@@ -1,6 +1,6 @@
 // Functions taken from http://www.quirksmode.org/js/cookies.html
 // ----------------------------------------------------------------------------
-// $Id: cookie.js,v 1.1 2008/09/30 09:37:59 frank_breedijk Exp $
+// $Id$
 // ----------------------------------------------------------------------------
 
 function createCookie(name,value,days) {
