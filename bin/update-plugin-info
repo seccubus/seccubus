@@ -1,0 +1,16 @@
+#!/bin/bash
+# ------------------------------------------------------------------------------
+# $Id: update-plugin-info,v 1.3 2010/07/05 12:17:04 frank_breedijk Exp $
+# ------------------------------------------------------------------------------
+# Update the plugin information
+# ------------------------------------------------------------------------------
+# Copyright (C) 2008  Schuberg Philis, Frank Breedijk - Under GPLv3
+# ------------------------------------------------------------------------------
+
+source /home/seccubus/etc/config
+export VAR
+export CONFIG
+
+$NESSUSBIN -c $CONFIG/full-nessusrc -qxp $HOST $PORT $USER $PASS > $VAR/.plugins/plugins.txt
+
+/home/seccubus/bin/update-plugin-info.pl

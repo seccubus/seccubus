@@ -1,0 +1,33 @@
+[\+\-] \d+\s+ETag\:.*\\r\n?
+[\+\-] \d+\s+Date\:.*\\r\n?
+[\+\-] \d+ \+ Start Time.*?\d+\:\d+\:\d+( \d{4})?\n?
+[\+\-] \d+ \+ End Time.*?\(\d+ seconds\)\n?
+[\+\-].*? The Linux process .(master|smtpd).*?\n?
+[\+\-] \d+ Plugin feed version : \d{12}\n?
+[\+\-] \d+ (version|processor|rootdispersion|peer|reftime|precision|refid|clock|jitter|phase|system)\=.*?\\r\n?
+[\+\-].*? TRACE \/.*?\.html HTTP\/\d\.\d\\r\n?
+[\+\-] \d+ \+ \d+ items checked - \d+ item\(s\) (found|reported) on remote host\(s\)\n?
+[\+\-] \d+ \+ \d+ items checked\: \d+ item\(s\) (found|reported) on remote host\n?
+[\+\-] \d+ 220.*?\\r\n?
+[\+\-] \d+ Scan (duration|Start Date) \:.*?\n?
+[\+\-] \d+ The difference between the local and remote clocks is \-?\d seconds\n?
+[\+\-] \d+ The remote clock is synchronized with the local clock\.\n?
+[\+\-] \d+ This web server leaks the following private IP address.*?\d+\.\d+\.\d+\.\d+\n?
+[\+\-] \d+ \[FileNotFoundException\]\: Could not find file \'.*?\'\.\\r\n?
+[\+\-] \d+\s+Set\-Cookie\:.*?\\r\n?
+[\+\-] \d+ \- Nikto \d+\.\d+\/\d+\.\d+\s+\-\s+(www\.)?cirt\.net\s+\n?
+[\+\-] \d+\s+Content.Length.\s+\d+\\r\n?
+[\+\-] \d+\s+Last.Modified\:.*?\\r\n?
+[\+\-] \d+\s+Expires\:.*?GMT\\r\n?
+[\+\-] \d+\s+Location\: \/.*?\\r\n?
+[\+\-] \d+\s+\[HttpException\]\: The file \'\/.*?\' does not exist\.\\r\n?
+[\+\-] \d+\s+X-Cache\:.*?\\r\n?
+[\+\-] \d+\s\[HttpExceptioni\]\: The file \'/.*?\' does not exist.\\r\n?
+[\+\-] \d+ \\n\n?
+[\+\-] \d+\s+\n?$
+[\+\-] \d+\s+Generated.*?by.*?\(squid.*?\)\n?
+[\+\-] \d+\s+OSVB\-6659\: GET \/[^\S]*?\n?
+[\+\-] \d+\s+Other references \: .*?\n?
+[\+\-] \d+\s+\+ OSVDB-0\: ETag header found on server, fields: .*?\n?
+[\+\-] \d+Server time.*?\d+\-\d+\-\d+.*?\d+\:\d+\:\d+ UTC.*?\n?
+[\+\-] \d+\s+value = .*?\n?

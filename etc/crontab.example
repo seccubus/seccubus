@@ -1,0 +1,23 @@
+# ------------------------------------------------------------------------------
+# $Id: crontab.example,v 1.3 2010/07/05 12:17:04 frank_breedijk Exp $
+# ------------------------------------------------------------------------------
+# This is an example crontab file for autonessus
+# ------------------------------------------------------------------------------
+
+# System housekeepin everyday
+
+# Make sure we have the latest plugins included in our rcs files
+# This is only needed if you run Nessus, not OpenVAS
+0 21 * * * /home/seccubus/bin/update-rcs 2>&1 |grep -v 14259
+
+# Make sure we have the latest plugin information in our var/.plugins directory
+#15 21 * * * /home/seccubus/bin/update-plugin-info
+
+# Scan MYWEEKLYSCAN every friday at 02:00
+#0 2 * * fri /home/seccubus/bin/do-scan MYWEEKLYSCAN
+
+# Scan MYBIWEEKLYSCAN every wednesday of every odd week at 6:00 a full scan 
+#0 4 * * wed /home/seccubus/bin/EveryXXXWeek.sh "/home/seccubus/bin/do-scan MYBIWEEKLYSCAN" 2 1
+
+# Scan MYMONTHLYSCAN every 2nd wednessday of the month at 04:00
+#0 4 8-14 * * /home/seccubus/bin/EveryXXXday.sh "/home/seccubus/bin/do-scan MYMONTHLYSCAN" 3

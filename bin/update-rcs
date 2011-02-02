@@ -1,0 +1,24 @@
+#!/bin/bash
+# ------------------------------------------------------------------------------
+# $Id: update-rcs,v 1.4 2010/07/05 12:17:04 frank_breedijk Exp $
+# ------------------------------------------------------------------------------
+# This shellscript updates the safe and full nessus-rc files with the latest
+# plugins downloaded by nessus
+# ------------------------------------------------------------------------------
+# Copyright (C) 2008  Schuberg Philis, Frank Breedijk - Under GPLv3
+# ------------------------------------------------------------------------------
+
+. /home/seccubus/etc/config
+export HOST
+export PORT
+export USER
+export PASS
+export NESSUSBIN
+export CONFIG
+
+# Update only safe plugins 
+/home/seccubus/bin/update-nessusrc -i "10180,10335,14274,14260" -x "10796,11219,11840,14272,14259" $CONFIG/safe-nessusrc
+# update all plugins
+/home/seccubus/bin/update-nessusrc -c "_all_" -c '!scanners' -i "10180,10335,14274,14260" -x "10796,11219,11840,14259,14272" $CONFIG/full-nessusrc
+# update the portscan config
+/home/seccubus/bin/update-nessusrc -c "" -f "" -r "" -i "10335,14274,10180" $CONFIG/portscan-nessusrc
