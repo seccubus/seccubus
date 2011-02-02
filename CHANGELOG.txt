@@ -1,3 +1,6 @@
+2-2-2011
+Code respository moved from CVS to SVN
+
 9-11-2010
 Seccubus v1.5.3 - Lots of small bugs, still make a lot of noise
 
