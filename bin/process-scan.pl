@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 # ------------------------------------------------------------------------------
-# $Id: process-scan.pl,v 1.19 2010/07/05 12:17:04 frank_breedijk Exp $
+# $Id$
 # ------------------------------------------------------------------------------
 # This perl script takes the last nessus output and storts it in the flat file 
 # database. It will also do some logased on the status and the previous nessus

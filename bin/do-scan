@@ -1,6 +1,6 @@
 #!/bin/bash
 # ------------------------------------------------------------------------------
-# $Id: do-scan,v 1.18 2010/11/09 14:52:37 frank_breedijk Exp $
+# $Id$
 # ------------------------------------------------------------------------------
 # This is the shell script that actually kicks off a scan usin nessus
 # after kicking of the scan it converts the output to xml and html format and

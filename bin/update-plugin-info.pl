@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 # ------------------------------------------------------------------------------
-# $Id: update-plugin-info.pl,v 1.2 2008/04/28 10:49:13 frank_breedijk Exp $
+# $Id$
 # ------------------------------------------------------------------------------
 # THis scripts gets the plugins.txt file and stores it in separate files in 
 # the var/.plugin directory

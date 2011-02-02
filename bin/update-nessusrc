@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 # ------------------------------------------------------------------------------
-# $Id: update-nessusrc,v 1.5 2010/07/05 12:17:04 frank_breedijk Exp $
+# $Id$
 # ------------------------------------------------------------------------------
 # update-nessusrc from http://www.tifaware.com/code/update-nessusrc 
 # slightly modified to ignore SSL certificate mismatches and take settings for
@@ -29,7 +29,7 @@
 # This module is free software; you can redistribute it and/or modify
 # it under the same terms as Perl itself.
 #
-# $Id: update-nessusrc,v 1.5 2010/07/05 12:17:04 frank_breedijk Exp $
+# $Id$
 # ---------------------------------------------------------------------
 
 
@@ -538,7 +538,7 @@ while (<CMD_READ>) {
         $categories{$_}++ if ($label eq 'category');
         $families{$_}++ if ($label eq 'family');
         # nb: strip extraneous characters from version string.
-        s/^\$Revision: 1.5 $$/$1/ if ($label eq 'version');
+        s/^\$Revision$$/$1/ if ($label eq 'version');
         # 
         $plugin{$id}{$label} = $_;
         warn "debug:     $label=>>$_<<\n" if $DEBUG;
