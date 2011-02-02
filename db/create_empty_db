@@ -1,0 +1,9 @@
+#!/bin/bash
+echo "mysqladmin -p drop Seccubus"
+mysqladmin -p drop Seccubus
+echo "mysqladmin -p create Seccubus"
+mysqladmin -p create Seccubus
+echo "mysql -p Seccubus < mysql_dump.txt"
+mysql -p Seccubus < structure_v1.mysql
+echo "mysql -p Seccubus < mysql_data.txt"
+mysql -p Seccubus < data_v1.mysql
