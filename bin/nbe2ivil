@@ -1,0 +1,182 @@
+#!/usr/bin/env perl
+# ------------------------------------------------------------------------------
+# $Id: nbe2ivil 14 2011-01-23 21:44:41Z frank_breedijk $
+# ------------------------------------------------------------------------------
+# This program converts an NBE file to the IVIL format
+# ------------------------------------------------------------------------------
+# Copyright (C) 2010  Schuberg Philis, Frank Breedijk - Under MIT license
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+# ------------------------------------------------------------------------------
+
+use strict;
+use IVIL;
+
+use Getopt::Long;
+use Carp;
+
+my (
+	$scanname,
+	$scanner,
+	$scannerversion,
+	$help,
+	$verbose,
+	$workspace,
+	$timestamp,
+	$infile,
+	$outfile,
+	@findings,
+   );
+
+my %sev = ( 
+		"Security Note" 	=> 3,
+		"Open port" 		=> 4,
+		"Security Warning"	=> 2,
+		"Security Hole"		=> 1
+	  );
+$help = 0;
+
+# Create default values
+
+GetOptions(	'scan=s'		=> \$scanname,
+		'scanner=s'		=> \$scanner,
+		'scannerversion=s'	=> \$scannerversion,
+		'help|h!'		=> \$help,
+		'verbose|v!'		=> \$verbose,
+		'workspace=s'		=> \$workspace,
+		'timestamp=s'		=> \$timestamp,
+		'infile=s'		=> \$infile,
+		'outfile=s'		=> \$outfile,
+	  );
+
+help() if $help;
+$scanname = $workspace unless $scanname;
+
+if ( ! $scanner ) {
+	print "You must specify a scanner";
+	help();
+} elsif ( ! $timestamp ) {
+	print "You must specify a timestamp";
+	help();
+} elsif ( ! $infile ) {
+	print "You must specify the infile parameter";
+	help();
+};
+
+print "Opening file $infile for input\n" if $verbose;
+open(IN, $infile) or die "Unable to open $infile";
+unless ( $outfile ) {
+	$outfile = $infile;
+	$outfile =~ s/\.nbe$//;
+	$outfile .= ".ivil.xml";
+}
+print "Opening file $outfile for output\n" if $verbose;
+open(OUT, ">$outfile") or die "Unable to open output file $outfile";
+print OUT xml_header();
+print OUT ivil_open();
+if ($workspace) {
+	print "Creating addressee block\n" if $verbose;
+	print OUT ivil_addressee("Seccubus", {
+						"workspace" => $workspace,
+						"scan"		=> $scanname,
+			 		     });
+}
+print "Creating sender block\n" if $verbose;
+print OUT ivil_sender($scanner, $scannerversion, $timestamp);
+
+print "Reading findings\n" if $verbose;
+@findings = ();
+while (<IN>) {
+	chomp;
+	my ( $type, $network, $ip, $port, $id, $severity, $finding ) = split(/\|/);
+	if ( $type eq "results" ) {
+		print "Finding: $ip|$port|$id|$sev{$severity}|$finding\n" if $verbose;
+		my %finding = ();
+		$finding{ip} = $ip;
+		# Unify the port numbers
+		$port .= "/tcp" if $port =~ /^\d+$/;
+		$port =~ /((\d+|general)\/(tcp|udp|icmp))/;
+		$finding{port} = $1;
+		$finding{id} = $id;
+		# If we have no finding id, we are dealing with a portscanner
+		$finding{id} = "portscan" unless $finding{id};
+		$finding{severity} = $sev{$severity};
+		# Severity is 0 unless we are able to find one
+		$finding{severity} = 0 unless $finding{severity};
+		$finding{finding} = $finding;
+		# If finding is empty we are dealing with a portscan
+		$finding{finding} = "Port $port is open" unless $finding{finding};
+		print "Refereces ->\n" if $verbose;
+		my %refs = get_refs($finding);
+		foreach my $reftype ( keys %refs ) {
+			if ( @{$refs{$reftype}} > 0 ) {
+				print "\t" . lc($reftype) . " : " if $verbose;
+				print join ", ", @{$refs{$reftype}} if $verbose;
+				print "\n" if $verbose;
+				$finding{references}->{lc($reftype)} = $refs{$reftype};
+				join ", ", 
+			}
+		}
+		push @findings, \%finding;
+	}
+}
+print OUT ivil_findings(\@findings) if (@findings);
+print ivil_findings(\@findings) if $verbose and @findings;
+
+print OUT ivil_close();
+
+close OUT;
+
+exit();
+
+sub help() {
+	print "
+
+Usage: nbe2ivil --scanner <scanner> [--scannerversion <versionstring>] \\
+                --timestamp <timestamp> [--workspace <workspacename>] \\
+		[--scan <scanname>] --infile <filename input> \\
+		[--outfile <filename output>] [--verbose] [--help]
+
+Arguments:
+--scanner	- The name of the scanner used to create the .nbe file
+			Logical options are Nessus, OpenVAS or Nikto
+--scannerversion- Optional: the version of the scanner used to create the .nbe
+		  file
+--timestamp	- Timestamp of when the file was created in the format 
+		  YYYYMMDDhhmmss or YYYYMMDDhhmm so 11 december 2011 1:14:00 pm
+		  is 20111211131400 or 201112111314
+--workspace	- Optional: Which Seccubus workspace do you want to load this 
+		  in, this informaiton is used to create the addressee block. 
+		  If not value is given for workspace no addressee block is 
+		  generated
+--scan		- Optional: Which Seccubus scan do you want to load this in, 
+		  this informaiton is used to create the addressee block. If 
+		  scan is not specified then the value for workspace is used.
+--infile	- This defines the .nbe file that will be converted to IVIL
+--outfile	- Optional: This defines the name of the file used to output 
+		  IVIL. If no filename is given, the infile value is used, 
+		  a trailing .nbe is removed (if it exists) and .ivil.xml is 
+		  appended
+--verbose (-v)	- Be verbose
+--help (-h)	- Print this message
+";
+	exit();
+}
+
+

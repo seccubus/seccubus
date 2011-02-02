@@ -1,0 +1,93 @@
+#!/usr/bin/env perl
+# ------------------------------------------------------------------------------
+# $Id$
+# ------------------------------------------------------------------------------
+# This program loads the findings from an IVIL file into the desired workspace 
+# and scan
+# ------------------------------------------------------------------------------
+#  Copyright 2011 Frank Breedijk of Schuberg Philis
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# ------------------------------------------------------------------------------
+
+use strict;
+use SeccubusV2;
+use SeccubusIVIL;
+use IVIL;
+use SeccubusFindings;
+use Getopt::Long;
+use Carp;
+
+my (
+	$help,
+	$workspace,
+	$scanname,
+	$verbose,
+	$scanner,
+	$scanner_version,
+	$timestamp,
+	$scan,
+   );
+
+$help = 0;
+
+GetOptions(	'scan=s'	=> \$scanname,
+		'scanner=s'	=> \$scanner,
+		'scannerversion=s'	=> \$scanner_version,
+		'help|h!'	=> \$help,
+		'verbose|v!'	=> \$verbose,
+		'workspace=s'	=> \$workspace,
+		'timestamp=s'	=> \$timestamp,
+	  );
+my $filename = shift(@ARGV);
+
+if ( ! -e $filename ) {
+	carp "File '$filename' does not exist";
+}
+
+help() if $help;
+
+$ENV{REMOTE_USER} = "importer";			# This utility runs under its 
+						# Own account
+
+print "Reading file $filename into memory\n" if $verbose;
+open(IVIL, $filename) or die "Unable to open file $filename for read";
+my $ivil = join("", <IVIL>);
+close(IVIL);
+print "File loaded\n" if $verbose;
+print "Parsing data\n" if $verbose;
+my ($workspace_id, $scan_id, $run_id) = load_ivil($ivil, $scanner, $scanner_version, $timestamp, $workspace, $scan);
+process_status($workspace_id, $scan_id, $run_id, $verbose);
+
+exit;
+
+sub help() {
+	# TODO: Update this help text
+	print "
+		This is not the helptext for load_ivil
+Usage: importer --workspace <workspace name> --scan <scan name> --scanner <scanner name --timestamp <yyyy-MM-dd HH:mm:ss> <filenae.nbe> [--help] [--verbose]
+
+Arguments:
+--workspace	- The name of the SeccubusV2 workspace this scan will be 
+		  imported to, defaults to the value of scanname
+--scan 		- the name of the scan in the old Seccubus
+--scanner	- Name of the scanner used
+--timestamp	- Time the scan ran in the format YYYY-MM-DD HH:mm:ss
+<filename>	- Path to the file to be imported
+--verbose (-v)	- Be verbose
+--help (-h)	- Print this message
+";
+	exit();
+}
+
+
