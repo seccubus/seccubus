@@ -15,20 +15,27 @@ my $query = CGI::new();
 
 print $query->header("text/xml");
 
+print "<seccubusAPI name='createWorkspace'>\n";
+
 my $workspaceName = $query->param("workspaceName");
 
+# Return an error if the required parameters were not passed 
+if (not (defined ($workspaceName))) {
+	print "\t<result>NOK</result>
+	<message>Invalid argument</message>
+</seccubusAPI>";
+ exit;	
+}
 
-my $newid;
+eval {
+	# Create the new workspace
+	my $newid = create_workspace($workspaceName);
 
-# Create the new workspace
-$newid = create_workspace($workspaceName);
-
-if ($newid == 0) {
-	print "<result>
-	<status>exists</status>
-</result>\n";
-} else {
-	print "<result>
-	<status>$newid</status>
-</result>\n";
+	print "\t<result>OK</result>
+	<message>Workspace $workspaceName successfully created</message>
+</seccubusAPI>";
+} or do {
+	print "\t<result>NOK</result>
+	<message>$@</message>
+</seccubusAPI>";
 }

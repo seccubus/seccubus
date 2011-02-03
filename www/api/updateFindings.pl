@@ -16,11 +16,22 @@ use SeccubusFindings;
 my $query = CGI::new();
 
 print $query->header("text/xml");
-my $workspaceid = $query->param("workspaceid") or die "No workspaceid provided";
+
+print "<seccubusAPI name='updateFindings'>\n";
+
+my $workspaceid = $query->param("workspaceid");
 my @ids = $query->param("ids[]");
 my $remark = $query->param("remark");
 my $status = $query->param("status");
 my $overwrite = $query->param("overwrite");
+
+# Return an error if the required parameters were not passed 
+if (not (defined ($workspaceid))) {
+	print "\t<result>NOK</result>
+	<message>Invalid argument</message>
+</seccubusAPI>";	
+	exit;
+}
 
 if ( $overwrite eq "true" || $overwrite == 1 ) {
 	$overwrite = 1;
@@ -29,26 +40,49 @@ if ( $overwrite eq "true" || $overwrite == 1 ) {
 }
 
 if ( @ids == 0 ) {
-	die "No ids passed to update";
+	print "\t<result>NOK</result>
+	<message>No ids passed to update</message>
+</seccubusAPI>";
+	exit;
 } else {
 	if ( $status < 0 || ( $status > 6 && $status != 99 ) ) {
-		die "Illegal status value";
+		print "\t<result>NOK</result>
+	<message>Invalid status code</message>
+</seccubusAPI>"; 
+	exit;
 	}
 }
 
-print "<updates>";
+print "\t<data>
+		<updates>\n";
 for my $id ( @ids ) {
-	print "<finding id='$id'>";
-	update_finding(	"finding_id"	=> $id,
+	print "\t\t\t<finding id='$id'>";
+	eval {
+		
+		update_finding(	"finding_id"	=> $id,
 			"workspace_id"	=> $workspaceid,
 			"status"	=> $status,
 			"remark"	=> $remark,
 			"overwrite"	=> $overwrite,
-		      );
-	print "OK</finding>";
+		    );
+		print "OK</finding>\n";
+	} or do {
+		print "NOK</finding>\n";
+		
+		print "\t\t</updates>
+	</data>
+	<result>NOK</result>
+	<message>$@</message>
+</seccubusAPI>";
+		exit; 
+	}
+	
 };
-print "<remark>$remark</remark>";
-print "<status>$status</status>";
-print "<overwrite>$overwrite</overwrite>";
-print "</updates>";
-
+print "\t\t\t<remark>$remark</remark>
+			<status>$status</status>
+			<overwrite>$overwrite</overwrite>
+		</updates>
+	</data>
+	<result>OK</result>
+	<message>Finding successfully changed</message>
+</seccubusAPI>"; 

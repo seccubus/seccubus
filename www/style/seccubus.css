@@ -3,46 +3,52 @@ Autonessus stylesheet
 --------------------------------------------------------------------------------
  $id: $
 ----------------------------------------------------------------------------- */
-
 body,td,th {
 	font-family: Georgia, Times New Roman, Times, serif;
-	font-size: 12px;
-	;color: #dddddd;
+	font-size: 12px;;
+	color: #dddddd;
 	color: white;
 }
-body {
-	;background-color: #3DBDE2;
+
+body {;
+	background-color: #3DBDE2;
 	background-color: grey;
 }
 
 a {
 	font-family: Georgia, Times New Roman, Times, serif;
-	color: #ff9900; 
+	color: #ff9900;
 }
+
 a:visited {
 	color: #ff9900;
 }
+
 a:hover {
 	color: #6699cc;
 }
+
 a:active {
 	color: #6699cc;
 }
 
 table {
-	border-collapse:collapse;
+	border-collapse: collapse;
 	width: 100%;
 }
-th {
-	text-align:left;
-}
-th.header{
-	background-image: url(../img/unsort.gif);
 
+th {
+	text-align: left;
 }
+
+th.header {
+	background-image: url(../img/unsort.gif);
+}
+
 th.headerSortUp {
 	background-image: url(../img/asc.gif);
 }
+
 th.headerSortDown {
 	background-image: url(../img/desc.gif);
 }
@@ -51,7 +57,7 @@ th {
 	cursor: pointer;
 }
 
-table, th, td, thead {
+table,th,td,thead {
 	border: 1px solid black;
 	background-repeat: no-repeat;
 	background-position: center right;
@@ -62,21 +68,21 @@ tr.s1 {
 }
 
 tr.s2 {
-	background-color: orange; 
+	background-color: orange;
 }
 
 tr.s2 a {
-	color: yellow; 
+	color: yellow;
 }
 
-tr.s3, td.s3 {
+tr.s3,td.s3 {
 	background-color: yellow;
 	color: black;
 }
 
-tr.s0, tr.s4 {
-}
+tr.s0,tr.s4 {
 	
+}
 
 h1 {
 	color: black;
@@ -89,6 +95,7 @@ h2 {
 a {
 	cursor: pointer;
 }
+
 .changed {
 	font-weight: bold;
 	color: black;

@@ -46,7 +46,7 @@ use Carp;
 sub get_scan_id($$;);
 sub get_scans($;);
 sub create_scan($$$$;$);
-sub update_scan($$$$$);
+sub update_scan($$$$$;$);
 sub run_scan($$;$$);
 
 =head1 Data manipulation - scans
@@ -90,7 +90,7 @@ sub create_scan($$$$;$) {
 	my $targets = shift;
 
 	if ( get_scan_id($workspace_id, $scanname) ) {
-		confess "A scan named '$scanname' allready exists in workspace $workspace_id";
+		die "A scan named '$scanname' already exists in workspace $workspace_id";
 	}
 	if ( may_write($workspace_id) ) {
 		return sql( "return"	=> "id",
@@ -105,7 +105,7 @@ sub create_scan($$$$;$) {
 			    "values"	=> [$scanname, $scanner_name, $scanner_param, $workspace_id, $targets],
 			  );
 	} else {
-		confess "Permission denied";
+		die "Permission denied";
 	}
 }
 
@@ -134,8 +134,8 @@ None
 =cut
 
 sub get_scan_id($$;) {
-	my $workspace_id = shift or confess "No workspace_id provided";
-	my $scanname = shift or confess "No scanname provide to getscanid";
+	my $workspace_id = shift or die "No workspace_id provided";
+	my $scanname = shift or die "No scanname provide to getscanid";
 
 	return sql( "return"	=> "array",
 		    "query"	=> "SELECT id from scans where name = ? and workspace_id = ?;",
@@ -167,7 +167,7 @@ Must have at least read rights
 =cut
 
 sub get_scans($;) {
-	my $workspace_id = shift or confess "No workspace_id provided";
+	my $workspace_id = shift or die "No workspace_id provided";
 
 	if ( may_read($workspace_id) ) {
 		return sql( "return"	=> "ref",
@@ -219,12 +219,12 @@ The scan must exist in the workspace.
 
 =cut
 
-sub update_scan($$$$$) {
-	my $workspace_id = shift or confess "No workspace_id provided";
-	my $scan_id = shift or confess "No scan_id provided";
-	my $scanname = shift or confess "No scanname provide to getscanid";
-	my $scanner_name = shift or confess "No scanner_name provided";
-	my $scanner_param = shift or confess "No scanner parameters specified";
+sub update_scan($$$$$;$) {
+	my $workspace_id = shift or die "No workspace_id provided";
+	my $scan_id = shift or die "No scan_id provided";
+	my $scanname = shift or die "No scanname provide to getscanid";
+	my $scanner_name = shift or die "No scanner_name provided";
+	my $scanner_param = shift or die "No scanner parameters specified";
 	my $targets = shift;
 
 	if ( may_write($workspace_id) ) {
@@ -237,7 +237,7 @@ sub update_scan($$$$$) {
 			    "values"	=> [$scanname, $scanner_name, $scanner_param, $targets, $scan_id, $workspace_id],
 			  );
 	} else {
-		confess "Permission denied";
+		die "Permission denied";
 	}
 }
 
@@ -288,10 +288,10 @@ sub run_scan($$;$$) {
 			my ( $scanname, $scanner, $param, $targets, $workspace ) = @scan;
 			my $config = SeccubusV2::get_config();
 			if ( ! -e $config->{paths}->{scanners} . "/$scanner/scan" ) {
-				confess "Scan script for $scanner is not installed";
+				die "Scan script for $scanner is not installed";
 			}
 			if ( $param =~ /\@HOSTS/ ) {
-				open TMP, ">$tempfile" or confess "Unable to open $tempfile for write";
+				open TMP, ">$tempfile" or die "Unable to open $tempfile for write";
 				print TMP "$targets\n";
 				close TMP;
 				$param =~ s/\@HOSTS/$tempfile/g;
@@ -313,7 +313,7 @@ sub run_scan($$;$$) {
 			}
 			print "cmd: $cmd\n" if $print;
 			my $result = "cmd: $cmd\n";
-			open CMD, "$cmd |" or confess "Unable to open pipe to '$cmd'";
+			open CMD, "$cmd |" or die "Unable to open pipe to '$cmd'";
 			while (<CMD>) {
 				$result .= $_;
 				print $_ if $print;
@@ -322,10 +322,10 @@ sub run_scan($$;$$) {
 			unlink $tempfile;
 			return $result;
 		} else {
-			confess "Scan $scan_id in workspace $workspace_id does not exist";
+			die "Scan $scan_id in workspace $workspace_id does not exist";
 		}
 	} else {
-		confess "You do not have permission to write in workspace $workspace_id";
+		die "You do not have permission to write in workspace $workspace_id";
 	}
 }
 

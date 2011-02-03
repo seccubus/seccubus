@@ -18,19 +18,32 @@ my $count = 0;
 
 print $query->header("text/xml");
 
-my $workspaces = get_workspaces;
+print "<seccubusAPI name='getWorkspaces'>\n";
 
-print "<workspaces>\n";
-foreach my $row ( @$workspaces ) {
-	print "\t<workspace 
-		  	id='$$row[0]'
-		  	lastrun='$$row[2]'
-		  	findings='$$row[3]'
-		  	scans='$$row[4]'
-		 >
-		 	<name>$$row[1]</name>
-		 </workspace>\n";
+eval {
+	my $workspaces = get_workspaces;
+
+	print "\t<result>OK</result>
+	<data>
+		<workspaces>\n";
+	foreach my $row ( @$workspaces ) {
+		print "\t\t\t<workspace>
+				<id>$$row[0]</id>
+				<name>$$row[1]</name>
+		  		<lastrun>$$row[2]</lastrun>
+		  		<findings>$$row[3]</findings>
+		  		<scans>$$row[4]</scans>
+		 	</workspace>\n";
 	$count++;
+	}
+	print "\t\t\t<count>$count</count>
+		</workspaces>
+	</data>
+	<message>$count Workspaces have been returned</message>
+</seccubusAPI>";
+
+} or do {
+	print "\t<result>NOK</result>
+	<message>$@</message>
+</seccubusAPI>";
 }
-print "\t<count>$count</count>\n";
-print "</workspaces>\n";

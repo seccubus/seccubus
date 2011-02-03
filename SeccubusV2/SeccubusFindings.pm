@@ -76,10 +76,9 @@ Must have at least read rights
 =cut
 
 sub get_findings($$;$) {
-	my $workspace_id = shift or confess "No workspace_id provided";
-	my $scan_id = shift;
+	my $workspace_id = shift or die "No workspace_id provided";
+	my $scan_id = shift or die "No scan_id_id provided";
 	my $filter = shift;
-	confess "No workspace_id provided" unless defined $scan_id;
 
 	if ( may_read($workspace_id) ) {
 		my $params = [ $workspace_id, $workspace_id ];
@@ -142,7 +141,7 @@ sub get_findings($$;$) {
 			    "values"	=> $params,
 		          );
 	} else {
-		return undef;
+		die "Permission denied!";
 	}
 }
 
@@ -172,8 +171,8 @@ Must have at least read rights
 =cut
 
 sub get_finding($$;) {
-	my $workspace_id = shift or confess "No workspace_id provided";
-	my $finding_id = shift or confess "No finding_id provided";
+	my $workspace_id = shift or die "No workspace_id provided";
+	my $finding_id = shift or die "No finding_id provided";
 
 	if ( may_read($workspace_id) ) {
 		my $params = [ $workspace_id, $workspace_id ];
@@ -207,7 +206,7 @@ sub get_finding($$;) {
 			    "values"	=> [ $workspace_id, $finding_id ]
 		          );
 	} else {
-		return undef;
+		die "Permission denied!";
 	}
 }
 
@@ -260,18 +259,18 @@ sub update_finding(@) {
 	my %arg = @_;
 
 	# Check if the user has write permissions
-	confess "You don't have write permissions for this workspace!" unless may_write($arg{workspace_id});
+	die "You don't have write permissions for this workspace!" unless may_write($arg{workspace_id});
 
 	# Check for mandatory parameters
 	foreach my $param ( qw(workspace_id) ) {
-		confess "Manditory parameter $param missing" unless exists $arg{$param};
+		die "Manditory parameter $param missing" unless exists $arg{$param};
 	}
 
 	if ( ! $arg{finding_id} ) {
 		# If we don't have a finding ID there are additional mandatory
 		# parameters.
 		foreach my $param ( qw(scan_id run_id host port plugin finding) ) {
-			confess "Manditory parameter $param missing" unless exists $arg{$param};
+			die "Manditory parameter $param missing" unless exists $arg{$param};
 		}
 
 		# Lets try to find out if a finding allready exists for this 
@@ -369,7 +368,7 @@ checking should have been doine a higher levels.
 =cut
 
 sub create_finding_change($:) {
-	my $finding_id = shift or confess "No fidnings_id given";
+	my $finding_id = shift or die "No fidnings_id given";
 	my $user_id = get_user_id($ENV{REMOTE_USER});
 
 	my @data = sql( "return"	=> "array",

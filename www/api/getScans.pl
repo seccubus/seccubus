@@ -18,22 +18,46 @@ my $count = 0;
 
 print $query->header("text/xml");
 
-my $workspace_id = $query->param("workspaceID") or die "Cannot get workspaceID";
-#my $workspace_id = 100;
+print "<seccubusAPI name='getScans'>\n";
 
-my $scans = get_scans($workspace_id);
+my $workspace_id = $query->param("workspaceID");
 
-print "<scans>\n";
-foreach my $row ( @$scans ) {
-	print "\t<scan id='$$row[0]' 
-			scanner='$$row[2]' 
-			scannerparam='$$row[3]'
-			lastrun='$$row[4]'
-			total_runs='$$row[5]'
-			findings='$$row[6]'
-		 >
-		 <name>$$row[1]</name></scan>\n";
-	$count++;
+# Return an error if the required parameters were not passed 
+if (not (defined ($workspace_id))) {
+	print "\t<result>NOK</result>
+	<message>Invalid argument</message>
+</seccubusAPI>";	
+	exit;
 }
-print "\t<count>$count</count>\n";
-print "</scans>\n";
+
+eval {
+	my $scans = get_scans($workspace_id);
+
+	print "\t<result>OK</result>
+	<data>
+		<scans>\n";
+		
+	foreach my $row ( @$scans ) {
+		print "\t\t\t<scan>
+				<id>$$row[0]</id>
+				<name>$$row[1]</name> 
+				<scanner>$$row[2]</scanner> 
+				<scannerparam>$$row[3]</scannerparam>
+				<lastrun>$$row[4]</lastrun>
+				<total_runs>$$row[5]</total_runs>
+				<findings>$$row[6]</findings>
+				<targets>$$row[7]</targets>
+			</scan>\n";
+		$count++;
+	}
+	print "\t\t\t<count>$count</count>
+		</scans>
+	</data>
+	<message>$count Scans have been returned</message>
+</seccubusAPI>";
+
+} or do {
+	print "\t<result>NOK</result>
+	<message>$@</message>
+</seccubusAPI>";
+}

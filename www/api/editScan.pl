@@ -18,14 +18,34 @@ my $count = 0;
 
 print $query->header("text/xml");
 
-my $workspace_id = $query->param("workspaceID") or die "Cannot get workspaceID";
-my $scan_id = $query->param("scanID") or die "Cannot get scanID";
-my $scanname = $query->param("scanName") or die "Cannot get scanName";
-my $scanner_name = $query->param("scannerName") or die "Cannot get scannerName";
-my $scanner_param = $query->param("scannerParam") or die "Cannot get scannerParam";
-my $targets = $query->param("Targets") or die "Cannot get Targets";
-#my $workspace_id = 100;
+print "<seccubusAPI name='editScan'>\n";
 
-my $result = update_scan($workspace_id, $scan_id, $scanname, $scanner_name, $scanner_param, $targets);
+my $workspace_id = $query->param("workspaceID");
+my $scan_id = $query->param("scanID");
+my $scanname = $query->param("scanName");
+my $scanner_name = $query->param("scannerName");
+my $scanner_param = $query->param("scannerParam");
+my $targets = $query->param("Targets");
 
-print "<updated>$result</updated>";
+# Return an error if the required parameters were not passed 
+if (not (defined ($workspace_id) and defined ($scan_id) and
+		 defined ($scanname) and defined ($scanner_name) and
+		 defined ($scanner_param) ) ) {
+	print "\t<result>NOK</result>
+	<message>Invalid arguments</message>
+</seccubusAPI>";	
+	exit;
+}
+
+eval {
+	my $result = update_scan($workspace_id, $scan_id, $scanname, $scanner_name, $scanner_param, $targets);
+
+	print "\t<result>OK</result>
+	<message>$result Scans successfully updated</message>
+</seccubusAPI>";
+
+} or do {
+	print "\t<result>NOK</result>
+	<message>$@</message>
+</seccubusAPI>"; 
+}

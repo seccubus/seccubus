@@ -218,7 +218,7 @@ $(document).ready( function() {
 	updateWorkspacesTable();
 	
 	// Show the overlay that displays results from api/up2date.pl
-	$("#start").overlay({
+	/*$("#start").overlay({
 		mask: {
 			color: '#D6D6D6',
 			closeSpeed: 0,
@@ -237,13 +237,14 @@ $(document).ready( function() {
 			});
 		}
 	});
-	setTimeout("$('#start').overlay('data').close()",6000);
+	setTimeout("$('#start').overlay('data').close()",6000);*/
 });
 
 // Error handler for all ajax calls
 $(document).ajaxError(function(e, xhr, settings, exception) {
-	alert("Error calling '" + settings.url + "' \nXHR status: " + xhr.status + 
-		  " \nXHR message:\n" + xhr.responseText + " \Exception Message:\n" + exception);
+	alert("Error calling '" + settings.url + "' \nXHR status: (" + xhr.status + ") " + xhr.statusText + 
+		  " \nXHR message:\n" + xhr.responseText + " \nXHR XML:\n" + xhr.responseXML +
+		  "\nException Message:\n" + exception);
 });
 
 // This function sets the workspace buttons up 
@@ -292,22 +293,23 @@ function workspacesSetup() {
 
 			// Create the workspace
 			$.post("api/createWorkspace.pl", {workspaceName: name}, function(xml, txtStatus){
-				// Present the results
-				result = $("status", xml).text();
+				// Store status of the result
+				result = $("result", xml).text();
 				
-				if (result === "exists") {	// if result exists, prompt user and keep form open
-					console.error("The workspace name '" + name + "' already exists. Please choose a different name.");
-					$("#addWS form").data("validator").invalidate( { 
-						"name": "This name already exists" 
-					});
-				} else if (!isNaN(result)) { // if result is a number (successful), log it and close overlay 
-					console.log("The workspace '" + name + "' was created successfully.");
+				if (result === "OK") { // if result is OK (successful), log it and refresh table 
+					console.log($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
 					// close the overlay
 					add_trigger.eq(0).overlay().close();
 					// Refresh the workspace names list
 					updateWorkspacesTable();
-				} else {	// Handle unknown results gracefully
-					console.error("An unknown result was returned. Please report the following result to the developers: " + result);
+				} else if (result === "NOK")  {	// Handle errors gracefully
+					console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+					// close the overlay
+					add_trigger.eq(0).overlay().close();
+				} else { // Handle unknown errors gracefully
+					console.error("An unknown result was returned.\n"+
+						"Please report the following result to the developers:\n" +
+						$("seccubusAPI", xml).attr("name") + ": " + result);
 					// close the overlay
 					add_trigger.eq(0).overlay().close();
 				}
@@ -342,36 +344,35 @@ function workspacesSetup() {
 	$("#editWS form").validator().submit(function(e) {
 		if (!e.isDefaultPrevented()) {	// client-side validation passed
 			// get user inputted workspace name
-			var name = $("#edit_ws_name").val();
+			var newName = $("#edit_ws_name").val();
 			
-			if (name === workspaceName) {
+			if (newName === workspaceName) {
 				$("#editWS form").data("validator").invalidate( { 
 					"name": "Name has not been modified" 
 				});
 				return e.preventDefault();
 			}
 			// Change the workspace name
-			$.post("api/editWorkspace.pl", {workspaceName: workspaceName, newWorkspaceName: name}, function(xml, txtStatus){
-				// Present the results
-				result = $("status", xml).text();
+			$.post("api/editWorkspace.pl", {workspaceName: workspaceName, newWorkspaceName: newName}, function(xml, txtStatus){
+				// Store status of the result
+				result = $("result", xml).text();
 				
-				if (result === "exists") {	// if result exists, prompt user and keep form open
-					console.error("The workspace name '" + name + "' already exists. Please choose a different name.");
-					$("#editWS form").data("validator").invalidate( { 
-						"name": "This name already exists" 
-					});
-				} else if (result === "notfound") {	// The original workspace name was not found
-					console.error("The current workspace name '" + workspaceName + "' was not found in the database!");
-				} else if (!isNaN(result)) { // if result is a number, prompt user and restart 
-					console.log("The workspace '" + workspaceName + "' was successfully changed to '" + name +"'");
+				if (result === "OK") { // if result is OK (successful), log it and refresh table 
+					console.log($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
 					// close the overlay
 					edit_trigger.eq(0).overlay().close();
 					// Change the current workspace name
-					workspaceName = name;
+					workspaceName = newName;
 					// Refresh the workspace names list
 					updateWorkspacesTable();
-				} else {	// Handle unknown results gracefully
-					console.error("An unknown result was returned. Please report the following result to the developers: " + result);
+				} else if (result === "NOK")  {	// Handle errors gracefully
+					console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+					// close the overlay
+					edit_trigger.eq(0).overlay().close();
+				} else { // Handle unknown errors gracefully
+					console.error("An unknown result was returned.\n"+
+						"Please report the following result to the developers:\n" +
+						$("seccubusAPI", xml).attr("name") + ": " + result);
 					// close the overlay
 					edit_trigger.eq(0).overlay().close();
 				}
@@ -408,13 +409,11 @@ function workspacesSetup() {
 	$("#yesDelWS").click(function(e) {
 		// Delete the current workspace
 		$.post("api/deleteWorkspace.pl", {workspaceName: workspaceName}, function(xml, txtStatus){
-			// Get the results
-			result = $("status", xml).text();
-
-			if (result === "fail") {	// if fail prompt user.
-				console.error("Unable to delete '" + workspaceName + "' workspace!");
-			} else if (result === "success") {
-				console.log("The workspace '" + workspaceName + "' and associated data has been deleted.");
+			// Store status of the result
+			result = $("result", xml).text();
+			
+			if (result === "OK") { // if result is OK (successful), log it and refresh table 
+				console.log($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
 				// close the overlay
 				delete_trigger.eq(0).overlay().close();
 				// Clear the global variables
@@ -422,8 +421,14 @@ function workspacesSetup() {
 				workspaceName = "";
 				// Refresh the workspace names list
 				updateWorkspacesTable();
-			} else {	// Handle unknown results gracefully
-				console.error("An unknown result was returned. Please report the following result to the developers: " + result);
+			} else if (result === "NOK")  {	// Handle errors gracefully
+				console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+				// close the overlay
+				delete_trigger.eq(0).overlay().close();
+			} else { // Handle unknown errors gracefully
+				console.error("An unknown result was returned.\n"+
+					"Please report the following result to the developers:\n" +
+					$("seccubusAPI", xml).attr("name") + ": " + result);
 				// close the overlay
 				delete_trigger.eq(0).overlay().close();
 			}
@@ -439,118 +444,122 @@ function workspacesSetup() {
 // This function updates the workspacelist 
 function updateWorkspacesTable() {
 	// Get the workspace list via XML
-	$.post("api/getWorkspaces.pl", function(xml, txtStatus){
+	$.post("api/getWorkspaces.pl", {}, function(xml, txtStatus){
+		// Store status of the result
+		result = $("result", xml).text();
 		
-		// Clear the table contents
-		$('#workspaces_table').dataTable().fnClearTable();
+		if (result === "OK") { // if result is OK (successful), fill table with data and add handlers
+			console.log($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+			// Clear the table contents
+			$('#workspaces_table').dataTable().fnClearTable();
 
-		// Prepare each workspace XML element as a table row to be inserted into the workspace table
-		$("workspace", xml).each(function() {
-			/* var row = "";  // used to insert data in HTML format into table
-			var id = $(this).attr('id');
-			var name = $("name", this).text();
-			row = "<tr title='Click to select a workspace'><td>"+ id +"</id>"+
-				"<td>"+ name +"</td><td>"+ $(this).attr('scans') +"</td></tr>";*/
-			var ai = $('#workspaces_table').dataTable().fnAddData([ $("name", this).text(), $(this).attr('scans') ]);
-			var selTR = $('#workspaces_table').dataTable().fnSettings().aoData[ ai[0] ].nTr;
-			$(selTR).attr('id', $(this).attr('id'))
-					.attr('title', "Click to select a workspace");
-		});
-		// Add a counter
-		//$("#Workspaces").append("<p>" + $("count", xml).text() + " workspace(s) available.</p>");
-		// Replace the table html 
-		//$("#workspaces_table tbody").html(table_rows);
+			// Prepare each workspace XML element as a table row to be inserted into the workspace table
+			$("workspace", xml).each(function() {
+				var ai = $('#workspaces_table').dataTable().fnAddData([ $("name", this).text(), $("scans", this).text() ]);
+				var selTR = $('#workspaces_table').dataTable().fnSettings().aoData[ ai[0] ].nTr;
+				$(selTR).data('id', $("id", this).text())
+						.attr('title', "Click to select a workspace");
+			});
 		
-		if (workspaceID != 0) {		// If a workspace is already selected
-			// Set workspace status and highlight the correct row
-			$("#workspace_status").text(workspaceName);
-			$("#workspaces_table tbody tr[id="+workspaceID+"]").addClass('select');
-		} else {	// If a workspace is not selected
-			// Make sure the workspace status is set to "None"
-			$("#workspace_status").text("None");
-			
-			// Set edit and delete buttons to disabled, if not already
-			if (!($("#btnEditWS").is(".disabled"))) {
-				$("#btnEditWS").toggleClass("disabled");
-			}
-			if (!($("#btnDeleteWS").is(".disabled"))) {
-				$("#btnDeleteWS").toggleClass("disabled");
-			}
-		}
-	
-		// Deny text selection in table where click and double click can have unintentional text selection 
-		$("#workspaces_table").disableTextSelect();
-			
-		// Assign a click handler for workspace rows
-		$("#workspaces_table tbody tr").single_double_click(function() {
-			if (workspaceID == 0) { // No workspaces have been selected
-				// Enable the appropriate buttons
-				$("#btnEditWS").toggleClass('disabled');
-				$("#btnDeleteWS").toggleClass('disabled');
-				//Set the current Workspace 
-				workspaceID = $(this).attr('id');
-				workspaceName = $("td:first", this).text();
-				//Change the workspace status
+			if (workspaceID != 0) {		// If a workspace is already selected
+				// Set workspace status and highlight the correct row
 				$("#workspace_status").text(workspaceName);
-				// load the correct scans for the current workpace into the table
-				updateScansTable();
-			} else if (workspaceID == $(this).attr('id')) {	// This workspace is already selected
-				workspaceID = 0;	// Change to indicate that no workpace is selected
-				workspaceName = "";
-				$("#btnEditWS").toggleClass('disabled');
-				$("#btnDeleteWS").toggleClass('disabled');
-				// clear the  status
+				$("#workspaces_table tbody tr[id="+workspaceID+"]").addClass('select');
+			} else {	// If a workspace is not selected
+				// Make sure the workspace status is set to "None"
 				$("#workspace_status").text("None");
-				$("#filter_status").text("None");
-				// Remove any loaded scans
-				fnUnloadAllFindings();
-			} else {	// Another workspace is already selected
-				// Toggle the already selected workspace off
-				$("#workspaces_table tbody tr[id="+workspaceID+"]").toggleClass('select');
-				// Remove any loaded scans
-				fnUnloadAllFindings();
 				
+				// Set edit and delete buttons to disabled, if not already
+				if (!($("#btnEditWS").is(".disabled"))) {
+					$("#btnEditWS").toggleClass("disabled");
+				}
+				if (!($("#btnDeleteWS").is(".disabled"))) {
+					$("#btnDeleteWS").toggleClass("disabled");
+				}
+			}
+	
+			// Deny text selection in table where click and double click can have unintentional text selection 
+			$("#workspaces_table").disableTextSelect();
+			
+			// Assign a click handler for workspace rows
+			$("#workspaces_table tbody tr").single_double_click(function() {
+				if (workspaceID == 0) { // No workspaces have been selected
+					// Enable the appropriate buttons
+					$("#btnEditWS").toggleClass('disabled');
+					$("#btnDeleteWS").toggleClass('disabled');
+					//Set the current Workspace 
+					workspaceID = $(this).data('id');
+					workspaceName = $("td:first", this).text();
+					//Change the workspace status
+					$("#workspace_status").text(workspaceName);
+					// load the correct scans for the current workpace into the table
+					updateScansTable();
+				} else if (workspaceID == $(this).data('id')) {	// This workspace is already selected
+					workspaceID = 0;	// Change to indicate that no workpace is selected
+					workspaceName = "";
+					$("#btnEditWS").toggleClass('disabled');
+					$("#btnDeleteWS").toggleClass('disabled');
+					// clear the  status
+					$("#workspace_status").text("None");
+					$("#filter_status").text("None");
+					// Remove any loaded scans
+					fnUnloadAllFindings();
+				} else {	// Another workspace is already selected
+					// Toggle the already selected workspace off
+					$("#workspaces_table tbody tr[id="+workspaceID+"]").toggleClass('select');
+					// Remove any loaded scans
+					fnUnloadAllFindings();
+					
+					//Set the current Workspace 
+					workspaceID = $(this).data('id');
+					workspaceName = $("td:first", this).text();
+					//Change the workspace status
+					$("#workspace_status").text(workspaceName);
+					// load the correct scans for the current workpace into the table
+					updateScansTable();
+				}
+				
+				// Always toggle the clicked on workspace
+				$(this).toggleClass('select');
+				
+			}, function() {		// Assign a double click handler for workspace rows
+				if (workspaceID == $(this).data('id')) {  // The currently selected workspace was double-clicked
+					return;
+				} else if (workspaceID == 0) { // No workspaces have been selected
+					// Enable the appropriate buttons
+					$("#btnEditWS").toggleClass('disabled');
+					$("#btnDeleteWS").toggleClass('disabled');
+					// Toggle the clicked on workspace
+					$(this).toggleClass('select');
+				} else if (workspaceID != $(this).data('id')) {	// Another workspace is already selected
+					// Toggle the already selected workspace off
+					$("#workspaces_table tbody tr[id="+workspaceID+"]").toggleClass('select');
+					// Remove any loaded scans
+					fnUnloadAllFindings();
+				
+					// Toggle the clicked on workspace
+					$(this).toggleClass('select');
+				}
 				//Set the current Workspace 
-				workspaceID = $(this).attr('id');
+				workspaceID = $(this).data('id');
 				workspaceName = $("td:first", this).text();
+			
 				//Change the workspace status
 				$("#workspace_status").text(workspaceName);
+				
 				// load the correct scans for the current workpace into the table
 				updateScansTable();
-			}
-				
-			// Always toggle the clicked on workspace
-			$(this).toggleClass('select');
 			
-		}, function() {		// Assign a double click handler for workspace rows
-			if (workspaceID == 0) { // No workspaces have been selected
-				// Enable the appropriate buttons
-				$("#btnEditWS").toggleClass('disabled');
-				$("#btnDeleteWS").toggleClass('disabled');
-				// Toggle the clicked on workspace
-				$(this).toggleClass('select');
-			} else if (workspaceID != $(this).attr('id')) {	// Another workspace is already selected
-				// Toggle the already selected workspace off
-				$("#workspaces_table tbody tr[id="+workspaceID+"]").toggleClass('select');
-				// Remove any loaded scans
-				fnUnloadAllFindings();
-				
-				// Toggle the clicked on workspace
-				$(this).toggleClass('select');
-			}
-			//Set the current Workspace 
-			workspaceID = $(this).attr('id');
-			workspaceName = $("td:first", this).text();
-			
-			//Change the workspace status
-			$("#workspace_status").text(workspaceName);
-			
-			// load the correct scans for the current workpace into the table
-			updateScansTable();
-			
-			// double click behavior goes here
-			$("ul.css-tabs").data("tabs").click("scans");
-		});
+				// double click behavior goes here
+				$("ul.css-tabs").data("tabs").click("scans");
+			});
+		} else if (result === "NOK")  {	// Handle errors gracefully
+			console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+		} else { // Handle unknown errors gracefully
+			console.error("An unknown result was returned.\n"+
+				"Please report the following result to the developers:\n" +
+				$("seccubusAPI", xml).attr("name") + ": " + result);
+		}
 	}, "xml");
 }
 
@@ -558,6 +567,9 @@ function updateWorkspacesTable() {
 function scansSetup() {
 	// Disable text selection by default
 	$("#btnAddScan").disableTextSelect();
+	
+	// SelectAll checkbox default is unchecked.
+	$('#SelectAll', '#scans_table').attr('checked', false);
 	
 	// Initialize table
 	var oTable = $('#scans_table').dataTable( {
@@ -590,7 +602,12 @@ function scansSetup() {
 		},
 		onLoad: function (event) { $("input:text:visible:first").focus(); },	// Set focus to the first input field
 		onBeforeClose: function (event) {
-			$("#add_scan_name").val("");		// Clear the scan name field
+			// Clear the add scan fields
+			$("#add_scan_name").val("");
+			$("#add_scan_scanner").val("");
+			$("#add_scan_parameters").val("");
+			$("#add_scan_targets").val("");
+			
 			$(".error").hide();				// Hide all error messages
 		}
 	});
@@ -598,27 +615,33 @@ function scansSetup() {
 		if (!e.isDefaultPrevented()) {	// client-side validation passed
 			e.preventDefault();
 			
-			// get user inputted scan name
-			var name = $("#add_scan_name").val();
+			// get user inputs
+			var nameOfScan = $("#add_scan_name").val();
+			var scanner = $("#add_scan_scanner").val();
+			var params = $("#add_scan_parameters").val();
+			var targets = $("#add_scan_targets").val();
 
 			// Create the scan
-			$.post("api/createScan.pl", {workspaceName: name}, function(xml, txtStatus){
-				// Present the results
-				result = $("status", xml).text();
+			$.post("api/createScan.pl", {workspaceID: workspaceID, scanName: nameOfScan,
+										 scannerName: scanner, scannerParam: params,
+										 Targets: targets}, function(xml, txtStatus){
+				// Store status of the result
+				result = $("result", xml).text();
 				
-				if (result === "exists") {	// if result exists, prompt user and keep form open
-					console.error("The scan name '" + name + "' already exists. Please choose a different name.");
-					$("#addScan form").data("validator").invalidate( { 
-						"name": "This name already exists" 
-					});
-				} else if (!isNaN(result)) { // if result is a number (successful), log it and close overlay 
-					console.log("The scan '" + name + "' was created successfully.");
+				if (result === "OK") { // if result is OK (successful), log it, close overlay and refresh table
+					console.log($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
 					// close the overlay
 					add_trigger.eq(0).overlay().close();
 					// Refresh the scan names list
-					updateScanTable();
-				} else {	// Handle unknown results gracefully
-					console.error("An unknown result was returned. Please report the following result to the developers: " + result);
+					updateScansTable();
+				} else if (result === "NOK")  {	// Handle errors gracefully
+					console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+					// close the overlay
+					add_trigger.eq(0).overlay().close();
+				} else { // Handle unknown errors gracefully
+					console.error("An unknown result was returned.\n"+
+						"Please report the following result to the developers:\n" +
+						$("seccubusAPI", xml).attr("name") + ": " + result);
 					// close the overlay
 					add_trigger.eq(0).overlay().close();
 				}
@@ -634,40 +657,37 @@ function scansSetup() {
 			if (!e.isDefaultPrevented()) {	// client-side validation passed
 				e.preventDefault();
 				
-				// get user inputted scan name and original name
-				var newName = $("#edit_scan_name", "#editScan").val();
-				var name = $("#orig_scan_name", "#editScan").val();
-				var id = $("#orig_scan_id", "#editScan").val();
-				
-				if (newName === name) {
-					$("form", "#editScan").data("validator").invalidate( { 
-						"name": "Name has not been modified" 
-					});
-					return e.preventDefault();
-				}
+				// get user inputs
+				var nameOfScan = $("#edit_scan_name").val();
+				var scanner = $("#edit_scan_scanner").val();
+				var params = $("#edit_scan_parameters").val();
+				var targets = $("#edit_scan_targets").val();
+
+				var scanID = $("#orig_scan_id", "#editScan").val();
 				
 				// Change the scan name
-				$.post("api/editScan.pl", {scanID: id, newScanName: newName}, function(xml, txtStatus){
-					// Present the results
-					result = $("status", xml).text();
+				$.post("api/editScan.pl", {workspaceID: workspaceID, scanID: scanID, 
+					scanName: nameOfScan, scannerName: scanner, scannerParam: params,
+					Targets: targets}, function(xml, txtStatus){
+					// Store status of the result
+					result = $("result", xml).text();
 					
-					if (result === "exists") {	// if result exists, prompt user and keep form open
-						console.error("The scan name '" + newName + "' already exists. Please choose a different name.");
-						$("form", "#editScan").data("validator").invalidate( { 
-							"name": "This name already exists" 
-						});
-					} else if (result === "notfound") {	// The original scan name was not found
-						console.error("The current scan name '" + name + "' was not found in the database!");
-					} else if (!isNaN(result)) { // if result is a number, prompt user and restart 
-						console.log("The scan '" + name + "' was successfully changed to '" + newName +"'");
+					if (result === "OK") { // if result is OK (successful), log it, close overlay and refresh table
+						console.log($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
 						// close the overlay
 						$(".close", "#editScan").click();
-						// Update the scan name in the object
-						scanObj.update(id, newName);
+						// Update the scan name in the collection in case it changed
+						scanObj.update(scanID, scanner);
 						// Refresh the scan names list
-						updateScanTable();
-					} else {	// Handle unknown results gracefully
-						console.error("An unknown result was returned. Please report the following result to the developers: " + result);
+						updateScansTable();
+					} else if (result === "NOK")  {	// Handle errors gracefully
+						console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+						// close the overlay
+						$(".close").click();
+					} else { // Handle unknown errors gracefully
+						console.error("An unknown result was returned.\n"+
+							"Please report the following result to the developers:\n" +
+							$("seccubusAPI", xml).attr("name") + ": " + result);
 						// close the overlay
 						$(".close").click();
 					}
@@ -679,9 +699,13 @@ function scansSetup() {
 		});
 		$("button:reset", "#editScan").click(function(e) {
 			e.preventDefault();
-			$("#edit_scan_name", "#editScan").val($("#orig_scan_name", "#editScan").val());
 			
-			return false;
+			$("#edit_scan_name", "#editScan").val($("#orig_scan_name", "#editScan").val());
+			$("#edit_scan_scanner", "#editScan").val($("#orig_scan_scanner", "#editScan").val());
+			$("#edit_scan_parameters", "#editScan").val($("#orig_scan_parameters", "#editScan").val());
+			$("#edit_scan_targets", "#editScan").val($("#orig_scan_targets", "#editScan").val());
+			//return false;
+			//$(".error").hide();	// Hide all error messages
 		});
 	
 	// Set delete scan button click handlers
@@ -693,23 +717,27 @@ function scansSetup() {
 		
 		// Delete the current scan
 		$.post("api/deleteScan.pl", {scanID: id}, function(xml, txtStatus){
-			// Get the results
-			result = $("status", xml).text();
-
-			if (result === "fail") {	// if fail prompt user.
-				console.error("Unable to delete '" + name + "' scan!");
-			} else if (result === "success") {
-				console.log("The scan '" + name + "' and associated data has been deleted.");
+			// Store status of the result
+			result = $("result", xml).text();
+			
+			if (result === "OK") { // if result is OK (successful), log it, close overlay and refresh table
+				console.log($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
 				// close the overlay
 				$(".close", "#deleteScan").click();
 				//remove from status if it exists
 				scanObj.remove(id);
 				// Refresh the scan names list
 				updateScansTable();
-			} else {	// Handle unknown results gracefully
-				console.error("An unknown result was returned. Please report the following result to the developers: " + result);
+			} else if (result === "NOK")  {	// Handle errors gracefully
+				console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
 				// close the overlay
-				$(".close", "#deleteScan").click();
+				$(".close").click();
+			} else { // Handle unknown errors gracefully
+				console.error("An unknown result was returned.\n"+
+					"Please report the following result to the developers:\n" +
+					$("seccubusAPI", xml).attr("name") + ": " + result);
+				// close the overlay
+				$(".close").click();
 			}
 		}, "xml");
 		
@@ -734,7 +762,7 @@ function scansSetup() {
 	// Assign a click handler for the scans_table cells
 	$("#scans_table").delegate('td', 'click', function(e) {
 		var selRow = $(this).parent();
-		var scanID = selRow.attr('id');
+		var scanID = selRow.data('id');
 		var scanName = $('td:eq(1)', selRow).text();
 		//alert("scanID = " + scanID +"\nscanName = "+ scanName);
 		var selTarget = $(e.target);
@@ -829,90 +857,122 @@ function updateScansTable() {
 	$('#scans_table').dataTable().fnClearTable();
 
 	// Get the scan list via XML and process it.
-	$.post("api/getScans.pl", {workspaceID: workspaceID}, function(xml, txtStatus){
-		//var rows = "";  // used to insert data in HTML format into table
-
-		// Prepare each workspace XML element as a table row to be inserted into the workspace table
-		$("scan", xml).each(function() {
-			var checkbox = "<input type='checkbox' title='Select' />";
-			var scanName = $("name", this).text();
-			var options = "<img name='"+ scanName + "' class='EditScan' "+
-				"rel='#editScan' src='img/pencil.png' title='Edit scan' "+
-				"alt='[edit]'/><img name='"+ scanName +"' class='DeleteScan' "+
-				"rel='#deleteScan' src='img/delete.png' title='Delete scan' alt='[delete]'/>";
-			
-			var ai = $('#scans_table').dataTable()
-						.fnAddData([ checkbox, scanName, $(this).attr('scanner'), $(this)
-						             .attr('findings'), options ]);
-			var selTR = $('#scans_table').dataTable().fnSettings().aoData[ ai[0] ].nTr;
-			$(selTR).attr('id', $(this).attr('id'))
-				 	.attr('title', "Click to select scan");
-			
-		});
-		// Add a counter
-		//table_rows = "<p>" + $("count", xml).text() + " workspace(s) available.</p>";
+	$.post("api/getScans.pl", { workspaceID: workspaceID}, function(xml, txtStatus){
+		// Present the results
+		result = $("result", xml).text();
 		
-		/* Replace the table html 
-		$("tbody", "#scans_table").html(rows);*/
-		
-		if (!scanObj.isEmpty()) {		// If a scan is already selected
-			// highlight selected rows
-			$("tbody tr", "#scans_table").each(function () {
-				if (scanObj.exists($(this).attr('id'))) $(this).addClass('select');
-			}); 
-			// Set scan status
-			$("#scan_status").text(scanObj.getValuesStr());
-		} else {	// If a scan is not selected
-			// Make sure the scan status is set to "None"
-			$("#scan_status").text("None");
+		if (result === "OK") { // if result is OK (successful), fill table and add handlers
+			console.log($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+			// Prepare each workspace XML element as a table row to be inserted into the workspace table
+			$("scan", xml).each(function() {
+				var checkbox = "<input type='checkbox' title='Select' />";
+				var scanName = $("name", this).text();
+				var options = "<img name='"+ scanName +"' class='EditScan' rel='#editScan' "+
+					"src='img/pencil.png' title='Edit scan' alt='[edit]'/>"+
+					//"<img name='"+ scanName + "' class='DeleteScan' rel='#deleteScan' "+
+					//"src='img/delete.png' title='Delete scan' alt='[delete]'/>"+
+					"<img name='"+ scanName +"' class='ExecuteScan' rel='#executeScan' "+
+					"src='img/lightning.png' title='Execute scan' alt='[execute]'/>";
+				
+				var ai = $('#scans_table').dataTable()
+							.fnAddData([ checkbox, scanName, $("scanner", this).text(), $(this)
+							             .attr('findings'), options ]);
+				var selTR = $('#scans_table').dataTable().fnSettings().aoData[ ai[0] ].nTr;
+				$(selTR).data('id', $("id", this).text())
+						.data('name', scanName)
+						.data('scanner', $("scanner", this).text())
+						.data('scannerparam', $("scannerparam", this).text())
+						.data('targets', $("targets", this).text())
+					 	.attr('title', $(this).attr('lastrun'));
+			});
+			
+			if (!scanObj.isEmpty()) {		// If a scan is already selected
+				// highlight selected rows
+				$("tbody tr", "#scans_table").each(function () {
+					if (scanObj.exists($(this).data('id'))) $(this).addClass('select');
+				}); 
+				// Set scan status
+				$("#scan_status").text(scanObj.getValuesStr());
+			} else {	// If a scan is not selected
+				// Make sure the scan status is set to "None"
+				$("#scan_status").text("None");
+			}
+			// Deny text selection in table where click and double click can have unintentional text selection 
+			$("#scans_table").disableTextSelect();
+				
+			$(".EditScan", "#scans_table").overlay({
+				mask: {
+					color: '#dff4ff',
+					loadSpeed: 'normal',
+					opacity: 0.9
+				},
+				closeOnClick: false,
+				onBeforeLoad: function (event) {
+					var scanRow = this.getTrigger().parent().parent();
+					// Fill in the scan name and id
+					$("#orig_scan_id", "#editScan").val($(scanRow).data('id'));
+					$("#orig_scan_name", "#editScan").val($(scanRow).data('name'));
+					$("#orig_scan_scanner", "#editScan").val($(scanRow).data('scanner'));
+					$("#orig_scan_parameters", "#editScan").val($(scanRow).data('scannerparam'));
+					$("#orig_scan_targets", "#editScan").val($(scanRow).data('targets'));
+					$("#edit_scan_name", "#editScan").val($(scanRow).data('name'));
+					$("#edit_scan_scanner", "#editScan").val($(scanRow).data('scanner'));
+					$("#edit_scan_parameters", "#editScan").val($(scanRow).data('scannerparam'));
+					$("#edit_scan_targets", "#editScan").val($(scanRow).data('targets'));
+				},
+				onLoad: function (event) { $("input:text:visible:first", "#editScan").focus(); },	// Set focus to the first input field
+				onBeforeClose: function (event) {
+					$("#edit_scan_name", "#editScan").val("");		// Clear the fields
+					$("#edit_scan_scanner", "#editScan").val("");
+					$("#edit_scan_parameters", "#editScan").val("");
+					$("#edit_scan_targets", "#editScan").val("");
+					$(".error").hide();				// Hide all error messages
+				}
+			});
+				
+			$(".ExecuteScan", "#scans_table").overlay({
+				mask: {
+					color: '#E6EFC2',
+					loadSpeed: 'normal',
+					opacity: 0.9
+				},
+				closeOnClick: true,
+				onBeforeLoad: function (event) {
+					//var selTrigger = this.getTrigger();
+					// fill in the scan name and id
+					//$("h3 span", "#deleteScan").html(selTrigger.attr('name'));
+					//$("#scan_id", "#deleteScan").val(selTrigger.parent().parent().data('id'));
+				},
+				onBeforeClose: function (event) {
+					$(".error").hide();				// Hide all error messages
+				}
+			});
+				
+			$(".DeleteScan", "#scans_table").overlay({
+				mask: {
+					color: '#fbe3e4',
+					loadSpeed: 'normal',
+					opacity: 0.9
+				},
+				closeOnClick: false,
+				onBeforeLoad: function (event) {
+					var selTrigger = this.getTrigger();
+					// fill in the scan name and id
+					$("h3 span", "#deleteScan").html(selTrigger.attr('name'));
+					$("#scan_id", "#deleteScan").val(selTrigger.parent().parent().data('id'));
+				},
+				onBeforeClose: function (event) {
+					$(".error", "#deleteScan").hide();				// Hide all error messages
+				}
+			});
+		} else if (result === "NOK")  {	// Handle errors gracefully
+			console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+		} else { // Handle unknown errors gracefully
+			console.error("An unknown result was returned.\n"+
+				"Please report the following result to the developers:\n" +
+				$("seccubusAPI", xml).attr("name") + ": " + result);
 		}
-	
-		// Deny text selection in table where click and double click can have unintentional text selection 
-		$("#scans_table").disableTextSelect();
-		
-		$(".EditScan", "#scans_table").overlay({
-			mask: {
-				color: '#dff4ff',
-				loadSpeed: 'normal',
-				opacity: 0.9
-			},
-			closeOnClick: false,
-			onBeforeLoad: function (event) {
-				var selTrigger = this.getTrigger();
-				var scanName = selTrigger.attr('name');
-				var scanID = selTrigger.parent().parent().attr('id');
-				// Fill in the scan name and id
-				$("#orig_scan_name", "#editScan").val(scanName);
-				$("#orig_scan_id", "#editScan").val(scanID);
-				$("#edit_scan_name", "#editScan").val(scanName);
-			},
-			onLoad: function (event) { $("input:text:visible:first", "#editScan").focus(); },	// Set focus to the first input field
-			onBeforeClose: function (event) {
-				$("#edit_scan_name", "#editScan").val("");		// Clear the scan name field
-				$(".error", "#editScan").hide();				// Hide all error messages
-			}
-		});
-		
-		$(".DeleteScan", "#scans_table").overlay({
-			mask: {
-				color: '#fbe3e4',
-				loadSpeed: 'normal',
-				opacity: 0.9
-			},
-			closeOnClick: false,
-			onBeforeLoad: function (event) {
-				var selTrigger = this.getTrigger();
-				// fill in the scan name and id
-				$("h3 span", "#deleteScan").html(selTrigger.attr('name'));
-				$("#scan_id", "#deleteScan").val(selTrigger.parent().parent().attr('id'));
-			},
-			onBeforeClose: function (event) {
-				$(".error", "#deleteScan").hide();				// Hide all error messages
-			}
-		});
-		
 	}, "xml");
-
 }
 
 function findingsSetup() {
@@ -1195,21 +1255,22 @@ function findingsSetup() {
 					// Change the scan name
 					$.post("api/updateFindings.pl", {workspaceid: workspaceID, ids: ID,
 							status: iStatus, remark: sRemark, overwrite: bOverwrite}, function(xml, txtStatus){
-						// Present the results
-						result = $("status", xml).text();
-						sRemark = sRemark.replace(/\n/g, "<br>");
-						if ( !isNaN(result.charAt(0)) ) {  
+						// Store status of the result
+						result = $("result", xml).text();
+								
+						if (result === "OK") { // if result is OK (successful)
+							sRemark = sRemark.replace(/\n/g, "<br>");  // format for display
 							if (bOverwrite) {	// if true overwrite remark 
-								console.log("editFindings: Overwriting remark for row id "+ ID[0]);
+								console.log("Overwriting remark for Finding ID "+ ID[0]);
 								// Update the remark column 
 								oTable.fnUpdate(sRemark, nTr, 9);
 							} else {	// otherwise append to the remark
-								console.log("editFindings: Appending remark for row id "+ ID[0]);
+								console.log("Appending remark for Finding ID "+ ID[0]);
 								var td = oTable.fnGetTd(nTr,9);  // get the cell with the ID in it
 								oTable.fnUpdate($(td).html() + "<br>" + sRemark, nTr, 9);
 							}
 							if (iStatus != previousStatus) {	// if status changed	
-								console.log("editFindings: Changing row id "+ ID[0] +" status from "+ previousStatus +" to "+ iStatus);
+								console.log("Changing Finding ID "+ ID[0] +" status from "+ previousStatus +" to "+ iStatus);
 								// decrement the original status by one
 								$("span[status="+previousStatus+"] span", "#centerCat").text( function (index, text) {
 									return parseInt(text) - 1;
@@ -1221,10 +1282,12 @@ function findingsSetup() {
 								// Update the status column
 								oTable.fnUpdate(iStatus, nTr, 10);
 							}
-						} else {	// Handle unknown results gracefully
-							console.error("editFindings: An unknown result was returned. Please report the following result to the developers:\n" + result);
-							// close the overlay
-							$(".close").click();
+						} else if (result === "NOK")  {	// Handle errors gracefully
+							console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+						} else { // Handle unknown errors gracefully
+							console.error("An unknown result was returned.\n"+
+								"Please report the following result to the developers:\n" +
+								$("seccubusAPI", xml).attr("name") + ": " + result);
 						}
 					}, "xml");
 				}
@@ -1259,68 +1322,79 @@ function findingsSetup() {
 			
 			// Perform ajax call or post and insert data rows
 			$.post("api/getFinding.pl", { workspaceID: workspaceID, findingID: findingID}, function(xml, txtStatus){
-				// This is the number of changes for this finding
-				var max = $("changes", xml).attr("max");
-				
-				$("change", xml).each(function() {
-					var dataRow = '<tr>';
-					
-					// insert Changed On
-					dataRow += '<td>' + $("changetime", this).text() + '</td>';
-					
-					// insert Changed By
-					dataRow += '<td>' + $("user", this).text() + '</td>';
-					
-					// insert Scan Time
-					dataRow += '<td>' + $("scantime", this).text() + '</td>';
-					
-					// insert Finding 
-					var max_finding_length = 50;
-					var finding = htmlEncode($("finding", this).text()).replace(/\\n/g, "<br>");
-					if ( finding.length > max_finding_length ) {
-						// If the finding is large we need to add a long and short version and a more/less link
-						var lfinding = $("finding", this).text();
-						var sfinding = lfinding.slice(0,max_finding_length)	// get only a part of the finding
-												.slice(0,-1) +	// Slice last char, in case sliced at newline char (\n) 
-												" ...";		// Add etc.
+				// Store status of the result
+				result = $("result", xml).text();
 						
-						lfinding = htmlEncode(lfinding).replace(/\\n/g, "<br>");
-						sfinding = htmlEncode(sfinding).replace(/\\n/g, "<br>");
+				if (result === "OK") { // if result is OK (successful)
+					// This is the number of changes for this finding
+					var max = $("changes", xml).attr("max");
+					
+					$("change", xml).each(function() {
+						var dataRow = '<tr>';
 						
-						finding = "";
-						finding += "<span id='fh" + findingID + "less'>" + sfinding + "</span>";
-						finding += "<span id='fh" + findingID + "more' style='display: none;'>" + lfinding + "</span>";
-						finding += "<div align='right'><a class='moreless' id='fh" + findingID + "'>[more]</a></div>";
-					}
-					dataRow += '<td>' + finding + '</td>';
+						// insert Changed On
+						dataRow += '<td>' + $("changetime", this).text() + '</td>';
+						
+						// insert Changed By
+						dataRow += '<td>' + $("user", this).text() + '</td>';
+						
+						// insert Scan Time
+						dataRow += '<td>' + $("scantime", this).text() + '</td>';
+						
+						// insert Finding 
+						var max_finding_length = 50;
+						var finding = htmlEncode($("finding", this).text()).replace(/\\n/g, "<br>");
+						if ( finding.length > max_finding_length ) {
+							// If the finding is large we need to add a long and short version and a more/less link
+							var lfinding = $("finding", this).text();
+							var sfinding = lfinding.slice(0,max_finding_length)	// get only a part of the finding
+													.slice(0,-1) +	// Slice last char, in case sliced at newline char (\n) 
+													" ...";		// Add etc.
+							
+							lfinding = htmlEncode(lfinding).replace(/\\n/g, "<br>");
+							sfinding = htmlEncode(sfinding).replace(/\\n/g, "<br>");
+							
+							finding = "";
+							finding += "<span id='fh" + findingID + "less'>" + sfinding + "</span>";
+							finding += "<span id='fh" + findingID + "more' style='display: none;'>" + lfinding + "</span>";
+							finding += "<div align='right'><a class='moreless' id='fh" + findingID + "'>[more]</a></div>";
+						}
+						dataRow += '<td>' + finding + '</td>';
+						
+						// insert Remark 
+						dataRow += '<td>' + 
+									htmlEncode($("remark", this).text()).replace(/\\n/g, "<br>") +
+									'</td>';
+						
+						// insert Severity
+						dataRow += '<td>' + $("severity", this).text() + '</td>';
+						
+						// insert Status
+						dataRow += '<td>' + $("status", this).text() + '</td>';
+						
+						dataRow += '</tr>';
+						$('#history_table > tbody:last', newRow).append(dataRow);
+					});
 					
-					// insert Remark 
-					dataRow += '<td>' + 
-								htmlEncode($("remark", this).text()).replace(/\\n/g, "<br>") +
-								'</td>';
-					
-					// insert Severity
-					dataRow += '<td>' + $("severity", this).text() + '</td>';
-					
-					// insert Status
-					dataRow += '<td>' + $("status", this).text() + '</td>';
-					
-					dataRow += '</tr>';
-					$('#history_table > tbody:last', newRow).append(dataRow);
-				});
-				
-				// Change table into Datatable
-				$('#history_table', newRow).dataTable({
-					"bAutoWidth": true,
-					"bFilter": false,
-					"bInfo": false,
-					"bPaginate": false,
-					"bProcessing": true,
-					"bSortClasses": false,
-					"sScrollY": "200px",
-					"sScrollX": "100%",
-					"aaSorting": [[ 0, "desc" ]]
-				});
+					// Change table into Datatable
+					$('#history_table', newRow).dataTable({
+						"bAutoWidth": true,
+						"bFilter": false,
+						"bInfo": false,
+						"bPaginate": false,
+						"bProcessing": true,
+						"bSortClasses": false,
+						"sScrollY": "200px",
+						"sScrollX": "100%",
+						"aaSorting": [[ 0, "desc" ]]
+					});
+				} else if (result === "NOK")  {	// Handle errors gracefully
+					console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+				} else { // Handle unknown errors gracefully
+					console.error("An unknown result was returned.\n"+
+						"Please report the following result to the developers:\n" +
+						$("seccubusAPI", xml).attr("name") + ": " + result);
+				}
 			});
 
 			$('#panelButtons').hide();
@@ -1385,11 +1459,11 @@ function findingsSetup() {
 			// Change the scan name
 			$.post("api/updateFindings.pl", {workspaceid: workspaceID, ids: aIDs,
 					status: iStatus, remark: sRemark, overwrite: bOverwrite}, function(xml, txtStatus){
-				// Present the results
-				result = $("status", xml).text();
-					
-				if ( !isNaN(result.charAt(0)) ) {  
-					console.log("editFindings: Finding(s) were successfully changed");
+				// Store status of the result
+				result = $("result", xml).text();
+								
+				if (result === "OK") { // if result is OK (successful)  
+					console.log($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
 					// close the overlay
 					$(".close", "#editFindings").click();
 					
@@ -1432,8 +1506,14 @@ function findingsSetup() {
 					// Clear the Select All check box if clicked
 					if ( $(sChkbx)[0].checked )
 						$(sChkbx)[0].checked = false;
-				} else {	// Handle unknown results gracefully
-					console.error("editFindings: An unknown result was returned. Please report the following result to the developers:\n" + result);
+				} else if (result === "NOK")  {	// Handle errors gracefully
+					console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+					// close the overlay
+					$(".close").click();
+				} else { // Handle unknown errors gracefully
+					console.error("An unknown result was returned.\n"+
+						"Please report the following result to the developers:\n" +
+						$("seccubusAPI", xml).attr("name") + ": " + result);
 					// close the overlay
 					$(".close").click();
 				}
@@ -1482,7 +1562,9 @@ function findingsSetup() {
 	});
 	// set Edit findings overlay button click handlers
 	$("form", "#addFindingsIssue").validator().submit(function(e) {
-		
+		if (!e.isDefaultPrevented()) {	// client-side validation passed
+			e.preventDefault();
+		}
 	});
 }
 
@@ -1664,91 +1746,102 @@ function loadFindings(scanID) {
 					finding: "",
 					remark: "",
 				}, function(xml, txtStatus){
-		var all_rows = [];
+		// Store status of the result
+		result = $("result", xml).text();
+									
+		if (result === "OK") { // if result is OK (successful)	
+			console.log($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+			var all_rows = [];	// Store row in memory for formatting and quick loading
 
-		// Process each finding
-		$("finding", xml).each(function() {
-			var max_finding_length = 150;
-			var row = [];
+			// Process each finding returned
+			$("finding", xml).each(function() {
+				var max_finding_length = 150;
+				var row = [];
 			
-			var id = $(this).attr("id");
-			var sevText = $("severity", this).text();
-			var sevNum = $("severity", this).attr("id");
-			var checkbox = "<input type='checkbox' id='" + id + "'>";
-			var remark = htmlEncode($(this).attr("remark")).replace(/\\n/g,"<br>");
-			if (remark.length > max_finding_length) max_finding_length = remark.length;
-			// The finding text
-			var finding = htmlEncode($("output", this).text()).replace(/\\n/g, "<br>");
-			if ( finding.length > max_finding_length ) {
-				// If the finding is large we need to add a long and short version and a more/less link
-				var lfinding = $("output", this).text();
-				var sfinding = lfinding.slice(0,max_finding_length)	// get only a part of the finding
-										.slice(0,-1) +	// Slice last char, in case sliced at newline char (\n) 
-										" ...";		// Add etc.
+				var id = $(this).attr("id");
+				var sevText = $("severity", this).text();
+				var sevNum = $("severity", this).attr("id");
+				var checkbox = "<input type='checkbox' id='" + id + "'>";
+				var remark = htmlEncode($(this).attr("remark")).replace(/\\n/g,"<br>");
+				if (remark.length > max_finding_length) max_finding_length = remark.length;
+				// The finding text
+				var finding = htmlEncode($("output", this).text()).replace(/\\n/g, "<br>");
+				if ( finding.length > max_finding_length ) {
+					// If the finding is large we need to add a long and short version and a more/less link
+					var lfinding = $("output", this).text();
+					var sfinding = lfinding.slice(0,max_finding_length)	// get only a part of the finding
+											.slice(0,-1) +	// Slice last char, in case sliced at newline char (\n) 
+											" ...";		// Add etc.
 				
-				lfinding = htmlEncode(lfinding).replace(/\\n/g, "<br>");
-				sfinding = htmlEncode(sfinding).replace(/\\n/g, "<br>");
+					lfinding = htmlEncode(lfinding).replace(/\\n/g, "<br>");
+					sfinding = htmlEncode(sfinding).replace(/\\n/g, "<br>");
 				
-				finding = "";
-				finding += "<span id='f" + id + "less'>" + sfinding + "</span>";
-				finding += "<span id='f" + id + "more' style='display: none;'>" + lfinding + "</span>";
-				finding += "<div align='right'><a class='moreless' id='f" + id + "'>[more]</a></div>";
+					finding = "";
+					finding += "<span id='f" + id + "less'>" + sfinding + "</span>";
+					finding += "<span id='f" + id + "more' style='display: none;'>" + lfinding + "</span>";
+					finding += "<div align='right'><a class='moreless' id='f" + id + "'>[more]</a></div>";
+				}
+			
+				row.push( checkbox, id, scanID, $(this).attr("host"), $(this).attr("hostname"), $(this).attr("port"),
+							$(this).attr("plugin"), sevNum+". "+sevText, finding, remark, $("status", this).attr("id") );
+			
+				all_rows.push(row);
+			});
+		
+			var oTable = $('#findings_table').dataTable();
+		
+			// Add the data
+			var ai = oTable.fnAddData(all_rows);
+		
+			// Add row attributes
+			for (var i=0; i < all_rows.length; i++) {
+				var selTR = oTable.fnSettings().aoData[ ai[i] ].nTr;
+				var sev = $("td:nth-child(6)", selTR).text();
+				$(selTR)//.attr('title', "Click to select finding") 
+					.addClass('s'+ sev.substring(0,1));
 			}
-			
-			row.push( checkbox, id, scanID, $(this).attr("host"), $(this).attr("hostname"), $(this).attr("port"),
-			             $(this).attr("plugin"), sevNum+". "+sevText, finding, remark, $("status", this).attr("id") );
-			
-			all_rows.push(row);
-		});
-		
-		var oTable = $('#findings_table').dataTable();
-		
-		// Add the data
-		var ai = oTable.fnAddData(all_rows);
-		
-		// Add row attributes
-		for (var i=0; i < all_rows.length; i++) {
-			var selTR = oTable.fnSettings().aoData[ ai[i] ].nTr;
-			var sev = $("td:nth-child(6)", selTR).text();
-			$(selTR)//.attr('title', "Click to select finding") 
-				 	.addClass('s'+ sev.substring(0,1));
-		}
 
-		// increment count on all status categories
-		$("span", "#centerCat").each( function () {
-			if (!($(this).attr('status'))) return;
+			// increment count on all status categories
+			$("span", "#centerCat").each( function () {
+				if (!($(this).attr('status'))) return;
 			
-			var count  = $(".count", this).text();
-			var scount = $("count",xml).attr("status_"+ $(this).attr('status'));
+				var count  = $(".count", this).text();
+				var scount = $("count",xml).attr("status_"+ $(this).attr('status'));
 			
-			if (!scount) scount = "0";
-			count = parseInt(count) + parseInt(scount);
-			$(".count", this).text(count);
-		});
+				if (!scount) scount = "0";
+				count = parseInt(count) + parseInt(scount);
+				$(".count", this).text(count);
+			});
 		
-		// Set the default category to New when a scan is loaded
-		$("#cat-none").trigger('click');
+			// Set the default category to New when a scan is loaded
+			$("#cat-none").trigger('click');
 		
-		// clear timer if is already set, so this function is only called once
-		if (filterTimer) clearTimeout(filterTimer);
-		// store the timer so that it can be cleared, if needed
-		filterTimer = setTimeout(function () {
-			filterTimer = null;
-			// load the filters with appropriate values
-			fnLoadFilters();
-	    }, 50);
+			// clear timer if is already set, so this function is only called once
+			if (filterTimer) clearTimeout(filterTimer);
+			// store the timer so that it can be cleared, if needed
+			filterTimer = setTimeout(function () {
+				filterTimer = null;
+				// load the filters with appropriate values
+				fnLoadFilters();
+			}, 50);
 		
+			// get the progress overlay
+			var apiOverlay = $("#progress").data("overlay");
 		
-		// get the progress overlay
-		var apiOverlay = $("#progress").data("overlay");
-		
-		// clear timer if is already set, keeps overlay visible during multiple loadFindings calls
-		if (progressTimer) clearTimeout(progressTimer);
-		// store the timer so that it can be cleared, if needed
-		progressTimer = setTimeout(function () {
-	        progressTimer = null;
-			apiOverlay.close();	
-	    }, 50);
+			// clear timer if is already set, keeps overlay visible during multiple loadFindings calls
+			if (progressTimer) clearTimeout(progressTimer);
+			// store the timer so that it can be cleared, if needed
+			progressTimer = setTimeout(function () {
+				progressTimer = null;
+				apiOverlay.close();	
+			}, 50);
+		} else if (result === "NOK")  {	// Handle errors gracefully
+			console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+		} else { // Handle unknown errors gracefully
+			console.error("An unknown result was returned.\n"+
+				"Please report the following result to the developers:\n" +
+				$("seccubusAPI", xml).attr("name") + ": " + result);
+		}
 	}, "xml");
 }
 
@@ -1899,20 +1992,6 @@ function pleaseWait() {
 function clearWait() {
 	$("#loading").text("Ready...");
 	$("#loading").hide();
-}
-
-
-function updateFinding() {
-	ID = $("#finding_title").attr("finding_id");
-	workspaceID = $("#finding_title").attr("workspace_id")
-	$.post("updateFindings.pl", { 	"workspaceid"	: workspaceID,
-					"ids"		: ID,
-					"status"	: $("#findingSetStatus").val(),
-					"remark"	: $("#findingSetRemark").val(),
-					"overwrite"	: true,
-				    }, function(xml, txtStatus){
-		loadFinding($("#finding_title").attr("finding_id"), $("#finding_title").attr("workspace_id"));
-	});
 }
 
 // These two ase 64 routines have been taken from 

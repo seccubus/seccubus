@@ -18,13 +18,30 @@ my $count = 0;
 
 print $query->header("text/xml");
 
-my $workspace_id = $query->param("workspaceID") or die "Cannot get workspaceID";
-my $scanname = $query->param("scanName") or die "Cannot get scanName";
-my $scanner_name = $query->param("scannerName") or die "Cannot get scannerName";
-my $scanner_param = $query->param("scannerParam") or die "Cannot get scannerParam";
-my $targets = $query->param("Targets") or die "Cannot get Targets";
-#my $workspace_id = 100;
+print "<seccubusAPI name='createScan'>\n";
 
-my $scan_id = create_scan($workspace_id, $scanname, $scanner_name, $scanner_param, $targets);
+my $workspace_id = $query->param("workspaceID");
+my $scanname = $query->param("scanName");
+my $scanner_name = $query->param("scannerName");
+my $scanner_param = $query->param("scannerParam");
+my $targets = $query->param("Targets");
 
-print "<id>$scan_id</id>";
+# Return an error if the required parameters were not passed 
+if (not (defined ($workspace_id) and defined ($scanname) and
+		 defined ($scanner_name) and defined ($scanner_param))) {
+	print "\t<result>NOK</result>
+	<message>Invalid argument</message>
+</seccubusAPI>";	
+	exit;
+}
+
+eval {
+	my $scan_id = create_scan($workspace_id, $scanname, $scanner_name, $scanner_param, $targets);
+	print "\t<result>OK</result>
+	<message>Scan $scanname was succesfully created.</message>
+</seccubusAPI>";
+} or do {
+	print "\t<result>NOK</result>
+	<message>$@</message>
+</seccubusAPI>"; 
+}
