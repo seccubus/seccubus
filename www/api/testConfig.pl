@@ -88,9 +88,9 @@ sub report_status($$;) {
 	}
 
 	if ( $state <2 ) {
-		print "<item><label>Paths</item><status>NOK</status><message>$error</message></item>\n";
+		print "<item><label>Paths</label><status>NOK</status><message>$error</message></item>\n";
 	} else {
-		print "<item><label>Paths</item><status>OK</status><message>All paths in the configuraiton file point to existing directories</message></item>\n";
+		print "<item><label>Paths</label><status>OK</status><message>All paths in the configuraiton file point to existing directories</message></item>\n";
 	}
 
 	if ( $state < 3 ) {

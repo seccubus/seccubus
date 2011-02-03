@@ -1,0 +1,31 @@
+# Version control files
+\bCVS\b
+,v$
+\.cvsignore$
+
+# Backups
+\.swp$
+\.bak$
+\.old$
+
+# Distributions
+\.tar\.gz$
+\.tar$
+
+# Makemaker generated files and dirs.
+^MANIFEST\.
+^Makefile$
+^blib/
+^MakeMaker-\d
+^pm_to_blib
+
+# Config files
+config\.xml
+\.nessusrc$
+\.openvasrc$
+\.update-nessusrc$
+
+# Misc
+^tmp\/
+^make_dist$
+^db\/create_empty_db$
