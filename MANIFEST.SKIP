@@ -2,6 +2,9 @@
 \bCVS\b
 ,v$
 \.cvsignore$
+\b.svn\b
+\/\.svn\/
+^\.svn\/
 
 # Backups
 \.swp$
