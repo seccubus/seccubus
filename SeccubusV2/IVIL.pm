@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# $Id: IVIL.pm 13 2011-01-23 21:41:21Z frank_breedijk $
+# $Id$
 # ------------------------------------------------------------------------------
 # IVIL perl module. This is where most of the real logic is 
 # This modules is based on the IVIL standard version v0.2

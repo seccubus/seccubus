@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # ------------------------------------------------------------------------------
-# $Id: dump_ivil 14 2011-01-23 21:44:41Z frank_breedijk $
+# $Id$
 # ------------------------------------------------------------------------------
 # This program loads an IVIL file with XML::Simple and dumps the data with
 # Data::Dumper
