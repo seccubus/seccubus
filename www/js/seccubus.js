@@ -1220,16 +1220,15 @@ function findingsSetup() {
 	$("#btnEditRow").click( function (e) {
 		if (!bPanelOpen) {
 			var nTr = $("#panelButtons").data('nTr');
+			var iCurStatus = parseInt($('#catFstatus .cat-selected').attr('status'));
 			
 			//  Display an edit form in a new row below the current row
-			var newRow = oTable.fnOpen( nTr, fnFormatFindingEdit(), 'rowPanel' );
+			var newRow = oTable.fnOpen( nTr, fnFormatFindingEdit(iCurStatus), 'rowPanel' );
 			
 			// Set the current rows values in the form
 			var aData = oTable.fnGetData( nTr );
 			var curRemark = aData[9];
 			curRemark = curRemark.replace(/<br>/g, "\n");
-			var curStatus = aData[10];
-			$('#panelFindingStatus', newRow).val(curStatus);
 			$('#panelFindingRemark', newRow).val(curRemark);
 
 			$('#panelButtons').hide();
@@ -1281,6 +1280,15 @@ function findingsSetup() {
 								});
 								// Update the status column
 								oTable.fnUpdate(iStatus, nTr, 10);
+							}
+							
+							// if finding is selected Update selected findings status
+							if ($('td:first-child input', nTr)[0].checked) {
+								countFindingsSel -= 1
+								// clear the check mark and class selection
+								$('td:first-child input', nTr)[0].checked = false;
+								$(nTr).removeClass('select');
+								$('span', '.findings_sel').html(countFindingsSel);
 							}
 						} else if (result === "NOK")  {	// Handle errors gracefully
 							console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
@@ -1418,7 +1426,9 @@ function findingsSetup() {
 		closeOnClick: false,
 		onLoad: function (event) { $("input:text:visible:first", "#editFindings").focus(); },	// Set focus to the first input field
 		onBeforeLoad: function (event) {
-			$("#findingsStatus", "#editFindings").val($('.cat-selected', '#centerCat').attr('status'));
+			//$("#findingsStatus", "#editFindings").val($('.cat-selected', '#centerCat').attr('status'));
+			intCurStatus = parseInt($('.cat-selected', '#centerCat').attr('status'));
+			$("#findingsStatus", "#editFindings").html(fnSetEditFindingStatus(intCurStatus));
 			$("#overwriteRemark", "#editFindings")[0].checked = true;
 			$("label[for=overwriteRemark]").text("Overwrite the current remark(s)");
 		},
@@ -1501,7 +1511,11 @@ function findingsSetup() {
 							// clear the check mark and class selection after changes have been applied
 							$('td:first-child input', aTrs[i])[0].checked = false;
 							$(aTrs[i]).removeClass('select');
+							
 						}
+						// Update selected findings #
+						countFindingsSel = 0;
+						$('span', '.findings_sel').html(countFindingsSel);
 					}
 					// Clear the Select All check box if clicked
 					if ( $(sChkbx)[0].checked )
@@ -1590,7 +1604,7 @@ function fnGetSelectedFindingIDs( oTableLocal )
 }
 
 /* Formating functions for individual findings edits and issues */
-function fnFormatFindingEdit ()
+function fnFormatFindingEdit(currentStatus)
 {
 	sOut = '<form class="myform">'+
 	  		'<fieldset>'+
@@ -1601,15 +1615,9 @@ function fnFormatFindingEdit ()
 	  		  '<tr><td>'+
 	  		   '<label for="panelFindingStatus">Status:</label>'+
 	  		  '</td><td>'+
-	  		   '<select id="panelFindingStatus">'+
-	  		    '<option value="1">New</option>'+
-	  		    '<option value="2">Changed</option>'+
-	  		    '<option value="3">Gone</option>'+
-	  		    '<option value="4">Open</option>'+
-	  		    '<option value="5">No Issue</option>'+
-	  		    '<option value="6">Closed</option>'+
-	  		    '<option value="99">MASKED</option>'+
-	  		   '</select>'+
+	  		   '<select id="panelFindingStatus">';
+	sOut += fnSetEditFindingStatus(currentStatus);
+	sOut +=   '</select>'+
 	  		  '</td><td>'+
 	  		   '<label for="panelFindingRemark">&nbsp;&nbsp;&nbsp;Remark:</label>'+
 	  		  '</td><td>'+
@@ -1631,6 +1639,52 @@ function fnFormatFindingEdit ()
 	sOut += '<div id="panelCloseButton">' + $('#panelCloseButton').html() + '</div>';
 	
 	return sOut;
+}
+
+function fnSetEditFindingStatus( intStatus ){
+	var options = "";
+	
+	if (!intStatus) return options;
+	
+	switch (intStatus) {
+	case 1:
+		options = '<option value="1">New</option>'+
+	    	'<option value="4">Open</option>'+
+	    	'<option value="5">No Issue</option>'+
+	    	'<option value="99">MASKED</option>';
+		break;
+	case 2:
+		options = '<option value="2">Changed</option>'+
+	    	'<option value="4">Open</option>'+
+	    	'<option value="5">No Issue</option>'+
+	    	'<option value="99">MASKED</option>';
+		break;
+	case 3:
+		options = '<option value="3">Gone</option>'+
+	    	'<option value="6">Closed</option>'+
+	    	'<option value="99">MASKED</option>';
+		break;
+	case 4:
+		options = '<option value="4">Open</option>'+
+	    	'<option value="5">No Issue</option>'+
+	    	'<option value="99">MASKED</option>';
+		break;
+	case 5:
+		options = '<option value="5">No Issue</option>'+ 
+			'<option value="4">Open</option>'+
+			'<option value="99">MASKED</option>';
+		break;
+	case 6:
+		options = '<option value="6">Closed</option>'+
+	    	'<option value="99">MASKED</option>';
+		break;
+	case 99:
+		options = '<option value="99">MASKED</option>'+
+			'<option value="1">New</option>';
+		break;
+	}
+	
+	return options;
 }
 
 function fnFormatFindingIssue ( oTable, nTr )
