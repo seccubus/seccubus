@@ -13,6 +13,7 @@ use lib "..";
 use CGI;
 use XML::Simple;
 
+my $current_db_version = 1;
 my $query = CGI::new();
 
 print $query->header("text/xml");
@@ -63,6 +64,19 @@ my $dbh = open_database;
 if ( ! $dbh ) {
 	report_status(3, "Unable to log into the the database. Either the definitions in '$config_file' are incorrect or you need to create '$config->{database}->{engine}' database '$config->{database}->{database}' on host '$config->{database}->{host}' and grant user '$config->{database}->{user}' the rights to login in with the specified password and use the database");
 }
+
+my $tables = sql( return	=> "ref",
+		  query		=> "show tables",
+		);
+
+if ( ! $tables ) {
+	my $msg = "Your database seems to be empty, please execute the following sql statements to create the required tables:\n";
+	die $msg;
+} else {
+	#die join "\n", @$tables;
+}
+
+
 
 $ok = 1;
 report_status(99999, "Everything is OK!");
