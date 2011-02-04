@@ -120,7 +120,7 @@ rows - number of rows effected by last update statement
 
 =item query - the SQL query (mandatory)
 
-=item Arrayref to the values that need to be bound after the prepare statement
+=item values - Arrayref to the values that need to be bound after the prepare statement
 
 =back
 
