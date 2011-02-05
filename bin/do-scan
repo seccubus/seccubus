@@ -67,15 +67,17 @@ exit();
 
 sub help() {
 	print "
-Usage: add_user --username <name> --name <Real name> [--isadmin]
+Usage: do-scan --workspace <workspace name> --scan <scan name> [--verbose] 
+               [--quiet] [--help]
+
+Executes a scan
 
 Arguments:
---username (-u)	- the username as provided to htpasswd or htdigest
---name (-n)	- the real name of the user
---(no)isadm 	- makes the user a member of the administrators group 
-		  Option, default: --noisadmin
---help		- Print this message
-		  Option
+--workspace (-w) - name of the workspace the scan is in
+--scan (-s)      - name of the scan
+--verbose (-v)   - Give verbose output, repeat to increase verbosity
+--quiet (-q)	 - Do not give any output unless an error occured
+--help		 - Print this message
 ";
 	exit();
 }
