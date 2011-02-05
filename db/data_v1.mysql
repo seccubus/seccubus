@@ -1,3 +1,9 @@
+LOCK TABLES `config` WRITE;
+/*!40000 ALTER TABLE `config` DISABLE KEYS */;
+INSERT INTO `config` VALUES ('version','1');
+/*!40000 ALTER TABLE `config` ENABLE KEYS */;
+UNLOCK TABLES;
+
 LOCK TABLES `finding_status` WRITE;
 /*!40000 ALTER TABLE `finding_status` DISABLE KEYS */;
 INSERT INTO `finding_status` VALUES 
