@@ -12,6 +12,7 @@ use strict;
 use lib "..";
 use CGI;
 use XML::Simple;
+use HTML::Entities;
 
 my $current_db_version = 1;
 my $query = CGI::new();
@@ -48,8 +49,8 @@ foreach my $config ( @configs ) {
 
 report_status(0, "Configuration file could not be found. Please copy one of the example configuration files to config.xml and edit it") unless $config_found;
 
-use SeccubusV2;
-my $config = get_config();
+require SeccubusV2;
+my $config = SeccubusV2::get_config();
 
 # Checking paths
 foreach my $dir ( @dirs ) {
@@ -58,25 +59,37 @@ foreach my $dir ( @dirs ) {
 	}
 }
 
-use SeccubusDB;
-my $dbh = open_database;
+require SeccubusDB;
+my $dbh = SeccubusDB::open_database();
 
 if ( ! $dbh ) {
-	report_status(3, "Unable to log into the the database. Either the definitions in '$config_file' are incorrect or you need to create '$config->{database}->{engine}' database '$config->{database}->{database}' on host '$config->{database}->{host}' and grant user '$config->{database}->{user}' the rights to login in with the specified password and use the database");
+	report_status(2, "Unable to log into the the database. Either the definitions in '$config_file' are incorrect or you need to create '$config->{database}->{engine}' database '$config->{database}->{database}' on host '$config->{database}->{host}' and grant user '$config->{database}->{user}' the rights to login in with the specified password and use the database");
 }
 
-my $tables = sql( return	=> "ref",
-		  query		=> "show tables",
-		);
+my $tables = SeccubusDB::sql( return	=> "ref",
+		  	      query	=> "show tables",
+			    );
 
-if ( ! $tables ) {
-	my $msg = "Your database seems to be empty, please execute the following sql statements to create the required tables:\n";
-	die $msg;
-} else {
-	#die join "\n", @$tables;
+if ( ! @$tables ) {
+	my $file = $config->{paths}->{dbdir} . "/structure_v$current_db_version" . "\." . $config->{database}->{engine};
+	my $msg = "Your database seems to be empty, please execute the sql statements in '$file' to create the required tables";
+	report_status(3, $msg);
 }
 
+my @version = SeccubusDB::sql( return	=> "array",
+		   	       query	=> "SELECT value FROM config 
+			                    WHERE name = ?",
+		   	       values	=> [ "version" ],
+		 	     );
 
+if ( ! @version ) {
+	my $file = $config->{paths}->{dbdir} . "/data_v$current_db_version" . "\." . $config->{database}->{engine};
+	my $msg = "Your database does not contain any base data, please execute the sql statements in '$file' to insert the base data into the database";
+	report_status(4, $msg);
+} elsif ( $version[0] != $current_db_version ) {
+	my $msg = "Your database currently has a version number that isn't that of the current database version. Since this cannot happen at this time, you are on your own";
+	report_status(5, $msg);
+}
 
 $ok = 1;
 report_status(99999, "Everything is OK!");
@@ -87,6 +100,7 @@ sub report_status($$;) {
 	my $state = shift;
 	my $error = shift;
 
+	$error = encode_entities($error);
 	print "<config>\n";
 	if ( $ok ) {
 		print "<status>OK</status>\n";
@@ -95,22 +109,40 @@ sub report_status($$;) {
 	}
 	print "<status_msg>$error</status_msg>\n";
 
-	if ( $state < 1 ) {
+	if( $state == 0 ) {
 		print "<item><label>Config file</label><status>NOK</status><message>$error</message></item>\n";
-	} else {
+	} elsif ( $state > 0 ) {
 		print "<item><label>Config file</label><status>OK</status><message>Configuration file found at '$config_file'</message></item>\n";
 	}
 
-	if ( $state <2 ) {
+	if ( $state == 1 ) {
 		print "<item><label>Paths</label><status>NOK</status><message>$error</message></item>\n";
-	} else {
+	} elsif ( $state > 1 ) {
 		print "<item><label>Paths</label><status>OK</status><message>All paths in the configuraiton file point to existing directories</message></item>\n";
 	}
 
-	if ( $state < 3 ) {
+	if ( $state == 2 ) {
 		print "<item><label>DB login</label><status>NOK</status><message>$error</message></item>\n";
-	} else {
+	} elsif ( $state > 2 ) {
 		print "<item><label>DB login</label><status>OK</status><message>We could login to database '$config->{database}->{database}' on host '$config->{database}->{host}' with the credentials from '$config_file'</message></item>\n";
+	}
+
+	if ( $state == 3 ) {
+		print "<item><label>DB tables</label><status>NOK</status><message>$error</message></item>\n";
+	} elsif ( $state > 3 ) {
+		print "<item><label>DB tables</label><status>OK</status><message>Your database does have datastructures in it.</message></item>\n";
+	}
+
+	if ( $state == 4 ) {
+		print "<item><label>DB basedata</label><status>NOK</status><message>$error</message></item>\n";
+	} elsif ( $state > 4 ) {
+		print "<item><label>DB basedata</label><status>OK</status><message>Your database does have basic data in it.</message></item>\n";
+	}
+
+	if ( $state == 5 ) {
+		print "<item><label>DB version</label><status>NOK</status><message>$error</message></item>\n";
+	} elsif ( $state > 5 ) {
+		print "<item><label>DB version</label><status>OK</status><message>Your database has the latest version.</message></item>\n";
 	}
 
 	print "</config>\n";
