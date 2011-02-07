@@ -889,7 +889,11 @@ function updateScansTable() {
 			if (!scanObj.isEmpty()) {		// If a scan is already selected
 				// highlight selected rows
 				$("tbody tr", "#scans_table").each(function () {
-					if (scanObj.exists($(this).data('id'))) $(this).addClass('select');
+					if (scanObj.exists($(this).data('id'))) {
+						$(this).addClass('select');
+						// Check the selection checkbox
+						$('td:first input:checkbox', this).attr('checked', true);
+					}
 				}); 
 				// Set scan status
 				$("#scan_status").text(scanObj.getValuesStr());
