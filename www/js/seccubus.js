@@ -794,6 +794,15 @@ function scansSetup() {
 			//setTimeout(function(){loadFindings(scanID)}, 500);
 			loadFindings(scanID);
 		} else {	// if already selected then
+			// Remove Select All check when removing a scan
+			$("thead tr th:first input:checkbox", "#scans_table").attr('checked', false);
+			
+			// Uncheck the selection checkbox
+			$('td:first input:checkbox', selRow).attr('checked', false);
+			
+			// Remove the 'select' class from the row
+			selRow.toggleClass('select');
+			
 			fnUnloadFindings(scanID);
 		}
 	});
@@ -817,7 +826,7 @@ function fnUnloadAllFindings() {
 }
 
 /*
- * Unloads findings for a particular scan
+ * Unloads findings for a particular scan id
  */
 function fnUnloadFindings(id) {
 	// Remove the clicked on scan name and id from the list and update the status
@@ -827,15 +836,6 @@ function fnUnloadFindings(id) {
 	} else {
 		$("#scan_status").text(scanObj.getValuesStr());
 	}
-	
-	// Remove Select All check when removing a scan
-	$("thead tr th:first input:checkbox", "#scans_table").attr('checked', false);
-	
-	// Uncheck the selection checkbox
-	$("#scans_table tbody tr[id="+id+"] td:first input:checkbox").attr('checked', false);
-	
-	// Remove the 'select' class from the row
-	$("#scans_table tbody tr[id="+id+"]").toggleClass('select');
 
 	// Unload the findings for this scan. Use a timing delay to show progress overlay
 	var apiOverlay = $("#progress").data("overlay");
