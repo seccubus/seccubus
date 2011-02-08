@@ -1,24 +1,35 @@
-9-11-2010
-Seccubus v1.5.3 - Lots of small bugs, still make a lot of noise
+7-2-2011 - OpenVAS-Client 3.x compatibility release
 
-Ticket [ 3105978 ] - POSTSCAN canot be used to mail html report
-Moved evaluation of POSTSCAN parameter till after HTMl reprots are generated
+This release fixes an OpenVAS-Client 3.x compatibility issue reported and
+fixed
+by Brad Alexander
 
-Ticket [ 3085944 ] - CWE: references not hyperlinked
-Added a line to SeccubusWeb.pm to render the missing links
+Frank,
 
-Ticket [ 3061224 ] - When nikto asks for input MODE=nikto scans "hang"
-Added the Nikto option -ask auto to the default config file. Users who
-allready have such a configuration file are encouraged to add this line
-themselves
+Please find the attached do-scan script. The problem was that OpenVAS-clients
+versions 2 and before as well as nessus (all versions that I was able to test)
+use -v to determine the version, whereas OpenVAS-Client version 3 (and
+presumably version 4, which is in alpha/beta now) uses -V
 
-Ticket [ 3060441 ] - MODE=safe line in do-scan overwrite settings in config
-Moved MODE=safe to top of file
+As a quick fix, I reversed the test, so that it tests for nessus rather than
+openvas-client, as follows
 
-Ticket [ 3054350 ] - Certain OpenVAS packages use -V for version 
-(in stead of -v)
-Redirected stderr to stdout so error does nto show in output anymore
+Is it nikto? -> yes -> run nikto test
+  | no
+ V
+Is it nessus? -> yes -> run nessus
+  |
+ V
+It's openvas -> run openvas
 
-Ticket [ 3011447 ] - Unsupported report type 'xml'
-Report type no longer gets rendered for Nessus, just of OpenVas
+Note that I have the following versions of the tools to test against:
+OpenVAS-Client -> 2.0.5, 3.0.0 (server version 3.0.4) Nessus -> 2.2.10, 4.2.2
+and 4.4.0
+
+In any case, let me know your comments on my changes. I can send you a diff
+file, if you prefer, when I get home. The license, obviously, on my changes
+are gpl, but I got bitten on not specifically stating that on my blog.
+
+Thanks,
+--b
 
