@@ -1,0 +1,34 @@
+/* Properties that both side lists have in common */
+div.menu {
+        width:15em;
+        position:absolute;
+        top:0;
+        font-size:80%;
+        padding-left:1%;
+        padding-right:1%;
+        margin-left:1em;
+        margin-right:1em;
+}
+/* we leave some place on the side using the margin-* properties */
+div.main {
+        margin-top:1em;
+        margin-bottom:1em;
+        margin-left:15em;
+        padding-left:1em;
+        padding-right:1em;
+        padding-top:1em;
+        padding-bottom:2em;
+	border:2px solid white;
+}
+div.main_menu {
+        margin-left:15em;
+        padding-left:1em;
+        padding-right:1em;
+        font-size:80%;
+}
+/* and then we put each list on its place */
+#scans {
+        left:0;
+}
+#txtInfo {
+}

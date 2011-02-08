@@ -1,0 +1,440 @@
+2-2-2011
+Code respository moved from CVS to SVN
+
+9-11-2010
+Seccubus v1.5.3 - Lots of small bugs, still make a lot of noise
+
+Ticket [ 3105978 ] - POSTSCAN canot be used to mail html report
+Moved evaluation of POSTSCAN parameter till after HTMl reprots are generated
+
+Ticket [ 3085944 ] - CWE: references not hyperlinked
+Added a line to SeccubusWeb.pm to render the missing links
+
+Ticket [ 3061224 ] - When nikto asks for input MODE=nikto scans "hang"
+Added the Nikto option -ask auto to the default config file. Users who
+allready have such a configuration file are encouraged to add this line
+themselves
+
+Ticket [ 3060441 ] - MODE=safe line in do-scan overwrite settings in config
+Moved MODE=safe to top of file
+
+Ticket [ 3054350 ] - Certain OpenVAS packages use -V for version 
+(in stead of -v)
+Redirected stderr to stdout so error does nto show in output anymore
+
+Ticket [ 3011447 ] - Unsupported report type 'xml'
+Report type no longer gets rendered for Nessus, just of OpenVas
+
+-------------------------------------------------------------------------------
+
+1-9-2010
+Seccubus v1.5.2 - If at first you don't succeed...
+
+Added Scanmonitor by Isac Balder
+See: http://dc214.defcon.org/notes/scanmonitor.pl
+
+Provided RELEASENOTES.txt
+
+Ticket [ 3057382 ] - RPM assumes dependancies on nessus and mod_perl
+
+The RPM installed assumed dependancies on nessus and mod_perl. While most use
+of Seccubus is with nessus, it can also be used with OpenVAS and/or Nikto
+without havving nessus installed, so this is not a hard dependancy
+
+Ticket [ 3057381 ] - CONFIG path wrong in config.dist
+
+In config.dist the CONFIG variable was set to /home/seccubus/bin this should
+have read /home/seccubus/etc. Kudos to Stephen Stormont for spotting this.
+
+-------------------------------------------------------------------------------
+
+27-08-2010
+Seccubus v1.5.1 - Emergency fix
+
+Ticket [ 3054336 ] - Perl scripts refer to $CONFIG
+
+When preparing for RPM installer some changes where made, this caused
+view_finding.pl not to find ignored_diffs anymore
+
+-------------------------------------------------------------------------------
+
+01-08-2010
+Seccubus v1.5.0 - The Defcon 18 and Nikto compatibility release
+
+Ticket [ 2979354 ] - Nikto compatibility
+
+Creating a scan with "mode='nikto'" will fire off a Nikto scan from the server
+running Seccubus, if nikto is installed (remote scanners are currently not 
+supported).
+
+The configuraiton file allows you to pass additional parameters to nikto.
+
+Ticket [ 2978649 ] - Seccubus cannot handle compliance plugin output
+
+It has turned out that in a Nessus .nbe file the same host/port/plugin
+combination can appear more then once, e.g. when dealing with compliancy
+plugines (e.g. plugin number 21157). Seccubus will now test if an entry for a
+certain host/port/plugin combination allready exists and if so it will append
+the finding to the entry in stead of overwriting the entry.
+
+Also the output of compliace type plugins is a bit large.
+If the plugin is one of the compliancy then the first word (sequence of 
+non-space characters) is added to the plugin number
+
+Ticket [ 2978437 ] - Typo in line 46 of do-scan
+Corrected typo
+
+Ticket [ 2978573 ] - New ignored_diffs
+Updated
+
+Ticket [ 2981907 ] - Online up2date check
+up2date.pl makes an http connection to the seccubus website to determine is
+the current version of Seccubus is up to date.
+
+Ticket [ 2986053  ] - Findings >150 characters not truncated
+In certain circumstances, findings with > 150 characters were not propperly
+truncated in the web gui. This is now fixed
+
+Ticket [ 2986061 ] - Odd rendering of MS bulleting links
+Only render MS type text into a hyperlink if it is not preceeded by a slash.
+
+Ticket [ 2984464 ] - ignore ASP.Net_SessionId 
+Added the line below to ignore_diffs
+[\+\-] \d+\s+value = .*?\n?
+
+Ticket [ 3025145 ] - Provide RPM installer
+Thanks to Peter Slootweg an RPM is now also available for easy installation
+
+-------------------------------------------------------------------------------
+
+18-03-2010
+Seccubus v1.4.1 - Nessus 4.2 compatibility release - Thanks Isac Balder
+
+Ticket [ 2954813 ] - Parsing of hostnames
+The get_hostnames routine of SeccubusWeb.pm does not parse the hostnames
+file correctly if it is a symlink to /etc/hosts.
+
+An entry like:
+1.2.3.4 abcmadm1 abcmadm1.abc.local cvs #This is a comment
+
+Returns 'abcmadm1 abcmadm1.abc.local cvs #This is a comment' as the
+hostname.
+
+Ticket [ 2962660 ] - update-nessusrc not comptible with Nessus 4.2
+
+Update-nessusrc did not handle Nessu 4.2 port 1241 connections right
+Thanks to Isac Balder for providing a fixes update-nessusrc file
+
+Ticket [ 2954186 ] - Still some AutoNessus references
+
+Removed last autonessus references (I hope)
+
+-------------------------------------------------------------------------------
+
+17-12-2009
+Seccubus v1.4 - Thy new name is...
+
+Ticket [ 2916275 ] - Rechristen tool Seccubus
+
+Ticket [ 2916290 ] - Directory traversal vulnerability in get_report.pl
+get_report.pl failed to do proper input validation when constructing a
+filename from user input. This lead to a directory traversal vulnerability
+which enable a remote (authenticated) user to read arbitrary files on the
+server with the rights of apache process.
+While Seccubus supports user authentication it does not enforce that
+authentication is configured upon installation of Seccubus
+
+Ticket [ 2916282 ] - do-scan enhancement, create dirs if they don't exist
+If the directories findings and output are not present in var/<scanname> e.g.
+because the user did not copy .skel, but created files manually, do-scan will
+now create them for him.
+
+-------------------------------------------------------------------------------
+
+3-9-2009
+Seccubus v1.3.2 - Fixing some bugs
+
+Ticket [ 2849220 ] - do-scan errors
+Running the scan by hand results in
+bin/do-scan: line 45: nessus: command not found
+
+Added an echo to a wrong statement in do-scan
+
+Ticket [ 2849229 ] - Nessus 4 compatibility
+The update-nessusrc script was not compatible with Nessus4. Downloaded a new
+version from http://www.tifaware.com/perl/update-nessusrc/ and changed it to
+be compatible with Seccubus
+
+Ticket [ 2740544 ] - XSS protection in diff kills formatting
+XSS filtering of diffs killed the markup inserted by ignored diffs. I now do
+the XSS filtering before I insert the markup so that the markup does nto get
+killed anymore
+
+Ticket [ 2793178 ] - Odd rendering of CVE references
+Tenneable now shows both CVE references and links to CVE references in its
+code:
+
+RedHat reported a null-pointer dereference flaw while processing
+monochrome ICC profiles (CVE-2009-0793). ....
+See also :
+http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0581
+
+CVE references will only be updated if not preceeded with a = sign.
+
+Ticket [ 2783580 ] - Missing EMAIL= not handled gracefully
+No email will be sent without email address
+
+Ticket [ 2783579 ] - Characters missing from URL
+Added @ and " as valid URL characters
+
+Ticket [ 2568643 ] - No help availabel for undefined
+Calling help only when ScanStatus changes
+
+-------------------------------------------------------------------------------
+
+7-4-2009
+Seccubus v1.3.1 - Nessus 2.2.5 Compatibility
+
+Ticket [ 2740102 ] Nessus v 2.2.5 issue
+It seems that the OpenVAS compatibility release broke downwards compatibility
+with Nessus 2.2.5 (guess which version happened to be installed at the office)
+
+Seccubus now detects if the OpenVAS or Nessus client is used and switches
+the command line arguments based on that.
+-------------------------------------------------------------------------------
+23-3-2009
+Seccubus v1.3.0 - OpenVAS compatibility release
+
+Ticket [ 2316867 ] - OpenVAS compatibility
+Seccubus is now OpenVAS compatible.
+
+In order to make Seccubus work with OpenVAS you will need to change the
+NESSUSBIN parameter in either ~/etc/config or ~/var/<scanname>/config to point
+to your OpenVAS-Client binary. You also need to change the mode of to scan an
+append openvas to it (e.g. MODE=full becomes MODE=full-openvas)
+
+Changes where needed to the following files:
+* process-scan.pl -     Due to differendces between OpenVAS and Nessus .nbe
+			file format
+* do-scan -             Due to slightly different command line handling
+                        between OpenVAS-Client and Nessus client
+* etc/config.dist -     To show an example OpenVAS setup
+
+Also additional nesssusrc files where needed because OpenVAS has a different a
+configuration file format.
+
+Ticket [ 2653614 ] - Problems with mode=portscan
+When you execute a mode=portscan scan and the portscan.nessusrc file contains
+an empty plugin section, nessus populates the plugin section with undesirable
+default settings. I have updated update-rcs to now populate the plugin section
+of the portscan.nessusrc with all current plugins with setting no.
+
+Ticket [ 2604472 ] - Predicatable diffs v1.2.5
+Added predicable diffs to ignored-diffs
+
+Ticket [ 2592187 ] - New autoremarks
+Added autoremarks
+
+Ticket [ 2609184 ] - XSS in view_finding.pl
+While the primary plug in output was properly sanitized, the diff output and
+historical plugin output was not properly sanitized.
+
+Script tags returned by Nessus plugins were not propperly escaped. Should an
+attacker be able to force a Nessus or OpenVAS plugin to return malicious
+script, this script would executed when it was displayed as a diff or as
+historical plugin output.
+
+While the attack was real and demonstrated via the output of plugin 14260
+(nikto) it was hard to execute.
+
+Ticket [ 2705701 ] - CVE entries were not properly formatted (missing ( )
+Fixed the regexp in add_external references
+
+-------------------------------------------------------------------------------
+
+26-02-2009
+Seccubus v1.2.5 - New features and bugfixes
+
+BUG [ 2316869 ] - Open all button
+Added a button the the Findings screen that opens all the selected findings
+with a single click
+
+BUG [ 2433253 ] - When scan fails nbe file should not be processed
+Updated do-scan to not run process-scan if the NBE file does not exist.
+
+BUG [ 2433674 ] - Install script does not ask location of bash
+The install script now takes the parameter --bash to allow for the
+location of the bash sheel to be specified.
+
+BUG [ 2537456 ] - _blank iso _new
+Replaced _new with _blank in the following files:
+SeccubusWeb.pm
+editHostfile.pl
+getFindings.pl
+getScanInfo.pl
+
+BUG [ 2537365 ] - Do not allow the user to select non recommended statusses
+In order to make the system more "fool proof" (it will not work fools are a
+lot smarter then you thing) statuses that are not recommended can no longer
+be selected.
+
+BUG [ 2155173 ] - Add CVSS base score calculation link
+Added the CVSS2 calculation link
+
+BUG [ 2144346 ] - Predictable diffs
+Updated ignore_diffs and added some new diffs to be ignored.
+
+BUG [ 2433020 ] - AutoRemarks
+Added three autoremarks
+
+BUG [ 2531288 ] Bulk update on a large number of items
+I was using a get method for the bulk update methode and hitting the limit on
+the Apache server as well as the OS limit on how long a cgi parameter can be.
+I changed this to use a POST request instead of a get request.
+
+BUG [ 2521076 ] - Finding without findings...
+Delta engine now marks a finding GONE when there is no data in it unless it
+is marked FIXED.
+
+BUG [ 2433084 ] - Comments rejected by check_param
+Added the following characters to check param as legal characters:
+()\t\r\n/:
+
+BUG [ 2433080 ] - Incorrect if in check_param
+Corrected an apparent typo in local file inclusion protection function check_param
+
+-------------------------------------------------------------------------------
+
+8-12-2008
+Seccubus v1.2.4 - Bugfixes
+
+BUG [ 2407614 ] - Add_remark broken
+Changed "$date - text" to "$date - $text" in add_remark function in
+process_scan.pl
+
+BUG [ 2152839 ] Comment add seems to overwrite
+Back to perl 101. When you want to read a complete file into a scalar var,
+this is what you will have to do:
+$var = join("", <HANDLE>);
+not:
+$var = <HANDLE>;
+As this will only give you the first line.
+
+-------------------------------------------------------------------------------
+
+5-12-2008
+Seccubus v1.2.3 - Buggy bugfixes
+
+BUG [ 1996774 ] Comment overwrite should be off by default
+Seems it is not fixed.
+Line should have read
+print "<input type=checkbox name=overwrite>Overwrite\n";
+In stead of:
+print "<input type=checkbox name=overwrite checked=false>Overwrite\n";
+
+BUG [ 2392801 ] AutoRemark did not correctly detect if comment allready
+present
+I misunderstood the index function so my earlier bugfix killed this function
+
+BUG [ 2152839 ] Comment add seems to overwrite
+I have updated the update_remark function and modified do_scan.pl. 
+update_remark is now more in line with autoupdate_remark which does seem to 
+work well.
+
+BUG [ 2255750 ] Spelling error in Delta engine
+Chaned the spelling of changed to the correct one ;)
+
+-------------------------------------------------------------------------------
+
+2-10-2008
+Seccubus v1.2.2 - Fixed XSS bug
+
+BUG [ 2141884 ] XSS possible in bluk_update.pl
+Checked parameter in an earlier state.
+
+-------------------------------------------------------------------------------
+
+1-10-2008
+Seccubus v1.2.1 - Fixed buggy installer
+
+BUG [ 2139601 ] www/js/cookie.js and www/getHelp.pl not includes
+Updated MANIFEST and Makefile.PL
+Also updated install.pl
+
+BUG [ 2139716 ] Help is off by default
+Updated index.html
+
+-------------------------------------------------------------------------------
+
+30-9-2008
+Seccubus v1.2 - Bug fix release with new (minor) features
+
+BUG [ 2100199 ] ASP.NET customer error predicatable diff not ignored
+Added the following line to etc/ignored_diffs
+[\+\-] \d+\s\[HttpExceptioni\]\: The file \'/.*?\' does not exist.\\r\n?
+
+BUG [ 1996774 ] Comment overwrite should be off by default
+Checkbox is now not checked by default
+
+BUG [ 1996757 ] Current "Mode" is not visible in the web GUI
+Updated index.html
+
+BUG [ 2130293 ] Add a short helptext to each status
+Created a new file called Cookie.js
+Created a new file called getHelp.pl
+
+BUG [ 2043133 ] Make status selection smart
+Updated the downdown routine from SeccubusWeb.pm
+
+BUG [ 1996755 ] AutoRemark does not correctly check if comment allready pres
+BUG [ 1996754 ] AutoRemark sometimes seems to overwrite comments
+Updated process_scan.pl
+
+-------------------------------------------------------------------------------
+
+26-09-2008
+Seccubus v1.1.1 - Intrim release with the following bugfixes
+
+BUG [ 1998001 ] - NEW status is changed by delta engine
+NEW findings now remain new untill status is changed by the user
+Reopened findings now get the status NEW in stead of CHANGED
+
+BUG [ 1914354 ] get_scans.pl still displays IP address
+IP address is no longer shown
+
+BUG [ 2130297 ] Make the scan list also show the version of Seccubus
+Updates Makefile.PL to get version from www/SeccubusWeb.pm
+Modified SeccubusWeb.pm to contain the $VERSION variable
+Updated getScans.pl to get the version number
+
+BUG [ 2130354 ] Remove CVS from scans list
+Updated getScans.pl
+
+BUG [ 2027155 ] New functions for autoremark
+Added verious new patterns to autoremark
+
+BUG [ 1912608 ] Add remark when reopening
+Added new function update_remark to process-scan.pl which adds a comment to a 
+remark with timestamp if the status gets changed by the delta engine.
+
+BUG [ 2088990 ] Secunia references not translated to a URL
+Secunia: references are now translated to a hyperlink
+milw0rm: references are now translated to a hyperlink
+
+BUG [ 2052985 ] ; not included as part of a URL
+Added ;:& and | as recognized part of a url
+
+BUG [ 2042667 ] MIssing prereq perl modules
+Prerequisite for LWP::UserAgent 2.0 added.
+
+-------------------------------------------------------------------------------
+
+15-05-2008
+Seccubus v1.1
+Fixed bug 1960766 - Cannot make dist_install.pl - Thanks to Gary Smith
+
+-------------------------------------------------------------------------------
+
+15-05-2008
+Seccubus v1.0
+Initial release

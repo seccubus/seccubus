@@ -1,0 +1,89 @@
+/* -----------------------------------------------------------------------------
+Autonessus stylesheet
+--------------------------------------------------------------------------------
+ $id: $
+----------------------------------------------------------------------------- */
+
+body,td,th {
+	font-family: Georgia, Times New Roman, Times, serif;
+	font-size: 12px;
+	color: #dddddd;
+}
+body {
+	background-color: #666666;
+}
+.hidden {
+	color: #666666;
+}
+
+a {
+	font-family: Georgia, Times New Roman, Times, serif;
+	color: #ff9900;
+}
+a:visited {
+	color: #ff9900;
+}
+a:hover {
+	color: #6699cc;
+}
+a:active {
+	color: #6699cc;
+}
+
+table {
+	border-width: medium;
+	border-style: solid;
+	border-spacing: 0px;
+	padding: 0px;
+}
+
+table.finding {
+	border-width: 0;
+	border-style: solid;
+	border-spacing: 0px;
+	padding: 0px;
+}
+
+td {
+	border-width: thin;
+	border-style: none;
+	border-bottom-style: solid;
+	border-right-style: dotted;
+	padding: 3px;
+}
+
+td.Security_Warning {
+	background-color: #ff9900;
+	color: white;
+}
+
+a.Security_Warning {
+	color: white;
+}
+
+td.Security_Note {
+	background-color: Yellow;
+}
+
+td.Open_port {
+	background-color: Yellow;
+}
+
+td.Security_Hole {
+	background-color: red;
+	color: white;
+}
+
+a.Security_Hole {
+ 	color: white;
+}
+
+
+h1 {
+	color: #6699cc;
+}
+
+h2 {
+	color: #ff9900;
+}
+

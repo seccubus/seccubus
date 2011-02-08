@@ -1,0 +1,6 @@
+# ------------------------------------------------------------------------------
+# $Id$
+# ------------------------------------------------------------------------------
+# Copyright (C) 2008  Schuberg Philis, Frank Breedijk - Under GPLv3
+# ------------------------------------------------------------------------------
+For installation instructions see http://seccubus.com/frequently-asked-questions/documentation
