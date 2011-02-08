@@ -14,7 +14,7 @@
 # Moved MODE=safe to top of file
 MODE="safe"
 
-. /home/seccubus/etc/config
+source /home/seccubus/etc/config
 export SENDMAIL
 export CONFIG
 
@@ -22,7 +22,7 @@ if [ -d "$VAR/$1" ]
 then
 	if [ -e $VAR/$1/config ]
 	then
-		. $VAR/$1/config
+		source $VAR/$1/config
 	else
 		echo "Config file $1/config not found"
 		exit
@@ -61,30 +61,17 @@ else
 	# It's a Nessus or OpenVAS scan
 	# BUG [ 2740102 ] Nessus v 2.2.5 issue
 	# Ticket [ 3054350 ] - Certain OpenVAS packages use -V for version (in stead of -v)
-	#
-	# Okay, here's a problem. If you use a version of OpenVAS that uses -V,
-	# it will also produce 0 lines of output as well as Nessus. So let's do
-	# it the other way 'round. That will keep us from having to worry about
-	# the -v vs. -V problem.
-	#
-	# Please note that I have Nessus 2.2.10, Nessus 4.2.2, Nessus 4.4.0 and 
-	# OpenVAS 3.0.0 client/OpenVAS 3.0.4 server to test against. This is a
-	# fairly small sampling, but should be a good cross-section of users.
-	# The bottom line is to get the version, nessus -v for all tested Nessus
-	# versions, OpenVAS-Client -v for 2.x and OpenVAS-Client -V for version
-	# 3.x and presumably the 4.x versions...
-	#
 	# Redirected stderr to stdout so error does nto show in output anymore
 	VERSION=`$NESSUSBIN -v 2>&1|head -1`
-	if [ `echo $VERSION|grep -i nessus|wc -l` -eq 1 ] # It will only ever be 0 or 1.
+	if [ `echo $VERSION|grep -i openvas|wc -l` -ge 1 ]
 	then
-		# Its's Nessus
-        	CMD="$NESSUSBIN -c $CONFIG/$MODE-nessusrc -q -x $HOST $PORT $USER '$PASS' hosts output/$DATE.nbe"
-	else
 		# It's OpenVAS
 		# BUG [ 2316867 ] OpenVas does not allow the -x flag before 
 		# the host spec, but needs it after that.
 		CMD="$NESSUSBIN -c $CONFIG/$MODE-nessusrc -q $HOST $PORT $USER '$PASS' hosts output/$DATE.nbe -x"
+	else
+		# Its's Nessus
+        	CMD="$NESSUSBIN -c $CONFIG/$MODE-nessusrc -q -x $HOST $PORT $USER '$PASS' hosts output/$DATE.nbe"
 	fi
 fi
 eval $CMD
@@ -123,3 +110,5 @@ else
 fi
 # TICKET [ 3105978 ] - POSTSCAN canot be used to mail html report
 eval "$POSTSCAN"
+
+
