@@ -34,8 +34,8 @@ my (
 	$conf_dir,
 	$db_dir,
 	$doc_dir,
-	$buildroot,
-	$buildonly,
+	$stage_dir,
+	$stageonly,
 	$create_dirs,
 	$owner,
 	$wwwowner,
@@ -63,7 +63,7 @@ my @patches = qw(
 		);
 
 $base_dir = "/home/seccubus";
-$buildroot = "/tmp/SeccubusV2.build.$$";
+$stage_dir = "/tmp/SeccubusV2.stage.$$";
 $help = 0;
 
 GetOptions(	'basedir|b=s'	=> \$base_dir,
@@ -76,8 +76,8 @@ GetOptions(	'basedir|b=s'	=> \$base_dir,
 		'docdir=s'	=> \$doc_dir,
 		'owner|o=s'	=> \$owner,
 		'wwwowner|o=s'	=> \$wwwowner,
-		'buildroot=s'	=> \$buildroot,
-		'buildonly'	=> \$buildonly,
+		'stage_dir=s'	=> \$stage_dir,
+		'stageonly'	=> \$stageonly,
 		'createdirs'	=> \$create_dirs,
 		'help|h!'	=> \$help,
 		'verbose|v+'	=> \$verbose,
@@ -99,40 +99,40 @@ if ( $help ) {
 	help();
 } 
 
-# Check if we have a build root
+# Check if we have a stage root
 print "Checking to see if target paths exists or created\n" if $verbose;
-if ( -d $buildroot ) {
-	print "Buildroot '$buildroot' exists\n" if $verbose;
+if ( -d $stage_dir ) {
+	print "Buildroot '$stage_dir' exists\n" if $verbose;
 } else {
-	print "Creating buildroot '$buildroot'\n" if $verbose;
-	syst("mkdir '$buildroot'");
+	print "Creating stage_dir '$stage_dir'\n" if $verbose;
+	syst("mkdir '$stage_dir'");
 }
 
-# Copy files to buildroot
-print "Copying files to buildroot\n" if $verbose;
+# Copy files to stage_dir
+print "Copying files to stage_dir\n" if $verbose;
 foreach my $file ( @files ) {
-	syst("cp $file $buildroot");
+	syst("cp $file $stage_dir");
 }
-print "Copying directories to buildroot\n" if $verbose;
+print "Copying directories to stage_dir\n" if $verbose;
 foreach my $dir ( @dirs ) {
-	syst("cp -r $dir $buildroot");
+	syst("cp -r $dir $stage_dir");
 }
 
 print "Patching file paths\n" if $verbose;
 foreach my $file ( @patches ) {
-	$file = "$buildroot/$file";
+	$file = "$stage_dir/$file";
 	syst("sed -i 's:/opt/Seccubus/SeccubusV2:$mod_dir:' $file");
 	syst("sed -i 's:/opt/Seccubus/scanners:$scan_dir:' $file");
 	syst("sed -i 's:/opt/Seccubus/etc:$conf_dir:' $file");
 	syst("sed -i 's:/opt/Seccubus/db:$db_dir:' $file");
 }
 
-print "Chaning file ownership\n" if $verbose && ( $owner || $wwwowner );
-syst("chown -R $owner $buildroot") if $owner;
-syst("chown -R $wwwowner $buildroot/www") if $wwwowner;
+print "Changing file ownership\n" if $verbose && ( $owner || $wwwowner );
+syst("chown -R $owner $stage_dir") if $owner;
+syst("chown -R $wwwowner $stage_dir/www") if $wwwowner;
 
-# Quit if buildonly
-exit if $buildonly;
+# Quit if stageonly
+exit if $stageonly;
 
 # Check to see if paths need to be created
 if ( -d $base_dir ) {
@@ -233,23 +233,23 @@ if ( -d $doc_dir ) {
 # Moving files
 print "Copying files and directories" if $verbose;
 foreach my $file ( @files ) {
-	syst("cp -p $buildroot/$file $base_dir");
+	syst("cp -p $stage_dir/$file $base_dir");
 }
-syst("cp -p -r $buildroot/www/* $www_dir");
-syst("cp -p -r $buildroot/bin/* $bin_dir");
-syst("cp -p -r $buildroot/SeccubusV2/* $mod_dir");
-syst("cp -p -r $buildroot/scanners/* $scan_dir");
-syst("cp -p -r $buildroot/etc/* $conf_dir");
-syst("cp -p -r $buildroot/db/* $db_dir");
-syst("cp -p -r $buildroot/docs/* $doc_dir");
+syst("cp -p -r $stage_dir/www/* $www_dir");
+syst("cp -p -r $stage_dir/bin/* $bin_dir");
+syst("cp -p -r $stage_dir/SeccubusV2/* $mod_dir");
+syst("cp -p -r $stage_dir/scanners/* $scan_dir");
+syst("cp -p -r $stage_dir/etc/* $conf_dir");
+syst("cp -p -r $stage_dir/db/* $db_dir");
+syst("cp -p -r $stage_dir/docs/* $doc_dir");
 
 # Link SeccubusV2.pm into www_dir
 print "Creating symbolic link to SeccubusV2.pm in wwwdir\n" if $verbose;
 syst("cd $www_dir;ln -s $base_dir/SeccubusV2.pm");
 
-# Clean up build root
+# Clean up stage root
 print "Cleaning up...\n" if $verbose;
-syst("rm -rf $buildroot");
+syst("rm -rf $stage_dir");
 
 # Done
 exit;
@@ -275,7 +275,7 @@ Usage: Install.PL [--basedir=<base path>] [--wwwdir=<www path>]
                   [--bindir=<binary path>] [--moddir=<module path>] 
 		  [--scandir=<scanners path>] [--confdir=<configuration path>]
 		  [--dbdir=<database file dir>] [--owner=<file owner>] 
-		  [--wwwoner=<www file owner>] [--buildroot=<build path>] 
+		  [--wwwoner=<www file owner>] [--stage_dir=<stage path>] 
 		  [--createdirs] [--help] [--verbose] [--quiet]
 
 Options (all optional):
@@ -302,10 +302,11 @@ Options (all optional):
 		  normally specify them for the chown command
 		  By default the file ownership is not changes and thus defaults
 		  to the user running this script
---buildroot	- Directory where the files will be built first. This option is 
-		  usually only used by distribution builders
-		  /tmp/SeccubusV2.build.<pid> by default
---buildonly	- Stop after the build is done, do not clean the build directory
+--stage_dir	- Directory where the files will be staged first. This option
+		  is usually only used by packagers
+		  /tmp/SeccubusV2.stage.<pid> by default
+--stageonly	- Stop after the staging is done, do not clean the staging
+		  directory
 --createdirs	- Create the destination directories. If specified the 
 		  destination directories will be created, otherwise the 
 		  installation will fail
