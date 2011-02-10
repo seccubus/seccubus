@@ -38,6 +38,7 @@ of all functions within the module.
 
 use strict;
 use Carp;
+use HTML::Entities;
 
 sub check_config();
 sub dirlist($;$);
