@@ -33,6 +33,7 @@ of all functions within the module.
 @EXPORT = qw ( 
 		check_config
 		dirlist
+		api_error
 	);
 
 use strict;
@@ -40,6 +41,7 @@ use Carp;
 
 sub check_config();
 sub dirlist($;$);
+sub api_error($$);
 
 =head2 check_config
 
@@ -128,6 +130,46 @@ sub dirlist($;$) {
     return @FILES_TMP;
 }
 
+=head2 api_error
+
+This function prints a standard Seccubus API error message and exits the program
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item api_name - Name of the api that returns the error
+
+=item message  - Error message in the error output
+
+=back
+
+=item Returns
+
+None
+
+=item Checks
+
+None
+
+=back
+
+=back
+
+=cut
+
+sub api_error($$) {
+	my $api_name = shift;
+	my $error_msg = shift;
+
+	print "<seccubusAPI name='$api_name'>\n";
+	print "<result>NOK</result>\n";
+	print "<message>" . encode_entities($error_msg) . "</message>\n";
+	print "</seccubusAPI>\n";
+	exit;
+}
 
 # Close the PM file.
 return 1;
