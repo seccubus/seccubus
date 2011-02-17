@@ -36,6 +36,7 @@ my (
 	$doc_dir,
 	$stage_dir,
 	$stageonly,
+	$build_root,
 	$create_dirs,
 	$owner,
 	$wwwowner,
@@ -78,6 +79,7 @@ GetOptions(	'basedir|b=s'	=> \$base_dir,
 		'wwwowner|o=s'	=> \$wwwowner,
 		'stage_dir=s'	=> \$stage_dir,
 		'stageonly'	=> \$stageonly,
+		'buildroot=s'	=> \$build_root,
 		'createdirs'	=> \$create_dirs,
 		'help|h!'	=> \$help,
 		'verbose|v+'	=> \$verbose,
@@ -94,6 +96,9 @@ $conf_dir = "$base_dir/etc" unless $conf_dir;
 $db_dir = "$base_dir/db" unless $db_dir;
 $doc_dir = "$base_dir/docs" unless $doc_dir;
 $wwwowner = $owner unless $wwwowner;
+if ( $build_root && ! $build_root =~ /\/$/ ) {
+	$build_root .= "/";
+}
 
 if ( $help ) {
 	help();
@@ -101,11 +106,11 @@ if ( $help ) {
 
 # Check if we have a stage root
 print "Checking to see if target paths exists or created\n" if $verbose;
-if ( -d $stage_dir ) {
-	print "Buildroot '$stage_dir' exists\n" if $verbose;
+if ( -d "$stage_dir" ) {
+	print "Stage directory '$stage_dir' exists\n" if $verbose;
 } else {
-	print "Creating stage_dir '$stage_dir'\n" if $verbose;
-	syst("mkdir '$stage_dir'");
+	print "Creating stage directory '$stage_dir'\n" if $verbose;
+	syst("mkdir -p '$stage_dir'");
 }
 
 # Copy files to stage_dir
@@ -135,117 +140,117 @@ syst("chown -R $wwwowner $stage_dir/www") if $wwwowner;
 exit if $stageonly;
 
 # Check to see if paths need to be created
-if ( -d $base_dir ) {
-	print "Basedir '$base_dir' exists\n" if $verbose;
+if ( -d "$build_root$base_dir" ) {
+	print "Basedir '$build_root$base_dir' exists\n" if $verbose;
 } else {
 	if ( $create_dirs ) {
-		print "Creating basedir '$base_dir'\n" if $verbose;
-		syst("mkdir '$base_dir'");
-		syst("chown $owner $base_dir") if $owner;
+		print "Creating basedir '$build_root$base_dir'\n" if $verbose;
+		syst("mkdir -p '$build_root$base_dir'");
+		syst("chown $owner $build_root$base_dir") if $owner;
 	} else {
-		help("Basedir '$base_dir' does not exist");
+		help("Basedir '$build_root$base_dir' does not exist");
 	}
 }
 
-if ( -d $www_dir ) {
-	print "Wwwdir '$www_dir' exists\n" if $verbose;
+if ( -d "$build_root$www_dir" ) {
+	print "Wwwdir '$build_root$www_dir' exists\n" if $verbose;
 } else {
 	if ( $create_dirs || index $www_dir,$base_dir == 0 ) {
-		print "Creating wwwdir '$www_dir'\n" if $verbose;
-		syst("mkdir '$www_dir'");
-		syst("chown $wwwowner $www_dir") if $wwwowner;
+		print "Creating wwwdir '$build_root$www_dir'\n" if $verbose;
+		syst("mkdir -p '$build_root$www_dir'");
+		syst("chown $wwwowner $build_root$www_dir") if $wwwowner;
 	} else {
-		help("Wwwdir '$www_dir' does not exist");
+		help("Wwwdir '$build_root$www_dir' does not exist");
 	}
 }
-if ( -d $bin_dir ) {
-	print "Bindir '$bin_dir' exists\n" if $verbose;
+if ( -d "$build_root$bin_dir" ) {
+	print "Bindir '$build_root$bin_dir' exists\n" if $verbose;
 } else {
 	if ( $create_dirs || index $bin_dir,$base_dir == 0 ) {
-		print "Creating wwwdir '$bin_dir'\n" if $verbose;
-		syst("mkdir '$bin_dir'");
-		syst("chown $owner $bin_dir") if $owner;
+		print "Creating wwwdir '$build_root$bin_dir'\n" if $verbose;
+		syst("mkdir -p '$build_root$bin_dir'");
+		syst("chown $owner $build_root$bin_dir") if $owner;
 	} else {
-		help("Bindir '$bin_dir' does not exist");
+		help("Bindir '$build_root$bin_dir' does not exist");
 	}
 }
 
-if ( -d $mod_dir ) {
-	print "Moddir '$mod_dir' exists\n" if $verbose;
+if ( -d "$build_root$mod_dir" ) {
+	print "Moddir '$build_root$mod_dir' exists\n" if $verbose;
 } else {
 	if ( $create_dirs || index $mod_dir,$base_dir == 0 ) {
-		print "Creating moddir '$mod_dir'\n" if $verbose;
-		syst("mkdir '$mod_dir'");
-		syst("chown $owner $mod_dir") if $owner;
+		print "Creating moddir '$build_root$mod_dir'\n" if $verbose;
+		syst("mkdir -p '$build_root$mod_dir'");
+		syst("chown $owner $build_root$mod_dir") if $owner;
 	} else {
-		help("Moddir '$mod_dir' does not exist");
+		help("Moddir '$build_root$mod_dir' does not exist");
 	}
 }
 
-if ( -d $scan_dir ) {
-	print "Scandir '$scan_dir' exists\n" if $verbose;
+if ( -d "$build_root$scan_dir" ) {
+	print "Scandir '$build_root$scan_dir' exists\n" if $verbose;
 } else {
 	if ( $create_dirs || index $scan_dir, $base_dir == 0 ) {
-		print "Creating scandir '$scan_dir'\n" if $verbose;
-		syst("mkdir '$scan_dir'");
-		syst("chown $owner $scan_dir") if $owner;
+		print "Creating scandir '$build_root$scan_dir'\n" if $verbose;
+		syst("mkdir -p '$build_root$scan_dir'");
+		syst("chown $owner $build_root$scan_dir") if $owner;
 	} else {
-		help("Scandir '$scan_dir' does not exist");
+		help("Scandir '$build_root$scan_dir' does not exist");
 	}
 }
 
-if ( -d $conf_dir ) {
-	print "Confdir '$conf_dir' exists\n" if $verbose;
+if ( -d "$build_root$conf_dir" ) {
+	print "Confdir '$build_root$conf_dir' exists\n" if $verbose;
 } else {
 	if ( $create_dirs || index $conf_dir, $base_dir == 0 ) {
-		print "Creating confdir '$conf_dir'\n" if $verbose;
-		syst("mkdir '$conf_dir'");
-		syst("chown $owner $conf_dir") if $owner;
+		print "Creating confdir '$build_root$conf_dir'\n" if $verbose;
+		syst("mkdir -p '$build_root$conf_dir'");
+		syst("chown $owner $build_root$conf_dir") if $owner;
 	} else {
-		help("Confdir '$conf_dir' does not exist");
+		help("Confdir '$build_root$conf_dir' does not exist");
 	}
 }
 
-if ( -d $db_dir ) {
-	print "Dbdir '$db_dir' exists\n" if $verbose;
+if ( -d "$build_root$db_dir" ) {
+	print "Dbdir '$build_root$db_dir' exists\n" if $verbose;
 } else {
 	if ( $create_dirs || index $db_dir, $base_dir == 0 ) {
-		print "Creating dbdir '$db_dir'\n" if $verbose;
-		syst("mkdir '$db_dir'");
-		syst("chown $owner $db_dir") if $owner;
+		print "Creating dbdir '$build_root$db_dir'\n" if $verbose;
+		syst("mkdir -p '$build_root$db_dir'");
+		syst("chown $owner $build_root$db_dir") if $owner;
 	} else {
-		help("Dbdir '$db_dir' does not exist");
+		help("Dbdir '$build_root$db_dir' does not exist");
 	}
 }
 
-if ( -d $doc_dir ) {
-	print "Docdir '$doc_dir' exists\n" if $verbose;
+if ( -d "$build_root$doc_dir" ) {
+	print "Docdir '$build_root$doc_dir' exists\n" if $verbose;
 } else {
 	if ( $create_dirs || index $doc_dir, $base_dir == 0 ) {
-		print "Creating docdir '$doc_dir'\n" if $verbose;
-		syst("mkdir '$doc_dir'");
-		syst("chown $owner $doc_dir") if $owner;
+		print "Creating docdir '$build_root$doc_dir'\n" if $verbose;
+		syst("mkdir -p '$build_root$doc_dir'");
+		syst("chown $owner $build_root$doc_dir") if $owner;
 	} else {
-		help("Docdir '$doc_dir' does not exist");
+		help("Docdir '$build_root$doc_dir' does not exist");
 	}
 } 
 
 # Moving files
 print "Copying files and directories" if $verbose;
 foreach my $file ( @files ) {
-	syst("cp -p $stage_dir/$file $base_dir");
+	syst("cp -p $stage_dir/$file $build_root$base_dir");
 }
-syst("cp -p -r $stage_dir/www/* $www_dir");
-syst("cp -p -r $stage_dir/bin/* $bin_dir");
-syst("cp -p -r $stage_dir/SeccubusV2/* $mod_dir");
-syst("cp -p -r $stage_dir/scanners/* $scan_dir");
-syst("cp -p -r $stage_dir/etc/* $conf_dir");
-syst("cp -p -r $stage_dir/db/* $db_dir");
-syst("cp -p -r $stage_dir/docs/* $doc_dir");
+syst("cp -p -r $stage_dir/www/* $build_root$www_dir");
+syst("cp -p -r $stage_dir/bin/* $build_root$bin_dir");
+syst("cp -p -r $stage_dir/SeccubusV2/* $build_root$mod_dir");
+syst("cp -p -r $stage_dir/scanners/* $build_root$scan_dir");
+syst("cp -p -r $stage_dir/etc/* $build_root$conf_dir");
+syst("cp -p -r $stage_dir/db/* $build_root$db_dir");
+syst("cp -p -r $stage_dir/docs/* $build_root$doc_dir");
 
 # Link SeccubusV2.pm into www_dir
 print "Creating symbolic link to SeccubusV2.pm in wwwdir\n" if $verbose;
-syst("cd $www_dir;ln -s $base_dir/SeccubusV2.pm");
+syst("cd $build_root$www_dir;ln -s $base_dir/SeccubusV2.pm");
 
 # Clean up stage root
 print "Cleaning up...\n" if $verbose;
@@ -276,7 +281,8 @@ Usage: Install.PL [--basedir=<base path>] [--wwwdir=<www path>]
 		  [--scandir=<scanners path>] [--confdir=<configuration path>]
 		  [--dbdir=<database file dir>] [--owner=<file owner>] 
 		  [--wwwoner=<www file owner>] [--stage_dir=<stage path>] 
-		  [--createdirs] [--help] [--verbose] [--quiet]
+		  [--buildroot=<build root> ] [--createdirs] [--help] 
+		  [--verbose] [--quiet]
 
 Options (all optional):
 --basedir (-b)	- Base directory in which files will be installed 
@@ -307,6 +313,9 @@ Options (all optional):
 		  /tmp/SeccubusV2.stage.<pid> by default
 --stageonly	- Stop after the staging is done, do not clean the staging
 		  directory
+--buildroot	- Create the file and directory structures in this place, but
+		  don't append this to the hard coded paths. This option is 
+		  mainly intended for package builders
 --createdirs	- Create the destination directories. If specified the 
 		  destination directories will be created, otherwise the 
 		  installation will fail
