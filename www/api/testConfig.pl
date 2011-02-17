@@ -73,7 +73,8 @@ my $tables = SeccubusDB::sql( return	=> "ref",
 if ( ! @$tables ) {
 	my $file = $config->{paths}->{dbdir} . "/structure_v$current_db_version" . "\." . $config->{database}->{engine};
 	my $msg = "Your database seems to be empty, please execute the sql statements in '$file' to create the required tables";
-	report_status(3, $msg);
+	my $api = "api/updateDB.pl?toVersion=$current_db_version&action=structure";
+	report_status(5, $msg, $api);
 }
 
 my @version = SeccubusDB::sql( return	=> "array",
@@ -85,7 +86,8 @@ my @version = SeccubusDB::sql( return	=> "array",
 if ( ! @version ) {
 	my $file = $config->{paths}->{dbdir} . "/data_v$current_db_version" . "\." . $config->{database}->{engine};
 	my $msg = "Your database does not contain any base data, please execute the sql statements in '$file' to insert the base data into the database";
-	report_status(4, $msg);
+	my $api = "api/updateDB.pl?toVersion=$current_db_version&action=data";
+	report_status(4, $msg, $api);
 } elsif ( $version[0] != $current_db_version ) {
 	my $msg = "Your database currently has a version number that isn't that of the current database version. Since this cannot happen at this time, you are on your own";
 	report_status(5, $msg);
@@ -96,11 +98,13 @@ report_status(99999, "Everything is OK!");
 
 exit;
 
-sub report_status($$;) {
+sub report_status($$;$) {
 	my $state = shift;
 	my $error = shift;
+	my $api = shift;
 
 	$error = encode_entities($error);
+	$api = encode_entities($api);
 	print "<seccubusAPI name='testConfig.pl'>\n";
 	if ( $ok ) {
 		print "<result>OK</result>\n";
@@ -129,19 +133,19 @@ sub report_status($$;) {
 	}
 
 	if ( $state == 3 ) {
-		print "<item><label>DB tables</label><status>NOK</status><message>$error</message></item>\n";
+		print "<item><label>DB tables</label><status>NOK</status><message>$error</message><api>$api</api></item>\n";
 	} elsif ( $state > 3 ) {
 		print "<item><label>DB tables</label><status>OK</status><message>Your database does have datastructures in it.</message></item>\n";
 	}
 
 	if ( $state == 4 ) {
-		print "<item><label>DB basedata</label><status>NOK</status><message>$error</message></item>\n";
+		print "<item><label>DB basedata</label><status>NOK</status><message>$error</message><api>$api</api></item>\n";
 	} elsif ( $state > 4 ) {
 		print "<item><label>DB basedata</label><status>OK</status><message>Your database does have basic data in it.</message></item>\n";
 	}
 
 	if ( $state == 5 ) {
-		print "<item><label>DB version</label><status>NOK</status><message>$error</message></item>\n";
+		print "<item><label>DB version</label><status>NOK</status><message>$error</message><api>$api</api></item>\n";
 	} elsif ( $state > 5 ) {
 		print "<item><label>DB version</label><status>OK</status><message>Your database has the latest version.</message></item>\n";
 	}
