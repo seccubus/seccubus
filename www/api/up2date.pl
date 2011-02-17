@@ -19,7 +19,7 @@ use SeccubusV2;
 
 my $query = CGI::new();
 
-print $query->header("text/plain");
+print $query->header("text/xml");
 
 my $verdict = get("http://v2.seccubus.com/up2date.pl?version=$SeccubusV2::VERSION");
 if ( ! $verdict ) {
