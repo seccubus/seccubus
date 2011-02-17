@@ -22,5 +22,16 @@ my $query = CGI::new();
 print $query->header("text/plain");
 
 my $verdict = get("http://v2.seccubus.com/up2date.pl?version=$SeccubusV2::VERSION");
-$verdict = "Cannot check version online!" unless $verdict;
+if ( ! $verdict ) {
+	$verdict = "
+<seccubusAPI name='up2data.pl'>
+	<result>OK</result>
+	<message>Cannot check version online! Online version checks are disabled</message>
+	<data>
+		<version>
+	</data>
+</seccubusAPI>";
+}
+
 print $verdict;
+exit;
