@@ -101,13 +101,14 @@ sub report_status($$;) {
 	my $error = shift;
 
 	$error = encode_entities($error);
-	print "<config>\n";
+	print "<seccubusAPI name='testConfig.pl'>\n";
 	if ( $ok ) {
-		print "<status>OK</status>\n";
+		print "<result>OK</result>\n";
 	} else {
-		print "<status>ERROR</status>\n";
+		print "<result>NOK</result>\n";
 	}
-	print "<status_msg>$error</status_msg>\n";
+	print "<message>$error</message>\n";
+	print "<data>\n";
 
 	if( $state == 0 ) {
 		print "<item><label>Config file</label><status>NOK</status><message>$error</message></item>\n";
@@ -145,6 +146,7 @@ sub report_status($$;) {
 		print "<item><label>DB version</label><status>OK</status><message>Your database has the latest version.</message></item>\n";
 	}
 
-	print "</config>\n";
+	print "</data>\n";
+	print "</seccubusAPI>\n";
 	exit;
 }
