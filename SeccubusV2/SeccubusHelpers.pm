@@ -34,6 +34,7 @@ of all functions within the module.
 		check_config
 		dirlist
 		api_error
+		api_result
 	);
 
 use strict;
@@ -43,6 +44,7 @@ use HTML::Entities;
 sub check_config();
 sub dirlist($;$);
 sub api_error($$);
+sub api_result($;$$$);
 
 =head2 check_config
 
@@ -172,5 +174,62 @@ sub api_error($$) {
 	exit;
 }
 
+=head2 api_result
+
+This function prints a standard Seccubus API output message.
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item api_name - Name of the api that returns the output
+
+=item message  - Optional message in the output
+
+=item data     - Optional data segment in the output
+
+=item iserror  - Optional, indicates that the output is an error message, negative by default
+
+=back
+
+=item Returns
+
+None
+
+=item Checks
+
+None
+
+=back
+
+=back
+
+=cut
+
+sub api_result($;$$$) {
+	my $api_name = shift;
+	my $msg = shift;
+	my $data = shift;
+	my $iserror = shift;
+
+	if ( $iserror ) {
+		$iserror = "OK";
+	} else {
+		$iserror = "NOK";
+	}
+
+	print "<seccubusAPI name='$api_name'>\n";
+	print "<result>$iserror</result>\n";
+	if ( $msg ) {
+		print "<message>" . encode_entities($msg) . "</message>\n";
+	}
+	if ( $data ) {
+		print "<data>\n$data\n</data>";
+	}
+	print "</seccubusAPI>\n";
+	exit;
+}
 # Close the PM file.
 return 1;
