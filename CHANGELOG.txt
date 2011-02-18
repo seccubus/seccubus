@@ -1,3 +1,5 @@
+??-??-?? Seccubus 1.5.6
+
 18-2-2011 Seccubus 1.5.5 - Fixed installer error
 
 If the installer changed files by means of the sed command a new file was

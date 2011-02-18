@@ -36,7 +36,7 @@ our $ETC  = '/home/seccubus/etc';
 		VERSION
 	);
 
-$VERSION = '1.5.5';
+$VERSION = '1.5.6';
 # BUG [ 2130297 ] Make the scan list also show the version of Seccubus
 # Moved version into this file so it can be read by getScans.pl
 
