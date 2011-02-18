@@ -41,13 +41,13 @@ my (
 
 $help = 0;
 
-GetOptions(	'scan=s'	=> \$scanname,
-		'scanner=s'	=> \$scanner,
+GetOptions(	'scan|s=s'		=> \$scanname,
+		'scanner=s'		=> \$scanner,
 		'scannerversion=s'	=> \$scanner_version,
-		'help|h!'	=> \$help,
-		'verbose|v!'	=> \$verbose,
-		'workspace=s'	=> \$workspace,
-		'timestamp=s'	=> \$timestamp,
+		'help|h!'		=> \$help,
+		'verbose|v!'		=> \$verbose,
+		'workspace|w=s'		=> \$workspace,
+		'timestamp|t=s'		=> \$timestamp,
 	  );
 my $filename = shift(@ARGV);
 
@@ -67,25 +67,29 @@ close(IVIL);
 print "File loaded\n" if $verbose;
 print "Parsing data\n" if $verbose;
 my ($workspace_id, $scan_id, $run_id) = load_ivil($ivil, $scanner, $scanner_version, $timestamp, $workspace, $scan);
+print "WorkspaceID: $workspace_id\nScanID: $scan_id\nRunID: $run_id\n" if $verbose;
 process_status($workspace_id, $scan_id, $run_id, $verbose);
 
 exit;
 
 sub help() {
-	# TODO: Update this help text
 	print "
-		This is not the helptext for load_ivil
-Usage: importer --workspace <workspace name> --scan <scan name> --scanner <scanner name --timestamp <yyyy-MM-dd HH:mm:ss> <filenae.nbe> [--help] [--verbose]
+Usage: load_ivil --workspace <workspace name> --scan <scan name> 
+                 [--scanner <scanner name>] [--scannerversion <scanner version>]
+		 --timestamp <YYYYMMDDHHmm[ss]>
+		 [--help] [--verbose] <filename> 
 
 Arguments:
---workspace	- The name of the SeccubusV2 workspace this scan will be 
-		  imported to, defaults to the value of scanname
---scan 		- the name of the scan in the old Seccubus
---scanner	- Name of the scanner used
---timestamp	- Time the scan ran in the format YYYY-MM-DD HH:mm:ss
-<filename>	- Path to the file to be imported
+--workspace (-w)- The name of the workspace the file should be loaded into
+--scan (-s)	- The name of the scan 
+--scanner	- Optional: name of the scanner used. If not provided it will be
+		  read from the IVIL file
+--scannerversion- Optional: Verison of the scanner used. If not provided it will
+		  be read from the IVIL file
+--timestamp (-t)- Time the scan ran in the format YYYYMMDDHHmm[ss]
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message
+<filename>	- Path to the file to be loaded
 ";
 	exit();
 }
