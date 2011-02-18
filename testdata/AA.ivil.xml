@@ -1,0 +1,23 @@
+<?xml version="1.0" standalone='yes'?>
+<IVIL version="0.2">
+	<sender>
+		<scanner_type>Nikto</scanner_type>
+		<timestamp>20110101010101</timestamp>
+	</sender>
+	<findings>
+		<finding>
+			<ip>A</ip>
+			<port>80/tcp</port>
+			<id>1</id>
+			<severity>2</severity>
+			<finding_txt>A</finding_txt>
+		</finding>
+		<finding>
+			<ip>A</ip>
+			<port>80/tcp</port>
+			<id>2</id>
+			<severity>2</severity>
+			<finding_txt>B</finding_txt>
+		</finding>
+	</findings>
+</IVIL>
