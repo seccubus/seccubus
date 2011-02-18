@@ -114,6 +114,7 @@ foreach $file ( @BINFILES ) {
 	syst "cp blib/script/$file $buildroot/$bindir";
 	if ( $bash ne "/bin/bash" ) {
 		syst "cat $buildroot/$bindir/$file | sed 's:/bin/bash:$bash:' > $buildroot/$bindir/$file";
+		syst "chmod 755 $buildroot/$bindir/$file";
 	}
 }
 
@@ -163,6 +164,7 @@ for my $file (@CHANGE_FILES) {
 	syst "mv $buildroot/$file $buildroot/$file.orig";
 	syst "sed -e \'s:/home/seccubus:$target:g\' -e \'s:/home/seccubus/var:$vardir:g\' -e \'s:/home/seccubus/bin:$bindir:g\' -e \'s:/home/seccubus/etc:$etcdir:g\' $buildroot/$file.orig > $buildroot/$file";
 	syst "rm $buildroot/$file.orig";
+	syst "chmod 755 $buildroot/$file";
 }
 
 if ( ! -e "$buildroot/$etcdir/config" ) {

@@ -1,4 +1,11 @@
-7-2-2011 - OpenVAS-Client 3.x compatibility release
+18-2-2011 Seccubus 1.5.5 - Fixed installer error
+
+If the installer changed files by means of the sed command a new file was
+created which takes the permissions from the system umask. This cuased some
+files not to have the correct permissions as reported by Brad Alexander in
+ticket #13 (https://sourceforge.net/apps/trac/seccubus/ticket/13)
+
+7-2-2011 Seccubus 1.5.4 - OpenVAS-Client 3.x compatibility release
 
 This release fixes an OpenVAS-Client 3.x compatibility issue reported and fixed
 by Brad Alexander
