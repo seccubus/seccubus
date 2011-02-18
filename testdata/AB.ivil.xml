@@ -17,7 +17,7 @@
 			<port>80/tcp</port>
 			<id>2</id>
 			<severity>2</severity>
-			<finding_txt>A</finding_txt>
+			<finding_txt>B</finding_txt>
 		</finding>
 	</findings>
 </IVIL>
