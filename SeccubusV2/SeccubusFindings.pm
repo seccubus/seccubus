@@ -29,6 +29,7 @@ of all functions within the module.
 use SeccubusDB;
 use SeccubusRights;
 use SeccubusUsers;
+use Algorithm::Diff qw( diff );
 
 @ISA = ('Exporter');
 
@@ -37,6 +38,7 @@ use SeccubusUsers;
 		get_finding
 		update_finding
 		process_status
+		diff_finding
 	);
 
 $VERSION = '0.1';
@@ -47,6 +49,7 @@ use Carp;
 sub get_findings($$;$);
 sub get_finding($$;);
 sub update_finding(@);
+sub diff_finding($$$$$;);
 
 =head1 Data manipulation - findings
 
@@ -467,22 +470,135 @@ sub process_status($$$;$) {
 		);
 	}
 
-	# Find the ids that need to be tested for changes. basically these are 
-	# the findings with status OPEN(3), or NO ISSUE (4) associated with the
-	# current run
-	$ref = sql( "return"	=> "ref",    
-		    "query"	=> "SELECT	id
-		      		    FROM	findings
-				    WHERE 	workspace_id = ? AND
-				    		scan_id = ? AND
-						( status = 3 OR status = 4 ) AND
-						run_id = ?",
-		      "values"	=> [ $workspace_id, $scan_id, $run_id ],
-		    );
-	foreach my $id ( @{$ref} ) {
-		$id = $$id[0]; # Get the id from the arrayref;
-		print "Checking finding $id for changes\n" if $verbose;
-		#check_for_diff($finding_id)
+	# Find out if there has been a previous run
+	my $previous_run = sql( return	=> "array",
+				query	=> "SELECT	MAX(id) 
+					    FROM	runs
+					    WHERE	scan_id = ? AND
+					    		id <> ?",
+				values	=> [ $scan_id, $run_id ] 
+			      );
+	print "Previous run is: $previous_run\n" if $verbose;
+	if ( $previous_run ) {		# No need to check for changes if this
+					# is the first run
+
+		# Find the ids that need to be tested for changes. basically 
+		# these are the findings with status OPEN(3), or NO ISSUE (4) 
+		# associated with the current run
+		$ref = sql( "return"	=> "ref",    
+			    "query"	=> "SELECT	id
+			      		    FROM	findings
+					    WHERE 	workspace_id = ? AND
+					    		scan_id = ? AND
+							( status = 3 OR status = 4 ) AND
+							run_id = ?",
+			      "values"	=> [ $workspace_id, $scan_id, $run_id ],
+			    );
+		foreach my $id ( @{$ref} ) {
+			$id = $$id[0]; # Get the id from the arrayref;
+			print "Checking finding $id for changes\n" if $verbose;
+			# Get differences in diff format
+			my @diff = diff_finding("diff", $workspace_id, $id, $run_id, $previous_run); 
+			# update the finding to changed if there is a diff
+			if ( @diff ) {
+				update_finding (
+					"workspace_id"  => $workspace_id,
+					"finding_id"    => $id,
+					"status"        => 2,
+				);
+			}
+		}
+	}
+}
+
+=head2 diff_finding
+
+This function calculates the differences between two runs of a finding.
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item type - Type of output
+
+"diff" output in diff format. Returns and array.
+"html" output in HTML format. See wiki.
+"txt" output in text format.
+
+=item workspace_id - ID of the workspace
+
+=item finding_id - ID of the finding to diff
+
+=item this_run - ID of the current run
+
+=item prev_run - ID of the previous run
+
+=back
+
+=item Returns
+
+undef if there are no differences, otherwise the diff in the format requested
+
+=item Checks
+
+Must be able to read the workspaced
+
+=back
+
+=cut
+
+sub diff_finding($$$$$;) {
+	my $type = shift;
+	my $workspace_id = shift;
+	my $finding_id = shift;
+	my $this_run = shift;
+	my $prev_run =shift;
+
+	if ( may_read($workspace_id) ) {
+		my @findings = sql( return	=> "arrya",
+				    query	=> "SELECT id
+				    		    FROM findings
+						    WHERE id = ? 
+						    AND workspace_id = ?",
+				    values	=> [ $finding_id, $workspace_id ],
+				  );
+		die "There is no finding '$finding_id' in workspace '$workspace_id'" unless @findings;
+		my @current = sql( return	=> "array",
+				   query	=> "SELECT finding
+				   		    FROM finding_changes
+						    WHERE finding_id = ?
+						    AND run_id = ?
+						    ORDER BY time 
+						    LIMIT 1",
+				   values	=> [ $finding_id, $this_run ],
+				 );
+		my @prev = sql( return	=> "array",
+				query	=> "SELECT finding
+				   	    FROM finding_changes
+					    WHERE finding_id = ?
+					    AND run_id = ?
+					    ORDER BY time 
+					    LIMIT 1",
+				   values	=> [ $finding_id, $prev_run ],
+				 );
+		die "Unable to load previous or current findings" unless ( @current && @prev );
+		@current = split(/\n/, $current[0]);
+		@prev = split(/\n/, $prev[0]);
+		my @diff = diff(\@prev, \@current);
+
+		if ( $type eq "diff" ) {
+			return @diff;
+		} elsif ( $type eq "txt" ) {
+			return join "\n", @diff;
+		} elsif ( $type eq "html" ) {
+			return join "<br>\n", @diff;
+		} else {
+			die "Unknown return type '$type'";
+		}
+	} else {
+		die("You are not allowed to read workspace '$workspace_id'")
 	}
 }
 
