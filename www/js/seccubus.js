@@ -218,7 +218,7 @@ $(document).ready( function() {
 	updateWorkspacesTable();
 	
 	// Show the overlay that displays results from api/up2date.pl
-	/*$("#start").overlay({
+	$("#start").overlay({
 		mask: {
 			color: '#D6D6D6',
 			closeSpeed: 0,
@@ -226,18 +226,35 @@ $(document).ready( function() {
 			opacity: 0.9
 		},
 		speed: 0,
-		closeOnClick: false,
-		closeOnEsc: false,
+		closeOnClick: true,
+		closeOnEsc: true,
 		load: true,
 		onBeforeLoad: function (e) {
 			// Execute api/up2date.pl
-			$.post("api/up2date.pl", {}, function(text){
-				$('#start h3').html(text);
-				//$('#start').append('<br>press ESC key to continue');
+			$.post("api/up2date.pl", {}, function(xml, txtStatus){
+				// Store status of the result
+				result = $("result", xml).text();
+				
+				if (result === "OK") { // if result is OK (successful),
+					console.log($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+					// do not display overlay
+					e.preventdefault();
+
+				} else if (result === "NOK")  {	// Handle errors gracefully
+					console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
+					// Show the error message
+					$('#start h3').html($("message", xml).text());
+				} else { // Handle unknown errors gracefully
+					console.error("An unknown result was returned.\n"+
+						"Please report the following result to the developers:\n" +
+						$("seccubusAPI", xml).attr("name") + ": " + result);
+					// do not display overlay
+					e.preventdefault();
+				}
 			});
 		}
 	});
-	setTimeout("$('#start').overlay('data').close()",6000);*/
+	//setTimeout("$('#start').overlay('data').close()",6000);
 });
 
 // Error handler for all ajax calls
@@ -1653,29 +1670,29 @@ function fnSetEditFindingStatus( intStatus ){
 	switch (intStatus) {
 	case 1:
 		options = '<option value="1">New</option>'+
-	    	'<option value="4">Open</option>'+
-	    	'<option value="5">No Issue</option>'+
+	    	'<option value="3">Open</option>'+
+	    	'<option value="4">No Issue</option>'+
 	    	'<option value="99">MASKED</option>';
 		break;
 	case 2:
 		options = '<option value="2">Changed</option>'+
-	    	'<option value="4">Open</option>'+
-	    	'<option value="5">No Issue</option>'+
+	    	'<option value="3">Open</option>'+
+	    	'<option value="4">No Issue</option>'+
 	    	'<option value="99">MASKED</option>';
 		break;
 	case 3:
-		options = '<option value="3">Gone</option>'+
+		options = '<option value="5">Gone</option>'+
 	    	'<option value="6">Closed</option>'+
 	    	'<option value="99">MASKED</option>';
 		break;
 	case 4:
-		options = '<option value="4">Open</option>'+
-	    	'<option value="5">No Issue</option>'+
+		options = '<option value="3">Open</option>'+
+	    	'<option value="4">No Issue</option>'+
 	    	'<option value="99">MASKED</option>';
 		break;
 	case 5:
-		options = '<option value="5">No Issue</option>'+ 
-			'<option value="4">Open</option>'+
+		options = '<option value="4">No Issue</option>'+ 
+			'<option value="3">Open</option>'+
 			'<option value="99">MASKED</option>';
 		break;
 	case 6:
