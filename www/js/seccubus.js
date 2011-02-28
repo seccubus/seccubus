@@ -1681,22 +1681,26 @@ function fnSetEditFindingStatus( intStatus ){
 	    	'<option value="99">MASKED</option>';
 		break;
 	case 3:
-		options = '<option value="5">Gone</option>'+
+		options = '<option value="3">Open</option>'+
+			'<option value="4">No Issue</option>'+
 	    	'<option value="6">Closed</option>'+
 	    	'<option value="99">MASKED</option>';
 		break;
 	case 4:
-		options = '<option value="3">Open</option>'+
-	    	'<option value="4">No Issue</option>'+
+		options = '<option value="4">No Issue</option>'+
+			'<option value="3">Open</option>'+
 	    	'<option value="99">MASKED</option>';
 		break;
 	case 5:
-		options = '<option value="4">No Issue</option>'+ 
+		options = '<option value="5">Gone</option>'+
 			'<option value="3">Open</option>'+
+			'<option value="4">No Issue</option>'+ 
 			'<option value="99">MASKED</option>';
 		break;
 	case 6:
 		options = '<option value="6">Closed</option>'+
+			'<option value="3">Open</option>'+
+			'<option value="4">No Issue</option>'+
 	    	'<option value="99">MASKED</option>';
 		break;
 	case 99:
