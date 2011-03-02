@@ -23,7 +23,7 @@
 ^pm_to_blib
 
 # Config files
-config\.xml
+config\.xml$
 \.nessusrc$
 \.openvasrc$
 \.update-nessusrc$
