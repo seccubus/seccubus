@@ -70,7 +70,10 @@
 </a></div>
 
 <div class="myoverlay" id="start">
-<h3>Waiting for response from Up2date.pl ...</h3>
+	<div class="close">
+		<h3>Waiting for response from Up2date.pl ...</h3>
+		<p><br>(Click to close)</br></p>
+	</div>
 </div>
 <div class="myoverlay" id="progress">
 <h3>Please wait...</h3>
@@ -97,7 +100,7 @@
 <fieldset>
 <h3>Edit workspace name</h3>
 <p><label>Workspace Name</label> <input id="edit_ws_name"
-	type="text" name="name" pattern="[a-zA-Z0-9 ]{1,}" /></p>
+	type="text" name="name" pattern="[a-zA-Z0-9 -_+=()]{1,}" /></p>
 <div class="buttons" style="padding: 15px 0;">
 <button type="submit" class="positive">Change</button>
 <button type="reset" class="negative">Reset</button>

@@ -117,6 +117,32 @@ function Collection() {
 	}
 }
 
+// Define Cookie functions
+function createCookie(name,value,days) {
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime()+(days*24*60*60*1000));
+		var expires = "; expires="+date.toGMTString();
+	}
+	else var expires = "";
+	document.cookie = name+"="+value+expires+"; path=/";
+}
+
+function readCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
+
+function eraseCookie(name) {
+	createCookie(name,"",-1);
+}
+
 
 // When the DOM is ready start building the screen
 // This is called the 1st time the script is loaded and if the webpage containing this script is refreshed.
@@ -227,34 +253,46 @@ $(document).ready( function() {
 		},
 		speed: 0,
 		closeOnClick: true,
-		closeOnEsc: true,
+		closeOnEsc: false,
 		load: true,
 		onBeforeLoad: function (e) {
 			// Execute api/up2date.pl
 			$.post("api/up2date.pl", {}, function(xml, txtStatus){
 				// Store status of the result
 				result = $("result", xml).text();
+				curVer = $("version", xml).text();
 				
 				if (result === "OK") { // if result is OK (successful),
-					console.log($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
-					// do not display overlay
-					e.preventdefault();
+					// Look for cookie
+					var storedVer = readCookie('version');
+					// If cookie not present or version changed then
+					if (typeof storedVer == "undefined" || storedVer != curVer) {
+						// Show the message.
+						$('#start h3').html($("message", xml).text());
+						// Store the version in a cookie
+						createCookie('version', curVer, 365);
+					} else {
+						// close the overlay
+						$('#start').overlay('data').close();
+					}
 
 				} else if (result === "NOK")  {	// Handle errors gracefully
-					console.error($("seccubusAPI", xml).attr("name") + ": " + $("message", xml).text());
 					// Show the error message
 					$('#start h3').html($("message", xml).text());
 				} else { // Handle unknown errors gracefully
 					console.error("An unknown result was returned.\n"+
 						"Please report the following result to the developers:\n" +
 						$("seccubusAPI", xml).attr("name") + ": " + result);
-					// do not display overlay
-					e.preventdefault();
+					// close the overlay
+					$('#start').overlay('data').close();
 				}
+			}, function () {
+				// If error in post call then
+				// close the overlay
+				$('#start').overlay('data').close();
 			});
 		}
 	});
-	//setTimeout("$('#start').overlay('data').close()",6000);
 });
 
 // Error handler for all ajax calls
