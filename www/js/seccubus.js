@@ -243,8 +243,8 @@ $(document).ready( function() {
 	// Setup the Workspace tab
 	updateWorkspacesTable();
 	
-	// Show the overlay that displays results from api/up2date.pl
-	$("#start").overlay({
+	// Setup the overlay that displays results from api/up2date.pl
+	var olStart = $("#start").overlay({
 		mask: {
 			color: '#D6D6D6',
 			closeSpeed: 0,
@@ -254,45 +254,9 @@ $(document).ready( function() {
 		speed: 0,
 		closeOnClick: true,
 		closeOnEsc: false,
-		load: true,
-		onBeforeLoad: function (e) {
-			// Execute api/up2date.pl
-			$.post("api/up2date.pl", {}, function(xml, txtStatus){
-				// Store status of the result
-				result = $("result", xml).text();
-				curVer = $("version", xml).text();
-				
-				if (result === "OK") { // if result is OK (successful),
-					// Look for cookie
-					var storedVer = readCookie('version');
-					// If cookie not present or version changed then
-					if (typeof storedVer == "undefined" || storedVer != curVer) {
-						// Show the message.
-						$('#start h3').html($("message", xml).text());
-						// Store the version in a cookie
-						createCookie('version', curVer, 365);
-					} else {
-						// close the overlay
-						$('#start').overlay('data').close();
-					}
-
-				} else if (result === "NOK")  {	// Handle errors gracefully
-					// Show the error message
-					$('#start h3').html($("message", xml).text());
-				} else { // Handle unknown errors gracefully
-					console.error("An unknown result was returned.\n"+
-						"Please report the following result to the developers:\n" +
-						$("seccubusAPI", xml).attr("name") + ": " + result);
-					// close the overlay
-					$('#start').overlay('data').close();
-				}
-			}, function () {
-				// If error in post call then
-				// close the overlay
-				$('#start').overlay('data').close();
-			});
-		}
+		api: true,
 	});
+	displayStartOverlay(olStart);
 });
 
 // Error handler for all ajax calls
@@ -301,6 +265,82 @@ $(document).ajaxError(function(e, xhr, settings, exception) {
 		  " \nXHR message:\n" + xhr.responseText + " \nXHR XML:\n" + xhr.responseXML +
 		  "\nException Message:\n" + exception);
 });
+
+function displayStartOverlay(ol) {
+	var showOL = false;
+	
+	// Execute api/up2date.pl
+	$.post("api/up2date.pl", {}, function(xml, txtStatus){
+		// Store status of the result
+		result = $("result", xml).text();
+		curVer = $("version", xml).text();
+		
+		if (result === "OK") { // if result is OK (successful),
+			// Look for cookie
+			var storedVer = readCookie('version');
+			// If cookie not present or version changed then
+			if (typeof storedVer == "undefined" || storedVer != curVer) {
+				// Show the message.
+				$('#up2date').html($("message", xml).text());
+				// Store the version in a cookie
+				createCookie('version', curVer, 365);
+				
+				showOL = true;
+			}
+		} else if (result === "NOK")  {	// Handle errors gracefully
+			// Set message
+			$('#up2date').html($("message", xml).text());
+			
+			showOL = true;
+		} else { // Handle unknown errors gracefully
+			console.error("An unknown result was returned.\n"+
+				"Please report the following result to the developers:\n" +
+				$("seccubusAPI", xml).attr("name") + ": " + result);
+		}
+		
+		// Execute api/testConfig.pl
+		$.post("api/testConfig.pl", {}, function(xml, txtStatus){
+			// Store status of the result
+			result = $("result", xml).text();
+			console.log("result = " + result);
+			
+			if (result === "OK") { // if result is OK (successful),
+				
+			} else if (result === "NOK")  {	// Handle errors gracefully
+				showOL = true;
+			} else { // Handle unknown errors gracefully
+				console.error("An unknown result was returned.\n"+
+					"Please report the following result to the developers:\n" +
+					$("seccubusAPI", xml).attr("name") + ": " + result);
+			}
+			
+			// Show the message.
+			$('#testConfig').html($("message:last", xml).text());
+			
+			var msg = "<br>";
+			// Process each item returned
+			$("item", xml).each(function() {
+				msg += "<br>";
+				if ($("status", this).text() === "OK") msg += '<img src="img/tick.png"/> ';
+				else msg += '<img src="img/cross.png"/> ';
+				msg += $("label", this).text() +": "+ $("message", this).text();
+			});
+			$('#testConfig').append(msg);
+			
+			// Show the overlay is necessary
+			if (showOL) ol.load();
+			
+		}, function () {
+			// If error in post call then
+			// close the overlay
+			ol.close();
+		});
+	}, function () {
+		// If error in post call then
+		// close the overlay
+		ol.close();
+	});
+}
 
 // This function sets the workspace buttons up 
 function workspacesSetup() {
