@@ -302,7 +302,6 @@ function displayStartOverlay(ol) {
 		$.post("api/testConfig.pl", {}, function(xml, txtStatus){
 			// Store status of the result
 			result = $("result", xml).text();
-			console.log("result = " + result);
 			
 			if (result === "OK") { // if result is OK (successful),
 				
