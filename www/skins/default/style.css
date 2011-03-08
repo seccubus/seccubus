@@ -562,6 +562,7 @@ dataTables_processing {
 .data_table tbody td {
 	padding: 3px 10px;
 	vertical-align: top;
+	word-break: break-all;
 }
 
 .data_table td.center {
