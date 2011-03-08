@@ -969,8 +969,7 @@ function updateScansTable() {
 					"src='img/lightning.png' title='Execute scan' alt='[execute]'/>";
 				
 				var ai = $('#scans_table').dataTable()
-							.fnAddData([ checkbox, scanName, $("scanner", this).text(), $(this)
-							             .attr('findings'), options ]);
+							.fnAddData([ checkbox, scanName, $("scanner", this).text(), $('findings', this).text(), options ]);
 				var selTR = $('#scans_table').dataTable().fnSettings().aoData[ ai[0] ].nTr;
 				$(selTR).data('id', $("id", this).text())
 						.data('name', scanName)
