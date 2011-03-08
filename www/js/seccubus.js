@@ -296,6 +296,7 @@ function displayStartOverlay(ol) {
 			console.error("An unknown result was returned.\n"+
 				"Please report the following result to the developers:\n" +
 				$("seccubusAPI", xml).attr("name") + ": " + result);
+			showOL = true;
 		}
 		
 		// Execute api/testConfig.pl
@@ -311,6 +312,7 @@ function displayStartOverlay(ol) {
 				console.error("An unknown result was returned.\n"+
 					"Please report the following result to the developers:\n" +
 					$("seccubusAPI", xml).attr("name") + ": " + result);
+				showOL = true;
 			}
 			
 			// Show the message.

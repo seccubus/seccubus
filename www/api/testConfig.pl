@@ -84,6 +84,7 @@ foreach my $dir ( @dirs ) {
 }
 
 ##### Test database login
+my $testDBLogin;
 print "<item><label>DB login</label>";
 require SeccubusDB;
 my $dbh = SeccubusDB::open_database();
@@ -92,66 +93,73 @@ if ( ! $dbh ) {
 	$status = "NOK";
 	$message = "Unable to log into the the database. Either the definitions in '$config_file' are incorrect or you need to create '$config->{database}->{engine}' database '$config->{database}->{database}' on host '$config->{database}->{host}' and grant user '$config->{database}->{user}' the rights to login in with the specified password and use the database";
 	$ok = 0;
+	$testDBLogin = 0;
 	#report_status(2, "Unable to log into the the database. Either the definitions in '$config_file' are incorrect or you need to create '$config->{database}->{engine}' database '$config->{database}->{database}' on host '$config->{database}->{host}' and grant user '$config->{database}->{user}' the rights to login in with the specified password and use the database");
 } else {
 	$status = "OK";
 	$message = "Login to database '$config->{database}->{database}' on host '$config->{database}->{host}' with the credentials from '$config_file', was successful";
+	$testDBLogin = 1;
 }
 $message = encode_entities($message);
 print "<status>$status</status><message>$message</message></item>\n";
 
 ##### Test database tables
-print "<item><label>DB tables</label>";
-my $tables = SeccubusDB::sql( return	=> "ref",
-		  	      query	=> "show tables",
-			    );
+# Make sure login to the database was successful
+if ($testDBLogin) {	
+	print "<item><label>DB tables</label>";
+	my $tables = SeccubusDB::sql( return	=> "ref",
+			  	      query	=> "show tables",
+				    );
 
-if ( ! @$tables ) {
-	my $file = $config->{paths}->{dbdir} . "/structure_v$current_db_version" . "\." . $config->{database}->{engine};
-	my $msg = "Your database seems to be empty, please execute the sql statements in '$file' to create the required tables";
-	my $api = "api/updateDB.pl?toVersion=$current_db_version&action=structure";
-	$status = "NOK";
-	$message = "$msg. API Call: '$api'";
-	$ok = 0;
-	#report_status(5, $msg, $api);
-} else {
-	$status = "OK";
-	$message = "Your database does have datastructures in it.";
-}
-$message = encode_entities($message);
-print "<status>$status</status><message>$message</message></item>\n";
-
-##### Test the default DB data version
-print "<item><label>DB data version</label>";
-eval {
-	local $SIG{__DIE__}; # No sigdie handler
-	
-	my @version = SeccubusDB::sql( return	=> "array",
-		   	       query	=> "SELECT value FROM config 
-			                    WHERE name = ?",
-		   	       values	=> [ "version" ],
-		 	     );
-
-	if ( $version[0] != $current_db_version ) {
+	if ( ! @$tables ) {
+		my $file = $config->{paths}->{dbdir} . "/structure_v$current_db_version" . "\." . $config->{database}->{engine};
+		my $msg = "Your database seems to be empty, please execute the sql statements in '$file' to create the required tables";
+		my $api = "api/updateDB.pl?toVersion=$current_db_version&action=structure";
 		$status = "NOK";
-		$message = "Your database currently has a version number that isn't that of the current database version. Since this cannot happen at this time, you are on your own";
+		$message = "$msg. API Call: '$api'";
 		$ok = 0;
-		#report_status(5, $msg);
+		#report_status(5, $msg, $api);
 	} else {
 		$status = "OK";
-		$message = "Your database has the base data and is the current version.";
-	}		 	     
-} or do {
-	my $file = $config->{paths}->{dbdir} . "/data_v$current_db_version" . "\." . $config->{database}->{engine};
-	my $msg = "Your database is missing data, please execute the sql statements in '$file' to insert the base data into the database";
-	my $api = "api/updateDB.pl?toVersion=&action=data";
-	$status = "NOK";
-	$message = "$msg. API Call: '$api'";
-	$ok = 0;
-};
+		$message = "Your database does have datastructures in it.";
+	}
+	$message = encode_entities($message);
+	print "<status>$status</status><message>$message</message></item>\n";
+}
 
-$message = encode_entities($message);
-print "<status>$status</status><message>$message</message></item>\n";
+##### Test the default DB data version
+# Make sure login to the database was successful
+if ($testDBLogin) {		
+	print "<item><label>DB data version</label>";
+	eval {
+		local $SIG{__DIE__}; # No sigdie handler
+	
+		my @version = SeccubusDB::sql( return	=> "array",
+			   	       query	=> "SELECT value FROM config 
+				                    WHERE name = ?",
+		   	    	   values	=> [ "version" ],
+		 	     	);
+
+		if ( $version[0] != $current_db_version ) {
+			$status = "NOK";
+			$message = "Your database currently has a version number that isn't that of the current database version. Since this cannot happen at this time, you are on your own";
+			$ok = 0;
+			#report_status(5, $msg);
+		} else {
+			$status = "OK";
+			$message = "Your database has the base data and is the current version.";
+		}		 	     
+	} or do {
+		my $file = $config->{paths}->{dbdir} . "/data_v$current_db_version" . "\." . $config->{database}->{engine};
+		my $msg = "Your database is missing data, please execute the sql statements in '$file' to insert the base data into the database";
+		my $api = "api/updateDB.pl?toVersion=&action=data";
+		$status = "NOK";
+		$message = "$msg. API Call: '$api'";
+		$ok = 0;
+	};
+	$message = encode_entities($message);
+	print "<status>$status</status><message>$message</message></item>\n";
+}
 
 ##### Overall status of tests
 my $result = "";
