@@ -129,6 +129,7 @@ foreach my $file ( @patches ) {
 	$file = "$stage_dir/$file";
 	syst("sed -i 's:/opt/Seccubus/SeccubusV2:$mod_dir:' $file");
 	syst("sed -i 's:/opt/Seccubus/scanners:$scan_dir:' $file");
+	syst("sed -i 's:/opt/Seccubus/bin:$bin_dir:' $file");
 	syst("sed -i 's:/opt/Seccubus/etc:$conf_dir:' $file");
 	syst("sed -i 's:/opt/Seccubus/db:$db_dir:' $file");
 }
