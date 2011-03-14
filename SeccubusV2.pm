@@ -38,7 +38,7 @@ use XML::Simple;
 use Data::Dumper;
 
 our $config = "config.xml";		# Change this value to match your setup
-					# if your configuraiton file cannot be 
+					# if your configuration file cannot be 
 					# found
 $config = "/etc/seccubus/config.xml" unless -e $config;
 $config = "/opt/Seccubus/etc/config.xml" unless -e $config;
