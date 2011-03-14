@@ -119,6 +119,9 @@ while (<IN>) {
 		$finding{severity} = $sev{$severity};
 		# Severity is 0 unless we are able to find one
 		$finding{severity} = 0 unless $finding{severity};
+		# Ticket #20 - Finding text include '\r'
+		# Convert linenends to real newlines
+		$finding =~ s/\\n\\r?/\n/g;
 		$finding{finding} = $finding;
 		# If finding is empty we are dealing with a portscan
 		$finding{finding} = "Port $port is open" unless $finding{finding};
