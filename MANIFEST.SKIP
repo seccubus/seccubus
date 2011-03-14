@@ -28,6 +28,9 @@ config\.xml$
 \.openvasrc$
 \.update-nessusrc$
 
+# This file should be a symlink after the install
+^www\/SeccubusV2\.pm$
+
 # Misc
 ^tmp\/
 ^make_dist$
