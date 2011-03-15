@@ -164,14 +164,17 @@ sub delete_workspace($;$) {
 					"query"	=> "SELECT id FROM scans WHERE workspace_id = ?", 
 					"values"	=> [ $workspace_id ],
 	       			);
+	my $total_runs_rows_del = 0;
 	foreach my $scan_id (@$scans) {
 		# delete all records in runs that matches scan_id
 		$rows = sql( "return"	=> "rows",
 			 "query"	=> "DELETE FROM runs where scan_id = ?",
 			 "values"	=> [ $$scan_id[0] ]
 			 );
-		$result .= "Deleted $rows from runs table.\n" if $verbose;
+		$total_runs_rows_del += $rows;
 	}
+	$result .= "Deleted $total_runs_rows_del from runs table.\n" if $verbose;
+	
 	#	delete all records in scans that matches workspace id
 	$rows = sql( "return"	=> "rows",
 		 "query"	=> "DELETE FROM scans WHERE workspace_id = ?",
@@ -184,19 +187,19 @@ sub delete_workspace($;$) {
 					   "query"	=> "SELECT id FROM findings WHERE workspace_id = ?", 
 					   "values"	=> [ $workspace_id ],
 	       			 );
+	my $total_finding_changes_rows_del = 0;
+	my $total_issue_changes_rows_del = 0;
+	my $total_issue2findings_changes_rows_del = 0;
+	my $total_issues_rows_del = 0;
+	my $total_issue2findings_rows_del = 0;
 	foreach my $finding_id (@$findings) {
 		# delete all records in finding_changes that matches finding_id
 		$rows = sql( "return"	=> "rows",
 			 		"query"	=> "DELETE FROM finding_changes where finding_id = ?",
 			 		"values"	=> [ $$finding_id[0] ]
 			 		);
-		$result .= "Deleted $rows from finding_changes table.\n" if $verbose;
-		# delete all records in occurances that matches finding_id
-		$rows = sql( "return"	=> "rows",
-			 		"query"	=> "DELETE FROM occurances where finding_id = ?",
-			 		"values"	=> [ $$finding_id[0] ]
-			 		);
-		$result .= "Deleted $rows from occurances table.\n" if $verbose;
+		$total_finding_changes_rows_del += $rows;
+		
 		# for each unique issue_id in issues2findings that matches finding_id
 		my $issues2findings = sql( "return"	=> "ref", 
 									"query"	=> "SELECT DISTINCT issue_id FROM issues2findings WHERE finding_id = ?", 
@@ -208,27 +211,35 @@ sub delete_workspace($;$) {
 			 			"query"	=> "DELETE FROM issue_changes where issue_id = ?",
 			 			"values"	=> [ $$issue_id[0] ]
 			 			);
-			$result .= "Deleted $rows from issue_changes table.\n" if $verbose;
+			$total_issue_changes_rows_del += $rows;
+			
 			# delete all records in issue2finding_changes that matches issue_id
 			$rows = sql( "return"	=> "rows",
 			 			"query"	=> "DELETE FROM issue2finding_changes where issue_id = ?",
 			 			"values"	=> [ $$issue_id[0] ]
 			 			);
-			$result .= "Deleted $rows from issue2finding_changes table.\n" if $verbose;
+			$total_issue2findings_changes_rows_del += $rows;
+			
 			# delete the record in issues that matches issue_id
 			$rows = sql( "return"	=> "rows",
 			 			"query"	=> "DELETE FROM issue where id = ?",
 			 			"values"	=> [ $$issue_id[0] ]
 			 			);
-			$result .= "Deleted $rows from issues table.\n" if $verbose;
+			$total_issues_rows_del += $rows;
 	    }
 		# delete all issues2findings records that matches finding_id
 		$rows = sql( "return"	=> "rows", 
 					"query"	=> "DELETE FROM issues2findings WHERE finding_id = ?", 
 					"values"	=> [ @$finding_id ],
 	       			);
-	    $result .= "Deleted $rows from issues2findings table.\n" if $verbose;
+	    $total_issue2findings_rows_del += $rows;
 	}
+	$result .= "Deleted $total_finding_changes_rows_del from finding_changes table.\n" if $verbose;
+	$result .= "Deleted $total_issue_changes_rows_del from issue_changes table.\n" if $verbose;
+	$result .= "Deleted $total_issue2findings_changes_rows_del from issue2finding_changes table.\n" if $verbose;
+	$result .= "Deleted $total_issue2findings_rows_del from issues2findings table.\n" if $verbose;
+	$result .= "Deleted $total_issues_rows_del from issues table.\n" if $verbose;
+	
 	#	delete all findings records that matches workspace id
 	$rows = sql( "return"	=> "rows", 
 				"query"	=> "DELETE FROM findings WHERE workspace_id = ?", 
