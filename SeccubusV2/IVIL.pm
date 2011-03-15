@@ -324,7 +324,7 @@ sub get_refs($) {
 			confess "Unknown reference type $type";
 		}
 	
-		my $txt = $text;
+		my $txt = encode_entities($text);
 		while ( $txt =~ m/^.*?($pattern)/ ) {
 			my $ref = $1;			# Get ref text
 			$txt =~ s/^.*?$pattern//;	# Strip it from text
