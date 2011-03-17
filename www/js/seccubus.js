@@ -278,10 +278,10 @@ function displayStartOverlay(ol) {
 		if (result === "OK") { // if result is OK (successful),
 			// Look for cookie
 			var storedVer = readCookie('version');
+			// Print the message.
+			$('#up2date').html($("message", xml).text());
 			// If cookie not present or version changed then
 			if (typeof storedVer == "undefined" || storedVer != curVer) {
-				// Show the message.
-				$('#up2date').html($("message", xml).text());
 				// Store the version in a cookie
 				createCookie('version', curVer, 365);
 				
@@ -1587,10 +1587,10 @@ function findingsSetup() {
 							var aTD;
 							if (bOverwrite) {	// if true overwrite remark 
 								// Update the remark column 
-								oTable.fnUpdate(sRemark, aTrs[i], 9);
+								oTable.fnUpdate(sRemark, aTrs[i], 9, false, false);
 							} else {	// otherwise append to the remark
 								var aTD = oTable.fnGetTd(aTrs[i],9);  // get the cell with the ID in it
-								oTable.fnUpdate($(aTD).html() + "<br>" + sRemark, aTrs[i], 9);
+								oTable.fnUpdate($(aTD).html() + "<br>" + sRemark, aTrs[i], 9, false, false);
 							}
 							if (iStatus != previousStatus) {	// if status changed
 								
@@ -1604,7 +1604,7 @@ function findingsSetup() {
 								});
 								
 								// Update the status column
-								oTable.fnUpdate(iStatus, aTrs[i], 10);
+								oTable.fnUpdate(iStatus, aTrs[i], 10, false, false);
 							}
 							
 							// clear the check mark and class selection after changes have been applied
@@ -1616,6 +1616,8 @@ function findingsSetup() {
 						countFindingsSel = 0;
 						$('span', '.findings_sel').html(countFindingsSel);
 					}
+					// Redraw and Rebuild the table
+					oTable.fnDraw();
 					// Clear the Select All check box if clicked
 					if ( $(sChkbx)[0].checked )
 						$(sChkbx)[0].checked = false;
