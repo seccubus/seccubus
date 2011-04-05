@@ -10,6 +10,7 @@ use CGI;
 use lib "..";
 use SeccubusV2;
 use SeccubusWorkspaces;
+use HTML::Entities;
 
 my $query = CGI::new();
 
@@ -33,7 +34,7 @@ eval {
 	my $result = edit_workspace($workspaceName, $newWorkspaceName);
 
 	print "\t<result>OK</result>
-	<message>Workspace $workspaceName successfully changed to $newWorkspaceName</message>
+	<message>Workspace ". encode_entities($workspaceName) ." successfully changed to ". encode_entity($newWorkspaceName) ."</message>
 </seccubusAPI>";
 } or do {
 	print "\t<result>NOK</result>
