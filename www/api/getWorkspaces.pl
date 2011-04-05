@@ -12,6 +12,7 @@ use CGI;
 use lib "..";
 use SeccubusV2;
 use SeccubusWorkspaces;
+use HTML::Entities;
 
 my $query = CGI::new();
 my $count = 0;
@@ -29,7 +30,7 @@ eval {
 	foreach my $row ( @$workspaces ) {
 		print "\t\t\t<workspace>
 				<id>$$row[0]</id>
-				<name>$$row[1]</name>
+				<name>" . encode_entities($$row[1]) ."</name>
 		  		<lastrun>$$row[2]</lastrun>
 		  		<findings>$$row[3]</findings>
 		  		<scans>$$row[4]</scans>
