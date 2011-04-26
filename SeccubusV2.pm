@@ -67,3 +67,4 @@ sub get_config() {
 
 # Close the PM file.
 return 1;
+
