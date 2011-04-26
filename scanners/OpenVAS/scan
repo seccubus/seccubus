@@ -63,6 +63,8 @@ GetOptions(
 
 help() if $help;
 $verbose = 0 if $quiet;
+# Ticket #34 - Default port for OpenVAS scanning not set correctly
+$port = 9390 unless $port;
 
 my $config = get_config();
 
