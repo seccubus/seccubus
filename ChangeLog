@@ -12,4 +12,7 @@ Bug fixed:
 #34 - Default port for OpenVAS scanning not set correctly
 https://sourceforge.net/apps/trac/seccubus/ticket/34
 
+#30 - Document running scans
+https://sourceforge.net/apps/trac/seccubus/ticket/30
+
 15-03-2011 - 2.0.alpha1 - First internal alpha release
