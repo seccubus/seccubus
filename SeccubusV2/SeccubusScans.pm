@@ -272,7 +272,9 @@ sub run_scan($$;$$) {
 	my $verbose = shift;
 	my $print = shift;
 
-	my $tempfile = "/tmp/seccus.hosts.$$";
+	# Bug #37 - @HOSTS gets expanded to /tmp/seccus.hosts.PID in stead of 
+	# /tmp/seccubus.hosts.PID
+	my $tempfile = "/tmp/seccubus.hosts.$$";
 	if ( may_write($scan_id) ) {
 		my @scan = sql( "return"	=> "array",
 				"query"	=> "
