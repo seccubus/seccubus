@@ -152,19 +152,24 @@ foreach my $host ( @{$nessus->{Report}->{ReportHost}} ) {
 			} elsif ( $key eq 'plugin_publication_date' ) {
 			} elsif ( $key eq 'plugin_modification_date' ) {
 			} elsif ( $key eq 'plugin_version' ) {
+			} elsif ( $key eq 'plugin_type' ) {
 			} elsif ( $key eq 'vuln_publication_date' ) {
 			} else {
-				print Dumper($item);
-				print "\nUnknown attribute $key";
-				die "Unknown attribute $key";
+				#print Dumper($item);
+				#print "\nUnknown attribute $key";
+				#die "Unknown attribute $key";
 			}
 		}
 		$item->{port} = 'generic' if ( $item->{port} eq '0' ); 
 		$finding->{port} = "$item->{port}/$item->{protocol}";
 
 		my $txt = "";
+		# Bug #35 - ivil does not import title of Nessus finiding
+		if ( $item->{pluginName} ) {
+			$txt =  $item->{pluginName};
+		}
 		if ( $item->{synopsis} ) {
-			$txt =  $item->{synopsis};
+			$txt = join ( "\n", $txt, $item->{synopsis} );
 		}
 		if ( $item->{plugin_output} ) {
 			$txt = join ( "\n", $txt, "\nPlugin output:",  $item->{plugin_output} );
