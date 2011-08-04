@@ -132,7 +132,14 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose;
 
 print "Importing ivil\n" unless $quiet;
-load_ivil("$tempfile.ivil.xml");
+$cmd = "$load_ivil --workspace $workspace --scan $scan --scanner Nessus --timestamp $timestamp";
+$cmd .= " -v" if $verbose > 1;
+$cmd .= " $tempfile.ivil.xml";
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+
 
 print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
 # TODO: Add files to scan

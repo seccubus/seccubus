@@ -9,6 +9,8 @@ New features / Issues resolved
 Bugs fixed:
 #36 - Nessus scans don't seem to see targets
 https://sourceforge.net/apps/trac/seccubus/ticket/36
+#12 - Gone hosts not not detected correctly
+https://sourceforge.net/apps/trac/seccubus/ticket/12
 
 17-03-2011 - 2.0.alpha2 
 

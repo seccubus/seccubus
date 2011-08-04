@@ -402,6 +402,8 @@ parallel editing may interfere
 
 =item run_id - Run ID number of the latest scan
 
+=item verbose - Optional paarameter that sets the verbosity of the processing
+
 =back
 
 =item Returns

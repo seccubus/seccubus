@@ -72,17 +72,13 @@ if ( ! $infile || ! -e $infile ) {
 	help();
 };
 
-print "Reading in .nessus file" if $verbose;
+print "Reading in .nessus file\n" if $verbose;
 my $nessus = XMLin($infile,
 		   forceArray	=> [ 'ReportHost', 'ReportItem', 'see_also', 'xref', 'cve', 'bid' ],
 		   KeyAttr	=> undef,
 	          );
 
 # Lets clear some memory space
-#$nessus->{Policy}->{Preferences}->{ServerPreferences} = undef;
-#$nessus->{Policy}->{Preferences}->{PluginsPreferences} = undef;
-#$nessus->{Policy}->{FamilySelection} = undef;
-#$nessus->{Policy}->{IndividualPluginSelection} = undef;
 $nessus->{Policy} = undef;
 
 unless ( $outfile ) {

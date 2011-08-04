@@ -97,6 +97,7 @@ my $tempscan = "seccubus.$scan.$timestamp";
 my $tempfile = "/tmp/$tempscan.$$";
 my $nivil = "$config->{paths}->{scanners}\/Nessus\/nivil.rb";
 my $nessus2ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nessus2ivil";
+my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
 
 print "Attempting to find policy ID for policy $policy\n" if $verbose;
 my $cmd = "$nivil -u '$user' -p '$password' -s '$server' --show-policies";
@@ -139,7 +140,7 @@ my $status = "running";
 my $done;
 my $total;
 while ( $status eq "running" ) {
-	my $cmd = "$nivil -u '$user' -p '$password' -s '$server' --get-report $report_id ";
+	my $cmd = "$nivil -u '$user' -p '$password' -s '$server' --get-report $report_id -o '$tempfile'";
 	print "\nExecuing $cmd\n" if $verbose > 1;
 	$result = `$cmd 2>&1`;
 	print "$result\n" if $verbose > 1;
@@ -154,12 +155,6 @@ while ( $status eq "running" ) {
 	sleep(10) if $status eq "running";
 }
 
-print "Attempting to download report $report_id\n" unless $quiet;
-my $cmd = "$nivil -u '$user' -p '$password' -s '$server' -g '$report_id' -o '$tempfile'";
-print "Execuing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
-
 print "Converting $tempfile.nessus to $tempfile.ivil.xml\n" unless $quiet;
 $cmd = "$nessus2ivil --infile $tempfile.nessus";
 $cmd .= " -v" if $verbose > 1;
@@ -168,7 +163,12 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
 print "Importing ivil\n" unless $quiet;
-load_ivil("$tempfile.ivil.xml", "Nessus", "", $timestamp, $workspace, $scan);
+$cmd = "$load_ivil --workspace $workspace --scan $scan --scanner Nessus --timestamp $timestamp";
+$cmd .= " -v" if $verbose > 1;
+$cmd .= " $tempfile.ivil.xml";
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
 
 print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
 # TODO: Add files to scan
