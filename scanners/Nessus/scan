@@ -126,7 +126,6 @@ if ( -e $hosts_file ) {			# Assume its a host spect rather then a
 } else {
 	$cmd .= " -t '$hosts_file'";
 }
-$cmd .= " -v" if $verbose > 1;
 
 print "Execuing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;

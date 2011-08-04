@@ -3,6 +3,13 @@ Seccubus V2 Change Log
 Seccubus V2 is currently in Alpha phase. Even though we tested this code
 ourselves do not expect production ready code yet.
 
+xx-08-2011 - 2.0.alpha3
+New features / Issues resolved
+
+Bugs fixed:
+#36 - Nessus scans don't seem to see targets
+https://sourceforge.net/apps/trac/seccubus/ticket/36
+
 17-03-2011 - 2.0.alpha2 
 
 New features / Issues resolved

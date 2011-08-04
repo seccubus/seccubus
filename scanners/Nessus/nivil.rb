@@ -246,9 +246,23 @@ if match.nil?
     exit
 end
 
+tgts = ""
+
+if options[:file]
+	File.open("#{options[:file]}", "r") do |tgtf|
+		while (line = tgtf.gets)
+			tgts << line
+			tgts << ","
+		end
+	end
+	tgts.chop!
+else
+	tgts = options[:target]
+end
+
 #start scan
 uri = "scan/new"
-post_data = { "token" => @token, "policy_id" => options[:policy], "scan_name" => options[:name], "target" => options[:target] }
+post_data = { "token" => @token, "policy_id" => options[:policy], "scan_name" => options[:name], "target" => tgts }
 stuff = @n.connect(uri, post_data)
 docxml = REXML::Document.new(stuff)
 uuid=docxml.root.elements['contents'].elements['scan'].elements['uuid'].text
