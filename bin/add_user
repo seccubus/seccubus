@@ -65,7 +65,7 @@ Usage: add_user --username <name> --name <Real name> [--isadmin]
 Arguments:
 --username (-u)	- the username as provided to htpasswd or htdigest
 --name (-n)	- the real name of the user
---(no)isadm 	- makes the user a member of the administrators group 
+--(no)isadmin 	- makes the user a member of the administrators group 
 		  Option, default: --noisadmin
 --help		- Print this message
 		  Option
