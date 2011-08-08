@@ -307,6 +307,14 @@ sub run_scan($$;$$) {
 			if ( $param =~ /\$SCAN/ ) {
 				$param =~ s/\$SCAN/$scanname/g;
 			}
+			# Bug #42 - Scan parameters --workspace and --scan 
+			# should be added automatically
+			if ( $param !~ /(\-sc|\-\-scan)[\s=]/ ) {
+				$param = "--scan $scanname $param";
+			}
+			if ( $param !~ /(\-ws|\-\-workspace)[\s=]/ ) {
+				$param = "--workspace $workspace $param";
+			}
 			my $cmd = $config->{paths}->{scanners} . "/$scanner/scan $param";
 			if ( $verbose == -1 ) {
 				$cmd .= " -q";
