@@ -1,0 +1,33 @@
+.mxui_tree ul, .mxui_tree{
+	list-style: none;
+}
+li {
+	margin:0px;
+	pading: 0px;
+}
+li a {
+	background: url(t.png) no-repeat;
+	padding-left: 20px;
+	height: 18px;
+	font-size: 12px;
+	display: block;
+
+}
+
+ul {
+	background: url(v.png) repeat-y;
+	
+	padding-left: 20px;
+}
+.has-children>a:hover {
+	text-decoration: underline;
+}
+.has-children>a{
+	cursor: pointer;
+}
+.last-child>a{
+	background: url(e.png) no-repeat;
+}
+.last-child>ul, .root-node{
+	background: none;
+}

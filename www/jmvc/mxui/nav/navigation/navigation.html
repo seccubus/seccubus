@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>navigation</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+			li {position: relative; font-size:25px}
+
+			ul.menu li {
+				float: left;
+				padding: 0px 10px 10px 10px;
+				margin: 0px 15px 15px 15px;
+				curosr: pointer;
+			}
+			ul li a {
+				display: block;
+				color: blue;
+				text-decoration: none;
+				curosr: pointer;
+			}
+			li.hover a {
+	
+				color: blue;
+			}
+			li.hover {
+				color: black;
+			}
+			.ui-menu-0 li{
+				
+				font-size: 14px;
+			}
+			#os {
+				position: relative;
+			}
+			#s{
+				position: relative;
+			}
+			li a {
+				outline : none;
+			}
+			.selected {
+				color: #943030;
+			}
+			.deselected,  .deselected a{
+				color: #a0a0ee;
+			}
+			#nav {
+				/*height: 100px;*/
+			}
+			h1 {
+				font-size: 60px;
+				font-family: Lucida Sans Unicode,Lucida Grande,sans-serif;
+				margin: 0px;padding:0px 0px 1px 2px;
+			}
+
+			#main {
+				margin: 0px;
+			}
+        </style>
+	</head>
+	<body>
+	    <h1><img src='Logo-Color.png' /></h1>
+		<div id="nav">
+			
+			<ul id='main'>
+		    	
+				<li id="s">
+					<a href="open">Consulting</a>
+					<ul>
+				    	<li><a href="open">Clients</a></li>
+						<li><a href="open">How We Work</a></li>
+						<li><a href="open">People</a></li>
+				    </ul>
+				</li>
+				<li id="os">
+		    		<a href="/open">Open Source</a>
+					<ul>
+				    	<li><a href="open">JavaScriptMVC</a></li>
+						<li><a href="open">DamnIT</a></li>
+						<li><a href="open">F->IT</a></li>
+						<li><a href="open">Jabbify</a></li>
+						<li><a href="open">EmbeddedJS</a></li>
+				    </ul>
+				</li>
+				<li>
+					<a href="/open">Training</a>
+					<ul>
+				    	<li><a href="open">How We Work</a></li>
+						<li><a href="open">Resources</a></li>
+						<li><a href="open">Testamony</a></li>
+						<li><a href="open">Sign Up</a></li>
+				    </ul>
+				</li>
+				<li>
+					<a href="/open">Support</a>
+					<ul>
+				    	<li><a href="open">JavaScriptMVC</a></li>
+						<li><a href="open">jQuery</a></li>
+				    </ul>
+		    	</li>
+		    </ul>
+		</div>
+		<div style="clear: both"></div>
+		
+		<script type='text/javascript' 
+                src='../../steal/steal.js?steal[app]=mxui/navigation&steal[env]=development'
+                package='main.js'
+                compress='false'>   
+        </script>
+        <script type='text/javascript'>
+            $("#nav>ul").mixin( Mxui.Navigation  )
+        </script>
+	</body>
+</html>

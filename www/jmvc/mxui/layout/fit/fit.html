@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>fittable</title>
+        <style type='text/css'>
+            body { font-family: verdana; margin: 0px; padding: 0px;} 
+			.container, .container4 {
+				float:left;
+				width:20%;
+				margin-left:10px;
+				position:relative;
+				height:400px;
+				border:5px solid #CCCCCC;
+				overflow:auto;
+				padding: 5px;
+				margin: 10px;
+			}
+	
+			.bottomPadding {height: 400px;}
+			.fittable {
+				width:140px;background-color:#AAAAAA;
+				top: 0px; left: 0px;
+				border:1px solid blue;
+				position: absolute;
+			}
+			.topPadding3 {height:300px}
+			.bottomPadding3 {height: 100px;}
+			.container4 {
+				height: 250px;
+			}			
+			.topPadding4 {height:10px}
+			.bottomPadding4 {height: 150px;}	
+			p {
+				height: 60px;
+				margin: 0px;
+				padding: 0px;
+			}	
+			#fitter {
+				z-index: 99;
+				top: 415px;
+				left: 300px;
+			}	
+        </style>
+       <link type="text/css" href="../../../mxui/combobox/combobox.css" rel="stylesheet" />
+	</head>
+	<body>
+		<div id='fitter' class="fittable">Demo Fittable</div>
+		<div class="container">
+			<p>If the element can be positioned without scrolling below, draw it</p>
+			<div class="topPadding"></div>
+			<input id="target1" type="text" name="myname1" value="click here to fit"/>
+			<div id='fittable1' class="fittable">Demo Fittable</div>
+			<div class="bottomPadding"></div>
+		</div>
+		<div class="container">
+			<p>If the dropdown can be positioned with scrolling greater than 300 px, draw it </p>
+			<div class="topPadding"></div>
+			<input id="target2" type="text" name="myname2" value="click here to fit"/>
+			<div id='fittable2' class="fittable">Demo Fittable</div>
+			<div class="bottomPadding"></div>
+		</div>
+		<div class="container">
+			<p>If the space above is greater than the space below, draw it above</p>
+			<div class="topPadding3"></div>
+			<input id="target3" type="text" name="myname3" value="click here to fit"/>
+			<div id='fittable3' class="fittable">Demo Fittable</div>
+			<div class="bottomPadding3"></div>
+		</div>
+		<div class="container4">
+			<p>If the space above is less than the space below, draw it to fit in the space remaining</p>
+			<div class="topPadding4"></div>
+			<input id="target4" type="text" name="myname4" value="click here to fit"/>
+			<div id='fittable4' class="fittable">Demo Fittable</div>
+			<div class="bottomPadding4"></div>
+		</div>		
+        <script type='text/javascript' 
+                src='../../../steal/steal.js'>   
+        </script>
+        <script type='text/javascript'>
+            steal("mxui/layout/fit").then(function($){
+				
+				var items = function(n) {
+					var items = ["<ul>"];
+					for(var i=0;i<n;i++){
+						items.push("<li>item" + i + "</li>");
+					}
+					items.push("</ul>");
+					return items.join("");					
+				}
+			
+				$("#fittable1")//.css("opacity",1)
+				//	.css("position", "absolute")
+				.html( items(5));				
+				$("#target1").click(function(ev){
+					$("#fittable1").fit({
+						within:300,
+						of:$("#target1")
+					}).css("opacity",1);
+				});
+				
+				$("#fittable2")//.css("opacity",0)
+				.html( items(30));				
+				$("#target2").click(function(ev){
+					$("#fittable2").fit({
+						within:300,
+						of:$("#target2")
+					})
+				});
+				
+				$("#fittable3").html( items(30));				
+				$("#target3").click(function(ev){
+					$("#fittable3").fit({
+						within:300,
+						of:$("#target3")
+					});
+				});
+				
+				$("#fittable4").html( items(20));				
+				$("#target4").click(function(ev){
+					$("#fittable4").fit({
+						within:300,
+						of:$("#target4")
+					});
+				});								
+			});
+		</script>
+	</body>
+</html>

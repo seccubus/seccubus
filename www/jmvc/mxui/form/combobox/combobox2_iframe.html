@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <title>combobox</title>
+        <style type='text/css'>
+            body {font-family: verdana; margin: 0px; padding: 0px;}
+			h5 {
+				width:400px;
+			}
+			#combobox1 {
+				margin:0 0 10px 0;
+			}
+			#combobox2_container {
+				width:400px;
+				height:200px;
+				margin:0 0 10px 0;
+				padding:50px 0 0 0;
+				border:1px solid #cccccc;
+			}
+			#combobox3_container {
+				position:absolute;
+				top:20px;
+				left:450px;
+				width:400px;
+				height:200px;
+				padding:50px 0 0 0;
+				border:1px solid #cccccc;
+			}			
+        </style>    
+        <link type="text/css" href="combobox.css" rel="stylesheet" />
+    </head>
+    <body>
+    	<!-- Combobox positioning tests:
+ 			
+			 4. Combobox appended to document
+			 5. Combobox appended to <div> - <div> is not positioned
+			 6. Combobox appended to <div> - <div> is positioned (absolute) -->
+			 
+		<!-- 4. Combobox appended to document -->
+		<h5>4. Tests if dropdown opens in the correct position if the combobox is appended to the document.</h3>
+		<div id="combobox1_log"></div>
+        <input id="combobox1" type="text" name="name1" />
+		
+		<!-- 5. Combobox appended to <div> - <div> is not positioned -->
+		<div id="combobox2_container">
+			<h5>5. Tests if dropdown opens in the correct position if the combobox is appended to a non-positioned &lt;div&gt;.</h3>
+			<div id="combobox2_log"></div>
+        	<input id="combobox2" type="text" name="name2" />
+		</div>		
+		
+		<!-- 6. Combobox appended to <div> - <div> is positioned (absolute) -->
+		<div id="combobox3_container">
+			<h5>6. Tests if dropdown opens in the correct position if combobox is appended to positioned (absolute) &lt;div&gt;.</h3>
+			<div id="combobox3_log"></div>
+        	<input id="combobox3" type="text" name="name3" />
+		</div>		
+		
+		
+        <script type='text/javascript' 
+                src='../../steal/steal.js'>   
+        </script>
+        <script type='text/javascript'>
+            steal("mxui/form/combobox/select",
+			              "mxui/form/combobox/ajax",
+			              "jquery/dom/fixture").then(function($){
+            
+				/*
+				 * Utility functions.
+				 */
+				var createItems = function(n){
+					var data = [];
+					for (var i = 0; i < n; i++) {
+						data.push({
+							value: i,
+							text: "item" + i
+						})
+					}
+					data[0].selected = true;
+					return data;
+				}
+				 
+				/*
+				 *  1. Combobox appended to document
+				 */
+                $("#combobox1").mxui_form_combobox({
+                    	items: createItems(10)
+					})/*.click(function(){
+						$("#combobox1_log").append("click!&nbsp;")
+					});*/
+					
+					
+				/*
+				 *  2. Combobox appended to <div> - <div> is not positioned
+				 */					
+                $("#combobox2").mxui_form_combobox({
+                    	items: createItems(6)
+					})
+					
+				/*
+				 * 3. Combobox appended to <div> - <div> is positioned (absolute)
+				 */
+                $("#combobox3").mxui_form_combobox({
+                    	items: createItems(15)
+					})				
+					
+			
+			                    
+			});
+     		steal.start();            
+        </script>
+    </body>
+</html>

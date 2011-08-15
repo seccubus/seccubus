@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+	<title>Grid2</title>
+	<style type='text/css'>
+        body {font-family: verdana}
+        .error {border: solid 1px red;}
+        .error_text { color: red; font-size: 10px;}
+        td {padding: 3px;}
+
+		
+		.wrapper {
+			width: 500px;
+			height: 500px;
+			padding: 10px;
+			border: solid 1px red;
+			overflow: auto;
+			overflow:hidden;
+		}
+		.disabled {
+			color: gray;
+			text-decoration: none;
+		}
+
+    </style>
+	<link type="text/css" href="grid.css" rel="stylesheet" />
+	<link type="text/css" href="../../layout/resize/resize.css" rel="stylesheet" />
+</head>
+<body>
+	<h1>MXUI GRID</h1>
+	
+	<h2>Paginated Grid</h2>
+	<div id='wrapper' class='wrapper'>
+		<div id='grid'></div>
+		<p><a href='javascript://' id='prev'>previous</a>
+			<a href='javascript://' id='next'>next</a>
+		</p>
+	</div>
+	
+	<h2>Forever Scroll Grid</h2>
+	<div id='wrapforever' class='wrapper'>
+		<div id='forever'></div>
+	</div>
+	
+	
+	
+	
+	<script type='text/ejs' id='rowEjs'>
+		<td><%= name %></td>
+		<td><%= birthday %></td>
+		<td><%= foo %></td>
+	</script>
+	<script type='text/javascript' 
+            src='../../../steal/steal.js'>   
+    </script>
+	<script type='text/javascript'>
+		steal('jquery/dom/fixture', 
+			'mxui/data/grid',
+			'mxui/layout/resize').then(function(){
+		
+		//want this as simple as possible
+		//provide it titles and 
+		// table contents
+			var params = new Mxui.Data({limit : 30})
+			
+			$.Model('Thing',{
+				attributes : {birthday: "date"}
+			},{})
+			$.fixture.make('thing', 1000, function(i){
+				return {
+					id: i,
+					name : "thing "+i,
+					birthday : Math.round(new Date()*Math.random()),
+					foo : "bar"
+				}
+			})
+			
+			
+			
+			// we need to also provide the grid with data ...
+			$("#grid").mxui_data_grid({
+				model : Thing,
+				params : params,
+				columns: {
+					name: "Name",
+					birthday: "Birthday",
+					foo : "Thisisaverylongtitle"
+				},
+				row : "rowEjs"
+			})
+				
+			
+			$('#next').click(function(){
+				params.next();
+			});
+			
+			$('#prev').click(function(){
+				params.prev();
+			});
+			
+			$('.wrapper').mxui_layout_resize();
+			
+			params.bind("updated.attr", function(){
+				if(!this.canMoveNext()){
+					$('#next').addClass('disabled')
+				}else{
+					$('#next').removeClass('disabled')
+				}
+				if(!this.canMovePrev()){
+					$('#prev').addClass('disabled')
+				}else{
+					$('#prev').removeClass('disabled')
+				}
+			})
+			var paramsScroll = new Mxui.Data({limit : 30, offset: 0})
+			
+			// Forever Scroll
+			$("#forever").mxui_data_grid({
+				model : Thing,
+				params : paramsScroll,
+				columns: {
+					name: "Name",
+					birthday: "Birthday",
+					foo : "Thisisaverylongtitle"
+				},
+				row : "rowEjs",
+				offsetEmpties: false
+			})
+			
+			$("#forever .scrollBody").bind("scroll", function(){
+				if(this.clientHeight+this.scrollTop + 70 >= this.scrollHeight && !paramsScroll.updating){
+					
+					paramsScroll.attr('offset', paramsScroll.offset + 30)
+				}
+			})
+			
+		});
+	</script>
+</body>
+</html>

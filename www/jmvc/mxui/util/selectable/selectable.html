@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>selectable</title>
+        <style type='text/css'>
+            li{
+            	list-style:none;
+				width:50px;
+            }
+			.selected{
+				background-color: #DFB946;
+				border:1px solid black;
+			}
+			.activated{
+				background-color: red;
+				border:1px solid black;
+			}
+        </style>
+	</head>
+	<body>
+		<h1>Basic Selectable</h1>
+        <div id='menu'>
+            <li><span class="selectable" tabindex="0">one</span></li>
+            <li><span class="selectable" tabindex="0">two</span></li>
+            <li><span class="selectable" tabindex="0">three</span></li>
+        </div>
+		
+		<h1>Nested Selectable</h1>
+        <div id='nested_menu'>
+            <li><span class="selectable" tabindex="0">one</span>
+			    <ul>
+			    	<li><span class="selectable" tabindex="0">four</span></li>
+					<li><span class="selectable" tabindex="0">five</span></li>
+				</ul>
+			</li>
+            <li><span class="selectable" tabindex="0">two</span></li>
+            <li><span class="selectable" tabindex="0">three</span>
+			    <ul>
+			    	<li><span class="selectable" tabindex="0">six</span></li>
+			    </ul>
+			</li>
+        </div>
+	    <h1>Selectable in overflowed box</h1>
+		<div id="overflow_menu" style="width:320px;height: 100px;overflow:auto;border:1px solid #cccccc;">
+            <li><span class="selectable">one</span></li>
+            <li><span class="selectable">two</span></li>
+            <li><span class="selectable">three</span></li>
+            <li><span class="selectable">four</span></li>
+            <li><span class="selectable">five</span></li>
+            <li><span class="selectable">six</span></li>
+            <li><span class="selectable">seven</span></li>
+            <li><span class="selectable">eight</span></li>
+            <li><span class="selectable">nine</span></li>
+            <li><span class="selectable">ten</span></li>
+            <li><span class="selectable">eleven</span></li>
+            <li><span class="selectable">twelve</span></li>
+            <li><span class="selectable">thirteen</span></li>
+            <li><span class="selectable">fourteen</span></li>
+            <li><span class="selectable">fifteen</span></li>
+            <li><span class="selectable">sixteen</span></li>
+            <li><span class="selectable">seventeen</span></li>
+            <li><span class="selectable">eightenn</span></li>
+            <li><span class="selectable">nineteen</span></li>
+            <li><span class="selectable">twenty</span></li>
+            <li><span class="selectable">twentyone</span></li>
+            <li><span class="selectable">twentytwo</span></li>
+            <li><span class="selectable">twentythree</span></li>
+            <li><span class="selectable">twentyfour</span></li>
+            <li><span class="selectable">twentyfive</span></li>
+            <li><span class="selectable">twentysix</span></li>
+            <li><span class="selectable">twentyseven</span></li>
+            <li><span class="selectable">twentyeight</span></li>
+            <li><span class="selectable">twentynine</span></li>
+            <li><span class="selectable">thirty</span></li>
+            <li><span class="selectable">thirtyone</span></li>
+            <li><span class="selectable">thirtytwo</span></li>
+            <li><span class="selectable">thirtythree</span></li>
+            <li><span class="selectable">thirtyfour</span></li>
+            <li><span class="selectable">thirtyfive</span></li>
+            <li><span class="selectable">thirtysix</span></li>
+            <li><span class="selectable">thirtyseven</span></li>
+            <li><span class="selectable">thirtyeight</span></li>
+            <li><span class="selectable">thirtynine</span></li>
+            <li><span class="selectable">forty</span></li>
+            <li><span class="selectable">fortyone</span></li>
+            <li><span class="selectable">fortytwo</span></li>
+            <li><span class="selectable">fortythree</span></li>
+            <li><span class="selectable">fortyfour</span></li>
+            <li><span class="selectable">fortyfive</span></li>
+            <li><span class="selectable">fortysix</span></li>
+            <li><span class="selectable">fortyseven</span></li>
+            <li><span class="selectable">fortyeight</span></li>
+            <li><span class="selectable">fortynine</span></li>
+            <li><span class="selectable">fifty</span></li>
+            <li><span class="selectable">fiftyone</span></li>
+            <li><span class="selectable">fiftytwo</span></li>
+            <li><span class="selectable">fiftythree</span></li>
+            <li><span class="selectable">fiftyfour</span></li>
+            <li><span class="selectable">fiftyfive</span></li>
+            <li><span class="selectable">fiftysix</span></li>
+            <li><span class="selectable">fiftyseven</span></li>
+            <li><span class="selectable">fiftyeight</span></li>
+            <li><span class="selectable">fiftynine</span></li>
+            <li><span class="selectable">sixty</span></li>
+            <li><span class="selectable">sixtyone</span></li>
+            <li><span class="selectable">sixtytwo</span></li>
+            <li><span class="selectable">sixtythree</span></li>
+            <li><span class="selectable">sixtyfour</span></li>
+            <li><span class="selectable">sixtyfive</span></li>
+            <li><span class="selectable">sixtysix</span></li>
+            <li><span class="selectable">sixtyseven</span></li>
+            <li><span class="selectable">sixtyeight</span></li>
+            <li><span class="selectable">sixtynine</span></li>
+            <li><span class="selectable">seventy</span></li>
+            <li><span class="selectable">seventyone</span></li>
+            <li><span class="selectable">seventytwo</span></li>
+            <li><span class="selectable">seventythree</span></li>
+            <li><span class="selectable">seventyfour</span></li>
+            <li><span class="selectable">seventyfive</span></li>
+            <li><span class="selectable">seventysix</span></li>
+            <li><span class="selectable">seventyseven</span></li>
+            <li><span class="selectable">seventyeight</span></li>
+            <li><span class="selectable">seventynine</span></li>
+            <li><span class="selectable">eighty</span></li>
+		</div>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>   
+        </script>
+		<script type='text/javascript'>
+		steal('mxui/util/selectable').then(function(){
+			$(function(){
+				$('#menu, #nested_menu, #overflow_menu').mxui_util_selectable();
+				$('#overflow_menu .selectable').each(function(i, el){
+					$(el).attr("tabindex", "0");
+				});
+			});
+		})
+        </script>
+	</body>
+</html>

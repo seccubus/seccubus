@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <title>combobox</title>
+        <style type='text/css'>
+            body {font-family: verdana; margin: 0px; padding: 0px;}
+			h5 {
+				/*width:400px;*/
+			}
+			.padding10 {
+				height:10px;
+				width:1px;
+			}
+			.padding25 {
+				height:25px;
+				width:1px;
+			}
+			.padding100 {
+				height:100px;
+				width:1px;
+			}			
+			.combobox {
+				margin:0 0 10px 0;
+			}
+        </style>    
+        <link type="text/css" href="combobox.css" rel="stylesheet" />
+    </head>
+    <body>
+    	<h3>7. Combobox autocomplete tests</h3>
+    	<!-- 7. Combobox autocomplete tests:
+ 			 
+ 			 7a Tests that if item with lowercase text is searched by keying the first character capitalized, the item shows up in the filtered list.
+  			 7b Tests that if capitalized item is searched by keying item's character other than first, the item does not show on the filtered list. 
+			 7c Tests that if the item's text is more than one word, and if the second word's first character is typed, the item shows on the filtered list. -->
+
+		<!-- 7a Tests that if item with lowercase text is searched by keying the first character capitalized, the item shows up in the filtered list. -->
+		<h5>7a Tests that if item with lowercase text is searched by keying the first character capitalized, the item shows up in the filtered list.</h3>
+		<div id="combobox7a_log"></div>
+    	<input id="combobox7a" class="combobox" type="text" name="name6a" />		
+				
+        <script type='text/javascript' 
+                src='../../steal/steal.js'>   
+        </script>
+        <script type='text/javascript'>
+            steal("mxui/form/combobox/select",
+			              "mxui/form/combobox/ajax",
+			              "jquery/dom/fixture").then(function($){
+            
+				/*
+				 * Utility functions.
+				 */
+				var createItems = function(n){
+					var data = [];
+					for (var i = 0; i < n; i++) {
+						data.push({
+							value: i,
+							text: "item" + i + " text" + i
+						})
+					}
+					data[0].selected = true;
+					return data;
+				}	
+				
+				// maximize window so that autocomplete tests execute correctly.
+				function maximize() {
+				  window.moveTo(0, 0);
+				  window.resizeTo(screen.width, screen.height);
+				}
+				maximize();				
+					
+				/*
+				 *  7a Tests that if item with lowercase text is searched by keying the first character capitalized, 
+				 *  the item shows up in the filtered list. 
+				 */					
+                $("#combobox7a").mxui_form_combobox({
+                    	items: createItems(6)
+					});					
+			                    
+			});
+     		steal.start();            
+        </script>
+    </body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <title>combobox</title>
+        <style type='text/css'>
+            body {font-family: verdana; margin: 0px; padding: 0px;}
+			h5 {
+				margin:0;
+				padding:10px 0 0 0;
+				/*width:400px;*/
+			}
+			.padding25 {
+				height:25px;
+				width:1px;
+			}
+			.combobox {
+				margin:0 0 10px 0;
+			}
+        </style>    
+        <link type="text/css" href="combobox.css" rel="stylesheet" />
+    </head>
+    <body>
+    	<h3>8. Combobox api tests:</h3>
+    	<!-- 8. Combobox api tests:
+ 			 
+ 			 8a Tests that if a value is set using .val() api the combobox input shows the text corresponding to that value.
+			 8b Test that if we call .val() with no arguments the current item value is returned. 
+			 8c Tests that if a value is set using .selectItem() api the combobox input shows the text corresponding to that value.
+			 8d Tests that if .getItem() api is called on with a value passed to it the combobox it returns the corresponding item object.
+			 8e Tests that if .getItems() api is called on combobox all combobox items are returned. 
+			 8f Tests that if .query(text) api is called the items values whose text matches the passed parameter are returned.
+			 8g Tests that if .clearSelection() api is called combobox's current selection is cleared from input box and set to null.
+			 8h Tests that if .hideItem(value) api is called the item corresponding to the passed value is now hidden.
+			 8i Tests that if .showItem(value) api is called the item corresponding to the passed value is now visible.
+			 8j Tests that if .disable(value) api is called the item corresponding value can't be selected by clicking on it.
+			 8l Tests that if .enable(value) api is called the item corresponding value can be selected by clicking on it.	-->
+
+		<h5>8a Tests that if a value is set using .val() api the combobox input shows the text corresponding to that value.</h5>
+		<h5>8b Test that if we call .val() with no arguments the current item value is returned.</h5> 
+		<h5>8c Tests that if a value is set using .selectItem() api the combobox input shows the text corresponding to that value.</h5>
+		<h5>8d Tests that if .getItem() api is called on with a value passed to it the combobox it returns the corresponding item object.</h5>
+		<h5>8e Tests that if .getItems() api is called on combobox all combobox items are returned.</h5>
+		<h5>8f Tests that if .query(text) api is called the items values whose text matches the passed parameter are returned.</h5>
+		<h5>8g Tests that if .clearSelection() api is called combobox's current selection is cleared from input box and set to null.</h5>
+		<h5>8h Tests that if .hideItem(value) api is called the item corresponding to the passed value is now hidden.</h5>
+		<h5>8i Tests that if .showItem(value) api is called the item corresponding to the passed value is now visible.</h5>
+		<h5>8j Tests that if .disable(value) api is called the item corresponding value can't be selected by clicking on it.</h5>
+		<h5>8l Tests that if .enable(value) api is called the item corresponding value can be selected by clicking on it.</h5>
+		
+    	<input id="combobox8a" class="combobox" type="text" name="name8a" />
+		<div class="drivers">
+			<input id="fixture8a" type="text" name="fixture8a"/>
+			<button id="setVal" type="button">[set].val(value)</button>
+			<button id="getVal" type="button">[get].val()</button>
+			<button id="selectItem" type="button">.selectItem(value)</button>
+			<button id="getItem" type="button">.getItem(value)</button>
+			<button id="getItems" type="button">.getItems()</button>
+			<button id="query" type="button">.query(text)</button>
+			<button id="clearSelection" type="button">.clearSelection()</button>
+			<button id="hideItem" type="button">.hideItem(value)</button>
+			<button id="showItem" type="button">.showItem(value)</button>
+			<button id="disable" type="button">.disable(value)</button>
+			<button id="enable" type="button">.enable(value)</button>
+			<div id="combobox8a_log"></div>
+			<div id="combobox8b_log"></div>
+		</div>		
+				
+        <script type='text/javascript' 
+                src='../../steal/steal.js'>   
+        </script>
+        <script type='text/javascript'>
+            steal("mxui/form/combobox/select",
+			              "mxui/form/combobox/ajax",
+			              "jquery/dom/fixture").then(function($){
+            
+				/*
+				 * Utility functions.
+				 */
+				var createItems = function(n){
+					var data = [];
+					for (var i = 0; i < n; i++) {
+						data.push({
+							value: i,
+							text: "item" + i
+						})
+					}
+					data[0].selected = true;
+					return data;
+				}	
+				
+				// maximize window so that autocomplete tests execute correctly.
+				function maximize() {
+				  window.moveTo(0, 0);
+				  window.resizeTo(screen.width, screen.height);
+				}
+				maximize();				
+									
+                $("#combobox8a").mxui_form_combobox({
+                    	items: createItems(6)
+				});		
+				
+				// funcunit tests click these buttons to execute the api				
+				/*
+				 *  8a Tests that if a value is set using .val() api
+				 *  the combobox input shows the text corresponding to that value. 
+				 */	
+				$("#setVal").click( function(ev) {
+					var value = $("#fixture8a").val();
+					$("#combobox8a").controller().val( value );
+				});
+				
+				/*
+				 *  8b Test that if we call .val() with no arguments the current item value is returned.
+				 */				
+				$("#getVal").click( function(ev) {
+					var value = $("#combobox8a").controller().val();
+					$("#combobox8b_log").text(value);
+				});
+				
+				/*
+				 *  8c Tests that if a value is set using .selectItem() api 
+ 				 *  the combobox input shows the text corresponding to that value. 
+				 */				
+				$("#selectItem").click( function(ev) {
+					var value = $("#fixture8a").val();
+					$("#combobox8a").controller().selectItem( value );
+				});
+				
+				/*
+				 *  8d Tests that if .getItem() api is called on with a value passed to it 
+ 				 *  the combobox it returns the corresponding item object.
+				 */						
+				$("#getItem").click( function(ev) {
+					var value = $("#fixture8a").val();
+					var item = $("#combobox8a").controller().getItem( value );
+					$("#combobox8b_log").text(item.text);
+				});	
+				
+				/*
+				*  8e Tests that if .getItems() api is called on combobox all combobox items are returned. 
+				*/									
+				$("#getItems").click( function(ev) {
+					var result = [],
+						items = $("#combobox8a").controller().getItems();
+						
+					for (var i = 0; i < items.length; i++) {
+						result.push(items[i].text);
+					}
+					$("#combobox8b_log").text(result.join(","));
+				});	
+				
+				/*
+				 *  8f Tests that if .query(text) api is called 
+				 *  the items values whose text matches the passed parameter are returned. 
+				 */	
+				$("#query").click( function(ev) {
+					var result = [],
+						q = $("#fixture8a").val(), 
+						items = $("#combobox8a").controller().query(q);
+					for (var i = 0; i < items.length; i++) {
+						result.push(items[i]);
+					}
+					$("#combobox8b_log").text(result.join(","));
+				});		
+				
+				/*
+				 *  8g Tests that if .clearSelection() api is called 
+				 *  combobox's current selection is cleared from input box and set to null. 
+				 */	
+				$("#clearSelection").click( function(ev) { 
+					var value = $("#fixture8a").val();
+					
+					$("#combobox8a").controller().clearSelection();
+					
+					// get current value
+					var value = $("#combobox8a").controller().val(),
+						result = value ? "NOT_NULL" : "NULL";
+					
+					$("#combobox8b_log").text(result);
+				});
+				
+				/*
+ 				 * 8h Tests that if .hideItem(value) api is called 
+ 				 * the item corresponding to the passed value is now hidden.
+ 				 */	
+				$("#hideItem").click( function(ev) {
+					var value = $("#fixture8a").val(); 
+					$("#combobox8a").controller().hideItem(value);
+					$("#combobox8b_log").text("item hidden");
+				});			
+				
+				/*
+  		    	 *  8i Tests that if .showItem(value) api is called 
+ 			     *  the item corresponding to the passed value is now visible.
+ 				 */
+				$("#showItem").click( function(ev) {
+					var value = $("#fixture8a").val(); 
+					$("#combobox8a").controller().showItem(value);
+				});							
+				
+				/*
+				*  8j Tests that if .disable(value) api is called 
+				*  the item corresponding value can't be selected by clicking on it.
+				*/				
+				$("#disable").click( function(ev) {
+					var value = $("#fixture8a").val();
+					$("#combobox8a").controller().disable( value );
+				});
+				
+				/*
+				* 8l Tests that if .enable(value) api is called 
+				* the item corresponding value can be selected by clicking on it.
+				*/				
+				$("#enable").click( function(ev) {
+					var value = $("#fixture8a").val();
+					$("#combobox8a").controller().enable( value );
+				});												
+				 				 						 								
+				
+				// log changes
+				$("#combobox8a").bind("change", function(ev, value){
+					$("#combobox8a_log").text(value);
+				});			
+			                    
+			});
+     		steal.start();            
+        </script>
+    </body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>toolbar</title>
+        
+		<link type="text/css" href="../../smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+		<style>
+			.ui-menu {
+				margin: 0px; padding: 0px;
+				list-style-image:none;
+				list-style-position:outside;
+				list-style-type:none;
+			}
+			.ui-menu-item {
+				padding:0.5em 1em;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+        <div id="toolbar" class=''>
+            
+        
+            <ul class="">
+                <li class=""><a href="">Button w/ Menu</a>
+                    <ul>
+                        <li>Menu 1
+							<ul>
+								<li>Sub-menu 1</li>
+								<li>Sub-menu 2</li>
+								<li>Sub-menu 3</li>
+							</ul>
+						
+						</li>
+						<li>Menu 2
+							<ul>
+								<li>Sub-menu 1</li>
+								<li>Sub-menu 2</li>
+								<li>Sub-menu 3</li>
+							</ul>
+						</li>
+						<li>Menu 3
+							<ul>
+								<li>Sub-menu 1</li>
+								<li>Sub-menu 2</li>
+								<li>Sub-menu 3</li>
+							</ul>
+						</li>
+                    </ul>
+                </li>
+                <li class=""><a href="">Users</a>
+                        <div class='ui-menu'>
+                            here is something to show
+                        </div>
+                </li>
+                <li class=""><a href="">Next</a>
+				<ul>
+                        <li>Menu A
+							<ul>
+								<li>Sub-menu 1</li>
+								<li>Sub-menu 2</li>
+								<li>Sub-menu 3</li>
+							</ul>
+						
+						</li>
+						<li>Menu B</li>
+						<li>Menu C</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js?steal[app]=mxui/nav/toolbar'>   
+        </script>
+        <script type='text/javascript'>
+            var J = Mxui;
+			
+			//J.Toolbar( J.Menu(J.Positionable)  ).extend("My.Toolbar")
+			
+			$("#toolbar>ul").mxui_ui_toolbar();  
+        </script>
+	</body>
+</html>

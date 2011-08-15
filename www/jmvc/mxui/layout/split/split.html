@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>splitter</title>
+		<link type="text/css" href="../resize/resize.css" rel="stylesheet" />
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+			.container {
+				border: solid 1px;
+				width: 350px;
+				height: 400px;
+				margin: 10px;
+				position:relative;
+			}
+			#container, #container2, #container_min_width{width:600px;}
+			.panel {
+				background-color: #ddddee;
+			}
+			h3
+			{
+				border-bottom:solid 1px #CCC;
+			}
+			
+			.min-wide {
+				min-width: 200px;
+			}
+			.min {
+				min-width: 100px;
+			}
+			.splitter {z-index: 1001}
+			
+			#container.mxui_layout_split .vsplitter {
+				width: 10px;
+			}
+        </style>
+	</head>
+	<body>
+	    <div style='display:none' id='buttons' class='buttons'>
+	    	<a href='javascript://' class="add">Add Panel</a>
+			<a href='javascript://' class="remove">Remove Last Panel</a>
+			<a href='javascript://' class="resize">Resize Parent</a>
+			<a href='javascript://' class="hide">Hide Last</a>
+	    </div>
+		<h1>Splitter</h1>
+
+		<h3>Vertical: Floating</h3>
+		<p>$(&quot;#container&quot;).mxui_layout_split({ direction: &quot;vertical&quot; });</p>
+		<div id='container' class="container vertical-splitter">
+	    	<div class='panel' style="float:left;width:200px;">
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	    	</div>
+			<div class='panel' style="float:left;width:200px;">			
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	    	</div>
+			<div class='panel collapsible' style="float:left;width:200px;">			
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	    	</div>
+	    </div>
+		
+		
+		
+		
+		<h3>Vertical: Absolute</h3>
+		<p>$(&quot;#container2&quot;).mxui_layout_split({ direction: &quot;vertical&quot; });</p>
+		<div id='container2' class="container vertical-splitter">
+	    	<div class='panel' style="width:200px;position:absolute;left:0;">
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	    	</div>
+			<div class='panel' style="width:200px;position:absolute;left:200px;">			
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	    	</div>
+			<div class='panel collapsible' style="width:200px;position:absolute;left:400px;">			
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	    	</div>
+	    </div>
+		
+		
+		<h3>Vertical: Absolute Min Width</h3>
+		<p>$(&quot;#container2&quot;).mxui_layout_split({ direction: &quot;vertical&quot; });</p>
+		<div id='container_min_width' class="container vertical-splitter">
+	    	<div class='panel min' style="width:200px; position:absolute;left:0;">
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	    	</div>
+			<div class='panel min-wide' style="width:200px;position:absolute;left:200px;">			
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	    	</div>
+			<div class='panel' style="width:200px;position:absolute;left:400px;">			
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	    	</div>
+	    </div>
+		
+	
+		
+		<h3>Horizontal</h3>
+		<p>$(&quot;#container3&quot;).mxui_layout_split({ direction: &quot;horizontal&quot; });</p>
+		<div id='container3' class="container horizontal-splitter">
+	    	<div class='panel' style="width:100%;height:200px;">
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	    	</div>
+			<div class='panel collapsible' style="width:100%;height:200px;">			
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	    	</div>
+	    </div>
+		
+		
+		
+		<h3>Horizontal And Vertical</h3>
+		<p>
+			$(&quot;#container4&quot;).mxui_layout_split({ direction: &quot;vertical&quot; });</br>
+			$(&quot;#container4inside&quot;).mj_ui_split({ direction: &quot;horizontal&quot; });
+		</p>
+		<div id='container4' class="container vertical-splitter">
+	    	<div class='panel' style="float:left;width:200px;">
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	    	</div>
+			<div class='panel horizontal-splitter' id="container4inside" style="float:left;width:200px;">
+				<div class="panel">
+						Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, 
+				</div>		
+				<div class="panel">	
+			consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	        	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+	    	</div>	
+			</div>
+	    </div>
+					
+        <script type='text/javascript' src='../../../steal/steal.js'></script>
+		<script type='text/javascript'>
+			steal('mxui/layout/split','mxui/layout/resize').then(function(){
+				var addButtons = function(){
+					$(this).after( $('#buttons').clone().removeAttr('id').show() );
+				}
+				
+				$('.vertical-splitter').mxui_layout_split({ direction: "vertical", panelClass: "panel" })
+					.each(addButtons).mxui_layout_resize();
+				
+				
+				$('.horizontal-splitter').mxui_layout_split({ direction: "horizontal", panelClass: "panel" })
+					.each(addButtons)
+				
+				$('#container3').mxui_layout_resize()
+				
+				$(document.body).delegate("a","click", function(ev){
+					var action = this.className,
+						container = $(this).parent().prev();
+					
+					switch(action){
+						case "add" : 
+							$("<div class='panel add' style='width:150px;float:left;'>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</div>")
+								.appendTo(container).trigger("insert");
+							break;
+						case "remove" : 
+							container.find('.panel:last').trigger('remove');
+							break;
+						case "resize" : 
+							var grow = container.height() !== 600;
+						
+							if(grow){
+								container.height(600).width(500).trigger("resize");
+							}else{
+								container.height(400).width(300).trigger("resize");
+							}
+							break;
+						case "hide" : 
+							hidething($(ev.target), container);
+							break;
+					}
+				})
+				
+				
+				
+				function hidething(elm, container)
+				{
+					if(elm.text() == "Hide Last"){
+						elm.text('Show Last');
+						container.mxui_layout_split('hidePanel', container.find('.panel:last'));
+						
+					} else {
+						elm.text('Hide Last');
+						container.mxui_layout_split('showPanel', container.find('.panel:last'));
+					}
+				}
+				
+			
+			});
+		</script>
+	</body>
+</html>

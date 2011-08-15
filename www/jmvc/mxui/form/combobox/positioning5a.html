@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <title>combobox</title>
+        <style type='text/css'>
+            body {font-family: verdana; margin: 0px; padding: 0px;}
+			h5 {
+				/*width:400px;*/
+			}
+			.padding10 {
+				height:10px;
+				width:1px;
+			}
+			.padding25 {
+				height:25px;
+				width:1px;
+			}			
+			.combobox {
+				margin:0 0 10px 0;
+			}
+			#container {
+				position:absolute;
+				top:150px;
+				left:150px;
+			}
+        </style>    
+        <link type="text/css" href="combobox.css" rel="stylesheet" />
+    </head>
+    <body>
+    	<h3>5. Combobox positioning tests - Combobox appended to positioned element</h3>
+    	<!-- 5. Combobox positioning tests - Combobox appended to positioned element:
+ 			 
+			 5a Tests that if the element can be positioned without scrolling below target, the dropdown opens bellow the target with full height.
+			 5b Tests that if the element can be positioned with scrolling greater than min height, the dropdown opens bellow with height equal the space available.
+			 5c Tests if the space above is greater than the space below and  dropdown fits in space above, the dropdown opens above with full height.
+			 5d Tests if the space above is greater than the space below and  dropdown doesnt fit in space above, the dropdown opens to fit space avaialble above. 
+			 5e Tests if the space above is less than the space below and the dropdown doesnt fit the space available the dropdown opens bellow to fit the space avaialble. -->
+		
+		<!-- 5a Tests that if the element can be positioned without scrolling below target, the dropdown opens bellow the target with full height. --> 
+		<h5>5a Tests that if the element can be positioned without scrolling below target, the dropdown opens bellow the target with full height.</h3>
+		<div id="combobox5a_log"></div>
+		<div id="container">
+    		<input id="combobox5a" class="combobox" type="text" name="name5a" />
+		</div>
+			
+        <script type='text/javascript' 
+                src='../../steal/steal.js'>   
+        </script>
+        <script type='text/javascript'>
+            steal("mxui/form/combobox/select",
+			              "mxui/form/combobox/ajax",
+			              "jquery/dom/fixture").then(function($){
+            
+				/*
+				 * Utility functions.
+				 */
+				var createItems = function(n){
+					var data = [];
+					for (var i = 0; i < n; i++) {
+						data.push({
+							value: i,
+							text: "item" + i
+						})
+					}
+					data[0].selected = true;
+					return data;
+				}	
+				
+				// maximize window so that positioning tests execute correctly.
+				function maximize() {
+				  window.moveTo(0, 0);
+				  //window.resizeTo(screen.width, screen.height);
+				  window.resizeTo("1366", "768");
+				}
+				maximize();											
+					
+				/*
+				 *  4a Tests that if the element can be positioned without scrolling below target, the dropdown opens bellow the target with full height.
+				 */					
+                $("#combobox5a").mxui_form_combobox({
+                    	items: createItems(6)
+					});	
+			                    
+			});
+     		steal.start();            
+        </script>
+    </body>
+</html>

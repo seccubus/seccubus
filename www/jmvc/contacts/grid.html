@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+	<title>Jupiter.Grid</title>
+	<style type='text/css'>
+        body {font-family: verdana}
+        .error {border: solid 1px red;}
+        .error_text { color: red; font-size: 10px;}
+        td {padding: 3px;}
+
+		body {
+			padding: 0px;
+			margin: 0px;
+		}
+		.wrapper {
+			width: 800px;
+			height: 400px;
+			padding: 10px;
+			border: solid 1px black;
+			overflow: auto;
+		}
+		.disabled {
+			color: gray;
+			text-decoration: none;
+		}
+    </style>
+</head>
+<body>
+	<div id='grid'></div>
+	
+	
+	<script type='text/ejs' id='formEJS'>
+		<tr><td colspan=4><form>
+			Title: <input type='text' name='assetTitle' />
+			Type: <input type='text' name='type' />
+		</form></td></tr>
+	</script>
+	<script type='text/ejs' id='rowEjs'>
+		<td><%= id %></td>
+		<td><%= assetTitle %></td>
+		<td><%= assetCollectionTitle %></td>
+		<td><%= type %></td>
+	</script>
+	<script type='text/javascript' 
+            src='steal/steal.js'>   
+    </script>
+	<script type='text/javascript'>
+		steal.plugins('jquery/dom/fixture', 'jupiter/grid').then(function(){
+		
+			var params = new Mxui.Data({limit : 30})
+			
+			$.Model('Asset')
+			$.fixture.make('asset', 1000, function(i){
+				var names = ["monkey", "cheeta", "bear", "dog", "cat", "hippo", "pony"],
+					types = ["audio", "video", "image", "flash"];
+				return {
+					id: 12345678+i,
+					type: types[i%4],
+					assetCollectionTitle : "Baby Panda "+i,
+					assetTitle: "Baby "+names[i%7]+" "+i
+				}
+			})
+			
+			$("#grid").jupiter_grid({
+				model : Asset,
+				params : params,
+				columns: {
+					id: "Geyser Id",
+					assetTitle: "Available Assets",
+					assetCollectionTitle: "Collection",
+					type: "Media Type"
+				},
+				row : "rowEjs",
+				create: "formEJS"
+			})
+		}).start();
+	</script>
+</body>
+</html>

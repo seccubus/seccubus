@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>fittable</title>
+        <style type='text/css'>
+            body { font-family: verdana;}
+			.container {float:left;width:23%;margin-left:10px;}
+			.padding {height:200px;} 
+			.padding2 {height:130px;}
+			.fittable {width:140px;background-color:#AAAAAA;border:1px solid blue;}			
+        </style>
+       <link type="text/css" href="../../mxui/combobox/combobox.css" rel="stylesheet" />
+	</head>
+	<body>
+		<h3>Window as the scrollable container</h3>
+		
+		<div class="container">
+			<p>If the element can be positioned without scrolling below, draw it</p>
+			<input id="target1" type="text" name="myname1" value="click here to fit"/>
+			<div id='fittable1' class="fittable">Demo Fittable</div>
+		</div>
+~
+		<div class="container">
+			<p>If the dropdown can be positioned with scrolling greater than 300 px, draw it </p>
+			<input id="target2" type="text" name="myname2" value="click here to fit"/>
+			<div id='fittable2' class="fittable">Demo Fittable</div>
+		</div>
+
+		<div class="container">
+			<p>If the space above is greater than the space below, draw it above</p>
+			<div class="padding"></div>
+			<input id="target3" type="text" name="myname3" value="click here to fit"/>
+			<div id='fittable3' class="fittable">Demo Fittable</div>
+		</div>
+
+		<div class="container">
+			<p>If the space above is less than the space below, draw it to fit in the space remaining</p>
+			<div class="padding2"></div>
+			<input id="target4" type="text" name="myname4" value="click here to fit"/>
+			<div id='fittable4' class="fittable">Demo Fittable</div>
+		</div>
+
+		
+        <script type='text/javascript' 
+                src='../../steal/steal.js'>   
+        </script>
+        <script type='text/javascript'>
+            steal("mxui/fittable").then(function($){
+				
+				var items = function(n) {
+					var items = ["<ul>"];
+					for(var i=0;i<n;i++){
+						items.push("<li>item" + i + "</li>");
+					}
+					items.push("</ul>");
+					return items.join("");					
+				}
+			
+				$("#fittable1").css("opacity",0).html( items(5));				
+				$("#target1").click(function(ev){
+					$("#fittable1").fit({
+						within:300,
+						of:$("#target1")
+					}).css("opacity",1);
+				});
+				
+				$("#fittable2").css("opacity",0).html( items(60));				
+				$("#target2").click(function(ev){
+					$("#fittable2").fit({
+						within:300,
+						of:$("#target2")
+					}).css("opacity",1);
+				});
+				
+				$("#fittable3").css("opacity",0).html( items(30));				
+				$("#target3").click(function(ev){
+					$("#fittable3").fit({
+						within:300,
+						of:$("#target3")
+					}).css("opacity",1);
+				});
+				
+				$("#fittable4").css("opacity",0).html( items(20));				
+				$("#target4").click(function(ev){
+					$("#fittable4").fit({
+						within:300,
+						of:$("#target4")
+					}).css("opacity",1);
+				});								
+			});
+		</script>
+	</body>
+</html>

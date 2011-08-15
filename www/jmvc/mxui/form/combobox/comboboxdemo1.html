@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <title>combobox</title>
+        <style type='text/css'>
+            body {font-family: verdana; margin: 0px; padding: 0px; height: 200px;}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+			.color1 { background-color: #334433; padding-left: 10px; margin: 1px; }
+			.color2 { background-color: #3366aa; padding-left: 10px; margin: 1px; }
+			.color3 { background-color: #6699aa; padding-left: 10px; margin: 1px; }
+			.color4 { background-color: #aabbbb; padding-left: 10px; margin: 1px; }
+			.color5 { background-color: #778877; padding-left: 10px; margin: 1px; }
+			.text { margin-left: 5px; }
+			.item-match {
+				font-weight: bold;
+			}
+			#selectable {
+				overflow: auto;
+				height: 100px;
+				width: 200px;
+			}
+			.selectable {
+				display: block;
+				width: 100%;
+				margin:0;
+				padding: 3px 0;
+				border-bottom: 1px solid #cccccc;
+			    cursor: pointer;
+			}
+			.selected {
+				background-color: orange;
+			}
+        </style>    
+        <link type="text/css" href="combobox.css" rel="stylesheet" />
+		<!--<link type="text/css" href="StyleResourceHandler.css" rel="stylesheet" /> -->
+    </head>
+    <body>
+	
+		<div id="demo-html">
+	        <input id="combobox_demo" type="text" name="myname" />
+		</div>
+	
+	    <!--<input id="combobox_demo" type="text" name="myname" />-->
+	
+        <script type='text/javascript' 
+                src='../../steal/steal.js'>   
+        </script>
+        <script type='text/javascript'>
+            steal("mxui/form/combobox/select", "mxui/form/combobox/ajax", "jquery/dom/fixture").then(function($){
+
+				$(function(){
+					$("input#combobox_demo").mxui_form_combobox({
+                    items: [{ value: "1", text: "hola", enabled: "true", selected: true,
+                                children: [  { value: "5", text: "chicago", enabled: "true", children: [] },
+                                              { value: "6", text: "kansas", enabled: "true", 
+                                              children: [ { value: "7", text: "losangeles", enabled: "true", children: [] } ] } ] },
+                            { value: "2", text: "mundo", enabled: "true", children: [] },
+                            { value: "3", text: "nuevo", enabled: "true", 
+                                children: [ { value: "8", text: "sanfrancisco", enabled: "true", children: [] } ] },
+                            { value: "4", text: "viva", enabled: "true", children: [] }] });                                            
+ 					});	
+				})
+			
+            steal.start();
+            
+        </script>
+    </body>
+</html>

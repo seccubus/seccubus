@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <title>combobox</title>
+        <style type='text/css'>
+            body {font-family: verdana; margin: 0px; padding: 0px;}
+			h5 {
+				margin:0;
+				padding:10px 0 0 0;
+				/*width:400px;*/
+			}
+			.padding25 {
+				height:25px;
+				width:1px;
+			}
+			.combobox {
+				margin:0 0 10px 0;
+			}
+        </style>    
+        <link type="text/css" href="combobox.css" rel="stylesheet" />
+    </head>
+    <body>
+    	<h3>8. Combobox api tests:</h3>
+    	<!-- 8. Combobox api tests:
+ 			 
+ 			 8k Tests that if enableNoSelection(value) is called with a value != null and the combobox has showNoSelection option == true
+ 			 then a "No Selection" item can be clicked by the user making the input box empty.
+			 
+			 8m Tests that if enableNoSelection(value) is called with a value != null and the combobox has showNoSelection option == true
+ 			 then a "No Selection" item can be clicked by the user making the input box empty.	-->
+
+		<h5>8k Tests that if enableNoSelection(value) is called with a value != null and the combobox has showNoSelection option == true
+			then a "No Selection" item can be clicked by the user making the input box empty.</h5>
+		<h5>8m Tests that if enableNoSelection(value) is called with a value != null and the combobox has showNoSelection option == true
+			then the "No Selection" item can be clicked by the user making the input box empty.</h5>
+		
+    	<input id="combobox8k" class="combobox" type="text" name="name8k" />
+		<div class="drivers">
+			<input id="fixture8k" type="text" name="fixture8k"/>
+			<button id="disableNoSelection" type="button">disable "No Selection"</button>
+			<button id="enableNoSelection" type="button">enable "No Selection"</button>
+			<div id="combobox8k_log"></div>
+		</div>		
+				
+        <script type='text/javascript' 
+                src='../../steal/steal.js'>   
+        </script>
+        <script type='text/javascript'>
+            steal("mxui/form/combobox/select",
+			              "mxui/form/combobox/ajax",
+			              "jquery/dom/fixture").then(function($){
+            
+				/*
+				 * Utility functions.
+				 */
+				var createItems = function(n){
+					var data = [];
+					for (var i = 0; i < n; i++) {
+						data.push({
+							value: i,
+							text: "item" + i
+						})
+					}
+					data[0].selected = true;
+					return data;
+				}	
+				
+				// maximize window so that autocomplete tests execute correctly.
+				function maximize() {
+				  window.moveTo(0, 0);
+				  window.resizeTo(screen.width, screen.height);
+				}
+				maximize();				
+									
+                $("#combobox8k").mxui_form_combobox({
+                    	items: createItems(6),
+						showNoSelectionOption: true
+				});		
+				
+				// funcunit tests click these buttons to execute the api			
+				/*	
+ 			     *  8k Tests that if enableNoSelection(value) is called with a value != null and the combobox has showNoSelection option == true
+ 				 *  then a "No Selection" item can be clicked by the user making the input box empty.
+ 				 */	
+				$("#disableNoSelection").click( function(ev) {
+					$("#combobox8k").controller().enableNoSelection(null);
+				});															 					
+				
+				/*
+				 * 8m Tests that if enableNoSelection(value) is called with a value != null and the combobox has showNoSelection option == true
+ 			     * then a "No Selection" item can be clicked by the user making the input box empty.
+				 */					 						
+				$("#enableNoSelection").click( function(ev) {
+					$("#combobox8k").controller().enableNoSelection(1);
+				});															 		
+				
+				// log changes
+				$("#combobox8k").bind("change", function(ev, value){
+					$("#combobox8k_log").text(value);
+				});			
+			                    
+			});
+     		steal.start();            
+        </script>
+    </body>
+</html>

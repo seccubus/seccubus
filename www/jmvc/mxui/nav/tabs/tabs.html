@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>tabs</title>
+		<link type="text/css" href="../../smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+			.tabarea {
+				border: solid 1px;
+			}
+			.tabarea li{
+				float: left;
+				padding: 10px;
+				list-style: none;
+				border: solid 1px green;
+				background-color: black;
+				color: white;
+			}
+			.tabarea ul {
+				height: 40px;
+				border-bottom: solid 1px gray;
+				padding: 0px;
+				margin: 0px;
+			}
+			.tabarea .active {
+				background-color: white;
+				color: black;
+			}
+			.tabarea li.selected {
+				color: red;
+			}
+        </style>
+	</head>
+	<body>
+		<h1>Tabs</h1>
+		<h2>Mxui.Tabable</h2>
+		<div class='tabarea'>
+		    <ul id="tabable">
+		        <li><a href="#fragment-1"><span>One</span></a></li>
+		        <li><a href="#fragment-2"><span>Two</span></a></li>
+		        <li><a href="#fragment-3"><span>Three</span></a></li>
+		    </ul>
+		    <div id="fragment-1">
+		        <p>First tab is active by default:</p>
+		        <pre><code>$('#example').tabs();</code></pre>
+		    </div>
+		    <div id="fragment-2">
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		    </div>
+		    <div id="fragment-3">
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		    </div>
+		</div>
+
+		<div class='tabarea'>
+		    <div>
+				<ul id="tabs">
+			        <li tabindex='1'><a><span>One</span></a></li>
+			        <li tabindex='2' class='selected active'><a><span>Two</span></a></li>
+			        <li tabindex='3'><a><span>Three</span></a></li>
+			    </ul>
+			</div>
+		    <div>
+		        <p>First tab is active by default:</p>
+		        <pre><code>$('#example').tabs();</code></pre>
+		    </div>
+		    <div>
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		    </div>
+		    <div>
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		    </div>
+		</div>
+
+		<div>
+		    <ul id="uitabs">
+		        <li><a href="javascript://"><span>One</span></a></li>
+		        <li><a href="javascript://"><span>Two</span></a></li>
+		        <li><a href="javascript://"><span>Three</span></a></li>
+		    </ul>
+			
+		    <div>
+		        <p>First tab is active by default:</p>
+		        <pre><code>$('#example').tabs();</code></pre>
+		    </div>
+		    <div>
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		    </div>
+		    <div>
+		        <div>
+                    <ul id='uitabs2'>
+    		            <li><a href="javascript://">Alpha</a></li>
+                        <li><a href="javascript://">Beta</a></li>
+                        <li><a href="javascript://">Gamma</a></li>
+    		        </ul>
+                    <div>Content Alpha</div>
+                    <div>Content Beta</div>
+                    <div>Content Gamma</div>
+                </div>
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+		    </div>
+		</div>	
+		
+		<script type='text/javascript' src='../../../steal/steal.js?mxui/nav/tabs'></script>
+		<script type='text/javascript'>
+
+			$("#tabable").mxui_nav_tabable().find("li").click(function(ev){
+				ev.preventDefault();
+				ev.stopPropagation();
+				$(this).trigger("activate")
+			}).focus(function(ev){
+				ev.stopPropagation();
+				$(this).trigger("select")
+			}).keypress(function(ev){
+				if(ev.keyCode == 13)
+					$(this).trigger("active")
+			});
+			$("#tabs").mxui_nav_tabs()
+			$("#uitabs, #uitabs2").mxui_ui_tabs()
+
+		</script>
+	</body>
+</html>

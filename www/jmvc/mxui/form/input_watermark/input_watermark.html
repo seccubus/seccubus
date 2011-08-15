@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>MXUI.Form.InputWatermark Demo</title>
+        <style type='text/css'>
+            body { font-family: verdana; margin: 0px; padding: 0px;} 
+        </style>
+	</head>
+	<body>
+
+		<h1>MXUI.Form.InputWatermark Demo</h1>
+		<input type="text" id="foo" />
+		<p>$('#foo').mxui_form_input_watermark({ defaultText:&quot;BAM!&quot; });</p>
+
+        <script type='text/javascript' src='../../../steal/steal.js'></script>
+        <script type='text/javascript'>
+            steal("mxui/form/input_watermark").then(function($){
+				$('#foo').mxui_form_input_watermark({ defaultText:"BAM!" });
+			});
+		</script>
+	</body>
+</html>

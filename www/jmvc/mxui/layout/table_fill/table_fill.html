@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>scrollable_table</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+			tbody tr:nth-child(2n+1) {
+				background-color: #ddeeff
+			}
+			
+			#container {
+				width: 600px;
+				height: 600px;
+				padding: 10px;
+				border: solid 1px red;
+				overflow: auto;
+			}
+			#container p {
+				margin: 0px;  padding: 2px;
+			}
+			#table {
+				
+			}
+        </style>
+		<link type="text/css" href="../resize/resize.css" rel="stylesheet" />
+	</head>
+	<body>
+		<a href="javascript://" id='scrollable'>Make Scrollable</a>
+	    <a href="javascript://" id='resize'>Resize</a>
+		<div id='container'>
+	    	<p>I can't see the columns when I scroll down :(.</p>
+			<table id='table'>
+	    		<thead>
+	    			<tr></tr>
+	    		</thead>
+				<tbody>
+				</tbody>
+				<tfoot>
+					<tr>
+	    			</tr>
+				</tfoot>
+	    	</table>
+	    </div>
+		
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>   
+        </script>
+		<script type='text/javascript'>
+			steal('mxui/layout/table_fill','mxui/layout/resize').then(function(){
+			var body = $('tbody'),
+				html = [],
+				cols = 8,
+				head = ["<th>HereIsALongColumnName</th>"],
+				randomString = function(){
+					var len = parseInt( Math.random()*20 ), 
+						str = []
+					for(var i =0; i < len; i++){
+						var rand = parseInt( Math.random()*60 )
+						str.push(String.fromCharCode(32+ (rand > 40 ? 0 : rand )  ))
+					}
+					return str.join("")
+				};
+			
+			
+			for(var c = 1;  c< cols; c++){
+					head.push("<th>col ",c,"</th>")
+			}
+			$("thead tr").html(head.join(''))
+			
+			for(var r=0; r < 20; r++){
+				html.push("<tr>")
+				for(var c = 0 ;  c< cols; c++){
+					html.push("<td>", randomString() ,"</td>")
+				}
+				html.push("</tr>")
+			}
+			body.html(html.join(''))
+			$('#scrollable').click(function(){
+				$('#table').mxui_layout_table_fill();
+			})
+			
+			$('#resize').click(function(){
+				$('#container').css("overflow","hidden").mxui_layout_resize();
+			})
+			})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>menu</title>
+        <link type="text/css" href="../../smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+        </style>
+        <style>
+			.ui-menu {
+				margin: 0px; padding: 0px;
+				list-style-image:none;
+				list-style-position:outside;
+				list-style-type:none;
+			}
+			.ui-menu-item {
+				padding:0.5em 1em;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+	    <h1>Menu</h1>
+        <ul id='menu1'>
+            <li>A
+                <ul>
+                    <li>A1
+						<ul>
+                            <li>A1.X</li>
+                            <li>A1.Y</li>
+                            <li>A1.Z</li>
+                        </ul>
+					
+					</li>
+                    <li>A2</li>
+                    <li>A3</li>
+                </ul>
+            
+            </li>
+            <li>B
+                <ul>
+                    <li>B1</li>
+                    <li>B2</li>
+                    <li>B3</li>
+                </ul>
+            
+            </li>
+        </ul>
+        <ul id='menu2'>
+            <li>A
+                <ul>
+                    <li>A1
+                        <ul>
+                            <li>A1.X</li>
+                            <li>A1.Y</li>
+                            <li>A1.Z</li>
+                        </ul>
+                    </li>
+                    <li>A2
+                        <ul>
+                            <li>A2.X</li>
+                            <li>A2.Y</li>
+                            <li>A2.Z</li>
+                        </ul>
+                    </li>
+                    <li>A3</li>
+                </ul>
+            
+            </li>
+            <li>B
+                <ul>
+                    <li>B1</li>
+                    <li>B2</li>
+                    <li>B3</li>
+                </ul>
+            
+            </li>
+        </ul>
+
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>   
+        </script>
+        <script type='text/javascript'>
+            steal('mxui/nav/menu').then(function(){
+				$("#menu1").mxui_nav_menu();
+            	$("#menu2").mxui_ui_menu().show().trigger("move", {top: 60, left: 280});
+			});
+        </script>
+	</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <title>tree</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+        </style>
+        <link type="text/css" href="smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />            
+        <link type="text/css" href="grid/grid.css" rel="stylesheet" />        
+    </head>
+    <body>
+        <div class='grid'>
+            
+        </div>
+        <script type='text/javascript' 
+                src='../steal/steal.js'>   
+        </script>
+        <script type='text/javascript'>
+            steal("mxui/grid/tree",
+                            "mxui/filler",
+                            "jquery/model",
+                            "jquery/dom/fixtures").then(function($){
+                
+                $.fixture["-make"](["resources", "resource"], 2000, function(num, resources) {
+		
+		            var resourceId = parseInt(Math.random() * num);
+		            var resource = resources[resourceId]
+		            if (num < 50) {
+		                return { "name": "root " + num,
+		                    "author": "Justin Meyer" + num,
+		                    "parentId": null,
+							childCount: 0
+		                }
+
+		            } else {
+		                resource.childCount =  resource.childCount ? resource.childCount + 1 : 1
+						return { "name": "This is resource " + num,
+		                    "author": "Justin Meyer" + num,
+		                    "parentId": resourceId
+		                }
+		            }
+		
+		        })
+				
+				$.Model.extend("Resource",{
+                    findAll : function(params, success, error){
+                        $.ajax({
+                            url: '/resource',
+                            type: 'get',
+                            dataType: 'json',
+                            data: params,
+                            success: this.callback(['wrapMany',success]),
+                            error: error,
+                            fixture: "-resources"
+                        })
+                    }
+                },{
+                    hasChildren : function(){ return true }
+                })
+                
+                $(".grid").mxui_filler().mxui_grid_tree({
+                    model: Resource,
+                    limit: 100,
+                    offset: 0,
+                    parentId: 0,
+					params : {
+						parentId: null
+					},
+                    columns: {
+                        name: "Name",
+                        author: "Author",
+						childCount: "Child Count"
+                    }, 
+                    indentedColumn: 'name',
+                    render : {
+                        name : function(instance){
+                            return instance.name;
+                        }
+                    }
+                })
+                
+                
+            })
+            
+        </script>
+    </body>
+</html>

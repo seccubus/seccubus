@@ -1,0 +1,54 @@
+body {font-family: verdana}
+td {padding: 3px;}
+
+.lists > div {
+	float:left;
+	width:33%;
+}
+
+.lists > div .container{
+	overflow:auto;
+}
+
+.lists ul li {
+	list-style-type:none;
+}
+
+.lists ul {
+	padding-left:0px;
+	margin:0;
+	height:200px;
+}
+
+h3{
+	text-align:center;
+}
+
+#contacts{
+	clear:both;
+	bottom: 10px;
+    position: fixed;
+    top: 250px;
+}
+
+#contacts {
+    left: 8px;
+    right: 8px;
+	width:100%:
+}
+
+.container form {
+	background-color:#eeeeee;
+}
+.container input {
+	width:100px;
+}
+
+.create {
+	float:right;
+}
+
+.lists > div .activated {
+	background-color:#eeeeee;
+	border:none;
+}

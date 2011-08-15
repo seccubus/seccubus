@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>fittable</title>
+        <style type='text/css'>
+            body { font-family: verdana;}
+			.container {
+				/*position:relative;*/
+				height:800px;
+				border:2px solid #CCCCCC;
+				overflow:auto;
+			}
+			.topPadding {height:10px}
+			.bottomPadding {height: 400px;}
+			#fittable {width:140px;background-color:#AAAAAA;border:1px solid blue;}
+        </style>
+       <link type="text/css" href="../../mxui/combobox/combobox.css" rel="stylesheet" />
+	</head>
+	<body>
+		<div class="container">
+			<div class="topPadding"></div>
+			<p>The window as the scrollable container</p>
+			<input id="target" type="text" name="myname" value="click here to move"/>
+			<div id='fittable'>Demo Fittable</div>
+			<div class="bottomPadding"></div>
+		</div>
+        <script type='text/javascript' 
+                src='../../steal/steal.js'>   
+        </script>
+        <script type='text/javascript'>
+            steal("mxui/fittable").then(function($){
+				var items = function(n) {
+					var items = ["<ul>"];
+					for(var i=0;i<n;i++){
+						items.push("<li>item" + i + "</li>");
+					}
+					items.push("</ul>");
+					return items.join("");					
+				}
+			
+				$("#fittable").css("opacity",0).html( items(50));				
+				$("#target").click(function(ev){
+					$("#fittable").fit({
+						within:300,
+						of:$("#target")
+					}).css("opacity",1);
+				});
+				
+			});
+		</script>
+	</body>
+</html>

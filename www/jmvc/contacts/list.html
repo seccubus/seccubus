@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>list</title>
+        <style type='text/css'>
+			li.item span {
+				border-bottom: 3px solid green;
+			}
+			li {
+				list-style: none;
+			}
+			ul{padding:0;margin:0;}
+			#list2, #out2{
+				position:absolute;
+				top: 0px;
+				left:200px;				
+			}
+        </style>
+
+	</head>
+	<body>
+        <ul id='list'></ul>
+        <div id='out'></div>
+		<script type='text/ejs' id='formEJS'>
+			<form>
+				Name: <input type='text' name='name' />
+				Status: <input type='text' name='status' />
+			</form>
+		</script>
+		<script type='text/ejs' id='itemEJS'>
+			<span><%=this.name%></span>
+			<span><%=this.status%></span>
+		</script>
+		<script type='text/javascript' 
+                src='steal/steal.js'>   
+        </script>
+		
+		<script type='text/javascript'>
+			steal.plugins("jupiter/list",
+				"jquery/model",
+				"jquery/dom/fixture")
+				.css('list')
+				.then(function(){
+				$.Model('File')
+				$.fixture.make('file', 10, function(i){
+					return {
+						name: "Entry "+i,
+						status: "checked out",
+						dateModified: Math.floor(new Date().getTime()),
+						parentId: i<100? 1: 2
+					}
+				})
+				
+				$("#list").jupiter_list({
+					model : File,
+					show : "itemEJS",
+					title: 'Files',
+					create: "formEJS"
+				})
+				$('#list').bind('activate', function(ev, item){
+					$("#out").html(item.name)
+				})
+			}).start();
+		</script>
+	</body>
+</html>

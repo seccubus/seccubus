@@ -1,0 +1,5 @@
+<% for(var i =0; i < items.length; i++){ %>
+  <tr <%= items[i]%> tabindex='0'>
+  	<%== $.View(row, items[i] ) %>
+  </tr>
+<%}%>

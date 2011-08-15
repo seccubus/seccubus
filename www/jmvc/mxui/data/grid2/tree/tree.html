@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <title>tree</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+        </style>
+        <link type="text/css" href="../../../smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />            
+        <link type="text/css" href="../grid.css" rel="stylesheet" />        
+    </head>
+    <body>
+        <div class='grid'>
+            
+        </div>
+        <script type='text/javascript' 
+                src='../../../../steal/steal.js'>   
+        </script>
+        <script type='text/javascript'>
+            steal("mxui/data/grid/tree",
+                            "mxui/layout/fill",
+                            "jquery/model",
+                            "jquery/dom/fixtures").then(function($){
+                
+                /*var pause = function(millis) {
+                    var date = new Date();
+                    var curDate = null;
+                    
+                    do { curDate = new Date(); } 
+                    while(curDate-date < millis);
+                }*/ 
+                
+                $.fixture["-make"](["resources","resource"],Math.round(Math.random()*10)+1,function(num){
+                    var resourceId = Math.round(Math.random() * 100);
+                    //pause(100);
+                    var parentId = Math.round(Math.random() * 100);
+                    return {
+                        id        :    resourceId,
+                        parentId  :    parentId,
+                        name : "Resource "+resourceId,
+                        description: "Resource "+num+" description. <br/> You might want to read this.",
+                        date: new Date(Math.random()*1000*60*60*24*365*30),
+                        location: Math.round(Math.random()*2000)+" Pinetree Ln",
+                        users_count: Math.round(Math.random()*20),
+                        active_days: Math.round(Math.random()*20),
+                        other_things : "Blah blah blah"
+                    }
+                })
+                
+                
+                $.Model.extend("Resource",{
+                    findAll : function(params, success, error){
+                        $.ajax({
+                            url: '/resource',
+                            type: 'get',
+                            dataType: 'json',
+                            data: params,
+                            success: this.callback(['wrapMany',success]),
+                            error: error,
+                            fixture: "~resources" //calculates the fixture path from the url and type.
+                        })
+                    },
+                    findOne : function(params, success, error){
+                        $.ajax({
+                            url: '/resources',
+                            type: 'get',
+                            dataType: 'json',
+                            data: params,
+                            success: this.callback(['wrap',success]),
+                            error: error,
+                            fixture: "-resource" //calculates the fixture path from the url and type.
+                        })
+                    }
+                },{
+                    hasChildren : function(){ return true }
+                })
+                
+                $(".grid").mxui_fill().mxui_data_grid_tree({
+                    model: Resource,
+                    limit: 100,
+                    offset: 0,
+                    columns: {
+                        name: "Name",
+                        description: "Description",
+                        date: "Date",
+                        location: "Location"
+                    }, 
+                    indentedColumn: 'name',
+                    render : {
+                        name : function(instance){
+                            return instance.name;
+                        }
+                    }
+                })
+                
+                
+            })
+            
+        </script>
+    </body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <title>combobox</title>
+        <style type='text/css'>
+            body {font-family: verdana; margin: 0px; padding: 0px;}
+			h5 {
+				width:400px;
+			}
+			.padding {
+				height:400px;
+				width:1px;
+			}
+			#combobox1 {
+				margin:0 0 10px 0;
+			}
+			#combobox1_container {
+				width:500px;
+				height:200px;
+				margin:0 0 10px 0;
+				padding:50px 0 0 0;
+				border:1px solid #cccccc;
+				overflow:auto;
+			}
+			#combobox2_container {
+				position:absolute;
+				top:40px;
+				left:550px;
+				width:500px;
+				height:200px;
+				padding:50px 0 0 0;
+				border:1px solid #cccccc;
+				overflow:auto;
+			}
+			#iframe1 {
+				width:900px;
+				height:600px;
+				margin:0 0 10px 0;
+				border:1px solid #cccccc;				
+			}		
+        </style>    
+        <link type="text/css" href="combobox.css" rel="stylesheet" />
+    </head>
+    <body>
+    	<h3>Positioning Tests (scrollable containers)</h3>
+    	<!-- Combobox positioning tests (scrollable containers):
+ 			
+			 3. Combobox appended to scrollable <div> - <div> is not positioned
+			 4. Combobox appended to scrollable <div> - <div> is positioned (absolute) -->
+		
+		<!-- 3. Combobox appended to <div> - <div> is not positioned -->
+		<div id="combobox1_container">
+			<h5>3. Tests if dropdown opens in the correct position if the combobox is appended to a scrollable, non-positioned &lt;div&gt;.</h3>
+			<input id="combobox1_dropdown_height" name="combobox1_dropdown_height" type="hidden" value="134" />
+			<div id="combobox1_log"></div>
+        	<input id="combobox1" type="text" name="name1" />
+			<div class="padding"></div>
+		</div>		
+		
+		<!-- 4. Combobox appended to <div> - <div> is positioned (absolute) -->
+		<div id="combobox2_container">
+			<h5>4. Tests if dropdown opens in the correct position if combobox is appended to scrollable, positioned (absolute) &lt;div&gt;.</h3> 
+			<input id="combobox2_dropdown_height" name="combobox2_dropdown_height" type="hidden" value="143"/>
+			<div id="combobox2_log"></div>
+        	<input id="combobox2" type="text" name="name2" />
+			<div class="padding"></div>
+		</div>		
+		
+        <script type='text/javascript' 
+                src='../../steal/steal.js'>   
+        </script>
+        <script type='text/javascript'>
+            steal("mxui/form/combobox/select",
+			              "mxui/form/combobox/ajax",
+			              "jquery/dom/fixture").then(function($){
+            
+				/*
+				 * Utility functions.
+				 */
+				var createItems = function(n){
+					var data = [];
+					for (var i = 0; i < n; i++) {
+						data.push({
+							value: i,
+							text: "item" + i
+						})
+					}
+					data[0].selected = true;
+					return data;
+				}					
+					
+				/*
+				 *  1. Combobox appended to <div> - <div> is not positioned
+				 */					
+                $("#combobox1").mxui_form_combobox({
+                    	items: createItems(6)
+					});
+				// get the dropdown's height and store in input[id=combobox1_dropdown_height]
+				// so we can use this value from the funcunit tests					
+				/*$("#combobox1").controller().dropdown().controller().show(function(){
+					var h = $("#combobox1_dropdown").outerHeight();
+					$("#combobox1_dropdown_height").val(h);
+					$("#combobox1_dropdown").hide();					
+				});*/
+					
+				/*
+				 * 2. Combobox appended to <div> - <div> is positioned (absolute)
+				 */
+                $("#combobox2").mxui_form_combobox({
+                    	items: createItems(15)
+					});
+				// get the dropdown's height and store in input[id=combobox2_dropdown_height]
+				// so we can use this value from the funcunit tests					
+				/*$("#combobox2").controller().dropdown().controller().show(function(){
+					var h = $("#combobox2_dropdown").outerHeight();
+					$("#combobox2_dropdown_height").val(h);
+					$("#combobox2_dropdown").hide();							
+				});*/			
+					
+			
+			                    
+			});
+     		steal.start();            
+        </script>
+    </body>
+</html>
