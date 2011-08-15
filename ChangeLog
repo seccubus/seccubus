@@ -3,7 +3,7 @@ Seccubus V2 Change Log
 Seccubus V2 is currently in Alpha phase. Even though we tested this code
 ourselves do not expect production ready code yet.
 
-xx-08-2011 - 2.0.alpha3
+15-08-2011 - 2.0.alpha3
 New features / Issues resolved
 * Major bug in the delta engine resolved. It turned out that statusses where
   not processed after a scan, but was called by the load_ivil utility.
