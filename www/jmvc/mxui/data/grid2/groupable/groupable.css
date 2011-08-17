@@ -1,0 +1,43 @@
+td {
+	position: relative;
+}
+.droparea {
+	background-color: #AAAAAA;
+	padding: 5px;
+	height: 30px;
+}
+.dropareaOver {
+	background-color: blue;
+}
+.grid-group-drag {
+	background-color: #abdeff;
+	cursor: move;
+}
+.header th a {
+	cursor: pointer;
+	margin-right: 3px;
+}
+.groupDrag {
+	float: left;
+	background-color: white;
+	margin: 3px;
+	padding: 2px;
+	border: solid 1px black;
+	cursor: pointer;
+}
+.ui-helper-clearfix:after {
+				clear:both;
+				content:".";
+				display:block;
+				height:0;
+				visibility:hidden;
+}
+.ui-helper-clearfix {
+	display:inline-block;
+}
+* html .ui-helper-clearfix {
+	height:1%;
+}
+.ui-helper-clearfix {
+	display:block;
+}

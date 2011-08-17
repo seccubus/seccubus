@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>resizable</title>
+		<link type="text/css" href="resize.css" rel="stylesheet" />
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;
+				vertical-align: top;
+			}
+			
+			
+			#first {
+				width: 200px;
+				height: 200px;
+				border: dashed 1px gray;
+				position: relative;
+			}
+			.wrap {
+				margin: 30px;
+			}
+        </style>
+	</head>
+	<body>
+		<h1>Resizable</h1>
+	    <table width='100%' style='table-layout: fixed'>
+	    	<tr>
+	    		<td>
+	    			<div class='wrap' id='first'>Here is some swell content</div>
+	    		</td>
+				<td>
+					<textarea class='wrap'>Here is my textarea</textarea>
+				</td>
+				<td>
+					<input class='wrap' type='text'/>
+				</td>
+	    	</tr>
+			<tr>
+				<td>
+					<select  class='wrap'><option>1</option></select>
+				</td>
+				<td>
+					<button type='button'  class='wrap'>try me</button>
+				</td>
+				<td>
+					<img src='../../../jmvc/images/phui.png'  
+							class='wrap'
+							style="border: solid 1px black"/>
+				</td>
+			</tr>
+	    </table>
+		
+		
+		
+		<script type='text/javascript' 
+                src='../../../steal/steal.js?mxui/layout/resize'
+                package='main.js'
+                compress='false'>   
+        </script>
+		<script type='text/javascript'>
+			$(function(){
+				$('.wrap').mxui_layout_resize()
+			})
+		</script>
+	</body>
+</html>

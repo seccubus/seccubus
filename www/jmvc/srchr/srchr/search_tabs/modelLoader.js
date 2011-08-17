@@ -1,0 +1,1 @@
+steal.models('../../models/flickr.js', '../../models/yahoo.js', '../../models/upcoming.js')

@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>tabs</title>
+	</head>
+	<body>
+		
+		<ul id='resultsTab'></ul>
+		
+		<script type='text/javascript' 
+                src='../../steal/steal.js?srchr/search_tabs/modelLoader.js'>
+        </script>
+		
+		<script type='text/javascript' 
+                src='../../steal/steal.js?srchr/search_tabs'>
+        </script>
+		
+		<script type='text/javascript' >
+				
+			$('#resultsTab').srchr_search_tabs(Srchr.Models);
+			
+		</script>
+		
+	</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>page</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+			.active {
+				border: solid 1px red;
+				cursor: pointer;
+			}
+			.toolbar_button {
+				float: left;
+				padding: 5px;
+			}
+			.pages {
+				float: left;
+				padding: 5px;
+			}
+			.page {
+				float: left;
+				cursor: pointer;
+			}
+        </style>
+	</head>
+	<body>
+	   <div id='paginator'></div>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js?steal[app]=mxui/paginator/page&steal[env]=development'>   
+        </script>
+		<script type='text/javascript'>
+			$("#paginator").mxui_paginator_page({offset: 0, limit: 100, count: 1000})
+						   .bind("paginate", function(ev, data){
+						   		console.log(ev, data)
+							
+						   })
+		</script>
+	</body>
+</html>

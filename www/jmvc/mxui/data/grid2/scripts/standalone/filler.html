@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>filler</title>
+        <link type="text/css" href="../../../resizable/resizable.css" rel="stylesheet" />
+		<style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {border: solid 1px gray; padding: 3px; vertical-align: top;}
+			body {
+				margin : 0px;
+				padding: 0px;
+			}
+			#header, #content, #footer{
+				border: solid 1px green;
+				height: 100px;
+			}
+			
+			#modal {
+				position: absolute;
+				background-color: green;
+			}
+			.container {
+
+				background-color: #cccccc;
+				
+			}
+
+			h4 {
+				background-color: gray;
+				margin: 15px 0;
+			}
+			p {
+				margin: 16px 0;
+			}
+			h3{
+				margin: 18px 0;
+			}
+			.redBD { border: dotted 2px red}
+			.bluBD { border: dotted 2px blue}
+			.grnBD { border: dotted 2px green}
+			.marginB {
+				margin: 40px;
+			}
+			.marginS {
+				margin: 20px;
+			}
+			.redBack {background-color: #ffdddd;}
+			.grnBack {background-color: #ddffdd;}
+			#log {
+				font-weight: normal;
+			}
+			#myloggin {
+				height: 0px;
+				overflow: auto;
+				
+			}
+        </style>
+	</head>
+	<body>
+<div id="demo-html">
+<h1>Filler</h1>
+<!--<p>Mxui.Filler will expand an element to fill a parent.  This is very useful for elements that change size.
+	Mxui.Filler is smart enough to know when to adjust for internal element's margins.  To 
+	make resizables on the page, click run.  This will add Mxui.Resizables.  Resize the parent to watch the internal
+	filler fill the space.  
+</p>-->
+
+<a href="javascript://" id='run'>Run</a>
+<!--<h2>Limitations</h2>
+<p>If you want to support IE6, it's best to not have top margins on the first element in a container, and bottom
+	margins on the last element.  Mxui.Filler will compensate for this, but things will not look exactly the same in 
+	IE6.  
+</p>-->
+<h3>jQuery.support.containerSizeAdjustments: <span id='log'></span></h3>
+
+<table>
+	<tr>
+		<td>
+		
+				
+				<div class='container' id='fill1'>
+					<h3>Nothing &uarr;</h3>
+					<div class='redBack'>
+						<p class='grnBack'>No Pad & Bord &uarr;</p>
+						<div class='grnBack fill'><p>Some deep content</p></div>
+						<p class='grnBack'>No Pad & Bord &darr;</p>
+					</div>
+					<h4>Nothing &darr;</h4>
+				</div>
+		
+		</td>
+		<td>
+			
+				<div class='container' id='fill2'>
+					<h3>Nothing &uarr;</h3>
+					<div class='redBack redBD'>
+						<p class='grnBack'>Border &uarr;</p>
+						<div class='grnBack fill'><p>Some deep content</p></div>
+						<p class='grnBack'>Border &darr;</p>
+					</div>
+					<h4>Nothing &darr;</h4>
+				</div>
+			
+		</td>
+		<td>
+			
+				<div class='container bluBD' id='fill3'>
+					<h3>Border &uarr;</h3>
+					<div class='redBack' style="padding-top: 1px">
+						<p class='grnBack'>Padding &uarr;</p>
+						<div class='grnBack fill'><p>Some deep content</p></div>
+						<p class='grnBack'>No Pad & Bord &darr;</p>
+					</div>
+					<h4>Border &darr;</h4>
+				</div>
+	
+		</td>
+	</tr>
+	
+</table>
+<div id='myloggin'></div>
+</div>		
+		
+		
+<script type='text/javascript' src='../../../../jquery/jquery.js'></script>
+<script type='text/javascript' src='filler.js'></script>
+<script type='text/javascript' src='resizable.js'></script>
+<script type='text/javascript' id="demo-source">
+		$(function(){
+			var out = [], affects= jQuery.support.containerSizeAdjustments;
+			for (var part in affects) {
+				out.push(part+"="+affects[part])
+			}
+			$(".container").each(function(){
+				$(this).mxui_resizable()
+			})
+			$("#log").html(out.join(", "))
+		});
+		$("#run").click(function(){
+			$(".container").each(function(){
+				$(this).find(".fill").mxui_filler({
+					parent: $(this),
+					adjust: true
+				})
+			})
+		})
+		loggin = function(text){
+			$("#myloggin").append("<p>"+text+"</p>")
+			//$("#myloggin")[0].scrollTop = $("#myloggin")[0].scrollHeight
+		}
+</script>
+	</body>
+</html>

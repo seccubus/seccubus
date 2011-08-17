@@ -1,0 +1,14 @@
+
+.srchr_tabs { padding: 0px; margin: 0px; }
+.srchr_tabs li { float: left; padding: 10px; background-color: #F6F6F6; list-style: none; margin-left: 10px; }
+.srchr_tabs li a { color: #1C94C4; font-weight: bold; text-decoration: none; }
+.srchr_tabs li.active a { color: #F6A828; cursor: default; }
+.srchr_search_result { border: solid 1px #F6A828; }
+/* clearfix from jQueryUI */
+.ui-helper-clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+.ui-helper-clearfix { display: inline-block; }
+/* required comment for clearfix to work in Opera \*/
+* html .ui-helper-clearfix { height:1%; }
+.ui-helper-clearfix { display:block; }
+/* end clearfix */​
+​

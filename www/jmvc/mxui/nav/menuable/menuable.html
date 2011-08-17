@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>menuable</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+			.selected>span, .selected>a{
+            	background-color: #ddffee;
+            }
+			.active>a, .active>span{
+				color: red;
+			}
+        </style>
+	</head>
+	<body>    
+	<h1>Basic Menuable</h1>
+		<pre>$("#menu1").mxui_menuable()</pre>
+        <ul id='menu1'>
+            <li><a>Option 1</a>
+                <ul>
+                	<li>Here is a subMenu :)</li>
+                </ul>
+            </li>
+            <li><a>Option 2</a>
+                <ul>
+                	<li>Here is a subMenu :)</li>
+                </ul>
+            
+            </li>
+        </ul>
+		<h1>Menuable with focus for select and enter key for active</h1>
+		<ul id='menu2'>
+            <li tabindex='0'><span>Option 1</span>
+                <ul>
+                	<li>Here is a subMenu :)</li>
+                </ul>
+            </li>
+            <li tabindex='0'><span>Option 2</span>
+                <ul>
+                	<li>Here is a subMenu :)</li>
+                </ul>
+            </li>
+        </ul>
+		
+		<h1>Submenus</h1>
+        <ul id="menu3">
+            <li><a>Folder 2</a>
+				<ul class='submenu'>
+                    <li><a>Folder Control</a>
+						<ul class='submenu'>
+                        	<li><a>Another</a></li>
+                        	<li><a>Exec</a></li>
+                        	<li><a>Policy</a></li>
+						</ul>
+					</li>
+                    <li><a>Search Policies</a></li>
+                    <li><a>View Policies</a></li>
+				</ul>
+			</li>
+			<li><a>Google</a>
+				<ul class='submenu'>
+                    <li><a>Risk</a></li>
+                    <li><a>Enterprise</a></li>
+                    <li><a>Incident</a></li>
+				</ul>
+			</li>
+        </ul>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js?mxui/nav/menuable'>   
+        </script>
+		<script type='text/javascript'>
+			$("#menu1").mxui_nav_menuable()
+				.find("ul").mxui_nav_menuable().hide()
+				.bind("show", function(ev){
+					ev.pause()
+					$(this).show(function(){
+						ev.resume();
+					});
+				})
+				.bind("hide", function(ev){
+					ev.pause()
+					$(this).hide(function(){
+						ev.resume();
+					});
+				});
+				
+        	$("#menu1").find("li").click(function(){
+				$(this).trigger("activate")
+			});
+			
+			
+			//menu with focus
+			$("#menu2").mxui_nav_menuable().find("ul").mxui_nav_menuable().hide()
+				.bind("show", function(ev){
+					ev.pause()
+					$(this).show(function(){
+						ev.resume();
+					});
+				})
+				.bind("hide", function(ev){
+					ev.pause()
+					$(this).hide(function(){
+						ev.resume();
+					});
+				});
+				
+        	$("#menu2").find("li").focus(function(){
+				$(this).trigger("select")
+			});
+			$("#menu2").find("li").keypress(function(ev){
+				if(ev.keyCode == 13 || ev.keyCode == 10)
+					$(this).trigger("activate")
+			});
+			
+			
+			
+			
+			$("#menu3").mxui_nav_menuable().find("ul").mxui_nav_menuable().hide()
+			$('#menu3').delegate("ul", "show", function(ev){
+				ev.stopPropagation();
+				ev.pause();
+				$(this).fadeIn("slow",function(){
+					ev.resume();
+				});
+			})
+			$('#menu3').delegate("ul", "hide", function(ev){
+				ev.stopPropagation();
+				ev.pause();
+				$(this).fadeOut("slow",function(){
+					ev.resume();
+				});
+				
+			})
+			$('#menu3').find("li").click(function(ev, el){
+				ev.stopPropagation();
+				$(this).trigger("activate")
+			});
+			
+		</script>
+	</body>
+</html>

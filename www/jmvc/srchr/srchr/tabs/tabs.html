@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>srchr.tabs</title>
+		<style>
+			.tab {
+				border: solid 1px black;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Srchr.Tabs</h1>
+		<p>A very basic tabs widget that creates 'activate' events.</p>
+		<h2>Demo</h2>
+		<p>Click the different tabs.</p>
+	    <ul id='resultsTab'>
+			<li><a href='#flickr'>Flickr</a></li>
+			<li><a href='#yahoo'>Yahoo</a></li>
+			<li><a href='#upcoming'>Upcoming</a></li>
+		</ul>
+
+		<div id='flickr' class='tab'>one</div>
+		<div id='yahoo' class='tab'>two</div>
+		<div id='upcoming' class='tab'>three</div>
+
+		
+		<script type='text/javascript' 
+                src='../../steal/steal.js?srchr/tabs'>
+        </script>
+		
+		<script type='text/javascript' >
+				
+			$('#resultsTab').srchr_tabs();
+			
+		</script>
+		
+	</body>
+</html>
