@@ -1,8 +1,0 @@
-<%for(var i =0; i < children.length; i++){%>
-	<%var item= children[i]%>
-	<tr <%= item%> class='<%= i==0 ? "first-row" : ""%> parent_<%= parent.identity() %>' collapsed='true'>
-		<%$.each(options.columns, function(name, title){%>
-			<td><%= options.render && options.render[name] ?  options.render[name](item) : item[name] %></td>
-		<%})%>
-	</tr>
-<%}%>

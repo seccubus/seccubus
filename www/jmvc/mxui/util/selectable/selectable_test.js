@@ -1,3 +1,0 @@
-steal('funcunit').then(function(){
-	
-})
