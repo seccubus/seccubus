@@ -8,3 +8,4 @@ What is in the testdata sets?
 * B - Host A with 1 finding (2=B)
 * BA - Host A with 2 findigns (1=B, 2=A)
 * BB - Host A with 2 findings (1=B, 2=B)
+* nmap.* - nmap scan data
