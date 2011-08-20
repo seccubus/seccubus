@@ -2,7 +2,7 @@
 # ------------------------------------------------------------------------------
 # $Id$
 # ------------------------------------------------------------------------------
-# This script will call the Nikto scanner and import the results as IVIL
+# This script will call the Nmap scanner and import the results as IVIL
 # ------------------------------------------------------------------------------
 #  Copyright 2011 Frank Breedijk of Schuberg Philis
 #
@@ -27,11 +27,12 @@ use Getopt::Long;
 use Carp;
 
 my (
-	$nikto_path,
-	$nikto_options,
+	$nmap_path,
+	$nmap_options,
 	$hosts_file,
 	$workspace,
 	$scan,
+	$sudo,
 	$help,
 	$verbose,
 	$quiet,
@@ -42,11 +43,12 @@ $help = 0;
 # Create default values
 
 GetOptions(	
-		'nikto_path|p=s'	=> \$nikto_path,
-		'nikto_options|o=s'	=> \$nikto_options,
+		'nmap_path|p=s'		=> \$nmap_path,
+		'nmap_options|o=s'	=> \$nmap_options,
 		'hosts=s'		=> \$hosts_file,
 		'workspace=s'		=> \$workspace,
 		'scan=s'		=> \$scan,
+		'sudo'			=> \$sudo,
 		'verbose|v+'		=> \$verbose,
 		'quiet|q!'		=> \$quiet,
 		'help|h'		=> \$help,
@@ -69,43 +71,53 @@ if ( ! $hosts_file || ! -e $hosts_file ) {
 	help();
 };
 
-$nikto_path = get_nikto_path() unless $nikto_path;
-if ( ! $nikto_path && -e $nikto_path ) {
-	print "Unable to find nikto on you system. I suggest you use the --nikto_path option\nto provide a path to nikto or nikto.pl\n";
+$nmap_path = get_nmap_path() unless $nmap_path;
+if ( ! $nmap_path && -e $nmap_path ) {
+	print "Unable to find Nmap on you system. I suggest you use the --nmap_path option\nto provide a path to the nmap executable\n";
 	help();
 }
-print "Nikto found in $nikto_path\n" if $verbose;
-my $nikto_version = get_nikto_version($nikto_path);
-print "Nikto version is $nikto_version\n" if $verbose;
-if ( check_nikto_version($nikto_version) ) {
-	print "Nikto version $nikto_version is ok\n" if $verbose;
-} else {
-	print "Your nikto version $nikto_version is too low. You should at least have nikto\nversion 2.1.2. Please upgrade\n";
-	help();
-}
+print "Nmap found in $nmap_path\n" if $verbose;
+my $nmap_version = get_nmap_version($nmap_path);
 
 my $tempfile = "/tmp/seccubus.$$";
 
-my $nikto_options = "-h $hosts_file -o $tempfile.nbe -F nbe $nikto_options";
-print "Nikto options: $nikto_options\n" if $verbose;
-
-open TMP, ">$tempfile" or die "Unable to open tempfile $tempfile for writing";
+my $nmap_options = "-iL $hosts_file -oA $tempfile $nmap_options";
+print "Nmap options: $nmap_options\n" if $verbose;
 
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
+my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
 
-print "Execuing $nikto_path $nikto_options\n" unless $quiet;
-open NIKTO, "$nikto_path $nikto_options |" or die "Unable to open pipe";
-
-while ( <NIKTO> ) {
-	print $_ if $verbose;
-	print TMP $_;
+my $cmd = "$nmap_path $nmap_options";
+if ( $sudo ) {
+	print "Sudo mode on\n" if $verbose;
+	$cmd = "sudo $cmd";
 }
-close TMP;
-close NIKTO;
+my $username = chomp(`whoami`) if $sudo;
 
-print "Scanning done, converting .nbe to ivil\n" unless $quiet;
-my $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=Nikto --scannerversion=$nikto_version --workspace=$workspace --scan=$scan --timestamp=$timestamp --infile=$tempfile.nbe ";
+print "Execuing $cmd\n" unless $quiet;
+open NMAP, "$cmd |" or die "Unable to open pipe";
+
+while ( <NMAP> ) {
+	print $_ if $verbose;
+}
+close NMAP;
+
+if ( $sudo ) {
+	$cmd = "chown $username $tempfile\.*";
+
+	print "Execuing $cmd\n" unless $quiet;
+	open NMAP, "$cmd |" or die "Unable to open pipe";
+
+	while ( <NMAP> ) {
+		print $_ if $verbose;
+	}
+	close NMAP;
+}
+
+
+print "Scanning done, converting .xml to ivil\n" unless $quiet;
+$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nmap2ivil --scannerversion=$nmap_version --workspace=$workspace --scan=$scan --timestamp=$timestamp --infile=$tempfile.xml ";
 $cmd .= "-v" if $verbose > 1;
 
 print "Executing $cmd\n" if $verbose;
@@ -113,40 +125,41 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose;
 
 print "Importing ivil\n" unless $quiet;
-$cmd = "$load_ivil --workspace $workspace --scan $scan --scanner Nessus --timestamp $timestamp";
+$cmd = "$load_ivil --workspace $workspace --scan $scan";
 $cmd .= " -v" if $verbose > 1;
 $cmd .= " $tempfile.ivil.xml";
 print "Execuing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
-print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
+#print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
 # TODO: Add files to scan
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile", "Command output");
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.nbe", "NBE output");
+#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.nmap", "Command output");
+#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.gnmap", "Nmap greppable format");
+#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.xml", "Nmap xml output");
 #add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.ivil.nbe", "IVIL output");
 
 # Cleanup
-unlink "$tempfile" if -e "$tempfile";
-unlink "$tempfile.nbe" if -e "$tempfile.nbe";
+unlink "$tempfile.gnmap" if -e "$tempfile.gnmap";
+unlink "$tempfile.nmap" if -e "$tempfile.nmap";
+unlink "$tempfile.xml" if -e "$tempfile.xml";
 unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
 
 exit(0);
 
 sub help() {
 	print "
-
-Usage: scan 	[--nikto_path|p <path to nikto>] \\
-		[--nikto_options <additional nikto options>]] \\
+Usage: scan 	[--nmap_path|p <path to nmap>] \\
+		[--nmap_options <additional Nmap options>]] \\
 		--hosts <hosts file> [--verbose|v] [--quiet|q] [--help|h]
 
 Arguments:
---nikto_path	- You can use this optional parameter to provide the script with
-(-p)		  the path to nikto.pl or nikto. If you do not provide this the 
+--nmap_path	- You can use this optional parameter to provide the script with
+(-p)		  the path to nmap. If you do not provide this the 
 		  script tries to find the files itself and fail if it cannot 
 		  fidn them.
---nikto_options	- Additional command line options to provide to nikto see 
-(-o)		  'nikto -Help' for more information.
+--nmap_options	- Additional command line options to provide to Nmap see 
+(-o)		  'nmap -Help' for more information.
 --hosts		- The file containing the 'hosts' to scan
 --workspace	- Name of the workspace to load the findings into
 --scan		- Name of the scan to load the findings into
@@ -157,40 +170,27 @@ Arguments:
 	exit(1);
 }
 
-sub get_nikto_path() {
-	my $path = `which nikto`;
-	if ( $path =~ /(^\/.*nikto)/ ) {
+sub get_nmap_path() {
+	my $path = `which nmap`;
+	if ( $path =~ /(^\/.*nmap)/ ) {
 		return $1;
 	}
-	$path = `which nikto.pl`;
-	if ( $path =~ /(^\/.*nikto\.pl)/ ) {
+	$path = `which nmap.pl`;
+	if ( $path =~ /(^\/.*nmap\.pl)/ ) {
 		return $1;
 	}
-	if ( -e '/opt/nikto/nikto.pl' ) {
-		return '/opt/nikto/nikto.pl';
+	if ( -e '/opt/nmap/nmap.pl' ) {
+		return '/opt/nmap/nmap.pl';
 	}
 	return undef;
 }
 
-sub get_nikto_version() {
-	my $nikto_path = shift;
+sub get_nmap_version() {
+	my $nmap_path = shift;
 
-	my $version=`$nikto_path -Version`;
-	$version =~ /Nikto main\s+(\d+\.\d+\.\d+)/;
+	my $version=`$nmap_path -V`;
+	$version =~ /Nmap version\s+(\d+\.\d+)/;
 	return $1;
-}
-
-sub check_nikto_version() {
-	my $version = shift;
-	$version =~ /(\d+)\.(\d+)\.(\d+)/;
-	if ( ( $1 > 2 ) ||
-	     ( $1 == 2 && $2 > 1 ) || 
-	     ($1 == 2 && $2 == 1 && $3 >= 2 )
-	   ) {
-		return 1;
-	} else {
-		return 0;
-	}
 }
 
 sub make_timestamp() {

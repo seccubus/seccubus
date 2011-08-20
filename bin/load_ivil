@@ -66,7 +66,7 @@ my $ivil = join("", <IVIL>);
 close(IVIL);
 print "File loaded\n" if $verbose;
 print "Parsing data\n" if $verbose;
-my ($workspace_id, $scan_id, $run_id) = load_ivil($ivil, $scanner, $scanner_version, $timestamp, $workspace, $scanname);
+my ($workspace_id, $scan_id, $run_id) = load_ivil($ivil, $scanner, $scanner_version, $timestamp, $workspace, $scanname, $verbose);
 print "WorkspaceID: $workspace_id\nScanID: $scan_id\nRunID: $run_id\n" if $verbose;
 process_status($workspace_id, $scan_id, $run_id, $verbose);
 

@@ -69,6 +69,8 @@ the Seccubus database.
 
 =item scan		- (Optional) Name of the scan to load the findings into, if not value is given the the value will be read from IVIL. If no value can be read, this defaults to the workspace name. If the scan does not exist it will be created.
 
+=item print		- (Optional) Print progress to stdin
+
 =back
 
 =item Checks
@@ -86,13 +88,14 @@ run_id		- ID of the run that was created for this scan
 
 =cut
 
-sub load_ivil($;$$$$$) {
+sub load_ivil($;$$$$$$) {
 	my $ivil_xml_data = shift;
 	my $scanner = shift;
 	my $scanner_ver = shift;
 	my $timestamp = shift;
 	my $workspace = shift;
 	my $scan = shift;
+	my $print = shift;
 
 	my $xml = new XML::Simple;
 	my $ivil = $xml->XMLin($ivil_xml_data,
@@ -129,7 +132,10 @@ sub load_ivil($;$$$$$) {
 	my $run_id = update_run($workspace_id, $scan_id, $timestamp);
 
 	# Now we create the findings
+
 	if ( exists $ivil->{findings}->{finding} ) {
+		my $count = @{$ivil->{findings}->{finding}};
+		print "There are $count findings\n" if $print;
 		foreach my $finding ( @{$ivil->{findings}->{finding}} ) {
 			$finding->{severity} = 0 unless defined $finding->{severity};
 			# TODO: Seccubus currently does not handle the 
@@ -144,6 +150,7 @@ sub load_ivil($;$$$$$) {
 					finding		=> $finding->{finding_txt},
 					severity	=> $finding->{severity},
 				      );
+			print "Finding: $finding->{ip}, $finding->{port}, $finding->{id}\n$finding->{finding_txt}\n" if $print >1;
 		}
 	}
 	return ($workspace_id, $scan_id, $run_id);
