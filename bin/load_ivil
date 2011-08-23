@@ -37,9 +37,13 @@ my (
 	$scanner_version,
 	$timestamp,
 	$scan,
+	$noprocess,
    );
 
 $help = 0;
+
+# Set defaults
+$timestamp = make_timestamp();
 
 GetOptions(	'scan|s=s'		=> \$scanname,
 		'scanner=s'		=> \$scanner,
@@ -48,8 +52,10 @@ GetOptions(	'scan|s=s'		=> \$scanname,
 		'verbose|v!'		=> \$verbose,
 		'workspace|w=s'		=> \$workspace,
 		'timestamp|t=s'		=> \$timestamp,
+		'noprocess'		=> \$noprocess,
 	  );
 my $filename = shift(@ARGV);
+help() unless $filename;
 
 if ( ! -e $filename ) {
 	carp "File '$filename' does not exist";
@@ -68,7 +74,9 @@ print "File loaded\n" if $verbose;
 print "Parsing data\n" if $verbose;
 my ($workspace_id, $scan_id, $run_id) = load_ivil($ivil, $scanner, $scanner_version, $timestamp, $workspace, $scanname, $verbose);
 print "WorkspaceID: $workspace_id\nScanID: $scan_id\nRunID: $run_id\n" if $verbose;
-process_status($workspace_id, $scan_id, $run_id, $verbose);
+unless ( $noprocess ) {
+	process_status($workspace_id, $scan_id, $run_id, $verbose);
+}
 
 exit;
 
@@ -86,7 +94,12 @@ Arguments:
 		  read from the IVIL file
 --scannerversion- Optional: Verison of the scanner used. If not provided it will
 		  be read from the IVIL file
---timestamp (-t)- Time the scan ran in the format YYYYMMDDHHmm[ss]
+--timestamp (-t)- Optional : Time the scan ran in the format YYYYMMDDHHmm[ss]
+                  Defaults to the current date and time
+--noprocess	- Just load the file into Seccubus, but don't process the status
+                  This is handy for importing older data or data out of sequence
+		  into Seccubus. Findings that have not been seen before will 
+		  get the status NEW
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message
 <filename>	- Path to the file to be loaded
@@ -94,4 +107,16 @@ Arguments:
 	exit();
 }
 
+sub make_timestamp() {
+        my ($second, $minute, $hour, $day, $month, $year) = localtime();
+        $month++;
+        $second = "0" . $second if $second < 10;
+        $minute = "0" . $minute if $minute <10;
+        $hour = "0". $hour if $hour < 10;
+        $day = "0". $day if $day <10;
+        $month = "0" . $month if $month <10;
+        $year += 1900;
+
+        return "$year$month$day$hour$minute$second";
+}
 

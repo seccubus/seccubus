@@ -402,7 +402,7 @@ sub ivil_finding($) {
 	$block .= "\t\t<finding>\n";
 	$block .= "\t\t\t<ip>$finding->{ip}<\/ip>\n";
 	$block .= "\t\t\t<port>$finding->{port}<\/port>\n";
-	$block .= "\t\t\t<id>$finding->{id}<\/id>\n";
+	$block .= "\t\t\t<id>" . encode_entities($finding->{id}) . "<\/id>\n";
 	$block .= "\t\t\t<severity>$finding->{severity}<\/severity>\n";
 	$block .= "\t\t\t<finding_txt>";
 	$block .= encode_entities($finding->{finding});

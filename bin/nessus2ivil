@@ -114,6 +114,12 @@ foreach my $host ( @{$nessus->{Report}->{ReportHost}} ) {
 			# We are dealing with portscanner output
 			$item->{pluginID} = 'portscanner';
 			$item->{synopsis} = "Port $item->{port}/$item->{protocol} is open.\nService was identified as $item->{svc_name}";
+		} elsif ( $item->{pluginFamily} eq 'Policy Compliance' ) {
+			# Compliance plugins behave funny. More findings per 
+			# PluginID
+			print "$item->{description}\n";
+			$item->{description} =~ /^\"?([^\"]+)\"?\s+\:/;
+			$item->{pluginID} .= "_$1";
 		}
 		foreach my $key ( keys %{$item} ) {
 			if ( $key eq 'protocol' ) {

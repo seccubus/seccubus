@@ -52,6 +52,7 @@ eval {
 		<findings>\n";
 		
 	foreach my $row ( @$findings ) {
+		$$row[4] = HTML::Entities::encode($$row[4]);
 		$$row[5] = HTML::Entities::encode($$row[5]);
 		$$row[5] =~ s/\n/\\n/g;
 		$$row[6] = HTML::Entities::encode($$row[6]);
