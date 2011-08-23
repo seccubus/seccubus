@@ -41,6 +41,7 @@ my (
 	$verbose,
 	$quiet,
 	$sleep,
+	$cmd,
    );
 
 # Default values for command line values
@@ -48,7 +49,16 @@ $help = 0;
 $quiet = 0;
 $sleep = 10;
 
-# Create default values
+# Check for Ruby
+print "Lets see if you have Ruby on your system\n" if $verbose;
+$cmd = "echo 'print \"yes\"'|env ruby";
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+if ( $result ne "yes" ) {
+	die "This script requires Ruby to run succesfully\n";
+}
+
 
 GetOptions(	
 		'user|u=s'		=> \$user,
@@ -102,7 +112,7 @@ my $nessus2ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}
 my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
 
 print "Attempting to find policy ID for policy $policy\n" if $verbose;
-my $cmd = "$nivil -u '$user' -p '$password' -s '$server' --show-policies";
+$cmd = "$nivil -u '$user' -p '$password' -s '$server' --show-policies";
 print "Execuing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
