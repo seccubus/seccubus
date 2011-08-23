@@ -36,6 +36,7 @@ my (
 	$help,
 	$verbose,
 	$quiet,
+	$username,
    );
 
 $help = 0;
@@ -93,7 +94,10 @@ if ( $sudo ) {
 	print "Sudo mode on\n" if $verbose;
 	$cmd = "sudo $cmd";
 }
-my $username = chomp(`whoami`) if $sudo;
+if ( $sudo ) {
+	$username = `whoami`;
+	chomp($username);
+}
 
 print "Execuing $cmd\n" unless $quiet;
 open NMAP, "$cmd |" or die "Unable to open pipe";
@@ -125,7 +129,7 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose;
 
 print "Importing ivil\n" unless $quiet;
-$cmd = "$load_ivil --workspace $workspace --scan $scan";
+$cmd = "$load_ivil --workspace $workspace --scan $scan --scanner Nmap --scannerversion $nmap_version --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
 $cmd .= " $tempfile.ivil.xml";
 print "Execuing $cmd\n" if $verbose > 1;
