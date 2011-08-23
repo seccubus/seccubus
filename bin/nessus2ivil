@@ -117,7 +117,6 @@ foreach my $host ( @{$nessus->{Report}->{ReportHost}} ) {
 		} elsif ( $item->{pluginFamily} eq 'Policy Compliance' ) {
 			# Compliance plugins behave funny. More findings per 
 			# PluginID
-			print "$item->{description}\n";
 			$item->{description} =~ /^\"?([^\"]+)\"?\s+\:/;
 			$item->{pluginID} .= "_$1";
 		}
