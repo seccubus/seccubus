@@ -4,6 +4,7 @@ This document explains how to setup and execute scans in Seccubus V2
 * Nessus scan via legacy port 1241
 * Nikto 
 * OpenVAS
+* Nmap
 1.1 Nessus scan via XML rpc
 Configuring a Nessus scan consist of the following steps:
 * Creating a policy in Nessus
@@ -13,7 +14,7 @@ In the Nessus GUI you need to create one or more policies. This example assumes 
 Now we need to set up a scan in Seccubus. Go to the workspace that you want to create the scan in and switch to the ‘Scans’ tab. Then click on the ‘Add’ button.
 Next we need to fill out a name for the scan, select the ‘Nessus’ scanner provide the scanner parameters and the scan targets.
 The scanner parameters determine which command line parameters are sent to the scanners/<scannername>/scan script. In the case of the Nessus scanner they should be:
---user <Nessus username> --password '<Nessus password>' --sever <Nessus IP address> --policy <Nessus policy name> --hosts '$HOSTS' --workspace <Seccubus workspace name> --scan <Seccubus scan name>
+--user <Nessus username> --password '<Nessus password>' --sever <Nessus IP address> --policy <Nessus policy name> --hosts '$HOSTS'
 
 If you use ‘$HOSTS’ in a scan parameters, if will be replaced by the text typed in the ‘Scan targets’ field. If you use @HOSTS it will be replaced with the path to a file containing the information provided in the ‘Scan targets fields’
 
@@ -24,7 +25,7 @@ Setting up a Nessus Legacy scan (a scan via the port 1241 interface) can be done
 Go to the workspace that you want to create the scan in and switch to the ‘Scans’ tab. Then click on the ‘Add’ button.
 Next we need to fill out a name for the scan, select the ‘Nessus Legacy (prior to v4.0)’ scanner and provide the scanner parameters and the scan targets.
 The scanner parameters determine which command line parameters are sent to the scanners/<scannername>/scan script. In the case of the NessusLegacy scanner they should be:
---nessus_path <path to the Nessus client> --user <Nessus username> --password '<Nessus password>' --sever <Nessus IP address> --rc <path to the .nessusrc file> --hosts @HOSTS --workspace <Seccubus workspace name> --scan <Seccubus scan name>
+--nessus_path <path to the Nessus client> --user <Nessus username> --password '<Nessus password>' --sever <Nessus IP address> --rc <path to the .nessusrc file> --hosts @HOSTS 
 
 If you use ‘$HOSTS’ in a scan parameters, if will be replaced by the text typed in the ‘Scan targets’ field. If you use @HOSTS it will be replaced with the path to a file containing the information provided in the ‘Scan targets fields’
 
@@ -53,7 +54,7 @@ Setting up a OpenVAS scan can be done via the Seccubus GUI. In order to this typ
 Go to the workspace that you want to create the scan in and switch to the ‘Scans’ tab. Then click on the ‘Add’ button.
 Next we need to fill out a name for the scan, select the ‘OpenVAS’ scanner and provide the scanner parameters and the scan targets.
 The scanner parameters determine which command line parameters are sent to the scanners/<scannername>/scan script. In the case of the NessusLegacy scanner they should be:
---openvas_path <path to the OpenVAS client> --user <OpenVAS username> --password '<OpenVAS password>' --sever <OpenVAS IP address> --rc <path to the .openvasrc file> --hosts @HOSTS --workspace <Seccubus workspace name> --scan <Seccubus scan name>
+--openvas_path <path to the OpenVAS client> --user <OpenVAS username> --password '<OpenVAS password>' --sever <OpenVAS IP address> --rc <path to the .openvasrc file> --hosts @HOSTS 
 
 If you use ‘$HOSTS’ in a scan parameters, if will be replaced by the text typed in the ‘Scan targets’ field. If you use @HOSTS it will be replaced with the path to a file containing the information provided in the ‘Scan targets fields’
 
@@ -62,4 +63,19 @@ The ‘openvas_path’ parameter is optional. Seccubus will look for the OpenVAS cli
 You can test if your scan works by running the following command:
 > bin/do-scan –-workspace <Seccubus workspace name> --scan <Seccubus scan name> -v
 Example openvasrc files can be found in the Seccubus etc directory.
+1.5 Nmap
+Setting up an Nmap scan can also be done via the Seccubus GUI. In order to this type of scan to work you need to have Nmap installed on the server running Seccubus.
+Go to the workspace that you want to create the scan in and switch to the ‘Scans’ tab. Then click on the ‘Add’ button.
+Next we need to fill out a name for the scan, select the ‘Nmap’ scanner and provide the scanner parameters and the scan targets.
+The scanner parameters determine which command line parameters are sent to the scanners/<scannername>/scan script. In the case of the Nmap scanner they should be:
+--nmap_path <path to nmap> --nmap_options <additional options passed to Nmap> --hosts @HOSTS
+
+If you use ‘$HOSTS’ in a scan parameters, if will be replaced by the text typed in the ‘Scan targets’ field. If you use @HOSTS it will be replaced with the path to a file containing the information provided in the ‘Scan targets fields’
+
+The ‘nmap_path’ parameter is optional. Seccubus will look for nmap in the usual places, however if Seccubus cannot find the Nmap executable you will need to specify the full path to it.
+
+The string specified by nmap_options will be passed as command line options to Nmap. See ‘nmap –help’ or http://nmap.org/book/man.html for a full explanation of these options. Do not specify the –o option as this option will be set by Seccubus
+
+You can test if your scan works by running the following command:
+> bin/do-scan –-workspace <Seccubus workspace name> --scan <Seccubus scan name> -v
 

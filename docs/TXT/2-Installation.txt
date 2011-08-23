@@ -3,6 +3,7 @@ Before you install Seccubus V2 you need to fulfill a number of prerequisites. Th
 * Mysql
 * Apache
 * Perl
+* Ruby (Required if you want to run Nessus scans)
 The following Perl libraries need to be present:
 * Algorithm::Diff
 * Carp
