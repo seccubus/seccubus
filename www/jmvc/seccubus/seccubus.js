@@ -1,7 +1,11 @@
-steal(
-	'./models/models.js',		// steals all your models
-	'./fixtures/fixtures.js',	// sets up fixtures for your models
-	'./seccubus.css', 					// application CSS file
-	function(){						// configure your application
+steal.plugins(
+	
+	//'mxui/data/list',		
+	'seccubus/tabs')		// get Seccubus tabs
+	.css('seccubus')		// application CSS file
+	//.models('workspaces', 'scans', 'findings')	// steals all your models 
+	.then(function(){						// configure your application
 		
+		
+		//$(document.body).seccubus();
 	})

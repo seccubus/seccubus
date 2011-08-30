@@ -2,16 +2,38 @@
 	"http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
 	<head>
-		<title>seccubus</title>
+		<title>Seccubus 2</title>
 	</head>
 	<body>
-	    <h1>Welcome to JavaScriptMVC 3.X!</h1>
-        <ul>
-			<li>Steal plugins and files in <i>seccubus/seccubus.js</i>.</li>
-			<li>Change to production mode by changing <i>development</i> to <i>production</i> in this file.</li>
-        </ul>
-		<script type='text/javascript' 
-	    src='../steal/steal.js?seccubus,development'>	 
+		<div class="shell">
+			<div id="header-logo"><img src="img/logo.png" alt="" height="50"width="50" /></div>
+			<div id="header-top">
+				<h1><a href="#">Seccubus</a></h1>
+				<h2>Automated vulnerability scanning and reporting</h2>
+				<nav id="top-nav"> <a href="#">Settings</a> <span> | </span> <ahref="#">Help</a> </nav>
+			</div>
+			<div id="header-bottom">
+				<ul id='navTab'>
+					<li><a href="#workspaces">Workspaces</a></li>
+					<li><a href="#scans">Scans</a></li>
+					<li><a href="#findings">Findings</a></li>
+					<li><a href="#issues">Issues</a></li>
+					<li><a href="#reports">Reports</a></li>
+				</ul>
+			</div>
+		</div>
+		
+		<div id='workspaces' class='tab'>The workspaces will go here</div>
+		<div id='scans' class='tab'>The scans will go here</div>
+		<div id='findings' class='tab'>The findings will go here</div>
+		<div id='issues' class='tab'>The Issues will go here</div>
+		<div id='reports' class='tab'>The Reports will go here</div>	    
+
+
+		<script type='text/javascript' src='../steal/steal.js?seccubus,development'>
+
+			$('#navTab').seccubus_tabs();
+	   	 
         </script>
 	</body>
 </html>
