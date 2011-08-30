@@ -33,12 +33,12 @@ steal.plugins('jquery/controller', 'jquery/event/default').css('tabs').then(func
 		 */
 		init: function( el ) {
 
-			// activate the first tab, which is the last tab since css is floating them right
-			this.activate($(el).children("li:last"));
+			// activate the first tab
+			this.activate($(el).children("li:first"));
 
 			// hide other tabs
 			var tab = this.tab;
-			this.element.addClass('ui-helper-clearfix').children(":not(:last)").each(function() {
+			this.element.addClass('ui-helper-clearfix').children(":not(:first)").each(function() {
 				tab($(this)).hide();
 			});
 		},
@@ -95,6 +95,20 @@ steal.plugins('jquery/controller', 'jquery/event/default').css('tabs').then(func
 		 */
 		enable: function( index ) {
 			this.element.children(":eq("+index+")").removeClass('disable');
+		},
+		/**
+		 * Hides a tab
+		 * @param {Object} The element index value to disable
+		 */
+		hide: function( index ) {
+			this.element.children(":eq("+index+")").hide();
+		},
+		/**
+		 * Shows a hidden tab
+		 * @param {Object} The element index value to enable
+		 */
+		show: function( index ) {
+			this.element.children(":eq("+index+")").show();
 		}
 	});
 
