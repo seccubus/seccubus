@@ -60,7 +60,8 @@ steal.plugins('jquery/controller', 'jquery/event/default').css('tabs').then(func
 		 */
 		"li click": function( el, ev ) {
 			ev.preventDefault();
-			if ( !(el.hasClass('disable')) ) el.trigger("activate");
+			if ( !(el.hasClass('disable')) ) this.activate(el);
+			else console.warn("This tab is currently disabled and cannot be activated.");
 		},
 
 		/**
