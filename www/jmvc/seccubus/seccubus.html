@@ -36,6 +36,12 @@
 	<script type='text/javascript' src='../steal/steal.js?seccubus,development'>
 
 		$('#navTab').seccubus_tabs();
+		// Disable the Scans and Findings tab on start
+		$('#navTab').seccubus_tabs("disable", 1);
+		$('#navTab').seccubus_tabs("disable", 2);
+		// Hide Issues and Reports tab for now
+		$('#navTab').seccubus_tabs("hide", 3);
+		$('#navTab').seccubus_tabs("hide", 4);
 	   	 
     </script>
 	</body>
