@@ -3,8 +3,13 @@ Seccubus V2 Change Log
 Seccubus V2 is currently in Alpha phase. Even though we tested this code
 ourselves do not expect production ready code yet.
 
+10-10-2011 - 2.0.alpha5
+New features / Issues resolved
+
+Bigs fixed (tickets closed):
+
 13-09-2011 - 2.0.alpha4
-New featues / Issues resolved
+New features / Issues resolved
 * Nmap support
   Scanning with is supported from the same server that is running the Nessus
   Seccubus GUI
