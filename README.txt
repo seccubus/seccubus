@@ -1,16 +1,20 @@
 Seccubus V2 is currently in Alpha phase. Even though we tested this code
 ourselves do not expect production ready code yet.
 
-15-08-2011 - 2.0.alpha3
-New features / Issues resolved
-* Major bug in the delta engine resolved. It turned out that statusses where
-  not processed after a scan, but was called by the load_ivil utility.
+13-09-2011 - 2.0.alpha4
+New featues / Issues resolved
+* Nmap support
+  Scanning with is supported from the same server that is running the Nessus
+  Seccubus GUI
+* The results of the Nessus Policy Compliance family of plugins is now
+  supported
+  These plugins are different in the sense that they return multiple results
+  all direntified by a single pluginID
 
-Bugs fixed:
-#36 - Nessus scans don't seem to see targets
-https://sourceforge.net/apps/trac/seccubus/ticket/36
-#12 - Gone hosts not not detected correctly
-https://sourceforge.net/apps/trac/seccubus/ticket/12
-#42 - Scan parameters --workspace and --scan should be added automatically
-https://sourceforge.net/apps/trac/seccubus/ticket/42
+Bigs fixed (tickets closed):
+#8 - Integrate nmap scans into Seccubus
+https://sourceforge.net/apps/trac/seccubus/ticket/8
+#50 - scanners/nessus/scan should give a clear error message when ruby is
+not on system
+http://sourceforge.net/apps/trac/seccubus/ticket/50
 

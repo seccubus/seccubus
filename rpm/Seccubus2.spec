@@ -11,11 +11,11 @@
 %define scandir		%{installdir}/scanners
 
 Name:		Seccubus
-Version:	2.0.alpha3
-Release:	1
-Summary:	Automated regular Nessus scanning with delta reporting
+Version:	2.0.alpha4
+Release:	0
+Summary:	Automated regular vulnerability scanning with delta reporting
 Group:		Network/Tools
-License:	GPL
+License:	ASL 2.0
 URL:		http://www.seccubus.com
 
 Packager:	Peter Slootweg <pslootweg@schubergphilis.com>
@@ -32,10 +32,14 @@ Requires:	perl-Algorithm-Diff
 Requires:	httpd
 
 %description
-Tool to automatically fire regular security scans with Nessus. Compare results
-of the current scan with the previous scan and report on the delta in a web
-interface. Main objective of the tool is to make repeated scans more efficient.
-Needs Nessus client (http://www.nessus.org).
+Tool to automatically fire regular vulnerability scans with Nessus, OpenVAS, 
+Nikto or Nmap. 
+Compare results of the current scan with the previous scan and report on the 
+delta in a web interface. Main objective of the tool is to make repeated scans 
+more efficient.
+Nessus scanning needs Ruby 
+Nmap scanning needs the Nmap scanner
+Nikto scanning needs the Nikto scanner
 
 %clean
 [ %{buildroot} != "/" ] && %{__rm} -rf %{buildroot}
@@ -333,6 +337,8 @@ OEF
 
 
 %changelog
+* Tue Sep 13 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
+- version 2.0.alpha4
 * Thu Aug 25 2011 Peter Slootweg <peter@pxmedia.nl>
 - version 2.0.alpha3
 * Mon May 2 2011 Peter Slootweg <pslootweg@schubergphilis.com>
