@@ -36,5 +36,8 @@ config\.xml$
 ^make_dist$
 ^db\/create_empty_db$
 
+# Don't bundle RPM building files
+^rmp\/
+
 # JMVC files for now as well
 ^www\/jmvc
