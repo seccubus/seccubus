@@ -15,7 +15,7 @@ Version:	2.0.alpha4
 Release:	0
 Summary:	Automated regular vulnerability scanning with delta reporting
 Group:		Network/Tools
-License:	ASL 2.0
+License:	GPL
 URL:		http://www.seccubus.com
 
 Packager:	Peter Slootweg <pslootweg@schubergphilis.com>
