@@ -15,7 +15,7 @@ Version:	2.0.alpha4
 Release:	0
 Summary:	Automated regular vulnerability scanning with delta reporting
 Group:		Network/Tools
-License:	GPL
+License:	ASL 2.0
 URL:		http://www.seccubus.com
 
 Packager:	Peter Slootweg <pslootweg@schubergphilis.com>
@@ -54,6 +54,7 @@ mkdir -p %{buildroot}/%{installdir}
 #mkdir -p %{buildroot}/%{confdir}
 #mkdir -p %{buildroot}/%{vardir}
 mkdir -p %{buildroot}/%{docsdir}/db
+mkdir -p %{buildroot}/%{docsdir}/GUI
 #mkdir -p %{buildroot}/%{moddir}
 #mkdir -p %{buildroot}/%{scandir}
 mkdir -p %{buildroot}/etc/httpd/conf.d
@@ -184,9 +185,11 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/add_user
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/do-scan
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/dump_ivil
+%attr(755, %{seccuser}, %{seccuser}) %{bindir}/dump_nmap
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/importer
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/load_ivil
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/nbe2ivil
+%attr(755, %{seccuser}, %{seccuser}) %{bindir}/nmap2ivil
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/nessus2ivil
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}
@@ -199,6 +202,39 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/db
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v1.mwb
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v1.pdf
+
+%attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/GUI
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/GUI/UseCaseFindings.png
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/GUI/UseCaseScans.png
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/GUI/UseCaseSeccubusGUIStart.png
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/GUI/UseCaseWorkspaces.png
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/GUI/umlSeccubusGUI.di2
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/GUI/umlSeccubusGUI.uml
+
+%attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/HTML
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/1-HowToGet.htm
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/2-Installation.htm
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/3-ScanConfiguration.htm
+
+%attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/HTML
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/1-HowToGet.htm
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/2-Installation.htm
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/3-ScanConfiguration.htm
+
+%attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/HTML
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/1-HowToGet.htm
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/2-Installation.htm
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/3-ScanConfiguration.htm
+
+%attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/HTML
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/1-HowToGet.htm
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/2-Installation.htm
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/3-ScanConfiguration.htm
+
+%attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/HTML
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/1-HowToGet.htm
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/2-Installation.htm
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/3-ScanConfiguration.htm
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/HTML
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/1-HowToGet.htm
@@ -239,6 +275,9 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Nessus
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nessus/nivil.rb
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nessus/scan
+
+%attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Nmap
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nmap/scan
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Nikto
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nikto/scan
@@ -359,3 +398,4 @@ OEF
 - Removed last remaining /home/seccubus references
 * Tue Jun 22 2010 Peter Slootweg <pslootweg@schubergphilis.com>
 - Initial Spec File
+
