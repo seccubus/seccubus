@@ -1,0 +1,19 @@
+// used to 'run' a funcunit/envjs command:
+// _args = ['selenium', 'path/to/page.html']; load('funcunit/run')
+(function(){
+	var type, page;
+	if (!_args[0]) {
+		print("Usage: js funcunit/run selenium path/to/page.html");
+		quit();
+	}
+	
+	load('steal/rhino/rhino.js');
+	type = _args[0];
+	page = _args[1];
+	
+	steal('funcunit/commandline/'+type+'.js', 
+		'funcunit/commandline/utils.js', function(){
+			FuncUnit.loader[type](page)
+	})
+
+})()
