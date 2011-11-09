@@ -1,0 +1,1 @@
+steal("funcunit/qunit", "./seccubus_test.js");
