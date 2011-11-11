@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>Seccubus.ConfigItem.Create</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+        </style>
+	</head>
+	<body>
+	    <h1>Seccubus.ConfigItem.Create Demo</h1>
+		<form id='create' action=''></form>
+		<div id='config_items'></div>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal('seccubus/config_item/create','seccubus/fixtures',function(){
+				
+				$('#create').seccubus_config_item_create();
+				Seccubus.Models.ConfigItem.bind('created', function(ev, config_item){
+					$('<div>').html("<h3>"+config_item.name+"</h3><p>"+config_item.description+"</p>")
+					        .appendTo( $('#config_items') )
+				})
+				
+			})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,5 @@
+<%for(var i = 0; i < this.length ; i++){%>
+	<li <%= this[i]%>>
+		<%== $.View('//seccubus/config_item/list/views/config_item.ejs', this[i] )%>
+	</li>
+<%}%>
