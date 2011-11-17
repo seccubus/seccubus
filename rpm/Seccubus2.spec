@@ -15,7 +15,7 @@ Version:	2.0.alpha4
 Release:	0
 Summary:	Automated regular vulnerability scanning with delta reporting
 Group:		Network/Tools
-License:	ASL 2.0
+License:	GPL
 URL:		http://www.seccubus.com
 
 Packager:	Peter Slootweg <pslootweg@schubergphilis.com>
@@ -273,23 +273,23 @@ OEF
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Nessus
-%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nessus/nivil.rb
-%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nessus/scan
+%attr(755, %{seccuser}, %{seccuser}) %{scandir}/Nessus/nivil.rb
+%attr(755, %{seccuser}, %{seccuser}) %{scandir}/Nessus/scan
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Nmap
-%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nmap/scan
+%attr(755, %{seccuser}, %{seccuser}) %{scandir}/Nmap/scan
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Nikto
-%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nikto/scan
+%attr(755, %{seccuser}, %{seccuser}) %{scandir}/Nikto/scan
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/OpenVAS
-%attr(644, %{seccuser}, %{seccuser}) %{scandir}/OpenVAS/scan
+%attr(755, %{seccuser}, %{seccuser}) %{scandir}/OpenVAS/scan
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/NessusLegacy
 %attr(644, %{seccuser}, %{seccuser}) "%{scandir}/NessusLegacy/(dot)update-nessusrc.example"
-%attr(644, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/scan
-%attr(644, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/update-nessusrc
-%attr(644, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/update-rcs
+%attr(755, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/scan
+%attr(755, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/update-nessusrc
+%attr(755, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/update-rcs
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/SeccubusV2.pm
@@ -376,6 +376,8 @@ OEF
 
 
 %changelog
+* Thu Nov 17 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Permissions of scanner files are not correct
 * Tue Sep 13 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
 - version 2.0.alpha4
 * Thu Aug 25 2011 Peter Slootweg <peter@pxmedia.nl>
@@ -398,4 +400,3 @@ OEF
 - Removed last remaining /home/seccubus references
 * Tue Jun 22 2010 Peter Slootweg <pslootweg@schubergphilis.com>
 - Initial Spec File
-
