@@ -211,7 +211,7 @@ Usage: scan       --user=<username> --password=<password> --server=<server> \\
 		    for specifying hosts, or path to a file containing such 
 		    specification
 --workspace (-ws) - Seccubus workspace the scan in in
---scan= (-sc)	  - Seccubus scan the data should be saved in
+--scan (-sc)	  - Seccubus scan the data should be saved in
 --noerase         - Don't erase temporary files
 --sleep           - Seconds to sleep between polls of the Nessus engine 
                     (default=10)
