@@ -7,6 +7,12 @@ ourselves do not expect production ready code yet.
 New features / Issues resolved
 
 Bigs fixed (tickets closed):
+#55 - Spec file is missing dependancies
+https://sourceforge.net/apps/trac/seccubus/ticket/55
+#56 - Scanner files not executable after install
+https://sourceforge.net/apps/trac/seccubus/ticket/56
+#59 - Nikto scanner not running
+https://sourceforge.net/apps/trac/seccubus/ticket/59
 
 13-09-2011 - 2.0.alpha4
 New features / Issues resolved

@@ -67,6 +67,7 @@ $verbose = 0 if $quiet;
 $port = 9390 unless $port;
 
 my $config = get_config();
+my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
 
 if ( ! $hosts_file || ! -e $hosts_file ) {
 	print "You must specify a valid hosts file";

@@ -65,6 +65,7 @@ help() if $help;
 $verbose = 0 if $quiet;
 
 my $config = get_config();
+my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
 
 print "Hosts file specified $hosts_file\n" if $verbose;
 if ( ! $hosts_file || ! -e $hosts_file ) {
