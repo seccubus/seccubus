@@ -27,13 +27,9 @@ Source0:	http://downloads.sourceforge.net/project/%{name}/%{name}_v2/%{name}-%{v
 
 #BuildRequires:	
 Requires:	perl-Algorithm-Diff
-Requires:	httpd 
-Requires:	ruby
-Requires:	mysql
-Requires:	mysql-server
 #Requires:	mod_perl
 #Requires:	Nessus
-
+Requires:	httpd
 
 %description
 Tool to automatically fire regular vulnerability scans with Nessus, OpenVAS, 
@@ -380,10 +376,6 @@ OEF
 
 
 %changelog
-* Thu Nov 18 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
-- Fixed missing dependancies (#55)
-* Thu Nov 17 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
-- Permissions of scanner files are not correct (#56)
 * Tue Sep 13 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
 - version 2.0.alpha4
 * Thu Aug 25 2011 Peter Slootweg <peter@pxmedia.nl>
