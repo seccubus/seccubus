@@ -127,9 +127,3 @@ header h2 {
 	background-repeat: no-repeat;
 	background-position: 0.5em;
 }
-li.Error {
-	padding-left: 30px;
-	background-image: url(img/error.png);
-	background-repeat: no-repeat;
-	background-position: 0.5em;
-}

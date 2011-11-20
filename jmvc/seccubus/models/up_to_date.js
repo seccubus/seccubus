@@ -9,8 +9,8 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.UpToDate',
 /* @Static */
 {
-	findAll: "/up_to_dates.json",
-  	findOne : "/up_to_dates/{id}.json", 
+	findAll: "api/UpToDate.json.pl" //,
+  	//findOne : "/up_to_dates/{id}.json", 
 },
 /* @Prototype */
 {});

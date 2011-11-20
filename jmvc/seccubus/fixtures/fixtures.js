@@ -12,6 +12,7 @@ steal("jquery/dom/fixture", function(){
 			link: $.fixture.rand( links, 1)[0]
 		}
 	})
+	/* Config Item fixture */
 	$.fixture.make("config_item", $.fixture.rand(50), function(i, config_item){
 		return {
 			name: "config_item "+i,
@@ -19,4 +20,5 @@ steal("jquery/dom/fixture", function(){
 			result: $.fixture.rand( ['OK','Error'] , 1)[0]
 		}
 	})
+	/* End config item fixture */
 })

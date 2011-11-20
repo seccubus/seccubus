@@ -5,6 +5,18 @@
 		<title>Seccubus.UpToDate.List Demo</title>
         <style type='text/css'>
             body {font-family: verdana}
+            .Error {
+                padding-left: 30px;
+                background-image: url(img/error.png);
+                background-repeat: no-repeat;
+                background-position: 0.5em;
+            }
+            .OK {
+                padding-left: 30px;
+                background-image: url(img/ok.png);
+                background-repeat: no-repeat;
+                background-position: 0.5em;
+            }
         </style>
 	</head>
 	<body>
@@ -14,7 +26,7 @@
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
-			steal('seccubus/up_to_date/list','seccubus/fixtures',function(){
+			steal('seccubus/up_to_date/list',function(){
 				
 				$('#up_to_dates').seccubus_up_to_date_list();
 				

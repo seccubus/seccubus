@@ -5,6 +5,18 @@
 		<title>Seccubus.ConfigItem.List Demo</title>
         <style type='text/css'>
             body {font-family: verdana}
+	    .Error {
+	        padding-left: 30px;
+	        background-image: url(img/error.png);
+	        background-repeat: no-repeat;
+	        background-position: 0.5em;
+	    }
+	    .OK {
+	    	padding-left: 30px;
+		background-image: url(img/ok.png);
+		background-repeat: no-repeat;
+		background-position: 0.5em;
+	    }
         </style>
 	</head>
 	<body>
@@ -15,7 +27,7 @@
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
-			steal('seccubus/config_item/list','seccubus/fixtures',function(){
+			steal('seccubus/config_item/list',function(){
 				
 				$('#config_items').seccubus_config_item_list();
 				

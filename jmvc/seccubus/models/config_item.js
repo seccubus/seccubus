@@ -9,11 +9,11 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.ConfigItem',
 /* @Static */
 {
-	findAll: "/config_items.json",
-  	findOne : "/config_items/{id}.json", 
-  	create : "/config_items.json",
- 	update : "/config_items/{id}.json",
-  	destroy : "/config_items/{id}.json"
+	findAll: "api/ConfigTest.json.pl",
+  	//findOne : "/config_items/{id}.json", 
+  	//create : "/config_items.json",
+ 	//update : "/config_items/{id}.json",
+  	//destroy : "/config_items/{id}.json"
 },
 /* @Prototype */
 {});

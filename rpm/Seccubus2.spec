@@ -30,6 +30,7 @@ Requires:	perl-Algorithm-Diff
 Requires:	httpd
 Requires:	mysql
 Requires:	ruby
+Requires:	perl-JSON-any
 
 %description
 Tool to automatically fire regular vulnerability scans with Nessus, OpenVAS, 

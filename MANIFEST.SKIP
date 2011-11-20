@@ -35,6 +35,7 @@ config\.xml$
 ^jmvc\/
 
 # Misc
+^www\/tmp\/
 ^tmp\/
 ^make_dist$
 ^db\/create_empty_db$

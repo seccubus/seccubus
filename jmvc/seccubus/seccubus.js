@@ -2,10 +2,9 @@ steal(
 	
 	'./seccubus.css',		// application CSS file
 	'./models/models.js',		// steals all your models
-	'./fixtures/fixtures.js',	// sets up fixtures for your models
+	//'./fixtures/fixtures.js',	// sets up fixtures for your models
 	'seccubus/tabs',		// get Seccubus tabs
 	'seccubus/up_to_date/list',
-	'seccubus/config_item/create',
 	'seccubus/config_item/list',
 	function(){			// configure your application
 		
