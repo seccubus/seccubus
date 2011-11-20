@@ -112,3 +112,24 @@ header h2 {
 #main-nav {
 	float: right;
 }
+
+/* begin li.error and li.ok */
+.Error {
+	padding-left: 30px;
+	background-image: url(img/error.png);
+	background-repeat: no-repeat;
+	background-position: 0.5em;
+}
+
+.OK {
+	padding-left: 30px;
+	background-image: url(img/ok.png);
+	background-repeat: no-repeat;
+	background-position: 0.5em;
+}
+li.Error {
+	padding-left: 30px;
+	background-image: url(img/error.png);
+	background-repeat: no-repeat;
+	background-position: 0.5em;
+}

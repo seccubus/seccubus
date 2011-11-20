@@ -1,5 +1,6 @@
+<h2>Configuration status</h2>
 <%for(var i = 0; i < this.length ; i++){%>
-	<li <%= this[i]%>>
+	<span <%= this[i]%>>
 		<%== $.View('//seccubus/config_item/list/views/config_item.ejs', this[i] )%>
-	</li>
+	</span>
 <%}%>

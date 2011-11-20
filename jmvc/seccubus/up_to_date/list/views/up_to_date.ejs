@@ -1,2 +1,5 @@
-<b>Update status:<span id='up2date_status'><%= status %></span></b>
-<p><%= message %></p>
+<b><%= status %></b>
+<% if(link) { %>
+	Download link: <a href='<%= link %>'><%= link %></a>
+<% } %>
+<p><br><%= message %></p>
