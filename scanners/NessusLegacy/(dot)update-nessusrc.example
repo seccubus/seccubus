@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+#use strict; #Fooling perl_ok
 $nessusd_host = "localhost";
 $nessusd_user = "localhost";
 $nessusd_user_pass = "localhost";

@@ -26,7 +26,7 @@ list of all functions within the module.
 
 =cut
 
-@ISA = ('Explorer')
+@ISA = ('Explorer');
 @EXPORT = qw ( 
 		FILETYPES
 		SCANNERS

@@ -16,25 +16,27 @@
 #  limitations under the License.
 # ------------------------------------------------------------------------------
 use ExtUtils::MakeMaker;
+use strict;
 
 WriteMakefile (
 	NAME		=> "Seccubus",
 	VERSION_FROM	=> "SeccubusV2.pm",
 	PREREQ_PM	=> {
-				Algorithm::Diff		=> 1.15,
-				Carp			=> 1.04,
-                                CGI			=> 3.15,
-                                Exporter		=> 5.58,
-				ExtUtils::MakeMaker	=> 6.30,
-				Getopt::Long		=> 2.35,
-				IPC::Open2		=> 1.02,
-				LWP::UserAgent		=> 2.0,
-				DBI			=> 1.58,
-				Data::Dumper		=> 2.12,
-				XML::Simple		=> 2.17,
-				HTML::Entities		=> 1.35,
-				LWP::Simple		=> 1.41,
-				MIME::Base64		=> 3.07,
+				'Algorithm::Diff'	=> 1.15,
+				'Carp'			=> 1.04,
+                                'CGI'			=> 3.15,
+                                'Exporter'		=> 5.58,
+				'ExtUtils::MakeMaker'	=> 6.30,
+				'Getopt::Long'		=> 2.35,
+				'IPC::Open2'		=> 1.02,
+				'LWP::UserAgent'	=> 2.0,
+				'DBI'			=> 1.58,
+				'Data::Dumper'		=> 2.12,
+				'XML::Simple'		=> 2.17,
+				'HTML::Entities'	=> 1.35,
+				'LWP::Simple'		=> 1.41,
+				'MIME::Base64'		=> 3.07,
+				'JSON'			=> 2.0,
 			},
 	PM		=> { 
 				'SeccubusV2.pm'				=> '$(INST_LIBDIR)/SeccubusV2.pm',
