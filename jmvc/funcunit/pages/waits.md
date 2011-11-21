@@ -14,7 +14,7 @@ getters depending on arguments.
 
 Most wait commands only require a single argument.
 
-<code>wait( checkVal, [timeout], [callback] )</code>
+<code>wait( checkVal, [timeout], [callback], [message] )</code>
 
 - [FuncUnit.prototype.size size]
 - [FuncUnit.prototype.html html]
@@ -46,7 +46,7 @@ S(".banner").text("Done")
 
 Some jQuery methods accept 2 parameters.  Similarly, those wait methods accept two arguments.
 
-<code>wait( keyVal, checkVal, [timeout], [callback] )</code>
+<code>wait( keyVal, checkVal, [timeout], [callback], [message] )</code>
 
 - [FuncUnit.prototype.data data]
 - [FuncUnit.prototype.attr attr]
@@ -67,6 +67,8 @@ S(".container").css("font-color", "red")
 ### Zero argument waits
 
 Several wait methods check for existence/visibility of elements. These require zero parameters.
+
+<code>wait( [timeout], [callback], [message] )</code>
 
 - [FuncUnit.prototype.exists exists]
 - [FuncUnit.prototype.missing missing]
@@ -113,7 +115,7 @@ provided.
 
 ## Callback
 
-The last (optional) parameter for each wait command is a callback method, which runs after the wait completes.
+Another optional parameter for each wait command is a callback method, which runs after the wait completes.
 
 Inside a callback is the place to get information about a page and perform assertions. Callbacks are 
 also useful for debugging.
@@ -122,4 +124,14 @@ also useful for debugging.
 S(".foo").text("bar", function(){
   // runs after wait condition completes
 })
+@codeend
+
+## Message
+
+The last (optional) parameter for each wait command is a message.  By default, wait conditions will pass silently (without a passed assertion).  
+If a user provides a message string, the wait condition will pass an assertion with the given message when the wait completes.  If the wait fails 
+(the timeout is reached), this message will be provided to the failed assertion.
+
+@codestart
+S(".foo").text("bar", "the foo element has text bar")
 @codeend

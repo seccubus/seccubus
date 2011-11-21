@@ -4,11 +4,16 @@ var confirms = [],
 	prompts = [], 
 	currentDocument,
 	lookingForNewDocument = false,
-	
+	urlWithoutHash = function(url){
+		return url.replace(/\#.*$/, "");
+	},
 	// returns true if url matches current window's url
 	isCurrentPage = function(url){
-		if( FuncUnit.win.location.pathname === url ||
-			FuncUnit.win.href === url ){
+		var pathname = urlWithoutHash(FuncUnit.win.location.pathname),
+			href = urlWithoutHash(FuncUnit.win.location.href),
+			url = urlWithoutHash(url);
+		// must strip off hash from URLs
+		if( pathname === url || href === url ){
 			return true;
 		}
 		return false;
@@ -104,15 +109,15 @@ $.extend(FuncUnit,{
 	</table>
 	 * 
 	 * @param {String} path a full or partial url to open.  If a partial is given, 
-	 * @param {Function} callback
+	 * @param {Function} success
 	 * @param {Number} timeout
 	 */
-	open: function( path, callback, timeout ) {
+	open: function( path, success, timeout ) {
 		var fullPath = FuncUnit.getAbsolutePath(path), 
 		temp;
-		if(typeof callback != 'function'){
-			timeout = callback;
-			callback = undefined;
+		if(typeof success != 'function'){
+			timeout = success;
+			success = undefined;
 		}
 		FuncUnit.add({
 			method: function(success, error){ //function that actually does stuff, if this doesn't call success by timeout, error will be called, or can call error itself
@@ -123,7 +128,7 @@ $.extend(FuncUnit,{
 					success()
 				}, error);
 			},
-			callback: callback,
+			success: success,
 			error: "Page " + path + " not loaded in time!",
 			timeout: timeout || 30000
 		});
@@ -143,8 +148,14 @@ $.extend(FuncUnit,{
 			else{
 				// giving a large height forces it to not open in a new tab and just opens to the window's height
 				var width = $(window).width();
-				//opera.postError("window.open")
 				FuncUnit.win = window.open(url, "funcunit",  "height=1000,toolbar=yes,status=yes,left="+width/2);
+				// This is mainly for opera. Other browsers will hit the unload event and close the popup.
+				// This block breaks in IE (which never reaches it) because after closing a window, it throws access 
+				// denied any time you try to access it, even after reopening.
+				if(FuncUnit.win.___FUNCUNIT_OPENED){
+					FuncUnit.win.close();
+					FuncUnit.win = window.open(url, "funcunit",  "height=1000,toolbar=yes,status=yes,left="+width/2);
+				}
 				
 				
 				if(!FuncUnit.win){
@@ -336,7 +347,7 @@ $.extend(FuncUnit,{
 	var newDocument = false, 
 		poller = function(){
 			var ls;
-			if(FuncUnit.win.document  == null){
+			if(FuncUnit.win && FuncUnit.win.document == null){
 				return
 			}
 			/*opera.postError("looking "+lookingForNewDocument)
@@ -370,25 +381,14 @@ $.extend(FuncUnit,{
 					}
 				}
 			}
-		
-		/*if (FuncUnit.win.document !== currentDocument || newDocument) { //we have a new document
-			currentDocument = FuncUnit.win.document;
-            newDocument = true;
-			if (FuncUnit.win.document.readyState === "complete" && FuncUnit.win.location.href!="about:blank" && !reloading) {
-				
-				
-			}
-		}*/
-		// TODO need a better way to determine if a reloaded frame is loaded (like clearing the frame), this might be brittle 
+			
 		setTimeout(arguments.callee, 500)
 	}
 
-	/**$(window).unload(function(){
-		// helps with page reloads
-		if (FuncUnit.win && FuncUnit.win.steal){
-			delete FuncUnit.win.steal.isReady;
-			delete FuncUnit.win.document.readyState
-		}
-	})*/
+	// All browsers except Opera close the app window on a reload.  This is to fix the case the URL to be opened 
+	// has a hash.  In this case, window.open doesn't cause a reload if you reuse an existing popup, so we need to close.
+	$(window).unload(function(){
+		FuncUnit.win && FuncUnit.win.close();
+	});
 	
 })(window.jQuery || window.FuncUnit.jQuery)

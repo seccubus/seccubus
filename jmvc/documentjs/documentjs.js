@@ -301,13 +301,18 @@ steal(	'steal/generate/ejs.js',
 	extend(docJS, {
 		files : function(path, cb){
 			var getJSFiles = function(dir){
-			  new steal.File(dir).contents(function(f, type){
-				if(type == 'directory'){
-			       getJSFiles(dir+"/"+f)
-			    }else {
-				  cb((dir+"/"+f).replace('\\', '/'), f)
-			    }
-			  })
+			  var file = new steal.File(dir);
+			  if(file.isFile()) {
+				  cb(dir.replace('\\', '/'), dir);
+			  } else {
+				  file.contents(function(f, type){
+					if(type == 'directory'){
+				       getJSFiles(dir+"/"+f)
+				    }else {
+					  cb((dir+"/"+f).replace('\\', '/'), f);
+				    }
+				  });
+			  }
 			};
 			getJSFiles(path);
 		},
@@ -320,7 +325,7 @@ steal(	'steal/generate/ejs.js',
 					scripts.each(function(script, text){
 						if (text && script.src) {
 							collection.push({
-								src: script.src,
+								src: script.rootSrc,
 								text:  text
 							})
 						}
@@ -373,6 +378,8 @@ steal(	'steal/generate/ejs.js',
 				}
 	
 			}
+			//print(commentTime);
+			//print(processTime)
 		},
 		// takes an object and returns how DocumentJS likes to save data
 		out: function() {

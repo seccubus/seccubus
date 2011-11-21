@@ -9,7 +9,7 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.ConfigItem',
 /* @Static */
 {
-	findAll: "api/ConfigTest.json.pl",
+	findAll: "api/ConfigTest.json.pl"
 },
 /* @Prototype */
 {});

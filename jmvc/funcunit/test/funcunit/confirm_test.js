@@ -5,15 +5,11 @@ module("funcunit - jQuery API",{
 })
 
 test("confirm overridden", function(){
-	S('#confirm').click().wait(1000, function(){
-		equal(S('#confirm').text(), "I was confirmed", "confirmed overriden to return true");
-	});
-	
+	S('#confirm').click()
+	S('#confirm').text("I was confirmed");
 });
 
 test("alert overridden", function(){
-	S('#alert').click().wait(1000, function(){
-		equal(S('#alert').text(), "I was alert", "alert overriden to return true");
-	});
-	
+	S('#alert').click()
+	S('#alert').text("I was alert");
 });

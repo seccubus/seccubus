@@ -62,14 +62,26 @@ steal(function(){
 		}
 	}
 	
-	FuncUnit._getPageUrl = function(page){
-		if(typeof phantom === "undefined" && !/http:|file:/.test(page)){ // if theres no protocol, turn it into a filesystem url
+	FuncUnit._getPageUrl = function(page, coverage){
+		if(!/https?:|file:/.test(page)){ // if theres no protocol, turn it into a filesystem urls
 			var cwd = (new java.io.File (".")).getCanonicalPath();
-			page = "file://"+cwd+"/"+page;
+			if(coverage){
+				page = "file://"+cwd+"/instrumented/"+page;
+			} else {
+				page = "file://"+cwd+"/"+page;
+			}
 		}
 		
 		//convert spaces to %20.
-		var newPage = /http:/.test(page) ? page: page.replace(/ /g,"%20");
+		var newPage = /https?:/.test(page) ? page: page.replace(/ /g,"%20");
+		
+		// insert /instrumented
+		// TODO this only works if you use an http url and the root domain is the jmvc root
+		if(/https?:/.test(page) && coverage){
+			var newPageMatch = newPage.match(/(https?\:\/\/[^\/]*\/)(.*)/);
+			newPage = newPageMatch[1]+"instrumented/"+newPageMatch[2];
+		}
+		
 		return newPage;
 	}
 })

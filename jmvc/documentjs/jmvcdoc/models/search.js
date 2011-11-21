@@ -24,9 +24,14 @@ steal('jquery/class').then('./favorites.js',function(){
 					return;
 				} else {
 					//clear everything that starts with jmvcDoc, try to remove the old data ...
-					for(var prop in localStorage){
-						if(prop.indexOf("jmvcDoc") == 0){
+					i = 0;
+					while (i < localStorage.length) {
+						var prop = localStorage.key(i);
+						if (prop.indexOf("jmvcDoc") == 0) {
 							localStorage.removeItem(prop)
+						}
+						else {
+							i++;
 						}
 					}
 				}

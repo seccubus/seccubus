@@ -220,7 +220,18 @@ or integrated with CI tools like [funcunit.jenkins Jenkins].
 	
 	var getContext = function(context){
 			if (typeof context == "number" || typeof context == "string") {
-				var frame = FuncUnit.win.frames[context];
+				var frame;
+				if(typeof context === "number"){
+					frame = FuncUnit.win.frames[context];
+				} else {
+					// in FF8, if you replace a frame with a frame of the same name, you can no longer 
+					// look up the frame by its name, so we have to iterate and find it ourself
+					for(var i=0; i < FuncUnit.win.frames.length; i++){
+						if(FuncUnit.win.frames[i].name && FuncUnit.win.frames[i].name === context) {
+							frame = FuncUnit.win.frames[i];
+						}
+					}
+				}
 				if(frame){
 					context = frame.document;
 				} else {

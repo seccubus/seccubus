@@ -1,9 +1,8 @@
-steal(function(){
+steal('funcunit/browser/resources/jquery.js', function(){
 
 	if(steal.options.browser === "phantomjs"){
-		var ifrm = document.createElement("IFRAME"); 
-		ifrm.setAttribute("id", "funcunit_app");
-		document.body.appendChild(ifrm);
+		var ifrm = $("<iframe id='funcunit_app' height='800' width='960'></iframe")
+		$(document.body).prepend(ifrm);
 	}
 
 	var evts = ['begin', 'testStart', 'testDone', 'moduleStart', 'moduleDone', 'done', 'log'], type;
@@ -12,6 +11,11 @@ steal(function(){
 		type = evts[i];
 		(function(type){
 			QUnit[type] = function(data){
+				if(type === "done"){
+					if (_$jscoverage) {
+						steal.client.trigger("coverage", _$jscoverage);
+					}
+				}
 				steal.client.trigger(type, data);
 			};
 		})(type);

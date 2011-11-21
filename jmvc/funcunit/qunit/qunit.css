@@ -1,9 +1,9 @@
 /**
- * QUnit - A JavaScript Unit Testing Framework
+ * QUnit 1.1.0 - A JavaScript Unit Testing Framework
  *
  * http://docs.jquery.com/QUnit
  *
- * Copyright (c) 2011 John Resig, Jšrn Zaefferer
+ * Copyright (c) 2011 John Resig, JÃ¶rn Zaefferer
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * or GPL (GPL-LICENSE.txt) licenses.
  */
@@ -186,6 +186,7 @@
 	color: #710909;
 	background-color: #fff;
 	border-left: 26px solid #EE5757;
+	white-space: pre;
 }
 
 #qunit-tests > li:last-child {

@@ -28,5 +28,8 @@
 	        test: <a href='<%= steal.root? steal.root.join(this.test): this.test %>'><%=this.test.match(/[^\/]*$/)[0]%></a>
 	    </div>
 	    <% } %>
+		<% if(this.line !== undefined && window.DOCS_SRC_MAP){ %>
+			<a href='<%== source(this) %>'>Source</a>
+		<%}%>
 	</div>	
 </div>

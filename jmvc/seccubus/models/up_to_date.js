@@ -9,7 +9,7 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.UpToDate',
 /* @Static */
 {
-	findAll: "api/UpToDate.json.pl",
+	findAll: "api/UpToDate.json.pl"
 },
 /* @Prototype */
 {});

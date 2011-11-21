@@ -102,6 +102,8 @@ var traversers = [
 					method: function(success, error){
 						// adjust the collection by using the real traverser method
 						this.bind = orig.apply(this.bind, args);
+						this.bind.prevTraverser = name;
+						this.bind.prevTraverserSelector = selector;
 						success()
 					},
 					error: "Could not traverse: " + name + " " + selector,

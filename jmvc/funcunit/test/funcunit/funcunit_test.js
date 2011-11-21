@@ -62,12 +62,14 @@ test("hasClass", function(){
 	setTimeout(function(){
 		fast = true
 	},50)
+	
 	S("#hasClass").hasClass("someClass",true, function(){
 		ok(fast,"waited until it has a class exists")
 	});
 	S("#hasClass").hasClass("someOtherClass",false, function(){
 		ok(fast,"waited until it has a class exists")
 	});
+	// S("#doesnotexist").hasClass("someOtherClass", false, "element doesn't exist, this should fail");
 })
 
 test("Exists", function(){
@@ -137,4 +139,8 @@ test("branch", function(){
 		ok(true, "found exists")
 	});
 	
+})
+
+test("invisible", function(){
+	S(".hidden").invisible("Invisible works");
 })

@@ -1,7 +1,7 @@
 module("jquery/model", { 
 	setup: function() {
         var ids = 0;
-	    $.Model.extend("Person",{
+	    $.Model("Person",{
 			findAll: function( params, success, error ) {
 				success("findAll");
 			},
@@ -462,4 +462,47 @@ test("identity should replace spaces with underscores", function(){
 	});
 	equals(t.identity(), "task_id_with_spaces")
 });
+
+test("save error args", function(){
+	var Foo = $.Model('Testin.Models.Foo',{
+		create : "/testinmodelsfoos.json"
+	},{
+		
+	})
+	var st = '{type: "unauthorized"}';
+	
+	$.fixture("/testinmodelsfoos.json", function(){
+		return [401,st]
+	});
+	stop();
+	var inst = new Foo({}).save(function(){
+		ok(false, "success should not be called")
+	}, function(jQXHR){
+		ok(true, "error called")
+		ok(jQXHR.getResponseHeader,"jQXHR object")
+		start()
+	})
+	
+	
+	
+});
+
+test("hookup and elements", function(){
+	$.Model('Escaper',{
+		escapeIdentity : true
+	},{});
+	
+	var ul = $('<ul><li></li></ul>'),
+		li = ul.find('li');
+	
+	var esc = new Escaper({id: " some crazy #/ %ing stuff"});
+	
+	li.model(esc);
+	
+	var res  = esc.elements(ul);
+	
+	equals(res.length,1)
+	equals(res[0], li[0])
+})
+
 

@@ -28,3 +28,16 @@ test("Back to back opens", function(){
 		equals(S("#changelink").text(), "Changed","href javascript run")
 	})
 })
+
+
+test("Back to back opens with hash", function(){
+	S.open("//funcunit/test/myapp.html?bar#foo");
+	S("#changelink").click(function(){
+		equals(S("#changelink").text(), "Changed","href javascript run")
+	});
+	
+	S.open("//funcunit/test/myapp.html?bar#foo2");
+	S("#changelink").text(function(text){
+		return text === "Change";
+	});
+})

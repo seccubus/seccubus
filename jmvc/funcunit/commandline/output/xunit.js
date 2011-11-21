@@ -14,7 +14,7 @@
  * prefix in FuncUnit.xmlLogClassPrefix.
  */
  
-(function() {
+steal('funcunit/commandline/output/json2.js', function(){
 	var classPrefix = FuncUnit.xmlLogClassPrefix ? FuncUnit.xmlLogClassPrefix : '',
 		filename = FuncUnit.xmlLogFilename ? FuncUnit.xmlLogFilename : false,
 		fstream, out;
@@ -152,6 +152,25 @@
 		},
 		browserDone: function(name, failures, total){
 			print("\n" + name+" done :-)");
+		},
+		coverage: function(stats){
+			print("\n"+'Coverage Statistics:'+"\n")
+			print("% Covered\tTotal Lines\tLines Run\tFile Name")
+			for(var file in stats.files){
+				var fileStats = stats.files[file].stats
+				print(fileStats.pct+"\t\t"+fileStats.lines+"\t\t"+fileStats.linesRun+"\t\t"+file)
+			}
+			var total = stats.total
+			print("\n"+'Summary:')
+			print(total.pct+"\t\t"+total.lines+"\t\t"+total.linesRun)
+			
+			
+			var fstream = new java.io.FileWriter('funcunit/coverage/coverage.json', false),
+				out = new java.io.BufferedWriter(fstream);
+			out.write(JSON.stringify(stats));
+			out.close();
+			
 		}
 	});
-})();
+})
+
