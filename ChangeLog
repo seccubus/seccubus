@@ -7,6 +7,8 @@ ourselves do not expect production ready code yet.
 New features / Issues resolved
 First parts of the GUI rewritten using JMVC framework
 Perl compile tests and JMVC unit tests are now part to the buidl process
+Updated JMVC to get more clear build errors
+Integrated JMVC building into the distribution building scripts
 
 Bigs fixed (tickets closed):
 #55 - Spec file is missing dependancies
