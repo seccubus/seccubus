@@ -12,6 +12,7 @@ my @files = split(/\n/, `find . -type f`);
 foreach my $file ( @files ) {
 	if ( $file !~ /\/\./ &&			# Skip hidden files
 	     $file !~ /tmp/ &&			# Skip temp files
+	     $file !~ /\.\/blib\// &&		# Skip blib directory
 	     $file !~ /\.(html|css|js|ejs|3pm|gif|jpg|png|pdf|doc|xml|nbe|txt)/i
 	     					# Skip know extensions
 	) { #skip hidden files
@@ -19,15 +20,13 @@ foreach my $file ( @files ) {
 		chomp($type);
 		if ( $type =~ /Perl/i ) {
 			print "$file.";
-			if (! `grep 'use strict;' $file`) {
+			if (! `grep 'use strict;' '$file'`) {
 				die("$file does not contain 'use strict;'\n");
 			}
 			print ".";
-			$file =~ /(.*)\/(.*)$/;
-			my ($dir,$basename) = ($1,$2);
-			my $compile = `cd $dir;perl -c '$basename' 2>&1`;
+			my $compile = `perl -ISeccubusV2 -c '$file' 2>&1`;
 			if ( $compile !~ /OK/) {
-				die("$file contains perl compile error:\n$compile\n");
+				die("nok\n$file contains perl compile error:\n$compile\n");
 			} else {
 				print "ok\n";
 			}
