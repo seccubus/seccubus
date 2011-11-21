@@ -5,6 +5,8 @@ ourselves do not expect production ready code yet.
 
 10-10-2011 - 2.0.alpha5
 New features / Issues resolved
+First parts of the GUI rewritten using JMVC framework
+Perl compile tests and JMVC unit tests are now part to the buidl process
 
 Bigs fixed (tickets closed):
 #55 - Spec file is missing dependancies
