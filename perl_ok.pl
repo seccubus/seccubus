@@ -21,12 +21,14 @@ foreach my $file ( @files ) {
 		if ( $type =~ /Perl/i ) {
 			print "$file.";
 			if (! `grep 'use strict;' '$file'`) {
+				print "nok\n";
 				die("$file does not contain 'use strict;'\n");
 			}
 			print ".";
 			my $compile = `perl -ISeccubusV2 -c '$file' 2>&1`;
 			if ( $compile !~ /OK/) {
-				die("nok\n$file contains perl compile error:\n$compile\n");
+				print "nok\n";
+				die("$file contains perl compile error:\n$compile\n");
 			} else {
 				print "ok\n";
 			}
