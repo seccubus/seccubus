@@ -4,6 +4,9 @@
 # ------------------------------------------------------------------------------
 # This shell script runs the command to make a valid distrbution including
 # making a MANIFEST
+# 
+# Before a distribution can be built perl files will be checked for syntaxt and
+# the jmvc unit test ha
 # ------------------------------------------------------------------------------
 #  Copyright 2011 Frank Breedijk of Schuberg Philis
 #
@@ -19,11 +22,32 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 # ------------------------------------------------------------------------------
-perl Makefile.PL
-make clean
-perl Makefile.PL
-rm MANIFEST
-make manifest
-perl Makefile.PL
-make
-make dist
+
+echo ***************************************************************************
+echo "Lets see if our perl compiles";
+echo ***************************************************************************
+./perl_ok.pl 2>&1 | tee /tmp/test.$$
+if [ `grep 'nok' /tmp/test.$$ |wc -l` -eq 0 ]
+then
+	echo ***************************************************************************
+	echo "Lets see if all jmvc unit tests pass"
+	echo ***************************************************************************
+	./unit_test_jmvc |tee /tmp/test.$$
+	if [ `grep 'OK' /tmp/test.$$|wc -l` -eq 1 ] 
+	then
+		rm /tmp/test.$$
+		echo ***************************************************************************
+		echo "Building distribution"
+		echo ***************************************************************************
+		perl Makefile.PL
+		make clean
+		perl Makefile.PL
+		rm MANIFEST
+		make manifest
+		perl Makefile.PL
+		make
+		rm Seccubus-*.tar.gz
+		make dist
+	fi
+fi
+rm /tmp/test.$$ 2>/dev/null

@@ -1,0 +1,3 @@
+#!/bin/bash
+cd jmvc
+./js funcunit/run envjs seccubus/qunit.html
