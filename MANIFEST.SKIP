@@ -31,8 +31,9 @@ config\.xml$
 # This file should be a symlink after the install
 ^www\/SeccubusV2\.pm$
 
-# JMVC development environment
+# Development environment
 ^jmvc\/
+^testdata\/
 
 # Misc
 ^www\/tmp\/
