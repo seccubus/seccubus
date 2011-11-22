@@ -3,14 +3,24 @@ Seccubus V2 Change Log
 Seccubus V2 is currently in Alpha phase. Even though we tested this code
 ourselves do not expect production ready code yet.
 
-10-10-2011 - 2.0.alpha5
+23-11-2011 - 2.0.alpha5
+=======================
 New features / Issues resolved
+------------------------------
+Perl compile tests and JMVC unit tests are now part to the build process
+In the RPM install files in the scanner directories did not run because of
+incorrect permissions (fixed)
+All scanners but Nessus were broken due to an untested fix by the author
+
+GUI rewrite
+-----------
+New GUI is in /seccubus/seccubus.html
 First parts of the GUI rewritten using JMVC framework
-Perl compile tests and JMVC unit tests are now part to the buidl process
 Updated JMVC to get more clear build errors
 Integrated JMVC building into the distribution building scripts
 
 Bigs fixed (tickets closed):
+----------------------------
 #55 - Spec file is missing dependancies
 https://sourceforge.net/apps/trac/seccubus/ticket/55
 #56 - Scanner files not executable after install
@@ -19,16 +29,20 @@ https://sourceforge.net/apps/trac/seccubus/ticket/56
 https://sourceforge.net/apps/trac/seccubus/ticket/59
 
 13-09-2011 - 2.0.alpha4
+=======================
 New features / Issues resolved
-* Nmap support
-  Scanning with is supported from the same server that is running the Nessus
-  Seccubus GUI
-* The results of the Nessus Policy Compliance family of plugins is now
-  supported
-  These plugins are different in the sense that they return multiple results
-  all direntified by a single pluginID
+------------------------------
+
+### Nmap support
+Scanning with is supported from the same server that is running the Nessus
+Seccubus GUI
+### The results of the Nessus Policy Compliance family of plugins is now
+supported
+These plugins are different in the sense that they return multiple results
+all direntified by a single pluginID
 
 Bigs fixed (tickets closed):
+----------------------------
 #8 - Integrate nmap scans into Seccubus
 https://sourceforge.net/apps/trac/seccubus/ticket/8
 #50 - scanners/nessus/scan should give a clear error message when ruby is
@@ -36,11 +50,13 @@ not on system
 http://sourceforge.net/apps/trac/seccubus/ticket/50
 
 15-08-2011 - 2.0.alpha3
+=======================
 New features / Issues resolved
 * Major bug in the delta engine resolved. It turned out that statusses where
   not processed after a scan, but was called by the load_ivil utility.
 
 Bugs fixed:
+-----------
 #36 - Nessus scans don't seem to see targets
 https://sourceforge.net/apps/trac/seccubus/ticket/36
 #12 - Gone hosts not not detected correctly
@@ -49,12 +65,14 @@ https://sourceforge.net/apps/trac/seccubus/ticket/12
 https://sourceforge.net/apps/trac/seccubus/ticket/42
 
 17-03-2011 - 2.0.alpha2 
-
+=======================
 New features / Issues resolved
+------------------------------
 Fixed slow speed of updates to multiple findings  
 Scanning with Nessus should work a lot better in this version
 
 Bug fixed:
+----------
 #30 - Document running scans
 https://sourceforge.net/apps/trac/seccubus/ticket/30
 #32 - load_ivil command line argument 'scan' is ignored
@@ -69,5 +87,5 @@ https://sourceforge.net/apps/trac/seccubus/ticket/37
 #38 - nessus2ivil should not die on unknown attribute
 https://sourceforge.net/apps/trac/seccubus/ticket/38
 
-
 15-03-2011 - 2.0.alpha1 - First internal alpha release
+======================================================

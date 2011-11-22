@@ -1,7 +1,9 @@
-@page index seccubus
+@page index Seccubus
 
 Seccubus V2
 ===========
+This is the technical documentation of the Seccubus GUI. This is the part that
+run in the users browser and talks to the backend API.
 
 What is Seccubus?
 -----------------
