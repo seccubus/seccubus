@@ -10,6 +10,7 @@
 \.swp$
 \.bak$
 \.old$
+\.tmp$
 
 # Distributions
 \.tar\.gz$
@@ -28,13 +29,16 @@ config\.xml$
 \.openvasrc$
 \.update-nessusrc$
 
-# This file should be a symlink after the install
-^www\/SeccubusV2\.pm$
-^www\/seccubus\SeccubusV2\.pm$
+
+# These files should be symlinks after the install
+^www\/.*SeccubusV2\.pm$
 
 # Development environment
 ^jmvc\/
 ^testdata\/
+^build_jmvc
+^perl_ok
+^unit_test_jmvc
 
 # Misc
 ^www\/tmp\/

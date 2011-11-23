@@ -11,14 +11,14 @@
 %define scandir		%{installdir}/scanners
 
 Name:		Seccubus
-Version:	2.0.alpha4
+Version:	2.0.alpha5
 Release:	0
 Summary:	Automated regular vulnerability scanning with delta reporting
 Group:		Network/Tools
 License:	GPL
 URL:		http://www.seccubus.com
 
-Packager:	Peter Slootweg <pslootweg@schubergphilis.com>
+Packager:	Frank Breedijk <fbreedijk@schubergphilis.com>
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:	noarch
@@ -27,10 +27,11 @@ Source0:	http://downloads.sourceforge.net/project/%{name}/%{name}_v2/%{name}-%{v
 
 #BuildRequires:	
 Requires:	perl-Algorithm-Diff
+#Requires:	mod_perl
+#Requires:	Nessus
 Requires:	httpd
 Requires:	mysql
 Requires:	ruby
-Requires:	perl-JSON-any
 
 %description
 Tool to automatically fire regular vulnerability scans with Nessus, OpenVAS, 
@@ -217,31 +218,6 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/2-Installation.htm
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/3-ScanConfiguration.htm
 
-%attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/HTML
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/1-HowToGet.htm
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/2-Installation.htm
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/3-ScanConfiguration.htm
-
-%attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/HTML
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/1-HowToGet.htm
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/2-Installation.htm
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/3-ScanConfiguration.htm
-
-%attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/HTML
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/1-HowToGet.htm
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/2-Installation.htm
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/3-ScanConfiguration.htm
-
-%attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/HTML
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/1-HowToGet.htm
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/2-Installation.htm
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/3-ScanConfiguration.htm
-
-%attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/HTML
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/1-HowToGet.htm
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/2-Installation.htm
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/3-ScanConfiguration.htm
-
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/HTML/1-HowToGet_files
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/1-HowToGet_files/colorschememapping.xml
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/1-HowToGet_files/filelist.xml
@@ -313,6 +289,8 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/api/up2date.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/api/updateDB.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/api/updateFindings.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/api/ConfigTest.json.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/api/UpToDate.json.pl   
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/img
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/img/add.png
@@ -371,12 +349,34 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/style/layout.css
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/style/seccubus.css
 
+# New GUI
+%attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/seccubus
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/production.js
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/production.css
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/seccubus.html
+
+%attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/seccubus/img
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/error.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/favicon.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/header.gif
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/logo.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/ok.png
+
+%attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/steal
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/steal/steal.production.js
+
 %attr(755, %{seccuser}, %{seccuser}) %dir %{vardir}
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/data_v1.mysql
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/structure_v1.mysql
 
-
 %changelog
+* Thu Nov 23 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Added support for rebuilt GUI
+- Removed quadruplicate docs/HTML reference
+* Thu Nov 18 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Fixed missing dependancies 
+* Thu Nov 17 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Permissions of scanner files are not correct 
 * Tue Sep 13 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
 - version 2.0.alpha4
 * Thu Aug 25 2011 Peter Slootweg <peter@pxmedia.nl>

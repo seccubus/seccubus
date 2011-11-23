@@ -33,6 +33,11 @@ fi
 echo No fixtures found
 
 echo '*************************************************************************'
+echo Building JMVC docs
+echo '*************************************************************************'
+./js seccubus/scripts/docs.js
+
+echo '*************************************************************************'
 echo Building JMVC package
 echo '*************************************************************************'
 ./js seccubus/scripts/build.js|tee /tmp/test.$$
@@ -41,7 +46,7 @@ echo '*************************************************************************'
 echo Copying files
 echo '*************************************************************************'
 cd ..
-rm -rf www/seccubus/img
+rm -rf www/seccubus/*
 cp -r jmvc/seccubus/img www/seccubus/
 cp jmvc/seccubus/production.* www/seccubus/
 cp jmvc/seccubus/seccubus.html www/seccubus/

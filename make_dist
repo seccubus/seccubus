@@ -27,30 +27,45 @@ echo '*************************************************************************'
 echo "Lets see if our perl compiles";
 echo '*************************************************************************'
 ./perl_ok.pl 2>&1 | tee /tmp/test.$$
-if [ `grep 'nok' /tmp/test.$$ |wc -l` -eq 0 ]
+if [ `grep 'nok' /tmp/test.$$ |wc -l` -gt 0 ]
 then
-	echo '*************************************************************************'
-	echo "Lets see if all jmvc unit tests pass"
-	echo '*************************************************************************'
-	#./unit_test_jmvc |tee /tmp/test.$$
-	echo OK > /tmp/test.$$
-	if [ `grep 'OK' /tmp/test.$$|wc -l` -eq 1 ] 
-	then
-		rm /tmp/test.$$
-		echo '*************************************************************************'
-		echo "Building distribution"
-		echo '*************************************************************************'
-		./build_jmvc
-
-		perl Makefile.PL
-		make clean
-		perl Makefile.PL
-		rm MANIFEST
-		make manifest
-		perl Makefile.PL
-		make
-		rm Seccubus-*.tar.gz
-		make dist
-	fi
+	rm /tmp/test.$$
+	exit 1
 fi
+
+echo '*************************************************************************'
+echo "Lets see if all jmvc unit tests pass"
+echo '*************************************************************************'
+#./unit_test_jmvc |tee /tmp/test.$$
+echo OK > /tmp/test.$$
+if [ `grep 'OK' /tmp/test.$$|wc -l` -lt 1 ] 
+then
+	rm /tmp/test.$$
+	exit 1
+fi 
+
+echo '*************************************************************************'
+echo "Building jmvc"
+echo '*************************************************************************'
+./build_jmvc |tee /tmp/test.$$
+if [ `grep 'Disable fixtures first' /tmp/test.$$|wc -l` -gt 0 ]
+then
+	rm /tmp/test.$$
+	exit 1
+fi
+
+rm /tmp/test.$$
+echo '*************************************************************************'
+echo "Building distribution"
+echo '*************************************************************************'
+perl Makefile.PL
+make clean
+perl Makefile.PL
+#rm MANIFEST
+make manifest
+perl Makefile.PL
+make
+rm Seccubus-*.tar.gz
+make dist
+
 rm /tmp/test.$$ 2>/dev/null
