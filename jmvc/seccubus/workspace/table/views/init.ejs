@@ -1,0 +1,26 @@
+<% var count = 1 %>
+<table>
+	<thead>
+		<tr>
+			<td>&nbsp;</td>
+			<td>Name</td>
+			<td># of scans</td>
+			<td>Last scan</td>
+			<td>Delete</td>
+		</tr>
+	</thead>
+	<tbody>
+		<%for(var i = 0; i < this.length ; i++){%>
+			<tr
+				<% if((count % 2) == 0) { %>
+					class='even' 
+				<% } else { %>
+					class='odd' 
+				<% } %>
+				<%= this[i] %> >
+				<%== $.View('//seccubus/workspace/table/views/workspace.ejs', this[i] )%>
+			</tr>
+			<% count++ %>
+		<%}%>
+	<tbody>
+</table>

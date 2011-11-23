@@ -5,7 +5,7 @@ steal(
 	'seccubus/tabs',
 	'seccubus/up_to_date/list',
 	'seccubus/config_item/list',
-	'seccubus/workspace/list',
+	'seccubus/workspace/table',
 	//'seccubus/workspace/create',
 	function(){					// configure your application
 		$('#navTab').seccubus_tabs();
@@ -23,7 +23,7 @@ steal(
 		$('#config_items').seccubus_config_item_list();
 
 		// Workspaces
-		$('#workspace_list').seccubus_workspace_list();
+		$('#workspace_table').seccubus_workspace_table();
 		//$('#create').seccubus_workspace_create();
 }
 )
