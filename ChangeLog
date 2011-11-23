@@ -3,6 +3,19 @@ Seccubus V2 Change Log
 Seccubus V2 is currently in Alpha phase. Even though we tested this code
 ourselves do not expect production ready code yet.
 
+??-??-2011 - 2.0.alpha6
+=======================
+New features / Issues resolved
+------------------------------
+
+GUI rewrite
+-----------
+New GUI is in /seccubus/seccubus.html
+First parts of the GUI rewritten using JMVC framework
+
+Bigs fixed (tickets closed):
+----------------------------
+
 23-11-2011 - 2.0.alpha5
 =======================
 New features / Issues resolved
