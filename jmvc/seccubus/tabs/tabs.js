@@ -4,7 +4,7 @@ steal('jquery/controller', 'jquery/event/default','./tabs.css').then(function() 
 
 	/**
          * @class Seccubus.Tabs
-         * @parent index
+         * @parent Tabs
          * @inherits jQuery.Controller
 	 * 
 	 * A basic tabs controller for showing and hiding content.
