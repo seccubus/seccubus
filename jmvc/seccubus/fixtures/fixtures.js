@@ -23,13 +23,5 @@ steal("jquery/dom/fixture", function(){
                 }
 
 	})
-
-//	/* Workspaces */
-//	$.fixture.make("workspace", 5, function(i, workspace){
-//		var descriptions = ["grill fish", "make ice", "cut onions"]
-//		return {
-//			name: "workspace "+i,
-//			description: $.fixture.rand( descriptions , 1)[0]
-//		}
-//	})
+	/* Workspaces have a static fixture */
 })
