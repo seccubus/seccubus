@@ -1,5 +1,6 @@
 steal(
 	'./seccubus.css', 			// application CSS file
+	'./seccubus_tables.css',		// Table CSS file
 	'./models/models.js',			// steals all your models
 	'./fixtures/fixtures.js',		// sets up fixtures for your models
 	'seccubus/tabs',

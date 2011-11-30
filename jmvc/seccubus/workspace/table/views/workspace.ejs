@@ -2,4 +2,10 @@
 <td><%= Name %></td>
 <td><%= ScanCount %></td>
 <td><%= LastScan %></td>
-<td><a href='javascript://' class='destroy'>X</a></td>
+<td>
+  <% if ( ScanCount != "0" ) { %>
+    &nbsp
+  <% } else { %>
+    <a href='javascript://' class='destroy'>X</a>
+  <% } %>
+</td>

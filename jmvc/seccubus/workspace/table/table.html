@@ -6,6 +6,7 @@
         <style type='text/css'>
             body {font-family: verdana}
         </style>
+	<link rel="stylesheet" href="css/demo_table.css" type="text/css">
 	</head>
 	<body>
 	    <h1>Seccubus.Workspace.Table Demo</h1>
@@ -15,13 +16,19 @@
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
-			steal(	'seccubus/workspace/table',
+			steal(	
+				'seccubus/workspace/table',
 				'seccubus/seccubus.css',
 				'seccubus/fixtures',
+				//'widgets/datatable',
 				function(){
 				
-				$('#workspaces').seccubus_workspace_table();
-				
+				//$('#workspaces').seccubus_workspace_table();
+				$('#workspaces').seccubus_workspace_table(function(el){
+					alert("el: " + el);
+					//alert($('#workspaces').children('table:first').attr('id'));
+				});
+
 				$('#create').click(function(){
 					new Seccubus.Models.Workspace({
 						name: "Grilled Cheese",
@@ -29,6 +36,13 @@
 					}).save();
 				})
 			})
+			//.then(
+			//	'widgets/datatable',
+			//	function(){
+			//		alert('bla');
+			//		$('#workspaces').widgets_datatable();
+			//	}
+			//);
 		</script>
 	</body>
 </html>
