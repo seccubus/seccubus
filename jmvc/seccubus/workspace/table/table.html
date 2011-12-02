@@ -20,14 +20,9 @@
 				'seccubus/workspace/table',
 				'seccubus/seccubus.css',
 				'seccubus/fixtures',
-				//'widgets/datatable',
 				function(){
 				
-				//$('#workspaces').seccubus_workspace_table();
-				$('#workspaces').seccubus_workspace_table(function(el){
-					alert("el: " + el);
-					//alert($('#workspaces').children('table:first').attr('id'));
-				});
+				$('#workspaces').seccubus_workspace_table();
 
 				$('#create').click(function(){
 					new Seccubus.Models.Workspace({
@@ -36,13 +31,6 @@
 					}).save();
 				})
 			})
-			//.then(
-			//	'widgets/datatable',
-			//	function(){
-			//		alert('bla');
-			//		$('#workspaces').widgets_datatable();
-			//	}
-			//);
 		</script>
 	</body>
 </html>
