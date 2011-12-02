@@ -6,7 +6,7 @@ steal(
      )
 .then( './views/init.ejs', 
        './views/workspace.ejs', 
-	'widgets/datatable',
+	'plugins/jquery.dataTables.js',
        function($){
 
 /**
