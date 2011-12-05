@@ -12,6 +12,8 @@ GUI rewrite
 -----------
 New GUI is in /seccubus/seccubus.html
 First parts of the GUI rewritten using JMVC framework
+Started on the workspaces tab
+New, less confusing, layout of Findings screen
 
 Bigs fixed (tickets closed):
 ----------------------------
