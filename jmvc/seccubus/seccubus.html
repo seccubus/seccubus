@@ -20,10 +20,10 @@
 	   <nav id="main-nav">
 	     <ul id='navTab'>
 	       <li><a href="#up2date">Status</a></li>
-	       <li><a href="#workspaces">Workspaces</a></li>
-	       <li><a href="#scans">Scans</a></li>
 	       <li><a href="#findings">Findings</a></li>
 	       <li><a href="#issues">Issues</a></li>
+	       <li><a href="#scans">Manage Scans</a></li>
+	       <li><a href="#workspaces">Manage Workspaces</a></li>
 	       <li><a href="#reports">Reports</a></li>
 	     </ul>
 	   </nav>
@@ -31,19 +31,82 @@
        </div>
      </header>
      <div class="shell">
-       <div id='up2date' class='tab'><br>
-         <div id='up_to_dates'>Up 2 date goes here</div>
-	 <br>
-         <hr>
-         <div id='config_items'>Coniguration items test go here</div>
+
+       <div id='up2date' class='tab'>
+	 <div class='full'>
+           <div id='up_to_dates'>Up 2 date goes here</div>
+	   <br>&nbsp;
+	   <br>&nbsp;
+           <div id='config_items'>Coniguration items test go here</div>
+	 </div>
        </div>
-       <div id='workspaces' class='tab'><br>
-         <div id='workspace_table'>Workspaces table goes here</div>
+
+       <div id='workspaces' class='tab'>
+         <div class='full'>
+           <div id='workspace_table'>Workspaces table goes here</div>
+	 </div>
        </div>
-       <div id='scans' class='tab'>The scans will go here</div>
-       <div id='findings' class='tab'>The findings will go here</div>
-       <div id='issues' class='tab'>The Issues will go here</div>
-       <div id='reports' class='tab'>The Reports will go here</div>
+
+       <div id='scans' class='tab'>
+         <div class='left'>
+           <div id='workspace_selector_scans'>
+	     <select>
+	       <option>Workspace selector</option>
+	     </select>
+	   </div>
+	 </div>
+	 <div class='main'>
+	   <div id='scan_table'>
+	     Datatable with scans will go here
+	   </div>
+	 </div>
+       </div>
+
+       <div id='findings' class='tab'>
+         <div class='left'>
+           <div id='workspace_selector_findings'>
+	     Workspace:<br>
+	     <select>
+	       <option>Workspace selector</option>
+	     </select>
+	     <br>&nbsp;
+	   </div>
+	   <div id='scan_multiselector_fidings'>
+	     Scan:<br>
+	     <select MULTIPLE size=20>
+	       <option>Select a workspace to start</option>
+	     </select>
+	   </div>
+	 </div>
+	 <div class=main>
+	   <div id='status_selector'>No workspace selected...</div>
+	   <div id='finding_table'>
+	     Datatable with findings will go here
+	   </div>
+	 </div>
+       </div>
+
+       <div id='issues' class='tab'>
+	 <div class='left'>
+           <div id='workspace_selector_issues'>
+	     <select>
+	       <option>Workspace selector</option>
+	     </select>
+	   </div>
+	 </div>
+	 <div class='main'>
+	   <div id='issue_table'>
+	     Datatable with issues will go here
+	   </div>
+	 </div>
+       </div>
+
+       <div id='reports' class='tab'>
+         <div class='full'>
+	   The Reports will go here
+	 </div>
+       </div>
+
      </div>
      <script type='text/javascript' src='../steal/steal.js?seccubus'>
      </script>

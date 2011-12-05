@@ -26,8 +26,30 @@ body {
 
 .shell {
 	margin: 0px auto;
-	width: 95%;
+	width: 100%;
 	min-width: 700px;
+}
+
+.left { 
+	width: 200px;
+	left: 0px;
+        margin-left: 0;
+        margin-right: 0;
+	float: left;
+	border: 3px solid white;
+}
+
+.main { 
+	margin-left: 260px;
+	margin-right: 50px;
+	border: 3px solid white;
+}
+
+.full {
+	margin-left: 0px;
+	margin-right: 50px; 
+	border: 3px solid white;
+	float: left;
 }
 
 a {
