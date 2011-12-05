@@ -1,5 +1,11 @@
-<select multiple>
-<%for ( var i = 0; i < this.length ; i++ ){%>
-		<%== $.View('//seccubus/scan/select/views/scan.ejs', { object: this[i] } )%>
-<%}%>
+<select multiple class='scan' size=40>
+	<% if( this.length > 0 ) { %>
+		<%for ( var i = 0; i < this.length ; i++ ){%>
+			<%== $.View('//seccubus/scan/select/views/scan.ejs', { object: this[i] } )%>
+		<%}%>
+	<% } else { %>
+		<option disabled>
+			No scans found
+		</option>
+	<% } %>
 </select>

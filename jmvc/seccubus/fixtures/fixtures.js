@@ -24,11 +24,18 @@ steal("jquery/dom/fixture", function(){
 
 	})
 	/* Workspaces have a static fixture */
-	$.fixture.make("scan", 5, function(i, scan){
-		var descriptions = ["grill fish", "make ice", "cut onions"]
+
+	/* Scans */
+	$.fixture.make("scan", $.fixture.rand(15), function(i, scan){
+		var scanners = ["Nessus", "Nessus Legacy", "OpenVAS", "Nikto", "Nmap" ];
 		return {
-			name: "scan "+i,
-			description: $.fixture.rand( descriptions , 1)[0]
+			id 	: i,
+			Name	: $.fixture.rand(scanners,1) + " " + $.fixture.rand(["inside", "outside"], 1) + " " + i,
+			Scanner	: $.fixture.rand(scanners,1),
+			Parameters : "some params will go here",
+			Targets	: $.fixture.rand(255) + "." + $.fixture.rand(255) + "." + $.fixture.rand(255) + "." + $.fixture.rand(255),
+			Findings : $.fixture.rand(255),
+			LastScan : $.fixture.rand(["", "2011-11-11 11:11:11" ],1)
 		}
 	})
 })

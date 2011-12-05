@@ -8,9 +8,7 @@ steal(
 	'seccubus/config_item/list',
 	'seccubus/workspace/selector',
 	'seccubus/workspace/table',
-	//'seccubus/workspace/create',
-	'seccubus/scan/create',
-	'seccubus/scan/list',
+	'seccubus/scan/select',
 	function(){					// configure your application
 		$('#navTab').seccubus_tabs();
 		// Disable the Scans tab on start
@@ -33,7 +31,10 @@ steal(
 		// Apparently this needs to be called last
 		$('#workspace_table').seccubus_workspace_table();
 		//$('#create').seccubus_workspace_create();
-	$('#scans').seccubus_scan_list();
-		$('#create').seccubus_scan_create();
+		
+		// Set up scans selectors
+		$('#scan_multiselector_findings').seccubus_scan_select();
+		//$('#scans').seccubus_scan_list();
+		//$('#create').seccubus_scan_create();
 }
 )

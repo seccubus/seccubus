@@ -53,6 +53,12 @@ select.workspace {
 	max-width: 180px;
 }
 
+select.scan {
+	width: 180px;
+	max-width: 180px;
+	size: 100;
+}
+
 a {
 	cursor: pointer;
 	text-decoration: underline;
