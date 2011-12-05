@@ -36,19 +36,16 @@ body {
         margin-left: 0;
         margin-right: 0;
 	float: left;
-	border: 3px solid white;
 }
 
 .main { 
 	margin-left: 260px;
 	margin-right: 50px;
-	border: 3px solid white;
 }
 
 .full {
 	margin-left: 0px;
 	margin-right: 50px; 
-	border: 3px solid white;
 	float: left;
 }
 
