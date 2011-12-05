@@ -1,4 +1,4 @@
-<select id='seccubus.workspace.selector'>
+<select id='seccubus.workspace.selector' class='workspace'>
 	<%for(var i = 0; i < this.length ; i++){%>
 		<%= this[i] %> >
 			<%== $.View('//seccubus/workspace/selector/views/workspace.ejs', this[i] )%>

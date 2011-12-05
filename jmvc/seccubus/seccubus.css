@@ -24,13 +24,13 @@ body {
 	display: block;
 }
 
-.shell {
+div.shell {
 	margin: 0px auto;
 	width: 100%;
 	min-width: 700px;
 }
 
-.left { 
+div.left { 
 	width: 200px;
 	left: 0px;
         margin-left: 0;
@@ -38,15 +38,19 @@ body {
 	float: left;
 }
 
-.main { 
+div.main { 
 	margin-left: 260px;
 	margin-right: 50px;
 }
 
-.full {
+div.full {
 	margin-left: 0px;
 	margin-right: 50px; 
 	float: left;
+}
+
+select.workspace {
+	max-width: 180px;
 }
 
 a {
