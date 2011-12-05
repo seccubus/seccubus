@@ -1,8 +1,0 @@
-<%$.each(this.group || [], function(i, group){%>
-	<col class='<%= group %>-colgroup' <%= widths[group] ? "style='width:"+widths[group]+"px'" : '' %>></col>
-<%})%>
-<%for(var name in this.columns){%>
-	<%if($.inArray(name, this.group || []) == -1){%>
-		<col class='<%= name %>-colgroup' <%= widths[name] ? "style='width:"+widths[name]+"px'" : '' %>></col>
-	<%}%>
-<%}%>
