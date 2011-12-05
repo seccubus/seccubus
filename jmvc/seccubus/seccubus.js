@@ -2,13 +2,15 @@ steal(
 	'./seccubus.css', 			// application CSS file
 	'./seccubus_tables.css',		// Table CSS file
 	'./models/models.js',			// steals all your models
-	//'./fixtures/fixtures.js',		// sets up fixtures for your models
+	'./fixtures/fixtures.js',		// sets up fixtures for your models
 	'seccubus/tabs',
 	'seccubus/up_to_date/list',
 	'seccubus/config_item/list',
 	'seccubus/workspace/selector',
 	'seccubus/workspace/table',
 	//'seccubus/workspace/create',
+	'seccubus/scan/create',
+	'seccubus/scan/list',
 	function(){					// configure your application
 		$('#navTab').seccubus_tabs();
 		// Disable the Scans tab on start
@@ -31,5 +33,7 @@ steal(
 		// Apparently this needs to be called last
 		$('#workspace_table').seccubus_workspace_table();
 		//$('#create').seccubus_workspace_create();
+	$('#scans').seccubus_scan_list();
+		$('#create').seccubus_scan_create();
 }
 )
