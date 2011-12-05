@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>Seccubus.Scan.Select Demo</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+        </style>
+	</head>
+	<body>
+	    <h1>Seccubus.Scan.Select Demo</h1>
+		<ul id='scans'></ul>
+		<a href='javascript://' id='create'>Create Scan</a>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal('seccubus/scan/select','seccubus/fixtures',function(){
+				
+				$('#scans').seccubus_scan_select();
+				
+				$('#create').click(function(){
+					new Seccubus.Models.Scan({
+						name: "Grilled Cheese",
+						description: "Bread and Cheese"
+					}).save();
+				})
+			})
+		</script>
+	</body>
+</html>
