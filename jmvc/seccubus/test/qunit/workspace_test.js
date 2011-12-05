@@ -2,18 +2,21 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/workspace.js", fun
 	module("Model: Seccubus.Models.Workspace")
 	
 	test("findAll", function(){
-		expect(4);
+		expect(6);
 		stop();
 		Seccubus.Models.Workspace.findAll({}, function(workspaces){
 			ok(workspaces)
-	        ok(workspaces.length)
-	        ok(workspaces[0].name)
-	        ok(workspaces[0].description)
+		        ok(workspaces.length)
+		        ok(workspaces[0].id)
+		        ok(workspaces[0].Name)
+		        ok(workspaces[0].ScanCount)
+		        ok(workspaces[0].LastScan)
 			start();
 		});
 		
 	})
 	
+/*
 	test("create", function(){
 		expect(3)
 		stop();
@@ -48,4 +51,5 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/workspace.js", fun
 					start();
 	            })
 	})
+*/
 })
