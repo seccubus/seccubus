@@ -21,8 +21,12 @@
 				
 				$('#create').click(function(){
 					new Seccubus.Models.Scan({
-						name: "Grilled Cheese",
-						description: "Bread and Cheese"
+						Name: "Added scan",
+						Scanner: "Nessus",
+						Parameters: "bla",
+						Targets: "localhost",
+						Findings: "0",
+						LastScan: ""
 					}).save();
 				})
 			})
