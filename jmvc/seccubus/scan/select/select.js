@@ -1,21 +1,23 @@
 steal( 'jquery/controller',
-	   'jquery/view/ejs',
-	   'jquery/controller/view',
-	   'seccubus/models' )
+       'jquery/view/ejs',
+       'jquery/controller/view',
+       'seccubus/models' )
 .then( './views/init.ejs', 
        './views/scan.ejs', 
        function($){
 
 /**
  * @class Seccubus.Scan.Select
- * @parent index
+ * @parent Scan
  * @inherits jQuery.Controller
  * Selects scans 
  */
 $.Controller('Seccubus.Scan.Select',
 /** @Static */
 {
-	defaults : {}
+	defaults : {},
+	// The count of the previous number of elements
+	previousCount : 0
 },
 /** @Prototype */
 {
