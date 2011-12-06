@@ -32,9 +32,7 @@ $.Controller('Seccubus.Scan.Select',
 		scan.elements(this.element).remove();
 	},
 	"{Seccubus.Models.Scan} created" : function(Scan, ev, scan){
-		// Append the append view (init view without select tags) to 
-		// the select element inside the element
-		this.element.children('select').append(this.view('append', [scan]))
+		this.element.append(this.view('init', [scan]))
 	},
 	"{Seccubus.Models.Scan} updated" : function(Scan, ev, scan){
 		scan.elements(this.element)
