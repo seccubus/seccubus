@@ -12,9 +12,11 @@ steal(
 	function(){					// configure your application
 		$('#navTab').seccubus_tabs();
 		// Disable the Scans tab on start
-		//$('#navTab').seccubus_tabs("disable", 3);
+		$('#navTab').seccubus_tabs("disable", 3);
 		// Hide Issues and Reports tab for now
-		//$('#navTab').seccubus_tabs("hide", 2);
+		$('#navTab').seccubus_tabs("hide", 2);
+		$('#navTab').seccubus_tabs("hide", 3);
+		$('#navTab').seccubus_tabs("hide", 4);
 		$('#navTab').seccubus_tabs("hide", 5);
 
 		// UpToDate status
