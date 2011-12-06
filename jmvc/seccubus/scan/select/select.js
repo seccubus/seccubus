@@ -15,9 +15,8 @@ steal( 'jquery/controller',
 $.Controller('Seccubus.Scan.Select',
 /** @Static */
 {
-	defaults : {},
+	defaults : {}
 	// The count of the previous number of elements
-	previousCount : 0
 },
 /** @Prototype */
 {

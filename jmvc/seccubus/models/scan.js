@@ -13,7 +13,8 @@ $.Model('Seccubus.Models.Scan',
   	findOne : "/scans/{id}.json", 
   	create : "/scans.json",
  	update : "/scans/{id}.json",
-  	destroy : "/scans/{id}.json"
+  	destroy : "/scans/{id}.json",
+	workspace : 0
 },
 /* @Prototype */
 {});
