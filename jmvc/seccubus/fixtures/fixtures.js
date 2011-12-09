@@ -38,4 +38,19 @@ steal("jquery/dom/fixture", function(){
 			LastScan : $.fixture.rand(["", "2011-11-11 11:11:11" ],1)
 		}
 	})
+	$.fixture.make("finding", 5, function(i, finding){
+		var severity = ["High", "Medium", "Low", "None"];
+		var findings = ["Here is a sample finding decription", "This is a example finding decription"];
+		var remarks = ["Fix it", "Disable it", "Remove it"];
+		return {
+			id: i,
+			HostIP: "192.168." + $.fixture.rand(255) + "." + $.fixture.rand(255) ,
+			HostName: "FakeHostName_" + i,
+			Port:  $.fixture.rand(65535),
+			Plugin:  $.fixture.rand(55000),
+			Severity: $.fixture.rand( severity , 1) ,
+			Finding:  $.fixture.rand( findings , 1) ,
+			Remark:  $.fixture.rand( remarks , 1) 
+		}
+	})
 })
