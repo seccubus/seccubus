@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Seccubus.Report.Open</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+        </style>
+	</head>
+	<body>
+	    <h1>Seccubus.Report.Open Demo</h1>
+		<div id='open'></div>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal('seccubus/report/open',function(){
+				
+				$('#open').seccubus_report_open();
+			})
+		</script>
+	</body>
+</html>
