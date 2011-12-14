@@ -38,6 +38,8 @@ steal("jquery/dom/fixture", function(){
 			LastScan : $.fixture.rand(["", "2011-11-11 11:11:11" ],1)
 		}
 	})
+
+	/* Findings */
 	$.fixture.make("finding", 5, function(i, finding){
 		var severity = ["High", "Medium", "Low", "None"];
 		var findings = ["Here is a sample finding decription", "This is a example finding decription"];
