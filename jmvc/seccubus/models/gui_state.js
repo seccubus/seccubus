@@ -1,5 +1,5 @@
 steal(	'jquery/model',
-	'jquery/model/validations',
+	//'jquery/model/validations',
 	function(){
 
 /**
@@ -14,13 +14,14 @@ $.Model('Seccubus.GuiState',
 {
 	// Default values for this object
 	defaults : {
-		findStatus : 1
-	},
-	init : function(){
-	},
-	attributes : {
-		findStatus : 'status'
+		findStatus : 1,
+		workspace : -1
 	}
+	//init : function(){
+	//},
+	//attributes : {
+	//	findStatus : 'status'
+	//}
 },
 /* @Prototype */
 {

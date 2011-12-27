@@ -2,12 +2,15 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/gui_state.js", fun
 	module("Model: Seccubus.GuiState")
 	
 	test("create default", function(){
-		expect(3)
+		expect(4)
 		stop();
 		new Seccubus.GuiState().save(function(gui_state){
 			ok(gui_state);
 	        ok(gui_state.id);
+		// Default findStatus = 1
 	        equals(gui_state.findStatus,1)
+		// Default workspace = -1
+		equals(gui_state.workspace, -1)
 	        gui_state.destroy()
 			start();
 		})
