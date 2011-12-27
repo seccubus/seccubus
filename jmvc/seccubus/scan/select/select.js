@@ -15,13 +15,14 @@ steal( 'jquery/controller',
 $.Controller('Seccubus.Scan.Select',
 /** @Static */
 {
-	defaults : {}
-	// The count of the previous number of elements
+	defaults : {
+		workspace : -1
+	}
 },
 /** @Prototype */
 {
 	init : function(){
-		this.element.html(this.view('init',Seccubus.Models.Scan.findAll()) )
+		this.updateView();
 	},
 	'.destroy click': function( el ){
 		if(confirm("Are you sure you want to destroy?")){
@@ -29,14 +30,31 @@ $.Controller('Seccubus.Scan.Select',
 		}
 	},
 	"{Seccubus.Models.Scan} destroyed" : function(Scan, ev, scan) {
-		scan.elements(this.element).remove();
+		this.updateView();
 	},
 	"{Seccubus.Models.Scan} created" : function(Scan, ev, scan){
-		this.element.append(this.view('init', [scan]))
+		this.updateView();
 	},
 	"{Seccubus.Models.Scan} updated" : function(Scan, ev, scan){
 		scan.elements(this.element)
 		      .html(this.view('scan', scan) );
+	},
+	updateView : function() {
+		if ( this.options.workspace == -1 ) {
+			this.element.html(this.view('no_workspace'));
+		} else {
+			this.element.html(
+				this.view(
+					'init',
+					Seccubus.Models.Scan.findAll(),
+					{selectedWorkspace : this.options.workspace }
+				) 
+			);
+		}
+	},
+	update : function(options){
+		this._super(options);
+		this.updateView();
 	}
 });
 

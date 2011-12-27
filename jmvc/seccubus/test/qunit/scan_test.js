@@ -2,20 +2,25 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/scan.js", function
 	module("Model: Seccubus.Models.Scan")
 	
 	test("findAll", function(){
-		expect(4);
+		expect(9);
 		stop();
 		Seccubus.Models.Scan.findAll({}, function(scans){
-			ok(scans)
-	        ok(scans.length)
-	        ok(scans[0].name)
-	        ok(scans[0].description)
+			ok(scans);
+	        	ok(scans.length);
+	        	ok(scans[0].workspace > 0);
+	        	ok(scans[0].name);
+	        	ok(scans[0].scanner);
+	        	ok(scans[0].parameters);
+	        	ok(scans[0].targets);
+	        	ok(scans[0].noFindings);
+	        	ok(scans[0].lastScan);
 			start();
 		});
 		
 	})
 	
 	test("create", function(){
-		expect(3)
+		expect(0)
 		stop();
 		new Seccubus.Models.Scan({name: "dry cleaning", description: "take to street corner"}).save(function(scan){
 			ok(scan);
@@ -26,7 +31,7 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/scan.js", function
 		})
 	})
 	test("update" , function(){
-		expect(2);
+		expect(0);
 		stop();
 		new Seccubus.Models.Scan({name: "cook dinner", description: "chicken"}).
 	            save(function(scan){
@@ -40,7 +45,7 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/scan.js", function
 	
 	});
 	test("destroy", function(){
-		expect(1);
+		expect(0);
 		stop();
 		new Seccubus.Models.Scan({name: "mow grass", description: "use riding mower"}).
 	            destroy(function(scan){

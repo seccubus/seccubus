@@ -1,11 +1,12 @@
-<% if( this.length > 0 ) { %>
+<% count = 0  %>
 	<%for ( var i = 0; i < this.length ; i++ ){%>
-		<option <%= this[i] %> value='<%= this[i].id %>'>
-			<%== $.View('//seccubus/scan/select/views/scan.ejs', this[i] )%>
-		</option>
+		<% if ( this[i].workspace == selectedWorkspace ) { %>
+			<option <%= this[i] %> value='<%= this[i].id %>'>
+				<%== $.View('//seccubus/scan/select/views/scan.ejs', this[i] )%>
+			</option>
+			<% count++ %>
+		<% } %>
 	<%}%>
-<% } else { %>
-	<option disabled>
-		No scans found
-	</option>
+<% if ( count == 0 ) { %>
+	<%== $.View('//seccubus/scan/select/views/no_scans') %>
 <% } %>
