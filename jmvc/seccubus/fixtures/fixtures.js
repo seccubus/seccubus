@@ -41,7 +41,7 @@ steal("jquery/dom/fixture", function(){
 	})
 
 	/* Findings */
-	$.fixture.make("finding", 5, function(i, finding){
+	$.fixture.make("finding", 2500, function(i, finding){
 		var severity = ["High", "Medium", "Low", "None"];
 		var findings = ["Here is a sample finding decription", "This is a example finding decription"];
 		var remarks = ["Fix it", "Disable it", "Remove it"];
