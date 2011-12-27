@@ -1,51 +1,89 @@
 steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/gui_state.js", function(){
 	module("Model: Seccubus.GuiState")
 	
-	test("findAll", function(){
-		expect(4);
-		stop();
-		Seccubus.GuiState.findAll({}, function(gui_states){
-			ok(gui_states)
-	        ok(gui_states.length)
-	        ok(gui_states[0].name)
-	        ok(gui_states[0].description)
-			start();
-		});
-		
-	})
-	
-	test("create", function(){
+	test("create default", function(){
 		expect(3)
 		stop();
-		new Seccubus.GuiState({name: "dry cleaning", description: "take to street corner"}).save(function(gui_state){
+		new Seccubus.GuiState().save(function(gui_state){
 			ok(gui_state);
 	        ok(gui_state.id);
-	        equals(gui_state.name,"dry cleaning")
+	        equals(gui_state.findStatus,1)
 	        gui_state.destroy()
 			start();
 		})
-	})
-	test("update" , function(){
-		expect(2);
-		stop();
-		new Seccubus.GuiState({name: "cook dinner", description: "chicken"}).
-	            save(function(gui_state){
-	            	equals(gui_state.description,"chicken");
-	        		gui_state.update({description: "steak"},function(gui_state){
-	        			equals(gui_state.description,"steak");
-	        			gui_state.destroy();
-						start();
-	        		})
-	            })
-	
 	});
-	test("destroy", function(){
-		expect(1);
+
+	test("create findStatus fraction", function(){
+		expect(3)
 		stop();
-		new Seccubus.GuiState({name: "mow grass", description: "use riding mower"}).
-	            destroy(function(gui_state){
-	            	ok( true ,"Destroy called" )
-					start();
-	            })
-	})
+		new Seccubus.GuiState({findStatus : 0.5}).save(function(gui_state){
+			ok(gui_state);
+	        ok(gui_state.id);
+	        equals(gui_state.findStatus,1)
+	        gui_state.destroy()
+			start();
+		})
+	});
+
+	test("set findStatus fraction", function(){
+		expect(3)
+		stop();
+		new Seccubus.GuiState().save(function(gui_state){
+			ok(gui_state);
+	        ok(gui_state.id);
+		gui_state.attr("findStatus",3.5);
+	        equals(gui_state.findStatus,3)
+	        gui_state.destroy()
+			start();
+		})
+	});
+
+	test("set findStatus fraction too_low", function(){
+		expect(3)
+		stop();
+		new Seccubus.GuiState().save(function(gui_state){
+			ok(gui_state);
+	        ok(gui_state.id);
+		gui_state.attr("findStatus",0.5);
+	        equals(gui_state.findStatus,1)
+	        gui_state.destroy()
+			start();
+		})
+	});
+
+	test("create findStatus too_low", function(){
+		expect(3)
+		stop();
+		new Seccubus.GuiState({findStatus : 0}).save(function(gui_state){
+			ok(gui_state);
+	        ok(gui_state.id);
+	        equals(gui_state.findStatus,1)
+	        gui_state.destroy()
+			start();
+		})
+	});
+
+	test("create findStatus too_high", function(){
+		expect(3)
+		stop();
+		new Seccubus.GuiState({findStatus : 999}).save(function(gui_state){
+			ok(gui_state);
+	        ok(gui_state.id);
+	        equals(gui_state.findStatus,1)
+	        gui_state.destroy()
+			start();
+		})
+	});
+
+	test("create findStatus Ignore", function(){
+		expect(3)
+		stop();
+		new Seccubus.GuiState({findStatus : 99}).save(function(gui_state){
+			ok(gui_state);
+	        ok(gui_state.id);
+	        equals(gui_state.findStatus,99)
+	        gui_state.destroy()
+			start();
+		})
+	});
 })

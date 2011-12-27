@@ -1,4 +1,6 @@
-steal('jquery/model', function(){
+steal(	'jquery/model',
+	'jquery/model/validations',
+	function(){
 
 /**
  * @class Seccubus.GuiState
@@ -10,8 +12,29 @@ steal('jquery/model', function(){
 $.Model('Seccubus.GuiState',
 /* @Static */
 {
+	// Default values for this object
+	defaults : {
+		findStatus : 1
+	},
+	init : function(){
+	},
+	attributes : {
+		findStatus : 'status'
+	}
 },
 /* @Prototype */
-{});
+{
+	// This function validates that status is set to a correct status
+	setFindStatus : function(status) {
+		status = parseInt(status);
+		if ( status >= 1 && (status ==99 || status <= 6 ) ) {
+			return(status);
+		} else {
+			if ( ! this.findStatus ) {
+				return 1;
+			} 
+		}
+	}
+});
 
 })
