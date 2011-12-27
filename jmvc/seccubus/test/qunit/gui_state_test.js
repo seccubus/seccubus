@@ -89,4 +89,21 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/gui_state.js", fun
 			start();
 		})
 	});
+
+	test("is scans cleared", function(){
+		expect(5)
+		stop();
+		new Seccubus.GuiState().save(function(gui_state){
+			ok(gui_state);
+	        ok(gui_state.id);
+		gui_state.scans = [1];
+	        equals(gui_state.scans[0],1)
+		gui_state.attr("workspace",-1);
+	        equals(gui_state.scans[0],1)
+		gui_state.attr("workspace",3);
+	        equals(gui_state.scans[0],undefined)
+	        gui_state.destroy()
+			start();
+		})
+	});
 })

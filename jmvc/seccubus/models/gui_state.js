@@ -14,14 +14,10 @@ $.Model('Seccubus.GuiState',
 {
 	// Default values for this object
 	defaults : {
-		findStatus : 1,
-		workspace : -1
+		findStatus	: 1,
+		workspace	: -1,
+		scans		: []
 	}
-	//init : function(){
-	//},
-	//attributes : {
-	//	findStatus : 'status'
-	//}
 },
 /* @Prototype */
 {
@@ -35,7 +31,14 @@ $.Model('Seccubus.GuiState',
 				return 1;
 			} 
 		}
+	},
+	// This function clears the scans object when a workspace is set
+	setWorkspace : function(ws) {
+		if ( ws != this.workspace ) {
+			this.scans = [];
+		}
+		return(ws);
 	}
-});
+}); // Model
 
-})
+})  // Steal
