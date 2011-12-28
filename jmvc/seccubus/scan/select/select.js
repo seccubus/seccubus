@@ -4,7 +4,9 @@ steal( 'jquery/controller',
        'seccubus/models' )
 .then( './views/init.ejs', 
        './views/scan.ejs', 
-       function($){
+       './views/no_workspace.ejs',
+       './views/no_scans.ejs',
+function($){
 
 /**
  * @class Seccubus.Scan.Select

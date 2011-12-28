@@ -101,7 +101,7 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/gui_state.js", fun
 		gui_state.attr("workspace",-1);
 	        equals(gui_state.scans[0],1)
 		gui_state.attr("workspace",3);
-	        equals(gui_state.scans[0],undefined)
+	        equals(gui_state.scans,null)
 	        gui_state.destroy()
 			start();
 		})

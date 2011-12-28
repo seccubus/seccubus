@@ -26,11 +26,11 @@ steal("jquery/dom/fixture", function(){
 	/* Workspaces have a static fixture */
 
 	/* Scans */
-	$.fixture.make("scan", $.fixture.rand(15), function(i, scan){
+	$.fixture.make("scan", $.fixture.rand(15)+8, function(i, scan){
 		var scanners = ["Nessus", "Nessus Legacy", "OpenVAS", "Nikto", "Nmap" ];
 		return {
 			id 	: i,
-			workspace : $.fixture.rand(15)+1,
+			workspace : $.fixture.rand(7)+1,
 			name	: $.fixture.rand(scanners,1) + " " + $.fixture.rand(["inside", "outside"], 1) + " " + i,
 			scanner	: $.fixture.rand(scanners,1),
 			parameters : "some params will go here",
@@ -59,11 +59,11 @@ steal("jquery/dom/fixture", function(){
 		return {
 			id		: i+1,
 			host		: "192.168." + $.fixture.rand(255) + "." + $.fixture.rand(255),
-			hostName	: $.fixture.rand(["","FakeHostName_" + i],1),
+			hostName	: $.fixture.rand(["","FakeHostName_" + i],1)[0],
 			port		: $.fixture.rand(65535) + "/" + $.fixture.rand(["tcp","udp"],1),
 			plugin		: $.fixture.rand(55000),
-			find		: $.fixture.rand(finds, 1),
-			remark		: $.fixture.rand( remarks , 1),
+			find		: $.fixture.rand(finds, 1)[0],
+			remark		: $.fixture.rand( remarks , 1)[0],
 			severity	: severity_id,
 			severityName	: severity[severity_id],
 			status		: status_id,

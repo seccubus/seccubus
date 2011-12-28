@@ -1,0 +1,25 @@
+<%= count = 0 %>
+<thead><tr>
+	<th>IP</th>
+	<th>Hostname</th>
+	<th>Port</th>
+	<th>Plugin</th>
+	<th>Severity</th>
+	<th>Finding</th>
+	<th>Remark</th>
+</tr></thead>
+<tbody>
+	<%for ( var i = 0; i < this.length ; i++ ){%>
+		<% if(this[i].isMatch({
+			scans : fScans
+		})) { %>
+			<tr <%= this[i] %> class='sev_<%= this[i].severity %>'>
+				<%== $.View('//seccubus/finding/table/views/finding.ejs', this[i] ) %>
+			</tr>
+			<% count++ %>
+		<% } %>
+	<% } %>
+	<% if ( count == 0 ) { %>
+		<tr><td collspan=7>No findings match you selection</td></tr>
+	<% } %>
+</tbody>

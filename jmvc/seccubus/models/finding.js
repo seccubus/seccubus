@@ -9,6 +9,9 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.Finding',
 /* @Static */
 {
+	defaults : {
+		matchScans	: null,
+	},
 	findAll: "/findings.json",
   	findOne : "/findings/{id}.json", 
   	create : "/findings.json",
@@ -16,6 +19,18 @@ $.Model('Seccubus.Models.Finding',
   	destroy : "/findings/{id}.json"
 },
 /* @Prototype */
-{});
+{
+	// This function returns true is 
+	isMatch	: function(filter) {
+		match = true;
+		if ( filter.scans ) {
+			match = false;
+			for(i=0;(! match ) && i < filter.scans.length;i++) {
+				match = ( this.scanId == filter.scans[i]);
+			}
+		}
+		return match;
+	},
+});
 
 })
