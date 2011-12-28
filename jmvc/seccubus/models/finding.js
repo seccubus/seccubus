@@ -31,6 +31,19 @@ $.Model('Seccubus.Models.Finding',
 		}
 		return match;
 	},
-});
+	asHTML : function(property) {
+		if ( this.attr(property) ) {
+			var newval = this.attr(property);
+			// Basic HTML encode
+			newval = $('<div/>').text(newval).html();
+			// Replace \n with <br>
+			newval = newval.replace(/\n/g,"<br>");
+			// Basic HTML decode
+			//newval = $('<div/>').html(newval).text();
 
-})
+			return(newval);
+		}
+	}
+}); // Model
+
+})  // Steal
