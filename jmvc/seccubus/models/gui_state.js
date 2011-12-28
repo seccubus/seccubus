@@ -1,5 +1,4 @@
 steal(	'jquery/model',
-	//'jquery/model/validations',
 	function(){
 
 /**
@@ -16,7 +15,7 @@ $.Model('Seccubus.GuiState',
 	defaults : {
 		findStatus	: 1,
 		workspace	: -1,
-		scans		: []
+		scans		: null
 	}
 },
 /* @Prototype */
@@ -35,7 +34,7 @@ $.Model('Seccubus.GuiState',
 	// This function clears the scans object when a workspace is set
 	setWorkspace : function(ws) {
 		if ( ws != this.workspace ) {
-			this.scans = [];
+			this.attr("scans",null);
 		}
 		return(ws);
 	}
