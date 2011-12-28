@@ -22,18 +22,22 @@ $.Controller('Seccubus.Workspace.Select',
 /** @Prototype */
 {
 	init : function(el, fn){
-		this.element.html(this.view('init',Seccubus.Models.Workspace.findAll()) );
+		this.updateView();
 	},
 	"{Seccubus.Models.Workspace} destroyed" : function(Workspace, ev, workspace) {
-		workspace.elements(this.element).remove();
+		this.updateView();
 	},
 	"{Seccubus.Models.Workspace} created" : function(Workspace, ev, workspace){
-		this.element.append(this.view('init', [workspace]))
+		this.updateView();
 	},
 	"{Seccubus.Models.Workspace} updated" : function(Workspace, ev, workspace){
 		workspace.elements(this.element)
 		      .html(this.view('workspace', workspace) );
+	},
+	updateView : function() {
+		this.element.html(this.view('init',Seccubus.Models.Workspace.findAll()) );
 	}
-});
 
-});
+}); // Controller
+
+}); // Steal
