@@ -1,14 +1,24 @@
 steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/finding.js", function(){
 	module("Model: Seccubus.Models.Finding")
 	
-	test("findAll", function(){
-		expect(4);
+	test("findAll with workspace", function(){
+		expect(14);
 		stop();
 		Seccubus.Models.Finding.findAll({}, function(findings){
 			ok(findings)
-	        ok(findings.length)
-	        ok(findings[0].name)
-	        ok(findings[0].description)
+	        	ok(findings.length)
+	        	ok(findings[0].id)
+	        	ok(findings[0].host)
+	        	ok(findings[0].hostName)
+	        	ok(findings[0].port)
+	        	ok(findings[0].plugin)
+	        	ok(findings[0].find)
+	        	ok(findings[0].remark)
+	        	ok(findings[0].severity)
+	        	ok(findings[0].severityName)
+	        	ok(findings[0].status)
+	        	ok(findings[0].statusName)
+	        	ok(findings[0].scanId)
 			start();
 		});
 		
