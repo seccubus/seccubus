@@ -4,7 +4,7 @@ steal(	'jquery/controller',
 	'seccubus/models' )
 .then(	'./views/init.ejs',
 	'./views/finding.ejs',
-	'./views/no_workspace.ejs',
+	'./views/error.ejs',
 function($){
 
 /**
@@ -26,11 +26,11 @@ $.Controller('Seccubus.Finding.Table',
 	updateView : function() {
 		if ( this.options.workspace < 0  ) {
 			this.element.html(
-				this.view('no_workspace')
+				this.view('error',{message : "Please select a workspace first"})
 			);
 		} else if ( this.options.scans == null ) {
 			this.element.html(
-				this.view('no_scan')
+				this.view('error',{message : "Please select one or more scans"})
 			);
 		} else {
 			this.element.html(
