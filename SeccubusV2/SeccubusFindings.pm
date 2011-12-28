@@ -46,7 +46,7 @@ $VERSION = '0.1';
 use strict;
 use Carp;
 
-sub get_findings($$;$);
+sub get_findings($;$$);
 sub get_finding($$;);
 sub update_finding(@);
 sub diff_finding($$$$$;);
@@ -78,9 +78,9 @@ Must have at least read rights
 
 =cut
 
-sub get_findings($$;$) {
+sub get_findings($;$$) {
 	my $workspace_id = shift or die "No workspace_id provided";
-	my $scan_id = shift or die "No scan_id_id provided";
+	my $scan_id = shift;
 	my $filter = shift;
 
 	if ( may_read($workspace_id) ) {
