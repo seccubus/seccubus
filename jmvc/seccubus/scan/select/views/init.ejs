@@ -1,12 +1,12 @@
 <% count = 0  %>
-	<%for ( var i = 0; i < this.length ; i++ ){%>
-		<% if ( this[i].workspace == selectedWorkspace ) { %>
-			<option <%= this[i] %> value='<%= this[i].id %>'>
-				<%== $.View('//seccubus/scan/select/views/scan.ejs', this[i] )%>
-			</option>
-			<% count++ %>
-		<% } %>
-	<%}%>
+<%for ( var i = 0; i < this.length ; i++ ){%>
+	<% if ( this[i].workspace == selectedWorkspace ) { %>
+		<option <%= this[i] %> value='<%= this[i].id %>'>
+			<%== $.View('//seccubus/scan/select/views/scan.ejs', this[i] )%>
+		</option>
+		<% count++ %>
+	<% } %>
+<% } %>
 <% if ( count == 0 ) { %>
 	<%== $.View('//seccubus/scan/select/views/no_scans') %>
 <% } %>
