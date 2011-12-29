@@ -9,6 +9,7 @@ steal(
 	'seccubus/workspace/select',
 	'seccubus/scan/select',
 	'seccubus/finding/table',
+	'seccubus/finding/status_table',
 	//'seccubus/workspace/table',
 	function(){					// configure your application
 		/***********************************************************
@@ -24,6 +25,11 @@ steal(
 		});
 		gui_state.bind("scans", function(ev, scan){
 			render_finding_table();
+			render_status_table();
+		});
+		gui_state.bind("status", function(ev, scan){
+			render_finding_table();
+			render_status_table();
 		});
 
 		/***********************************************************
@@ -73,6 +79,9 @@ steal(
 		// Setup finding table
 		render_finding_table();
 
+		// Setup status table
+		render_status_table();
+
 		/**********************************************************
 		 * Functions
 		 *********************************************************/
@@ -89,7 +98,26 @@ steal(
 			$('#finding_table').seccubus_finding_table({
 					workspace : gui_state.workspace,
 					scans     : gui_state.scans,
+					status        : gui_state.status,
 			});
 		};
+
+		function render_status_table() {
+			$('#status_buttons').seccubus_finding_status_table({
+					workspace     : gui_state.workspace,
+					scans         : gui_state.scans,
+					status        : gui_state.status,
+					onClick       : function(s){
+						gui_state.attr("status",s);
+					},
+					updateOnClick : false,
+			});
+			$('.setStatus').each( function() {
+				$(this).click(function() {
+					alert('click ' +  $(this).value());
+					gui_state.attr('status') = $(this).value();
+				});
+			});
+		}
 	}
 )

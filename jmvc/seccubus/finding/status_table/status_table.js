@@ -16,7 +16,7 @@ $.Controller('Seccubus.Finding.StatusTable',
 		workspace	: -1,
 		scans		: null,
 		status		: 1,
-		onClick 	: function(value) { this.updateView(); },
+		onClick 	: function(value) { },
 		updateOnClick	: true,
 	}
 },
