@@ -8,5 +8,5 @@
 	<% } %>
 <% } %>
 <% if ( count == 0 ) { %>
-	<%== $.View('//seccubus/scan/select/views/no_scans') %>
+	<%== $.View('//seccubus/scan/select/views/error.ejs',{ message : "No scans found"}) %>
 <% } %>

@@ -4,8 +4,7 @@ steal( 'jquery/controller',
        'seccubus/models' )
 .then( './views/init.ejs', 
        './views/scan.ejs', 
-       './views/no_workspace.ejs',
-       './views/no_scans.ejs',
+       './views/error.ejs',
 function($){
 
 /**
@@ -43,7 +42,12 @@ $.Controller('Seccubus.Scan.Select',
 	},
 	updateView : function() {
 		if ( this.options.workspace == -1 ) {
-			this.element.html(this.view('no_workspace'));
+			this.element.html(
+				this.view(
+					'error',
+					{message : "No workspace selected" }
+				)
+			);
 		} else {
 			this.element.html(
 				this.view(
