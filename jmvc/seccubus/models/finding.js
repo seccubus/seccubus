@@ -29,6 +29,9 @@ $.Model('Seccubus.Models.Finding',
 				match = ( this.scanId == filter.scans[i]);
 			}
 		}
+		if ( match && typeof filter.status != 'undefined' ) {
+			match = ( this.status == filter.status );
+		}
 		return match;
 	},
 	asHTML : function(property) {

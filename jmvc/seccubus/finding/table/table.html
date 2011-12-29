@@ -18,6 +18,14 @@
 		Workspace: <select id='workspace'></select><br>
 		Scan(s):<br>
 		<select multiple id='scans' size=8></select><br><br>
+		Status:
+		<a href='javascript://' class='setStatus' value=1>1</a>
+		<a href='javascript://' class='setStatus' value=2>2</a>
+		<a href='javascript://' class='setStatus' value=3>3</a>
+		<a href='javascript://' class='setStatus' value=4>4</a>
+		<a href='javascript://' class='setStatus' value=5>5</a>
+		<a href='javascript://' class='setStatus' value=6>6</a>
+		<a href='javascript://' class='setStatus' value=99>99</a><br>
 		<table id='findings' border=1></table>
 		<script type='text/javascript' 
                 src='../../../steal/steal.js'>
@@ -37,6 +45,9 @@
 					});
 					update_findings();
 				});
+				gui_state.bind("status", function(){
+					update_findings();
+				});
 				gui_state.bind("scans", function(ev, sc){
 					update_findings();
 				});
@@ -52,10 +63,16 @@
 				$('#scans').seccubus_scan_select();
 				$('#findings').seccubus_finding_table();
 
+				$('.setStatus').click( function(){
+					s = $(this).attr("value");
+					gui_state.attr("status",s);
+				});
+
 				function update_findings() {
 					$('#findings').seccubus_finding_table({
 						workspace	: gui_state.attr("workspace"),
 						scans		: gui_state.attr("scans"),
+						status		: gui_state.attr("status"),
 					});
 				};
 			})

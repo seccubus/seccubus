@@ -15,7 +15,8 @@ $.Controller('Seccubus.Finding.Table',
 {
 	defaults : {
 		workspace	: -1,
-		scans		: null
+		scans		: null,
+		status		: 1
 	}
 },
 /** @Prototype */
@@ -37,6 +38,7 @@ $.Controller('Seccubus.Finding.Table',
 				this.view(
 					'init',
 					Seccubus.Models.Finding.findAll(), {
+						fStatus : this.options.status,
 						fScans : this.options.scans,
 					}
 				)

@@ -11,7 +11,8 @@
 <tbody>
 	<%for ( var i = 0; i < this.length ; i++ ){%>
 		<% if(this[i].isMatch({
-			scans : fScans
+			scans : fScans,
+			status : fStatus,
 		})) { %>
 			<tr <%= this[i] %> class='sev_<%= this[i].severity %>'>
 				<%== $.View('//seccubus/finding/table/views/finding.ejs', this[i] ) %>
