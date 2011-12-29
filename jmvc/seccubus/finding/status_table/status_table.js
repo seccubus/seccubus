@@ -15,6 +15,7 @@ $.Controller('Seccubus.Finding.StatusTable',
 	defaults : {
 		workspace	: -1,
 		scans		: null,
+		status		: 1
 	}
 },
 /** @Prototype */
@@ -22,17 +23,18 @@ $.Controller('Seccubus.Finding.StatusTable',
 	init : function(){
 		this.updateView();
 	},
-	'.setStatus clicked' : function(el) {
-		alert("Yes we did it");
+	'.setStatus click' : function(el) {
+		this.options.status = el.val();
+		this.onClick(this.options.status);
 	},
 	updateView : function() {
 		if ( this.options.workspace < 0  ) {
 			this.element.html(
-				this.view('error', {message : "Please select a workspace to start"})
+				this.view('error', {sStatus : this.options.status})
 			);
 		} else if ( this.options.scans == null ) {
 			this.element.html(
-				this.view('error', {message : "Please select one or more scans"})
+				this.view('error', {sStatus : this.options.status})
 			);
 		} else {
 			this.element.html(
@@ -40,6 +42,7 @@ $.Controller('Seccubus.Finding.StatusTable',
 					'init',
 					Seccubus.Models.Finding.findAll(), {
 						fScans : this.options.scans,
+						sStatus : this.options.status,
 					}
 				)
 			);
@@ -48,6 +51,12 @@ $.Controller('Seccubus.Finding.StatusTable',
 	update : function(options){
 		this._super(options);
 		this.updateView();
+	},
+	onClick : function(value) {
+		this.updateView();
+	},
+	getStatus : function() {
+		return this.options.status;
 	}
 }) // Controller
 
