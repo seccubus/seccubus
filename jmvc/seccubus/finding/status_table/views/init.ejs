@@ -1,0 +1,17 @@
+<% var counter = [0,0,0,0,0,0,0] %>
+<% counter[99] = 0; %>
+<% for ( var i = 0; i < this.length ; i++ ) { %>
+	<% if(this[i].isMatch({ scans : fScans })) { %>
+		<% counter[this[i].status]++; %>
+	<% } %>
+<% } %>
+<tbody>
+<tr>
+	<td><button value=1 class='setStatus'>New (<%= counter[1] %>)</button></td>
+	<td><button value=2 class='setStatus'>Changed (<%= counter[2] %>)</button></td>
+	<td><button value=3 class='setStatus'>Open (<%= counter[3] %>)</button></td>
+	<td><button value=4 class='setStatus'>No Issue (<%= counter[4] %>)</button></td>
+	<td><button value=5 class='setStatus'>Gone (<%= counter[5] %>)</button></td>
+	<td><button value=6 class='setStatus'>Closed (<%= counter[6] %>)</button></td>
+	<td><button value=99 class='setStatus'>MASKED (<%= counter[99] %>)</button></td>
+</tbody>
