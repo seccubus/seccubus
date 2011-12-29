@@ -3,7 +3,6 @@ steal(	'jquery/controller',
 	'jquery/controller/view',
 	'seccubus/models' )
 .then(	'./views/init.ejs',
-	'./views/finding.ejs',
 	'./views/error.ejs',
 function($){
 
