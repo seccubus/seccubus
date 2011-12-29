@@ -15,7 +15,9 @@ $.Controller('Seccubus.Finding.StatusTable',
 	defaults : {
 		workspace	: -1,
 		scans		: null,
-		status		: 1
+		status		: 1,
+		onClick 	: function(value) { this.updateView(); },
+		updateOnClick	: true,
 	}
 },
 /** @Prototype */
@@ -25,7 +27,10 @@ $.Controller('Seccubus.Finding.StatusTable',
 	},
 	'.setStatus click' : function(el) {
 		this.options.status = el.val();
-		this.onClick(this.options.status);
+		this.options.onClick(this.options.status);
+		if ( this.options.updateOnClick ) {
+			this.updateView();
+		}
 	},
 	updateView : function() {
 		if ( this.options.workspace < 0  ) {
@@ -50,9 +55,6 @@ $.Controller('Seccubus.Finding.StatusTable',
 	},
 	update : function(options){
 		this._super(options);
-		this.updateView();
-	},
-	onClick : function(value) {
 		this.updateView();
 	},
 	getStatus : function() {

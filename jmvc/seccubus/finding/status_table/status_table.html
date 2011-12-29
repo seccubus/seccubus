@@ -58,6 +58,7 @@
 					$('#status').seccubus_finding_status_table({
 						workspace	: gui_state.attr("workspace"),
 						scans		: gui_state.attr("scans"),
+						onClick		: function(val) { alert(val); },
 					});
 				};
 			})
