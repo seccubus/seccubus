@@ -29,6 +29,22 @@ $.Controller('Seccubus.Finding.Filter',
 	init : function(){
 		this.updateView();
 	},
+	'.clearFilter click' : function() {
+		$('select.filter').val("*");
+		this.options.host = "*";
+		this.options.hostName = "*";
+		this.options.port = "*";
+		this.options.plugin = "*";
+		this.options.onChange({
+			host		: this.options.host,
+			hostName	: this.options.hostName,
+			port		: this.options.port,
+			plugin		: this.options.plugin,
+		});
+		if ( this.options.updateOnChange ) {
+			this.updateView();
+		}
+	},
 	'.filter change' : function(el) {
 		this.options[el.attr("filter")] = el.val();
 		this.options.onChange({

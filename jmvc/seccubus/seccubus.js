@@ -22,38 +22,25 @@ steal(
 		});
 		gui_state.bind("workspace", function(ev, ws){
 			render_scan_selectors();
-			render_finding_table();
-			render_filters();
+			render_findings();
 		});
 		gui_state.bind("scans", function(ev, scan){
-			render_finding_table();
-			render_status_table();
-			render_filters();
+			render_findings();
 		});
 		gui_state.bind("findStatus", function(ev, scan){
-			render_finding_table();
-			render_status_table();
-			render_filters();
+			render_findings();
 		});
 		gui_state.bind("host", function(ev, scan){
-			render_finding_table();
-			render_status_table();
-			render_filters();
+			render_findings();
 		});
 		gui_state.bind("hostName", function(ev, scan){
-			render_finding_table();
-			render_status_table();
-			render_filters();
+			render_findings();
 		});
 		gui_state.bind("port", function(ev, scan){
-			render_finding_table();
-			render_status_table();
-			render_filters();
+			render_findings();
 		});
 		gui_state.bind("plugin", function(ev, scan){
-			render_finding_table();
-			render_status_table();
-			render_filters();
+			render_findings();
 		});
 
 		/***********************************************************
@@ -112,6 +99,11 @@ steal(
 		/**********************************************************
 		 * Functions
 		 *********************************************************/
+		function render_findings() {
+			render_finding_table();
+			render_status_table();
+			render_filters();
+		}
 
 		function render_scan_selectors() {
 			$('select.scanSelector').each( function() {
@@ -162,7 +154,7 @@ steal(
 						gui_state.attr(a,f[a]);
 					}
 				},
-				updateOnChange	: false
+				updateOnChange	: false,
 			});
 		};
 	}
