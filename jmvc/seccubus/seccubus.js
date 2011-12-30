@@ -10,6 +10,7 @@ steal(
 	'seccubus/scan/select',
 	'seccubus/finding/table',
 	'seccubus/finding/status_table',
+	'seccubus/finding/filter',
 	//'seccubus/workspace/table',
 	function(){					// configure your application
 		/***********************************************************
@@ -22,14 +23,37 @@ steal(
 		gui_state.bind("workspace", function(ev, ws){
 			render_scan_selectors();
 			render_finding_table();
+			render_filters();
 		});
 		gui_state.bind("scans", function(ev, scan){
 			render_finding_table();
 			render_status_table();
+			render_filters();
 		});
-		gui_state.bind("status", function(ev, scan){
+		gui_state.bind("findStatus", function(ev, scan){
 			render_finding_table();
 			render_status_table();
+			render_filters();
+		});
+		gui_state.bind("host", function(ev, scan){
+			render_finding_table();
+			render_status_table();
+			render_filters();
+		});
+		gui_state.bind("hostName", function(ev, scan){
+			render_finding_table();
+			render_status_table();
+			render_filters();
+		});
+		gui_state.bind("port", function(ev, scan){
+			render_finding_table();
+			render_status_table();
+			render_filters();
+		});
+		gui_state.bind("plugin", function(ev, scan){
+			render_finding_table();
+			render_status_table();
+			render_filters();
 		});
 
 		/***********************************************************
@@ -82,6 +106,9 @@ steal(
 		// Setup status table
 		render_status_table();
 
+		// Setup filters
+		render_filters();
+
 		/**********************************************************
 		 * Functions
 		 *********************************************************/
@@ -96,28 +123,47 @@ steal(
 
 		function render_finding_table() {
 			$('#finding_table').seccubus_finding_table({
-					workspace : gui_state.workspace,
-					scans     : gui_state.scans,
-					status        : gui_state.status,
+				workspace	: gui_state.workspace,
+				scans		: gui_state.scans,
+				status		: gui_state.findStatus,
+				host		: gui_state.host,
+				hostName	: gui_state.hostName,
+				port		: gui_state.port,
+				plugin		: gui_state.plugin,
 			});
 		};
 
 		function render_status_table() {
 			$('#status_buttons').seccubus_finding_status_table({
-					workspace     : gui_state.workspace,
-					scans         : gui_state.scans,
-					status        : gui_state.status,
-					onClick       : function(s){
-						gui_state.attr("status",s);
-					},
-					updateOnClick : false,
-			});
-			$('.setStatus').each( function() {
-				$(this).click(function() {
-					alert('click ' +  $(this).value());
-					gui_state.attr('status') = $(this).value();
-				});
+				workspace	: gui_state.workspace,
+				scans		: gui_state.scans,
+				status		: gui_state.findStatus,
+				host		: gui_state.host,
+				hostName	: gui_state.hostName,
+				port		: gui_state.port,
+				plugin		: gui_state.plugin,
+				onClick		: function(s){
+					gui_state.attr("findStatus",s);
+				},
+				updateOnClick : false,
 			});
 		}
+		function render_filters() {
+			$('#filters').seccubus_finding_filter({
+				workspace 	: gui_state.workspace,
+				scans		: gui_state.scans,
+				status		: gui_state.findStatus,
+				host		: gui_state.host,
+				hostName	: gui_state.hostName,
+				port		: gui_state.port,
+				plugin		: gui_state.plugin,
+				onChange	: function(f) {
+					for(var a in f) {
+						gui_state.attr(a,f[a]);
+					}
+				},
+				updateOnChange	: false
+			});
+		};
 	}
 )

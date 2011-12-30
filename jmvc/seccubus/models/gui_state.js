@@ -15,7 +15,11 @@ $.Model('Seccubus.GuiState',
 	defaults : {
 		findStatus	: 1,
 		workspace	: -1,
-		scans		: null
+		scans		: null,
+		host		: "*",
+		hostName	: "*",
+		port		: "*",
+		plugin		: "*",
 	}
 },
 /* @Prototype */

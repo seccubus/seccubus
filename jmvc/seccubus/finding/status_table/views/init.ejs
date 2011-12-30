@@ -5,7 +5,13 @@
    var names = ["New","Changed","Open","No Issue","Gone","Closed","MASKED"];
 
    for ( var i = 0; i < this.length ; i++ ) { 
-   	if(this[i].isMatch({ scans : fScans })) { 
+   	if(this[i].isMatch({ 
+		scans		: fScans,
+		host		: fHost,
+		hostName	: fHostName,
+		port		: fPort,
+		plugin		: fPlugin,
+	})) { 
 		counter[this[i].status]++; 
 	} 
    } %>

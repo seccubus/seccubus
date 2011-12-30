@@ -16,6 +16,10 @@ $.Controller('Seccubus.Finding.StatusTable',
 		workspace	: -1,
 		scans		: null,
 		status		: 1,
+		host		: "*",
+		hostName	: "*",
+		port		: "*",
+		plugin		: "*",
 		onClick 	: function(value) { },
 		updateOnClick	: true,
 	}
@@ -46,8 +50,12 @@ $.Controller('Seccubus.Finding.StatusTable',
 				this.view(
 					'init',
 					Seccubus.Models.Finding.findAll(), {
-						fScans : this.options.scans,
-						sStatus : this.options.status,
+						fScans		: this.options.scans,
+						sStatus		: this.options.status,
+						fHost		: this.options.host,
+						fHostName	: this.options.hostName,
+						fPort		: this.options.port,
+						fPlugin		: this.options.plugin,
 					}
 				)
 			);
