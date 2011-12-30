@@ -32,6 +32,23 @@ $.Model('Seccubus.Models.Finding',
 		if ( match && typeof filter.status != 'undefined' ) {
 			match = ( this.status == filter.status );
 		}
+		if ( match && typeof filter.host != 'undefined' && filter.host != "*" ) {
+			var starpos = filter.host.indexOf("*");
+			if ( starpos == -1 ) {
+				match = ( this.host == filter.host );
+			} else {
+				match = ( filter.host.substring(0,starpos) == this.host.substring(0,starpos));
+			}
+		}
+		if ( match && typeof filter.hostName != "undefined" && filter.hostName != "*" ) {
+			match = ( this.hostName == filter.hostName );
+		}
+		if ( match && typeof filter.port != "undefined" && filter.port != "*" ) {
+			match = ( this.port == filter.port );
+		}
+		if ( match && typeof filter.plugin != "undefined" && filter.plugin != "*" ) {
+			match = ( this.plugin == filter.plugin );
+		}
 		return match;
 	},
 	asHTML : function(property) {

@@ -58,10 +58,10 @@ steal("jquery/dom/fixture", function(){
 		status_id = [1,2,3,4,5,6,99][status_id];
 		return {
 			id		: i+1,
-			host		: "192.168." + $.fixture.rand(255) + "." + $.fixture.rand(255),
+			host		: "192.168." + $.fixture.rand(20) + "." + $.fixture.rand(255),
 			hostName	: $.fixture.rand(["","FakeHostName_" + i],1)[0],
-			port		: $.fixture.rand(65535) + "/" + $.fixture.rand(["tcp","udp"],1),
-			plugin		: $.fixture.rand(55000),
+			port		: $.fixture.rand(1024) + "/" + $.fixture.rand(["tcp","udp"],1),
+			plugin		: 1000 + $.fixture.rand(100),
 			find		: $.fixture.rand(finds, 1)[0],
 			remark		: $.fixture.rand( remarks , 1)[0],
 			severity	: severity_id,
