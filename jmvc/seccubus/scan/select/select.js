@@ -52,7 +52,9 @@ $.Controller('Seccubus.Scan.Select',
 			this.element.html(
 				this.view(
 					'init',
-					Seccubus.Models.Scan.findAll(),
+					Seccubus.Models.Scan.findAll({
+						workspaceId : this.options.workspace
+					}),
 					{selectedWorkspace : this.options.workspace }
 				) 
 			);
