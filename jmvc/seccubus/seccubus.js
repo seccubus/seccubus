@@ -1,7 +1,7 @@
 steal(
 	'./seccubus.css', 			// application CSS file
-	'./models/models.js',			// steals all your models
 	'./fixtures/fixtures.js',		// sets up fixtures for your models
+	'./models/models.js',			// steals all your models
 	'seccubus/tabs',
 	'seccubus/up_to_date/list',
 	'seccubus/config_item/list',

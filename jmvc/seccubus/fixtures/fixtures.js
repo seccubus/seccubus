@@ -26,9 +26,11 @@ steal("jquery/dom/fixture", function(){
 	/* Workspaces have a static fixture */
 
 	/* Scans */
-	$.fixture.make("scan", $.fixture.rand(15)+8, function(i, scan){
-		var scanners = ["Nessus", "Nessus Legacy", "OpenVAS", "Nikto", "Nmap" ];
-		return {
+	var scanFixtures = [];
+	var noScans = $.fixture.rand(15)+8;
+	var scanners = ["Nessus", "Nessus Legacy", "OpenVAS", "Nikto", "Nmap" ];
+	for(var i = 0;i < noScans;i++) {
+		scanFixtures[i] = {
 			id 	: i,
 			workspace : $.fixture.rand(7)+1,
 			name	: $.fixture.rand(scanners,1) + " " + $.fixture.rand(["inside", "outside"], 1) + " " + i,
@@ -38,7 +40,20 @@ steal("jquery/dom/fixture", function(){
 			noFindings : $.fixture.rand(255),
 			lastScan : $.fixture.rand(["", "2011-11-11 11:11:11" ],1)
 		}
-	})
+	}
+
+	$.fixture("json/getScans.pl", function(orig, settings, headers) {
+		var selected = {};
+		for(var i = 0; i < scanFixtures.length;i++) {
+			if ( scanFixtures[i].workspace == orig.data.workspaceId ) {
+				if ( typeof selected[0] == "undefined" ) {
+					selected = [];
+				}
+				selected.push(scanFixtures[i]);
+			}
+		}
+		return [selected];
+	});
 
 	/* Findings */
 	$.fixture.make("finding", 2500, function(i, finding){

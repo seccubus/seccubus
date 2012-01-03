@@ -1,5 +1,5 @@
 <% %>
-<% if ( typeof this[0].error != "undefined" ) { %>
+<% if ( typeof this[0] != "undefined" && typeof this[0].error != "undefined" ) { %>
 	 <%== $.View('//seccubus/finding/filter/views/error.ejs',{ message : this[0].error }) %>
 <% } else { 
 	var hosts = {};

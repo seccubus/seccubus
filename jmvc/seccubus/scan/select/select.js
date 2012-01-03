@@ -49,16 +49,18 @@ $.Controller('Seccubus.Scan.Select',
 				)
 			);
 		} else {
-			this.element.html(
-				this.view(
-					'init',
-					Seccubus.Models.Scan.findAll({
-						workspaceId : this.options.workspace
-					}),
-					{selectedWorkspace : this.options.workspace }
-				) 
+			Seccubus.Models.Scan.findAll( 
+				{ workspaceId : this.options.workspace },
+				this.callback('dataReady')
 			);
 		}
+	},
+	dataReady : function(items) {
+		this.element.html(this.view(
+			'init',
+			items,
+			{selectedWorkspace : this.options.workspace }
+		));
 	},
 	update : function(options){
 		this._super(options);
