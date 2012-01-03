@@ -92,7 +92,8 @@ sub get_findings($;$$) {
 				findings.severity as severity_id, 
 				severity.name as severity_name, 
 				findings.status as status_id, 
-				finding_status.name as status
+				finding_status.name as status,
+				findings.scan_id as scan_id
 			FROM
 				findings
 			LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
