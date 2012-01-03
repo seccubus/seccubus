@@ -9,17 +9,7 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.Finding',
 /* @Static */
 {
-	//findAll: "json/getFindings.json",
-	findAll: function(params,success,error){
-		return $.ajax({
-			url:		"json/getFindings.pl",
-			type:		"post",
-			dataType:	"json finding.models",
-			data:		params,
-			success:	success,
-			error:		error
-		});
-	},
+	findAll: "json/getFindings.pl?workspaceId={workspaceId}",
   	findOne : "/findings/{id}.json", 
   	create : "/findings.json",
  	update : "/findings/{id}.json",
