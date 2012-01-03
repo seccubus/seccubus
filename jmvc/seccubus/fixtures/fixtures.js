@@ -56,22 +56,24 @@ steal("jquery/dom/fixture", function(){
 	});
 
 	/* Findings */
-	$.fixture.make("finding", 2500, function(i, finding){
-		var finds = [
-				"OSVDB-637: GET : Enumeration of users is possible by requesting ~username (responds with 'Forbidden' for users, 'not found' for non-existent users).",
-				"OSVDB-3268: GET : /icons/: Directory indexing found.",
-				"Port 22/tcp is open.\nService was identified as ssh",
-				"Port 80/tcp is open.\nService was identified as www",
-				"Remote listeners enumeration\nUsing netstat, it is possible to identify daemons listening on the remote\nport.\n\nPlugin output:\nThe Linux process '/opt/nessus/sbin/nessusd' is listening on this port.\n\nDescription:\nBy logging into the remote host and using the Linux-specific 'netstat\n-anp' command, it was possible to obtain the name of the processe\nlistening on the remote port.\n\nSolution:\nn/a\n\nSeverity: 1\n\nRisk factor: None",
-				"Service Detection\nThe remote service could be identified.\n\nPlugin output:\nA web server is running on this port.\n\nDescription:\nIt was possible to identify the remote service by its banner or by looking\nat the error message it sends when it receives an HTTP request.\n\nSolution:\nn/a\n\nSeverity: 1\n\nRisk factor: None"
-			    ];
-		var remarks = ["Fix it", "Disable it", "Remove it","","","Duh..."];
+	var findingFixtures = [];
+	var noFindings = 2500;
+	var finds = [
+		"OSVDB-637: GET : Enumeration of users is possible by requesting ~username (responds with 'Forbidden' for users, 'not found' for non-existent users).",
+		"OSVDB-3268: GET : /icons/: Directory indexing found.",
+		"Port 22/tcp is open.\nService was identified as ssh",
+		"Port 80/tcp is open.\nService was identified as www",
+		"Remote listeners enumeration\nUsing netstat, it is possible to identify daemons listening on the remote\nport.\n\nPlugin output:\nThe Linux process '/opt/nessus/sbin/nessusd' is listening on this port.\n\nDescription:\nBy logging into the remote host and using the Linux-specific 'netstat\n-anp' command, it was possible to obtain the name of the processe\nlistening on the remote port.\n\nSolution:\nn/a\n\nSeverity: 1\n\nRisk factor: None",
+		"Service Detection\nThe remote service could be identified.\n\nPlugin output:\nA web server is running on this port.\n\nDescription:\nIt was possible to identify the remote service by its banner or by looking\nat the error message it sends when it receives an HTTP request.\n\nSolution:\nn/a\n\nSeverity: 1\n\nRisk factor: None"
+	];
+	var remarks = ["Fix it", "Disable it", "Remove it","","","Duh..."];
+	var severity = ["Not set","High", "Medium", "Low", "Note"];
+	var status = ["New","Changed", "Open", "No issue", "Gone", "Closed", "MASKED"][status_id];
+	for(var i = 0;i < noFindings;i++) {
 		var severity_id = $.fixture.rand(5);
-		var severity = ["Not set","High", "Medium", "Low", "Note"];
 		var status_id = $.fixture.rand(7);
-		var status = ["New","Changed", "Open", "No issue", "Gone", "Closed", "MASKED"][status_id];
 		status_id = [1,2,3,4,5,6,99][status_id];
-		return {
+		findingFixtures[i] = {
 			id		: i+1,
 			host		: "192.168." + $.fixture.rand(20) + "." + $.fixture.rand(255),
 			hostName	: $.fixture.rand(["","FakeHostName_" + i],1)[0],
@@ -85,5 +87,9 @@ steal("jquery/dom/fixture", function(){
 			statusName	: status,
 			scanId		: $.fixture.rand(15)
 		};
+	}
+
+	$.fixture("json/getFindings.pl", function(orig, settings, headers) {
+		return [findingFixtures];
 	});
-})
+});
