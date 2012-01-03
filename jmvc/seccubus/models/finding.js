@@ -17,7 +17,8 @@ $.Model('Seccubus.Models.Finding',
 },
 /* @Prototype */
 {
-	// This function returns true is 
+	// This function returns true if the finding matches the criteria 
+	// in the filter object
 	isMatch	: function(filter,debug) {
 		match = true;
 		debug = ( typeof debug != "undefined" );
