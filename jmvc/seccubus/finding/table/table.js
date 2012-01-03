@@ -94,9 +94,6 @@ $.Controller('Seccubus.Finding.Table',
 		var fn;
 		if ( false ) {
 			/* Funciton to sort IP's goes here */	
-
-
-
 		} else {
 			fn = "if (a.attr('" + at + "') < b.attr('" + at + "')) { return -1; } else if ( a.attr('" + at + "') == b.attr('" + at + "')) { return 0; } else { return 1; }";
 		}

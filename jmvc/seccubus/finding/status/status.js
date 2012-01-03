@@ -7,9 +7,9 @@ steal(	'jquery/controller',
 function($){
 
 /**
- * @class Seccubus.Finding.StatusTable
+ * @class Seccubus.Finding.Status
  */
-$.Controller('Seccubus.Finding.StatusTable',
+$.Controller('Seccubus.Finding.Status',
 /** @Static */
 {
 	defaults : {

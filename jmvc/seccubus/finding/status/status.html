@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
 	<head>
-		<title>Seccubus.Finding.StatusTable</title>
+		<title>Seccubus.Finding.Status</title>
         <style type='text/css'>
             body {font-family: verdana}
             .error {border: solid 1px red;}
@@ -15,17 +15,17 @@
         </style>
 	</head>
 	<body>
-	    <h1>Seccubus.Finding.StatusTable Demo</h1>
+	    <h1>Seccubus.Finding.Status Demo</h1>
 		Workspace: <select id='workspace'></select><br>
 		Scan(s):<br>
 		<select multiple id='scans' size=8></select><br><br>
-		<table id='status' border=1></table><br>
+		<div id='status' border=1></div><br>
 		<table id='findings' border=1></table>
 		<script type='text/javascript' 
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
-			steal(	'seccubus/finding/status_table',
+			steal(	'seccubus/finding/status',
 				'seccubus/workspace/select',
 				'seccubus/scan/select',
 				'seccubus/fixtures',
@@ -52,10 +52,10 @@
 				$('#workspace').seccubus_workspace_select();
 				$('#workspace').attr("value", -1);
 				$('#scans').seccubus_scan_select();
-				$('#status').seccubus_finding_status_table();
+				$('#status').seccubus_finding_status();
 
 				function update_findings() {
-					$('#status').seccubus_finding_status_table({
+					$('#status').seccubus_finding_status({
 						workspace	: gui_state.attr("workspace"),
 						scans		: gui_state.attr("scans"),
 						onClick		: function(val) { alert(val); },

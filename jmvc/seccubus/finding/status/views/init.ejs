@@ -15,19 +15,15 @@
 		counter[this[i].status]++; 
 	} 
    } %>
-<tbody>
-	<tr>
-		<% for(var i = 0;i < values.length;i++) { %>
-			<td><button value=<%= values[i] %> 
-				<% if(sStatus == values[i]) { %>
-					disabled=true
-					class='setStatus selected'
-				<% } else { %>
-					class='setStatus'
-				<% } %>
-				>
-				<%= names[i] %> (<%= counter[values[i]] %>)
-			</button></td>
+<% for(var i = 0;i < values.length;i++) { %>
+	<button value=<%= values[i] %> 
+		<% if(sStatus == values[i]) { %>
+			disabled=true
+			class='setStatus selected'
+		<% } else { %>
+			class='setStatus'
 		<% } %>
-	</tr>
-</tbody>
+		>
+		<%= names[i] %> (<%= counter[values[i]] %>)
+	</button>
+<% } %>

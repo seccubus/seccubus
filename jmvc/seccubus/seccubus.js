@@ -8,7 +8,7 @@ steal(
 	'seccubus/workspace/select',
 	'seccubus/scan/select',
 	'seccubus/finding/table',
-	'seccubus/finding/status_table',
+	'seccubus/finding/status',
 	'seccubus/finding/filter',
 	//'seccubus/workspace/table',
 	function(){					// configure your application
@@ -90,7 +90,7 @@ steal(
 		render_finding_table();
 
 		// Setup status table
-		render_status_table();
+		render_status();
 
 		// Setup filters
 		render_filters();
@@ -100,7 +100,7 @@ steal(
 		 *********************************************************/
 		function render_findings() {
 			render_finding_table();
-			render_status_table();
+			render_status();
 			render_filters();
 		}
 
@@ -124,8 +124,8 @@ steal(
 			});
 		};
 
-		function render_status_table() {
-			$('#status_buttons').seccubus_finding_status_table({
+		function render_status() {
+			$('#status_buttons').seccubus_finding_status({
 				workspace	: gui_state.workspace,
 				scans		: gui_state.scans,
 				status		: gui_state.findStatus,

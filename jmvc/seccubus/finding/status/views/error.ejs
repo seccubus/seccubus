@@ -1,0 +1,20 @@
+<% %>
+<% var values = [1,2,3,4,5,6,99];
+   var names = ["New","Changed","Open","No Issue","Gone","Closed","MASKED"];
+%>
+<% for(var i = 0;i < values.length;i++) { %>
+	<button value=<%= values[i] %> 
+		disabled=true
+		<% if(sStatus == values[i]) { %>
+			class='setStatus selected'
+		<% } else { %>
+			class='setStatus'
+		<% } %>
+		>
+		<%= names[i] %> (0)
+	</button>
+<% } %>
+<% if ( typeof message != 'undefined' ) { %>
+	<br>
+	<%= message %>
+<% } %>
