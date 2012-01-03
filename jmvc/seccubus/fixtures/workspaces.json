@@ -1,92 +1,107 @@
 [
    {
       "id"		: "1",
-      "Name" 		: "Client 1",
-      "ScanCount"	: "1",
-      "LastScan"	: "2011-11-11 11:11:11"
+      "name" 		: "Client 1",
+      "findCount"	: "10",
+      "scanCount"	: "1",
+      "lastScan"	: "2011-11-11 11:11:11"
    },
    {
       "id"		: "2",
-      "Name" 		: "Client 2",
-      "ScanCount"	: "2",
-      "LastScan"	: "2011-11-11 11:11:11"
+      "name" 		: "Client 2",
+      "findCount"	: "10",
+      "scanCount"	: "2",
+      "lastScan"	: "2011-11-11 11:11:11"
    },
    {
       "id"		: "3",
-      "Name" 		: "Client 0",
-      "ScanCount"	: "0",
-      "LastScan"	: ""
+      "name" 		: "Client 0",
+      "findCount"	: "10",
+      "scanCount"	: "0",
+      "lastScan"	: ""
    },
    {
       "id"		: "4",
-      "Name" 		: "Client 4",
-      "ScanCount"	: "4",
-      "LastScan"	: "2011-11-11 11:11:11"
+      "name" 		: "Client 4",
+      "findCount"	: "10",
+      "scanCount"	: "4",
+      "lastScan"	: "2011-11-11 11:11:11"
    },
    {
       "id"		: "5",
-      "Name" 		: "Client 5",
-      "ScanCount"	: "0",
-      "LastScan"	: ""
+      "name" 		: "Client 5",
+      "findCount"	: "10",
+      "scanCount"	: "0",
+      "lastScan"	: ""
    },
    {
       "id"		: "6",
-      "Name" 		: "Client 6",
-      "ScanCount"	: "6",
-      "LastScan"	: "2011-11-11 11:11:11"
+      "name" 		: "Client 6",
+      "findCount"	: "10",
+      "scanCount"	: "6",
+      "lastScan"	: "2011-11-11 11:11:11"
    },
    {
       "id"		: "7",
-      "Name" 		: "Client 7",
-      "ScanCount"	: "7",
-      "LastScan"	: "2011-11-11 11:11:11"
+      "name" 		: "Client 7",
+      "findCount"	: "10",
+      "scanCount"	: "7",
+      "lastScan"	: "2011-11-11 11:11:11"
    },
    {
       "id"		: "8",
-      "Name" 		: "Client 8",
-      "ScanCount"	: "8",
-      "LastScan"	: "2011-11-11 11:11:11"
+      "name" 		: "Client 8",
+      "findCount"	: "10",
+      "scanCount"	: "8",
+      "lastScan"	: "2011-11-11 11:11:11"
    },
    {
       "id"		: "9",
-      "Name" 		: "Client 9",
-      "ScanCount"	: "9",
-      "LastScan"	: ""
+      "name" 		: "Client 9",
+      "findCount"	: "10",
+      "scanCount"	: "9",
+      "lastScan"	: ""
    },
    {
       "id"		: "10",
-      "Name" 		: "Client 10",
-      "ScanCount"	: "10",
-      "LastScan"	: ""
+      "name" 		: "Client 10",
+      "findCount"	: "10",
+      "scanCount"	: "10",
+      "lastScan"	: ""
    },
    {
       "id"		: "11",
-      "Name" 		: "Client 11",
-      "ScanCount"	: "11",
-      "LastScan"	: "2011-11-11 11:11:11"
+      "name" 		: "Client 11",
+      "findCount"	: "10",
+      "scanCount"	: "11",
+      "lastScan"	: "2011-11-11 11:11:11"
    },
    {
       "id"		: "12",
-      "Name" 		: "Client 12",
-      "ScanCount"	: "12",
-      "LastScan"	: "2011-11-11 11:11:11"
+      "name" 		: "Client 12",
+      "findCount"	: "10",
+      "scanCount"	: "12",
+      "lastScan"	: "2011-11-11 11:11:11"
    },
    {
       "id"		: "13",
-      "Name" 		: "Client 10",
-      "ScanCount"	: "10",
-      "LastScan"	: ""
+      "name" 		: "Client 10",
+      "findCount"	: "10",
+      "scanCount"	: "10",
+      "lastScan"	: ""
    },
    {
       "id"		: "14",
-      "Name" 		: "Client 14",
-      "ScanCount"	: "14",
-      "LastScan"	: "2011-11-11 11:11:11"
+      "name" 		: "Client 14",
+      "findCount"	: "10",
+      "scanCount"	: "14",
+      "lastScan"	: "2011-11-11 11:11:11"
    },
    {
       "id"		: "15",
-      "Name" 		: "Client 15",
-      "ScanCount"	: "10",
-      "LastScan"	: ""
+      "name" 		: "Client 15",
+      "findCount"	: "10",
+      "scanCount"	: "10",
+      "lastScan"	: ""
    }
 ]

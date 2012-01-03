@@ -17,7 +17,7 @@ $.Model('Seccubus.Models.ConfigItem',
 	 * @return result - String, result of the test OK/NOK
 	 * @return message - String, message about the configuraiton item
 	 */
-	findAll: "api/ConfigTest.json.pl"
+	findAll: "json/ConfigTest.pl"
 },
 /* @Prototype */
 {});

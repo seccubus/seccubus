@@ -2,15 +2,16 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/workspace.js", fun
 	module("Model: Seccubus.Models.Workspace")
 	
 	test("findAll", function(){
-		expect(6);
+		expect(7);
 		stop();
 		Seccubus.Models.Workspace.findAll({}, function(workspaces){
 			ok(workspaces)
 		        ok(workspaces.length)
 		        ok(workspaces[0].id)
-		        ok(workspaces[0].Name)
-		        ok(workspaces[0].ScanCount)
-		        ok(workspaces[0].LastScan)
+		        ok(workspaces[0].name)
+		        ok(workspaces[0].findCount)
+		        ok(workspaces[0].scanCount)
+		        ok(workspaces[0].lastScan)
 			start();
 		});
 		

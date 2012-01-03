@@ -13,7 +13,7 @@ $.Model('Seccubus.Models.UpToDate',
 	 * Finds all UpToDate statusses. Since there can only be one status, 
 	 * one row will be returned
 	 */
-	findAll: "api/UpToDate.json.pl"
+	findAll: "json/UpToDate.pl"
 },
 /* @Prototype */
 {});
