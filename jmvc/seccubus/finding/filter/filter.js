@@ -70,7 +70,10 @@ $.Controller('Seccubus.Finding.Filter',
 			this.element.html(
 				this.view(
 					'init',
-					Seccubus.Models.Finding.findAll(), {
+					Seccubus.Models.Finding.findAll({
+						workspaceId	: this.options.workspace
+					}), 
+					{
 						fScans : this.options.scans,
 						fStatus : this.options.status,
 						fHost : this.options.host,

@@ -1,39 +1,49 @@
-<% count = 0 %>
-<thead><tr>
-<% for(var i=0;i < columns.length;i+=2) { %>
-	<th sort='<%= columns[i] %>'
-		<% if(columns[i] == orderBy) { %>
-			<% if(descending) { %>
-				class='desc'
+<% %>
+<% if(typeof this[0].error != "undefined" ) { %>
+	<%== $.View('//seccubus/finding/table/views/error.ejs', { 
+		message		: this[0].error,
+		columns		: columns,
+		orderBy		: orderBy,
+		descending	: descending
+	}) %>
+<% } else { %>
+	<% count = 0 %>
+	<thead><tr>
+	<% for(var i=0;i < columns.length;i+=2) { %>
+		<th sort='<%= columns[i] %>'
+			<% if(columns[i] == orderBy) { %>
+				<% if(descending) { %>
+					class='desc'
+				<% } else { %>
+					class='asc'
+				<% } %>
 			<% } else { %>
-				class='asc'
+				class='both'
 			<% } %>
-		<% } else { %>
-			class='both'
+		>
+			<%= columns[i+1] %>
+		</th>
+	<% } %>
+	</tr></thead>
+	<tbody>
+		<% this.sort(fn) %>
+		<%for ( var i = 0; i < this.length ; i++ ){%>
+			<% if(this[i].isMatch({
+				scans		: fScans,
+				status		: fStatus,
+				host		: fHost,
+				hostName	: fHostName,
+				port		: fPort,
+				plugin		: fPlugin,
+			})) { %>
+				<tr <%= this[i] %> class='sev_<%= this[i].severity %>'>
+					<%== $.View('//seccubus/finding/table/views/finding.ejs', this[i] ) %>
+				</tr>
+				<% count++ %>
+			<% } %>
 		<% } %>
-	>
-		<%= columns[i+1] %>
-	</th>
+		<% if ( count == 0 ) { %>
+			<tr><td colspan=7>No findings match you selection</td></tr>
+		<% } %>
+	</tbody>
 <% } %>
-</tr></thead>
-<tbody>
-	<% this.sort(fn) %>
-	<%for ( var i = 0; i < this.length ; i++ ){%>
-		<% if(this[i].isMatch({
-			scans		: fScans,
-			status		: fStatus,
-			host		: fHost,
-			hostName	: fHostName,
-			port		: fPort,
-			plugin		: fPlugin,
-		})) { %>
-			<tr <%= this[i] %> class='sev_<%= this[i].severity %>'>
-				<%== $.View('//seccubus/finding/table/views/finding.ejs', this[i] ) %>
-			</tr>
-			<% count++ %>
-		<% } %>
-	<% } %>
-	<% if ( count == 0 ) { %>
-		<tr><td colspan=7>No findings match you selection</td></tr>
-	<% } %>
-</tbody>

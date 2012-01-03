@@ -9,10 +9,17 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.Finding',
 /* @Static */
 {
-	defaults : {
-		matchScans	: null,
+	//findAll: "json/getFindings.json",
+	findAll: function(params,success,error){
+		return $.ajax({
+			url:		"json/getFindings.pl",
+			type:		"post",
+			dataType:	"json finding.models",
+			data:		params,
+			success:	success,
+			error:		error
+		});
 	},
-	findAll: "/findings.json",
   	findOne : "/findings/{id}.json", 
   	create : "/findings.json",
  	update : "/findings/{id}.json",
@@ -21,13 +28,15 @@ $.Model('Seccubus.Models.Finding',
 /* @Prototype */
 {
 	// This function returns true is 
-	isMatch	: function(filter) {
+	isMatch	: function(filter,debug) {
 		match = true;
+		debug = ( typeof debug != "undefined" );
 		if ( filter.scans ) {
 			match = false;
 			for(i=0;(! match ) && i < filter.scans.length;i++) {
 				match = ( this.scanId == filter.scans[i]);
 			}
+			if( debug) { alert("scans: " + match) };
 		}
 		if ( match && typeof filter.status != 'undefined' ) {
 			match = ( this.status == filter.status );
