@@ -1,14 +1,23 @@
-<%= count = 0 %>
+<% count = 0 %>
 <thead><tr>
-	<th>IP</th>
-	<th>Hostname</th>
-	<th>Port</th>
-	<th>Plugin</th>
-	<th>Severity</th>
-	<th>Finding</th>
-	<th>Remark</th>
+<% for(var i=0;i < columns.length;i+=2) { %>
+	<th sort='<%= columns[i] %>'
+		<% if(columns[i] == orderBy) { %>
+			<% if(descending) { %>
+				class='desc'
+			<% } else { %>
+				class='asc'
+			<% } %>
+		<% } else { %>
+			class='both'
+		<% } %>
+	>
+		<%= columns[i+1] %>
+	</th>
+<% } %>
 </tr></thead>
 <tbody>
+	<% this.sort(fn) %>
 	<%for ( var i = 0; i < this.length ; i++ ){%>
 		<% if(this[i].isMatch({
 			scans		: fScans,

@@ -1,12 +1,21 @@
 <% // Display table with error message %>
 <thead><tr>
-	<th>IP</th>
-	<th>Hostname</th>
-	<th>Port</th>
-	<th>Plugin</th>
-	<th>Finding</th>
-	<th>Remark</th>
-	<th>Severity</th>
+<thead><tr>
+<% for(var i=0;i < columns.length;i+=2) { %>
+        <th sort='<%= columns[i] %>'
+        	<% if(columns[i] == orderBy) { %>
+                        <% if(descending) { %>
+                                class='desc'
+                        <% } else { %>
+                                class='asc'
+                        <% } %>
+                <% } else { %>
+			class='both'
+		<% } %>
+	>
+                <%= columns[i+1] %>
+        </th>
+<% } %>
 </tr></thead>
 <tbody>
 	<tr><td colspan=7><%= message %></td></tr>

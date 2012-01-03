@@ -158,3 +158,61 @@ header h2 {
 	background-position: 0.5em;
 }
 
+/*****************************************************************************
+ * Table
+ */
+
+table {
+	margin: 0 auto;
+	clear: right;
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th.asc_disabled {
+	background: url("img/sort_asc_disabled.png") no-repeat scroll right center; 
+	padding-right: 20px;
+}
+th.desc_disabled {
+	background: url("img/sort_desc_disabled.png") no-repeat scroll right center; 
+	padding-right: 20px;
+}
+th.both_disabled {
+	background: url("img/sort_both_disabled.png") no-repeat scroll right center; 
+	padding-right: 20px;
+}
+th.asc {
+	background: url("img/sort_asc.png") no-repeat scroll right center; 
+	padding-right: 20px;
+	cursor: hand;
+}
+th.desc {
+	background: url("img/sort_desc.png") no-repeat scroll right center; 
+	padding-right: 20px;
+	cursor: hand;
+}
+th.both {
+	background: url("img/sort_both.png") no-repeat scroll right center; 
+	padding-right: 20px;
+	cursor: hand;
+}
+thead th {
+	border: 1px solid #aaa;
+	border-bottom: 1px solid black;
+	font-weight: bold;
+}
+td {
+	border: 1px solid #aaa;
+}
+tr.sev_1 {
+	background-color: red;
+}
+tr.sev_2 {
+	background-color: yellow;
+}
+tr.sev_3 {
+	background-color: green;
+}
+tr.sev_4 {
+	background-color: blue;
+}
