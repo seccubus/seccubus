@@ -12,7 +12,7 @@ $.Model('Seccubus.Models.Finding',
 	findAll: "json/getFindings.pl",
   	findOne : "/findings/{id}.json", 
   	create : "/findings.json",
- 	update : "/findings/{id}.json",
+ 	update : "json/updateFindings.pl",
   	destroy : "/findings/{id}.json"
 },
 /* @Prototype */

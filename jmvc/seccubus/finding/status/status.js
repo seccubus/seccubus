@@ -64,6 +64,15 @@ $.Controller('Seccubus.Finding.Status',
 			);
 		}
 	},
+	"{Seccubus.Models.Finding} created" : function(Finding, ev, finding) {
+		this.updateView();
+	},
+	"{Seccubus.Models.Finding} updated" : function(Finding, ev, finding) {
+		this.updateView();
+	},
+	"{Seccubus.Models.Finding} destroyed" : function(Finding, ev, finding) {
+		this.updateView();
+	},
 	update : function(options){
 		this._super(options);
 		this.updateView();

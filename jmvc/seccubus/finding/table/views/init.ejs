@@ -17,7 +17,7 @@
 				<% } else { %>
 					class='asc'
 				<% } %>
-			<% } else { %>
+			<% } else if (columns[i]) { %>
 				class='both'
 			<% } %>
 		>
@@ -37,13 +37,19 @@
 				plugin		: fPlugin,
 			})) { %>
 				<tr <%= this[i] %> class='sev_<%= this[i].severity %>'>
-					<%== $.View('//seccubus/finding/table/views/finding.ejs', this[i] ) %>
+					<%== $.View('//seccubus/finding/table/views/finding.ejs', 
+						this[i], 
+						{
+							columns : columns,
+							state	: fStatus,
+						} 
+					) %>
 				</tr>
 				<% count++ %>
 			<% } %>
 		<% } %>
 		<% if ( count == 0 ) { %>
-			<tr><td colspan=7>No findings match you selection</td></tr>
+			<tr><td colspan=columns.length>No findings match you selection</td></tr>
 		<% } %>
 	</tbody>
 <% } %>

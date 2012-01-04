@@ -92,4 +92,13 @@ steal("jquery/dom/fixture", function(){
 	$.fixture("json/getFindings.pl", function(orig, settings, headers) {
 		return [findingFixtures];
 	});
+	$.fixture("json/updateFindings.pl", function(orig, settings, headers) {
+		//var txt = "";
+		for(var a in orig.data) {
+			//txt = txt + a + " - " + orig.data[a] + "\n";
+			findingFixtures[orig.data.id-1][a] = orig.data[a];
+		}
+		//alert("update:\n" + txt);
+		return {};
+	});
 });

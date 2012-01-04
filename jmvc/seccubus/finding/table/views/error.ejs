@@ -9,7 +9,7 @@
                         <% } else { %>
                                 class='asc'
                         <% } %>
-                <% } else { %>
+                <% } else if (columns[i]) { %>
 			class='both'
 		<% } %>
 	>
@@ -18,5 +18,5 @@
 <% } %>
 </tr></thead>
 <tbody>
-	<tr><td colspan=7><%= message %></td></tr>
+	<tr><td colspan=<%= columns.length + 1 %>><%= message %></td></tr>
 </tbody>

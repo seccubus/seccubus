@@ -1,8 +1,36 @@
 <% // Renders a table row %>
-<td><%= host %></td>
-<td><%= hostName %></td>
-<td><%= port %></td>
-<td><%= plugin %></td>
-<td><%= severity %>. <%= severityName %></td>
-<td><%== this.asHTML("find") %></td>
-<td><%= remark %></td>
+<% for(var i=0;i < columns.length;i+=2) { %>
+	<% if (columns[i] == "") { %>
+		<td>
+			<% if(columns[i+1] == "Action") { %>
+				<a href='javascript://' class='editFinding'>Edit</a><br>
+				<div>
+				<% if (state == 99 ) { %>
+					<a href='javascript://' value='1' class='small changeState'>New</a>
+				<% } %>
+				<% if (state <= 2 || state == 4 ) { %>
+					<a href='javascript://' value='3' class='small changeState'>Open</a>
+				<% } %>
+				<% if (state < 4 ) { %>
+					<a href='javascript://' value='4' class='small changeState'>No&nbsp;issue</a>
+				<% } %>
+				<% if (state == 6 ) { %>
+					<a href='javascript://' value='5' class='small changeState'>Gone</a>
+				<% } %>
+				<% if (state == 5 ) { %>
+					<a href='javascript://' value='6' class='small changeState'>Close</a>
+				<% } %>
+				<% if (state != 99 ) { %>
+					<a href='javascript://' value='99' class='small changeState'>MASK</a>
+				<% } %>
+				</div>
+			<% } else { %>
+				Unknown colum <%= columns[i+1] %>
+			<% } %>
+		</td>
+	<% } else if (columns[i] == "find") { %>
+		<td><%== this.asHTML("find") %></td>
+	<% } else { %>
+		<td><%= this[columns[i]] %></td>
+	<% } %>
+<% } %>

@@ -29,7 +29,8 @@ $.Controller('Seccubus.Finding.Table',
 					"plugin", "Plugin", 
 					"severity", "Severity", 
 					"find", "Finding",
-					"remark", "Remark"
+					"remark", "Remark",
+					"", "Action"
 				  ],
 	}
 },
@@ -81,17 +82,44 @@ $.Controller('Seccubus.Finding.Table',
 		}
 	},
 	"th click" : function(el,ev) {
-		if(this.options.orderBy == $(el).attr("sort")) {
-			if ( this.options.descending ) {
-				this.options.descending = false;
+		if($(el).attr("sort")) {	// Only sort when sort column
+			if(this.options.orderBy == $(el).attr("sort")) {
+				if ( this.options.descending ) {
+					this.options.descending = false;
+				} else {
+					this.options.descending = true;
+				}
 			} else {
-				this.options.descending = true;
+				this.options.orderBy = $(el).attr("sort");
+				this.options.descending = false;
 			}
-		} else {
-			this.options.orderBy = $(el).attr("sort");
-			this.options.descending = false;
+			this.updateView();
 		}
-		this.updateView();
+	},
+	".editFinding click" : function(el,ev) {
+		alert("Editing is not (yet) implemented");
+	},
+	".changeState click" : function(el,ev) {
+		var newState = $(el).attr("value");
+		var finding = el.closest('.finding').model();
+		finding.attr("status",newState);
+		finding.save();
+	},
+	"{Seccubus.Models.Finding} created" : function(Finding, ev, finding) {
+		alert("table created:" + finding.id);
+	},
+	"{Seccubus.Models.Finding} updated" : function(Finding, ev, finding) {
+		//alert("table updated :" + finding.id);
+		if(find.status == this.options.status) {
+			finding.elements(this.element).html(
+				this.view('finding',finding)
+			);
+		} else {
+			this.updateView();
+		}
+	},
+	"{Seccubus.Models.Finding} destroyed" : function(Finding, ev, finding) {
+		alert("table destroyed:" + finding.id);
 	},
 	sortFunc : function(at, rev) {
 		var fn;
