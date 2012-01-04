@@ -103,6 +103,8 @@ $.Controller('Seccubus.Finding.Table',
 		var newState = $(el).attr("value");
 		var finding = el.closest('.finding').model();
 		finding.attr("status",newState);
+		finding.attr("workspaceId",this.options.workspace);
+		finding.attr("overwrite",1);
 		finding.save();
 	},
 	"{Seccubus.Models.Finding} created" : function(Finding, ev, finding) {
