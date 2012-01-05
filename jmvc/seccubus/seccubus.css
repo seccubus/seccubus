@@ -204,6 +204,9 @@ thead th {
 td {
 	border: 1px solid #aaa;
 }
+td.center {
+	text-align: center;
+}
 tr.sev_1 {
 	background-color: red;
 }
