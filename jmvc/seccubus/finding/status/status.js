@@ -30,10 +30,12 @@ $.Controller('Seccubus.Finding.Status',
 		this.updateView();
 	},
 	'.setStatus click' : function(el) {
+		$('.setStatus').attr("disabled",false);
+		$(el).attr("disabled",true);
 		this.options.status = el.val();
 		this.options.onClick(this.options.status);
 		if ( this.options.updateOnClick ) {
-			this.updateView();
+			//this.updateView();
 		}
 	},
 	updateView : function() {

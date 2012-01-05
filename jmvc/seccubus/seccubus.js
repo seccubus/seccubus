@@ -21,24 +21,30 @@ steal(
 		});
 		gui_state.bind("workspace", function(ev, ws){
 			render_scan_selectors();
+			render_status();
 			render_findings();
 		});
 		gui_state.bind("scans", function(ev, scan){
+			render_status();
 			render_findings();
 		});
 		gui_state.bind("findStatus", function(ev, scan){
 			render_findings();
 		});
 		gui_state.bind("host", function(ev, scan){
+			render_status();
 			render_findings();
 		});
 		gui_state.bind("hostName", function(ev, scan){
+			render_status();
 			render_findings();
 		});
 		gui_state.bind("port", function(ev, scan){
+			render_status();
 			render_findings();
 		});
 		gui_state.bind("plugin", function(ev, scan){
+			render_status();
 			render_findings();
 		});
 
@@ -100,7 +106,6 @@ steal(
 		 *********************************************************/
 		function render_findings() {
 			render_finding_table();
-			render_status();
 			render_filters();
 		}
 
