@@ -1,4 +1,4 @@
-steal('jquery/model', function(){
+steal('jquery/model','jquery/model/list', function(){
 
 /**
  * @class Seccubus.Models.Finding
@@ -65,5 +65,18 @@ $.Model('Seccubus.Models.Finding',
 		}
 	}
 }); // Model
+/**
+ * @class Seccubus.Models.Finding
+ * @parent index
+ * @inherits jQuery.Model.List
+ * Wraps backend finding services.  
+ */
+$.Model.List('Seccubus.Models.Finding.List', {
+/* @Static */
+	update : "POST json/updateFindings.pl",
+},{
+/* @Prototype */
+}); // Model list
+
 
 })  // Steal

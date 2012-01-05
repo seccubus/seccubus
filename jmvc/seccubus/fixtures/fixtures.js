@@ -93,12 +93,16 @@ steal("jquery/dom/fixture", function(){
 		return [findingFixtures];
 	});
 	$.fixture("json/updateFindings.pl", function(orig, settings, headers) {
-		//var txt = "";
+		var txt = "";
 		for(var a in orig.data) {
-			//txt = txt + a + " - " + orig.data[a] + "\n";
-			findingFixtures[orig.data.id-1][a] = orig.data[a];
+			txt = txt + a + " - " + orig.data[a] + "\n";
+			//findingFixtures[orig.data.id-1][a] = orig.data[a];
 		}
-		//alert("update:\n" + txt);
+		alert("update:\n" + txt);
+		var txt = "";
+		for(var a in orig.data.attrs) {
+			txt = txt + a + " - " + orig.data.attrs[a] + "\n";
+		}
 		return {};
 	});
 });
