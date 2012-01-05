@@ -4,27 +4,19 @@
 		message		: this[0].error,
 		columns		: columns,
 		orderBy		: orderBy,
-		descending	: descending
+		descending	: descending,
+		checked		: checked,
 	}) %>
 <% } else { %>
 	<% count = 0 %>
-	<thead><tr>
-	<% for(var i=0;i < columns.length;i+=2) { %>
-		<th sort='<%= columns[i] %>'
-			<% if(columns[i] == orderBy) { %>
-				<% if(descending) { %>
-					class='desc'
-				<% } else { %>
-					class='asc'
-				<% } %>
-			<% } else if (columns[i]) { %>
-				class='both'
-			<% } %>
-		>
-			<%= columns[i+1] %>
-		</th>
+	<% if(typeof noHeader == "undefined" || ! noHeader ) { %>
+		<%== $.View('//seccubus/finding/table/views/header.ejs', {
+			columns		: columns,
+			orderBy		: orderBy,
+			descending	: descending,
+			checked		: checked,
+		}) %>
 	<% } %>
-	</tr></thead>
 	<tbody>
 		<% this.sort(fn) %>
 		<%for ( var i = 0; i < this.length ; i++ ){%>
@@ -42,6 +34,7 @@
 						{
 							columns : columns,
 							state	: fStatus,
+							checked : checked,
 						} 
 					) %>
 				</tr>
@@ -49,7 +42,7 @@
 			<% } %>
 		<% } %>
 		<% if ( count == 0 ) { %>
-			<tr><td colspan=<%= columns.length %>>No findings match you selection</td></tr>
+			<tr><td colspan=<%= columns.length/2 %>>No findings match you selection</td></tr>
 		<% } %>
 	</tbody>
 <% } %>

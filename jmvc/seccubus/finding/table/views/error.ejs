@@ -1,22 +1,10 @@
 <% // Display table with error message %>
-<thead><tr>
-<thead><tr>
-<% for(var i=0;i < columns.length;i+=2) { %>
-        <th sort='<%= columns[i] %>'
-        	<% if(columns[i] == orderBy) { %>
-                        <% if(descending) { %>
-                                class='desc'
-                        <% } else { %>
-                                class='asc'
-                        <% } %>
-                <% } else if (columns[i]) { %>
-			class='both'
-		<% } %>
-	>
-                <%= columns[i+1] %>
-        </th>
-<% } %>
-</tr></thead>
+<%== $.View('//seccubus/finding/table/views/header.ejs', {
+	columns         : columns,
+	orderBy         : orderBy,
+	descending      : descending,
+	checked		: checked,
+}) %>
 <tbody>
-	<tr><td colspan=<%= columns.length + 1 %>><%= message %></td></tr>
+	<tr><td colspan=<%= columns.length/2 %>><%= message %></td></tr>
 </tbody>

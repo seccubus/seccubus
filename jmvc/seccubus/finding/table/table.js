@@ -4,6 +4,7 @@ steal(	'jquery/controller',
 	'seccubus/models' )
 .then(	'./views/init.ejs',
 	'./views/finding.ejs',
+	'./views/header.ejs',
 	'./views/error.ejs',
 function($){
 
@@ -23,7 +24,8 @@ $.Controller('Seccubus.Finding.Table',
 		plugin		: "*",
 		orderBy		: "host",
 		descending	: false,
-		columns		: [ 	"host", "IP", 
+		columns		: [ 	"", "select",
+					"host", "IP", 
 					"hostNmae", "HostName", 
 					"port", "Port", 
 					"plugin", "Plugin", 
@@ -32,6 +34,10 @@ $.Controller('Seccubus.Finding.Table',
 					"remark", "Remark",
 					"", "Action"
 				  ],
+		checked		: {
+					"none" : true,
+					"all" : false,
+				  },
 	}
 },
 /** @Prototype */
@@ -40,13 +46,15 @@ $.Controller('Seccubus.Finding.Table',
 		this.updateView();
 	},
 	updateView : function() {
+		this.options.checked = { "all" : this.options.checked.all, "none" : ! this.options.checked.all };
 		if ( this.options.workspace < 0  ) {
 			this.element.html(
 				this.view('error',{
 					columns		: this.options.columns,
 					orderBy		: this.options.orderBy,
 					descending	: this.options.descending,
-					message : "Please select a workspace first"
+					message 	: "Please select a workspace first",
+					checked		: this.options.checked,
 				})
 			);
 		} else if ( this.options.scans == null ) {
@@ -55,7 +63,8 @@ $.Controller('Seccubus.Finding.Table',
 					columns		: this.options.columns,
 					orderBy		: this.options.orderBy,
 					descending	: this.options.descending,
-					message : "Please select one or more scans"
+					message 	: "Please select one or more scans",
+					checked		: this.options.checked,
 				})
 			);
 		} else {
@@ -76,6 +85,7 @@ $.Controller('Seccubus.Finding.Table',
 						orderBy		: this.options.orderBy,
 						descending	: this.options.descending,
 						fn		: this.sortFunc(this.options.orderBy,this.options.descending),
+						checked		: this.options.checked,
 					}
 				)
 			);
@@ -96,6 +106,52 @@ $.Controller('Seccubus.Finding.Table',
 			this.updateView();
 		}
 	},
+	".selectAll click" : function(el,ev) {
+		if ( typeof $(el).attr("checked") == "undefined" || $(el).attr("checked") == false ) {
+			$('.selectAll').attr("checked", true);
+			$('.selectAll').attr("src", "img/checkbox_filled.png");
+			$('.selectFinding').attr("checked", true);
+			$('.selectFinding').attr("src", "img/checkbox_filled.png");
+			this.options.checked = { all : true, none: false }
+		} else {
+			$('.selectAll').attr("checked", false);
+			$('.selectAll').attr("src", "img/checkbox_blank.png");
+			$('.selectFinding').attr("checked", false);
+			$('.selectFinding').attr("src", "img/checkbox_blank.png");
+			this.options.checked = { all : false, none: true }
+		}
+	},
+	".selectFinding click" : function(el,ev) {
+		if ( typeof $(el).attr("checked") == "undefined" || $(el).attr("checked") == false ) {
+			$(el).attr("checked", true);
+			$(el).attr("src", "img/checkbox_filled.png");
+			this.options.checked[$(el).attr("finding")] = true;
+		} else {
+			$(el).attr("checked", false);
+			$(el).attr("src", "img/checkbox_blank.png");
+			this.options.checked[$(el).attr("finding")] = false;
+		}
+		var all = true;
+		var none = true;
+		$('.selectFinding').each(function() {
+			if (typeof $(this).attr("checked") == "undefined" || $(this).attr("checked") == false ) {
+				all = false;
+			} else {
+				none = false;
+			}
+		});
+		this.options.checked = { all : all, none: none }
+		if ( all ) {
+			$(".selectAll").attr("checked", true);
+			$(".selectAll").attr("src", "img/checkbox_filled.png");
+		} else if ( none ) {
+			$(".selectAll").attr("checked", false);
+			$(".selectAll").attr("src", "img/checkbox_blank.png");
+		} else {
+			$(".selectAll").attr("checked", false);
+			$(".selectAll").attr("src", "img/checkbox_half.png");
+		}
+	},
 	".editFinding click" : function(el,ev) {
 		alert("Editing is not (yet) implemented");
 	},
@@ -111,7 +167,6 @@ $.Controller('Seccubus.Finding.Table',
 		alert("table created:" + finding.id);
 	},
 	"{Seccubus.Models.Finding} updated" : function(Finding, ev, finding) {
-		//alert("table updated :" + finding.id);
 		if(find.status == this.options.status) {
 			finding.elements(this.element).html(
 				this.view('finding',finding)
