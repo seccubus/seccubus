@@ -13,7 +13,7 @@ $.Controller('Seccubus.Finding.Bulkedit',
 {
 	defaults : {
 		status	: 1,
-		workspace : -1,
+		workspace : -1
 	}
 },
 /** @Prototype */
@@ -49,14 +49,14 @@ $.Controller('Seccubus.Finding.Bulkedit',
 	updateView : function() {
 		this.element.html(this.view('init',{
 			workspace 	: this.options.workspace,
-			status		: this.options.status,
+			status		: this.options.status
 		}));
 	},
 	update : function(options) {
 		this._super(options);
 
 		this.updateView();
-	},
+	}
 })
 
 });

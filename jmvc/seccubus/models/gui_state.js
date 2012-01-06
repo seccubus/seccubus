@@ -19,7 +19,7 @@ $.Model('Seccubus.GuiState',
 		host		: "*",
 		hostName	: "*",
 		port		: "*",
-		plugin		: "*",
+		plugin		: "*"
 	}
 },
 /* @Prototype */

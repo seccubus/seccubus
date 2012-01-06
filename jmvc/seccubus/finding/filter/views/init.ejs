@@ -13,7 +13,7 @@
 
 	for ( var i = 0; i < this.length ; i++ ) { 
 		if(this[i].isMatch({ 			// Only consider stuff in scans
-			scans : fScans ,
+			scans : fScans
 		})) {
 			if ( typeof hosts[this[i].host] == 'undefined' ) {
 				hosts[this[i].host] = 0;
@@ -32,7 +32,7 @@
 				host : fHost,
 				hostName : fHostName,
 				port : fPort,
-				plugin : fPlugin,
+				plugin : fPlugin
 			})) { 
 				hosts[this[i].host]++; 
 				hosts["*"]++;

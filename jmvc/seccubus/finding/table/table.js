@@ -36,8 +36,8 @@ $.Controller('Seccubus.Finding.Table',
 				  ],
 		checked		: {
 					"none" : true,
-					"all" : false,
-				  },
+					"all" : false
+				  }
 	}
 },
 /** @Prototype */
@@ -54,7 +54,7 @@ $.Controller('Seccubus.Finding.Table',
 					orderBy		: this.options.orderBy,
 					descending	: this.options.descending,
 					message 	: "Please select a workspace first",
-					checked		: this.options.checked,
+					checked		: this.options.checked
 				})
 			);
 		} else if ( this.options.scans == null ) {
@@ -64,7 +64,7 @@ $.Controller('Seccubus.Finding.Table',
 					orderBy		: this.options.orderBy,
 					descending	: this.options.descending,
 					message 	: "Please select one or more scans",
-					checked		: this.options.checked,
+					checked		: this.options.checked
 				})
 			);
 		} else {
@@ -85,7 +85,7 @@ $.Controller('Seccubus.Finding.Table',
 						orderBy		: this.options.orderBy,
 						descending	: this.options.descending,
 						fn		: this.sortFunc(this.options.orderBy,this.options.descending),
-						checked		: this.options.checked,
+						checked		: this.options.checked
 					}
 				)
 			);
@@ -195,7 +195,7 @@ $.Controller('Seccubus.Finding.Table',
 	update : function(options){
 		this._super(options);
 		this.updateView();
-	},
+	}
 }) // Controller
 
 }); // Steal

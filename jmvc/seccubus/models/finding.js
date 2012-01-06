@@ -73,7 +73,7 @@ $.Model('Seccubus.Models.Finding',
  */
 $.Model.List('Seccubus.Models.Finding.List', {
 /* @Static */
-	update : "POST json/updateFindings.pl",
+	update : "POST json/updateFindings.pl"
 },{
 /* @Prototype */
 }); // Model list

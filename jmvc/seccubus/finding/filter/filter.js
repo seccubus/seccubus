@@ -21,7 +21,7 @@ $.Controller('Seccubus.Finding.Filter',
 		port		: "*",
 		plugin		: "*",
 		onChange 	: function(filter) { },
-		updateOnChange	: true,
+		updateOnChange	: true
 	}
 },
 /** @Prototype */
@@ -39,7 +39,7 @@ $.Controller('Seccubus.Finding.Filter',
 			host		: this.options.host,
 			hostName	: this.options.hostName,
 			port		: this.options.port,
-			plugin		: this.options.plugin,
+			plugin		: this.options.plugin
 		});
 		if ( this.options.updateOnChange ) {
 			this.updateView();
@@ -51,7 +51,7 @@ $.Controller('Seccubus.Finding.Filter',
 			host		: this.options.host,
 			hostName	: this.options.hostName,
 			port		: this.options.port,
-			plugin		: this.options.plugin,
+			plugin		: this.options.plugin
 		});
 		if ( this.options.updateOnChange ) {
 			this.updateView();
@@ -79,7 +79,7 @@ $.Controller('Seccubus.Finding.Filter',
 						fHost : this.options.host,
 						fHostName : this.options.hostName,
 						fPort : this.options.port,
-						fPlugin : this.options.plugin,
+						fPlugin : this.options.plugin
 					}
 				)
 			);

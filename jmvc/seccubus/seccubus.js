@@ -1,6 +1,6 @@
 steal(
 	'./seccubus.css', 			// application CSS file
-	'./fixtures/fixtures.js',		// sets up fixtures for your models
+	//'./fixtures/fixtures.js',		// sets up fixtures for your models
 	'./models/models.js',			// steals all your models
 	'seccubus/tabs',
 	'seccubus/up_to_date/list',
@@ -64,8 +64,8 @@ steal(
 		// Issues - tab 2
 		$('#navTab').seccubus_tabs("hide", 2);
 		// Scans - tab 3
-		//$('#navTab').seccubus_tabs("disable", 3);
-		//$('#navTab').seccubus_tabs("hide", 3);
+		$('#navTab').seccubus_tabs("disable", 3);
+		$('#navTab').seccubus_tabs("hide", 3);
 		// Workspaces - tab 4
 		$('#navTab').seccubus_tabs("hide", 4);
 		// Reports - tab 5
@@ -148,7 +148,7 @@ steal(
 				host		: gui_state.host,
 				hostName	: gui_state.hostName,
 				port		: gui_state.port,
-				plugin		: gui_state.plugin,
+				plugin		: gui_state.plugin
 			});
 		};
 
@@ -164,7 +164,7 @@ steal(
 				onClick		: function(s){
 					gui_state.attr("findStatus",s);
 				},
-				updateOnClick : false,
+				updateOnClick : false
 			});
 		};
 		function render_filters() {
@@ -181,13 +181,13 @@ steal(
 						gui_state.attr(a,f[a]);
 					}
 				},
-				updateOnChange	: false,
+				updateOnChange	: false
 			});
 		};
 		function render_bulkedit() {
 			$('#finding_bulkedit').seccubus_finding_bulkedit({
 				workspace	: gui_state.workspace,
-				status		: gui_state.findStatus,
+				status		: gui_state.findStatus
 			});
 		};
 	}

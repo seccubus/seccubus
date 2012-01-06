@@ -62,7 +62,7 @@ $.Controller('Seccubus.Scan.List',
 	update : function(options){
 		this._super(options);
 		this.updateView(); 
-	},
+	}
 });
 
 });

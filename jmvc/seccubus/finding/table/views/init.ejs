@@ -5,7 +5,7 @@
 		columns		: columns,
 		orderBy		: orderBy,
 		descending	: descending,
-		checked		: checked,
+		checked		: checked
 	}) %>
 <% } else { %>
 	<% count = 0 %>
@@ -14,7 +14,7 @@
 			columns		: columns,
 			orderBy		: orderBy,
 			descending	: descending,
-			checked		: checked,
+			checked		: checked
 		}) %>
 	<% } %>
 	<tbody>
@@ -26,7 +26,7 @@
 				host		: fHost,
 				hostName	: fHostName,
 				port		: fPort,
-				plugin		: fPlugin,
+				plugin		: fPlugin
 			})) { %>
 				<tr <%= this[i] %> class='sev_<%= this[i].severity %>'>
 					<%== $.View('//seccubus/finding/table/views/finding.ejs', 
@@ -34,7 +34,7 @@
 						{
 							columns : columns,
 							state	: fStatus,
-							checked : checked,
+							checked : checked
 						} 
 					) %>
 				</tr>
