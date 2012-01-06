@@ -269,6 +269,12 @@ sub update_finding(@) {
 	foreach my $param ( qw(workspace_id) ) {
 		die "Manditory parameter $param missing" unless exists $arg{$param};
 	}
+	# Check if status is a legal value
+	if ( exists $arg{status} ) {
+		unless ( ($arg{status} >=  1 && $arg{status} <= 6) || $arg{status} == 99 ) {
+			die "Illegal status value $arg{status}";
+		}
+	}
 
 	if ( ! $arg{finding_id} ) {
 		# If we don't have a finding ID there are additional mandatory

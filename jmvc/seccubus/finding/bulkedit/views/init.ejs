@@ -1,4 +1,25 @@
-<% %>
-<label for='remark'>Remark:<label><textarea name='remark' cols=80 rows=1 />
-<label for='overwrite'>Overwrite:<label><input type='checkbox' name='overwrite'></input>
-<input type=submit value='Update' name='update' />
+<% if(workspace > 0) { %>
+	<label for='remark'>Remark:</label><textarea name='remark' cols=80 rows=1 />
+	<label for='overwrite'>Overwrite:</label><input type='checkbox' name='overwrite'></input>
+	<input type=hidden name='status' id='bulkEditStatus' value='<%= status %>'/>
+	<input type=hidden name='workspaceId' value='<%= workspace %>'/>
+	<input type=button newStatus=<%= status %> value='Update' class='bulkSetStatus'/>
+	<% if ( status == 99) { %>
+		<input type=button newStatus=1 value='Set to New' class='bulkSetStatus'/>
+	<% }  %>
+	<% if ( status <= 2 || status == 4 ) { %>
+		<input type=button newStatus=3 value='Set to Open' class='bulkSetStatus'/>
+	<% }  %>
+	<% if ( status <= 3 ) { %>
+		<input type=button newStatus=4 value='Set to No Issue' class='bulkSetStatus'/>
+	<% }  %>
+	<% if ( status == 6 ) { %>
+		<input type=button newStatus=5 value='Set to Gone' class='bulkSetStatus'/>
+	<% }  %>
+	<% if ( status == 5 ) { %>
+		<input type=button newStatus=6 value='Set to Closed' class='bulkSetStatus'/>
+	<% }  %>
+	<% if ( status != 99 ) { %>
+		<input type=button newStatus=99 value='Set to MASKED' class='bulkSetStatus'/>
+	<% } %>
+<% } %>

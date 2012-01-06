@@ -11,29 +11,52 @@ steal(	'jquery/controller',
 $.Controller('Seccubus.Finding.Bulkedit',
 /** @Static */
 {
-	defaults : {}
+	defaults : {
+		status	: 1,
+		workspace : -1,
+	}
 },
 /** @Prototype */
 {
 	init : function(){
-		this.element.html(this.view());
+		this.updateView();
 	},
 	submit : function(el, ev) {
 		ev.preventDefault();
-		this.element.find('[type=submit]').val('Updating...');
-		var findings = $(".selectFinding[checked=checked] ").closest(".finding").models();
-		//txt = "";
-		//for(var a in findings) {
-		//	txt = txt + a + ": " + findings[a] + "\n--\n";
-		//}
-		//alert(txt);
-		findings.update({ name : "bla"},this.callback('saved'));
-		//findings.update(el.formParams(),this.callback('saved'));
+		this.bulkUpdate();
+	},
+	".bulkSetStatus click" : function(el, ev) {
+		ev.preventDefault();
+		$(el).val("Saving...");
+		var newStatus = $(el).attr("newStatus");
+		$('#bulkEditStatus').val(newStatus);
+		this.bulkUpdate();
+	},
+	bulkUpdate : function() {
+		var findings = $(".selectFinding[checked=checked]").closest(".finding").models();
+		var params = this.element.formParams();
+		params.workspaceId = this.options.workspace;
+		findings.update(params,this.callback('saved'));
 	},
 	saved : function() {
 		this.element.find('[type=submit]').val('Update');
 		this.element[0].reset();
-	}
+		this.updateView();
+	},
+	"{Seccubus.Model.GuiState} updated" : function(state, event, task) {
+		alert(state, event, task);
+	},
+	updateView : function() {
+		this.element.html(this.view('init',{
+			workspace 	: this.options.workspace,
+			status		: this.options.status,
+		}));
+	},
+	update : function(options) {
+		this._super(options);
+
+		this.updateView();
+	},
 })
 
 });

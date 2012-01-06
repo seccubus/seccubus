@@ -18,13 +18,13 @@ my $json = JSON->new();
 
 print $query->header("application/json");
 
-my $workspace_id = $query->param("workspaceId");
+my $workspace_id = $query->param("attrs[workspaceId]");
 my @ids = $query->param("ids[]");
-my $remark = $query->param("remark");
-my $status = $query->param("status");
-my $overwrite = $query->param("overwrite");
+my $remark = $query->param("attrs[remark]");
+my $status = $query->param("attrs[status]");
+my $overwrite = $query->param("attrs[overwrite]");
 
-if ( $overwrite eq "true" || $overwrite == 1 ) {
+if ( $overwrite eq "true" || $overwrite eq "on" ) {
 	$overwrite = 1;
 } else {
 	$overwrite = 0;
@@ -47,12 +47,22 @@ if ( $status < 0 || ( $status > 6 && $status != 99 ) ) {
 eval {
 	my @data = ();
 	foreach my $id (@ids) { 
-		update_finding(	"finding_id"	=> $id,
-			"workspace_id"	=> $workspace_id,
-			"status"	=> $status,
-			"remark"	=> $remark,
-			"overwrite"	=> $overwrite,
-		);
+		# Only updat e the remark when we overwrite or when the
+		# remark isn't empty. This prevents that an empty line is added
+		# on each update
+		if ( $overwrite || $remark ) {
+			update_finding(	"finding_id"	=> $id,
+				"workspace_id"	=> $workspace_id,
+				"status"	=> $status,
+				"remark"	=> $remark,
+				"overwrite"	=> $overwrite,
+			);
+		} else {
+			update_finding(	"finding_id"	=> $id,
+				"workspace_id"	=> $workspace_id,
+				"status"	=> $status,
+			);
+		}
 	};
 	print $json->pretty->encode(\@data);
 } or do {
