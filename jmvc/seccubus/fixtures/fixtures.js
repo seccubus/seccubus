@@ -74,7 +74,7 @@ steal("jquery/dom/fixture", function(){
 		var status_id = $.fixture.rand(7);
 		status_id = [1,2,3,4,5,6,99][status_id];
 		findingFixtures[i] = {
-			id		: i+1,
+			id		: i,
 			host		: "192.168." + $.fixture.rand(20) + "." + $.fixture.rand(255),
 			hostName	: $.fixture.rand(["","FakeHostName_" + i],1)[0],
 			port		: $.fixture.rand(1024) + "/" + $.fixture.rand(["tcp","udp"],1),
@@ -93,16 +93,22 @@ steal("jquery/dom/fixture", function(){
 		return [findingFixtures];
 	});
 	$.fixture("json/updateFindings.pl", function(orig, settings, headers) {
-		var txt = "";
-		for(var a in orig.data) {
-			txt = txt + a + " - " + orig.data[a] + "\n";
-			//findingFixtures[orig.data.id-1][a] = orig.data[a];
+		//var txt = "";
+		//for(var a in orig.data.attrs) {
+		//	txt = txt + a + ": " + orig.data.attrs[a];
+		//}
+		//alert(txt);
+		for(var id in orig.data.ids) {
+			findingFixtures[id].status = orig.data.attrs.status;
+			if ( orig.data.attrs.overwrite == "on" ) {
+				findingFixtures[id].remark = orig.data.attrs.remark;
+			} else if (orig.data.attrs.remark != "") { 
+				findingFixtures[id].remark = findingFixtures[id].remark + "\n" + orig.data.attrs.remark;
+			}
 		}
-		alert("update:\n" + txt);
-		var txt = "";
-		for(var a in orig.data.attrs) {
-			txt = txt + a + " - " + orig.data.attrs[a] + "\n";
-		}
-		return {};
+		return {
+			status : orig.data.attrs.status,
+			remark : orig.data.attrs.remark,
+		};
 	});
 });

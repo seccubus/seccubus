@@ -10,6 +10,7 @@ steal(
 	'seccubus/finding/table',
 	'seccubus/finding/status',
 	'seccubus/finding/filter',
+	'seccubus/finding/bulkedit',
 	//'seccubus/workspace/table',
 	function(){					// configure your application
 		/***********************************************************
@@ -23,6 +24,7 @@ steal(
 			render_scan_selectors();
 			render_status();
 			render_findings();
+			render_bulkedit();
 		});
 		gui_state.bind("scans", function(ev, scan){
 			render_status();
@@ -30,6 +32,7 @@ steal(
 		});
 		gui_state.bind("findStatus", function(ev, scan){
 			render_findings();
+			render_bulkedit();
 		});
 		gui_state.bind("host", function(ev, scan){
 			render_status();
@@ -101,6 +104,9 @@ steal(
 		// Setup filters
 		render_filters();
 
+		// Setup Bulk edit
+		render_bulkedit();
+
 		/**********************************************************
 		 * Functions
 		 *********************************************************/
@@ -143,7 +149,7 @@ steal(
 				},
 				updateOnClick : false,
 			});
-		}
+		};
 		function render_filters() {
 			$('#filters').seccubus_finding_filter({
 				workspace 	: gui_state.workspace,
@@ -159,6 +165,12 @@ steal(
 					}
 				},
 				updateOnChange	: false,
+			});
+		};
+		function render_bulkedit() {
+			$('#finding_bulkedit').seccubus_finding_bulkedit({
+				workspace	: gui_state.workspace,
+				status		: gui_state.findStatus,
 			});
 		};
 	}

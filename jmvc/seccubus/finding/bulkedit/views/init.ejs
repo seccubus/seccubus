@@ -1,4 +1,5 @@
 <% if(workspace > 0) { %>
+	Edit selected findings:<br>
 	<label for='remark'>Remark:</label><textarea name='remark' cols=80 rows=1 />
 	<label for='overwrite'>Overwrite:</label><input type='checkbox' name='overwrite'></input>
 	<input type=hidden name='status' id='bulkEditStatus' value='<%= status %>'/>
