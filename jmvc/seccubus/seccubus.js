@@ -7,6 +7,7 @@ steal(
 	'seccubus/config_item/list',
 	'seccubus/workspace/select',
 	'seccubus/scan/select',
+	'seccubus/scan/list',
 	'seccubus/finding/table',
 	'seccubus/finding/status',
 	'seccubus/finding/filter',
@@ -22,6 +23,7 @@ steal(
 		});
 		gui_state.bind("workspace", function(ev, ws){
 			render_scan_selectors();
+			render_scan_lists();
 			render_status();
 			render_findings();
 			render_bulkedit();
@@ -57,12 +59,16 @@ steal(
 
 		// Tabs
 		$('#navTab').seccubus_tabs();
-		// Disable the Scans tab on start
-		$('#navTab').seccubus_tabs("disable", 3);
-		// Hide Issues and Reports tab for now
-		//$('#navTab').seccubus_tabs("hide", 2);
-		$('#navTab').seccubus_tabs("hide", 3);
+		// Status - tab 0
+		// Findigns - tab 1
+		// Issues - tab 2
+		$('#navTab').seccubus_tabs("hide", 2);
+		// Scans - tab 3
+		//$('#navTab').seccubus_tabs("disable", 3);
+		//$('#navTab').seccubus_tabs("hide", 3);
+		// Workspaces - tab 4
 		$('#navTab').seccubus_tabs("hide", 4);
+		// Reports - tab 5
 		$('#navTab').seccubus_tabs("hide", 5);
 
 		// UpToDate status
@@ -107,6 +113,9 @@ steal(
 		// Setup Bulk edit
 		render_bulkedit();
 
+		// Setup scan list
+		render_scan_lists();
+
 		/**********************************************************
 		 * Functions
 		 *********************************************************/
@@ -118,6 +127,14 @@ steal(
 		function render_scan_selectors() {
 			$('select.scanSelector').each( function() {
 				$(this).seccubus_scan_select({
+					workspace : gui_state.workspace
+				});
+			});
+		};
+
+		function render_scan_lists() {
+			$('.scanList').each( function() {
+				$(this).seccubus_scan_list({
 					workspace : gui_state.workspace
 				});
 			});
