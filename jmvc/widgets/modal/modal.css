@@ -1,0 +1,24 @@
+/* Z-index of #mask must lower than #boxes .window */
+#widgetsModalMask {
+  position:absolute;
+  top : 0;
+  left : 0;
+  z-index:9000;
+  background-color:#000;
+  display:none;
+}
+   
+.widgetsModalWindow {
+  position:absolute;
+  width:440px;
+  height:200px;
+  display:none;
+  z-index:9999;
+  padding:20px;
+}
+ 
+ 
+/* Customize your modal window here, you can add background image too */
+.widgetsModalWindow {
+  background-color:white;
+}
