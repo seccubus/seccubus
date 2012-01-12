@@ -96,7 +96,7 @@ if ( ! @$tables ) {
 	# TODO: Add link to screen that does this for the user
 	# my $api = "api/updateDB.pl?toVersion=$current_db_version&action=structure";
 } else {
-	result($data, "Database strcture", "Your database does have datastructures in it.", 'OK');
+	result($data, "Database structure", "Your database does have datastructures in it.", 'OK');
 }
 
 ##### Test the default DB data version
