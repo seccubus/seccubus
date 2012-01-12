@@ -30,12 +30,6 @@ $.Controller('Widgets.Modal',
 		} else {
 			id = "#widgetsModalDialog";
 		}
-		//var txt = "";
-		//for(var a in $(id)) {
-			//txt = txt + a + ": " + $(id)[a] + "\n";
-		//}
-		//alert(txt);
-		alert($(id).html());
 
 		// Cover whole document
 		var maskHeight = $(document).height();
