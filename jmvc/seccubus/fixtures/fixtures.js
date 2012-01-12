@@ -23,7 +23,15 @@ steal("jquery/dom/fixture", function(){
                 }
 
 	})
-	/* Workspaces have a static fixture */
+	$.fixture.make("workspace", 15, function(i, workspace){
+		return {
+			id 		: i,
+			name		: "Client "+i,
+			findCount	: $.fixture.rand(9999),
+			scanCount	: $.fixture.rand(3),
+			lastScan	: "2011-11-11 11:11:11"
+		}
+	})
 
 	/* Scans */
 	var scanFixtures = [];

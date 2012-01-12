@@ -19,7 +19,7 @@
 				
 				$('#create').seccubus_workspace_create();
 				Seccubus.Models.Workspace.bind('created', function(ev, workspace){
-					$('<div>').html("<h3>"+workspace.name+"</h3><p>"+workspace.description+"</p>")
+					$('<div>').html("<h3>"+workspace.name+"</h3><p>"+workspace.id+"</p>")
 					        .appendTo( $('#workspaces') )
 				})
 				

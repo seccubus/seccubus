@@ -1,11 +1,13 @@
 steal(
 	'./seccubus.css', 			// application CSS file
-	//'./fixtures/fixtures.js',		// sets up fixtures for your models
+	'./fixtures/fixtures.js',		// sets up fixtures for your models
+	'jquery/jquery.js',
 	'./models/models.js',			// steals all your models
 	'seccubus/tabs',
 	'seccubus/up_to_date/list',
 	'seccubus/config_item/list',
 	'seccubus/workspace/select',
+	'seccubus/workspace/create',
 	'seccubus/scan/select',
 	'seccubus/scan/list',
 	'seccubus/finding/table',
@@ -13,6 +15,7 @@ steal(
 	'seccubus/finding/filter',
 	'seccubus/finding/bulkedit',
 	//'seccubus/workspace/table',
+	'widgets/modal',
 	function(){					// configure your application
 		/***********************************************************
 		 * Initialize gui state and hook into it
@@ -71,6 +74,8 @@ steal(
 		// Reports - tab 5
 		$('#navTab').seccubus_tabs("hide", 5);
 
+		// Initialize add buttons
+
 		// UpToDate status
 		$('#up_to_dates').seccubus_up_to_date_list();
 
@@ -115,6 +120,12 @@ steal(
 
 		// Setup scan list
 		render_scan_lists();
+
+		// Setup create workspace
+		$('#createWorkspace').seccubus_workspace_create();
+		$('.addWorkspace').click(function() {
+			$('#modalDialog').widgets_modal({query : "#createWorkspaceDialog"});
+		});
 
 		/**********************************************************
 		 * Functions

@@ -10,6 +10,11 @@
 	padding: 0;
 }
 
+/* Hidden */
+.hidden {
+	display: none;
+}
+
 /* HTML 5 specific */
 header,section,article,aside,footer {
 	display: block;

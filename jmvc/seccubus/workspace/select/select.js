@@ -35,7 +35,12 @@ $.Controller('Seccubus.Workspace.Select',
 		      .html(this.view('workspace', workspace) );
 	},
 	updateView : function() {
-		this.element.html(this.view('init',Seccubus.Models.Workspace.findAll()) );
+		this.element.html(
+			this.view(
+				'init',
+				Seccubus.Models.Workspace.findAll()
+			) 
+		);
 	}
 
 }); // Controller

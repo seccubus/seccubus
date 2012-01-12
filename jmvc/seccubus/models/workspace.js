@@ -10,10 +10,10 @@ $.Model('Seccubus.Models.Workspace',
 /* @Static */
 {
 	findAll: "json/getWorkspaces.pl",
-  	findOne : "/workspaces/{id}.json", 
-  	create : "/workspaces.json",
- 	update : "/workspaces/{id}.json",
-  	destroy : "/workspaces/{id}.json"
+  	//findOne : "/workspaces/{id}.json", 
+  	create : "json/createWorkspace.json",
+ 	//update : "/workspaces/{id}.json",
+  	//destroy : "/workspaces/{id}.json"
 },
 /* @Prototype */
 {});

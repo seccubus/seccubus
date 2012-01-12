@@ -43,7 +43,7 @@
 
        <div id='findings' class='tab'>
          <div class='left'>
-	   Workspace:<br>
+	   Workspace (<a href='javascript://' class='addWorkspace'>add</a>):<br>
            <select class='left workspaceSelector' id='workspace_selector_findings'>
 	     <option>Workspace selector</option>
 	     <option>----</option>
@@ -124,6 +124,13 @@
 	 </div>
        </div>
 
+     </div>
+     <div id="createWorkspaceDialog" class='hidden'>
+       <form id="createWorkspace">
+         Room for modal creatWorkspace
+       </form>
+     </div>
+     <div id="modalDialog">
      </div>
      <script type='text/javascript' src='../steal/steal.js?seccubus'>
      </script>
