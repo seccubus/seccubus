@@ -15,7 +15,9 @@
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
-			steal('seccubus/workspace/create','seccubus/fixtures',function(){
+			steal(	'seccubus/workspace/create',
+				'seccubus/fixtures',
+			function(){
 				
 				$('#create').seccubus_workspace_create();
 				Seccubus.Models.Workspace.bind('created', function(ev, workspace){

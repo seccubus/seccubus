@@ -8,12 +8,13 @@ steal('jquery/model', function(){
  */
 $.Model('Seccubus.Models.Workspace',
 /* @Static */
+// Not implemented:
+//findOne : "/workspaces/{id}.json", 
+//update : "/workspaces/{id}.json",
+//destroy : "/workspaces/{id}.json"
 {
 	findAll: "json/getWorkspaces.pl",
-  	//findOne : "/workspaces/{id}.json", 
-  	create : "json/createWorkspace.json",
- 	//update : "/workspaces/{id}.json",
-  	//destroy : "/workspaces/{id}.json"
+  	create : "json/createWorkspace.pl",
 },
 /* @Prototype */
 {});

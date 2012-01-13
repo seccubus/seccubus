@@ -2,8 +2,7 @@ steal(	'jquery/controller',
 	'jquery/view/ejs',
 	'jquery/dom/form_params',
 	'jquery/controller/view',
-	'seccubus/models',
-	'seccubus/fixtures'
+	'seccubus/models'
 ).then(	'./views/init.ejs', 
 	function($){
 
