@@ -6,6 +6,8 @@ steal(	'jquery/controller',
 
 /**
  * @class Widgets.Modal
+ * @parent index
+ * Renders a modal window with either a string or a certain element as content
  */
 $.Controller('Widgets.Modal',
 /** @Static */

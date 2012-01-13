@@ -21,19 +21,27 @@ $.Controller('Seccubus.Workspace.Select',
 },
 /** @Prototype */
 {
+	/* This funciton calls updateView to render the control
+	 */
 	init : function(el, fn){
 		this.updateView();
 	},
+	// (re-)Render on delete
 	"{Seccubus.Models.Workspace} destroyed" : function(Workspace, ev, workspace) {
 		this.updateView();
 	},
+	// (re-)Render on create
 	"{Seccubus.Models.Workspace} created" : function(Workspace, ev, workspace){
 		this.updateView();
 	},
+	// Apend on update
 	"{Seccubus.Models.Workspace} updated" : function(Workspace, ev, workspace){
 		workspace.elements(this.element)
 		      .html(this.view('workspace', workspace) );
 	},
+	/*
+	 * This fuction rerenders the entire control with data from findAll
+	 */
 	updateView : function() {
 		this.element.html(
 			this.view(

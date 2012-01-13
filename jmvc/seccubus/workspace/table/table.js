@@ -14,6 +14,10 @@ steal(
  * @parent Workspace
  * @inherits jQuery.Controller
  * Lists workspaces in a table and lets you destroy them.
+ *
+ * Warning
+ * =======
+ * This code isn't finished yet
  */
 $.Controller('Seccubus.Workspace.Table',
 /** @Static */

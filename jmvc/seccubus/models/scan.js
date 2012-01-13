@@ -9,7 +9,16 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.Scan',
 /* @Static */
 {
-	//findAll : "json/getScans.pl",
+	/*
+	 * @function findAll
+	 * @param {Object} params
+	 * Parameters of the API call
+	 * @param {Function} success
+	 * Callback funciton in case of success
+	 * @param {Function} error
+	 * Callback function in case of error
+	 * @return {Deferred} A deferred Scans (Scan.List)
+	 */
 	findAll : function(params,success,error){
 		return $.ajax({
 			url	: "json/getScans.pl",
@@ -20,10 +29,14 @@ $.Model('Seccubus.Models.Scan',
 			error	: error
 		});
 	},
-  	findOne	: "/scans/{id}.json", 
-  	create	: "/scans.json",
- 	update	: "/scans/{id}.json",
-  	destroy	: "/scans/{id}.json"
+  	// Not implemented
+	//findOne	: "/scans/{id}.json", 
+	// Not implemented (yet)
+  	//create	: "/scans.json",
+ 	// Not implemented yet
+	//update	: "/scans/{id}.json",
+  	// Not implemented yet
+	//destroy	: "/scans/{id}.json"
 },
 /* @Prototype */
 {});

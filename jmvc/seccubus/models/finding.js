@@ -2,23 +2,42 @@ steal('jquery/model','jquery/model/list', function(){
 
 /**
  * @class Seccubus.Models.Finding
- * @parent index
+ * @parent Finding
  * @inherits jQuery.Model
- * Wraps backend finding services.  
+ * This model deals with individual findings
  */
 $.Model('Seccubus.Models.Finding',
 /* @Static */
 {
+	/*
+	 * @function findAll
+	 * This funciton gets all findings, it is the interface to 
+	 * json/getFndings.pl
+	 * @return {Deferred} Deferred with all findings in it
+	 */
 	findAll: "json/getFindings.pl",
-  	findOne : "/findings/{id}.json", 
-  	create : "/findings.json",
+  	//findOne : "/findings/{id}.json", 
+  	//create : "/findings.json",
+	/*
+	 * @function update
+	 * This function updates a single finding, it is the interface to
+	 * json/updateFinding.pl
+	 * @return {Object} the updated object or an error
+	 */
  	update : "POST json/updateFinding.pl",
-  	destroy : "/findings/{id}.json"
+  	//destroy : "/findings/{id}.json"
 },
 /* @Prototype */
 {
-	// This function returns true if the finding matches the criteria 
-	// in the filter object
+	/*
+	 * This function returns true if the finding matches the criteria 
+	 * in the filter object
+	 * @param {Object} filter
+	 * Object containing the filter settings
+	 * @param {Boolean) debug
+	 * Turns debugging on
+	 * @return {Boolean} True if this finding matches the filter
+	 */
 	isMatch	: function(filter,debug) {
 		match = true;
 		debug = ( typeof debug != "undefined" );
@@ -51,6 +70,14 @@ $.Model('Seccubus.Models.Finding',
 		}
 		return match;
 	},
+	/*
+	 * This function returns an object property as HTML. It does the 
+	 * following conversions:
+	 * - \n to <br>
+	 * More will be added in the future, e.g.:
+	 * - http:// to <a href=...
+	 * - CVE entries
+	 */
 	asHTML : function(property) {
 		if ( this.attr(property) ) {
 			var newval = this.attr(property);
@@ -65,18 +92,23 @@ $.Model('Seccubus.Models.Finding',
 		}
 	}
 }); // Model
+
 /**
- * @class Seccubus.Models.Finding
- * @parent index
+ * @class Seccubus.Models.Finding.List
+ * @parent Seccubus.Models.Finding
  * @inherits jQuery.Model.List
- * Wraps backend finding services.  
+ * List dealing with multiple findings
  */
 $.Model.List('Seccubus.Models.Finding.List', {
 /* @Static */
+	/*
+	 * @function update
+	 * This function deals with updating multiple findings in one go it 
+	 * wraps the json.updateFindings.pl API
+	 */
 	update : "POST json/updateFindings.pl"
 },{
 /* @Prototype */
 }); // Model list
-
 
 })  // Steal

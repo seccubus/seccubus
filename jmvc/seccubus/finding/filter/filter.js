@@ -8,19 +8,69 @@ function($){
 
 /**
  * @class Seccubus.Finding.Filter
+ * @parent Finding
+ * @inherits jQuery.Controller
+ * This controller renders a filter from the findings model and rerenders itself
+ * on changes to the model
  */
 $.Controller('Seccubus.Finding.Filter',
 /** @Static */
 {
+	/*
+	 * @attribute options
+	 * Object that holds the options
+	 */
 	defaults : {
+		/*
+		 * @attribute options.workspace
+		 * Determines which workspace is selected
+		 * - Default value: -1
+		 * - Special value: -1 - No workspace selected
+		 */
 		workspace	: -1,
+		/*
+		 * @attribute options.scans
+		 * Array of selected scans
+		 * - Default value: null
+		 * - Special value: null - no scans selected
+		 */
 		scans		: null,
+		/*
+		 * @attribute options.status
+		 * Integer that determines the current status of the gui
+		 * - Default value: 1
+		 */
 		status		: 1,
+		/*
+		 * @attribute options.host
+		 * Value of the host filter
+		 */
 		host		: "*",
+		/*
+		 * @attribute options.hostName
+		 * Value of the hostName filter
+		 */
 		hostName	: "*",
+		/*
+		 * @attribute options.port
+		 * Value of the port filter
+		 */
 		port		: "*",
+		/*
+		 * @attribute options.plugin
+		 * Value of the plugin filter
+		 */
 		plugin		: "*",
+		/*
+		 * @attribute options.onChange
+		 * Function to be executed when the filter changes
+		 */
 		onChange 	: function(filter) { },
+		/*
+		 * @attribute options.updateOnChange
+		 * Boolean that indicates is the control should update itself 
+		 * when its value changes.
+		 */
 		updateOnChange	: true
 	}
 },

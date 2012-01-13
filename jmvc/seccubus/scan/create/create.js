@@ -1,15 +1,24 @@
-steal( 'jquery/controller',
-       'jquery/view/ejs',
-	   'jquery/dom/form_params',
-	   'jquery/controller/view',
-	   'seccubus/models' )
-	.then('./views/init.ejs', function($){
+steal(	'jquery/controller',
+	'jquery/view/ejs',
+	'jquery/dom/form_params',
+	'jquery/controller/view',
+	'seccubus/models'
+).then(	'./views/init.ejs',
+	function($){
 
 /**
  * @class Seccubus.Scan.Create
- * @parent index
+ * @parent Scan
  * @inherits jQuery.Controller
- * Creates scans
+ * Generates a dialog to create scans
+ *
+ * Warning
+ * =======
+ * This code is unfished
+ *
+ * Story
+ * -----
+ * As a user I would like to be able tot create scans from the GUI
  */
 $.Controller('Seccubus.Scan.Create',
 /** @Prototype */

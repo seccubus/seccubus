@@ -10,14 +10,11 @@ steal( 'jquery/controller',
  * @class Seccubus.UpToDate.List
  * @parent UpToDate
  * @inherits jQuery.Controller
- * Lists up_to_dates
+ * c$Renders a list that shows if Seccubus is up to date
  */
 $.Controller('Seccubus.UpToDate.List',
 /** @Static */
 {
-	/**
-	 * The default values are empty
-	 */
 	defaults : {}
 },
 /** @Prototype */
@@ -30,22 +27,6 @@ $.Controller('Seccubus.UpToDate.List',
 	init : function(){
 		this.element.html(this.view('init',Seccubus.Models.UpToDate.findAll()) )
 	}
-	//},
-	//'.destroy click': function( el ){
-	//	if(confirm("Are you sure you want to destroy?")){
-	//		el.closest('.up_to_date').model().destroy();
-	//	}
-	//},
-	//"{Seccubus.Models.UpToDate} destroyed" : function(UpToDate, ev, up_to_date) {
-	//	up_to_date.elements(this.element).remove();
-	//},
-	//"{Seccubus.Models.UpToDate} created" : function(UpToDate, ev, up_to_date){
-	//	this.element.append(this.view('init', [up_to_date]))
-	//},
-	//"{Seccubus.Models.UpToDate} updated" : function(UpToDate, ev, up_to_date){
-	//	up_to_date.elements(this.element)
-	//	      .html(this.view('up_to_date', up_to_date) );
-	//}
 });
 
 });

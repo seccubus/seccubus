@@ -10,20 +10,69 @@ function($){
 
 /**
  * @class Seccubus.Finding.Table
+ * @parent Finding
+ * Controller that displays a sortable table of findings including multiselect
  */
 $.Controller('Seccubus.Finding.Table',
 /** @Static */
 {
+	/*
+	 * @attribute options
+	 * Object that holds the options in its attributes
+	 */
 	defaults : {
+		/*
+		 * @attribute options.workspace
+		 * The currently selected workspace, -1 = no workspace
+		 */
 		workspace	: -1,
+		/*
+		 * @attribute options.scans
+		 * Array of selected scans, null is no scans selected
+		 */
 		scans		: null,
+		/*
+		 * @attribute options.status
+		 * The current status, prevents incorrect status selections
+		 */
 		status		: 1,
+		/*
+		 * @attribute options.host
+		 * The current host filter
+		 */
 		host		: "*",
+		/*
+		 * @attribute options.hostName
+		 * The current hostName filter
+		 */
 		hostName	: "*",
+		/*
+		 * @attribute options.port
+		 * The current port filter
+		 */
 		port		: "*",
+		/*
+		 * @attribute options.plugin
+		 * The current plugin filter
+		 */
 		plugin		: "*",
+		/*
+		 * @attribute options.orderBy
+		 * By what attribute the table is sorted by
+		 */
 		orderBy		: "host",
+		/*
+		 * @attribute options.descending
+		 * Boolean that determines if the order is descending
+		 */
 		descending	: false,
+		/*
+		 * @attribute options.columns
+		 * Array that holds pairs of column headers and attribute names
+		 * If the attribute is empty and the label is select this 
+		 * represents the multiselect column, if the attribute is empty
+		 * but the label is 'Action' this is the action column
+		 */
 		columns		: [ 	"", "select",
 					"host", "IP", 
 					"hostNmae", "HostName", 
@@ -34,17 +83,37 @@ $.Controller('Seccubus.Finding.Table',
 					"remark", "Remark",
 					"", "Action"
 				  ],
+		/*
+		 * @attribute options.checked that holds the state of the 
+		 * master checkbox of the multiselect
+		 */
 		checked		: {
+					/*
+					 * @attribute options.checked.none
+					 * Boolean that indicates no findings 
+					 * are checked
+					 */
 					"none" : true,
+					/*
+					 * @attribute options.checked.all
+					 * Boolean that indicates if all 
+					 * findings are checked
+					 */
 					"all" : false
 				  }
 	}
 },
 /** @Prototype */
 {
+	/*
+	 * Calls updateView to (re-)render the control
+	 */
 	init : function(){
 		this.updateView();
 	},
+	/*
+	 * (Re-)renders the control
+	 */
 	updateView : function() {
 		this.options.checked = { "all" : this.options.checked.all, "none" : ! this.options.checked.all };
 		if ( this.options.workspace < 0  ) {
@@ -91,6 +160,7 @@ $.Controller('Seccubus.Finding.Table',
 			);
 		}
 	},
+	// Handle click event on table headers to sort
 	"th click" : function(el,ev) {
 		if($(el).attr("sort")) {	// Only sort when sort column
 			if(this.options.orderBy == $(el).attr("sort")) {
@@ -106,6 +176,7 @@ $.Controller('Seccubus.Finding.Table',
 			this.updateView();
 		}
 	},
+	// Handle master checkbox
 	".selectAll click" : function(el,ev) {
 		if ( typeof $(el).attr("checked") == "undefined" || $(el).attr("checked") == false ) {
 			$('.selectAll').attr("checked", true);
@@ -121,6 +192,7 @@ $.Controller('Seccubus.Finding.Table',
 			this.options.checked = { all : false, none: true }
 		}
 	},
+	// Handle checkbox clicks
 	".selectFinding click" : function(el,ev) {
 		if ( typeof $(el).attr("checked") == "undefined" || $(el).attr("checked") == false ) {
 			$(el).attr("checked", true);
@@ -152,9 +224,12 @@ $.Controller('Seccubus.Finding.Table',
 			$(".selectAll").attr("src", "img/checkbox_half.png");
 		}
 	},
+	// Handle edit clicks
 	".editFinding click" : function(el,ev) {
 		alert("Editing is not (yet) implemented");
 	},
+	// Handle state change click by updating the finding in question via the
+	// model
 	".changeState click" : function(el,ev) {
 		var newState = $(el).attr("value");
 		var finding = el.closest('.finding').model();
@@ -163,9 +238,11 @@ $.Controller('Seccubus.Finding.Table',
 		finding.attr("overwrite",1);
 		finding.save();
 	},
+	// Hanlde create events
 	"{Seccubus.Models.Finding} created" : function(Finding, ev, finding) {
 		alert("table created:" + finding.id);
 	},
+	// Handle update events by redrawing the view
 	"{Seccubus.Models.Finding} updated" : function(Finding, ev, finding) {
 		if(find.status == this.options.status) {
 			finding.elements(this.element).html(
@@ -175,9 +252,21 @@ $.Controller('Seccubus.Finding.Table',
 			this.updateView();
 		}
 	},
+	// Handle destroy events
 	"{Seccubus.Models.Finding} destroyed" : function(Finding, ev, finding) {
 		alert("table destroyed:" + finding.id);
 	},
+	/*
+	 * Returns the specific sort function for an attribute
+	 * This function can be passed to the sort function to sort arays of 
+	 * objects and handle things like IP and hostname sorting
+	 * @return {Function} Function that compares objects based on the 
+	 * specified attribute and order
+	 * @param {String} at
+	 * Attribute to sort on
+	 * @param {Boolean} rev
+	 * Boolean that indicates if the results should be reversed
+	 */
 	sortFunc : function(at, rev) {
 		var fn;
 		if ( false ) {
@@ -192,6 +281,9 @@ $.Controller('Seccubus.Finding.Table',
 		}
 		return fn;
 	},
+	/*
+	 * Update, overloaded to rerender the control after an update event
+	 */
 	update : function(options){
 		this._super(options);
 		this.updateView();
