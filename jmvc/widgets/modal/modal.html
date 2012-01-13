@@ -11,8 +11,9 @@
 	</head>
 	<body>
 	    <h1>Widgets.Modal Demo</h1>
-		<div id='modal'>This is where the modal window will be</div>
-		<div id='test' border=1>This is #test</div>
+		<div id='modal'>This is where the modal window will be
+		  <div id='test' border=1>This is #test</div>
+		</div>
 		<a href='#' id='doit'>show hello world</a>
 		<a href='#' id='h1'>show #test modal</a>
 		<script type='text/javascript' 
@@ -22,7 +23,10 @@
 			steal('widgets/modal',function(){
 				
 				$('#h1').click( function() {
-					$('#modal').widgets_modal({query : "#test"});
+					$('#modal').widgets_modal({
+						query : "#test",
+						close : true
+					});
 				});
 				$('#doit').click( function() {
 					$('#modal').widgets_modal();

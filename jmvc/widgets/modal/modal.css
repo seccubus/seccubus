@@ -10,8 +10,13 @@
    
 .widgetsModalWindow {
   position:absolute;
-  width:440px;
-  height:200px;
+  display:none;
+  z-index:9995;
+  padding:20px;
+}
+
+.widgetsModalClose {
+  position:absolute;
   display:none;
   z-index:9999;
   padding:20px;

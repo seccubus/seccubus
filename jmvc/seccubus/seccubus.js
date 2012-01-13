@@ -122,9 +122,16 @@ steal(
 		render_scan_lists();
 
 		// Setup create workspace
-		$('#createWorkspace').seccubus_workspace_create();
+		$('#createWorkspace').seccubus_workspace_create({
+			onClear	: function() {
+				$("#widgetsModalMask").click();
+			}
+		});
 		$('.addWorkspace').click(function() {
-			$('#modalDialog').widgets_modal({query : "#createWorkspaceDialog"});
+			$('#modalDialog').widgets_modal({
+				query : "#createWorkspaceDialog",
+				close : true,
+			});
 		});
 
 		/**********************************************************

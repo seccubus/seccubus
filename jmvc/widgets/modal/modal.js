@@ -12,24 +12,63 @@ $.Controller('Widgets.Modal',
 {
 	defaults : {
 		query : "",
-		message : "Hello World",
+		message : "",
+		close : false
 	}
 },
 /** @Prototype */
 {
 	init : function(){
-		this.element.html("//widgets/modal/views/init.ejs",{
+		this.element.append("//widgets/modal/views/init.ejs",{
 			message: this.options.message
 		});
-
-		// Find out what to show
+		this.open();
+	},
+	".close click" : function() {
+		this.close();
+	},
+	".mask click" : function() {
+		this.close();
+	},
+	close : function() {
+		$('#widgetsModalMask').hide();
 		var id;
-		if ( this.options.query ) {
-			id = this.options.query;
-			$(id).addClass('widgetsModalWindow');
+		if(this.options.message ) {
+			this.update_message(this.options.message);
+			id = "#widgetsModalMessage";
 		} else {
-			id = "#widgetsModalDialog";
+			id = this.options.query;
 		}
+		$(id).removeClass('widgetsModalWindow');
+		$(id).hide();
+
+		if ( this.options.close ) {
+			$('#widgetsModalClose').hide();
+		}
+
+		this.options.message = "";
+		this.options.query = "";
+		this.options.close = false;
+	},
+	open : function(options) {
+		for(var a in options) {
+			this.options[a] = options[a];
+		}
+
+		// Default text
+		if ( this.options.message == "" && this.options.query == "" ) {
+			this.options.message = "Hello world";
+		}
+
+		// Find out what to show, and render message if needed
+		var id;
+		if(this.options.message ) {
+			this.update_message(this.options.message);
+			id = "#widgetsModalMessage";
+		} else {
+			id = this.options.query;
+		}
+		$(id).addClass('widgetsModalWindow');
 
 		// Cover whole document
 		var maskHeight = $(document).height();
@@ -47,23 +86,23 @@ $.Controller('Widgets.Modal',
 
 		// Transition effect
 		$(id).fadeIn(2000);
-	},
-	".close click" : function() {
-		this.close();
-	},
-	".mask click" : function() {
-		this.close();
-	},
-	close : function() {
-		$('#widgetsModalMask').hide();
-		if ( this.options.query ) {
-			$(this.options.query).removeClass('widgetsModalWindow');
+
+		if ( this.options.close ) {
+			var position = $(id).position();
+			$('#widgetsModalClose').css({
+				position	: 'absolute'
+			});
+			$('#widgetsModalClose').css('top', position.top-$('#widgetsModalClose').height());
+			$('#widgetsModalClose').css('left', position.left+$(id).width());
+			$('#widgetsModalClose').fadeIn(1500);
 		}
-		this.element.html("");
+	},
+	update_message : function(message) {
+		$("#widgetsModalMessage").html(message);		
 	},
 	update : function(options) {
 		this._super(options);
-		this.init();
+		this.open();
 	}
 })
 
