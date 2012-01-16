@@ -7,31 +7,63 @@ steal(	'jquery/controller',
 /**
  * @class Widgets.Modal
  * @parent index
+ * @inherits jQuery.Controller
  * Renders a modal window with either a string or a certain element as content
+ * If options.close is set, a close button is rendered using an image with 
+ * img/closebox.png as source
+ * That if a jQuery query is provided as part of the options this element will 
+ * be displayed as modal window and hidden after the modal window closes.
  */
 $.Controller('Widgets.Modal',
 /** @Static */
 {
+	/*
+	 * @attribute options
+	 * Object that holds the options for this controller
+	 */
 	defaults : {
+		/*
+		 * @atrribute options.query
+		 * jQuery query string for the element you want to render as a 
+		 * modal popup
+		 */
 		query : "",
+		/*
+		 * @atrribute options.message
+		 * Message that you want to be displayed as a modal popup
+		 */
 		message : "",
+		/*
+		 * @atrribute options.close
+		 * Boolean that indicates if a close button should be rendered
+		 * Close button is represented by image with source
+		 * img/closebox.png
+		 */
 		close : false
 	}
 },
 /** @Prototype */
 {
+	/*
+	 * Renders the controller and displays the modal window
+	 */
 	init : function(){
 		this.element.append("//widgets/modal/views/init.ejs",{
 			message: this.options.message
 		});
 		this.open();
 	},
+	// Close on .close click
 	".close click" : function() {
 		this.close();
 	},
+	// Close on .mask click
 	".mask click" : function() {
 		this.close();
 	},
+	/*
+	 * Closes the popup and resets the options to default values.
+	 */
 	close : function() {
 		$('#widgetsModalMask').hide();
 		var id;
@@ -52,6 +84,11 @@ $.Controller('Widgets.Modal',
 		this.options.query = "";
 		this.options.close = false;
 	},
+	/*
+	 * This function actually opens the modal popup.
+	 * @param options object containing the options for this render session.
+	 * The attributes of options will be transferred to this.options
+	 */
 	open : function(options) {
 		for(var a in options) {
 			this.options[a] = options[a];
@@ -99,9 +136,15 @@ $.Controller('Widgets.Modal',
 			$('#widgetsModalClose').fadeIn(1500);
 		}
 	},
+	/*
+	 * Updates the model popup message
+	 */
 	update_message : function(message) {
 		$("#widgetsModalMessage").html(message);		
 	},
+	/*
+	 * Update, overloaded to allways open the popup
+	 */
 	update : function(options) {
 		this._super(options);
 		this.open();
