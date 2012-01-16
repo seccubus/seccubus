@@ -23,18 +23,18 @@ $.Controller('Widgets.Modal',
 	 */
 	defaults : {
 		/*
-		 * @atrribute options.query
+		 * @attribute options.query
 		 * jQuery query string for the element you want to render as a 
 		 * modal popup
 		 */
 		query : "",
 		/*
-		 * @atrribute options.message
+		 * @attribute options.message
 		 * Message that you want to be displayed as a modal popup
 		 */
 		message : "",
 		/*
-		 * @atrribute options.close
+		 * @attribute options.close
 		 * Boolean that indicates if a close button should be rendered
 		 * Close button is represented by image with source
 		 * img/closebox.png
