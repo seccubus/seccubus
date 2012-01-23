@@ -2,14 +2,15 @@ steal('jquery/model', function(){
 
 /**
  * @class Seccubus.Scanner
- * @parent index
+ * @parent Scanner
  * @inherits jQuery.Model
  * Wraps backend scanner services.  
+ * Only has a findAll api
  */
 $.Model('Seccubus.Models.Scanner',
 /* @Static */
 {
-	findAll: "/scanners.json",
+	findAll: "json/getScanners.pl",
   	//findOne : "/scanners/{id}.json", 
   	//create : "/scanners.json",
  	//update : "/scanners/{id}.json",
