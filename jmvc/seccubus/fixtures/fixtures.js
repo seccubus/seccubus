@@ -119,4 +119,21 @@ steal("jquery/dom/fixture", function(){
 			remark : orig.data.attrs.remark,
 		};
 	});
+
+	// Scanners 
+	$.fixture.make("scanner", 5, function(i, scanner){
+		var name = ["Nessus", "NessusLegacy", "Nikto", "Nmap", "OpenVAS" ];
+		var desc = [
+			"Nessus vulnerability scanner via XMLrpc", 
+			"Nessus vulnerability scanner via port 1241 interface", 
+			"Nikto web vulnerability scanner", 
+			"Nmap port scanner", 
+			"OpenVAS vulnerability scanner" 
+		];
+		return {
+			name: name[i],
+			description: desc[i],
+			help : "Helptext for " + name[i]
+		}
+	})
 });

@@ -1,0 +1,23 @@
+<% %>
+<option 
+	selected 
+	value='none' 
+	disabled=true
+	help='Please select a scanner'
+>
+	Select a scanner
+</option>
+<% for(var i = 0; i < this.length ; i++) { %>
+	<option <%= this[i] %> 
+		value='<%= this[i].name %>'
+		help='<%= this[i].help %>'
+	>
+		<%= this[i].name %> - <%= this[i].description %>
+	</option>
+<% } %>
+<option 
+	value='other'
+	help='Help unavailable'
+>
+	Other scanner, not listed here
+</option>

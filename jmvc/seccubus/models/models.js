@@ -5,4 +5,4 @@ steal(	"jquery/model",
 	'./workspace.js',
 	'./scan.js', 
 	'./finding.js', 
-	'./gui_state.js')
+	'./gui_state.js', './scanner.js')
