@@ -28,7 +28,7 @@ list of all functions within the module.
 
 use Exporter;
 
-@ISA = ('Explorer');
+@ISA = ('Exporter');
 
 @EXPORT = qw ( 
 		get_scanners

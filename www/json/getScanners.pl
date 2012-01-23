@@ -21,7 +21,7 @@ print $query->header("application/json");
 
 eval {
 	my @data;
-	my $scanners = SeccubusScanners::get_scanners(); # Get somethin here
+	my $scanners = get_scanners(); # Get somethin here
 
 	foreach my $row ( @$scanners ) {
 		push (@data, {
