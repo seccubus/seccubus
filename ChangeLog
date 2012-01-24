@@ -8,8 +8,19 @@ If you are looking for stable code you might want to use the V1 branch of this
 project, but be aware that it only supports Nessus with a professional feed
 and is not longer under active development.
 
+xx-xx-2012 - 2.0.beta2
+======================
+New features / Issues resolved
+------------------------------
+Add workspace screen
+
+Bigs fixed (tickets closed):
+----------------------------
+62 - Default locations for config.xml does not include ~seccubus/etc/config.xml
+https://sourceforge.net/apps/trac/seccubus/ticket/62
+
 07-01-2012 - 2.0.beta1
-=======================
+======================
 New features / Issues resolved
 ------------------------------
 With this release Seccubus goes into BETA phase. It also marks the end of

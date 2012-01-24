@@ -40,6 +40,8 @@ use Data::Dumper;
 our $config = "config.xml";		# Change this value to match your setup
 					# if your configuration file cannot be 
 					# found
+$config = "/home/seccubus/etc/config.xml" unless -e $config;
+					# Bug #62 - /home/seccubus/etc missing
 $config = "/etc/seccubus/config.xml" unless -e $config;
 $config = "/opt/Seccubus/etc/config.xml" unless -e $config;
 
