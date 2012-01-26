@@ -122,7 +122,7 @@ if ( $sudo ) {
 
 
 print "Scanning done, converting .xml to ivil\n" unless $quiet;
-$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nmap2ivil --scannerversion=$nmap_version --workspace=$workspace --scan=$scan --timestamp=$timestamp --infile=$tempfile.xml ";
+$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nmap2ivil --scannerversion=$nmap_version --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile=$tempfile.xml ";
 $cmd .= "-v" if $verbose > 1;
 
 print "Executing $cmd\n" if $verbose;
@@ -130,7 +130,7 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose;
 
 print "Importing ivil\n" unless $quiet;
-$cmd = "$load_ivil --workspace $workspace --scan $scan --scanner Nmap --scannerversion $nmap_version --timestamp $timestamp";
+$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner Nmap --scannerversion $nmap_version --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
 $cmd .= " $tempfile.ivil.xml";
 print "Execuing $cmd\n" if $verbose > 1;

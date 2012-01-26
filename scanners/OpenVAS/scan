@@ -133,13 +133,13 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose;
 
 print "Converting .nbe to IVIL\n" unless $quiet;
-$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=OpenVAS --workspace=$workspace --scan=$scan --timestamp=$timestamp --infile=$tempfile.nbe";
+$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=OpenVAS --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile=$tempfile.nbe";
 print "Executing $cmd\n" if $verbose;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose;
 
 print "Importing ivil\n" unless $quiet;
-$cmd = "$load_ivil --workspace $workspace --scan $scan --scanner OpenVAS --timestamp $timestamp";
+$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner OpenVAS --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
 $cmd .= " $tempfile.ivil.xml";
 print "Execuing $cmd\n" if $verbose > 1;

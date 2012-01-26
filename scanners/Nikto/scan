@@ -106,7 +106,7 @@ close TMP;
 close NIKTO;
 
 print "Scanning done, converting .nbe to ivil\n" unless $quiet;
-my $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=Nikto --scannerversion=$nikto_version --workspace=$workspace --scan=$scan --timestamp=$timestamp --infile=$tempfile.nbe ";
+my $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=Nikto --scannerversion=$nikto_version --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile=$tempfile.nbe ";
 $cmd .= "-v" if $verbose > 1;
 
 print "Executing $cmd\n" if $verbose;
@@ -114,7 +114,7 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose;
 
 print "Importing ivil\n" unless $quiet;
-$cmd = "$load_ivil --workspace $workspace --scan $scan --scanner Nikto --scannerversion $nikto_version --timestamp $timestamp";
+$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner Nikto --scannerversion $nikto_version --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
 $cmd .= " $tempfile.ivil.xml";
 print "Execuing $cmd\n" if $verbose > 1;

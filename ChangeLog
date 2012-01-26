@@ -13,11 +13,17 @@ xx-xx-2012 - 2.0.beta2
 New features / Issues resolved
 ------------------------------
 Add workspace screen
+Add scan screen, with helptext for scanner
+Developer documentation updated
 
 Bigs fixed (tickets closed):
 ----------------------------
 62 - Default locations for config.xml does not include ~seccubus/etc/config.xml
 https://sourceforge.net/apps/trac/seccubus/ticket/62
+57 - Scan names with two words not handled correctly
+https://sourceforge.net/apps/trac/seccubus/ticket/57
+#54 - Scanner selection wasn;t dynamic in the GUI
+https://sourceforge.net/apps/trac/seccubus/ticket/54
 
 07-01-2012 - 2.0.beta1
 ======================

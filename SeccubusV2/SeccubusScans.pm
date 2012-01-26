@@ -311,10 +311,14 @@ sub run_scan($$;$$) {
 			# Bug #42 - Scan parameters --workspace and --scan 
 			# should be added automatically
 			if ( $param !~ /(\-sc|\-\-scan)[\s=]/ ) {
-				$param = "--scan $scanname $param";
+				# Bug #57 - Scan names with two words not 
+				# handled correctly
+				$param = "--scan '$scanname' $param";
 			}
 			if ( $param !~ /(\-ws|\-\-workspace)[\s=]/ ) {
-				$param = "--workspace $workspace $param";
+				# Bug #57 - Scan names with two words not 
+				# handled correctly
+				$param = "--workspace '$workspace' $param";
 			}
 			my $cmd = $config->{paths}->{scanners} . "/$scanner/scan $param";
 			if ( $verbose == -1 ) {
