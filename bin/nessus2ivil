@@ -242,16 +242,16 @@ exit();
 sub help() {
 	print "
 
-Usage: nbe2ivil --scanner <scanner> [--scannerversion <versionstring>] \\
-                --timestamp <timestamp> [--workspace <workspacename>] \\
-		[--scan <scanname>] --infile <filename input> \\
-		[--outfile <filename output>] [--verbose] [--help]
+Usage: nessus2ivil --scanner <scanner> [--scannerversion <versionstring>] \\
+                   --timestamp <timestamp> [--workspace <workspacename>] \\
+		   [--scan <scanname>] --infile <filename input> \\
+		   [--outfile <filename output>] [--verbose] [--help]
 
 Arguments:
---scanner	- The name of the scanner used to create the .nbe file
+--scanner	- The name of the scanner used to create the .nessus file
 			Logical options are Nessus, OpenVAS or Nikto
---scannerversion- Optional: the version of the scanner used to create the .nbe
-		  file
+--scannerversion- Optional: the version of the scanner used to create the 
+		  .nessus file
 --timestamp	- Timestamp of when the file was created in the format 
 		  YYYYMMDDhhmmss or YYYYMMDDhhmm so 11 december 2011 1:14:00 pm
 		  is 20111211131400 or 201112111314
@@ -262,10 +262,10 @@ Arguments:
 --scan		- Optional: Which Seccubus scan do you want to load this in, 
 		  this informaiton is used to create the addressee block. If 
 		  scan is not specified then the value for workspace is used.
---infile	- This defines the .nbe file that will be converted to IVIL
+--infile	- This defines the .nessus file that will be converted to IVIL
 --outfile	- Optional: This defines the name of the file used to output 
 		  IVIL. If no filename is given, the infile value is used, 
-		  a trailing .nbe is removed (if it exists) and .ivil.xml is 
+		  a trailing .nessus is removed (if it exists) and .ivil.xml is 
 		  appended
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message
