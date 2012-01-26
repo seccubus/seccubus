@@ -49,7 +49,7 @@
 	     <option>----</option>
 	     <option>This is where we load the workspace selector</option>
 	   </select>
-	   <br>Scans:<br>
+	   <br>Scans (<a href='javascript://' disabled=true class='addScan'>add</a>):<br>
 	   <select class='left scanSelector' id='scan_multiselector_findings' MULTIPLE size=20>
 	     <option>Select a workspace to start</option>
 	   </select>
@@ -130,6 +130,12 @@
        <h1>Please provide the details for a new workspace</h1>
        <form id="createWorkspace">
          Room for modal creatWorkspace
+       </form>
+     </div>
+     <div id="createScanDialog" class='hidden'>
+       <h1>Please provide the details for a new workspace</h1>
+       <form id="createScan">
+         Room for modal createScan
        </form>
      </div>
      <div id="modalDialog">

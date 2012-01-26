@@ -1,36 +1,36 @@
 <% %>
 <h2>Create a new scan</h2>
-<table>
-	<tr><td>
+<table class='noborder'>
+	<tr><td class='noborder'>
 		<label for='name'>Name</label> 
-	</td><td>
+	</td><td class='noborder'>
 		<input type='input' size=78 name='name' id='newScanName'/>
 	</td></tr>
-	<tr><td>
+	<tr><td class='noborder'>
 		<label for='scanner'>Scanner</label> 
-	</td><td>
+	</td><td class='noborder'>
 		<select name='scanner' id='newScanScanner'/></select>
 	</td></tr>
-	<tr id='newScanOtherScannerRow'><td>
+	<tr id='newScanOtherScannerRow'><td class='noborder'>
 		<label for='otherScanner'>Specify scanner:</label> 
-	</td><td>
+	</td><td class='noborder'>
 		<input type=input size=78 name='otherScanner' id='newScanOtherScanner'/></select>
 	</td></tr>
-	<tr><td>
+	<tr><td class='noborder'>
 		<label for='parameters'>parameters</label> 
-	</td><td>
+	</td><td class='noborder'>
 		<input type='input' size=78 name='parameters' id='newScanParam'/>
 	</td></tr>
-	<tr><td>
+	<tr><td class='noborder'>
 		<label for='targets'>Hosts</label> 
-	</td><td>
+	</td><td class='noborder'>
 		<textarea rows=5 cols=59 name='targets' id='newScanTargets'/>
 	</td></tr>
-	<tr><td colspan=2 align='right'>
+	<tr><td class='noborder' colspan=2 align='right'>
 		<input type='submit' value='Create scan'/>
 		<button type='button' class='cancel'>Cancel</button>
 	</td></tr>
-	<tr><td colspan=2>
+	<tr><td class='noborder' colspan=2>
 		<div id='newScanHelp'></div>
 	</td></tr>
 </table>

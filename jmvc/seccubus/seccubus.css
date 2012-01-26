@@ -29,6 +29,10 @@ body {
 	display: block;
 }
 
+.nok {
+	background-color: #FF6666;
+}
+
 div.shell {
 	margin: 0px auto;
 	width: 100%;
@@ -173,6 +177,10 @@ table {
 	width: 100%;
 	border-collapse: collapse;
 }
+.noborder {
+	border: 0px;
+	padding: 3px;
+}
 
 th.asc_disabled {
 	background: url("img/sort_asc_disabled.png") no-repeat scroll right center; 
@@ -205,6 +213,9 @@ thead th {
 	border: 1px solid #aaa;
 	border-bottom: 1px solid black;
 	font-weight: bold;
+}
+td.noborder {
+	border: 0px;
 }
 td {
 	border: 1px solid #aaa;

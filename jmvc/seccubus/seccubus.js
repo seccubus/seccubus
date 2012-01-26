@@ -9,6 +9,7 @@ steal(
 	'seccubus/workspace/create',
 	'seccubus/scan/select',
 	'seccubus/scan/list',
+	'seccubus/scan/create',
 	'seccubus/finding/table',
 	'seccubus/finding/status',
 	'seccubus/finding/filter',
@@ -28,6 +29,7 @@ steal(
 			render_scan_lists();
 			render_status();
 			render_findings();
+			render_create_scan();
 			render_bulkedit();
 		});
 		gui_state.bind("scans", function(ev, scan){
@@ -133,6 +135,18 @@ steal(
 			});
 		});
 
+		// Setup create scan
+		$('.addScan').click(function() {
+			if ( gui_state.workspace == -1 ) {
+				alert("Pelase select a workspace first");
+			} else {
+				$('#modalDialog').widgets_modal({
+					query: "#createScanDialog",
+					close : true,
+				});
+			}
+		});
+
 		/**********************************************************
 		 * Functions
 		 *********************************************************/
@@ -205,6 +219,14 @@ steal(
 			$('#finding_bulkedit').seccubus_finding_bulkedit({
 				workspace	: gui_state.workspace,
 				status		: gui_state.findStatus
+			});
+		};
+		function render_create_scan() {
+			$('#createScan').seccubus_scan_create({
+				workspace	: gui_state.workspace,
+				onClear		: function() {
+					$("#widgetsModalMask").click();
+				}
 			});
 		};
 	}

@@ -22,7 +22,7 @@ $.Model('Seccubus.Models.Scan',
 	findAll : function(params,success,error){
 		return $.ajax({
 			url	: "json/getScans.pl",
-			type	: "get",
+			type	: "POST",
 			dataType: "json scan.models",
 			data	: params,
 			success	: success,
