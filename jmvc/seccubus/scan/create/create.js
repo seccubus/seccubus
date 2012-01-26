@@ -86,7 +86,7 @@ $.Controller('Seccubus.Scan.Create',
 		}
 		if ( ok ) {
 			this.element.find('[type=submit]').val('Creating...')
-			params.workspace = this.options.workspace;
+			params.workspaceId = this.options.workspace;
 			new Seccubus.Models.Scan(params).save(this.callback('saved'));
 		} else {
 			this.nok(elements);
@@ -116,7 +116,7 @@ $.Controller('Seccubus.Scan.Create',
 		this.element.find('[type=submit]').val('Create scan');
 		this.element[0].reset()
 		$(".nok").removeClass("nok");
-		this.onClear();
+		this.options.onClear();
 	},
 	"#newScanScanner change" : function() {
 		if ( $('#newScanScanner').val() == 'other' ) {
