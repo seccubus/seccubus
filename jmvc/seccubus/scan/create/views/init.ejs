@@ -1,9 +1,36 @@
-<h2>New scan</h2>
-<p>
-	<label for='name'>Name</label> <br/>
-	<input type='input' name='name' id='name'/>
-</p>
-<p><label for='description'>Description</label><br/>
-<textarea name='description' id='description'/></textarea>
-</p>
-<p><input type='submit' value='Create'/></p>
+<% %>
+<h2>Create a new scan</h2>
+<table>
+	<tr><td>
+		<label for='name'>Name</label> 
+	</td><td>
+		<input type='input' size=78 name='name' id='newScanName'/>
+	</td></tr>
+	<tr><td>
+		<label for='scanner'>Scanner</label> 
+	</td><td>
+		<select name='scanner' id='newScanScanner'/></select>
+	</td></tr>
+	<tr id='newScanOtherScannerRow'><td>
+		<label for='otherScanner'>Specify scanner:</label> 
+	</td><td>
+		<input type=input size=78 name='otherScanner' id='newScanOtherScanner'/></select>
+	</td></tr>
+	<tr><td>
+		<label for='parameters'>parameters</label> 
+	</td><td>
+		<input type='input' size=78 name='parameters' id='newScanParam'/>
+	</td></tr>
+	<tr><td>
+		<label for='targets'>Hosts</label> 
+	</td><td>
+		<textarea rows=5 cols=59 name='targets' id='newScanTargets'/>
+	</td></tr>
+	<tr><td colspan=2 align='right'>
+		<input type='submit' value='Create scan'/>
+		<button type='button' class='cancel'>Cancel</button>
+	</td></tr>
+	<tr><td colspan=2>
+		<div id='newScanHelp'></div>
+	</td></tr>
+</table>

@@ -5,6 +5,7 @@
 		<title>Seccubus.Scan.Create</title>
         <style type='text/css'>
             body {font-family: verdana}
+	    .nok {background-color: red}
         </style>
 	</head>
 	<body>
@@ -15,9 +16,11 @@
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
-			steal('seccubus/scan/create','seccubus/fixtures',function(){
+			steal(	'seccubus/scan/create',
+				//'seccubus/fixtures',
+			function(){
 				
-				$('#create').seccubus_scan_create();
+				$('#create').seccubus_scan_create({ workspace: 12 });
 				Seccubus.Models.Scan.bind('created', function(ev, scan){
 					$('<div>').html("<h3>"+scan.name+"</h3><p>"+scan.description+"</p>")
 					        .appendTo( $('#scans') )
