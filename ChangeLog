@@ -22,8 +22,10 @@ Bigs fixed (tickets closed):
 https://sourceforge.net/apps/trac/seccubus/ticket/62
 57 - Scan names with two words not handled correctly
 https://sourceforge.net/apps/trac/seccubus/ticket/57
-#54 - Scanner selection wasn;t dynamic in the GUI
+54 - Scanner selection wasn;t dynamic in the GUI
 https://sourceforge.net/apps/trac/seccubus/ticket/54
+53 - nessus2ivil still contains references to nbe
+https://sourceforge.net/apps/trac/seccubus/ticket/53
 
 07-01-2012 - 2.0.beta1
 ======================
