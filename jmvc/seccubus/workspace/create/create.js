@@ -13,7 +13,7 @@ steal(	'jquery/controller',
  * Renders the content of a form to create a workspace and handles creation
  */
 $.Controller('Seccubus.Workspace.Create',
-/** @ Static */
+/** @Static */
 {
 	/*
 	 * @attribute options 
