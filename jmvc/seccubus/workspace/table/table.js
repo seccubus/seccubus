@@ -57,7 +57,7 @@ $.Controller('Seccubus.Workspace.Table',
 		workspace.elements(this.element).remove();
 	},
 	"{Seccubus.Models.Workspace} created" : function(Workspace, ev, workspace){
-		this.element.append(this.view('init', [workspace]))
+		this.element.append(this.view('init', [workspace], { noHead : true }  ))
 	},
 	"{Seccubus.Models.Workspace} updated" : function(Workspace, ev, workspace){
 		workspace.elements(this.element)
