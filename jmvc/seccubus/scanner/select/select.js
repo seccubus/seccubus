@@ -25,7 +25,11 @@ $.Controller('Seccubus.Scanner.Select',
 		 * Default value: null
 		 * Special value: null - Don't render help
 		 */
-		helpHere : null
+		helpHere : null,
+		/* @attribute options.selected
+		 * Value of the selected option
+		 */
+		selected : "none",
 	}
 },
 /** @Prototype */
@@ -48,10 +52,14 @@ $.Controller('Seccubus.Scanner.Select',
 	},
 	/* Renders the control */
 	updateView : function() {
+		var dfd = Seccubus.Models.Scanner.findAll();
 		this.element.html(
 			this.view(
 				'init',
-				Seccubus.Models.Scanner.findAll()
+				dfd,
+				{
+					selected : this.options.selected
+				}
 			)
 		);
 		this.updateHelp();

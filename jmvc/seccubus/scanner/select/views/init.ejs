@@ -1,9 +1,12 @@
-<% %>
+<% var match = false %>
 <option 
-	selected 
 	value='none' 
 	disabled=true
 	help='Please select a scanner'
+	<% if(selected == "none") { %>
+		selected
+		<% match = true %>
+	<% } %>
 >
 	Select a scanner
 </option>
@@ -11,6 +14,10 @@
 	<option <%= this[i] %> 
 		value='<%= this[i].name %>'
 		help='<%= this[i].help %>'
+		<% if(this[i].name == selected) { %>
+			selected
+			<% match = true %>
+		<% } %>
 	>
 		<%= this[i].name %> - <%= this[i].description %>
 	</option>
@@ -18,6 +25,9 @@
 <option 
 	value='other'
 	help='Help unavailable'
+	<% if(match == false) { %>
+		selected
+	<% } %>
 >
 	Other scanner, not listed here
 </option>

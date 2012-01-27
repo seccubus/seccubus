@@ -37,13 +37,14 @@ steal("jquery/dom/fixture", function(){
 	/* Scans */
 	var scanFixtures = [];
 	var noScans = $.fixture.rand(15)+8;
-	var scanners = ["Nessus", "Nessus Legacy", "OpenVAS", "Nikto", "Nmap" ];
+	var scanners = ["Nessus", "NessusLegacy", "OpenVAS", "Nikto", "Nmap", "Unlisted scanner" ];
 	for(var i = 0;i < noScans;i++) {
+		sc = $.fixture.rand(scanners.length);
 		scanFixtures[i] = {
 			id 	: i,
 			workspace : $.fixture.rand(7)+1,
-			name	: $.fixture.rand(scanners,1) + " " + $.fixture.rand(["inside", "outside"], 1) + " " + i,
-			scanner	: $.fixture.rand(scanners,1),
+			name	: scanners[sc] + " " + $.fixture.rand(["inside", "outside"], 1) + " " + i,
+			scanner	: scanners[sc],
 			parameters : "some params will go here",
 			targets	: $.fixture.rand(255) + "." + $.fixture.rand(255) + "." + $.fixture.rand(255) + "." + $.fixture.rand(255),
 			noFindings : $.fixture.rand(255),
