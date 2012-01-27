@@ -40,8 +40,10 @@ eval {
 	my @data = ();
 	my $newid = create_workspace($workspace_name);
 	push @data, {
-		id	=> $newid,
-		name	=> $workspace_name
+		id		=> $newid,
+		name		=> $workspace_name,
+		scanCount	=> 0,
+		findCount	=> 0
 	};
 	print $json->pretty->encode(\@data);
 } or do {

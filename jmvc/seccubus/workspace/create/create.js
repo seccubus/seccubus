@@ -47,7 +47,11 @@ $.Controller('Seccubus.Workspace.Create',
 	submit : function(el, ev){
 		ev.preventDefault();
 		this.element.find('[type=submit]').val('Creating...')
-		new Seccubus.Models.Workspace(el.formParams()).save(this.callback('saved'));
+		var param = el.formParams();
+		param.scanCount = 0;
+		param.findCount = 0;
+		param.lastScan = null;
+		new Seccubus.Models.Workspace(param).save(this.callback('saved'));
 	},
 	".cancel click" : function() {
 		this.clearAll();

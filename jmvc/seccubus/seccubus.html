@@ -108,12 +108,10 @@
 
        <div id='workspaces' class='tab'>
          <div class='full'>
+	   <h1>Manage your workspaces below</h1>
+	   <button class='addWorkspace'>New workspace</button>
            <table id='workspace_table'>
-	     <thead> <tr> <th>a</th> <th>b</th> <th>c</th> </tr> </thead>
-	     </tbody> <tr> <th>1</th> <th>3</th> <th>a</th> </tr>
-	       <tr> <th>2</th> <th>2</th> <th>b</th> </tr>
-	       <tr> <th>3</th> <th>1</th> <th>c</th> </tr>
-	     </tbody>
+	   	<tr><td>Workspace table goes here</td></tr>
 	   </table>
 	 </div>
        </div>
@@ -130,6 +128,12 @@
        <h1>Please provide the details for a new workspace</h1>
        <form id="createWorkspace">
          Room for modal creatWorkspace
+       </form>
+     </div>
+     <div id="editWorkspaceDialog" class='hidden'>
+       <h1>Please update the name of your scan</h1>
+       <form id="editWorkspace">
+         Room for modal editWorkspace
        </form>
      </div>
      <div id="createScanDialog" class='hidden'>

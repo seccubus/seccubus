@@ -7,6 +7,8 @@ steal(
 	'seccubus/config_item/list',
 	'seccubus/workspace/select',
 	'seccubus/workspace/create',
+	'seccubus/workspace/table',
+	'seccubus/workspace/edit',
 	'seccubus/scan/select',
 	'seccubus/scan/list',
 	'seccubus/scan/create',
@@ -14,7 +16,6 @@ steal(
 	'seccubus/finding/status',
 	'seccubus/finding/filter',
 	'seccubus/finding/bulkedit',
-	//'seccubus/workspace/table',
 	'widgets/modal',
 	function(){					// configure your application
 		/***********************************************************
@@ -95,6 +96,21 @@ steal(
 				$('.workspaceSelector').attr("value",newWorkspace);
 
 			});
+		});
+		$('#workspace_table').seccubus_workspace_table({
+			onEdit : function(ws) {
+				alert(ws.id);
+				$('#editWorkspace').seccubus_workspace_edit({
+					workspace : ws,
+					onClear	: function() {
+						$("#widgetsModalMask").click();
+					}
+				});
+				$('#modalDialog').widgets_modal({
+					query : "#editWorkspaceDialog",
+					close : true,
+				});
+			}
 		});
 
 		// Setup all scan selectors
