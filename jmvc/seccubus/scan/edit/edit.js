@@ -53,8 +53,8 @@ $.Controller('Seccubus.Scan.Edit',
 				this.options.scan
 			)
 		);
-		$('#newScanScanner').seccubus_scanner_select({
-			helpHere : '#newScanHelp',
+		$('#editScanScanner').seccubus_scanner_select({
+			helpHere : '#editScanHelp',
 			selected : this.options.scan.scanner
 		});
 	},
@@ -68,29 +68,31 @@ $.Controller('Seccubus.Scan.Edit',
 		var ok = true;
 		var elements = [];
 		if ( params.name == '' ) {
-			elements.push("#newScanName");
+			elements.push("#editScanName");
 			ok = false;
 		}
 		if ( params.scanner == '' || params.scanner == 'none' ) {
-			elements.push("#newScanScanner", "#newScanOtherScanner");
+			elements.push("#editScanScanner", "#editScanOtherScanner");
 			ok = false;
 		}
 		if ( params.parameters == '' ) {
-			elements.push("#newScanParam");
+			elements.push("#editScanParam");
 			ok = false;
 		}
 		if ( params.targets == '' ) {
-			elements.push("#newScanTargets");
-			ok = false;
-		}
-		if ( this.options.workspace == -1 ) {
-			alert("Error: workspace is not set");
+			elements.push("#editScanTargets");
 			ok = false;
 		}
 		if ( ok ) {
-			this.element.find('[type=submit]').val('Creating...')
-			params.workspaceId = this.options.workspace;
-			new Seccubus.Models.Scan(params).save(this.callback('saved'));
+			this.element.find('[type=submit]').val('Updating...')
+
+			sc = this.options.scan;
+			sc.name = params.name;
+			sc.scanner = params.scanner;
+			sc.parameters = params.parameters;
+			sc.targets = params.targets;
+
+			sc.save(this.callback('saved'));
 		} else {
 			this.nok(elements);
 		}
@@ -121,12 +123,11 @@ $.Controller('Seccubus.Scan.Edit',
 		$(".nok").removeClass("nok");
 		this.options.onClear();
 	},
-	"#newScanScanner change" : function() {
-		alert($('#newScanScanner').val());
-		if ( $('#newScanScanner').val() == null || $('#newScanScanner').val() == 'other'  ) {
-			$('#newScanOtherScannerRow').show();
+	"#editScanScanner change" : function() {
+		if ( $('#editScanScanner').val() == null || $('#editScanScanner').val() == 'other'  ) {
+			$('#editScanOtherScannerRow').show();
 		} else {
-			$('#newScanOtherScannerRow').hide();
+			$('#editScanOtherScannerRow').hide();
 		}
 	},
 	".nok change" : function(el) {

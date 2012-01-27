@@ -47,7 +47,7 @@ steal("jquery/dom/fixture", function(){
 			scanner	: scanners[sc],
 			parameters : "some params will go here",
 			targets	: $.fixture.rand(255) + "." + $.fixture.rand(255) + "." + $.fixture.rand(255) + "." + $.fixture.rand(255),
-			noFindings : $.fixture.rand(255),
+			findCount : $.fixture.rand(255),
 			lastScan : $.fixture.rand(["", "2011-11-11 11:11:11" ],1)
 		}
 	}
@@ -67,7 +67,7 @@ steal("jquery/dom/fixture", function(){
 
 	/* Findings */
 	var findingFixtures = [];
-	var noFindings = 2500;
+	var findCount = 2500;
 	var finds = [
 		"OSVDB-637: GET : Enumeration of users is possible by requesting ~username (responds with 'Forbidden' for users, 'not found' for non-existent users).",
 		"OSVDB-3268: GET : /icons/: Directory indexing found.",

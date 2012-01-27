@@ -1,36 +1,36 @@
 <% %>
-<h2>Create a new scan</h2>
+<h2>Change your scan here</h2>
 <table class='noborder'>
 	<tr><td class='noborder'>
 		<label for='name'>Name</label> 
 	</td><td class='noborder'>
-		<input type='input' size=78 name='name' value='<%= name %>' id='newScanName'/>
+		<input type='input' size=78 name='name' value='<%= name %>' id='editScanName'/>
 	</td></tr>
 	<tr><td class='noborder'>
 		<label for='scanner'>Scanner</label> 
 	</td><td class='noborder'>
-		<select name='scanner' id='newScanScanner'/></select>
+		<select name='scanner' id='editScanScanner'/></select>
 	</td></tr>
-	<tr id='newScanOtherScannerRow'><td class='noborder'>
+	<tr id='editScanOtherScannerRow'><td class='noborder'>
 		<label for='otherScanner'>Specify scanner:</label> 
 	</td><td class='noborder'>
-		<input type=input size=78 name='otherScanner' id='newScanOtherScanner' value='<%= scanner %>'/>
+		<input type=input size=78 name='otherScanner' id='editScanOtherScanner' value='<%= scanner %>'/>
 	</td></tr>
 	<tr><td class='noborder'>
 		<label for='parameters'>parameters</label> 
 	</td><td class='noborder'>
-		<input type='input' size=78 name='parameters' id='newScanParam' value='<%= parameters %>'/>
+		<input type='input' size=78 name='parameters' id='editScanParam' value='<%= parameters %>'/>
 	</td></tr>
 	<tr><td class='noborder'>
 		<label for='targets'>Hosts</label> 
 	</td><td class='noborder'>
-		<textarea rows=5 cols=59 name='targets' id='newScanTargets'><%= targets %></textarea>
+		<textarea rows=5 cols=59 name='targets' id='editScanTargets'><%= targets %></textarea>
 	</td></tr>
 	<tr><td class='noborder' colspan=2 align='right'>
 		<input type='submit' value='Update'/>
 		<button type='button' class='cancel'>Cancel</button>
 	</td></tr>
 	<tr><td class='noborder' colspan=2>
-		<div id='newScanHelp'></div>
+		<div id='editScanHelp'></div>
 	</td></tr>
 </table>

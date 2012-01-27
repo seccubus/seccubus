@@ -12,6 +12,8 @@ steal(
 	'seccubus/scan/select',
 	'seccubus/scan/list',
 	'seccubus/scan/create',
+	'seccubus/scan/table',
+	'seccubus/scan/edit',
 	'seccubus/finding/table',
 	'seccubus/finding/status',
 	'seccubus/finding/filter',
@@ -27,6 +29,7 @@ steal(
 		});
 		gui_state.bind("workspace", function(ev, ws){
 			render_scan_selectors();
+			render_scan_table();
 			render_scan_lists();
 			render_status();
 			render_findings();
@@ -68,11 +71,8 @@ steal(
 		// Findigns - tab 1
 		// Issues - tab 2
 		$('#navTab').seccubus_tabs("hide", 2);
-		// Scans - tab 3
-		$('#navTab').seccubus_tabs("disable", 3);
-		$('#navTab').seccubus_tabs("hide", 3);
-		// Workspaces - tab 4
-		//$('#navTab').seccubus_tabs("hide", 4);
+		// Manage Workspaces - tab 3
+		// Manage Scans - tab 4
 		// Reports - tab 5
 		$('#navTab').seccubus_tabs("hide", 5);
 
@@ -99,7 +99,6 @@ steal(
 		});
 		$('#workspace_table').seccubus_workspace_table({
 			onEdit : function(ws) {
-				alert(ws.id);
 				$('#editWorkspace').seccubus_workspace_edit({
 					workspace : ws,
 					onClear	: function() {
@@ -113,7 +112,7 @@ steal(
 			}
 		});
 
-		// Setup all scan selectors
+		// Scans
 		render_scan_selectors();
 		$('.scanSelector').each( function() {
 			$(this).change(function() {
@@ -175,6 +174,26 @@ steal(
 			$('select.scanSelector').each( function() {
 				$(this).seccubus_scan_select({
 					workspace : gui_state.workspace
+				});
+			});
+		};
+
+		function render_scan_table() {
+			$('#scan_table').each( function() {
+				$(this).seccubus_scan_table({
+					workspace : gui_state.workspace,
+					onEdit : function(sc) {
+						$('#editScan').seccubus_scan_edit({
+							scan : sc,
+							onClear	: function() {
+								$("#widgetsModalMask").click();
+							}
+						});
+						$('#modalDialog').widgets_modal({
+							query : "#editScanDialog",
+							close : true,
+						});
+					}
 				});
 			});
 		};

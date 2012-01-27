@@ -2,11 +2,10 @@
 # ------------------------------------------------------------------------------
 # $Id$
 # ------------------------------------------------------------------------------
-# List the scans
+# Updates a scan
 # ------------------------------------------------------------------------------
 # Copyright (C) 2010  Schuberg Philis, Frank Breedijk - Under GPLv3
 # ------------------------------------------------------------------------------
-
 use strict;
 use CGI;
 use JSON;
@@ -19,32 +18,42 @@ my $json = JSON->new();
 
 print $query->header("application/json");
 
-my $workspace_id = $query->param("workspaceId");
+my $scan_id = $query->param("id");
+my $workspace_id = $query->param("workspace");
+my $name = $query->param("name");
+my $scanner = $query->param("scanner");
+my $parameters = $query->param("parameters");
+my $targets = $query->param("targets");
 
 # Return an error if the required parameters were not passed 
+if (not (defined ($scan_id))) {
+	bye("Parameter id is missing");
+};
 if (not (defined ($workspace_id))) {
-	bye("Parameter workspaceId is missing");
-} elsif ( $workspace_id + 0 ne $workspace_id ) {
-	bye("WorkspaceId is not numeric");
+	bye("Parameter workspace is missing");
+};
+if (not (defined ($name))) {
+	bye("Parameter name is missing");
+};
+if (not (defined ($scanner))) {
+	bye("Parameter scanner is missing");
+};
+if (not (defined ($parameters))) {
+	bye("Parameter parameters is missing");
+};
+if (not (defined ($targets))) {
+	bye("Parameter targets is missing");
 };
 
 eval {
-	my @data;
-	my $scans = get_scans($workspace_id);
-
-	foreach my $row ( @$scans ) {
-		push (@data, {
-			'id'		=> $$row[0],
-			'name'		=> $$row[1],
-			'scanner'	=> $$row[2],
-			'parameters'	=> $$row[3],
-			'lastScan'	=> $$row[4],
-			'runs'		=> $$row[5],
-			'findCount'	=> $$row[6],
-			'targets'	=> $$row[7],
-			'workspace'	=> $$row[8],
-		});
-	}
+	my @data = ();
+	update_scan($workspace_id,$scan_id,$name,$scanner,$parameters,$targets);
+	push @data, {
+		name		=> $name,
+		scanner		=> $scanner,
+		parameters	=> $parameters,
+		targets		=> $targets,
+	};
 	print $json->pretty->encode(\@data);
 } or do {
 	bye(join "\n", $@);
@@ -55,3 +64,4 @@ sub bye($) {
 	print $json->pretty->encode([{ error => $error }]);
 	exit;
 }
+

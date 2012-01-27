@@ -15,7 +15,9 @@ New features / Issues resolved
 Workspace management tab
 * Create workspaces
 * Modify workspaces
-Add scan screen, with helptext for scanner
+Scan management tab
+* Create scans
+* Edit scans
 Developer documentation updated
 
 Bigs fixed (tickets closed):

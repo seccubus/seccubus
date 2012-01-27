@@ -22,8 +22,8 @@
 	       <li><a href="#up2date">Status</a></li>
 	       <li><a href="#findings">Findings</a></li>
 	       <li><a href="#issues">Issues</a></li>
-	       <li><a href="#scans">Manage Scans</a></li>
 	       <li><a href="#workspaces">Manage Workspaces</a></li>
+	       <li><a href="#scans">Manage Scans</a></li>
 	       <li><a href="#reports">Reports</a></li>
 	     </ul>
 	   </nav>
@@ -99,10 +99,11 @@
 	   </select>
 	 </div>
 	 <div class='main'>
-	   Scans in this workspace: <a href='javascript://' class='createScan'>Add</a>
-	   <ul id='scan_list' class="scanList">
-	     <li>list with scans will go here</li>
-	   </ul>
+	   <h1>Manage your scans below</h1>
+	   <button class='addScan'>New scan</button>
+           <table id='scan_table'>
+	   	<tr><td>Scan table goes here</td></tr>
+	   </table>
 	 </div>
        </div>
 
@@ -140,6 +141,12 @@
        <h1>Please provide the details for a new workspace</h1>
        <form id="createScan">
          Room for modal createScan
+       </form>
+     </div>
+     <div id="editScanDialog" class='hidden'>
+       <h1>Please update your scan</h1>
+       <form id="editScan">
+         Room for modal editScan
        </form>
      </div>
      <div id="modalDialog">
