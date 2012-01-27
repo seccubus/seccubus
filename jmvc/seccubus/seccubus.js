@@ -71,7 +71,7 @@ steal(
 		$('#navTab').seccubus_tabs("disable", 3);
 		$('#navTab').seccubus_tabs("hide", 3);
 		// Workspaces - tab 4
-		$('#navTab').seccubus_tabs("hide", 4);
+		//$('#navTab').seccubus_tabs("hide", 4);
 		// Reports - tab 5
 		$('#navTab').seccubus_tabs("hide", 5);
 

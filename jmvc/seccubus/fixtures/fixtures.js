@@ -23,6 +23,7 @@ steal("jquery/dom/fixture", function(){
                 }
 
 	})
+	/* Workspaces */
 	$.fixture.make("workspace", 15, function(i, workspace){
 		return {
 			id 		: i,
