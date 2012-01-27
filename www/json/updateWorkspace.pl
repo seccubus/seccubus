@@ -2,7 +2,7 @@
 # ------------------------------------------------------------------------------
 # $Id$
 # ------------------------------------------------------------------------------
-# Creates a new workspace
+# Updates the workspace passed by ID with the data passed
 # ------------------------------------------------------------------------------
 # Copyright (C) 2010  Schuberg Philis, Frank Breedijk - Under GPLv3
 # ------------------------------------------------------------------------------
@@ -31,6 +31,10 @@ if ( $overwrite eq "true" || $overwrite == 1 ) {
 }
 
 # Return an error if the required parameters were not passed 
+my $workspace_id = $query->param("id");
+if (not (defined ($workspace_id))) {
+	bye("Parameter name is missing");
+};
 my $workspace_name = $query->param("name");
 if (not (defined ($workspace_name))) {
 	bye("Parameter name is missing");
@@ -38,9 +42,8 @@ if (not (defined ($workspace_name))) {
 
 eval {
 	my @data = ();
-	my $newid = create_workspace($workspace_name);
+	edit_workspace($workspace_id, $workspace_name);
 	push @data, {
-		id	=> $newid,
 		name	=> $workspace_name
 	};
 	print $json->pretty->encode(\@data);

@@ -286,29 +286,18 @@ User must be an admin. A workspace with this name musn't exist.
 =cut 
 
 sub edit_workspace($$;) {
-	my $name = shift;
+	my $id = shift;
 	my $newname = shift;
 
-	die "No workspace name provided" unless $name;
+	die "No workspace id provided" unless $id;
 	die "No new workspace name provided" unless $newname;
 	die "You need to be an administrator to use this function" unless is_admin();
 
-	my $id = get_workspace_id($name);
-	# Verify the name passed is a valid workspace name and retrieve its' id
-	if (!$id ) {
-		die "The #name Workspace was not found.";
-	}
-	
 	# Verify the newName passed does not already exist
 	if (get_workspace_id($newname)) {
 		die "The $newname Workspace name already exists.";
 	}
 	
-	# Verify user is admin
-	if ( !is_admin() ) {
-		die "Permission denied";
-	}
-
 	my $rows = sql( "return"	=> "rows",
 			"query"	=> "UPDATE workspaces SET name = ? WHERE id = ?",
 			"values"	=> [ $newname, $id ]
