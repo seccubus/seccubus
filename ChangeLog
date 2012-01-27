@@ -12,7 +12,9 @@ xx-xx-2012 - 2.0.beta2
 ======================
 New features / Issues resolved
 ------------------------------
-Add workspace screen
+Workspace management tab
+* Create workspaces
+* Modify workspaces
 Add scan screen, with helptext for scanner
 Developer documentation updated
 
