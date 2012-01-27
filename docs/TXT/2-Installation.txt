@@ -50,7 +50,7 @@ Warning: prerequisite XML::Simple 2.18 not found. We have 2.17.
 
 # ./install.pl --wwwdir /var/www/html/
 
-* Next we have to make sure that *.pl is recognized as a CGI script” for this we need to add the following line to httpd.conf  and restart apache.
+* Next we have to make sure that *.pl “is recognized as a CGI script” for this we need to add the following line to httpd.conf  and restart apache.
 * We also need to add the ExecCGI to the options section of the /var/www/html directory
 AddHandler cgi-script .pl
 
