@@ -11,7 +11,7 @@
 %define scandir		%{installdir}/scanners
 
 Name:		Seccubus
-Version:	2.0.beta1
+Version:	2.0.beta2
 Release:	0
 Summary:	Automated regular vulnerability scanning with delta reporting
 Group:		Network/Tools
@@ -252,21 +252,31 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Nessus
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/Nessus/nivil.rb
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/Nessus/scan
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nessus/description.txt
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nessus/help.html
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Nmap
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/Nmap/scan
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nmap/description.txt
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nmap/help.html
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Nikto
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/Nikto/scan
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nikto/description.txt
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nikto/help.html
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/OpenVAS
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/OpenVAS/scan
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/OpenVAS/description.txt
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/OpenVAS/help.html
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/NessusLegacy
 %attr(644, %{seccuser}, %{seccuser}) "%{scandir}/NessusLegacy/(dot)update-nessusrc.example"
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/scan
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/update-nessusrc
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/update-rcs
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/description.txt
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/help.html
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/SeccubusV2.pm
@@ -375,7 +385,8 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/sort_both_disabled.png
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/sort_desc.png
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/sort_desc_disabled.png
-
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/closebox.png
+   
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/seccubus/json
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/ConfigTest.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/UpToDate.pl
@@ -385,6 +396,11 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/getWorkspaces.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/updateFinding.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/updateFindings.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/createScan.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/createWorkspace.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/getScanners.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/updateScan.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/updateWorkspace.pl
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/steal
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/steal/steal.production.js
@@ -394,6 +410,8 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/structure_v1.mysql
 
 %changelog
+* Fri Jan 27 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Version 2.0.beta2
 * Sat Jan 07 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Moved old GUi to oldstyle
 - New GUI is now main GUI
