@@ -10,7 +10,8 @@
 	</head>
 	<body>
 	    <h1>Seccubus.Workspace.Table Demo</h1>
-		<ul id='workspaces'></ul>
+		<form id='editws'>Edit form is here</form>
+		<table id='workspaces'></table>
 		<a href='javascript://' id='create'>Create Workspace</a>
 		<script type='text/javascript' 
                 src='../../../steal/steal.js'>
@@ -19,10 +20,17 @@
 			steal(	
 				'seccubus/fixtures',
 				'seccubus/workspace/table',
+				'seccubus/workspace/edit',
 				'seccubus/seccubus.css',
 				function(){
 				
-				$('#workspaces').seccubus_workspace_table();
+				$('#workspaces').seccubus_workspace_table({
+					onEdit : function(ws) {
+						$('#editws').seccubus_workspace_edit({
+							workspace : ws 
+						});
+					}
+				});
 
 				$('#create').click(function(){
 					new Seccubus.Models.Workspace({
@@ -32,6 +40,7 @@
 						LastScan :      "2099-09-09 09:09:09"
 					}).save();
 				})
+
 			})
 		</script>
 	</body>

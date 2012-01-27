@@ -22,7 +22,17 @@ steal(
 $.Controller('Seccubus.Workspace.Table',
 /** @Static */
 {
-	defaults : {}
+	defaults : {
+	/*
+	 	* @attribute options.onEdit
+	 	* Function that will be called when an edit link is clicked
+	 	* The funciton will received the workspace object that belongs 
+		* to the edit link as the object
+	 	*/
+		onEdit : function(ws) { 
+			alert("Error: onEdit function not set\nWorkspace id : " + ws.id);
+		}
+	}
 },
 /** @Prototype */
 {
@@ -38,6 +48,10 @@ $.Controller('Seccubus.Workspace.Table',
 		if(confirm("Are you sure you want to destroy?")){
 			el.closest('.workspace').model().destroy();
 		}
+	},
+	'.edit click' : function( el ) {
+		var ws = el.closest('.workspace').model();
+		this.options.onEdit(ws);
 	},
 	"{Seccubus.Models.Workspace} destroyed" : function(Workspace, ev, workspace) {
 		workspace.elements(this.element).remove();

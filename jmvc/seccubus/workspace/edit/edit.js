@@ -46,7 +46,8 @@ $.Controller('Seccubus.Workspace.Edit',
 	},
 	/*
 	 * This function is triggered when a form is submitted. It prevents the 
-	 * default event, and uses the form parameters to edit a new Workspace
+	 * default event, and uses the form parameters to edit a Workspace 
+	 * object
 	 * @param {Object} el 
 	 * The element that is submitted
 	 * @param {Object} ev
@@ -54,7 +55,6 @@ $.Controller('Seccubus.Workspace.Edit',
 	 */
 	submit : function(el, ev){
 		ev.preventDefault();
-		alert("submit");
 		this.element.find('[type=submit]').val('Updating...')
 		this.options.workspace.attr("name",el.formParams().name);
 		this.options.workspace.save(this.callback('saved'));

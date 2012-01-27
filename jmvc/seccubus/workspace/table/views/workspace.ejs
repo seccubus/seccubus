@@ -1,11 +1,13 @@
-<td>&nbsp;</td>
-<td><%= Name %></td>
-<td><%= ScanCount %></td>
-<td><%= LastScan %></td>
+<% %>
+<td><%= name %></td>
+<td><%= scanCount %></td>
+<td><%= findCount %></td>
+<td><%= lastScan %></td>
 <td>
-  <% if ( ScanCount != "0" ) { %>
+  <a href='javascript://' class='edit'>Edit</a>
+  <% if ( true || scanCount != "0" ) { %>
     &nbsp
   <% } else { %>
-    <a href='javascript://' class='destroy'>X</a>
+    <a href='javascript://' class='destroy'>Delete</a>
   <% } %>
 </td>
