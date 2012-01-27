@@ -40,7 +40,15 @@ echo '*************************************************************************'
 echo '*************************************************************************'
 echo Building JMVC package
 echo '*************************************************************************'
-./js seccubus/scripts/build.js|tee /tmp/test.$$
+./js seccubus/scripts/build.js 2>&1|tee /tmp/test.$$
+if [ `grep -i error /tmp/test.$$|wc -l` -ne 0 ]
+then
+	echo "Not building any further, fix your errors first"
+	mv /tmp/test.$$ ../errors.txt
+	less ../errors.txt
+	exit 1
+fi
+echo "Package built"
 
 echo '*************************************************************************'
 echo Copying files

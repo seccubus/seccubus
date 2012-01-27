@@ -29,7 +29,7 @@ $.Controller('Seccubus.Scanner.Select',
 		/* @attribute options.selected
 		 * Value of the selected option
 		 */
-		selected : "none",
+		selected : "none"
 	}
 },
 /** @Prototype */

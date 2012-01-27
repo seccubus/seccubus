@@ -13,9 +13,12 @@ $.Model('Seccubus.Models.ConfigItem',
 	/**
 	 * Finds the status of all configuration items
 	 * @return array of ConfigTest hashes ( name, result, message )
-	 * @return name - String, name of the configuration item
-	 * @return result - String, result of the test OK/NOK
-	 * @return message - String, message about the configuraiton item
+	 *
+	 * name - String, name of the configuration item
+	 *
+	 * result - String, result of the test OK/NOK
+	 *
+	 * message - String, message about the configuraiton item
 	 */
 	findAll: "json/ConfigTest.pl"
 },

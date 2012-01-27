@@ -24,7 +24,7 @@ $.Model('Seccubus.Models.Finding',
 	 * json/updateFinding.pl
 	 * @return {Object} the updated object or an error
 	 */
- 	update : "POST json/updateFinding.pl",
+ 	update : "POST json/updateFinding.pl"
   	//destroy : "/findings/{id}.json"
 },
 /* @Prototype */

@@ -14,7 +14,7 @@ $.Model('Seccubus.Models.Workspace',
   	create : "POST json/createWorkspace.pl",
 	findAll: "POST json/getWorkspaces.pl",
 	//findOne: "POST json/getWorkspace.pl",
-	update : "POST json/updateWorkspace.pl",
+	update : "POST json/updateWorkspace.pl"
 },
 /* @Prototype */
 {});

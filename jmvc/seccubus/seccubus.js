@@ -107,7 +107,7 @@ steal(
 				});
 				$('#modalDialog').widgets_modal({
 					query : "#editWorkspaceDialog",
-					close : true,
+					close : true
 				});
 			}
 		});
@@ -146,7 +146,7 @@ steal(
 		$('.addWorkspace').click(function() {
 			$('#modalDialog').widgets_modal({
 				query : "#createWorkspaceDialog",
-				close : true,
+				close : true
 			});
 		});
 
@@ -157,7 +157,7 @@ steal(
 			} else {
 				$('#modalDialog').widgets_modal({
 					query: "#createScanDialog",
-					close : true,
+					close : true
 				});
 			}
 		});
@@ -191,7 +191,7 @@ steal(
 						});
 						$('#modalDialog').widgets_modal({
 							query : "#editScanDialog",
-							close : true,
+							close : true
 						});
 					}
 				});
