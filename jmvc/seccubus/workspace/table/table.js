@@ -6,7 +6,7 @@ steal(
      )
 .then( './views/init.ejs', 
        './views/workspace.ejs', 
-	'plugins/jquery.dataTables.js',
+//	'plugins/jquery.dataTables.js',
        function($){
 
 /**
@@ -41,7 +41,7 @@ $.Controller('Seccubus.Workspace.Table',
 	    	element = this.element;
 		element.html(this.view('init', dfd));
 		dfd.success(function() {
-	        	element.children("table:first").dataTable();
+	        	//element.children("table:first").dataTable();
 		});
 	},
 	'.destroy click': function( el ){
