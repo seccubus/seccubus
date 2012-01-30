@@ -39,12 +39,12 @@ config\.xml$
 ^build_jmvc
 ^perl_ok
 ^unit_test_jmvc
+^make_
+^db\/create_empty_db$
 
 # Misc
 ^www\/tmp\/
 ^tmp\/
-^make_dist$
-^db\/create_empty_db$
 
 # Don't bundle RPM building files
 ^rmp\/
