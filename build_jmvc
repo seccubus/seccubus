@@ -31,11 +31,7 @@ then
 	exit 1
 fi
 echo No fixtures found
-
-echo '*************************************************************************'
-echo Building JMVC docs
-echo '*************************************************************************'
-./js seccubus/scripts/docs.js
+rm /tmp/test.$$
 
 echo '*************************************************************************'
 echo Building JMVC package
@@ -49,6 +45,7 @@ then
 	exit 1
 fi
 echo "Package built"
+rm /tmp/test.$$
 
 echo '*************************************************************************'
 echo Copying files
