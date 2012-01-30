@@ -41,7 +41,7 @@ echo '*************************************************************************'
 echo Building JMVC package
 echo '*************************************************************************'
 ./js seccubus/scripts/build.js 2>&1|tee /tmp/test.$$
-if [ `grep -i error /tmp/test.$$|wc -l` -ne 0 ]
+if [ `grep -i error /tmp/test.$$|grep -v error.ejs|wc -l` -ne 0 ]
 then
 	echo "Not building any further, fix your errors first"
 	mv /tmp/test.$$ ../errors.txt
