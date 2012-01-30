@@ -19,6 +19,9 @@ steal(	'steal/generate/ejs.js',
 	/**
 	 * @class DocumentJS
 	 * @parent index 3
+	 * 
+	 * @description A documentation framework.
+	 * 
      * There are several reasons why documentation is important:
      * 
      * * As apps grow, source code becomes complex and difficult to maintain.
@@ -373,7 +376,7 @@ steal(	'steal/generate/ejs.js',
 										.replace(/&#46;/g, ".")
 										.replace(/&gt;/g, "_gt_")
 										.replace(/\*/g, "_star_")
-					toJSON = this.out(obj);
+					toJSON = this.out(obj, undefined, "c");
 					new docJS.File(output + converted + ".json").save(toJSON);
 				}
 	
@@ -382,8 +385,8 @@ steal(	'steal/generate/ejs.js',
 			//print(processTime)
 		},
 		// takes an object and returns how DocumentJS likes to save data
-		out: function() {
-			return "C(" + docJS.toJSON.apply(docJS.toJSON, arguments) + ")"
+		out: function(data, how, Char) {
+			return (Char|| "C")+"(" + docJS.toJSON(data, how) + ")"
 		},
 		// tests if item is a shallow child of parent
 		shallowParent: function( item, parent ) {

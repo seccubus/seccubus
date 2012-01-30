@@ -79,10 +79,32 @@ DocumentationHelpers = {
 			if (/^["']/.test(first) ) {
 				first = first.substr(1, first.length - 2)
 			}
+			if ( /^\/\//.test(first) ) {
+				first = steal.root.join(first.substr(2))
+			}
 			var url = Doc.findOne({name: first}) || null;
+			if(!url){
+				//try again ...
+				// might start w/ jQuery
+				var convert = first;
+				if(first.indexOf('$.') == 0){
+					convert = "jQuery."+convert.substr(2);
+					url = Doc.findOne({name: convert}) || null;
+				}
+				if(!url && first.indexOf('::')){
+					url = Doc.findOne({name: convert.replace('::',".prototype.")}) || null;
+				}
+				if(!url){
+					var parts = convert.split('.')
+					parts.splice(parts.length-1,0,"static");
+					url = Doc.findOne({name: parts.join('.')}) || null;
+				}
+			}
+			
+			
 			if ( url ) {
 				if (!n ) {
-					n = dontReplace ? first : first.replace(/\.prototype|\.static/, "")
+					n = dontReplace ? first : first.replace(/\\.static/, "")
 				}
 				return  "<a href='" +$.route.url({who:  url.name }) + "'>" + n + "</a>"
 			} else if ( typeof first == 'string' && first.match(/^https?|www\.|#/) ) {
@@ -99,7 +121,6 @@ DocumentationHelpers = {
 	},
 	source : function(comment){
 		var matches = comment.src.match(/([^\/]+)\/(.+)/);
-		console.log(matches)
 		return DOCS_SRC_MAP[matches[1]]+"/blob/master/"+matches[2]+"#L"+comment.line
 	}
 }
