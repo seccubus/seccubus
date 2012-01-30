@@ -25,6 +25,7 @@ echo '*************************************************************************'
 if [ `svn status|wc -l` -ne 0 ]
 then
         echo "Something isn't checked in yet"
+        echo "Fix the error and rerun make_tarball"
         svn status
         exit 1
 fi
