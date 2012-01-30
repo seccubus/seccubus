@@ -20,7 +20,9 @@
                 src='../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
-			steal('widgets/modal',function(){
+			steal(	'widgets/modal',
+				'widgets/modal/modal.css',
+			function(){
 				
 				$('#h1').click( function() {
 					$('#modal').widgets_modal({

@@ -1,6 +1,5 @@
 steal(	'jquery/controller',
-	'jquery/view/ejs' ,
-	'./modal.css'
+	'jquery/view/ejs' 
 ).then( './views/init.ejs', 
 	function($){
 

@@ -235,3 +235,39 @@ tr.sev_3 {
 tr.sev_4 {
 	background-color: blue;
 }
+
+/* 
+ * Modal window stuff
+ */
+
+.mask {
+  position:absolute;
+  top : 0;
+  left : 0;
+  z-index:9000;
+  background-color:#000;
+  display:none;
+  opacity: 1;
+  filter:alpha(opacity:100); /* For IE8 and earlier */
+}
+
+.widgetsModalWindow {
+  position:absolute;
+  display:none;
+  z-index:9995;
+  padding:20px;
+}
+
+.widgetsModalClose {
+  position:absolute;
+  display:none;
+  z-index:9999;
+  padding:20px;
+}
+
+
+/* Customize your modal window here, you can add background image too */
+.widgetsModalWindow {
+  background-color:white;
+}
+
