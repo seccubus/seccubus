@@ -224,13 +224,13 @@ td.center {
 	text-align: center;
 }
 tr.sev_1 {
-	background-color: red;
+	background-color: #FF6666;
 }
 tr.sev_2 {
 	background-color: yellow;
 }
 tr.sev_3 {
-	background-color: green;
+	background-color: #66FF33;
 }
 tr.sev_4 {
 	background-color: blue;
