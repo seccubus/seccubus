@@ -39,7 +39,19 @@
 			</td>
 		<% } %>
 	<% } else if (columns[i] == "find") { %>
-		<td><%== this.asHTML("find") %></td>
+		<td class='finding'>
+			<% if(this.find.length > 150) { %>
+				<span class='reduced'>
+					<%== this.asHTML("find",150) %>...
+				</span>
+				<span class='full'>
+					<%== this.asHTML("find") %>
+				</span>
+				<div class='more'><a href='javascript://'>More</a></div>
+			<% } else { %>
+				<%== this.asHTML("find") %>
+			<% } %>
+		</td>
 	<% } else if (columns[i] == "remark") { %>
 		<td><%== this.asHTML("remark") %></td>
 	<% } else { %>

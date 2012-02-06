@@ -78,9 +78,12 @@ $.Model('Seccubus.Models.Finding',
 	 * - http:// to <a href=...
 	 * - CVE entries
 	 */
-	asHTML : function(property) {
+	asHTML : function(property,len) {
 		if ( this.attr(property) ) {
 			var newval = this.attr(property);
+			if ( len ) {
+				newval = newval.substr(0,len);
+			}
 			// Basic HTML encode
 			newval = $('<div/>').text(newval).html();
 			// Replace \n with <br>

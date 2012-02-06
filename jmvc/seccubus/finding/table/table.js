@@ -238,6 +238,19 @@ $.Controller('Seccubus.Finding.Table',
 		finding.attr("overwrite",1);
 		finding.save();
 	},
+	// Handle more/less link clicks
+	".more click" : function(el,ev) {
+		ev.preventDefault();
+		if ( el.text() == "More" ) {
+			el.children("a").text("Less");
+			el.parent().children(".reduced").hide();
+			el.parent().children(".full").show();
+		} else {
+			el.children("a").text("More");
+			el.parent().children(".reduced").show();
+			el.parent().children(".full").hide();
+		}
+	},
 	// Hanlde create events
 	"{Seccubus.Models.Finding} created" : function(Finding, ev, finding) {
 		alert("table created:" + finding.id);

@@ -223,6 +223,10 @@ td {
 td.center {
 	text-align: center;
 }
+td.finding {
+	max-width:800px;
+	overflow: hidden;
+}
 tr.sev_1 {
 	background-color: #FF6666;
 }
@@ -271,3 +275,11 @@ tr.sev_4 {
   background-color:white;
 }
 
+
+/* More/less trick */
+div.more {
+	text-align:right;
+}
+span.full {
+	display:none;
+}
