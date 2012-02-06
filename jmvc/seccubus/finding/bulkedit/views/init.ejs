@@ -1,5 +1,4 @@
 <% if(workspace > 0) { %>
-	Edit selected findings:<br>
 	<label for='remark'>Remark:</label><textarea name='remark' cols=80 rows=1 />
 	<label for='overwrite'>Overwrite:</label><input type='checkbox' name='overwrite'></input>
 	<input type=hidden name='status' id='bulkEditStatus' value='<%= status %>'/>
@@ -23,4 +22,9 @@
 	<% if ( status != 99 ) { %>
 		<input type=button newStatus=99 value='Set to MASKED' class='bulkSetStatus'/>
 	<% } %>
+<% } else { %>
+	<label for='remark'>Remark:</label><textarea name='remark' cols=80 rows=1 disabled=disabled />
+	<label for='overwrite'>Overwrite:</label><input type='checkbox' name='overwrite' disabled=disabled></input>
+	<input type=hidden name='status' id='bulkEditStatus' value='<%= status %>' disabled=disabled />
+	<input type=button newStatus=<%= status %> value='Update' class='bulkSetStatus' disabled=disabled />
 <% } %>
