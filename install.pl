@@ -58,10 +58,13 @@ my @dirs = qw(
 		www
 	     );
 
+# Ticket #62 - Default locations for config.xml does not include
+# /home/seccubus/etc/config.xml
 my @patches = qw(
 			SeccubusV2.pm
 			etc/config.xml.mysql.example
-			www/api/testConfig.pl
+			www/oldstuff/api/testConfig.pl
+			www/json/ConfigTest.pl
 		);
 
 $base_dir = "/home/seccubus";
