@@ -37,6 +37,7 @@ my (
 	$verbose,
 	$quiet,
 	$username,
+	$nodelete,
    );
 
 $help = 0;
@@ -53,10 +54,12 @@ GetOptions(
 		'verbose|v+'		=> \$verbose,
 		'quiet|q!'		=> \$quiet,
 		'help|h'		=> \$help,
+		'nodelete'		=> \$nodelete,
 	  );
 
 help() if $help;
 $verbose = 0 if $quiet;
+$nodelete = 0 unless $nodelete;
 
 my $config = get_config();
 my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
@@ -145,10 +148,12 @@ print "$result\n" if $verbose > 1;
 #add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.ivil.nbe", "IVIL output");
 
 # Cleanup
-unlink "$tempfile.gnmap" if -e "$tempfile.gnmap";
-unlink "$tempfile.nmap" if -e "$tempfile.nmap";
-unlink "$tempfile.xml" if -e "$tempfile.xml";
-unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+unless( $nodelete ) {
+	unlink "$tempfile.gnmap" if -e "$tempfile.gnmap";
+	unlink "$tempfile.nmap" if -e "$tempfile.nmap";
+	unlink "$tempfile.xml" if -e "$tempfile.xml";
+	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+}
 
 exit(0);
 

@@ -74,8 +74,10 @@ if ( ! $infile || ! -e $infile ) {
 };
 
 print "Reading in nmap xml file\n" if $verbose;
+# Ticket #74 - Minor bugs in nmap2ivil when using nmap 5.21
+# https://sourceforge.net/apps/trac/seccubus/ticket/74
 my $nmap = XMLin($infile,
-		   forceArray	=> [ 'host', 'osclass', 'osmatch', 'port', 'extrareasons' ],
+		   forceArray	=> [ 'host', 'osclass', 'osmatch', 'port', 'extrareasons','hostname' ],
 		   KeyAttr	=> undef,
 	          );
 
@@ -132,7 +134,16 @@ $finding = {};
 $finding->{ip} = "scaninfo";
 $finding->{port} = "generic/$nmap->{scaninfo}->{protocol}";
 $finding->{id} = "summary";
-$finding->{finding} = $nmap->{runstats}->{finished}->{summary};
+# Ticket #74 - Minor bugs in nmap2ivil when using nmap 5.21
+# https://sourceforge.net/apps/trac/seccubus/ticket/74
+if ( ref($nmap->{runstats}->{finished}->{summary}) eq "" ) {
+	$finding->{finding} = $nmap->{runstats}->{finished}->{summary};
+} else {
+	$finding->{finding} = "Scan Exection Stats\n";
+	$finding->{finding} .= "Completed : $nmap->{runstats}->{finished}->{timestr}\n";
+	$finding->{finding} .= "Duration  : $nmap->{runstats}->{finished}->{elapsed} seconds";
+}
+
 print OUT ivil_finding($finding);
 
 print "Iterating over hosts\n" if $verbose;
