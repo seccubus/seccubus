@@ -281,85 +281,7 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/SeccubusV2.pm
 
-%attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/oldstyle
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/index.html
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/index2.html
-
-%attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/oldstyle/api
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/createScan.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/createWorkspace.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/deleteWorkspace.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/doScan.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/editScan.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/editWorkspace.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/getFinding.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/getFindings.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/getScans.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/getWorkspaces.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/getfFilter.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/testConfig.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/up2date.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/updateDB.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/api/updateFindings.pl
-
-%attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/oldstyle/img
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/add.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/arrow_down.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/arrow_first.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/arrow_first_disabled.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/arrow_last.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/arrow_last_disabled.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/arrow_next.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/arrow_next_disabled.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/arrow_previous.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/arrow_previous_disabled.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/arrow_refresh.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/arrow_up.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/asc.gif
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/changed.gif
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/cross.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/date.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/delete.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/desc.gif
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/favicon.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/filter.gif
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/lightning.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/logo.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/nav.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/pencil.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/sort_asc.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/sort_asc_disabled.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/sort_both.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/sort_desc.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/sort_desc_disabled.png
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/unsort.gif
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/img/tick.png
-
-%attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/oldstyle/js
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/js/jquery.cookie.js
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/js/jquery.dataTables.min.js
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/js/jquery.disable.text.select.pack.js
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/js/jquery.js
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/js/jquery.metadata.js
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/js/jquery.single_double_click.js
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/js/jquery.tablesorter.js
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/js/jquery.tools.min.js
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/js/main.js
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/js/seccubus.js
-
-%attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/oldstyle/skins
-%attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/oldstyle/skins/default
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/skins/default/asc.gif
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/skins/default/bg.gif
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/skins/default/desc.gif
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/skins/default/header.gif
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/skins/default/style.css
-
-%attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/oldstyle/style
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/style/layout.css
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/oldstyle/style/seccubus.css
-
-# New GUI
+# GUI
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/index.html
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/seccubus
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/production.js
@@ -410,6 +332,8 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/structure_v1.mysql
 
 %changelog
+* Fri Feb 24 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Removed oldstyle gui
 * Fri Jan 27 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Version 2.0.beta2
 * Sat Jan 07 2012 Frank Breedijk <fbreedijk@schubergphilis.com>

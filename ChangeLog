@@ -17,6 +17,7 @@ New features / Issues resolved
   the finding, causing the findigns table to generally dispaly more compact.
 * Clarified the purpose of status buttons, filters and bul update form in GUI.
 * Added the capability to filter on severity, finding text and remark text
+* Removed www/oldstyle GUI
 
 Bigs fixed (tickets closed):
 ----------------------------
