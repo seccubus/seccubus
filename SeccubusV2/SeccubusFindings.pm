@@ -316,7 +316,7 @@ sub update_finding(@) {
 			if ( $arg{overwrite} ) {
 				$query .= ", remark = ? ";
 			} else {
-				$query .= ", remark = CONCAT(remark, '\n', ?) ";
+				$query .= ", remark = CONCAT_WS('\n', remark, ?) ";
 			}
 			push @values, $arg{remark};
 		}

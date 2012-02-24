@@ -51,6 +51,7 @@ $.Controller('Seccubus.Finding.Bulkedit',
 	 */
 	submit : function(el, ev) {
 		ev.preventDefault();
+		var params = this.element.formParams();
 		this.bulkUpdate();
 	},
 	// Handles clicks on the save button
@@ -59,6 +60,7 @@ $.Controller('Seccubus.Finding.Bulkedit',
 		$(el).val("Saving...");
 		var newStatus = $(el).attr("newStatus");
 		$('#bulkEditStatus').val(newStatus);
+		var params = this.element.formParams();
 		this.bulkUpdate();
 	},
 	/*
@@ -78,9 +80,6 @@ $.Controller('Seccubus.Finding.Bulkedit',
 		this.element.find('[type=submit]').val('Update');
 		this.element[0].reset();
 		this.updateView();
-	},
-	"{Seccubus.Model.GuiState} updated" : function(state, event, task) {
-		alert(state, event, task);
 	},
 	/*
 	 * This function updates the view

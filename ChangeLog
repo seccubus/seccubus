@@ -25,6 +25,8 @@ https://sourceforge.net/apps/trac/seccubus/ticket/62
 https://sourceforge.net/apps/trac/seccubus/ticket/67
 71 - Scan result should "window shade" in the UI to hide lengthy text
 https://sourceforge.net/apps/trac/seccubus/ticket/71
+75 - Bulk update: Comments only get added when you select overwrite
+https://sourceforge.net/apps/trac/seccubus/ticket/75
 
 17-01-2012 - 2.0.beta2
 ======================
