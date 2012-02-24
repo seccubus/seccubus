@@ -119,7 +119,8 @@ print "$result\n" if $verbose > 1;
 
 my $pol_id = "";
 foreach my $line ( split /\n/, $result ) {
-	my ($id, $name) = split /\s+/, $line;
+	$line =~ /^(\S+)\s+(.*)$/;
+	my ($id, $name) = ($1, $2);
 	if ( $name eq $policy ) {
 		$pol_id = $id;
 		last;
