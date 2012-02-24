@@ -62,6 +62,21 @@ $.Controller('Seccubus.Finding.Filter',
 		 */
 		plugin		: "*",
 		/*
+		 * @attribute options.severity
+		 * Value of the severity filter
+		 */
+		severity	: "*",
+		/*
+		 * @attribute options.finding
+		 * Value of the finding filter
+		 */
+		finding		: "",
+		/*
+		 * @attribute options.remark
+		 * Value of the remark filter
+		 */
+		remark		: "",
+		/*
 		 * @attribute options.onChange
 		 * Function to be executed when the filter changes
 		 */
@@ -85,11 +100,17 @@ $.Controller('Seccubus.Finding.Filter',
 		this.options.hostName = "*";
 		this.options.port = "*";
 		this.options.plugin = "*";
+		this.options.severity = "*";
+		this.options.finding = "";
+		this.options.remark = "";
 		this.options.onChange({
 			host		: this.options.host,
 			hostName	: this.options.hostName,
 			port		: this.options.port,
-			plugin		: this.options.plugin
+			plugin		: this.options.plugin,
+			serverity	: this.options.severity,
+			finding		: this.options.finding,
+			remark		: this.options.remark
 		});
 		if ( this.options.updateOnChange ) {
 			this.updateView();
@@ -101,7 +122,10 @@ $.Controller('Seccubus.Finding.Filter',
 			host		: this.options.host,
 			hostName	: this.options.hostName,
 			port		: this.options.port,
-			plugin		: this.options.plugin
+			plugin		: this.options.plugin,
+			severity	: this.options.severity,
+			finding		: this.options.finding,
+			remark		: this.options.remark
 		});
 		if ( this.options.updateOnChange ) {
 			this.updateView();
@@ -129,7 +153,10 @@ $.Controller('Seccubus.Finding.Filter',
 						fHost : this.options.host,
 						fHostName : this.options.hostName,
 						fPort : this.options.port,
-						fPlugin : this.options.plugin
+						fPlugin : this.options.plugin,
+						fSeverity : this.options.severity,
+						fFinding : this.options.finding,
+						fRemark : this.options.remark
 					}
 				)
 			);

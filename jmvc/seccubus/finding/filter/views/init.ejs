@@ -10,6 +10,8 @@
 	ports["*"] = 0;
 	var plugins= {};
 	plugins["*"] = 0;
+	var severitys= {};
+	severitys["*"] = 0;
 
 	for ( var i = 0; i < this.length ; i++ ) { 
 		if(this[i].isMatch({ 			// Only consider stuff in scans
@@ -27,12 +29,18 @@
 			if ( typeof plugins[this[i].plugin] == 'undefined' ) {
 				plugins[this[i].plugin] = 0;
 			}
+			if ( typeof severitys[this[i].severity] == 'undefined' ) {
+				severitys[this[i].severity] = 0;
+			}
 			if(this[i].isMatch({ 
 				status : fStatus,
 				host : fHost,
 				hostName : fHostName,
 				port : fPort,
-				plugin : fPlugin
+				plugin : fPlugin,
+				severity : fSeverity,
+				finding : fFinding,
+				remark : fRemark
 			})) { 
 				hosts[this[i].host]++; 
 				hosts["*"]++;
@@ -42,6 +50,8 @@
 				ports["*"]++;
 				plugins[this[i].plugin]++;
 				plugins["*"]++;
+				severitys[this[i].severity]++;
+				severitys["*"]++;
 			} 
 		}
 	} 
@@ -82,7 +92,14 @@
 	for(var i in plugins) {
 		pluginList.push(i);
 	}
-	pluginList.sort(); %>
+	pluginList.sort(); 
+
+	severityList = [];
+	for(var i in severitys) {
+		severityList.push(i);
+	}
+	severityList.sort(); 
+%>
 
 	Host:
 	<select filter='host' class='filter hostFilter'>
@@ -192,5 +209,35 @@
 			<% } %>
 		<% } %>
 	</select>
+	
+	Severity:
+	<select filter='severity' class='filter severityFilter'>
+		<% for(var i=0;i<severityList.length;i++) { %>
+			<% if(severitys[severityList[i]] > 0) { %>
+				<option 
+					value='<%= severityList[i] %>'
+					<% if (severityList[i] == fSeverity) { %> selected <% } %>
+				>
+					<%= severityList[i] %> (<%= severitys[severityList[i]] %>)
+				</option>
+			<% } %>
+		<% } %>
+		<option disabled=true>-----</option>
+		<% for(var i=0;i<severityList.length;i++) { %>
+			<% if(severitys[severityList[i]] == 0) { %>
+				<option 
+					value='<%= severityList[i] %>'
+					<% if (severityList[i] == fSeverity) { %> selected <% } %>
+				>
+					<%= severityList[i] %> (?)
+				</option>
+			<% } %>
+		<% } %>
+	</select>
+
+	Finding: <input type='text' filter='finding' class='filter findingFilter' value='<%= fFinding %>'>
+
+	Remark: <input type='text' filter='remark' class='filter remarkFilter' value='<%= fRemark %>'>
+
 	<a href='javascript://' class='clearFilter'>Clear</a>
 <% } %>

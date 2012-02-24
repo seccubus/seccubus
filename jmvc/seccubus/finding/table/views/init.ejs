@@ -26,7 +26,10 @@
 				host		: fHost,
 				hostName	: fHostName,
 				port		: fPort,
-				plugin		: fPlugin
+				plugin		: fPlugin,
+				severity	: fSeverity,
+				finding		: fFinding,
+				remark		: fRemark
 			})) { %>
 				<tr <%= this[i] %> class='sev_<%= this[i].severity %>'>
 					<%== $.View('//seccubus/finding/table/views/finding.ejs', 

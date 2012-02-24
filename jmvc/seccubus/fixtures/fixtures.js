@@ -79,7 +79,7 @@ steal("jquery/dom/fixture", function(){
 	var remarks = ["Fix it", "Disable it", "Remove it","","","Duh..."];
 	var severity = ["Not set","High", "Medium", "Low", "Note"];
 	var status = ["New","Changed", "Open", "No issue", "Gone", "Closed", "MASKED"][status_id];
-	for(var i = 0;i < noFindings;i++) {
+	for(var i = 0;i < findCount;i++) {
 		var severity_id = $.fixture.rand(5);
 		var status_id = $.fixture.rand(7);
 		status_id = [1,2,3,4,5,6,99][status_id];

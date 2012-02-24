@@ -55,6 +55,21 @@ $.Controller('Seccubus.Finding.Status',
 	 	 */
 		plugin		: "*",
 		/*
+	 	 * @attribute options.severity
+		 * The current severity filter
+	 	 */
+		severity	: "*",
+		/*
+	 	 * @attribute options.finding
+		 * The current finding filter
+	 	 */
+		finding		: "",
+		/*
+	 	 * @attribute options.remark
+		 * The current remark filter
+	 	 */
+		remark		: "",
+		/*
 	 	 * @attribute options.onClick
 		 * Function to be execute on clicking one of the buttons
 	 	 */
@@ -109,7 +124,10 @@ $.Controller('Seccubus.Finding.Status',
 						fHost		: this.options.host,
 						fHostName	: this.options.hostName,
 						fPort		: this.options.port,
-						fPlugin		: this.options.plugin
+						fPlugin		: this.options.plugin,
+						fSeverity	: this.options.severity,
+						fFinding	: this.options.finding,
+						fRemark		: this.options.remark
 					}
 				)
 			);

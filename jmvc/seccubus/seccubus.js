@@ -60,6 +60,18 @@ steal(
 			render_status();
 			render_findings();
 		});
+		gui_state.bind("severity", function(ev, scan){
+			render_status();
+			render_findings();
+		});
+		gui_state.bind("finding", function(ev, scan){
+			render_status();
+			render_findings();
+		});
+		gui_state.bind("remark", function(ev, scan){
+			render_status();
+			render_findings();
+		});
 
 		/***********************************************************
 		 * Setup the screen
@@ -214,7 +226,10 @@ steal(
 				host		: gui_state.host,
 				hostName	: gui_state.hostName,
 				port		: gui_state.port,
-				plugin		: gui_state.plugin
+				plugin		: gui_state.plugin,
+				severity	: gui_state.severity,
+				finding		: gui_state.finding,
+				remark		: gui_state.remark
 			});
 		};
 
@@ -227,6 +242,9 @@ steal(
 				hostName	: gui_state.hostName,
 				port		: gui_state.port,
 				plugin		: gui_state.plugin,
+				severity	: gui_state.severity,
+				finding		: gui_state.finding,
+				remark		: gui_state.remark,
 				onClick		: function(s){
 					gui_state.attr("findStatus",s);
 				},
@@ -242,6 +260,9 @@ steal(
 				hostName	: gui_state.hostName,
 				port		: gui_state.port,
 				plugin		: gui_state.plugin,
+				severity	: gui_state.severity,
+				finding		: gui_state.finding,
+				remark		: gui_state.remark,
 				onChange	: function(f) {
 					for(var a in f) {
 						gui_state.attr(a,f[a]);

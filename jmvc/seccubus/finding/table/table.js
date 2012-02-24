@@ -57,6 +57,21 @@ $.Controller('Seccubus.Finding.Table',
 		 */
 		plugin		: "*",
 		/*
+		 * @attribute options.severity
+		 * The current severity filter
+		 */
+		severity		: "*",
+		/*
+		 * @attribute options.finding
+		 * The current finding filter
+		 */
+		finding		: "",
+		/*
+		 * @attribute options.remark
+		 * The current remark filter
+		 */
+		remark		: "",
+		/*
 		 * @attribute options.orderBy
 		 * By what attribute the table is sorted by
 		 */
@@ -151,6 +166,9 @@ $.Controller('Seccubus.Finding.Table',
 						fHostName	: this.options.hostName,
 						fPort		: this.options.port,
 						fPlugin		: this.options.plugin,
+						fSeverity	: this.options.severity,
+						fFinding	: this.options.finding,
+						fRemark		: this.options.remark,
 						orderBy		: this.options.orderBy,
 						descending	: this.options.descending,
 						fn		: this.sortFunc(this.options.orderBy,this.options.descending),

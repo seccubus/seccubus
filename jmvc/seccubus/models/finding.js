@@ -68,6 +68,21 @@ $.Model('Seccubus.Models.Finding',
 		if ( match && typeof filter.plugin != "undefined" && filter.plugin != "*" ) {
 			match = ( this.plugin == filter.plugin );
 		}
+		if ( match && typeof filter.severity != "undefined" && filter.severity != "*" ) {
+			match = ( this.severity == filter.severity );
+		}
+		if ( match && typeof filter.finding != "undefined" && filter.finding != "" ) {
+			var re = new RegExp(filter.finding,"i");
+			match = ! ( this.find.match(re) == null );
+		}
+		if ( match && typeof filter.remark != "undefined" && filter.remark != "" ) {
+			if ( this.remark == null ) {
+				match = false;
+			} else {
+				var re = new RegExp(filter.remark,"i");
+				match = ! ( this.remark.match(re) == null );
+			}
+		}
 		return match;
 	},
 	/*
