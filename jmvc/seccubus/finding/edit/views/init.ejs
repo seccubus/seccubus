@@ -1,0 +1,75 @@
+<% %>
+<table>
+	<tr><td align=left>
+		<% if ( index > 0 ) { %>
+			<div align=left>
+				<a href='javascript://' index=0 class='move'><img src='img/first.png'></a>
+				<a href='javascript://' index=<%= index-1 %> class='move'><img src='img/previous.png'></a>
+			</div>
+		<% } %>
+	</td><td align=right>
+		<% if ( index < length-1 ) { %>
+			<div align=right>
+				<a href='javascript://' index=<%= 1+parseInt(index) %> class='move'><img src='img/next.png'></a>
+				<a href='javascript://' index=<%= length-1 %> class='move'><img src='img/last.png'></a>
+			</div>
+		<% } %>
+	</td></tr>
+	<tr><td>
+		IP :
+	</td><td>
+		<%= host %>
+	</td></tr>
+	<tr><td>
+		Hostname :
+	</td><td>
+		<%= hostName %>
+	</td></tr>
+	<tr><td>
+		Port :
+	</td><td>
+		<%= port %>
+	<tr><td>
+		Plugin :
+	</td><td>
+		<%= plugin %>
+	</td></tr>
+	<tr><td>
+		Severity :
+	</td><td>
+		<%= severity %> - <%= severityName %>
+	</td></tr>
+	<tr><td>
+		Finding :
+	</td><td class='finding'>
+		<%== this.asHTML("find") %>
+	</td></tr>
+	<tr><td>
+		<label for='remark'>Remark :</label>
+	</td><td>
+		<textarea name='remark' cols=80 rows=5><%= remark %></textarea>
+	</td></tr>
+	<tr><td>
+		Status :
+	</td><td>
+		<%= statusName %>
+	</td></tr>
+	<tr><td colspan=2>
+		<input type=button newStatus=<%= status %> value='Update' class='editSetStatus'/>
+		<% if ( status == 99 ) { %>
+			 <input type=button newStatus=1 value='Set to New' class='editSetStatus'/>
+		<% } %>
+		<% if ( status <= 2 || status == 4 ) { %>
+			<input type=button newStatus=3 value='Set to Open' class='editSetStatus'/>
+		<% } %>
+		<% if ( status <= 3 ) { %>
+			<input type=button newStatus=4 value='Set to No Issue' class='editSetStatus'/>
+		<% } %>
+		<% if ( status == 6 ) { %>
+			<input type=button newStatus=5 value='Set to Gone' class='editSetStatus'/>
+		<% } %>
+		<% if ( status == 5 ) { %>
+			<input type=button newStatus=99 value='Set to MASKED' class='editSetStatus'/>
+		<% } %>
+	</td></tr>
+</table>

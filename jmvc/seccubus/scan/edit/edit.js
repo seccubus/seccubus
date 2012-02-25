@@ -13,10 +13,6 @@ steal(	'jquery/controller',
  * @inherits jQuery.Controller
  * Generates a dialog to edit a scan
  *
- * Warning
- * =======
- * This code is unfished
- *
  * Story
  * -----
  * As a user I would like to be able to edit scans from the GUI

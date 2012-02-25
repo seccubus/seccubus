@@ -1,6 +1,6 @@
 steal(
 	'./seccubus.css', 			// application CSS file
-	//'./fixtures/fixtures.js',		// sets up fixtures for your models
+	'./fixtures/fixtures.js',		// sets up fixtures for your models
 	'./models/models.js',			// steals all your models
 	'seccubus/tabs',
 	'seccubus/up_to_date/list',
@@ -10,7 +10,6 @@ steal(
 	'seccubus/workspace/table',
 	'seccubus/workspace/edit',
 	'seccubus/scan/select',
-	'seccubus/scan/list',
 	'seccubus/scan/create',
 	'seccubus/scan/table',
 	'seccubus/scan/edit',

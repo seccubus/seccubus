@@ -90,7 +90,7 @@ $.Controller('Seccubus.Finding.Table',
 		 */
 		columns		: [ 	"", "select",
 					"host", "IP", 
-					"hostNmae", "HostName", 
+					"hostName", "HostName", 
 					"port", "Port", 
 					"plugin", "Plugin", 
 					"severity", "Severity", 
@@ -115,7 +115,15 @@ $.Controller('Seccubus.Finding.Table',
 					 * findings are checked
 					 */
 					"all" : false
-				  }
+				  },
+		/*
+		 * @attribute options.onEdit
+		 * Function that is called when an attribute's edit link is 
+		 * clicked
+		 */
+		onEdit		:  function(find) {
+			alert("Options.onEdit function is not set");
+		}
 	}
 },
 /** @Prototype */
@@ -244,7 +252,9 @@ $.Controller('Seccubus.Finding.Table',
 	},
 	// Handle edit clicks
 	".editFinding click" : function(el,ev) {
-		alert("Editing is not (yet) implemented");
+		ev.preventDefault();
+		var find = el.closest('.finding').model();
+		this.options.onEdit(find);
 	},
 	// Handle state change click by updating the finding in question via the
 	// model
@@ -271,7 +281,7 @@ $.Controller('Seccubus.Finding.Table',
 	},
 	// Hanlde create events
 	"{Seccubus.Models.Finding} created" : function(Finding, ev, finding) {
-		alert("table created:" + finding.id);
+		alert("finding created:" + finding.id);
 	},
 	// Handle update events by redrawing the view
 	"{Seccubus.Models.Finding} updated" : function(Finding, ev, finding) {
