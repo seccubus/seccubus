@@ -1,13 +1,13 @@
 <% %>
-<table>
-	<tr><td align=left>
+<table class='noborder'>
+	<tr><td class='noborder' align=left>
 		<% if ( index > 0 ) { %>
 			<div align=left>
 				<a href='javascript://' index=0 class='move'><img src='img/first.png'></a>
 				<a href='javascript://' index=<%= index-1 %> class='move'><img src='img/previous.png'></a>
 			</div>
 		<% } %>
-	</td><td align=right>
+	</td><td class='noborder' align=right>
 		<% if ( index < length-1 ) { %>
 			<div align=right>
 				<a href='javascript://' index=<%= 1+parseInt(index) %> class='move'><img src='img/next.png'></a>
@@ -15,46 +15,47 @@
 			</div>
 		<% } %>
 	</td></tr>
-	<tr><td>
+	<tr><td class='noborder'>
 		IP :
-	</td><td>
+	</td><td class='noborder'>
 		<%= host %>
 	</td></tr>
-	<tr><td>
+	<tr><td class='noborder'>
 		Hostname :
-	</td><td>
+	</td><td class='noborder'>
 		<%= hostName %>
 	</td></tr>
-	<tr><td>
+	<tr><td class='noborder'>
 		Port :
-	</td><td>
+	</td><td class='noborder'>
 		<%= port %>
-	<tr><td>
+	</td></tr>
+	<tr><td class='noborder'>
 		Plugin :
-	</td><td>
+	</td><td class='noborder'>
 		<%= plugin %>
 	</td></tr>
-	<tr><td>
+	<tr><td class='noborder'>
 		Severity :
-	</td><td>
+	</td><td class='noborder'>
 		<%= severity %> - <%= severityName %>
 	</td></tr>
-	<tr><td>
+	<tr><td class='noborder'>
 		Finding :
-	</td><td class='finding'>
+	</td><td class='noborder finding'>
 		<%== this.asHTML("find") %>
 	</td></tr>
-	<tr><td>
+	<tr><td class='noborder'>
 		<label for='remark'>Remark :</label>
-	</td><td>
+	</td><td class='noborder'>
 		<textarea name='remark' cols=80 rows=5><%= remark %></textarea>
 	</td></tr>
-	<tr><td>
+	<tr><td class='noborder'>
 		Status :
-	</td><td>
+	</td><td class='noborder'>
 		<%= statusName %>
 	</td></tr>
-	<tr><td colspan=2>
+	<tr><td class='noborder' colspan=2>
 		<input type=button newStatus=<%= status %> value='Update' class='editSetStatus'/>
 		<% if ( status == 99 ) { %>
 			 <input type=button newStatus=1 value='Set to New' class='editSetStatus'/>
@@ -69,7 +70,11 @@
 			<input type=button newStatus=5 value='Set to Gone' class='editSetStatus'/>
 		<% } %>
 		<% if ( status == 5 ) { %>
+			<input type=button newStatus=6 value='Set to Close' class='editSetStatus'/>
+		<% } %>
+		<% if ( status != 99 ) { %>
 			<input type=button newStatus=99 value='Set to MASKED' class='editSetStatus'/>
 		<% } %>
+			
 	</td></tr>
 </table>

@@ -1,6 +1,6 @@
 steal(
 	'./seccubus.css', 			// application CSS file
-	'./fixtures/fixtures.js',		// sets up fixtures for your models
+	//'./fixtures/fixtures.js',		// sets up fixtures for your models
 	'./models/models.js',			// steals all your models
 	'seccubus/tabs',
 	'seccubus/up_to_date/list',
@@ -17,6 +17,7 @@ steal(
 	'seccubus/finding/status',
 	'seccubus/finding/filter',
 	'seccubus/finding/bulkedit',
+	'seccubus/finding/edit',
 	'widgets/modal',
 	function(){					// configure your application
 		/***********************************************************
@@ -228,7 +229,25 @@ steal(
 				plugin		: gui_state.plugin,
 				severity	: gui_state.severity,
 				finding		: gui_state.finding,
-				remark		: gui_state.remark
+				remark		: gui_state.remark,
+				onEdit		: function(find) {
+					var findings = $(".finding").models();
+					var n = 0;
+					while(n < findings.length && findings[n].id != find.id) {
+						n++;
+					}
+					if(n < findings.length) {
+						$('#editFinding').seccubus_finding_edit({
+							findings : findings,
+							index	 : n,
+							workspace: gui_state.workspace
+						});
+						$('#modalDialog').widgets_modal({
+							query : "#editFindingDialog",
+							close : true
+						});
+					}
+				}
 			});
 		};
 
