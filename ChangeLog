@@ -13,6 +13,7 @@ xx-xx-2012 - 2.0.beta3
 New features / Issues resolved
 ------------------------------
 * Nessus5 tested and found compatilble
+* Findings can now be opened and edited individually
 * Long(ish) findings now render with a more link that allows you to expand the
   the finding, causing the findigns table to generally dispaly more compact.
 * Clarified the purpose of status buttons, filters and bul update form in GUI.
