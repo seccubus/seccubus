@@ -3,27 +3,27 @@
 	<% if (columns[i] == "") { %>
 		<% if(columns[i+1] == "Action") { %>
 			<td>
-				<a href='javascript://' class='editFinding'>Edit</a><br>
-				<div>
+				<a href='javascript://' class='editFinding'>
+					<img src='img/edit.png'>
+				</a><br>
 				<% if (state == 99 ) { %>
-					<a href='javascript://' value='1' class='small changeState'>New</a>
+					<a href='javascript://' value='1' class='small changeState'><img src='img/new.png'></a><br>
 				<% } %>
 				<% if (state <= 2 || state == 4 ) { %>
-					<a href='javascript://' value='3' class='small changeState'>Open</a>
+					<a href='javascript://' value='3' class='small changeState'><img src='img/open.png'></a><br>
 				<% } %>
 				<% if (state < 4 ) { %>
-					<a href='javascript://' value='4' class='small changeState'>No&nbsp;issue</a>
+					<a href='javascript://' value='4' class='small changeState'><img src='img/noissue.png'></a><br>
 				<% } %>
 				<% if (state == 6 ) { %>
-					<a href='javascript://' value='5' class='small changeState'>Gone</a>
+					<a href='javascript://' value='5' class='small changeState'><img src='img/gone.png'></a><br>
 				<% } %>
 				<% if (state == 5 ) { %>
-					<a href='javascript://' value='6' class='small changeState'>Close</a>
+					<a href='javascript://' value='6' class='small changeState'><img src='img/closed.png'></a><br>
 				<% } %>
 				<% if (state != 99 ) { %>
-					<a href='javascript://' value='99' class='small changeState'>MASK</a>
+					<a href='javascript://' value='99' class='small changeState'><img src='img/masked.png'></a><br>
 				<% } %>
-				</div>
 			</td>
 		<% } else if (columns[i+1] == "select") { %>
 			<td class='center'>

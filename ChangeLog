@@ -8,8 +8,9 @@ If you are looking for stable code you might want to use the V1 branch of this
 project, but be aware that it only supports Nessus with a professional feed
 and is not longer under active development.
 
-xx-xx-2012 - 2.0.beta3
-======================
+14-3-2012 - 2.0.beta3 (a.k.a. the Blackhat edition)
+==================================================
+
 New features / Issues resolved
 ------------------------------
 * Nessus5 tested and found compatilble
@@ -18,8 +19,10 @@ New features / Issues resolved
   the finding, causing the findigns table to generally dispaly more compact.
 * Clarified the purpose of status buttons, filters and bul update form in GUI.
 * Added the capability to filter on severity, finding text and remark text
+* Restyled status buttons and edit button
 * Removed www/oldstyle GUI
 * Removed Seccubus.Scan.List
+
 
 Bigs fixed (tickets closed):
 ----------------------------
