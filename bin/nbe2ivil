@@ -116,6 +116,17 @@ while (<IN>) {
 		$finding{id} = $id;
 		# If we have no finding id, we are dealing with a portscanner
 		$finding{id} = "portscan" unless $finding{id};
+
+		# Bug #60 - Not all items from a Nikto scan appear to create a 
+		# finding in Seccubus
+		if ( $scanner =~ /^nikto$/i ) {
+			# In nikto the same plugin can trigger multiple times on
+			# different directories
+			if( $finding =~ /(\/[\w\/\-]+)\:/ ) {
+				$finding{id} .= " $1";
+			}
+		}
+
 		$finding{severity} = $sev{$severity};
 		# Severity is 0 unless we are able to find one
 		$finding{severity} = 0 unless $finding{severity};

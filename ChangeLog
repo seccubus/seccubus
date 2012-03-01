@@ -27,6 +27,8 @@ New features / Issues resolved
 
 Bigs fixed (tickets closed):
 ----------------------------
+60 - Not all items from a Nikto scan appear to create a finding in Seccubus
+https://sourceforge.net/apps/trac/seccubus/ticket/60
 62 - Default locations for config.xml does not include ~seccubus/etc/config.xml
 https://sourceforge.net/apps/trac/seccubus/ticket/62
 67 - Links in top right of UI do nothing

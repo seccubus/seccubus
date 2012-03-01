@@ -32,6 +32,7 @@ my (
 	$hosts_file,
 	$workspace,
 	$scan,
+	$nodelete,
 	$help,
 	$verbose,
 	$quiet,
@@ -47,6 +48,7 @@ GetOptions(
 		'hosts=s'		=> \$hosts_file,
 		'workspace=s'		=> \$workspace,
 		'scan=s'		=> \$scan,
+		'nodelete'		=> \$nodelete,
 		'verbose|v+'		=> \$verbose,
 		'quiet|q!'		=> \$quiet,
 		'help|h'		=> \$help,
@@ -128,9 +130,11 @@ print "Scan imported, adding files to scan $scan in workspace $workspace\n" unle
 #add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.ivil.nbe", "IVIL output");
 
 # Cleanup
-unlink "$tempfile" if -e "$tempfile";
-unlink "$tempfile.nbe" if -e "$tempfile.nbe";
-unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+unless ( $nodelete ) {
+	unlink "$tempfile" if -e "$tempfile";
+	unlink "$tempfile.nbe" if -e "$tempfile.nbe";
+	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+}
 
 exit(0);
 
@@ -152,6 +156,7 @@ Arguments:
 --workspace	- Name of the workspace to load the findings into
 --scan		- Name of the scan to load the findings into
 --verbose (-v)	- Be verbose during execution
+--nodelete	- Don't delete temporary files
 --quiet (-q)	- Don't print output
 --help (-h)	- Print this message
 ";
