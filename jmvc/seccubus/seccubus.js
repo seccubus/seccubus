@@ -1,6 +1,6 @@
 steal(
 	'./seccubus.css', 			// application CSS file
-	'./fixtures/fixtures.js',		// sets up fixtures for your models
+	//'./fixtures/fixtures.js',		// sets up fixtures for your models
 	'./models/models.js',			// steals all your models
 	'seccubus/tabs',
 	'seccubus/up_to_date/list',
@@ -18,6 +18,7 @@ steal(
 	'seccubus/finding/filter',
 	'seccubus/finding/bulkedit',
 	'seccubus/finding/edit',
+	'seccubus/history/table',
 	'widgets/modal',
 	function(){					// configure your application
 		/***********************************************************
@@ -240,7 +241,8 @@ steal(
 						$('#editFinding').seccubus_finding_edit({
 							findings : findings,
 							index	 : n,
-							workspace: gui_state.workspace
+							workspace: gui_state.workspace,
+							history	 : '#findingHistory'
 						});
 						$('#modalDialog').widgets_modal({
 							query : "#editFindingDialog",

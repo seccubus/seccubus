@@ -1,5 +1,5 @@
 steal(	'jquery/controller',
-	'jquery/view/ejs' 
+	'jquery/view/ejs'
 ).then( './views/init.ejs', 
 	function($){
 
@@ -89,6 +89,7 @@ $.Controller('Widgets.Modal',
 	 * The attributes of options will be transferred to this.options
 	 */
 	open : function(options) {
+
 		for(var a in options) {
 			this.options[a] = options[a];
 		}
@@ -112,27 +113,44 @@ $.Controller('Widgets.Modal',
 		var maskHeight = $(document).height();
 		var maskWidth = $(document).width();
 		$('#widgetsModalMask').css({'width' : maskWidth,'height' : maskHeight});
+		this.reposition(id);
+
 		// Transition effect
 		$('#widgetsModalMask').fadeIn(1000);
 		$('#widgetsModalMask').fadeTo("slow",0.8);
-
-		// Position 
-		var winH = $(window).height();
-		var winW = $(window).width();
-		$(id).css('top', winH/2-$(id).height()/2);
-		$(id).css('left', winW/2-$(id).width()/2);
 
 		// Transition effect
 		$(id).fadeIn(2000);
 
 		if ( this.options.close ) {
-			var position = $(id).position();
+			$('#widgetsModalClose').fadeIn(1500);
+		}
+		this.reposition(id);
+	},
+	reposition : function(id) {
+		// Position 
+		var winH = $(window).height();
+		var winW = $(window).width();
+		var divH = parseInt($(id).css("height"));
+		var divW = parseInt($(id).css("width"));
+		if ( divH < winH ) {
+			$(id).css('top', winH/2-divH/2);
+		} else {
+			$(id).css('top', 0);
+		}
+		if( divW < winW ) {
+			$(id).css('left', winW/2-divW/2);
+		} else {
+			$(id).css('left', 0);
+		}
+		if ( this.options.close ) {
+			var top = parseInt($(id).css('top')) - parseInt($('#widgetsModalClose').css('height'));
+			var left = parseInt($(id).css('left'))+ parseInt($(id).css('width'));
 			$('#widgetsModalClose').css({
 				position	: 'absolute'
 			});
-			$('#widgetsModalClose').css('top', position.top-$('#widgetsModalClose').height());
-			$('#widgetsModalClose').css('left', position.left+$(id).width());
-			$('#widgetsModalClose').fadeIn(1500);
+			$('#widgetsModalClose').css('top', top);
+			$('#widgetsModalClose').css('left', left);
 		}
 	},
 	/*

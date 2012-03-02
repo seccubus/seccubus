@@ -151,8 +151,8 @@ sub get_findings($;$$) {
 
 =head2 get_finding
 
-This function returns a reference to an array of history of findings
-(id, host, hostname, port, plugin, findingl, remark, severity, status, status_txt)
+This function returns a reference to an array of changes of findings
+(id, finding.id, host, hostname, port, plugin, finding, remark, severity, severity_name, status, status_txt, user_id, username, time, runtime)
 
 =over 2
 
@@ -201,7 +201,7 @@ sub get_finding($$;) {
 				finding_changes.severity = severity.id AND
 				finding_changes.status = finding_status.id AND
 				runs.id = finding_changes.run_id 
-			ORDER BY finding_changes.time
+			ORDER BY finding_changes.time DESC
 			";
 
 

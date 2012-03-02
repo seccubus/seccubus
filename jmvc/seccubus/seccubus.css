@@ -14,6 +14,9 @@
 .hidden {
 	display: none;
 }
+.wide {
+	width : 80%;
+}
 
 /* HTML 5 specific */
 header,section,article,aside,footer {

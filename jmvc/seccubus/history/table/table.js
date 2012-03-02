@@ -50,7 +50,7 @@ $.Controller('Seccubus.History.Table',
 	updateView : function() {
 		if ( this.options.workspace == -1 ) {
 			alert("Seccubus.History.Table: woorkspace not set");
-		} else if ( this.options.finding_id == -1 ) {
+		} else if ( this.options.findingId == -1 ) {
 			alert("Seccubus.History.Table: findingId not set");
 		} else {
 			this.element.html(

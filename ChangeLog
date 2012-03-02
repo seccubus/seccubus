@@ -15,6 +15,7 @@ New features / Issues resolved
 ------------------------------
 * Nessus5 tested and found compatilble
 * Findings can now be opened and edited individually
+* The edit finding dialog shows the change history of the finding
 * Long(ish) findings now render with a more link that allows you to expand the
   the finding, causing the findigns table to generally dispaly more compact.
 * Clarified the purpose of status buttons, filters and bul update form in GUI.
