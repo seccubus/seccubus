@@ -34,37 +34,24 @@ steal("jquery/dom/fixture", function(){
 		}
 	})
 
-	/* Scans */
-	var scanFixtures = [];
-	var noScans = $.fixture.rand(15)+8;
-	var scanners = ["Nessus", "NessusLegacy", "OpenVAS", "Nikto", "Nmap", "Unlisted scanner" ];
-	for(var i = 0;i < noScans;i++) {
-		sc = $.fixture.rand(scanners.length);
-		scanFixtures[i] = {
-			id 	: i,
-			workspace : $.fixture.rand(7)+1,
-			name	: scanners[sc] + " " + $.fixture.rand(["inside", "outside"], 1) + " " + i,
-			scanner	: scanners[sc],
-			parameters : "some params will go here",
-			targets	: $.fixture.rand(255) + "." + $.fixture.rand(255) + "." + $.fixture.rand(255) + "." + $.fixture.rand(255),
-			findCount : $.fixture.rand(255),
-			lastScan : $.fixture.rand(["", "2011-11-11 11:11:11" ],1)
+	
+	// Scanners 
+	$.fixture.make("scanner", 5, function(i, scanner){
+		var name = ["Nessus", "NessusLegacy", "Nikto", "Nmap", "OpenVAS" ];
+		var desc = [
+			"Nessus vulnerability scanner via XMLrpc", 
+			"Nessus vulnerability scanner via port 1241 interface", 
+			"Nikto web vulnerability scanner", 
+			"Nmap port scanner", 
+			"OpenVAS vulnerability scanner" 
+		];
+		return {
+			name: name[i],
+			description: desc[i],
+			help : "Helptext for " + name[i]
 		}
-	}
-
-	$.fixture("json/getScans.pl", function(orig, settings, headers) {
-		var selected = {};
-		for(var i = 0; i < scanFixtures.length;i++) {
-			if ( scanFixtures[i].workspace == orig.data.workspaceId ) {
-				if ( typeof selected[0] == "undefined" ) {
-					selected = [];
-				}
-				selected.push(scanFixtures[i]);
-			}
-		}
-		return [selected];
-	});
-
+	})
+	
 	/* Findings */
 	var findingFixtures = [];
 	var findCount = 2500;
@@ -122,20 +109,75 @@ steal("jquery/dom/fixture", function(){
 		};
 	});
 
-	// Scanners 
-	$.fixture.make("scanner", 5, function(i, scanner){
-		var name = ["Nessus", "NessusLegacy", "Nikto", "Nmap", "OpenVAS" ];
-		var desc = [
-			"Nessus vulnerability scanner via XMLrpc", 
-			"Nessus vulnerability scanner via port 1241 interface", 
-			"Nikto web vulnerability scanner", 
-			"Nmap port scanner", 
-			"OpenVAS vulnerability scanner" 
-		];
-		return {
-			name: name[i],
-			description: desc[i],
-			help : "Helptext for " + name[i]
+	/* Scans */
+	var scanFixtures = [];
+	var noScans = $.fixture.rand(15)+8;
+	var scanners = ["Nessus", "NessusLegacy", "OpenVAS", "Nikto", "Nmap", "Unlisted scanner" ];
+	for(var i = 0;i < noScans;i++) {
+		sc = $.fixture.rand(scanners.length);
+		scanFixtures[i] = {
+			id 	: i,
+			workspace : $.fixture.rand(7)+1,
+			name	: scanners[sc] + " " + $.fixture.rand(["inside", "outside"], 1) + " " + i,
+			scanner	: scanners[sc],
+			parameters : "some params will go here",
+			targets	: $.fixture.rand(255) + "." + $.fixture.rand(255) + "." + $.fixture.rand(255) + "." + $.fixture.rand(255),
+			findCount : $.fixture.rand(255),
+			lastScan : $.fixture.rand(["", "2011-11-11 11:11:11" ],1)
 		}
-	})
+	}
+
+	$.fixture("json/getScans.pl", function(orig, settings, headers) {
+		var selected = {};
+		for(var i = 0; i < scanFixtures.length;i++) {
+			if ( scanFixtures[i].workspace == orig.data.workspaceId ) {
+				if ( typeof selected[0] == "undefined" ) {
+					selected = [];
+				}
+				selected.push(scanFixtures[i]);
+			}
+		}
+		return [selected];
+	});
+	
+	// History
+	var historyFixtures = [];
+	var finds = [
+		"OSVDB-637: GET : Enumeration of users is possible by requesting ~username (responds with 'Forbidden' for users, 'not found' for non-existent users).",
+		"OSVDB-3268: GET : /icons/: Directory indexing found.",
+		"Port 22/tcp is open.\nService was identified as ssh",
+		"Port 22/tcp is open.\nService was identified as telnet",
+		"Port 80/tcp is open.\nService was identified as www",
+		"Port 80/tcp is open.\nService was identified as gopher",
+		"Remote listeners enumeration\nUsing netstat, it is possible to identify daemons listening on the remote\nport.\n\nPlugin output:\nThe Linux process '/opt/nessus/sbin/nessusd' is listening on this port.\n\nDescription:\nBy logging into the remote host and using the Linux-specific 'netstat\n-anp' command, it was possible to obtain the name of the processe\nlistening on the remote port.\n\nSolution:\nn/a\n\nSeverity: 1\n\nRisk factor: None",
+		"Service Detection\nThe remote service could be identified.\n\nPlugin output:\nA web server is running on this port.\n\nDescription:\nIt was possible to identify the remote service by its banner or by looking\nat the error message it sends when it receives an HTTP request.\n\nSolution:\nn/a\n\nSeverity: 1\n\nRisk factor: None"
+	];
+	var remarks = ["Fix it", "forget about it", "Disable it", "Enable it", "Remove it","","","Duh...", "Duh...\nNow do something about it"];
+	var severity_id = $.fixture.rand(5);
+	var severity = ["Not set","High", "Medium", "Low", "Note"];
+	var status_id = $.fixture.rand(7);
+	var status_name = ["New","Changed", "Open", "No issue", "Gone", "Closed", "MASKED"][status_id];
+	status_id = [1,2,3,4,5,6,99][status_id];
+	for(var i=0;i<10;i++) {
+		historyFixtures[i] = {
+			id: i,
+			name: i,
+			finding: $.fixture.rand( finds, 1)[0],
+			remark: $.fixture.rand( remarks, 1)[0],
+			severity: severity_id,
+			severityName: severity[severity_id],
+			status: status_id,
+			statusName: status_name,
+			user_id: 0,
+			run_id: 0,
+			time: "2012-03-" + i + " 00:00:00"
+		}
+	}
+
+	$.fixture("json/getFindingHistory.pl", function(orig, settings, headers) {
+		return [historyFixtures];
+	});
+
+	
+
 });

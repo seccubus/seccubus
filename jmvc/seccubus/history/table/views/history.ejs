@@ -1,0 +1,29 @@
+<%  %>
+<td> <%= time %></td>
+<td>
+	<% if( typeof(previous) == "undefined"  || finding != previous.finding) { %>
+		<%== asHTML(finding) %></td>
+	<% } else { %>
+		(No Change)
+	<% } %>
+<td>
+	<% if( typeof(previous) == "undefined" || remark != previous.remark) { %>
+		<b><%= remark %></b>
+	<% } else { %>
+		<%= remark %>
+	<% } %>
+</td>
+<td>
+	<% if( typeof(previous) == "undefined" ||  status != previous.status) { %>
+		<b><%= statusName %></b>
+	<% } else { %>
+		<%= statusName %>
+	<% } %>
+</td>
+<td>
+	<% if( typeof(previous) == "undefined" || severity != previous.severity) { %>
+		<b><%= severity %> - <%= severityName %></b>
+	<% } else { %>
+		<%= severity %> - <%= severityName %>
+	<% } %>
+</td>

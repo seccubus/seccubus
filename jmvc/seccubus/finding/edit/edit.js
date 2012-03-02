@@ -2,7 +2,8 @@ steal(	'jquery/controller',
 	'jquery/view/ejs',
 	'jquery/controller/view',
 	'jquery/dom/form_params',
-	'seccubus/models'
+	'seccubus/models',
+	'seccubus/history/table'
 ).then( './views/init.ejs', 
 function($){
 
@@ -34,6 +35,12 @@ $.Controller('Seccubus.Finding.Edit',
 		 * Default: 0
 		 */
 		index : 0,
+		/* @attribute options.hostory
+		 * jQuery query that defines where the history will be displayed
+		 * Default : null
+		 * If this attribute is null there will be no history displayed
+		 */
+		history : null,
 		/* @attribute options.workspace
 		 * Id of the current workspace
 		 */
@@ -62,6 +69,13 @@ $.Controller('Seccubus.Finding.Edit',
 					}
 				)
 			)
+		}
+		if ( this.options.history != null ) {
+			/* Display the finding history */
+			$(this.options.history).seccubus_history_table({
+				workspace	: this.options.workspace,
+				finding_id	: this.options.findings[this.options.index].id,
+			});
 		}
 	},
 	".editSetStatus click" : function(el,ev) {
