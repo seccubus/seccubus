@@ -27,7 +27,7 @@ CREATE TABLE `attachments` (
   `run_id` int(11) NOT NULL,
   `name` longtext NOT NULL,
   `description` longtext ,
-  `data` blob NOT NULL,
+  `data` longblob NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_attachments_runs1` (`run_id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

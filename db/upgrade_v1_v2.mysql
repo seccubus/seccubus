@@ -7,7 +7,7 @@ CREATE  TABLE IF NOT EXISTS `Seccubus`.`attachments` (
   `run_id` INT(11) NOT NULL ,
   `name` LONGTEXT NOT NULL ,
   `description` longtext,
-  `data` BLOB NOT NULL ,
+  `data` LONGBLOB NOT NULL ,
   PRIMARY KEY (`id`) ,
   KEY `fk_attachments_runs1` (`run_id` ASC) 
 ) ENGINE = InnoDB DEFAULT CHARSET = latin1;
