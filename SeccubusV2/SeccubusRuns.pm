@@ -59,7 +59,7 @@ not exist it wil be created
 
 =item attachment   - Optional, path of the file to attache
 
-=item attachment   - Optional, Description of the file
+=item description   - Optional, Description of the file
 
 =back
 
@@ -81,7 +81,7 @@ sub update_run($$$;$$) {
 	my $scan_id = shift or confess "No scan_id provided to update_run";
 	my $timestamp = shift or confess "No timestamp provided to update_run";
 	my $attachment = shift;
-	my $name = shift;
+	my $description = shift;
 
 	if ( ! $timestamp =~ /^\d\d\d\d\-\d\d\-\d\d \d\d\:\d\d\:\d\d$/ ) {
 		confess "Timestamp '$timestamp' does not have the correct format";
@@ -102,13 +102,13 @@ sub update_run($$$;$$) {
 				      );
 		} 
 		if ( $run_id && -e $attachment ) {
-			$name = $attachment unless $name;
 			open ATT, $attachment or confess "Unable to open attachment '$attachment'";
 			my @file = <ATT>; # Slurp
 			close ATT;
+			my $name = basename($attachment);
 			my $id = sql( "return"	=> "id",
-				      "query"	=> "INSERT into attachments(run_id, name, data) values (?, ?, ?);",
-				      "values"	=> [ $run_id, $name, join "", @file ]
+				      "query"	=> "INSERT into attachments(run_id, name, description, data) values (?, ?, ?);",
+				      "values"	=> [ $run_id, $name, $description, join "", @file ]
 				    );
 			@file = undef;
 		} else {

@@ -32,7 +32,7 @@ my (
 	$workspace,
 	$scanname,
 	$file,
-	$name,
+	$description,
 	$timestamp,
 	$verbose,
    );
@@ -46,7 +46,7 @@ GetOptions(	'scan|s=s'		=> \$scanname,
 		'workspace|w=s'		=> \$workspace,
 		'timestamp|t=s'		=> \$timestamp,
 		'file|f=s'		=> \$file,
-		'name|n=s'		=> \$name,
+		'descrition|d=s'	=> \$description,
 		'help|h!'		=> \$help,
 		'verbose|v!'		=> \$verbose,
 	  );
@@ -77,7 +77,7 @@ if ( $scan_id <= 0 ) {
 }
 
 print "Attaching file '$file' to scan '$scanname'\n" if $verbose;
-my $run_id = update_run($workspace_id, $scan_id, $timestamp, $file, $name);
+my $run_id = update_run($workspace_id, $scan_id, $timestamp, $file, $description);
 
 exit;
 
@@ -86,7 +86,7 @@ sub help(;$) {
 	print "$msg\n
 Usage: attach_file --workspace <workspace name> --scan <scan name> 
 		 --timestamp <YYYY-MM-DD HH:mm:ss> --file <path of file>
-		 --name <description of file>
+		 --description <description of file>
 		 [--help] [--verbose]  
 
 Arguments:
@@ -94,7 +94,8 @@ Arguments:
 --scan (-s)	- The name of the scan 
 --timestamp (-t)- Optional : Time the scan ran in the format YYYY-MM-DD HH:mm:ss
 --file (-f)	- Path of the file to attach
---name (-n)	- Descriptive name for the attachment
+--description (-d) 
+                - Discription of the attachment
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message
 ";
