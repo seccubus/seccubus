@@ -100,24 +100,25 @@ sub update_run($$$;$$) {
 			      	"query"		=> "SELECT runs.id FROM runs, scans WHERE scans.id = runs.scan_id and scans.workspace_id = ? and scans.id = ? and runs.time = ?;",
 				"values"	=> [ $workspace_id, $scan_id, $timestamp ],
 			      );
-		if ( ( ! $run_id ) and may_write($workspace_id) ) {
-			$run_id = sql ( "return"	=> "id",
-					"query"		=> "INSERT into runs (scan_id, time) values (?, ? );",
-					"values"	=> [ $scan_id, $timestamp ],
-				      );
-		} 
-		if ( $run_id && -e $attachment ) {
-			open ATT, $attachment or confess "Unable to open attachment '$attachment'";
-			my @file = <ATT>; # Slurp
-			close ATT;
-			my $name = basename($attachment);
-			my $id = sql( "return"	=> "id",
-				      "query"	=> "INSERT into attachments(run_id, name, description, data) values (?, ?, ?, ?);",
-				      "values"	=> [ $run_id, $name, $description, join "", @file ]
-				    );
-			@file = undef;
-		} else {
-			confess("Run not found or attachment doesn't exist");
+		if ( may_write($workspace_id) ) {
+			if ( ! $run_id ) {
+				$run_id = sql ( "return"	=> "id",
+						"query"		=> "INSERT into runs (scan_id, time) values (?, ? );",
+						"values"	=> [ $scan_id, $timestamp ],
+				      	      );
+			} elsif ( -e $attachment ) {
+				open ATT, $attachment or confess "Unable to open attachment '$attachment'";
+				my @file = <ATT>; # Slurp
+				close ATT;
+				my $name = basename($attachment);
+				my $id = sql( "return"	=> "id",
+				      	"query"	=> "INSERT into attachments(run_id, name, description, data) values (?, ?, ?, ?);",
+				      	"values"	=> [ $run_id, $name, $description, join "", @file ]
+				    	);
+				@file = undef;
+			} else {
+				confess("Attachment doesn't exist");
+			}
 		}
 	} else {
 		warn "You are not authorised to read workspace $workspace_id";

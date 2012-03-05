@@ -66,7 +66,7 @@ $verbose = 0 if $quiet;
 
 my $config = get_config();
 my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
-my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_file";
+my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
 
 print "Hosts file specified $hosts_file\n" if $verbose;
 if ( ! $hosts_file || ! -e $hosts_file ) {
