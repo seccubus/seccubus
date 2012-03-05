@@ -28,6 +28,7 @@ all functions within the module.
 
 use SeccubusDB;
 use SeccubusRights;
+use File::Basename;
 
 @ISA = ('Exporter');
 
@@ -107,7 +108,7 @@ sub update_run($$$;$$) {
 			close ATT;
 			my $name = basename($attachment);
 			my $id = sql( "return"	=> "id",
-				      "query"	=> "INSERT into attachments(run_id, name, description, data) values (?, ?, ?);",
+				      "query"	=> "INSERT into attachments(run_id, name, description, data) values (?, ?, ?, ?);",
 				      "values"	=> [ $run_id, $name, $description, join "", @file ]
 				    );
 			@file = undef;

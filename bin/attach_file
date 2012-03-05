@@ -46,7 +46,7 @@ GetOptions(	'scan|s=s'		=> \$scanname,
 		'workspace|w=s'		=> \$workspace,
 		'timestamp|t=s'		=> \$timestamp,
 		'file|f=s'		=> \$file,
-		'descrition|d=s'	=> \$description,
+		'description|d=s'	=> \$description,
 		'help|h!'		=> \$help,
 		'verbose|v!'		=> \$verbose,
 	  );
