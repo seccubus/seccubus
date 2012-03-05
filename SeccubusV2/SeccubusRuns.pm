@@ -34,12 +34,16 @@ use File::Basename;
 
 @EXPORT = qw ( 
 		update_run
+		get_runs
+		get_attachment
 	);
 
 use strict;
 use Carp;
 
 sub update_run($$$;$$);
+sub get_runs($$);
+sub get_attachment($$$$);
 
 =head2 update_run
 
@@ -119,6 +123,115 @@ sub update_run($$$;$$) {
 		warn "You are not authorised to read workspace $workspace_id";
 	}
 	return $run_id;
+}
+
+=head2 get_runs
+
+This function gets all data from runs 
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item workspace_id  - Manditory
+
+=item scan_id     - Manditory
+
+=back
+
+=item Returns
+
+Pointer to array of scan data
+Run_id, time, Attachment_id, attachment_name, attachment_description
+
+=item Checks
+
+Must be a reader to get the data
+
+=back
+
+=cut
+
+sub get_runs($$) {
+	my $workspace_id = shift or confess "No workspace_id provided to get_runs";
+	my $scan_id = shift or confess "No scan_id provided to get_runs";
+
+	if ( may_read($workspace_id) ) {
+		my $data = sql ( return	=> "ref",
+				 query	=> "
+				 	SELECT	runs.id, time, attachments.id, 
+						attachments.name, description
+					FROM	runs
+					LEFT JOIN attachments
+					ON	runs.id = attachments.run_id 
+					LEFT JOIN scans
+					on	runs.scan_id = scans.id
+					WHERE	runs.scan_id = scans.id AND
+						scans.workspace_id = ? AND
+						runs.scan_id = ?
+					ORDER BY runs.time DESC",
+				 values	=> [ $workspace_id, $scan_id ]
+			       );
+		return $data;
+	}
+}
+
+=head2 get_attachment
+
+This function gets and returns an attachment
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item workspace_id  - Manditory
+
+=item scan_id     - Manditory
+
+=item run_id     - Manditory
+
+=item attachment_id     - Manditory
+
+=back
+
+=item Returns
+
+Pointer to array of scan data
+blob
+
+=item Checks
+
+Must be a reader to get the data
+
+=back
+
+=cut
+
+sub get_attachment($$$$) {
+	my $workspace_id = shift or confess "No workspace_id provided to get_attachment";
+	my $scan_id = shift or confess "No scan_id provided to get_attachment";
+	my $run_id = shift or confess "No run_id provided to get_attachment";
+	my $attachment_id = shift or confess "No attachment_id provided to get_attachment";
+
+	if ( may_read($workspace_id) ) {
+		my $data = sql ( return	=> "ref",
+				 query	=> "
+				 	SELECT	attachments.name, data
+					FROM	scans,runs,attachments
+					WHERE	scans.id = runs.scan_id AND
+						runs.id = attachments.run_id AND
+						scans.workspace_id = ? AND
+						runs.scan_id = ? AND
+						runs.id = ? AND
+						attachments.id = ?",
+				 values	=> [ $workspace_id, $scan_id, $run_id, $attachment_id ]
+			       );
+		return $data;
+	}
 }
 
 # Close the PM file.

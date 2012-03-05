@@ -13,6 +13,7 @@ steal(
 	'seccubus/scan/create',
 	'seccubus/scan/table',
 	'seccubus/scan/edit',
+	'seccubus/run/table',
 	'seccubus/finding/table',
 	'seccubus/finding/status',
 	'seccubus/finding/filter',
@@ -34,12 +35,14 @@ steal(
 			render_scan_lists();
 			render_status();
 			render_findings();
+			render_runs();
 			render_create_scan();
 			render_bulkedit();
 		});
 		gui_state.bind("scans", function(ev, scan){
 			render_status();
 			render_findings();
+			render_runs();
 		});
 		gui_state.bind("findStatus", function(ev, scan){
 			render_findings();
@@ -80,14 +83,15 @@ steal(
 
 		// Tabs
 		$('#navTab').seccubus_tabs();
-		// Status - tab 0
-		// Findigns - tab 1
-		// Issues - tab 2
-		$('#navTab').seccubus_tabs("hide", 2);
-		// Manage Workspaces - tab 3
-		// Manage Scans - tab 4
-		// Reports - tab 5
-		$('#navTab').seccubus_tabs("hide", 5);
+		// Up2Date - tab 0
+		// Runs - tab 1
+		// Findigns - tab 2
+		// Issues - tab 3
+		$('#navTab').seccubus_tabs("hide", 3);
+		// Manage Workspaces - tab 4
+		// Manage Scans - tab 5
+		// Reports - tab 6
+		$('#navTab').seccubus_tabs("hide", 6);
 
 		// Initialize add buttons
 
@@ -291,12 +295,29 @@ steal(
 				updateOnChange	: false
 			});
 		};
+		function render_runs() {
+			var scan = $('#scan_selector_runs').val();
+			if ( scan == null ) {
+				scan = -1;
+			}
+			$('#run_table').seccubus_run_table({
+				workspace	: gui_state.workspace,
+				scan		: scan,
+				download	: true,
+				onDownload	: function(wId,sId,rId,aId) {
+					var url = "json/getAttachment.pl?workspaceId=" + wId.toString() + "&scanId=" + sId.toString() + "&runId=" + rId.toString() + "&attachmentId=" + aId.toString();
+					window.open(url);
+				}
+			});
+		};
+
 		function render_bulkedit() {
 			$('#finding_bulkedit').seccubus_finding_bulkedit({
 				workspace	: gui_state.workspace,
 				status		: gui_state.findStatus
 			});
 		};
+
 		function render_create_scan() {
 			$('#createScan').seccubus_scan_create({
 				workspace	: gui_state.workspace,

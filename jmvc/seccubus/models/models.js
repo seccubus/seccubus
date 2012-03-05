@@ -7,5 +7,6 @@ steal(	"jquery/model",
 	'./finding.js', 
 	'./gui_state.js', 
 	'./scanner.js', 
-	'./history.js'
+	'./history.js', 
+	'./run.js'
 )

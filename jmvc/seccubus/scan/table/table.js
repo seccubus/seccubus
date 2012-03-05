@@ -11,10 +11,6 @@ function($){
  * @class Seccubus.Scan.Table
  * @parent Scan
  * @inherits jQuery.Controller
- *
- * Warning
- * =======
- * This code isn't finished yet
  */
 $.Controller('Seccubus.Scan.Table',
 /** @Static */

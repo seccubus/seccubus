@@ -178,6 +178,11 @@ steal("jquery/dom/fixture", function(){
 		return [historyFixtures];
 	});
 
-	
-
+	// Runs
+	$.fixture.make("runs", 15, function(i, attachment){
+		return {
+			id: i,
+			time: "201201"+ ( "0" + i).substr(-2)
+		}
+	})
 });
