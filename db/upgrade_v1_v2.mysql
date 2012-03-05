@@ -6,11 +6,14 @@ CREATE  TABLE IF NOT EXISTS `Seccubus`.`attachments` (
   `id` INT(11) NOT NULL AUTO_INCREMENT ,
   `run_id` INT(11) NOT NULL ,
   `name` LONGTEXT NOT NULL ,
-  `description` longtext,
+  `description` LONGTEXT NULL DEFAULT NULL ,
   `data` LONGBLOB NOT NULL ,
-  PRIMARY KEY (`id`) ,
-  KEY `fk_attachments_runs1` (`run_id` ASC) 
-) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
+
+update config set value=2 where name = 'version';
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

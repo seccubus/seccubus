@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.1.56, for pc-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.1.61, for pc-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: Seccubus
 -- ------------------------------------------------------
--- Server version	5.1.56-log
+-- Server version	5.1.61-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -26,21 +26,11 @@ CREATE TABLE `attachments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `run_id` int(11) NOT NULL,
   `name` longtext NOT NULL,
-  `description` longtext ,
+  `description` longtext,
   `data` longblob NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_attachments_runs1` (`run_id`),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `attachments`
---
-
-LOCK TABLES `attachments` WRITE;
-/*!40000 ALTER TABLE `attachments` DISABLE KEYS */;
-/*!40000 ALTER TABLE `attachments` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `checkpoints`
@@ -56,18 +46,9 @@ CREATE TABLE `checkpoints` (
   `tags` varchar(45) DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `fk_checkpoints_workspaces1` (`workspace_id`),
+  KEY `fk_checkpoints_workspaces1` (`workspace_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `checkpoints`
---
-
-LOCK TABLES `checkpoints` WRITE;
-/*!40000 ALTER TABLE `checkpoints` DISABLE KEYS */;
-/*!40000 ALTER TABLE `checkpoints` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `config`
@@ -84,6 +65,7 @@ CREATE TABLE `config` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+--
 -- Table structure for table `finding_changes`
 --
 
@@ -93,30 +75,16 @@ DROP TABLE IF EXISTS `finding_changes`;
 CREATE TABLE `finding_changes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `finding_id` int(11) NOT NULL,
-  `finding` longtext ,
-  `remark` longtext ,
+  `finding` longtext CHARACTER SET utf8,
+  `remark` longtext CHARACTER SET utf8,
   `severity` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `run_id` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `fk_finding_changes_findings1` (`finding_id`),
-  KEY `fk_finding_changes_finding_status1` (`status`),
-  KEY `fk_finding_changes_severity1` (`severity`),
-  KEY `fk_finding_changes_users1` (`user_id`),
-  KEY `fk_finding_changes_runs1` (`run_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `finding_changes`
---
-
-LOCK TABLES `finding_changes` WRITE;
-/*!40000 ALTER TABLE `finding_changes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `finding_changes` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `finding_status`
@@ -127,12 +95,13 @@ DROP TABLE IF EXISTS `finding_status`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `finding_status` (
   `id` int(11) NOT NULL,
-  `name` char(20) NOT NULL,
-  `description` char(255) NOT NULL,
+  `name` char(20) CHARACTER SET utf8 NOT NULL,
+  `description` char(255) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
 --
 -- Table structure for table `findings`
 --
@@ -143,12 +112,12 @@ DROP TABLE IF EXISTS `findings`;
 CREATE TABLE `findings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `workspace_id` int(11) NOT NULL,
-  `scan_id` char(20) NOT NULL,
-  `host` char(255) NOT NULL,
-  `port` char(20) NOT NULL,
-  `plugin` char(255) NOT NULL,
-  `finding` longtext ,
-  `remark` longtext ,
+  `scan_id` char(20) CHARACTER SET utf8 NOT NULL,
+  `host` char(255) CHARACTER SET utf8 NOT NULL,
+  `port` char(20) CHARACTER SET utf8 NOT NULL,
+  `plugin` char(255) CHARACTER SET utf8 NOT NULL,
+  `finding` longtext CHARACTER SET utf8,
+  `remark` longtext CHARACTER SET utf8,
   `severity` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   `run_id` int(11) NOT NULL,
@@ -162,15 +131,6 @@ CREATE TABLE `findings` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `findings`
---
-
-LOCK TABLES `findings` WRITE;
-/*!40000 ALTER TABLE `findings` DISABLE KEYS */;
-/*!40000 ALTER TABLE `findings` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `groups`
 --
 
@@ -179,7 +139,7 @@ DROP TABLE IF EXISTS `groups`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` char(255) NOT NULL,
+  `name` char(255) CHARACTER SET utf8 NOT NULL,
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=100 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -193,21 +153,12 @@ DROP TABLE IF EXISTS `host_names`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `host_names` (
   `workspace_id` int(11) NOT NULL,
-  `ip` char(16) NOT NULL,
-  `name` char(255) NOT NULL,
+  `ip` char(16) CHARACTER SET utf8 NOT NULL,
+  `name` char(255) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`workspace_id`,`ip`),
   KEY `fk_hosts_sessions1` (`workspace_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `host_names`
---
-
-LOCK TABLES `host_names` WRITE;
-/*!40000 ALTER TABLE `host_names` DISABLE KEYS */;
-/*!40000 ALTER TABLE `host_names` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `issue2finding_changes`
@@ -230,15 +181,6 @@ CREATE TABLE `issue2finding_changes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `issue2finding_changes`
---
-
-LOCK TABLES `issue2finding_changes` WRITE;
-/*!40000 ALTER TABLE `issue2finding_changes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `issue2finding_changes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `issue_changes`
 --
 
@@ -248,9 +190,9 @@ DROP TABLE IF EXISTS `issue_changes`;
 CREATE TABLE `issue_changes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `issue_id` int(11) NOT NULL,
-  `name` char(255) NOT NULL,
-  `ext_ref` char(255) DEFAULT NULL,
-  `description` longtext ,
+  `name` char(255) CHARACTER SET utf8 NOT NULL,
+  `ext_ref` char(255) CHARACTER SET utf8 DEFAULT NULL,
+  `description` longtext CHARACTER SET utf8,
   `severity` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -264,15 +206,6 @@ CREATE TABLE `issue_changes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `issue_changes`
---
-
-LOCK TABLES `issue_changes` WRITE;
-/*!40000 ALTER TABLE `issue_changes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `issue_changes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `issue_status`
 --
 
@@ -281,8 +214,8 @@ DROP TABLE IF EXISTS `issue_status`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `issue_status` (
   `id` int(11) NOT NULL,
-  `name` char(20) NOT NULL,
-  `description` char(255) NOT NULL,
+  `name` char(20) CHARACTER SET utf8 NOT NULL,
+  `description` char(255) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -297,9 +230,9 @@ DROP TABLE IF EXISTS `issues`;
 CREATE TABLE `issues` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `session_id` int(11) NOT NULL,
-  `name` char(255) NOT NULL,
-  `ext_ref` char(255) DEFAULT NULL,
-  `description` longtext ,
+  `name` char(255) CHARACTER SET utf8 NOT NULL,
+  `ext_ref` char(255) CHARACTER SET utf8 DEFAULT NULL,
+  `description` longtext CHARACTER SET utf8,
   `severity` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -307,15 +240,6 @@ CREATE TABLE `issues` (
   KEY `fk_issues_severity1` (`severity`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `issues`
---
-
-LOCK TABLES `issues` WRITE;
-/*!40000 ALTER TABLE `issues` DISABLE KEYS */;
-/*!40000 ALTER TABLE `issues` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `issues2findings`
@@ -335,15 +259,6 @@ CREATE TABLE `issues2findings` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `issues2findings`
---
-
-LOCK TABLES `issues2findings` WRITE;
-/*!40000 ALTER TABLE `issues2findings` DISABLE KEYS */;
-/*!40000 ALTER TABLE `issues2findings` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `rights`
 --
 
@@ -359,15 +274,6 @@ CREATE TABLE `rights` (
   KEY `fk_rights_sessions1` (`workspace_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rights`
---
-
-LOCK TABLES `rights` WRITE;
-/*!40000 ALTER TABLE `rights` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rights` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `runs`
@@ -386,15 +292,6 @@ CREATE TABLE `runs` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `runs`
---
-
-LOCK TABLES `runs` WRITE;
-/*!40000 ALTER TABLE `runs` DISABLE KEYS */;
-/*!40000 ALTER TABLE `runs` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `scans`
 --
 
@@ -403,24 +300,15 @@ DROP TABLE IF EXISTS `scans`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `scans` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` char(255) NOT NULL,
-  `scannername` char(255) NOT NULL,
-  `scannerparam` char(255) DEFAULT NULL,
-  `targets` longtext ,
+  `name` char(255) CHARACTER SET utf8 NOT NULL,
+  `scannername` char(255) CHARACTER SET utf8 NOT NULL,
+  `scannerparam` char(255) CHARACTER SET utf8 DEFAULT NULL,
+  `targets` longtext CHARACTER SET utf8,
   `workspace_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_scans_workspaces1` (`workspace_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `scans`
---
-
-LOCK TABLES `scans` WRITE;
-/*!40000 ALTER TABLE `scans` DISABLE KEYS */;
-/*!40000 ALTER TABLE `scans` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `severity`
@@ -431,8 +319,8 @@ DROP TABLE IF EXISTS `severity`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `severity` (
   `id` int(11) NOT NULL,
-  `name` char(20) NOT NULL,
-  `description` char(255) NOT NULL,
+  `name` char(20) CHARACTER SET utf8 NOT NULL,
+  `description` char(255) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -461,8 +349,8 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` char(20) DEFAULT NULL,
-  `name` char(255) DEFAULT NULL,
+  `username` char(20) CHARACTER SET utf8 DEFAULT NULL,
+  `name` char(255) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=MyISAM AUTO_INCREMENT=100 DEFAULT CHARSET=latin1;
@@ -477,22 +365,12 @@ DROP TABLE IF EXISTS `workspaces`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `workspaces` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` char(255) NOT NULL,
+  `name` char(255) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=100 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `workspaces`
---
-
-LOCK TABLES `workspaces` WRITE;
-/*!40000 ALTER TABLE `workspaces` DISABLE KEYS */;
-/*!40000 ALTER TABLE `workspaces` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -502,4 +380,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-03-02 16:30:29
+-- Dump completed on 2012-03-05 17:48:32
