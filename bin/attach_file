@@ -1,0 +1,116 @@
+#!/usr/bin/env perl
+# ------------------------------------------------------------------------------
+# $Id$
+# ------------------------------------------------------------------------------
+# This program attaches a file to a run
+# ------------------------------------------------------------------------------
+#  Copyright 2011 Frank Breedijk of Schuberg Philis
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# ------------------------------------------------------------------------------
+
+use strict;
+use SeccubusV2;
+use SeccubusWorkspaces;
+use SeccubusScans;
+use SeccubusRuns;
+use Getopt::Long;
+use Carp;
+
+my (
+	$help,
+	$workspace,
+	$scanname,
+	$file,
+	$name,
+	$timestamp,
+	$verbose,
+   );
+
+$help = 0;
+
+# Set defaults
+$timestamp = make_timestamp();
+
+GetOptions(	'scan|s=s'		=> \$scanname,
+		'workspace|w=s'		=> \$workspace,
+		'timestamp|t=s'		=> \$timestamp,
+		'file|f=s'		=> \$file,
+		'name|n=s'		=> \$name,
+		'help|h!'		=> \$help,
+		'verbose|v!'		=> \$verbose,
+	  );
+help("No workspace name specified") unless $workspace;
+help("No scan name specified") unless $scanname;
+help("No timestamp specified") unless $timestamp;
+
+if ( ! -e $file ) {
+	help("File '$file' does not exist");
+}
+
+help() if $help;
+
+print "Gettting workspace_id for workspace '$workspace'\n" if $verbose;
+my $workspace_id = get_workspace_id($workspace);
+if ( $workspace_id <= 0 ) {
+	help("Unable to find a workspace with name '$workspace'");
+} else {
+	print "Workspace_id: $workspace_id\n" if $verbose;
+}
+
+print "Getting scan_id for scan '$scanname' in workspace '$workspace'\n" if $verbose;
+my $scan_id = get_scan_id($workspace_id, $scanname);
+if ( $scan_id <= 0 ) {
+	help("Unable to find a scan with name '$scanname' in workspace '$workspace'");
+} else {
+	print "Scan_id : $scan_id\n" if $verbose;
+}
+
+print "Attaching file '$file' to scan '$scanname'\n" if $verbose;
+my $run_id = update_run($workspace_id, $scan_id, $timestamp, $file, $name);
+
+exit;
+
+sub help(;$) {
+	my $msg = shift;
+	print "$msg\n
+Usage: attach_file --workspace <workspace name> --scan <scan name> 
+		 --timestamp <YYYY-MM-DD HH:mm:ss> --file <path of file>
+		 --name <description of file>
+		 [--help] [--verbose]  
+
+Arguments:
+--workspace (-w)- The name of the workspace the file should be loaded into
+--scan (-s)	- The name of the scan 
+--timestamp (-t)- Optional : Time the scan ran in the format YYYY-MM-DD HH:mm:ss
+--file (-f)	- Path of the file to attach
+--name (-n)	- Descriptive name for the attachment
+--verbose (-v)	- Be verbose
+--help (-h)	- Print this message
+";
+	exit();
+}
+
+sub make_timestamp() {
+        my ($second, $minute, $hour, $day, $month, $year) = localtime();
+        $month++;
+        $second = "0" . $second if $second < 10;
+        $minute = "0" . $minute if $minute <10;
+        $hour = "0". $hour if $hour < 10;
+        $day = "0". $day if $day <10;
+        $month = "0" . $month if $month <10;
+        $year += 1900;
+
+        return "$year$month$day$hour$minute$second";
+}
+

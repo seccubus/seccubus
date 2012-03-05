@@ -16,7 +16,7 @@ use JSON;
 sub result($$$$);
 sub bye($);
 
-my $current_db_version = 1;
+my $current_db_version = 2;
 my $query = CGI::new();
 my $json = JSON->new();
 
@@ -113,7 +113,11 @@ eval {
 	 	     	);
 
 	if ( $version[0] != $current_db_version ) {
-		result($data,"Database version", "Your database currently has a version number that isn't that of the current database version. Since this cannot happen at this time, you are on your own", 'Error');
+		my $file = $config->{paths}->{dbdir} . "/";
+		if ( $version[0] eq "1" ) {
+			$file .= "upgrade_v1_v2." . $config->{database}->{engine};
+		} 
+		result($data,"Database version", "Your database is not current, please execute the sql statements in '$file' to update the database to the next version and rerun this test", 'Error');
 		bye($data);
 	} else {
 		result($data,"Database version", "Your database has the base data and is the current version.", 'OK');

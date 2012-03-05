@@ -38,7 +38,7 @@ use SeccubusRights;
 use strict;
 use Carp;
 
-sub update_run($$$;);
+sub update_run($$$;$$);
 
 =head2 update_run
 
@@ -57,6 +57,10 @@ not exist it wil be created
 
 =item timestamp   - Mandatory
 
+=item attachment   - Optional, path of the file to attache
+
+=item attachment   - Optional, Description of the file
+
 =back
 
 =item Returns
@@ -65,16 +69,19 @@ run_id
 
 =item Checks
 
-Must be a reader to get the run_id, must be a writer to create a run
+Must be a reader to get the run_id, must be a writer to create or alter a run 
+Attachment must be a file that exists
 
 =back
 
 =cut
 
-sub update_run($$$;) {
+sub update_run($$$;$$) {
 	my $workspace_id = shift or confess "No workspace_id provided to update_run";
 	my $scan_id = shift or confess "No scan_id provided to update_run";
 	my $timestamp = shift or confess "No timestamp provided to update_run";
+	my $attachment = shift;
+	my $name = shift;
 
 	if ( ! $timestamp =~ /^\d\d\d\d\-\d\d\-\d\d \d\d\:\d\d\:\d\d$/ ) {
 		confess "Timestamp '$timestamp' does not have the correct format";
@@ -93,6 +100,19 @@ sub update_run($$$;) {
 					"query"		=> "INSERT into runs (scan_id, time) values (?, ? );",
 					"values"	=> [ $scan_id, $timestamp ],
 				      );
+		} 
+		if ( $run_id && -e $attachment ) {
+			$name = $attachment unless $name;
+			open ATT, $attachment or confess "Unable to open attachment '$attachment'";
+			my @file = <ATT>; # Slurp
+			close ATT;
+			my $id = sql( "return"	=> "id",
+				      "query"	=> "INSERT into attachments(run_id, name, data) values (?, ?, ?);",
+				      "values"	=> [ $run_id, $name, join "", @file ]
+				    );
+			@file = undef;
+		} else {
+			confess("Run not found or attachment doesn't exist");
 		}
 	} else {
 		warn "You are not authorised to read workspace $workspace_id";
