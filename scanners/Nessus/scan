@@ -110,6 +110,7 @@ my $tempfile = "/tmp/$tempscan.$$";
 my $nivil = "$config->{paths}->{scanners}\/Nessus\/nivil.rb";
 my $nessus2ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nessus2ivil";
 my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
+my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_file";
 
 print "Attempting to find policy ID for policy $policy\n" if $verbose;
 $cmd = "$nivil -u '$user' -p '$password' -s '$server' --show-policies";
@@ -184,9 +185,17 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
 print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
-# TODO: Add files to scan
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.nessus", ".nessus output");
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.ivil", "IVIL output");
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.nessus' --description 'Nessus xml output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
 
 # Cleanup
 unless ( $noerase ) {

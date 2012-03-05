@@ -63,6 +63,7 @@ $nodelete = 0 unless $nodelete;
 
 my $config = get_config();
 my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
+my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_file";
 
 print "Hosts file specified $hosts_file\n" if $verbose;
 if ( ! $hosts_file || ! -e $hosts_file ) {
@@ -140,12 +141,29 @@ print "Execuing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
-#print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
-# TODO: Add files to scan
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.nmap", "Command output");
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.gnmap", "Nmap greppable format");
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.xml", "Nmap xml output");
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.ivil.nbe", "IVIL output");
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.nmap' --description 'Command output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.gnmap' --description 'Greppable output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.xml' --description 'XML output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
 
 # Cleanup
 unless( $nodelete ) {

@@ -68,6 +68,7 @@ $port = 9390 unless $port;
 
 my $config = get_config();
 my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
+my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_file";
 
 if ( ! $hosts_file || ! -e $hosts_file ) {
 	print "You must specify a valid hosts file";
@@ -147,11 +148,30 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
 print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
-# TODO: Add files to scan
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.nbe", "NBE output");
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.html", "HTML output");
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.xml", "HTML output");
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.ivil.xml", "IVIL output");
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.nbe' --description 'BNE output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.html' --description 'HTML output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.xml' --description 'XML output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
 
 # Cleanup
 unlink "$tempfile.nbe" if -e "$tempfile.nbe";

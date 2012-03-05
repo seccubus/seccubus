@@ -59,6 +59,7 @@ $verbose = 0 if $quiet;
 
 my $config = get_config();
 my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
+my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_file";
 
 print "Hosts file specified $hosts_file\n" if $verbose;
 if ( ! $hosts_file || ! -e $hosts_file ) {
@@ -124,10 +125,24 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
 print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
-# TODO: Add files to scan
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile", "Command output");
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.nbe", "NBE output");
-#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.ivil.nbe", "IVIL output");
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile' --description 'Command line output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.nbe' --description 'NBE output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
 
 # Cleanup
 unless ( $nodelete ) {
