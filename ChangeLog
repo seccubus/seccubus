@@ -22,6 +22,7 @@ New features / Issues resolved
 * Added the capability to filter on severity, finding text and remark text
 * Added the ability for scan scripts to add attachments to runs
 * All scan scripts add attachments to runs
+* Script to convert Seccubus v1 data to V2 data adds attachments to runs
 * Scan history can now be viewed in the GUI and attachments can be dowloaded
 * IP numbers now sort correctly
 * Restyled status buttons and edit button

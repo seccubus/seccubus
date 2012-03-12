@@ -2,8 +2,8 @@
 # ------------------------------------------------------------------------------
 # $Id$
 # ------------------------------------------------------------------------------
-# This program imports an old Seccubus1 scan from the filesystem and places it
-# in the database
+# This program imports an Seccubus v1 scan from the filesystem and places it
+# in the Seccubus V2 database
 # ------------------------------------------------------------------------------
 #  Copyright 2011 Frank Breedijk of Schuberg Philis
 #
@@ -63,13 +63,13 @@ $help = 0;
 $basedir = "/home/seccubus";
 $scanner = "nessus full";
 
-GetOptions(	'basedir=s'	=> \$basedir,
-		'scan=s'	=> \$scanname,
-		'scanner=s'	=> \$scanner,
+GetOptions(	'basedir|b=s'	=> \$basedir,
+		'scan|s=s'	=> \$scanname,
+		'scanner|c=s'	=> \$scanner,
 		'help|h!'	=> \$help,
 		'verbose|v!'	=> \$verbose,
-		'newname=s'	=> \$newname,
-		'workspace=s'	=> \$workspace,
+		'newname|n=s'	=> \$newname,
+		'workspace|w=s'	=> \$workspace,
 	  );
 
 help() if $help;
@@ -91,6 +91,9 @@ $ENV{REMOTE_USER} = "importer";			# This utility runs under its
 
 $newname = $scanname unless $newname;
 $workspace = $scanname unless $workspace;
+
+my $config = get_config();
+my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
 
 print "Creating Seccubus2 scan '$newname' in workspace '$workspace' from Seccubus1 scan '$scanname'\n" if $verbose;
 my $workspace_id = get_workspace_id("$workspace");
@@ -176,11 +179,23 @@ foreach my $dir ( @plugins ) {
 			  "severity"	=> $severity,
 			);
 		print "Finding ID: $finding_id\n" if $verbose;
-
-
 	}
 }
 
+print "\nImporting scanner output\n" if $verbose;
+print "Globbing $basedir/var/$scanname/output/*\n" if $verbose;
+
+foreach my $att ( <$basedir/var/$scanname/output/*> ) {
+	$att =~ /\/(\d+)\.(.*)$/;
+	my $ts = $1;
+	my $ext = $2;
+	$ts = substr($ts, 0,4) . "-" . substr($ts,4,2) . "-" . substr($ts,6,2) . " " . substr($ts,8,2) . ":" . substr($ts,10,2) . ":00";
+	my $cmd = "$attach_file --workspace '$workspace' --scan '$newname' --timestamp '$ts' --file '$att' --description 'Imported .$ext file'";
+	$cmd .= " -v" if $verbose;
+	print "Execuing $cmd\n" if $verbose;
+	my $result = `$cmd 2>&1`;
+	print "$result\n" if $verbose;
+}
 
 exit();
 
@@ -189,15 +204,16 @@ sub help() {
 Usage: importer [--basedir <directory>] --scan <scan name> [--scanner <scanner name] [--newname <new scan name>] [--workspace <workspace name>] [--help] [--verbose]
 
 Arguments:
---basedir 	- the old Seccubus base directory
+--basedir (-b) 	- the Seccubus V1 base directory
 		  Option, default: /home/seccubus
---scan 		- the name of the scan in the old Seccubus
---scanner	- Name of the scanner should be either one of: 
-		  * nessus
-		  * openvas
---newname	- New name to use when importing into the database
-		  Option, default: user the value given for scan
---workspace	- The name of the SeccubusV2 workspace this scan will be 
+--scan (-s)	- the name of the scan in Seccubus V1
+--scanner (-c)	- Name of the scanner should be either one of: 
+		  * NessusLegacy
+		  * OpenVAS
+		  * Nikto
+--newname (-n)	- New name to use when importing into the database
+		  Option, default: use the value given for scan
+--workspace (-w)- The name of the SeccubusV2 workspace this scan will be 
 		  imported to, defaults to the value of scanname
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message

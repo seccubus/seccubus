@@ -106,18 +106,20 @@ sub update_run($$$;$$) {
 						"query"		=> "INSERT into runs (scan_id, time) values (?, ? );",
 						"values"	=> [ $scan_id, $timestamp ],
 				      	      );
-			} elsif ( -e $attachment ) {
-				open ATT, $attachment or confess "Unable to open attachment '$attachment'";
-				my @file = <ATT>; # Slurp
-				close ATT;
-				my $name = basename($attachment);
-				my $id = sql( "return"	=> "id",
-				      	"query"	=> "INSERT into attachments(run_id, name, description, data) values (?, ?, ?, ?);",
-				      	"values"	=> [ $run_id, $name, $description, join "", @file ]
-				    	);
-				@file = undef;
-			} else {
-				confess("Attachment doesn't exist");
+			} elsif ( $attachment ) {
+				if ( -e $attachment ) {
+					open ATT, $attachment or confess "Unable to open attachment '$attachment'";
+					my @file = <ATT>; # Slurp
+					close ATT;
+					my $name = basename($attachment);
+					my $id = sql( "return"	=> "id",
+				      		"query"	=> "INSERT into attachments(run_id, name, description, data) values (?, ?, ?, ?);",
+				      		"values"	=> [ $run_id, $name, $description, join "", @file ]
+				    		);
+					@file = undef;
+				} else {
+					confess("The attachment '$attachment' doesn't exist");
+				}
 			}
 		}
 	} else {
