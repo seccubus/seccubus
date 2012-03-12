@@ -9,6 +9,7 @@
 
 use strict;
 use CGI;
+use CGI::Carp qw(fatalsToBrowser);
 use JSON;
 use lib "..";
 use SeccubusV2;

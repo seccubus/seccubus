@@ -11,6 +11,7 @@
 use strict;
 use lib "..";
 use CGI;
+use CGI::Carp qw(fatalsToBrowser);
 use SeccubusV2;
 use LWP::Simple;
 use JSON;
