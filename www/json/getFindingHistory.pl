@@ -4,8 +4,6 @@
 # ------------------------------------------------------------------------------
 # Get a full list of findings associated with the filter parameters given
 # ------------------------------------------------------------------------------
-# Copyright (C) 2010  Schuberg Philis, Frank Breedijk - Under GPLv3
-# ------------------------------------------------------------------------------
 
 use strict;
 use CGI;

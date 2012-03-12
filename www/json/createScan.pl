@@ -4,8 +4,6 @@
 # ------------------------------------------------------------------------------
 # Updates the findings passed by ID with the data passed
 # ------------------------------------------------------------------------------
-# Copyright (C) 2010  Schuberg Philis, Frank Breedijk - Under GPLv3
-# ------------------------------------------------------------------------------
 use strict;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
