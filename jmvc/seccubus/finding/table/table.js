@@ -326,26 +326,32 @@ $.Controller('Seccubus.Finding.Table',
 		return fn;
 	},
 	hostSort : function(a,b) {
-		var isIP = new RegExp('^[12]?\\d?\\d\\.[12]?\\d?\\d\\.[12]?\\d?\\d\\.[12]?\\d?\\d$');
-		if( a.host.match(isIP) ) {
-			if( b.host.match(isIP) ) {
-				/* IP compare */
-				var ipa = a.host.split('.');
-				ipa = (ipa[3] * 1) + (ipa[2] * 256) + (ipa[1] * 65536) + (ipa[0] * 16777216);
-				var ipb = b.host.split('.');
-				ipb = (ipb[3] * 1) + (ipb[2] * 256) + (ipb[1] * 65536) + (ipb[0] * 16777216);
-				return ipa - ipb;
-			} else {
-				/* Hostnames sort before IPs */
-				return -1;
-			}
+		if ( typeof(a) == 'undefined' ) {
+			return 1; // Undefined comes last
+		} else if ( typeof(b) == 'undefined' ) {
+			return -1; // Undefiend comes last
 		} else {
-			if( b.host.match(isIP) ) {
-				/* IPs after hostnames */
-				return 1;
+			var isIP = new RegExp('^[12]?\\d?\\d\\.[12]?\\d?\\d\\.[12]?\\d?\\d\\.[12]?\\d?\\d$');
+			if( a.host.match(isIP) ) {
+				if( b.host.match(isIP) ) {
+					/* IP compare */
+					var ipa = a.host.split('.');
+					ipa = (ipa[3] * 1) + (ipa[2] * 256) + (ipa[1] * 65536) + (ipa[0] * 16777216);
+					var ipb = b.host.split('.');
+					ipb = (ipb[3] * 1) + (ipb[2] * 256) + (ipb[1] * 65536) + (ipb[0] * 16777216);
+					return ipa - ipb;
+				} else {
+					/* Hostnames sort before IPs */
+					return -1;
+				}
 			} else {
-				/* Lexical sort */
-				return( a.host >= b.host ) ;
+				if( b.host.match(isIP) ) {
+					/* IPs after hostnames */
+					return 1;
+				} else {
+					/* Lexical sort */
+					return( a.host >= b.host ) ;
+				}
 			}
 		}
 	},
