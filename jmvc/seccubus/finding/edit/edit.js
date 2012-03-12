@@ -74,7 +74,7 @@ $.Controller('Seccubus.Finding.Edit',
 			/* Display the finding history */
 			$(this.options.history).seccubus_history_table({
 				workspace	: this.options.workspace,
-				findingId	: this.options.findings[this.options.index].id,
+				findingId	: this.options.findings[this.options.index].id
 			});
 		}
 	},

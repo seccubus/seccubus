@@ -9,7 +9,7 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.Run',
 /* @Static */
 {
-	findAll: "POST json/getRuns.pl",
+	findAll: "POST json/getRuns.pl"
   	//findOne : "/runs/{id}.json", 
   	//create : "/runs.json",
  	//update : "/runs/{id}.json",

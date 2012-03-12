@@ -81,7 +81,7 @@ $.Controller('Seccubus.Run.Table',
 					'init',
 					Seccubus.Models.Run.findAll({
 						workspaceId	: this.options.workspace,
-						scanId		: this.options.scan,
+						scanId		: this.options.scan
 					}),
 					{
 						download	: this.options.download
