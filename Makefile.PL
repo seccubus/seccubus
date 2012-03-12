@@ -11,6 +11,7 @@ WriteMakefile (
 				'Algorithm::Diff'	=> 1.15,
 				'Carp'			=> 1.04,
                                 'CGI'			=> 3.15,
+                                'CGI::Carp'		=> 0.01,
                                 'Exporter'		=> 5.58,
 				'ExtUtils::MakeMaker'	=> 6.30,
 				'Getopt::Long'		=> 2.35,
