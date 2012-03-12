@@ -1,5 +1,8 @@
 Seccubus v2
 Copyright 2007-2012 - Schuberg Philis
+
+Unless specifically stated otherwise:
+
 Licensed under the Apache License v2.0 January 2004 -
 http://www.apache.org/licenses/
 

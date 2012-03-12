@@ -4,7 +4,7 @@
 # IVIL perl module. This is where most of the real logic is 
 # This modules is based on the IVIL standard version v0.2
 # ------------------------------------------------------------------------------
-# Copyright (C) 2010  Schuberg Philis, Frank Breedijk - Under the MIT license
+# Copyright (C) 2012  Schuberg Philis, Frank Breedijk - Under the MIT license
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
