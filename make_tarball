@@ -32,7 +32,7 @@ echo '*************************************************************************'
 perl Makefile.PL
 make clean
 perl Makefile.PL
-#rm MANIFEST
+rm MANIFEST
 make manifest
 perl Makefile.PL
 make

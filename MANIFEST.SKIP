@@ -41,7 +41,7 @@ config\.xml$
 ^unit_test_jmvc
 ^make_
 ^db\/create_empty_db_v.$
-*.pdn$
+\.pdn$
 
 # Misc
 ^www\/tmp\/
