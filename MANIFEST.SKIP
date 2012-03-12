@@ -40,7 +40,8 @@ config\.xml$
 ^perl_ok
 ^unit_test_jmvc
 ^make_
-^db\/create_empty_db$
+^db\/create_empty_db_v.$
+*.pdn$
 
 # Misc
 ^www\/tmp\/
