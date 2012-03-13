@@ -28,7 +28,7 @@ our $config = "config.xml";		# Change this value to match your setup
 					# found
 $config = "/home/seccubus/etc/config.xml" unless -e $config;
 					# Bug #62 - /home/seccubus/etc missing
-$config = "/etc/seccubus/config.xml" unless -e $config;
+$config = "/etc/Seccubus/config.xml" unless -e $config;
 $config = "/opt/Seccubus/etc/config.xml" unless -e $config;
 
 # Module directory

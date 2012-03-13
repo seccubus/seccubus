@@ -25,9 +25,8 @@ print $query->header("application/json");
 # Ticket #62 - Default locations for config.xml does not include 
 # /home/seccubus/etc/config.xml
 my @configs = qw(
-			config.xml
 			/home/seccubus/etc/config.xml
-			/etc/seccubus/config.xml
+			/etc/Seccubus/config.xml
 			/opt/Seccubus/etc/config.xml
 	    	);
 
