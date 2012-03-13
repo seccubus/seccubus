@@ -11,7 +11,7 @@
 %define scandir		%{installdir}/scanners
 
 Name:		Seccubus
-Version:	2.0.beta2
+Version:	2.0.beta3
 Release:	0
 Summary:	Automated regular vulnerability scanning with delta reporting
 Group:		Network/Tools
@@ -124,8 +124,8 @@ fi
 /bin/cat << OEF
 ################################################################################
 
-After installation, create a database and database user. Populate the db with provided
-scripts:
+After installation, If you have not done so allready, create a database and 
+database user. Populate the db with provided scripts:
 
   # mysql << EOF
   create database Seccubus;
@@ -185,10 +185,11 @@ OEF
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{bindir}
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/add_user
+%attr(755, %{seccuser}, %{seccuser}) %{bindir}/attach_file
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/do-scan
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/dump_ivil
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/dump_nmap
-%attr(755, %{seccuser}, %{seccuser}) %{bindir}/importer
+%attr(755, %{seccuser}, %{seccuser}) %{bindir}/convert_v1_v2
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/load_ivil
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/nbe2ivil
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/nmap2ivil
@@ -204,6 +205,8 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/db
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v1.mwb
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v1.pdf
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v2.mwb
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v2.pdf
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/GUI
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/GUI/UseCaseFindings.png
@@ -279,11 +282,11 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/help.html
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/SeccubusV2.pm
+%attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/seccubus
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/SeccubusV2.pm
 
 # GUI
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/index.html
-%attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/seccubus
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/production.js
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/production.css
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/seccubus.html
@@ -308,21 +311,35 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/sort_desc.png
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/sort_desc_disabled.png
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/closebox.png
-   
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/changed.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/closed.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/edit.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/first.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/gone.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/last.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/masked.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/new.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/next.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/noissue.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/open.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/previous.png   
+
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/seccubus/json
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/ConfigTest.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/UpToDate.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/getFindings.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/getNothing.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/getScans.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/getWorkspaces.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/updateFinding.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/updateFindings.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/createScan.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/createWorkspace.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/getScanners.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/updateScan.pl
-%attr(755, %{seccuser}, %{seccuser}) %{webdir}/json/updateWorkspace.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/ConfigTest.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/UpToDate.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getFindings.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getScans.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getWorkspaces.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateFinding.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateFindings.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/createScan.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/createWorkspace.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getScanners.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateScan.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateWorkspace.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getAttachment.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getFindingHistory.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getRuns.pl
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/steal
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/steal/steal.production.js
@@ -330,8 +347,13 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %dir %{vardir}
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/data_v1.mysql
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/structure_v1.mysql
+%attr(644, %{seccuser}, %{seccuser}) %{vardir}/data_v2.mysql
+%attr(644, %{seccuser}, %{seccuser}) %{vardir}/structure_v2.mysql
+%attr(644, %{seccuser}, %{seccuser}) %{vardir}/upgrade_v1_v2.mysql
 
 %changelog
+* Tue Mar 12 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Seccubus 2.0.beta3
 * Fri Feb 24 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Removed oldstyle gui
 * Fri Jan 27 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
