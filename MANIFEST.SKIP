@@ -42,6 +42,7 @@ config\.xml$
 ^make_
 ^db\/create_empty_db_v.$
 \.pdn$
+json\/getNothing.pl$
 
 # Misc
 ^www\/tmp\/
