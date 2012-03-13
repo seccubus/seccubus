@@ -240,9 +240,8 @@ syst("cp -p -r $stage_dir/db/* $build_root$db_dir");
 syst("cp -p -r $stage_dir/docs/* $build_root$doc_dir");
 
 # Link SeccubusV2.pm and api in www_dir
-print "Creating symbolic links to SeccubusV2.pm and api in wwwdir\n" if $verbose;
-syst("cd $build_root$www_dir;ln -s $base_dir/SeccubusV2.pm");
-syst("cd $build_root$www_dir/seccubus;ln -s ../json");
+print "Creating symbolic links to SeccubusV2.pm in wwwdir/seccubus\n" if $verbose;
+syst("cd $build_root$www_dir/seccubus;ln -s $base_dir/SeccubusV2.pm");
 
 # Clean up stage root
 print "Cleaning up...\n" if $verbose;
