@@ -1,10 +1,7 @@
 #!/usr/bin/env perl
 # ------------------------------------------------------------------------------
-# $Id$
-# ------------------------------------------------------------------------------
-# This program imports an Seccubus v1 scan from the filesystem and places it
-# in the Seccubus V2 database
-# ------------------------------------------------------------------------------
+# $Id$ # ------------------------------------------------------------------------------
+# This program imports an Seccubus v1 scan from the filesystem and places it # in the Seccubus V2 database # ------------------------------------------------------------------------------
 
 use strict;
 use SeccubusV2;
@@ -67,8 +64,12 @@ if ( ! $scanname ) {
 	help();
 };
 
-if ( ! -e "$basedir/var/$scanname" ) {
-	print "Unable to read scan $scanname from $basedir/var/$scanname, did you specify --basedir and --scan correctly?\n";
+if ( -e "$basedir/var/" ) {
+	$basedir .= "/var";
+}
+
+if ( ! -e "$basedir/$scanname" ) {
+	print "Unable to read scan $scanname from $basedir/$scanname, did you specify --basedir and --scan correctly?\n";
 	help();
 }
 
@@ -81,32 +82,23 @@ $workspace = $scanname unless $workspace;
 my $config = get_config();
 my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
 
-print "Creating Seccubus2 scan '$newname' in workspace '$workspace' from Seccubus1 scan '$scanname'\n" if $verbose;
-my $workspace_id = get_workspace_id("$workspace");
-unless ( $workspace_id ) {
+print "Creating Seccubus2 scan '$newname' in workspace '$workspace' from Seccubus1 scan '$scanname'\n" if $verbose; my $workspace_id = get_workspace_id("$workspace"); unless ( $workspace_id ) {
 	$workspace_id = create_workspace($workspace);
-	print "Workspace '$workspace' with id $workspace_id created.\n" if $verbose;
-} else {
-	print "Workspace '$workspace' with id $workspace_id selected.\n" if $verbose;
-}
+	print "Workspace '$workspace' with id $workspace_id created.\n" if $verbose; } else {
+	print "Workspace '$workspace' with id $workspace_id selected.\n" if $verbose; }
 	
-my $scan_id = get_scan_id($workspace_id, $newname);
-if ( $scan_id ) {
-	 confess "Scan $newname allready exists in workspace $workspace, you can specify a new scanname with the --newname parameter";
-} else {
+my $scan_id = get_scan_id($workspace_id, $newname); if ( $scan_id ) {
+	 confess "Scan $newname allready exists in workspace $workspace, you can specify a new scanname with the --newname parameter"; } else {
 	print "\nLoading targets\n" if $verbose;
-	open(HOSTS, "$basedir/var/$scanname/hosts") or confess "Unable to open $basedir/var/$scanname/hosts";
+	open(HOSTS, "$basedir/$scanname/hosts") or confess "Unable to open $basedir/$scanname/hosts";
 	$targets = join "", <HOSTS>;
 	close HOSTS;
 	print "\nTargets:\n----\n$targets\n-----\n" if $verbose;
 
 	$scan_id = create_scan($workspace_id, $newname, $scanner, "Please update manually", $targets);
-	print "Created scan '$newname' with id $scan_id" if $verbose;
-}
+	print "Created scan '$newname' with id $scan_id" if $verbose; }
 
-print "\nAdding hostnames\n" if $verbose;
-open(NAMES, "$basedir/var/$scanname/hostnames") or confess "Unable to open $basedir/var/$scanname/hostnames";
-while ( <NAMES> ) {
+print "\nAdding hostnames\n" if $verbose; open(NAMES, "$basedir/$scanname/hostnames") or confess "Unable to open $basedir/$scanname/hostnames"; while ( <NAMES> ) {
 	chomp();
 	s/\#.*$//;
 	s/^\s*//;
@@ -122,10 +114,9 @@ while ( <NAMES> ) {
 }
 close NAMES;
 
-print "\nImporting findings\n" if $verbose;
-print "Globbing $basedir/var/$scanname/findings/*/*/*\n" if $verbose;
+print "\nImporting findings\n" if $verbose; print "Globbing $basedir/$scanname/findings/*/*/*\n" if $verbose;
 
-my @plugins = <$basedir/var/$scanname/findings/*/*/*>;
+my @plugins = <$basedir/$scanname/findings/*/*/*>;
 
 foreach my $dir ( @plugins ) {
 	print "In directory $dir\n" if $verbose;
@@ -168,10 +159,9 @@ foreach my $dir ( @plugins ) {
 	}
 }
 
-print "\nImporting scanner output\n" if $verbose;
-print "Globbing $basedir/var/$scanname/output/*\n" if $verbose;
+print "\nImporting scanner output\n" if $verbose; print "Globbing $basedir/$scanname/output/*\n" if $verbose;
 
-foreach my $att ( <$basedir/var/$scanname/output/*> ) {
+foreach my $att ( <$basedir/$scanname/output/*> ) {
 	$att =~ /\/(\d+)\.(.*)$/;
 	my $ts = $1;
 	my $ext = $2;
@@ -198,13 +188,10 @@ Arguments:
 		  * OpenVAS
 		  * Nikto
 --newname (-n)	- New name to use when importing into the database
-		  Option, default: use the value given for scan
---workspace (-w)- The name of the SeccubusV2 workspace this scan will be 
+		  Option, default: use the value given for scan --workspace (-w)- The name of the SeccubusV2 workspace this scan will be 
 		  imported to, defaults to the value of scanname
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message
 ";
 	exit();
 }
-
-

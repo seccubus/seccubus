@@ -16,6 +16,8 @@ New features / Issues resolved
 
 Bigs fixed (tickets closed):
 ----------------------------
+83 - convert_v2_v2 does not work with default install directory from RPM
+(/var/lib/seccubus)
 
 14-3-2012 - 2.0.beta3 (a.k.a. the Blackhat edition)
 ==================================================
