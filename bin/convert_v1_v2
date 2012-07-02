@@ -1,7 +1,10 @@
 #!/usr/bin/env perl
 # ------------------------------------------------------------------------------
-# $Id$ # ------------------------------------------------------------------------------
-# This program imports an Seccubus v1 scan from the filesystem and places it # in the Seccubus V2 database # ------------------------------------------------------------------------------
+# $Id$ 
+# ------------------------------------------------------------------------------
+# This program imports an Seccubus v1 scan from the filesystem and places it 
+# in the Seccubus V2 database 
+# ------------------------------------------------------------------------------
 
 use strict;
 use SeccubusV2;
@@ -188,7 +191,8 @@ Arguments:
 		  * OpenVAS
 		  * Nikto
 --newname (-n)	- New name to use when importing into the database
-		  Option, default: use the value given for scan --workspace (-w)- The name of the SeccubusV2 workspace this scan will be 
+		  Option, default: use the value given for scan 
+--workspace (-w)- The name of the SeccubusV2 workspace this scan will be 
 		  imported to, defaults to the value of scanname
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message
