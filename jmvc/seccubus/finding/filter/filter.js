@@ -145,7 +145,8 @@ $.Controller('Seccubus.Finding.Filter',
 				this.view(
 					'init',
 					Seccubus.Models.Finding.findAll({
-						workspaceId	: this.options.workspace
+						workspaceId	: this.options.workspace,
+						scanIds		: this.options.scans
 					}), 
 					{
 						fScans : this.options.scans,

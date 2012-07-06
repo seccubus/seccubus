@@ -13,11 +13,13 @@ xx-x-2012 - 2.0.beta4
 
 New features / Issues resolved
 ------------------------------
+FIxed major performance issues
 
 Bigs fixed (tickets closed):
 ----------------------------
 83 - convert_v2_v2 does not work with default install directory from RPM
-(/var/lib/seccubus)
+   (/var/lib/seccubus)
+86 - getFindings slow with workspaces with lots of findings
 
 14-3-2012 - 2.0.beta3 (a.k.a. the Blackhat edition)
 ==================================================

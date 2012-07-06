@@ -164,7 +164,8 @@ $.Controller('Seccubus.Finding.Table',
 				this.view(
 					'init',
 					Seccubus.Models.Finding.findAll({
-						workspaceId	: this.options.workspace
+						workspaceId	: this.options.workspace,
+						scanIds		: this.options.scans
 					}), 
 					{
 						columns		: this.options.columns,
