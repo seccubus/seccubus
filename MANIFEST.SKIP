@@ -43,6 +43,7 @@ config\.xml$
 ^db\/create_empty_db_v.$
 \.pdn$
 json\/getNothing.pl$
+^www\/json\/.*$
 
 # Misc
 ^www\/tmp\/
