@@ -49,7 +49,6 @@ my @dirs = qw(
 my @patches = qw(
 			SeccubusV2.pm
 			etc/config.xml.mysql.example
-			www/oldstuff/api/testConfig.pl
 			www/json/ConfigTest.pl
 		);
 

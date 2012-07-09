@@ -362,7 +362,7 @@ sub get_workspaces(;) {
 				   SELECT DISTINCT 
 				   	workspaces.id, workspaces.name,
 				   	( SELECT MAX(time) FROM scans LEFT JOIN runs ON scans.id = runs.scan_id WHERE scans.workspace_id = workspaces.id) as lastrun,
-				   	( SELECT COUNT(*) FROM findings WHERE workspace_id = workspaces.id) as findings,
+				   	'' as findings,
 				   	( SELECT COUNT(*) FROM scans WHERE workspace_id = workspaces.id) as scans
 				   FROM workspaces 
 				   LEFT JOIN rights ON workspaces.id = rights.workspace_id 
