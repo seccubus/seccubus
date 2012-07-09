@@ -40,7 +40,7 @@ echo '*************************************************************************'
 cd ..
 rm -rf www/seccubus/*
 cp -r jmvc/seccubus/img www/seccubus
-cp -r www/json www/seccubus
+cp -r json www/seccubus
 cp jmvc/seccubus/production.* www/seccubus
 cp jmvc/seccubus/seccubus.html www/seccubus
 rm -rf www/steal/*
