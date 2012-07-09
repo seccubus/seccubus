@@ -50,5 +50,4 @@ echo Patching files
 echo '*************************************************************************'
 mv www/seccubus/seccubus.html www/seccubus/seccubus.html.bak
 sed s:steal\.js:steal.production.js: www/seccubus/seccubus.html.bak >www/seccubus/seccubus.html
-(cd www/seccubus/;ln -s ../json)
 echo end
