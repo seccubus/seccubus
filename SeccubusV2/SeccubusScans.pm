@@ -160,7 +160,7 @@ sub get_scans($;) {
 			    "query"	=> "SELECT id, name, scannername, scannerparam,
 			    		   (SELECT MAX(time) FROM runs WHERE runs.scan_id = scans.id) as lastrun,
 			    		   (SELECT COUNT(*) FROM runs WHERE runs.scan_id = scans.id) as total_runs,
-			    		   '' as total_fidings,
+			    		   '' as total_findings,
 					   targets,
 					   workspace_id
 			    		   FROM scans  
