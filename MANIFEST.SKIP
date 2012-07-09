@@ -35,6 +35,9 @@ config\.xml$
 
 # Development environment
 ^jmvc\/
+^www\/jmvc
+^json\/.*$
+json\/getNothing.pl$
 ^testdata\/
 ^build_jmvc
 ^perl_ok
@@ -42,8 +45,6 @@ config\.xml$
 ^make_
 ^db\/create_empty_db_v.$
 \.pdn$
-json\/getNothing.pl$
-^www\/json\/.*$
 
 # Misc
 ^www\/tmp\/
@@ -53,4 +54,3 @@ json\/getNothing.pl$
 ^rmp\/
 
 # JMVC files for now as well
-^www\/jmvc

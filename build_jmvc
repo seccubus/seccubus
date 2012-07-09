@@ -40,11 +40,12 @@ echo '*************************************************************************'
 cd ..
 rm -rf www/seccubus/*
 cp -r jmvc/seccubus/img www/seccubus
+cp -r www/json www/seccubus
 cp jmvc/seccubus/production.* www/seccubus
 cp jmvc/seccubus/seccubus.html www/seccubus
 rm -rf www/steal/*
 cp jmvc/steal/steal.production.js www/steal
-(cd www/seccubus;ln -s ../json;ln -s ../../SeccubusV2.pm)
+(cd www/seccubus;ln -s ../../SeccubusV2.pm)
 
 echo '*************************************************************************'
 echo Patching files
