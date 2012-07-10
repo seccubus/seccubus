@@ -8,12 +8,13 @@ If you are looking for stable code you might want to use the V1 branch of this
 project, but be aware that it only supports Nessus with a professional feed
 and is not longer under active development.
 
-xx-x-2012 - 2.0.beta4 
+10-6-2012 - 2.0.beta4 
 =====================
 
 New features / Issues resolved
 ------------------------------
-FIxed major performance issues
+Fixed major performance issues
+Fixed installer bug
 
 Bigs fixed (tickets closed):
 ----------------------------

@@ -8,13 +8,19 @@ If you are looking for stable code you might want to use the V1 branch of this
 project, but be aware that it only supports Nessus with a professional feed
 and is not longer under active development.
 
-xx-x-2012 - 2.0.beta4
+10-6-2012 - 2.0.beta4
 =====================
 
 New features / Issues resolved
 ------------------------------
+Fixed major performance issues
+Fixed installer bug
 
 Bigs fixed (tickets closed):
 ----------------------------
-xx - 
-https://sourceforge.net/apps/trac/seccubus/ticket/
+83 - convert_v2_v2 does not work with default install directory from RPM
+(/var/lib/seccubus)
+84 - getWorkspaces slow with large database
+85 - getScans slow with large databases
+86 - getFindings slow with workspaces with lots of findings
+
