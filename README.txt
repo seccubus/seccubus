@@ -18,6 +18,7 @@ Fixed installer bug
 
 Bigs fixed (tickets closed):
 ----------------------------
+82 - Install.pl fails to write all necesary files
 83 - convert_v2_v2 does not work with default install directory from RPM
 (/var/lib/seccubus)
 84 - getWorkspaces slow with large database
