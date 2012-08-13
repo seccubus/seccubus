@@ -61,7 +61,7 @@ if ( ! $hosts_file || ! -e $hosts_file ) {
 
 $nikto_path = get_nikto_path() unless $nikto_path;
 if ( ! $nikto_path && -e $nikto_path ) {
-	print "Unable to find nikto on you system. I suggest you use the --nikto_path option\nto provide a path to nikto or nikto.pl\n";
+	print "Unable to find nikto on your system. I suggest you use the --nikto_path option\nto provide a path to nikto or nikto.pl\n";
 	help();
 }
 print "Nikto found in $nikto_path\n" if $verbose;
@@ -149,7 +149,7 @@ Usage: scan 	[--nikto_path|p <path to nikto>] \\
 Arguments:
 --nikto_path	- You can use this optional parameter to provide the script with
 (-p)		  the path to nikto.pl or nikto. If you do not provide this the 
-		  script tries to find the files itself and fail if it cannot 
+		  script tries to find the files itself and fails if it cannot 
 		  fidn them.
 --nikto_options	- Additional command line options to provide to nikto see 
 (-o)		  'nikto -Help' for more information.

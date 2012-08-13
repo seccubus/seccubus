@@ -65,7 +65,7 @@ if ( ! $hosts_file || ! -e $hosts_file ) {
 
 $nmap_path = get_nmap_path() unless $nmap_path;
 if ( ! $nmap_path && -e $nmap_path ) {
-	print "Unable to find Nmap on you system. I suggest you use the --nmap_path option\nto provide a path to the nmap executable\n";
+	print "Unable to find Nmap on your system. I suggest you use the --nmap_path option\nto provide a path to the nmap executable\n";
 	help();
 }
 print "Nmap found in $nmap_path\n" if $verbose;
@@ -171,7 +171,7 @@ Arguments:
 --nmap_path	- You can use this optional parameter to provide the script with
 (-p)		  the path to nmap. If you do not provide this the 
 		  script tries to find the files itself and fail if it cannot 
-		  fidn them.
+		  find them.
 --nmap_options	- Additional command line options to provide to Nmap see 
 (-o)		  'nmap -Help' for more information.
 --hosts		- The file containing the 'hosts' to scan
