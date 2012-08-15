@@ -8,6 +8,16 @@ If you are looking for stable code you might want to use the V1 branch of this
 project, but be aware that it only supports Nessus with a professional feed
 and is not longer under active development.
 
+xx-8-2012 - 2.0.beta5 
+=====================
+
+New features / Issues resolved
+------------------------------
+
+Bigs fixed (tickets closed):
+----------------------------
+91 - Scan_ids is a mandatory parameter
+
 10-6-2012 - 2.0.beta4 
 =====================
 
