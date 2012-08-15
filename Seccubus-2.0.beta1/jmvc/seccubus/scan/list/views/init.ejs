@@ -1,0 +1,16 @@
+<% count = 0  %>
+<% if(typeof this[0] != "undefined" && typeof this[0].error != "undefined" ) { %>
+	 <%== $.View('//seccubus/scan/list/views/error.ejs',{ message : this[0].error }) %>
+<% } else { %>
+	<%for ( var i = 0; i < this.length ; i++ ){%>
+		<% if ( this[i].workspace == selectedWorkspace ) { %>
+			<li <%= this[i] %> >
+				<%== $.View('//seccubus/scan/list/views/scan.ejs', this[i] )%>
+			</li>
+			<% count++ %>
+		<% } %>
+	<% } %>
+	<% if ( count == 0 ) { %>
+		<%== $.View('//seccubus/scan/list/views/error.ejs',{ message : "No scans found"}) %>
+	<% } %>
+<% } %>

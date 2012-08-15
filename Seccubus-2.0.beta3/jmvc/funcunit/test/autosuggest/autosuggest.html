@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Autocomplete Example Page</title>
+		<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />	
+		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+		<!--<script type="text/javascript" src="development-bundle/ui/jquery.ui.core.js"></script>	
+		<script type="text/javascript" src="development-bundle/ui/jquery.ui.widget.js"></script>	
+		<script type="text/javascript" src="development-bundle/ui/jquery.ui.position.js"></script>
+		<script type="text/javascript" src="development-bundle/ui/jquery.ui.autocomplete.js"></script>-->	
+		
+		<script>
+			$(function() {
+				var availableTags = [
+					"ActionScript",
+					"AppleScript",
+					"Asp",
+					"BASIC",
+					"C",
+					"C++",
+					"Clojure",
+					"COBOL",
+					"ColdFusion",
+					"Erlang",
+					"Fortran",
+					"Groovy",
+					"Haskell",
+					"Java",
+					"JavaScript",
+					"Lisp",
+					"Perl",
+					"PHP",
+					"Python",
+					"Ruby",
+					"Scala",
+					"Scheme"
+				];
+				$( "#tags" ).autocomplete({
+					source: availableTags
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div class="demo">
+			<div class="ui-widget">
+				<input id="tags" />
+			</div>
+		</div>
+	</body>
+</html>
+
+

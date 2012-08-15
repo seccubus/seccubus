@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>Seccubus.Workspace.Table Demo</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+        </style>
+	<link rel="stylesheet" href="css/demo_table.css" type="text/css">
+	</head>
+	<body>
+	    <h1>Seccubus.Workspace.Table Demo</h1>
+		<ul id='workspaces'></ul>
+		<a href='javascript://' id='create'>Create Workspace</a>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal(	
+				'seccubus/fixtures',
+				'seccubus/workspace/table',
+				'seccubus/seccubus.css',
+				function(){
+				
+				$('#workspaces').seccubus_workspace_table();
+
+				$('#create').click(function(){
+					new Seccubus.Models.Workspace({
+						id :            "9999",
+						Name :          "Client 9999",
+						ScanCount :     "9999",
+						LastScan :      "2099-09-09 09:09:09"
+					}).save();
+				})
+			})
+		</script>
+	</body>
+</html>

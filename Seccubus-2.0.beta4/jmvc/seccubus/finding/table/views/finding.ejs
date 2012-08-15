@@ -1,0 +1,60 @@
+<% // Renders a table row %>
+<% for(var i=0;i < columns.length;i+=2) { %>
+	<% if (columns[i] == "") { %>
+		<% if(columns[i+1] == "Action") { %>
+			<td>
+				<a href='javascript://' class='editFinding'>
+					<img src='img/edit.png'>
+				</a><br>
+				<% if (state == 99 ) { %>
+					<a href='javascript://' value='1' class='small changeState'><img src='img/new.png'></a><br>
+				<% } %>
+				<% if (state <= 2 || state == 4 ) { %>
+					<a href='javascript://' value='3' class='small changeState'><img src='img/open.png'></a><br>
+				<% } %>
+				<% if (state < 4 ) { %>
+					<a href='javascript://' value='4' class='small changeState'><img src='img/noissue.png'></a><br>
+				<% } %>
+				<% if (state == 6 ) { %>
+					<a href='javascript://' value='5' class='small changeState'><img src='img/gone.png'></a><br>
+				<% } %>
+				<% if (state == 5 ) { %>
+					<a href='javascript://' value='6' class='small changeState'><img src='img/closed.png'></a><br>
+				<% } %>
+				<% if (state != 99 ) { %>
+					<a href='javascript://' value='99' class='small changeState'><img src='img/masked.png'></a><br>
+				<% } %>
+			</td>
+		<% } else if (columns[i+1] == "select") { %>
+			<td class='center'>
+				<% if( checked.all) { %>
+					<img src='img/checkbox_filled.png' class='selectFinding' checked="checked" finding='<%= this.id %>'>
+				<% } else  { %>
+					<img src='img/checkbox_blank.png' class='selectFinding' finding='<%= this.id %>'>
+				<% } %>
+			</td>
+		<% } else { %>
+			<td>
+				Unknown colum <%= columns[i+1] %>
+			</td>
+		<% } %>
+	<% } else if (columns[i] == "find") { %>
+		<td class='finding'>
+			<% if(this.find.length > 150) { %>
+				<span class='reduced'>
+					<%== this.asHTML("find",150) %>...
+				</span>
+				<span class='full'>
+					<%== this.asHTML("find") %>
+				</span>
+				<div class='more'><a href='javascript://'>More</a></div>
+			<% } else { %>
+				<%== this.asHTML("find") %>
+			<% } %>
+		</td>
+	<% } else if (columns[i] == "remark") { %>
+		<td><%== this.asHTML("remark") %></td>
+	<% } else { %>
+		<td><%= this[columns[i]] %></td>
+	<% } %>
+<% } %>

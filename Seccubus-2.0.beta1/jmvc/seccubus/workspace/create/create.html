@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>Seccubus.Workspace.Create</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+        </style>
+	</head>
+	<body>
+	    <h1>Seccubus.Workspace.Create Demo</h1>
+		<form id='create' action=''></form>
+		<div id='workspaces'></div>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal('seccubus/workspace/create','seccubus/fixtures',function(){
+				
+				$('#create').seccubus_workspace_create();
+				Seccubus.Models.Workspace.bind('created', function(ev, workspace){
+					$('<div>').html("<h3>"+workspace.name+"</h3><p>"+workspace.description+"</p>")
+					        .appendTo( $('#workspaces') )
+				})
+				
+			})
+		</script>
+	</body>
+</html>

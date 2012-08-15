@@ -1,0 +1,17 @@
+timestamps|network|host|port|nikto_id|prio|Nikto v2.1.3/2.1.4
+results||somehost.com|80|999999|Security Warning|OSVDB-637: GET : Enumeration of users is possible by requesting ~username (responds with 'Forbidden' for users, 'not found' for non-existent users).
+results||somehost.com|80|999972|Security Warning|DEBUG : DEBUG HTTP verb may show server debugging information. See http://msdn.microsoft.com/en-us/library/e8z01xdh%28VS.80%29.aspx for details.
+results||somehost.com|80|000137|Security Warning|GET : /autologon.html?10514: Remotely Anywhere 5.10.415 is vulnerable to XSS attacks that can lead to cookie theft or privilege escalation. This is typically found on port 2000.
+results||somehost.com|80|000330|Security Warning|GET : /servlet/webacc?User.html=noexist: Netware web access may reveal full path of the web server. Apply vendor patch or upgrade.
+results||somehost.com|80|001131|Security Warning|OSVDB-35878: GET : /modules.php?name=Members_List&letter='%20OR%20pass%20LIKE%20'a%25'/*: PHP-Nuke module allows user names and passwords to be viewed.
+results||somehost.com|80|001212|Security Warning|OSVDB-3233: GET : /mailman/listinfo: Mailman was found on the server.
+results||somehost.com|80|001217|Security Warning|OSVDB-682: GET : /usage/: Webalizer may be installed. Versions lower than 2.01-09 vulnerable to Cross Site Scripting (XSS). CA-2000-02.
+results||somehost.com|80|001362|Security Warning|OSVDB-8193: GET : /index.php?module=ew_filemanager&type=admin&func=manager&pathext=../../../etc: EW FileManager for PostNuke allows arbitrary file retrieval.
+results||somehost.com|80|001554|Security Warning|OSVDB-3092: GET : /administrator/: This might be interesting...
+results||somehost.com|80|001687|Security Warning|OSVDB-3092: GET : /home/: This might be interesting...
+results||somehost.com|80|001702|Security Warning|OSVDB-3092: GET : /includes/: This might be interesting...
+results||somehost.com|80|001738|Security Warning|OSVDB-3092: GET : /logs/: This might be interesting...
+results||somehost.com|80|001897|Security Warning|OSVDB-3092: GET : /tmp/: This might be interesting...
+results||somehost.com|80|750000|Security Warning|OSVDB-3268: GET : /icons/: Directory indexing found.
+results||somehost.com|80|003584|Security Warning|OSVDB-3233: GET : /icons/README: Apache default file found.
+results||somehost.com|80|006270|Security Warning|GET : /administrator/index.php: Admin login page/section found.

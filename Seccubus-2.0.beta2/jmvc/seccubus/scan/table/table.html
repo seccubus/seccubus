@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Seccubus.Scan.Table</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+        </style>
+	</head>
+	<body>
+	    <h1>Seccubus.Scan.Table Demo</h1>
+	    <select id='selectWorkspace'></select>
+		<br>
+		Create scan in workspace: 
+		<a href='javascript://' ws=1 class='createScan'>1</a>
+		<a href='javascript://' ws=2 class='createScan'>2</a>
+		<a href='javascript://' ws=3 class='createScan'>3</a>
+		<a href='javascript://' ws=4 class='createScan'>4</a>
+		<a href='javascript://' ws=5 class='createScan'>5</a><br>
+		<br>
+		Table:
+		<table id='scans'></table>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal(	'seccubus/scan/table',
+				'seccubus/workspace/select',
+				'seccubus/fixtures',
+			function(){
+				$('#selectWorkspace').seccubus_workspace_select();
+				$('#selectWorkspace').change(function() {
+					ws = $('#selectWorkspace').val();
+					$('#scans').seccubus_scan_table({
+						workspace : ws 
+					});
+				});
+
+				$('.createScan').click( function(){
+					ws = $(this).attr("ws");
+					new Seccubus.Models.Scan({
+						name: "Added scan",
+						workspace: ws,
+						scanner: "Nessus",
+						parameters: "bla",
+						targets: "localhost",
+						findings: "0",
+						lastScan: ""
+					}).save();
+				});
+				$('#scans').seccubus_scan_table();
+			})
+		</script>
+	</body>
+</html>

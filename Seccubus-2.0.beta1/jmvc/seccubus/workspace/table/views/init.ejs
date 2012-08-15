@@ -1,0 +1,18 @@
+<table id='seccubus.workspace.table'>
+	<thead>
+		<tr>
+			<th>&nbsp;</td>
+			<th>Name</td>
+			<th># of scans</td>
+			<th>Last scan</td>
+			<th>Delete</td>
+		</tr>
+	</thead>
+	<tbody>
+		<%for(var i = 0; i < this.length ; i++){%>
+			<tr <%= this[i] %> >
+				<%== $.View('//seccubus/workspace/table/views/workspace.ejs', this[i] )%>
+			</tr>
+		<%}%>
+	<tbody>
+</table>

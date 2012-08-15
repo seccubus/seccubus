@@ -1,0 +1,1 @@
+OpenVAS vulnerability scanner via OpenVAS-Client interface

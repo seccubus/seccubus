@@ -1,0 +1,14 @@
+#!/bin/bash
+VER=1
+DB="mysql"
+if [ "$DB" == "mysql" ] 
+then
+	echo "mysqladmin -p drop Seccubus"
+	mysqladmin -p drop Seccubus
+	echo "mysqladmin -p create Seccubus"
+	mysqladmin -p create Seccubus
+	echo "mysql -p Seccubus < structure_v$VER.mysql"
+	mysql -p Seccubus < structure_v$VER.mysql
+	echo "mysql -p Seccubus < data_v$VER.mysql"
+	mysql -p Seccubus < data_v$VER.mysql
+fi

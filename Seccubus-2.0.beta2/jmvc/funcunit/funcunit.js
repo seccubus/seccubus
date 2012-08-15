@@ -1,0 +1,12 @@
+//what we need from javascriptmvc or other places
+steal('funcunit/qunit')
+	.then('funcunit/browser/resources/jquery.js')
+	.then('funcunit/browser/resources/json.js')
+	.then('funcunit/syn')
+	.then('funcunit/browser/core.js')
+	.then('funcunit/browser/open.js')
+	.then('funcunit/browser/actions.js')
+	.then('funcunit/browser/getters.js')
+	.then('funcunit/browser/traversers.js')
+	.then('funcunit/browser/queue.js')
+	.then('funcunit/browser/waits.js')

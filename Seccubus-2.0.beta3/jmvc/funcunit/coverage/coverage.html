@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <title>Coverage</title>
+        <style>
+        	#file{
+        		position:absolute;
+        		left:0;
+        		top:0;
+        		border:1px solid black;
+        		background-color:White;
+        		width: 97%;
+        		height: 100%;
+        		overflow: auto;
+        		display: none;
+        	}
+        	pre{
+        		margin: 0;
+        	}
+        	#closeButton {
+        		color: red;
+        		display: none;
+        		position: absolute;
+        		right: 10px;
+        		top: 10px;
+        		cursor: pointer;
+        	}
+        </style>
+    </head>
+    <body>
+    	<div id='closeButton'>X</div>
+    	<table id='coverage'>
+    		<tr>
+    			<th>File Name</th>
+    			<th>Number of Lines</th>
+    			<th>Lines Run</th>
+    			<th>Coverage Percentage</th>
+    		</tr>
+    	</table>
+    	<table id='file'></table>
+		<script type='text/javascript' src='../../steal/steal.js?funcunit/coverage'></script>
+    </body>
+</html>

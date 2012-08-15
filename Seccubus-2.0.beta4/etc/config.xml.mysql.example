@@ -1,0 +1,18 @@
+<?xml version="1.0" standalone='yes'?>
+<seccubus>
+	<database>
+		<engine>mysql</engine>
+		<database>Seccubus</database>
+		<host>localhost</host>
+		<port>3306</port>
+		<user>Seccubus</user>
+		<password>Seccubus</password>
+	</database>
+	<paths>
+		<modules>/opt/Seccubus/SeccubusV2</modules>
+		<scanners>/opt/Seccubus/scanners</scanners>
+		<bindir>/opt/Seccubus/bin</bindir>
+		<configdir>/opt/Seccubus/etc</configdir>
+		<dbdir>/opt/Seccubus/db</dbdir>
+	</paths>
+</seccubus>

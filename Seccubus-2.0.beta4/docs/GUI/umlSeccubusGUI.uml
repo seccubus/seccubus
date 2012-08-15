@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmi:id="_b1rpgMOUEeCtqb_vHM_PcQ" name="umlSeccubusGUI">
+  <packageImport xmi:id="_b1rpgcOUEeCtqb_vHM_PcQ">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Package" xmi:id="_4borYMOWEeCtqb_vHM_PcQ" name="Seccubus"/>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_nFv2cMO-EeCtqb_vHM_PcQ" name="Select Workspace"/>
+  <packagedElement xmi:type="uml:Package" xmi:id="_agP00MSKEeCtqb_vHM_PcQ" name="Seccubus GUI Start">
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_xi1KMMSLEeCtqb_vHM_PcQ" name="Authentication"/>
+    <packagedElement xmi:type="uml:Actor" xmi:id="_1g3QkMSMEeCtqb_vHM_PcQ" name="Actor_0"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_2UwysMSMEeCtqb_vHM_PcQ" name="Configuration">
+      <extensionPoint xmi:id="_dW7UwMSPEeCtqb_vHM_PcQ" name="ExtensionPoint_0"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_6VCxQMSMEeCtqb_vHM_PcQ" name="Authenticate">
+      <include xmi:id="_YGgVQMSVEeCtqb_vHM_PcQ" name="Include_Display Impost Info" addition="_Lc6XgMSVEeCtqb_vHM_PcQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_BV16gMSNEeCtqb_vHM_PcQ" name="Workspace"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_9Mms4MSPEeCtqb_vHM_PcQ" name="Configure GUI"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_WE6qQMSQEeCtqb_vHM_PcQ" name="Click Tabs"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_cg-HsMSQEeCtqb_vHM_PcQ" name="A_Actor_0_Authentication" memberEnd="_chOmYMSQEeCtqb_vHM_PcQ _chazoMSQEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_chOmYMSQEeCtqb_vHM_PcQ" name="authentication" visibility="public" type="_6VCxQMSMEeCtqb_vHM_PcQ" isUnique="false" association="_cg-HsMSQEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_chZlgMSQEeCtqb_vHM_PcQ"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_chY-cMSQEeCtqb_vHM_PcQ"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_chazoMSQEeCtqb_vHM_PcQ" name="actor_0" visibility="public" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_cg-HsMSQEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_chdP4MSQEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_chd28MSQEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_dJL-QMSQEeCtqb_vHM_PcQ" name="A_Actor_0_Configure GUI" memberEnd="_dJSr8MSQEeCtqb_vHM_PcQ _dJYykMSQEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_dJSr8MSQEeCtqb_vHM_PcQ" name="configure gui" type="_9Mms4MSPEeCtqb_vHM_PcQ" isUnique="false" association="_dJL-QMSQEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_dJYLgcSQEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_dJYLgMSQEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_dJYykMSQEeCtqb_vHM_PcQ" name="actor_0" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_dJL-QMSQEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_dJfgQMSQEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_dJgHUMSQEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_durQ8MSQEeCtqb_vHM_PcQ" name="A_Actor_0_Use Workspaces" memberEnd="_du1B8MSQEeCtqb_vHM_PcQ _du_aAMSQEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_du1B8MSQEeCtqb_vHM_PcQ" name="use workspaces" type="_WE6qQMSQEeCtqb_vHM_PcQ" isUnique="false" association="_durQ8MSQEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_du-y8MSQEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_du9k0MSQEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_du_aAMSQEeCtqb_vHM_PcQ" name="actor_0" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_durQ8MSQEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_dvH84MSQEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_dvH84cSQEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_7QfJAMSQEeCtqb_vHM_PcQ" name="Configure"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_99GgQMSQEeCtqb_vHM_PcQ" name="A_Actor_0_Configure GUI" memberEnd="_99RfYMSQEeCtqb_vHM_PcQ _99Y0IMSQEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_99RfYMSQEeCtqb_vHM_PcQ" name="configure gui" type="_7QfJAMSQEeCtqb_vHM_PcQ" isUnique="false" association="_99GgQMSQEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_99XmAMSQEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_99W-8MSQEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_99Y0IMSQEeCtqb_vHM_PcQ" name="actor_0" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_99GgQMSQEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_99bQYMSQEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_99b3cMSQEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_2Vi8MMSUEeCtqb_vHM_PcQ" name="View Help"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_BwTIQMSVEeCtqb_vHM_PcQ" name="A_Actor_0_View Help" memberEnd="_BwXZsMSVEeCtqb_vHM_PcQ _BwbEEMSVEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_BwXZsMSVEeCtqb_vHM_PcQ" name="view help" type="_2Vi8MMSUEeCtqb_vHM_PcQ" isUnique="false" association="_BwTIQMSVEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_BwadAcSVEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_BwadAMSVEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_BwbEEMSVEeCtqb_vHM_PcQ" name="actor_0" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_BwTIQMSVEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_BwdgUMSVEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_BweHYMSVEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_Lc6XgMSVEeCtqb_vHM_PcQ" name="Display Status Screen">
+      <include xmi:id="_FfkS8MkBEeCQxO_mlUUH3w" name="Include_Update Database" addition="_y18scMkAEeCQxO_mlUUH3w"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_y18scMkAEeCQxO_mlUUH3w" name="Update Database"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Package" xmi:id="_j90sAMVaEeCtqb_vHM_PcQ" name="Workspaces">
+    <ownedComment xmi:id="_eIPRMMblEeCtqb_vHM_PcQ" annotatedElement="_bVXDkMVpEeCtqb_vHM_PcQ">
+      <body>Activate Scans Tab</body>
+    </ownedComment>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_lZq-8MVaEeCtqb_vHM_PcQ" name="Create Workspace"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_r6TaYMVaEeCtqb_vHM_PcQ" name="Edit Workspace Name">
+      <include xmi:id="_2NAbcMVpEeCtqb_vHM_PcQ" name="Include_Confirm Message" addition="_wc76QMVpEeCtqb_vHM_PcQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_vRmGUMVaEeCtqb_vHM_PcQ" name="Delete Workspace">
+      <include xmi:id="_4qfxkMVpEeCtqb_vHM_PcQ" name="Include_Confirm Message" addition="_wc76QMVpEeCtqb_vHM_PcQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_pz7R0MVcEeCtqb_vHM_PcQ" name="Open Workspace">
+      <include xmi:id="_i7rUsMVpEeCtqb_vHM_PcQ" name="Include_Load Scans / Activate Tab" addition="_bVXDkMVpEeCtqb_vHM_PcQ"/>
+      <include xmi:id="_IShGQMkCEeCQxO_mlUUH3w" name="Include_Load Scans" addition="_bVXDkMVpEeCtqb_vHM_PcQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_ePGVAMViEeCtqb_vHM_PcQ" name="Change Workspaces">
+      <include xmi:id="_QGohUMVpEeCtqb_vHM_PcQ" name="Include_Close Workspace" addition="_pVc-YMViEeCtqb_vHM_PcQ"/>
+      <include xmi:id="_WQxvYMVpEeCtqb_vHM_PcQ" name="Include_Open Existing Workspace" addition="_pz7R0MVcEeCtqb_vHM_PcQ"/>
+      <include xmi:id="_JcLdAMkCEeCQxO_mlUUH3w" name="Include_Load Scans" addition="_bVXDkMVpEeCtqb_vHM_PcQ"/>
+      <include xmi:id="_LGWf0MkCEeCQxO_mlUUH3w" name="Include_Unload Scans" addition="_lYvNAMVpEeCtqb_vHM_PcQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_pVc-YMViEeCtqb_vHM_PcQ" name="Close Workspace">
+      <include xmi:id="_rijq8MVpEeCtqb_vHM_PcQ" name="Include_Unload Scans / De-Activate Tab" addition="_lYvNAMVpEeCtqb_vHM_PcQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_79ciUMVkEeCtqb_vHM_PcQ" name="UseCase_0"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_Hj5gsMVoEeCtqb_vHM_PcQ" name="A_Actor_Create Workspace" memberEnd="_Hj9LEMVoEeCtqb_vHM_PcQ _HkJYUMVoEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_Hj9LEMVoEeCtqb_vHM_PcQ" name="create workspace" type="_lZq-8MVaEeCtqb_vHM_PcQ" isUnique="false" association="_Hj5gsMVoEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_HkIxQMVoEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Hj_nUMVoEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_HkJYUMVoEeCtqb_vHM_PcQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_Hj5gsMVoEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_HkNCsMVoEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_HkNpwMVoEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_Iqlb8MVoEeCtqb_vHM_PcQ" name="A_Actor_Edit Workspace Name" memberEnd="_IqpGUMVoEeCtqb_vHM_PcQ _IqswsMVoEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_IqpGUMVoEeCtqb_vHM_PcQ" name="edit workspace name" type="_r6TaYMVaEeCtqb_vHM_PcQ" isUnique="false" association="_Iqlb8MVoEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_IqsJocVoEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_IqsJoMVoEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_IqswsMVoEeCtqb_vHM_PcQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_Iqlb8MVoEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_IqxCIMVoEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_IqxpMMVoEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_JswDkMVoEeCtqb_vHM_PcQ" name="A_Actor_Delete Workspace" memberEnd="_Js0VAMVoEeCtqb_vHM_PcQ _Js3_YMVoEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_Js0VAMVoEeCtqb_vHM_PcQ" name="delete workspace" type="_vRmGUMVaEeCtqb_vHM_PcQ" isUnique="false" association="_JswDkMVoEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Js3YUcVoEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Js3YUMVoEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_Js3_YMVoEeCtqb_vHM_PcQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_JswDkMVoEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Js7pwMVoEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Js7pwcVoEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_KfBOAMVoEeCtqb_vHM_PcQ" name="A_Actor_Open Existing Workspace" memberEnd="_KfNbQMVoEeCtqb_vHM_PcQ _KfZogMVoEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_KfNbQMVoEeCtqb_vHM_PcQ" name="open existing workspace" type="_pz7R0MVcEeCtqb_vHM_PcQ" isUnique="false" association="_KfBOAMVoEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_KfZBcMVoEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_KfXzUMVoEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_KfZogMVoEeCtqb_vHM_PcQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_KfBOAMVoEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_KfiLYMVoEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_KfiycMVoEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_NQLHAMVoEeCtqb_vHM_PcQ" name="A_Actor_Change Workspaces" memberEnd="_NQQmkMVoEeCtqb_vHM_PcQ _NQU4AMVoEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_NQQmkMVoEeCtqb_vHM_PcQ" name="change workspaces" type="_ePGVAMViEeCtqb_vHM_PcQ" isUnique="false" association="_NQLHAMVoEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_NQUQ8MVoEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_NQTp4MVoEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_NQU4AMVoEeCtqb_vHM_PcQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_NQLHAMVoEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_NQYiYMVoEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_NQZJcMVoEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_PUyDEMVoEeCtqb_vHM_PcQ" name="A_Actor_Close Workspace" memberEnd="_PU27kMVoEeCtqb_vHM_PcQ _PU7NAMVoEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_PU27kMVoEeCtqb_vHM_PcQ" name="close workspace" type="_pVc-YMViEeCtqb_vHM_PcQ" isUnique="false" association="_PUyDEMVoEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_PU6l8cVoEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_PU6l8MVoEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_PU7NAMVoEeCtqb_vHM_PcQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_PUyDEMVoEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_PU-3YMVoEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_PU_ecMVoEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_bVXDkMVpEeCtqb_vHM_PcQ" name="Load Scans">
+      <include xmi:id="_ke5lgMVqEeCtqb_vHM_PcQ" name="Include_Open Existing Workspace" addition="_pz7R0MVcEeCtqb_vHM_PcQ"/>
+      <include xmi:id="_Vmt8sMkBEeCQxO_mlUUH3w" name="Include_Change Workspaces" addition="_ePGVAMViEeCtqb_vHM_PcQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_lYvNAMVpEeCtqb_vHM_PcQ" name="Unload Scans">
+      <include xmi:id="_nyVFIMVqEeCtqb_vHM_PcQ" name="Include_Close Workspace" addition="_pVc-YMViEeCtqb_vHM_PcQ"/>
+      <include xmi:id="_S93EEMkBEeCQxO_mlUUH3w" name="Include_Change Workspaces" addition="_ePGVAMViEeCtqb_vHM_PcQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_wc76QMVpEeCtqb_vHM_PcQ" name="Confirm Message">
+      <include xmi:id="_h5JEMMVqEeCtqb_vHM_PcQ" name="Include_Edit Workspace Name" addition="_r6TaYMVaEeCtqb_vHM_PcQ"/>
+      <include xmi:id="_jE_zUMVqEeCtqb_vHM_PcQ" name="Include_Delete Workspace" addition="_vRmGUMVaEeCtqb_vHM_PcQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_cikBEMVqEeCtqb_vHM_PcQ" name="A_Load Scans / Activate Tab_Open Existing Workspace" memberEnd="_ci28AMVqEeCtqb_vHM_PcQ _ci70gMVqEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_ci28AMVqEeCtqb_vHM_PcQ" name="open existing workspace" type="_pz7R0MVcEeCtqb_vHM_PcQ" isUnique="false" association="_cikBEMVqEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_ci7NcMVqEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ci6mYMVqEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_ci70gMVqEeCtqb_vHM_PcQ" name="load scans / activate tab" type="_bVXDkMVpEeCtqb_vHM_PcQ" isUnique="false" association="_cikBEMVqEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_cjAtAMVqEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_cjBUEMVqEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_da7zgMVqEeCtqb_vHM_PcQ" name="A_0"/>
+  <packagedElement xmi:type="uml:Package" xmi:id="_heSKgMbmEeCtqb_vHM_PcQ" name="Scans">
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_ppzacMbmEeCtqb_vHM_PcQ" name="Create Scan"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_53HWkMbmEeCtqb_vHM_PcQ" name="Edit Scan"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_CFEPcMbnEeCtqb_vHM_PcQ" name="Delete Scan"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_GxPqsMbnEeCtqb_vHM_PcQ" name="Select Scan">
+      <include xmi:id="_dAzdIMbnEeCtqb_vHM_PcQ" name="Include_Load Findings" addition="_Y8BZEMbnEeCtqb_vHM_PcQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_Y8BZEMbnEeCtqb_vHM_PcQ" name="Load Findings"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_iumGYMbnEeCtqb_vHM_PcQ" name="A_Actor_Create Scan" memberEnd="_iuqX0MbnEeCtqb_vHM_PcQ _iuwecMbnEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_iuqX0MbnEeCtqb_vHM_PcQ" name="create scan" type="_ppzacMbmEeCtqb_vHM_PcQ" isUnique="false" association="_iumGYMbnEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_iuv3YMbnEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_iuvQUMbnEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_iuwecMbnEeCtqb_vHM_PcQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_iumGYMbnEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_iu3MIMbnEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_iu3MIcbnEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_jd1K8MbnEeCtqb_vHM_PcQ" name="A_Actor_Edit Scan" memberEnd="_jeBYMMbnEeCtqb_vHM_PcQ _jeTFAMbnEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_jeBYMMbnEeCtqb_vHM_PcQ" name="edit scan" type="_53HWkMbmEeCtqb_vHM_PcQ" isUnique="false" association="_jd1K8MbnEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_jeR24MbnEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_jeQowMbnEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_jeTFAMbnEeCtqb_vHM_PcQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_jd1K8MbnEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_jeeEIMbnEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_jeerMMbnEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_kJcTwMbnEeCtqb_vHM_PcQ" name="A_Actor_Delete Scan" memberEnd="_kJpIEMbnEeCtqb_vHM_PcQ _kJ3KgMbnEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_kJpIEMbnEeCtqb_vHM_PcQ" name="delete scan" type="_CFEPcMbnEeCtqb_vHM_PcQ" isUnique="false" association="_kJcTwMbnEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_kJ2jcMbnEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_kJ1VUMbnEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_kJ3KgMbnEeCtqb_vHM_PcQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_kJcTwMbnEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_kJ-fQMbnEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_kJ_GUMbnEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_k_-6MMbnEeCtqb_vHM_PcQ" name="A_Actor_Select Scan" memberEnd="_lAM8oMbnEeCtqb_vHM_PcQ _lAXUsMbnEeCtqb_vHM_PcQ">
+      <ownedEnd xmi:id="_lAM8oMbnEeCtqb_vHM_PcQ" name="select scan" type="_GxPqsMbnEeCtqb_vHM_PcQ" isUnique="false" association="_k_-6MMbnEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_lAWtoMbnEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_lAWGkMbnEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_lAXUsMbnEeCtqb_vHM_PcQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_k_-6MMbnEeCtqb_vHM_PcQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_lAeCYMbnEeCtqb_vHM_PcQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_lAeCYcbnEeCtqb_vHM_PcQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="__N9C8MbnEeCtqb_vHM_PcQ" name="Confirm Message">
+      <include xmi:id="_DFricMboEeCtqb_vHM_PcQ" name="Include_Edit Scan" addition="_53HWkMbmEeCtqb_vHM_PcQ"/>
+      <include xmi:id="_Gi7FYMboEeCtqb_vHM_PcQ" name="Include_Delete Scan" addition="_CFEPcMbnEeCtqb_vHM_PcQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_as3hsMkCEeCQxO_mlUUH3w" name="Deselect Scan">
+      <include xmi:id="_jI-LUMkCEeCQxO_mlUUH3w" name="Include_Unload Findings" addition="_eEgL4MkCEeCQxO_mlUUH3w"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_eEgL4MkCEeCQxO_mlUUH3w" name="Unload Findings"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_mSb2oMkCEeCQxO_mlUUH3w" name="A_Actor_Deselect Scan" memberEnd="_mSp5EMkCEeCQxO_mlUUH3w _mS2GUMkCEeCQxO_mlUUH3w">
+      <ownedEnd xmi:id="_mSp5EMkCEeCQxO_mlUUH3w" name="deselect scan" type="_as3hsMkCEeCQxO_mlUUH3w" isUnique="false" association="_mSb2oMkCEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_mS1fQMkCEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_mS0RIMkCEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_mS2GUMkCEeCQxO_mlUUH3w" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_mSb2oMkCEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_mS80AMkCEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_mS9bEMkCEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_z-J_wMkCEeCQxO_mlUUH3w" name="Start Scan"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_5sPj8MkCEeCQxO_mlUUH3w" name="View Scan History"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_9PpZQMkCEeCQxO_mlUUH3w" name="A_Actor_Start Scan" memberEnd="_9P8UMMkCEeCQxO_mlUUH3w _9QJvkMkCEeCQxO_mlUUH3w">
+      <ownedEnd xmi:id="_9P8UMMkCEeCQxO_mlUUH3w" name="start scan" type="_z-J_wMkCEeCQxO_mlUUH3w" isUnique="false" association="_9PpZQMkCEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_9QDo8MkCEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_9QDB4MkCEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_9QJvkMkCEeCQxO_mlUUH3w" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_9PpZQMkCEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_9QQdQMkCEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_9QRrYMkCEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_96Ak4MkCEeCQxO_mlUUH3w" name="A_Actor_View Scan History" memberEnd="_96P1cMkCEeCQxO_mlUUH3w _96a0kMkCEeCQxO_mlUUH3w">
+      <ownedEnd xmi:id="_96P1cMkCEeCQxO_mlUUH3w" name="view scan history" type="_5sPj8MkCEeCQxO_mlUUH3w" isUnique="false" association="_96Ak4MkCEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_96ZmcMkCEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_96Y_YMkCEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_96a0kMkCEeCQxO_mlUUH3w" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_96Ak4MkCEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_96oP8MkCEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_96peEMkCEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Package" xmi:id="_nMCsoMboEeCtqb_vHM_PcQ" name="Findings">
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_p9Po8MboEeCtqb_vHM_PcQ" name="Select Finding"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_ueMroMboEeCtqb_vHM_PcQ" name="Select Current Status View"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_KF7coMbpEeCtqb_vHM_PcQ" name="Click to Sort by Column"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_MinhgMbpEeCtqb_vHM_PcQ" name="Choose or Type text for Filter"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_COXA0MdUEeCccMkZY9o-WQ" name="A_Actor_Select Finding" memberEnd="_COnfgMdUEeCccMkZY9o-WQ _COxQgMdUEeCccMkZY9o-WQ">
+      <ownedEnd xmi:id="_COnfgMdUEeCccMkZY9o-WQ" name="select finding" type="_p9Po8MboEeCtqb_vHM_PcQ" isUnique="false" association="_COXA0MdUEeCccMkZY9o-WQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_COwpcMdUEeCccMkZY9o-WQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_COwCYMdUEeCccMkZY9o-WQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_COxQgMdUEeCccMkZY9o-WQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_COXA0MdUEeCccMkZY9o-WQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_CO4lQMdUEeCccMkZY9o-WQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_CO5MUMdUEeCccMkZY9o-WQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_C4dGsMdUEeCccMkZY9o-WQ" name="A_Actor_Change Status " memberEnd="_C4oF0MdUEeCccMkZY9o-WQ _C41hMMdUEeCccMkZY9o-WQ">
+      <ownedEnd xmi:id="_C4oF0MdUEeCccMkZY9o-WQ" name="change status " type="_ueMroMboEeCtqb_vHM_PcQ" isUnique="false" association="_C4dGsMdUEeCccMkZY9o-WQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_C40TEMdUEeCccMkZY9o-WQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_C4zE8MdUEeCccMkZY9o-WQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_C41hMMdUEeCccMkZY9o-WQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_C4dGsMdUEeCccMkZY9o-WQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_C4-rIMdUEeCccMkZY9o-WQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_C4_5QMdUEeCccMkZY9o-WQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_Dg4_sMdUEeCccMkZY9o-WQ" name="A_Actor_Select Sort" memberEnd="_Dg_tYMdUEeCccMkZY9o-WQ _DhKFcMdUEeCccMkZY9o-WQ">
+      <ownedEnd xmi:id="_Dg_tYMdUEeCccMkZY9o-WQ" name="select sort" type="_KF7coMbpEeCtqb_vHM_PcQ" isUnique="false" association="_Dg4_sMdUEeCccMkZY9o-WQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_DhI3UMdUEeCccMkZY9o-WQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_DhIQQMdUEeCccMkZY9o-WQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_DhKFcMdUEeCccMkZY9o-WQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_Dg4_sMdUEeCccMkZY9o-WQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_DhSBQMdUEeCccMkZY9o-WQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_DhTPYMdUEeCccMkZY9o-WQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_D-IVUMdUEeCccMkZY9o-WQ" name="A_Actor_Select / Type Filter" memberEnd="_D-SGUMdUEeCccMkZY9o-WQ _D-dFcMdUEeCccMkZY9o-WQ">
+      <ownedEnd xmi:id="_D-SGUMdUEeCccMkZY9o-WQ" name="select / type filter" type="_MinhgMbpEeCtqb_vHM_PcQ" isUnique="false" association="_D-IVUMdUEeCccMkZY9o-WQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_D-b3UMdUEeCccMkZY9o-WQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_D-apMMdUEeCccMkZY9o-WQ" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_D-dFcMdUEeCccMkZY9o-WQ" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_D-IVUMdUEeCccMkZY9o-WQ">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_D-lBQMdUEeCccMkZY9o-WQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_D-loUMdUEeCccMkZY9o-WQ" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_QEy6UMkDEeCQxO_mlUUH3w" name="Deselect Finding"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_Tafq0MkDEeCQxO_mlUUH3w" name="Toggle Selection of All Findings"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_FtJUkMkEEeCQxO_mlUUH3w" name="Edit One Finding"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_XJ6tcMkEEeCQxO_mlUUH3w" name="Edit Selected Findings"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_beNNIMkEEeCQxO_mlUUH3w" name="Change # of Findings Displayed"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_h8zoQMkEEeCQxO_mlUUH3w" name="Change Page Displayed"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_6E8F4MkEEeCQxO_mlUUH3w" name="A_Actor_Deselect Finding" memberEnd="_6FQ2AMkEEeCQxO_mlUUH3w _6FZ_8MkEEeCQxO_mlUUH3w">
+      <ownedEnd xmi:id="_6FQ2AMkEEeCQxO_mlUUH3w" name="deselect finding" type="_QEy6UMkDEeCQxO_mlUUH3w" isUnique="false" association="_6E8F4MkEEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_6FYx0MkEEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_6FYKwMkEEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_6FZ_8MkEEeCQxO_mlUUH3w" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_6E8F4MkEEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_6Fh7wMkEEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_6Fii0MkEEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_6s0lQMkEEeCQxO_mlUUH3w" name="A_Actor_Toggle Selection of All Findings" memberEnd="_6tCAoMkEEeCQxO_mlUUH3w _6tKjgMkEEeCQxO_mlUUH3w">
+      <ownedEnd xmi:id="_6tCAoMkEEeCQxO_mlUUH3w" name="toggle selection of all findings" type="_Tafq0MkDEeCQxO_mlUUH3w" isUnique="false" association="_6s0lQMkEEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_6tJ8cMkEEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_6tJVYMkEEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_6tKjgMkEEeCQxO_mlUUH3w" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_6s0lQMkEEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_6tSfUMkEEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_6tTGYMkEEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_7GOjwMkEEeCQxO_mlUUH3w" name="A_Actor_Add Finding to New Issue" memberEnd="_7GbYEMkEEeCQxO_mlUUH3w _7GkiAMkEEeCQxO_mlUUH3w">
+      <ownedEnd xmi:id="_7GbYEMkEEeCQxO_mlUUH3w" name="add finding to new issue" type="_tnFeEMkEEeCQxO_mlUUH3w" isUnique="false" association="_7GOjwMkEEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_7GjT4MkEEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_7Gis0MkEEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_7GkiAMkEEeCQxO_mlUUH3w" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_7GOjwMkEEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_7Gsd0MkEEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_7GtE4MkEEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_7qXLkMkEEeCQxO_mlUUH3w" name="A_Actor_Add Finding to Existing Issue" memberEnd="_7ql1EMkEEeCQxO_mlUUH3w _7qw0MMkEEeCQxO_mlUUH3w">
+      <ownedEnd xmi:id="_7ql1EMkEEeCQxO_mlUUH3w" name="add finding to existing issue" type="_y8AUUMkEEeCQxO_mlUUH3w" isUnique="false" association="_7qXLkMkEEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_7qu_AMkEEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_7qtJ0MkEEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_7qw0MMkEEeCQxO_mlUUH3w" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_7qXLkMkEEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_7q9ogMkEEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_7q-2oMkEEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_8Ha7AMkEEeCQxO_mlUUH3w" name="A_Actor_View Finding History" memberEnd="_8IEbQMkEEeCQxO_mlUUH3w _8IUS4MkEEeCQxO_mlUUH3w">
+      <ownedEnd xmi:id="_8IEbQMkEEeCQxO_mlUUH3w" name="view finding history" type="_3MR2sMkEEeCQxO_mlUUH3w" isUnique="false" association="_8Ha7AMkEEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_8IR2oMkEEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_8IQogMkEEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_8IUS4MkEEeCQxO_mlUUH3w" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_8Ha7AMkEEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_8Idc0MkEEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_8Ieq8MkEEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_Vy1wUMkFEeCQxO_mlUUH3w" name="A_Actor_Edit One Finding" memberEnd="_Vzsr8MkFEeCQxO_mlUUH3w _Vz4SIMkFEeCQxO_mlUUH3w">
+      <ownedEnd xmi:id="_Vzsr8MkFEeCQxO_mlUUH3w" name="edit one finding" type="_FtJUkMkEEeCQxO_mlUUH3w" isUnique="false" association="_Vy1wUMkFEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Vz3EAMkFEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Vz2c8MkFEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_Vz4SIMkFEeCQxO_mlUUH3w" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_Vy1wUMkFEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_V0D4UMkFEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_V0FGcMkFEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_X7WU8MkFEeCQxO_mlUUH3w" name="A_Actor_Edit Selected Findings" memberEnd="_X7oBwMkFEeCQxO_mlUUH3w _X7xLsMkFEeCQxO_mlUUH3w">
+      <ownedEnd xmi:id="_X7oBwMkFEeCQxO_mlUUH3w" name="edit selected findings" type="_XJ6tcMkEEeCQxO_mlUUH3w" isUnique="false" association="_X7WU8MkFEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_X7v9kMkFEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_X7vWgMkFEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_X7xLsMkFEeCQxO_mlUUH3w" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_X7WU8MkFEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_X75ukMkFEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_X76VoMkFEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_YbX40MkFEeCQxO_mlUUH3w" name="A_Actor_Change # of Findings Displayed" memberEnd="_YbqMsMkFEeCQxO_mlUUH3w _YbyvkMkFEeCQxO_mlUUH3w">
+      <ownedEnd xmi:id="_YbqMsMkFEeCQxO_mlUUH3w" name="change # of findings displayed" type="_beNNIMkEEeCQxO_mlUUH3w" isUnique="false" association="_YbX40MkFEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_YbyIgMkFEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_YbxhcMkFEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_YbyvkMkFEeCQxO_mlUUH3w" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_YbX40MkFEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Yb9usMkFEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Yb-VwMkFEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_ZD87wMkFEeCQxO_mlUUH3w" name="A_Actor_Change Page Displayed" memberEnd="_ZEP2sMkFEeCQxO_mlUUH3w _ZEZnsMkFEeCQxO_mlUUH3w">
+      <ownedEnd xmi:id="_ZEP2sMkFEeCQxO_mlUUH3w" name="change page displayed" type="_h8zoQMkEEeCQxO_mlUUH3w" isUnique="false" association="_ZD87wMkFEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_ZEYZkMkFEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ZEXygMkFEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_ZEZnsMkFEeCQxO_mlUUH3w" name="actor" type="_hgca0MO-EeCtqb_vHM_PcQ" isUnique="false" association="_ZD87wMkFEeCQxO_mlUUH3w">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_ZEjYsMkFEeCQxO_mlUUH3w" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ZEj_wMkFEeCQxO_mlUUH3w" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_y8AUUMkEEeCQxO_mlUUH3w" name="Add Finding to Existing Issue"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_3MR2sMkEEeCQxO_mlUUH3w" name="View Finding History"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Actor" xmi:id="_hgca0MO-EeCtqb_vHM_PcQ" name="Actor"/>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_tnFeEMkEEeCQxO_mlUUH3w" name="Add Finding to New Issue"/>
+  <profileApplication xmi:id="_b1rpgsOUEeCtqb_vHM_PcQ">
+    <eAnnotations xmi:id="_b1rpg8OUEeCtqb_vHM_PcQ" source="http://www.eclipse.org/uml2/2.0.0/UML">
+      <references xmi:type="ecore:EPackage" href="http://www.eclipse.org/uml2/schemas/Standard/1#/"/>
+    </eAnnotations>
+    <appliedProfile href="pathmap://UML_PROFILES/Standard.profile.uml#_0"/>
+  </profileApplication>
+</uml:Model>

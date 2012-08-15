@@ -1,0 +1,23 @@
+<html>
+	<body>
+		<div>
+			<iframe id='myframe' name='myframe' src="iframe.html"></iframe>
+		</div>
+
+		<script src='../jquery.js' type='text/javascript'></script>
+		<script type='text/javascript'>
+			$('div').click(function() {
+				var div = $(this),
+						iframe = $('<iframe/>');
+
+				iframe.attr({
+					id: 'myframe',
+					name: 'myframe',
+					src: 'iframe2.html'
+				});
+
+				div.html(iframe);
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,60 @@
+Seccubus v2
+Copyright 2011 - Schuberg Philis
+Licensed under the Apache License v2.0 January 2004 -
+http://www.apache.org/licenses/
+
+Contributors:
+Frank Breedijk
+Steve Launius
+Zate Berg
+Peter Slootweg
+
+Seccubus includes the following software:
+
+jQuery
+http://jquery.org
+Licensed under the GPL v2 and MIT license
+http://jquery.org/license
+
+jQuery Cookie plugin
+Copyright (c) 2006 Klaus Hartl (stilbuero.de)
+Dual licensed under the MIT and GPL licenses
+
+jQuery dataTables
+Copyright 2008-2010 Allan Jardine, all rights reserved.
+This source file is free software, under either the GPL v2 license or a BSD
+style license
+
+jQuery - Disable Text Select Plugin
+Copyright (c) 2007 James Dempster (letssurf@gmail.com,
+http://www.jdempster.com/category/jquery/disabletextselect/)
+Dual licensed under the MIT and GPL licenses
+
+Metadata - jQuery plugin for parsing metadata from elements
+Copyright (c) 2006 John Resig, Yehuda Katz, J�örn Zaefferer, Paul McLanahan
+Dual licensed under the MIT and GPL licenses
+
+jQuery - Single Double Click
+Jacek Becela
+http://gist.github.com/399624
+MIT License
+
+jQuery - TableSorter
+http://tablesorter.com
+Author: Christian Bach
+Dual licensed under MIT or GPL licenses. 
+
+jQuery Tools - The missing UI library for the Web
+http://flowplayer.org/tools/
+NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
+
+NessusIVILwrapper
+https://github.com/Zate/Nessus-IVIL-Wrapper
+Author: Zate Berg
+Permisison has been granted by the author to use this tool in Seccubus
+
+IVIL
+http://ivil.sourceforge.net
+Author: Frank Breedijk
+MIT License
+

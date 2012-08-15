@@ -1,0 +1,206 @@
+#!/usr/bin/env perl
+# ------------------------------------------------------------------------------
+# $Id$
+# ------------------------------------------------------------------------------
+# This script will call the Nikto scanner and import the results as IVIL
+# ------------------------------------------------------------------------------
+#  Copyright 2011 Frank Breedijk of Schuberg Philis
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# ------------------------------------------------------------------------------
+
+use strict;
+use SeccubusV2;
+use SeccubusIVIL;
+
+use Getopt::Long;
+use Carp;
+
+my (
+	$nessus_path,
+	$user,
+	$password,
+	$server,
+	$port,
+	$rcfile,
+	$hosts_file,
+	$workspace,
+	$scan,
+	$help,
+	$verbose,
+	$quiet,
+   );
+
+$help = 0;
+
+# Create default values
+$port = 1241;
+
+GetOptions(	
+		'nessus_path|p=s'	=> \$nessus_path,
+		'user|u=s'		=> \$user,
+		'password|pw=s'		=> \$password,
+		'server|s=s'		=> \$server,
+		'port=s'		=> \$port,
+		'rc=s'			=> \$rcfile,
+		'hosts|h=s'		=> \$hosts_file,
+		'workspace=s'		=> \$workspace,
+		'scan=s'		=> \$scan,
+		'verbose|v+'		=> \$verbose,
+		'quiet|q!'		=> \$quiet,
+		'help'			=> \$help,
+	  );
+
+help() if $help;
+$verbose = 0 if $quiet;
+
+my $config = get_config();
+my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
+
+print "Hosts file specified $hosts_file\n" if $verbose;
+if ( ! $hosts_file || ! -e $hosts_file ) {
+	print "You must specify a valid hosts file";
+	help();
+} elsif ( ! $user ) {
+	print "you must specify a user";
+	help();
+} elsif ( ! $password ) {
+	print "You must specify a password";
+	help();
+} elsif ( ! $server ) {
+	print "You must specify a Nessus server";
+	help();
+} elsif ( ! $rcfile ) {
+	print "You must specify a valid .nessusrc file";
+	help();
+} elsif ( ! $workspace ) {
+	print "You must specify a workspace name";
+	help();
+} elsif ( ! $scan ){
+	print "You must specify a scan name";
+	help();
+};
+
+if ( ! -e $rcfile ) {
+	if ( -e "$config->{paths}->{configdir}/$rcfile" ) {	
+		$rcfile = "$config->{paths}->{configdir}/$rcfile";
+	} else {
+		print "The .nessusrc file '$rcfile' could not be found directly or in $config->{paths}->{configdir}/\n";
+		help();
+	}
+}
+
+$nessus_path = get_nessus_path() unless $nessus_path;
+if ( ! $nessus_path || ! -e $nessus_path ) {
+	print "Unable to find the nessus client on you system. I suggest you use the \n--nessus_path option to provide a path to the nessus client.\n";
+	help();
+}
+print "Nessus found in $nessus_path\n" if $verbose;
+
+my $tempfile = "/tmp/seccubus.$$";
+my $timestamp = make_timestamp();
+print "Timestamp = $timestamp\n" if $verbose;
+
+print "Starting scan\n" if $verbose;
+my $cmd = "$nessus_path -c $rcfile -q -x $server $port $user '$password' $hosts_file $tempfile.nbe";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" unless $quiet;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose;
+
+print "Scanning done, converting .nbe to html\n" unless $quiet;
+my $cmd = "$nessus_path -c $rcfile -q -i $tempfile.nbe -o $tempfile.html";
+$cmd .= " -v" if $verbose > 1;
+
+print "Executing $cmd\n" if $verbose;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose;
+
+print "Converting .nbe to IVIL\n" unless $quiet;
+$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=NessusLegacy --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile=$tempfile.nbe";
+print "Executing $cmd\n" if $verbose;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose;
+
+print "Importing ivil\n" unless $quiet;
+$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner NessusLegacy --timestamp $timestamp";
+$cmd .= " -v" if $verbose > 1;
+$cmd .= " $tempfile.ivil.xml";
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+
+
+print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
+# TODO: Add files to scan
+#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.nbe", "NBE output");
+#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.html", "HTML output");
+#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.ivil.xml", "IVIL output");
+
+# Cleanup
+unlink "$tempfile.nbe" if -e "$tempfile.nbe";
+unlink "$tempfile.html" if -e "$tempfile.html";
+unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+
+exit(0);
+
+sub help() {
+	print "
+
+Usage: scan 	[--nessus_path=<path to nessus>] --user=<nessus username> \\
+		--password=<nessus password> --server=<nessus server> \\
+		--rc=<.nessusrc file> --hosts=<file containing hosts to scan> \\
+		--workspace=<seccubus workspace> --scan=<seccubus scan> \\
+		[--verbose|v] [--quiet|q] [--help|h]
+
+Arguments:
+--nessus_path (-p) - Optional path of the nessus (client) binary. If it is not
+		     provided the script will try to find it for you
+--user (-u)	   - Usernameto use for Nessus login
+--password (--pw)  - Password to use for nessus login
+--server	   - IP address of hostname of the Nessus server
+--rc		   - Path of the .nessusrc file to use
+--hosts		   - The file containing the 'hosts' to scan
+--workspace	   - Name of the workspace to load the findings into
+--scan		   - Name of the scan to load the findings into
+--verbose (-v)	   - Be verbose during execution
+--quiet (-q)	   - Don't print output
+--help (-h)	   - Print this message
+";
+	exit(1);
+}
+
+sub get_nessus_path() {
+	my $path = `which nessus`;
+	if ( $path =~ /(^\/.*nessus)/ ) {
+		return $1;
+	}
+	if ( -e '/opt/nessus/bin/nessus' ) {
+		return '/opt/nessus/bin/nessus';
+	}
+	return undef;
+}
+
+sub make_timestamp() {
+	my ($second, $minute, $hour, $day, $month, $year) = localtime();
+	$month++;
+	$second = "0" . $second if $second < 10;
+	$minute = "0" . $minute if $minute <10;
+	$hour = "0". $hour if $hour < 10;
+	$day = "0". $day if $day <10;
+	$month = "0" . $month if $month <10;
+	$year += 1900;
+
+	return "$year$month$day$hour$minute$second";
+}

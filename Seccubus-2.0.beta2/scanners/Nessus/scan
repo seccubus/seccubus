@@ -1,0 +1,236 @@
+#!/usr/bin/env perl
+# ------------------------------------------------------------------------------
+# $Id$
+# ------------------------------------------------------------------------------
+# This script will call Zate Berg's Nessis-IVIL-Wrapper (see 
+# https://github.com/Zate/Nessus-IVIL-Wrapper ) to connect to a Nessus instance,
+# initiate a scan, save the results as an IVIL file and import it
+# ------------------------------------------------------------------------------
+#  Copyright 2011 Frank Breedijk of Schuberg Philis
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# ------------------------------------------------------------------------------
+
+use strict;
+use SeccubusV2;
+use SeccubusIVIL;
+
+use Getopt::Long;
+use Carp;
+
+my (
+	$user,
+	$password,
+	$server,
+	$policy,
+	$hosts_file,
+	$workspace,
+	$scan,
+	$noerase,
+	$help,
+	$verbose,
+	$quiet,
+	$sleep,
+	$cmd,
+   );
+
+# Default values for command line values
+$help = 0;
+$quiet = 0;
+$sleep = 10;
+
+# Check for Ruby
+print "Lets see if you have Ruby on your system\n" if $verbose;
+$cmd = "echo 'print \"yes\"'|env ruby";
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+if ( $result ne "yes" ) {
+	die "This script requires Ruby to run succesfully\n";
+}
+
+
+GetOptions(	
+		'user|u=s'		=> \$user,
+		'password|p=s'		=> \$password,
+		'server|s=s'		=> \$server,
+		'policy|pol=s'		=> \$policy,
+		'hosts|h=s'		=> \$hosts_file,
+		'workspace|ws=s'	=> \$workspace,
+		'scan|sc=s'		=> \$scan,
+		'sleep=s'		=> \$sleep,
+		'noerase'		=> \$noerase,
+		'verbose|v+'		=> \$verbose,
+		'quiet|q!'		=> \$quiet,
+		'help'			=> \$help,
+	  );
+
+help() if $help;
+$verbose = 0 if $quiet;
+
+my $config = get_config();
+
+if ( ! $hosts_file ) {
+	print "You must specify a valid hosts spec";
+	help();
+} elsif ( ! $user ) {
+	print "You must specify a user";
+	help();
+} elsif ( ! $password ) {
+	print "You must specify a password";
+	help();
+} elsif ( ! $server ) {
+	print "You must specify a nessus server";
+	help();
+} elsif ( ! $policy ) {
+	print "You must specify a policy";
+	help();
+} elsif ( ! $workspace ) {
+	print "You must specify a workspace name";
+	help();
+} elsif ( ! $scan ){
+	print "You must specify a scan name";
+	help();
+};
+
+my $timestamp = make_timestamp();
+print "Timestamp = $timestamp\n" if $verbose > 1;
+my $tempscan = "seccubus.$scan.$timestamp";
+my $tempfile = "/tmp/$tempscan.$$";
+my $nivil = "$config->{paths}->{scanners}\/Nessus\/nivil.rb";
+my $nessus2ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nessus2ivil";
+my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
+
+print "Attempting to find policy ID for policy $policy\n" if $verbose;
+$cmd = "$nivil -u '$user' -p '$password' -s '$server' --show-policies";
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+my $pol_id = "";
+foreach my $line ( split /\n/, $result ) {
+	my ($id, $name) = split /\s+/, $line;
+	if ( $name eq $policy ) {
+		$pol_id = $id;
+		last;
+	}
+}
+if ( $pol_id ) { 
+	print "Policy ID is $pol_id\n" if $verbose;
+} else {
+	die "Could not find policy id for policy $policy";
+}
+
+print "Starting scan\n" unless $quiet;
+my $cmd = "$nivil -u '$user' -p '$password' -s '$server' -l $pol_id -n '$tempscan'";
+if ( -e $hosts_file ) {			# Assume its a host spect rather then a
+					# hosts file if there is no file 
+	$cmd .= " -f '$hosts_file'";
+} else {
+	$cmd .= " -t '$hosts_file'";
+}
+
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+$result =~ /([\da-f\-]+)/;
+
+my $report_id = $1;
+
+print "Polling to determin that report has finished\n" if $verbose > 1;
+my $status = "running";
+my $done;
+my $total;
+while ( $status eq "running" ) {
+	my $cmd = "$nivil -u '$user' -p '$password' -s '$server' --get-report $report_id -o '$tempfile'";
+	print "\nExecuing $cmd\n" if $verbose > 1;
+	$result = `$cmd 2>&1`;
+	print "$result\n" if $verbose > 1;
+	$status = "";
+	foreach my $line ( split /\n/, $result ) {
+		if ( $line =~ /^(.*)\|(\d+)\|(\d+)/ ) {
+			($status, $done, $total) = split( /\|/, $line);
+			print "$status: $done of $total IPs done\n" unless $quiet;
+			last;
+		} 
+	}
+	sleep(10) if $status eq "running";
+}
+
+print "Converting $tempfile.nessus to $tempfile.ivil.xml\n" unless $quiet;
+$cmd = "$nessus2ivil --infile $tempfile.nessus";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+print "Importing ivil\n" unless $quiet;
+$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner Nessus --timestamp $timestamp";
+$cmd .= " -v" if $verbose > 1;
+$cmd .= " $tempfile.ivil.xml";
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
+# TODO: Add files to scan
+#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.nessus", ".nessus output");
+#add_file_to_scan($workspace, $scan, $timestamp, "$tempfile.ivil", "IVIL output");
+
+# Cleanup
+unless ( $noerase ) {
+	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+	unlink "$tempfile.nessus" if -e "$tempfile.nessus";
+}
+
+print "Done\n" unless $quiet;
+
+exit(0);
+
+sub help() {
+	print "
+Usage: scan       --user=<username> --password=<password> --server=<server> \\
+                  --policy=<policy name> --hosts=<hosts file|hosts spec> \\ 
+                  --workspace=<seccubus workspace> --scan=<seccubus scan>\\
+                  [--noerase] [--verbose] [--quiet] [--help]
+--user (-u)	  - Nessus username
+--password (-p)	  - Nessus password
+--server (-s)	  - Nessus server (ip or name)
+--policy	  - Name of Nessus policy
+--hosts		  - Specification of hosts to scan. Follows the Nessus rules 
+		    for specifying hosts, or path to a file containing such 
+		    specification
+--workspace (-ws) - Seccubus workspace the scan in in
+--scan (-sc)	  - Seccubus scan the data should be saved in
+--noerase         - Don't erase temporary files
+--sleep           - Seconds to sleep between polls of the Nessus engine 
+                    (default=10)
+--verbose (-v)    - Be verbose during execution
+--quiet (-q)      - Don't print output
+--help (-h)       - Print this message
+";
+	exit(1);
+}
+
+sub make_timestamp() {
+	my ($second, $minute, $hour, $day, $month, $year) = localtime();
+	$month++;
+	$second = "0" . $second if $second < 10;
+	$minute = "0" . $minute if $minute <10;
+	$hour = "0". $hour if $hour < 10;
+	$day = "0". $day if $day <10;
+	$month = "0" . $month if $month <10;
+	$year += 1900;
+
+	return "$year$month$day$hour$minute$second";
+}

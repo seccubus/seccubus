@@ -1,0 +1,273 @@
+/* 
+  Default skin CSS stylesheet
+  
+  $Id$
+  
+*/
+* {
+	margin: 0;
+	outline: 0;
+	padding: 0;
+}
+
+/* Hidden */
+.hidden {
+	display: none;
+}
+
+/* HTML 5 specific */
+header,section,article,aside,footer {
+	display: block;
+}
+
+body {
+	font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	font-size: 11px;
+	line-height: 14px;
+	color: #000;
+	background-color: #ddd;
+	display: block;
+}
+
+.nok {
+	background-color: #FF6666;
+}
+
+div.shell {
+	margin: 0px auto;
+	width: 100%;
+	min-width: 700px;
+}
+
+/* Left side div */
+div.left { 
+	width: 200px;
+	left: 0px;
+        margin-left: 0;
+        margin-right: 0;
+	float: left;
+}
+
+select.left {
+	width: 180px;
+	max-width: 180px;
+}
+
+
+/* Div next to a left side div */
+div.main { 
+	margin-left: 260px;
+	margin-right: 50px;
+}
+
+/* Div is there is no left side div */
+div.full {
+	margin-left: 0px;
+	margin-right: 50px; 
+	float: left;
+}
+
+/* Generic elements */
+
+a {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+h1 {
+	font-size: 22px;
+	line-height: 24px;
+	color: #000;
+	font-weight: normal;
+}
+
+h1 a {
+	color: #000;
+	text-decoration: none;
+}
+
+h2 {
+	font-size: 16px;
+	line-height: 28px;
+	color: #000;
+	font-weight: normal;
+}
+
+header {
+	background: url(img/header.gif);
+	height: 78px;
+	white-space: nowrap;
+}
+
+#header-logo {
+	float: left;
+}
+
+#header-logo img {
+	height: 50px;
+	width: 50px;
+	padding: 0 4px 0 0;
+	margin: 14px 0;
+}
+
+#header-top {
+	height: 47px;
+}
+
+#header-bottom {
+	height: 30px;
+}
+
+header h1 {
+	float: left;
+	display: inline;
+	margin-top: 12px;
+}
+
+header h2 {
+	float: left;
+	display: inline;
+	margin-top: 12px;
+	margin-left: 15px;
+}
+
+/* begin Top Navigation links */
+#top-nav {
+	color: #000;
+	float: right;
+	margin-top: 15px;
+	white-space: nowrap;
+}
+
+#top-nav a {
+	color: #000;
+}
+
+#top-nav span {
+	color: #000;
+}
+
+/* begin Menu Navigation tabs */
+#main-nav {
+	float: right;
+}
+
+/* begin li.error and li.ok */
+.Error {
+	padding-left: 30px;
+	background-image: url(img/error.png);
+	background-repeat: no-repeat;
+	background-position: 0.5em;
+}
+
+.OK {
+	padding-left: 30px;
+	background-image: url(img/ok.png);
+	background-repeat: no-repeat;
+	background-position: 0.5em;
+}
+
+/*****************************************************************************
+ * Table
+ */
+
+table {
+	margin: 0 auto;
+	clear: right;
+	width: 100%;
+	border-collapse: collapse;
+}
+.noborder {
+	border: 0px;
+	padding: 3px;
+}
+
+th.asc_disabled {
+	background: url("img/sort_asc_disabled.png") no-repeat scroll right center; 
+	padding-right: 20px;
+}
+th.desc_disabled {
+	background: url("img/sort_desc_disabled.png") no-repeat scroll right center; 
+	padding-right: 20px;
+}
+th.both_disabled {
+	background: url("img/sort_both_disabled.png") no-repeat scroll right center; 
+	padding-right: 20px;
+}
+th.asc {
+	background: url("img/sort_asc.png") no-repeat scroll right center; 
+	padding-right: 20px;
+	cursor: hand;
+}
+th.desc {
+	background: url("img/sort_desc.png") no-repeat scroll right center; 
+	padding-right: 20px;
+	cursor: hand;
+}
+th.both {
+	background: url("img/sort_both.png") no-repeat scroll right center; 
+	padding-right: 20px;
+	cursor: hand;
+}
+thead th {
+	border: 1px solid #aaa;
+	border-bottom: 1px solid black;
+	font-weight: bold;
+}
+td.noborder {
+	border: 0px;
+}
+td {
+	border: 1px solid #aaa;
+}
+td.center {
+	text-align: center;
+}
+tr.sev_1 {
+	background-color: #FF6666;
+}
+tr.sev_2 {
+	background-color: yellow;
+}
+tr.sev_3 {
+	background-color: #66FF33;
+}
+tr.sev_4 {
+	background-color: blue;
+}
+
+/* 
+ * Modal window stuff
+ */
+
+.mask {
+  position:absolute;
+  top : 0;
+  left : 0;
+  z-index:9000;
+  background-color:#000;
+  display:none;
+  opacity: 1;
+  filter:alpha(opacity:100); /* For IE8 and earlier */
+}
+
+.widgetsModalWindow {
+  position:absolute;
+  display:none;
+  z-index:9995;
+  padding:20px;
+}
+
+.widgetsModalClose {
+  position:absolute;
+  display:none;
+  z-index:9999;
+  padding:20px;
+}
+
+
+/* Customize your modal window here, you can add background image too */
+.widgetsModalWindow {
+  background-color:white;
+}
+

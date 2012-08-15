@@ -1,0 +1,15 @@
+<html>
+	<head></head>
+	<body>
+		<a href='#' id='open'>Click to open</a>
+		<script src='../jquery.js' type='text/javascript'></script>
+		<script type='text/javascript'>
+			$(document).ready(function(){
+				$('#open').click(function(ev){
+					ev.preventDefault()
+					$('<iframe src="iframe.html" name="myframe"></iframe>').appendTo(document.body)
+				})
+			})
+		</script>
+	</body>
+</html>

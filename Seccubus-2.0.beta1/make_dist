@@ -1,0 +1,71 @@
+#!/bin/bash
+# ------------------------------------------------------------------------------
+# $Id$
+# ------------------------------------------------------------------------------
+# This shell script runs the command to make a valid distrbution including
+# making a MANIFEST
+# 
+# Before a distribution can be built perl files will be checked for syntaxt and
+# the jmvc unit test ha
+# ------------------------------------------------------------------------------
+#  Copyright 2011 Frank Breedijk of Schuberg Philis
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# ------------------------------------------------------------------------------
+
+echo '*************************************************************************'
+echo "Lets see if our perl compiles";
+echo '*************************************************************************'
+./perl_ok.pl 2>&1 | tee /tmp/test.$$
+if [ `grep 'nok' /tmp/test.$$ |wc -l` -gt 0 ]
+then
+	rm /tmp/test.$$
+	exit 1
+fi
+
+echo '*************************************************************************'
+echo "Lets see if all jmvc unit tests pass"
+echo '*************************************************************************'
+#./unit_test_jmvc |tee /tmp/test.$$
+echo OK > /tmp/test.$$
+if [ `grep 'OK' /tmp/test.$$|wc -l` -lt 1 ] 
+then
+	rm /tmp/test.$$
+	exit 1
+fi 
+
+echo '*************************************************************************'
+echo "Building jmvc"
+echo '*************************************************************************'
+./build_jmvc |tee /tmp/test.$$
+if [ `grep 'Disable fixtures first' /tmp/test.$$|wc -l` -gt 0 ]
+then
+	rm /tmp/test.$$
+	exit 1
+fi
+
+rm /tmp/test.$$
+echo '*************************************************************************'
+echo "Building distribution"
+echo '*************************************************************************'
+perl Makefile.PL
+make clean
+perl Makefile.PL
+#rm MANIFEST
+make manifest
+perl Makefile.PL
+make
+rm Seccubus-*.tar.gz
+make dist
+
+rm /tmp/test.$$ 2>/dev/null

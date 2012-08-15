@@ -1,0 +1,26 @@
+<% %>
+<thead><tr>
+<% for(var i=0;i < columns.length;i+=2) { %>
+	<th sort='<%= columns[i] %>'
+		<% if(columns[i] == orderBy) { %>
+			<% if(descending) { %>
+				class='desc'
+			<% } else { %>
+				class='asc'
+			<% } %>
+		<% } else if (columns[i]) { %>
+			class='both'
+		<% } %>
+	>
+		<% if (columns[i+1] == "select") {  %>
+			<% if(checked.all) { %>
+				<img src="img/checkbox_filled.png" checked='true' class="selectAll">
+			<% } else  { %>
+				<img src="img/checkbox_blank.png" class="selectAll">
+			<% } %>
+		<% } else { %>
+			<%= columns[i+1] %>
+		<% } %>
+	</th>
+<% } %>
+</tr></thead>

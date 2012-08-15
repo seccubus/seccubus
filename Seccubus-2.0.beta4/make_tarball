@@ -1,0 +1,41 @@
+#!/bin/bash
+# ------------------------------------------------------------------------------
+# $Id$
+# ------------------------------------------------------------------------------
+# This shell script make the distribution tarball
+# ------------------------------------------------------------------------------
+
+echo '*************************************************************************'
+echo "Make sure everything is checked in"
+echo '*************************************************************************'
+if [ `svn status|wc -l` -ne 0 ]
+then
+        echo "Something isn't checked in yet"
+        echo "Fix the error and rerun make_tarball"
+        svn status
+        exit 1
+fi
+
+echo '*************************************************************************'
+echo "Lets see if our perl compiles";
+echo '*************************************************************************'
+./perl_ok.pl 2>&1 | tee /tmp/test.$$
+if [ `grep 'nok' /tmp/test.$$ |wc -l` -gt 0 ]
+then
+        rm /tmp/test.$$
+        exit 1
+fi
+
+echo '*************************************************************************'
+echo "Building tarball"
+echo '*************************************************************************'
+perl Makefile.PL
+make clean
+perl Makefile.PL
+rm MANIFEST
+make manifest
+perl Makefile.PL
+make
+rm Seccubus-*.tar.gz
+make dist
+

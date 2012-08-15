@@ -1,0 +1,208 @@
+#!/usr/bin/env perl
+# ------------------------------------------------------------------------------
+# $Id$
+# ------------------------------------------------------------------------------
+# This program imports an old Seccubus1 scan from the filesystem and places it
+# in the database
+# ------------------------------------------------------------------------------
+#  Copyright 2011 Frank Breedijk of Schuberg Philis
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# ------------------------------------------------------------------------------
+
+use strict;
+use SeccubusV2;
+use SeccubusHelpers;
+use SeccubusScans;
+use SeccubusRuns;
+use SeccubusWorkspaces;
+use SeccubusFindings;
+use SeccubusHostnames;
+use Getopt::Long;
+use Carp;
+
+my (
+	$help,
+	$basedir,
+	$scanname,
+	$verbose,
+	$newname,
+	$scanner,
+	$workspace,
+	%stati,
+	$scanner_param,
+	$targets,
+   );
+
+%stati = ( 
+		"NEW" 		=> 1,
+		"CHANGED"	=> 2,
+		"OPEN"		=> 3,
+		"NO ISSUE"	=> 4,
+		"GONE"		=> 5,
+		"FIXED"		=> 6,
+		"HARD MASKED"	=> 99
+	 );
+my %sev = ( 
+		"Security Note" 	=> 3,
+		"Open port" 		=> 4,
+		"Security Warning"	=> 2,
+		"Security Hole"		=> 1
+	  );
+$help = 0;
+$basedir = "/home/seccubus";
+$scanner = "nessus full";
+
+GetOptions(	'basedir=s'	=> \$basedir,
+		'scan=s'	=> \$scanname,
+		'scanner=s'	=> \$scanner,
+		'help|h!'	=> \$help,
+		'verbose|v!'	=> \$verbose,
+		'newname=s'	=> \$newname,
+		'workspace=s'	=> \$workspace,
+	  );
+
+help() if $help;
+if ( ! $scanname ) {
+	print "You must specify a scan name";
+	help();
+} elsif ( ! check_config() ) {
+	print "Configuration file problem";
+	help();
+};
+
+if ( ! -e "$basedir/var/$scanname" ) {
+	print "Unable to read scan $scanname from $basedir/var/$scanname, did you specify --basedir and --scan correctly?\n";
+	help();
+}
+
+$ENV{REMOTE_USER} = "importer";			# This utility runs under its 
+						# Own account
+
+$newname = $scanname unless $newname;
+$workspace = $scanname unless $workspace;
+
+print "Creating Seccubus2 scan '$newname' in workspace '$workspace' from Seccubus1 scan '$scanname'\n" if $verbose;
+my $workspace_id = get_workspace_id("$workspace");
+unless ( $workspace_id ) {
+	$workspace_id = create_workspace($workspace);
+	print "Workspace '$workspace' with id $workspace_id created.\n" if $verbose;
+} else {
+	print "Workspace '$workspace' with id $workspace_id selected.\n" if $verbose;
+}
+	
+my $scan_id = get_scan_id($workspace_id, $newname);
+if ( $scan_id ) {
+	 confess "Scan $newname allready exists in workspace $workspace, you can specify a new scanname with the --newname parameter";
+} else {
+	print "\nLoading targets\n" if $verbose;
+	open(HOSTS, "$basedir/var/$scanname/hosts") or confess "Unable to open $basedir/var/$scanname/hosts";
+	$targets = join "", <HOSTS>;
+	close HOSTS;
+	print "\nTargets:\n----\n$targets\n-----\n" if $verbose;
+
+	$scan_id = create_scan($workspace_id, $newname, $scanner, "Please update manually", $targets);
+	print "Created scan '$newname' with id $scan_id" if $verbose;
+}
+
+print "\nAdding hostnames\n" if $verbose;
+open(NAMES, "$basedir/var/$scanname/hostnames") or confess "Unable to open $basedir/var/$scanname/hostnames";
+while ( <NAMES> ) {
+	chomp();
+	s/\#.*$//;
+	s/^\s*//;
+	s/\s$//;
+	if ( ! /^\s*$/ ) { # Ignore empty lines
+		if ( /^(\S+)\s+(.*)$/ ) {
+			my $ip = $1;
+			my $name = $2;
+			update_hostname($workspace_id, $ip, $name);
+			print "Set hostname '$ip -> $name'\n" if $verbose;
+		}
+	}
+}
+close NAMES;
+
+print "\nImporting findings\n" if $verbose;
+print "Globbing $basedir/var/$scanname/findings/*/*/*\n" if $verbose;
+
+my @plugins = <$basedir/var/$scanname/findings/*/*/*>;
+
+foreach my $dir ( @plugins ) {
+	print "In directory $dir\n" if $verbose;
+	my @fields = split "\/", $dir;
+	my $plugin = $fields[-1];
+	my $port = $fields[-2];
+	my $ip = $fields[-3];
+
+	my $remark = `cat $dir/remark`;
+	my $status = `cat $dir/status`;
+	print "Status: $status, remark: $remark\n" if $verbose;
+	my @tsfiles = <$dir/2*>;
+	foreach my $tsfile ( @tsfiles ) {
+		my $timestamp = (split /\//, $tsfile)[-1];
+		$timestamp =~ s/(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/$1-$2-$3 $4:$5:00/;
+		my $finding = `cat $tsfile`;
+		$finding =~ /^.*?\|.*?\|.*?\|.*?\|.*?\|(.*?)\|/;
+		my $severity = $sev{$1};
+		$finding =~ s/^.*\|(\\n)*//;
+		$finding =~ s/\\n/\n/g;
+		print "Timestamp: $timestamp\t" if $verbose;
+		my $run_id = update_run($workspace_id, $scan_id, $timestamp);
+		print "Run ID: $run_id\t" if $verbose;
+		die "Unknown status $status encountered ($ip/$port/$plugin)" unless exists($stati{$status});
+		# In SeccubusV1 / was replaced by _
+		$port =~ s/\_/\//;
+		my $finding_id = update_finding
+			( "workspace_id"	=> $workspace_id,
+			  "run_id"	=> $run_id,
+			  "scan_id"	=> $scan_id,
+			  "host"	=> $ip,
+			  "port"	=> $port,
+			  "plugin"	=> $plugin,
+			  "finding"	=> $finding,
+			  "status"	=> $stati{$status},
+			  "remark"	=> $remark,
+			  "severity"	=> $severity,
+			);
+		print "Finding ID: $finding_id\n" if $verbose;
+
+
+	}
+}
+
+
+exit();
+
+sub help() {
+	print "
+Usage: importer [--basedir <directory>] --scan <scan name> [--scanner <scanner name] [--newname <new scan name>] [--workspace <workspace name>] [--help] [--verbose]
+
+Arguments:
+--basedir 	- the old Seccubus base directory
+		  Option, default: /home/seccubus
+--scan 		- the name of the scan in the old Seccubus
+--scanner	- Name of the scanner should be either one of: 
+		  * nessus
+		  * openvas
+--newname	- New name to use when importing into the database
+		  Option, default: user the value given for scan
+--workspace	- The name of the SeccubusV2 workspace this scan will be 
+		  imported to, defaults to the value of scanname
+--verbose (-v)	- Be verbose
+--help (-h)	- Print this message
+";
+	exit();
+}
+
+
