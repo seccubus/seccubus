@@ -1,0 +1,4 @@
+#!/usr/bin/env perl
+$nessusd_host = "localhost";
+$nessusd_user = "localhost";
+$nessusd_user_pass = "localhost";
