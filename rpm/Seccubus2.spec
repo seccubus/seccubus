@@ -11,7 +11,7 @@
 %define scandir		%{installdir}/scanners
 
 Name:		Seccubus
-Version:	2.0.beta4
+Version:	2.0.beta5
 Release:	0
 Summary:	Automated regular vulnerability scanning with delta reporting
 Group:		Network/Tools
@@ -352,6 +352,8 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/upgrade_v1_v2.mysql
 
 %changelog
+* Wed Aug 15 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Corrected major error in beta4
 * Tue Jul 10 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Corrected performance and installation issues
 - Version 2.0.beta4
