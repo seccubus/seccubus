@@ -1,0 +1,209 @@
+# This file was automagically created by nessus
+nessusd_user = autonessus
+nessusd_host = sectionzero.org
+begin(SERVER_PREFS)
+ max_hosts = 8
+ max_checks = 5
+ log_whole_attack = yes
+ cgi_path = /cgi-bin
+ port_range = 0-65535
+ optimize_test = yes
+ language = english
+ checks_read_timeout = 5
+ non_simult_ports = 139, 445
+ plugins_timeout = 320
+ safe_checks = no
+ auto_enable_dependencies = yes
+ silent_dependencies = yes
+ use_mac_addr = no
+ save_knowledge_base = no
+ kb_restore = no
+ only_test_hosts_whose_kb_we_dont_have = no
+ only_test_hosts_whose_kb_we_have = no
+ kb_dont_replay_scanners = no
+ kb_dont_replay_info_gathering = no
+ kb_dont_replay_attacks = no
+ kb_dont_replay_denials = no
+ kb_max_age = 864000
+ plugin_upload = no
+ plugin_upload_suffixes = .nasl, .inc
+ slice_network_addresses = no
+ auto_update = yes
+ ntp_save_sessions = yes
+ ntp_detached_sessions = yes
+ server_info_nessusd_version = 2.2.6
+ server_info_libnasl_version = 2.2.6
+ server_info_libnessus_version = 2.2.6
+ server_info_thread_manager = fork
+ server_info_os = Linux
+ server_info_os_version = 2.6.20-gentoo-r7
+ reverse_lookup = yes
+ ntp_keep_communication_alive = yes
+ ntp_opt_show_end = yes
+ save_session = yes
+ detached_scan = no
+ continuous_scan = no
+end(SERVER_PREFS)
+
+begin(RULES)
+end(RULES)
+
+begin(SERVER_INFO)
+ server_info_nessusd_version = 2.2.6
+ server_info_os_version = 2.6.20-gentoo-r7
+ server_info_os = Linux
+ server_info_thread_manager = fork
+ server_info_libnessus_version = 2.2.6
+ server_info_libnasl_version = 2.2.6
+end(SERVER_INFO)
+
+begin(PLUGINS_PREFS)
+ Nmap (NASL wrapper)[radio]:TCP scanning technique : = SYN scan
+ SSH settings[password]:Passphrase for SSH key : = 
+ SSH settings[file]:SSH private key to use : = 
+ SSH settings[file]:SSH public key to use : = 
+ HTTP login page[entry]:Login form : = 
+ Kerberos configuration[entry]:Kerberos Realm (SSH only) : = 
+ Kerberos configuration[entry]:Kerberos Key Distribution Center (KDC) : = 
+ Login configurations[entry]:Additional SMB domain (optional) (3) : = 
+ Login configurations[password]:Additional SMB password (3) : = 
+ Login configurations[entry]:Additional SMB account (3) : = 
+ Login configurations[entry]:Additional SMB domain (optional) (2) : = 
+ Login configurations[password]:Additional SMB password (2) : = 
+ Login configurations[entry]:Additional SMB account (2) : = 
+ Login configurations[entry]:Additional SMB domain (optional) (1) : = 
+ Login configurations[password]:Additional SMB password (1) : = 
+ Login configurations[entry]:Additional SMB account (1) : = 
+ Login configurations[entry]:SMB domain (optional) : = 
+ Login configurations[password]:SMB password : = 
+ Login configurations[entry]:SMB account : = 
+ Login configurations[password]:IMAP password (sent in clear) : = 
+ Login configurations[entry]:IMAP account : = 
+ Login configurations[password]:POP3 password (sent in clear) : = 
+ Login configurations[entry]:POP3 account : = 
+ Login configurations[password]:POP2 password (sent in clear) : = 
+ Login configurations[entry]:POP2 account : = 
+ Login configurations[password]:NNTP password (sent in clear) : = 
+ Login configurations[entry]:NNTP account : = 
+ Login configurations[password]:HTTP password (sent in clear) : = 
+ Login configurations[entry]:HTTP account : = 
+ Services[file]:CA file : = 
+ Services[password]:PEM password : = 
+ Services[file]:SSL private key : = 
+ Services[file]:SSL certificate : = 
+ HTTP NIDS evasion[entry]:Force protocol string : = 
+ HTTP NIDS evasion[entry]:HTTP User-Agent = Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0; SBP autonessus; fbreedijk at schubergphilils dot com)
+ Nmap (NASL wrapper)[file]:File containing grepable results : = 
+ Nmap (NASL wrapper)[entry]:Minimum wait between probes (ms) = 
+ Nmap (NASL wrapper)[entry]:Ports scanned in parallel (min) = 
+ Nmap (NASL wrapper)[entry]:Ports scanned in parallel (max) = 
+ Nmap (NASL wrapper)[entry]:Initial RTT timeout (ms) : = 
+ Nmap (NASL wrapper)[entry]:Max RTT Timeout (ms) : = 
+ Nmap (NASL wrapper)[entry]:Min RTT Timeout (ms) : = 
+ Nmap (NASL wrapper)[entry]:Host Timeout (ms) : = 
+ Nmap (NASL wrapper)[entry]:Source port : = 
+ Nmap (NASL wrapper)[checkbox]:UDP port scan = no
+ Nmap (NASL wrapper)[checkbox]:Service scan = yes
+ Nmap (NASL wrapper)[checkbox]:RPC port scan = yes
+ Nmap (NASL wrapper)[checkbox]:Identify the remote OS = yes
+ Nmap (NASL wrapper)[checkbox]:Use hidden option to identify the remote OS = yes
+ Nmap (NASL wrapper)[checkbox]:Fragment IP packets (bypasses firewalls) = no
+ Nmap (NASL wrapper)[checkbox]:Get Identd info = yes
+ Nmap (NASL wrapper)[checkbox]:Do not randomize the  order  in  which ports are scanned = yes
+ Nmap (NASL wrapper)[radio]:Timing policy : = Aggressive
+ Nmap (NASL wrapper)[checkbox]:Do not scan targets not in the file = no
+ Nmap (NASL wrapper)[checkbox]:Run dangerous port scans even if safe checks are set = yes
+ Ping the remote host[entry]:TCP ping destination port(s) : = built-in
+ Ping the remote host[checkbox]:Do a TCP ping = yes
+ Ping the remote host[checkbox]:Do an ICMP ping = yes
+ Ping the remote host[entry]:Number of retries (ICMP) : = 6
+ Ping the remote host[checkbox]:Do an applicative UDP ping (DNS,RPC...) = yes
+ Ping the remote host[checkbox]:Make the dead hosts appear in the report = yes
+ Ping the remote host[checkbox]:Log live hosts in the report = yes
+ Ping the remote host[checkbox]:Test the local Nessus host = yes
+ Misc information on News server[entry]:From address : = Nessus <listme@listme.dsbl.org>
+ Misc information on News server[entry]:Test group name regex : = f[a-z]\.tests?
+ Misc information on News server[entry]:Max crosspost : = 7
+ Misc information on News server[checkbox]:Local distribution = yes
+ Misc information on News server[checkbox]:No archive = no
+ Do not scan fragile devices[checkbox]:Scan Network Printers = yes
+ Do not scan fragile devices[checkbox]:Scan Novell Netware hosts = yes
+ SMTP settings[entry]:Third party domain : = sectionzero.org
+ SMTP settings[entry]:From address : = frank@sectionzero.org
+ SMTP settings[entry]:To address : = postmaster@[AUTO_REPLACED_IP]
+ HTTP NIDS evasion[checkbox]:Use HTTP HEAD instead of GET = no
+ HTTP NIDS evasion[radio]:URL encoding = none
+ HTTP NIDS evasion[radio]:Absolute URI type = none
+ HTTP NIDS evasion[radio]:Absolute URI host = none
+ HTTP NIDS evasion[checkbox]:Double slashes = no
+ HTTP NIDS evasion[radio]:Reverse traversal = none
+ HTTP NIDS evasion[checkbox]:Self-reference directories = no
+ HTTP NIDS evasion[checkbox]:Premature request ending = no
+ HTTP NIDS evasion[checkbox]:CGI.pm semicolon separator = no
+ HTTP NIDS evasion[checkbox]:Parameter hiding = no
+ HTTP NIDS evasion[checkbox]:Dos/Windows syntax = no
+ HTTP NIDS evasion[checkbox]:Null method = no
+ HTTP NIDS evasion[checkbox]:TAB separator = no
+ HTTP NIDS evasion[checkbox]:HTTP/0.9 requests = no
+ HTTP NIDS evasion[checkbox]:Random case sensitivity (Nikto only) = no
+ Services[entry]:Number of connections done in parallel : = 6
+ Services[entry]:Network connection timeout : = 5
+ Services[entry]:Network read/write timeout : = 5
+ Services[entry]:Wrapped service read timeout : = 2
+ Services[radio]:Test SSL based services = Known SSL ports
+ SMB use domain SID to enumerate users[entry]:Start UID : = 1000
+ SMB use domain SID to enumerate users[entry]:End UID : = 1200
+ Unknown CGIs arguments torture[checkbox]:Send POST requests = no
+ Cleartext protocols settings[entry]:User name : = root
+ Cleartext protocols settings[password]:Password (unsafe!) : = 
+ Cleartext protocols settings[checkbox]:Try to perform patch level checks over telnet = no
+ Cleartext protocols settings[checkbox]:Try to perform patch level checks over rsh = no
+ Cleartext protocols settings[checkbox]:Try to perform patch level checks over rexec = no
+ SNMP settings[entry]:Community name : = public
+ SNMP settings[entry]:UDP port : = 161
+ Web mirroring[entry]:Number of pages to mirror : = 200
+ Web mirroring[entry]:Start page : = /
+ Global variable settings[checkbox]:Enable CGI scanning = yes
+ Global variable settings[radio]:Network type = Mixed (use RFC 1918)
+ Global variable settings[checkbox]:Enable experimental scripts = no
+ Global variable settings[checkbox]:Thorough tests (slow) = no
+ Global variable settings[radio]:Report verbosity = Verbose
+ Global variable settings[radio]:Report paranoia = Normal
+ Global variable settings[radio]:Log verbosity = Quiet
+ Global variable settings[entry]:Debug level = 0
+ Global variable settings[entry]:HTTP User-Agent = Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0; SBP autonessus; fbreedijk at schubergphilils dot com)
+ Login configurations[entry]:FTP account : = anonymous
+ Login configurations[password]:FTP password (sent in clear) : = nessus@nessus.org
+ Login configurations[entry]:FTP writeable directory : = /incoming
+ Login configurations[radio]:SMB password type : = Password
+ Login configurations[checkbox]:Never send SMB credentials in clear text = yes
+ Login configurations[checkbox]:Only use NTLMv2 = no
+ Kerberos configuration[entry]:Kerberos KDC Port : = 88
+ Kerberos configuration[radio]:Kerberos KDC Transport : = udp
+ HTTP login page[entry]:Login page : = /
+ HTTP login page[entry]:Login form fields : = user=%USER%&pass=%PASS%
+ SMB Scope[checkbox]:Request information about the domain = yes
+ Nikto (NASL wrapper)[checkbox]:Force full (generic) scan = no
+ Nikto (NASL wrapper)[checkbox]:Enable Nikto = yes
+ NIDS evasion[radio]:TCP evasion technique = none
+ NIDS evasion[checkbox]:Send fake RST when establishing a TCP connection = no
+ SMB use host SID to enumerate local users[entry]:Start UID : = 1000
+ SMB use host SID to enumerate local users[entry]:End UID : = 1200
+ SSH settings[entry]:SSH user name : = root
+ SSH settings[password]:SSH password (unsafe!) : = 
+end(PLUGINS_PREFS)
+
+begin(SCANNER_SET)
+ 14259 = no
+ 11219 = no
+ 14274 = yes
+ 11840 = no
+ 10180 = yes
+ 14272 = no
+ 10796 = no
+ 10335 = yes
+end(SCANNER_SET)
+
+
+begin(PLUGIN_SET)
+end(PLUGIN_SET)

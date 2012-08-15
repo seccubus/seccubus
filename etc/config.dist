@@ -1,0 +1,20 @@
+# PLease update the parameters below and copy this file to config
+HOST=''					# This is the host running your nessusd
+PORT=1241				# Nessusd port (1241 = default)
+USER=''					# Nessusd user name
+PASS=''					# Nessusd password
+NESSUSBIN=/usr/bin/nessus		# The full path to your nessus client
+#NESSUSBIN=/usr/bin/OpenVAS-Client	# Use this line if you are using OpenVAS
+NIKTOBIN=/usr/bin/nikto.pl              # The full path to nikto.pl on your
+                                        # system
+NIKTOOPTS='-ask auto'                   # Additional nikto options (-o -h and
+                                        # -F) are set by default, -ask auto
+					# makes sure nikto does not 'hang;' if
+					# it encounters new signatures
+EMAIL=''				# This is the default email address
+HOME='/home/seccubus'			# Home location of seccubus
+VAR='/home/seccubus/var'		# This is where the 'database' lives
+BIN='/home/seccubus/bin'		# This is where the binaries live
+CONFIG='/home/seccubus/etc'		# This is where the config lives
+SENDMAIL=/usr/sbin/sendmail             # Path to sendmail
+
