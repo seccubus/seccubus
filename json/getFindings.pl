@@ -26,7 +26,7 @@ if (not (defined ($workspace_id))) {
 	bye("Parameter workspaceId is missing");
 } elsif ( $workspace_id + 0 ne $workspace_id ) {
 	bye("WorkspaceId is not numeric");
-} elsif ( 0 <= @scan_ids ) {
+} elsif ( 0 == @scan_ids ) {
 	bye("Scan_ids is a mandatory parameter");
 };
 
