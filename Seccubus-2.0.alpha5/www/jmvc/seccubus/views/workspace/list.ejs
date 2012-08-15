@@ -1,0 +1,5 @@
+<%for(var i = 0; i < workspaces.length ; i++){%>
+	<tr <%= workspaces[i]%>>
+		<%= $.View('//seccubus/views/workspace/show',workspaces[i])%>
+	</tr>
+<%}%>

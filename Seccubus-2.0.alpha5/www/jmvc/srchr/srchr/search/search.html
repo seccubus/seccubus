@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>search</title>
+		<style>
+			#results {font-weight: bold;color: red;}
+		</style>
+	</head>
+	<body>
+	    <h1>Srchr.Search</h1>
+		<p>This plugin creates a search form that:</p>
+		<ul>
+			<li>Checks that one of the Search services is selected.</li>
+			<li>Toggles Default Text</li>
+			<li>Creates a search event when a new search should happen.</li>
+		</ul>
+		<h2>Demo</h2>
+		<p>Focus on 'Search for things here', the default text should be removed.</p>
+		<p>Enter a search term and click search, it should warn you that a Search
+			service needs to be updated.</p>
+		<p>Check a search service, you should see 'Search Created'.</p>
+        <div id='content'></div>
+		
+		<div id="results"></div>
+		
+		<p>Finally, click 'Set Search To Foo', to set the search to Foo and trigger a search.</p>
+		<a href='javascript://' id='set'>Set Search To Foo</a>
+		<script type='text/javascript' 
+                src='../../steal/steal.js?srchr/search'>   
+        </script>
+		<script type='text/javascript'>
+			
+			
+			
+			$('#content').srchr_search()
+				.bind("search", function(ev, data){
+					$('#results').hide().html('Search Created '+data.query).fadeIn();
+				});
+				
+			$("#set").click(function(){
+				var search = new Srchr.Models.Search({
+					query: "foo", 
+					types : ["Srchr.Models.Yahoo"]
+				})
+				$('#content').srchr_search("val",search);
+			})
+		</script>
+	</body>
+</html>

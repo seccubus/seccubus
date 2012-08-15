@@ -1,0 +1,11 @@
+.createbutton{
+	width:16px;
+	height:16px;
+	cursor:pointer;
+	margin-right:2px;
+	margin-top:2px;
+}
+
+.open.createbutton{
+	background-color:#eeeeee;
+}

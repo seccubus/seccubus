@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>search_result</title>
+		<style>
+			#content {
+				border: solid 1px black;
+				padding: 20px;
+			}
+			#count {
+				border: solid 1px red;
+			}
+			#searchNum {
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Srchr.SearchResult</h1>
+		<p>Uses a model to show search results.  SearchResult only
+			gets results when visible and won't repeat searches. </p>
+		<h2>Demo</h2>
+		<p>Enter a search term in the the following form and click "Search".</p>
+		
+		<form action='' id='searchForm'>
+			<input type='text' id='searchVal'/>
+			<input type='submit' value='Search' />
+		</form>
+		<p>The results of your search will appear below:</p>
+		<div id='content'></div>
+		<p>Each time the model performs a request, it increments the following counter:</p>
+		<div id='count'>
+			Number of Ajax Requests = <span id='searchNum'></span>
+		</div>
+		<p>You can see that searching two times in a row for 'flowers' does
+		not increment the Ajax request count.</p>
+		<p>By toggling (hiding) the search result panel with the following "Toggle" link, 
+		and creating another search, you'll notice that the number of ajax requests stays the same.
+		However, when you toggle it (show it) again, an ajax request will be made.</p>
+		<p>This demonstrates that the searches are only performed when needed.</p>
+		<a href="javascript://" id='toggle'>Toggle</a>
+		
+        
+		
+		
+		<script type='text/javascript' 
+                src='../../steal/steal.js?srchr/search_result'>   
+        </script>
+		<script type='text/javascript'>
+			SEARCHNUM = 0;
+			Google = {
+				findAll : function(q, success){
+					var results = [];
+					var length = parseInt( Math.random()*10+1 );
+					for(var i =0; i < length; i++){
+						results.push({
+							title : i+"th search result for "+q.query,
+							text : "foo bar baz",
+							href : "http://blah.com/"+i
+						})
+					}
+					SEARCHNUM++;
+					$("#searchNum").html(SEARCHNUM)
+					success(results)
+				}
+			}
+			
+			$("#content").srchr_search_result({
+				modelType : Google
+			})
+			$("#searchForm").submit(function(ev){
+				ev.preventDefault();
+				$("#searchForm").trigger("search.created",{
+					query : $("#searchVal").val()
+				});
+			})
+			$("#toggle").click(function(){
+				var c =  $("#content")
+				if(c.is(":visible")){
+					c.hide()
+				}else{
+					c.show();
+					c.trigger("show")
+				}
+			})
+		</script>
+	</body>
+</html>

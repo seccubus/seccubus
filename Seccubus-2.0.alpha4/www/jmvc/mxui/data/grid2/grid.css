@@ -1,0 +1,122 @@
+body .grid {
+	overflow: auto;
+}
+.mxui_filler {
+	overflow: hidden;
+}
+
+.grid th {
+	text-align: left;
+		overflow: hidden;
+}
+.grid th a {
+	display: block;
+}
+ .grid .body  {
+	overflow: hidden;
+	width:100%;
+}
+.grid table {
+	width: 100%;
+	width:100%;
+
+}
+.grid .innerBody {
+	overflow: auto;
+}
+.header {
+	overflow: hidden;
+	border-bottom: solid 1px gray;
+	width: 100%;
+}
+.grid th {
+	padding: 2px;
+}
+.footer {
+	margin:0px;padding:0px;
+	border-top: solid 1px gray;
+	overflow: hidden;
+}
+div {
+	position: relative;
+}
+.pagelisting {
+	width: 35%;
+}
+.gridpages {
+	text-align:center;
+}
+.gridpages, .pagelisting {
+	padding: 3px 0px;
+}
+.pagelisting label {
+	padding: 0px 3px;
+}
+.gridpages {
+	
+}
+.pageinput {
+	width: 35%;
+	margin: 0px;
+	padding: 3px 0px;
+	text-align: right;
+}
+.pageinput div {
+	padding: 0px 3px;
+	
+}
+.pagenumber {
+	font-size: 10px;
+}
+.mxui_paginator_page {
+
+}
+.mxui_paginator_page .toolbar_button {
+	display:inline;
+	cursor: pointer;
+	margin: 0px 2px;
+}
+.mxui_paginator_page .active{
+		cursor: pointer;
+}
+.mxui_paginator_page .toolbar_range {
+	
+}
+.pages{
+	display:inline;
+	font-size: 10px;
+}
+.page a {
+	border: solid 1px black;
+	padding: 2px;
+	cursor: pointer;
+	position: relative;
+	top: -2px;
+}
+.page {
+	margin: 0px 2px;
+	display:inline;
+}
+.page a:hover{
+	border: solid 1px red;
+	color: red;
+}
+
+.grid .active a:hover, .grid .active a{
+	border-color: gray;
+	color: gray;
+}
+.grid .footer form {
+	padding:0px 3px;
+}
+.footer form {
+	margin:0px;padding:0px
+}
+.column-resizer {
+	position: absolute;
+	border-right: solid 1px black;
+	border-left: solid 1px black;
+	cursor: e-resize;
+	z-index: 9999;
+}
+.innerBody tr:nth-child(odd) {background: #DEF}

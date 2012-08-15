@@ -1,0 +1,23 @@
+<form action=''>
+	<input type='text' value='<%=defaultText%>' name='query' id="query" class='blurred'/>
+	<input type='submit' value='search' />
+	
+	<ul class='options'>
+		<li>
+			<label for="cb_flickr">Flickr</label> 
+			<input type='checkbox' id="cb_flickr" name='types' value='Srchr.Models.Flickr'/>
+		</li>
+		<li>
+			<label for="cb_yahoo">Yahoo </label>
+			<input id="cb_yahoo" type='checkbox' name='types' value='Srchr.Models.Yahoo'/>
+		</li>
+		<li>
+			<label for="cb_upcoming">Upcoming </label>
+			<input id="cb_upcoming" type='checkbox' name='types' value='Srchr.Models.Upcoming'/>
+		</li>
+		<li>
+			<label for="cb_twitter">Twitter</label>
+			<input id="cb_twitter" type='checkbox' name='types' value='Srchr.Models.Twitter'/>
+		</li>
+	</ul>
+</form>

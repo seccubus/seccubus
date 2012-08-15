@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>modal</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+			#modal {
+				width: 300px;
+				height: 200px;
+				border: solid 1px black;
+				background-color: #eeeeff;
+			}
+        </style>
+	</head>
+	<body>
+	    <h1>Modal</h1>
+		<div id='modal'>
+	    	<h3>Some Modal</h3>
+			<p>Here is some text. Blah blah blah. I am watching SNL with Jennifer Lopez.
+				She still has it.  But, I am not sure SNL does.
+			</p>
+	    </div>
+		<a href="#" id='show'>show as modal</a>
+		<script type='text/javascript' 
+                src='../../steal/steal.js?mxui/modal,production'>   
+        </script>
+		<script type='text/javascript'>
+			$("#show").click(function(){
+				$("#modal").mxui_modal().trigger('show');
+			})
+		</script>
+	</body>
+</html>

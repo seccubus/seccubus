@@ -1,0 +1,30 @@
+[
+	{
+        "id": 1,
+        "name": "Friends"
+    },
+    {
+        "id": 2,
+        "name": "Family"
+    },
+    {
+        "id": 3,
+        "name": "College"
+    },
+    {
+        "id": 4,
+        "name": "High School"
+    },
+    {
+        "id": 5,
+        "name": "Work"
+    },
+    {
+        "id": 6,
+        "name": "Enemies"
+    },
+    {
+        "id": 7,
+        "name": "Volunteer"
+    }
+]

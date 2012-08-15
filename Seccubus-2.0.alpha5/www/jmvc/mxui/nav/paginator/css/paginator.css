@@ -1,0 +1,28 @@
+.mxui_paginator {
+	font-size: 11px;
+}
+.mxui_paginator .toolbar_button {
+	position:relative;
+	top:0px;
+	float: left;
+	width: 23px;
+	height: 14px;
+	padding: 21px 7px 0px 5px;
+	margin: 0px 2px;
+	border: 1px solid transparent;
+	background-repeat: no-repeat;
+	background-position: center 2px;
+}
+.mxui_paginator .active{
+		cursor: pointer;
+}
+.mxui_paginator .toolbar_range {
+	height: 14px;
+	padding: 21px 7px 0px 5px;
+	float: left;
+}
+
+.mxui_paginator .first_record {background-image: url(../images/first.png)}
+.mxui_paginator .previous_record {background-image: url(../images/previous.png)}
+.mxui_paginator .next_record {background-image: url(../images/next.png)}
+.mxui_paginator .last_record {background-image: url(../images/last.png)}

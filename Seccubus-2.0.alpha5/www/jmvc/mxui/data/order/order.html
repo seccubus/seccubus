@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>Mxui.Data.Order</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+        </style>
+	</head>
+	<body>
+	    <h1>Mxui.Data.Order Demo</h1>
+		<table>
+			<thead>
+				<tr id='order'>
+					<th class='foo-sort'>
+						Foo
+					</th>
+					<th class='bar-sort'>
+						Bar
+					</th>
+					<th class='precious-sort'>
+						Hard To Watch
+					</th>
+				</tr>
+			</thead>
+		</table>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js?mxui/data/order'>
+        </script>
+		<script type='text/javascript'>
+			var params = new Mxui.Data();
+			
+			$('#order').mxui_data_order({params : params});
+		</script>
+	</body>
+</html>

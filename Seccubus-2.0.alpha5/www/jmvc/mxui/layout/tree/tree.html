@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>tree</title>
+		<link type="text/css" href="tree.css" rel="stylesheet" />
+	</head>
+	<body>
+		<h1>Mxui.Tree</h1>
+		<h2>Basic</h2>
+	    <ul id='menu1'>
+            <li><a>A</a>
+                <ul>
+                    <li><a>A1</a>
+						<ul>
+                            <li><a>A1.X</a></li>
+                            <li><a>A1.Y</a></li>
+                            <li><a>A1.Z</a></li>
+                        </ul>
+					
+					</li>
+                    <li><a>A2</a></li>
+                    <li><a>A3</a></li>
+                </ul>
+            
+            </li>
+            <li><a>B</a>
+                <ul>
+                    <li><a>B1</a>
+						<ul>
+                            <li><a>B1.X</a></li>
+                            <li><a>B1.Y</a></li>
+                            <li><a>B1.Z</a></li>
+                        </ul>
+					
+					</li>
+                    <li><a>B2</a></li>
+                    <li><a>B3</a></li>
+                </ul>
+            
+            </li>
+        </ul>
+		
+		<h2>Ajax Tree</h2>
+		<ul id="menu2">
+			<li><a>Group 1</a></li>
+			<li><a>Group 2</a></li>
+		</ul>
+		
+		
+		<script type='text/javascript' 
+                src='../../../steal/steal.js?mxui/layout/tree'>   
+        </script>
+		<script type='text/javascript'>
+			$("#menu1").mxui_layout_tree();
+			
+			$("#menu2").mxui_layout_tree().bind("select", function(ev){
+				//console.log("selecting ...", ev.target)
+				var li = $(ev.target)
+				console.log(li, li.children().length)
+				if(li.children().length <= 1){
+					$(this).controller().styleUL(
+						$("<ul><li><a>Item1</a></li><li><a>Item2</a></li></ul>")
+					).appendTo(ev.target)
+				}
+			});
+			
+			
+		</script>
+	</body>
+</html>

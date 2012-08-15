@@ -1,0 +1,6 @@
+<h2>Online version check</h2>
+<%for(var i = 0; i < this.length ; i++){%>
+	<div <%= this[i]%>>
+		<%== $.View('//seccubus/up_to_date/list/views/up_to_date.ejs', this[i] )%>
+	</div>
+<%}%>

@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>Seccubus.ConfigItem.List Demo</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+	    .Error {
+	        padding-left: 30px;
+	        background-image: url(img/error.png);
+	        background-repeat: no-repeat;
+	        background-position: 0.5em;
+	    }
+	    .OK {
+	    	padding-left: 30px;
+		background-image: url(img/ok.png);
+		background-repeat: no-repeat;
+		background-position: 0.5em;
+	    }
+        </style>
+	</head>
+	<body>
+	    <h1>Seccubus.ConfigItem.List Demo</h1>
+		<ul id='config_items'></ul>
+		<a href='javascript://' id='create'>Create ConfigItem</a>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal('seccubus/config_item/list',function(){
+				
+				$('#config_items').seccubus_config_item_list();
+				
+				$('#create').click(function(){
+					new Seccubus.Models.ConfigItem({
+						name: "Grilled Cheese",
+						description: "Bread and Cheese"
+					}).save();
+				})
+			})
+		</script>
+	</body>
+</html>

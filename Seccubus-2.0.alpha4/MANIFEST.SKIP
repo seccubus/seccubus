@@ -1,0 +1,43 @@
+# Version control files
+\bCVS\b
+,v$
+\.cvsignore$
+\b.svn\b
+\/\.svn\/
+^\.svn\/
+
+# Backups
+\.swp$
+\.bak$
+\.old$
+
+# Distributions
+\.tar\.gz$
+\.tar$
+
+# Makemaker generated files and dirs.
+^MANIFEST\.
+^Makefile$
+^blib/
+^MakeMaker-\d
+^pm_to_blib
+
+# Config files
+config\.xml$
+\.nessusrc$
+\.openvasrc$
+\.update-nessusrc$
+
+# This file should be a symlink after the install
+^www\/SeccubusV2\.pm$
+
+# Misc
+^tmp\/
+^make_dist$
+^db\/create_empty_db$
+
+# Don't bundle RPM building files
+^rmp\/
+
+# JMVC files for now as well
+^www\/jmvc

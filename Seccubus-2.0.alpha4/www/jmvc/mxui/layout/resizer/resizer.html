@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>resizer</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;
+			  
+			}
+			th {
+				text-align: left;
+				border-right: solid 1px gray;
+			}
+
+			#mxui_resizer {
+				position: absolute;
+				border: solid 1px black;
+				cursor: e-resize;
+				z-index: 9999;
+			}
+        </style>
+	</head>
+	<body>
+	    <table id='resizer' width='100%'>
+	    	<col />
+			<col />
+			<col />
+			<col />
+	    	<thead>
+		    	<tr>
+		    		<th><span>One</span></th>
+					<th><span>Two</span></th>
+					<th><span>Three</span></th>
+					<th><span>Four</span></th>
+		    	</tr>
+	    	</thead>
+	    	<tbody id='body'>
+	    		
+	    		<tr>
+		    		<td>abc</td>
+					<td>def</td>
+					<td>abc</td>
+					<td>def</td>
+		    	</tr>
+	    	</tbody>
+	    </table>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js?mxui/layout/resizer,development'>   
+        </script>
+		<script type='text/javascript'>
+			var body = $('#body'),
+				start,
+				col,
+				width;
+			$("#resizer").mxui_layout_resizer().bind("size:start", function(ev, distance){
+				start = distance
+				col = $("#resizer").find('col:eq('+$('th').index(ev.target)+')');
+				width = $(ev.target).width();
+			}).bind("size", function(ev, delta){
+				col.width(width+start+delta)
+				console.log(width, delta, start)
+			});
+		</script>
+	</body>
+</html>

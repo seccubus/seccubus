@@ -1,0 +1,7 @@
+<ul>
+<%for(var i = 0 ; i < data.length; i++){%>
+	<li>
+		<%= $.View(options.resultView,data[i]) %>
+	</li>
+<%}%>
+</ul>

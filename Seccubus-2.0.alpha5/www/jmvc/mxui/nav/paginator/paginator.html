@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>paginator</title>
+        <link type="text/css" href="css/paginator.css" rel="stylesheet" />
+	</head>
+	<body>
+	    <div id='paginator'></div>
+		<script type='text/javascript' 
+                src='../../steal/steal.js?steal[app]=mxui/paginator&steal[env]=development'>   
+        </script>
+		<script type='text/javascript'>
+			$("#paginator").mxui_paginator({offset: 0, limit: 100, count: 1000})
+						   .bind("paginate", function(ev, data){
+						   		console.log(ev, data)
+							
+						   })
+		</script>
+	</body>
+</html>

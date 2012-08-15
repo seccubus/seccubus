@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>srchr.history</title>
+		<style>
+			#list {
+				padding-top: 10px;
+				padding-bottom: 10px;
+				border: solid 1px;
+				width: 200px;
+			}
+		</style>
+	</head>
+	<body>
+        <h1>Srchr.History</h1>
+		<p>History provides a cookie-saved list of model instances
+		and a means to remove them from the list.</p>
+		
+		<h2>Demo</h2>
+		<p>The following boxes shows the list of items
+		   added to the srchr_history widget:</p>
+		<ul id='list'></ul>
+		<p>Add to the list by entering a todo task:</p>
+		<form id='todoForm' action=''>
+			<input type='text' id='description'>
+			<input type='submit' value='Create Todo' />
+		</form>
+		<p>When you add it, it will appear above.  Refresh the page,
+		   and you should still see it.</p>
+		
+		<script type='text/javascript' 
+                src='../../steal/steal.js?srchr/history'>   
+        </script>
+		<script type='text/javascript' >
+			$.Model.extend("Todo",{
+				id: "description"
+			},{});
+			
+			$("#list").srchr_history({
+				titleHelper : function(todo){
+					return todo.description;
+				},
+				storeName : "todoCookie"
+			});
+			
+			
+			
+			$("#todoForm").submit(function(ev){
+				ev.preventDefault();
+				var todo = new Todo({
+					description: $("#description").val()
+				});
+				
+				$("#list").srchr_history("add", todo );
+				
+				$("#description").val("")[0].focus();
+			})
+			
+		</script>
+	</body>
+</html>

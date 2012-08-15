@@ -1,0 +1,9 @@
+<%for(var i =0; i < items.length; i++){%>
+	<%var item= items[i]%>
+	<%= this.options.renderer(item, options,i, items) %>
+<%}%>
+<tr class='spacing'>
+	<%$.each(options.columns, function(name, title){%>
+		<th><div class='spacer'><%= title %></div></th>
+	<%})%>
+</tr>

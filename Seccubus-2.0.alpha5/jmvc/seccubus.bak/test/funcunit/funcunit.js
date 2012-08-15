@@ -1,0 +1,2 @@
+steal("funcunit", 'seccubus/up2_date/create/create_test.js', 'seccubus/up2_date/list/list_test.js', 'seccubus/up_to_date/create/create_test.js', 'seccubus/up_to_date/list/list_test.js', 'seccubus/config_item/create/create_test.js', 'seccubus/config_item/list/list_test.js')
+ .then("./seccubus_test.js");

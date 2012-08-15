@@ -1,0 +1,62 @@
+body {font-family: verdana}
+.error {border: solid 1px red;}
+.error_text { color: red; font-size: 10px;}
+td {padding: 3px;}
+
+#srchr{
+	margin:	40px auto 0px;
+	width: 960px;
+}
+
+#query{
+	font-size: 1.25em;
+	width: 420px;
+}
+
+.options{
+	float: right;
+	list-style: none;
+	margin: 0px;
+	font-size: 1.4em;
+	width: 400px;
+}
+
+.options li{
+	
+}
+
+#history-results-container{
+	clear: both;
+	position: relative;
+}
+
+#history-container{
+	float: left;
+	width:	200px;
+}
+#history{
+	border: 1px solid #F6A828;
+	margin-top: 57px;
+}
+
+#results-container{
+	float: left;
+	margin: 0px 0px 0px 30px;
+	width: 570px;
+}
+
+#results-container .srchr_search_result,
+#history
+{
+	min-height:	300px;
+}
+.srchr_history .search {
+	cursor: pointer;
+}
+.disabled a{
+	color: #333 !important;
+}
+
+input[type="submit"]{
+	font-size: 1.25em;
+}

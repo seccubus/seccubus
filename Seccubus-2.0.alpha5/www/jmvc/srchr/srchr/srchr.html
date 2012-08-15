@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>srchr</title>
+		
+		<link rel="stylesheet" type="text/css" href="srchr.css" /> 
+		
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+        </style>
+	</head>
+	<body>
+		<div id="srchr">
+		    <div id='searchArea'></div>
+			
+			<div id="history-results-container">
+				<div id="history-container">
+					<h3>Search History</h3>
+					<ul id="history">  </ul>
+				</div>
+				
+				<div id="results-container">
+					<h3>Results</h3>
+					
+					<ul id='resultsTab'>
+						<li><a href='#flickr'>Flickr</a></li>
+						<li><a href='#yahoo'>Yahoo</a></li>
+						<li><a href='#upcoming'>Upcoming</a></li>
+						<li><a href='#twitter'>Twitter</a></li>
+					</ul>
+					<div id='flickr'></div>
+					<div id='yahoo'></div>
+					<div id='upcoming'></div>
+					<div id='twitter'></div>
+
+					
+				</div>
+			</div>
+		</div>
+		
+		<script type='text/javascript' 
+                src='../steal/steal.js?srchr,development'>   
+        </script>
+	</body>
+</html>

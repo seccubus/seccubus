@@ -1,0 +1,21 @@
+<div class="<%= this.options.buttonClass %> first_record <%= this.options.prevActive ? this.options.activeClass : ""%>">
+	<%= this.options.firstText%>
+</div>
+<div class="<%= this.options.buttonClass %> previous_record <%= this.options.prevActive ? this.options.activeClass : ""%>">
+	<%= this.options.prevText%>
+</div>
+<div class="<%= this.options.pageClass %>">
+	<%for(var i = this.startPage; i < this.endPage; i++){%>
+		<div class='page <%= i == this.currentPage ?  this.options.activeClass : ""%>'>
+			<a><%= i+1 %></a>
+			
+		</div>
+	<%}%>
+</div>
+<div class="<%= this.options.buttonClass %> next_record <%= this.options.nextActive ? this.options.activeClass : ""%>">
+	<%= this.options.nextText%>
+</div>
+<div class="<%= this.options.buttonClass %> last_record <%= this.options.nextActive ? this.options.activeClass : ""%>">
+	<%= this.options.lastText%>
+</div>
+				

@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>Srchr.Disabler</title>
+		<link rel="stylesheet" type="text/css" href="srchr.css" /> 
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+			.disabled a { color: gray; font-style: italic;}
+			#out {
+				border: solid 1px red;
+				padding: 3px;
+				margin: 10px 0px;
+				
+			}
+        </style>
+		
+	</head>
+	<body>
+		<h1>Srchr.Disabler</h1>
+		<p>Listens for search events and if the search event doesn't have
+			this 'type', it disables it by adding a
+			'disabled' class and preventing default 'acitvate' 
+			behavior.</p>
+		<p>This is really the glue widget between Srchr.Search and Srchr.Tabs.</p>
+		<h3>Demo</h3>
+		<p>Clicking on the following links, will say "Activated X"</p>
+		
+		<div id="srchr">
+		    
+			<ul id='resultsTab'>
+				<li><a href='#flickr'>Flickr</a></li>
+				<li><a href='#yahoo'>Yahoo</a></li>
+				<li><a href='#upcoming'>Upcoming</a></li>
+			</ul>
+			
+			<div id='out'>Activated ...</div>
+			<div>
+				<p>Clicking the following button, creates a "Flickr" search.
+					Disabler will disable non 'Flickr' buttons and when you
+					click on them, they won't be activated.
+				</p>
+			<button>Create "Flickr" Search Event</button>
+			</div>
+			
+			
+			
+		</div>
+		
+		<script type='text/javascript' 
+                src='../../steal/steal.js?srchr/disabler'>   
+        </script>
+		<script type="text/javascript">
+			$('#resultsTab').srchr_disabler();
+			
+			$('button').click(function(){
+				$(document.documentElement).trigger('search.created', { types : ['Srchr.Models.Flickr']})
+			})
+			
+			$('li')
+				.live('click',function(ev){
+					ev.preventDefault();
+					$(this).trigger('activate');
+				})
+				.live('default.activate', function(){
+					$('#out').html('Activated '+$(this).text())
+				})
+				
+			
+			
+		</script>
+		
+	</body>
+</html>

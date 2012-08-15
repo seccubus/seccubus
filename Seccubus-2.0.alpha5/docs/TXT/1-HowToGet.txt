@@ -1,0 +1,7 @@
+1 How to get Seccubus V2?
+Seccubus V2 is currently a development release. The first Alpha release is planned for 14th of March 2011, at this time it can be downloaded from Sourceforge.
+Seccubus will be released in the following formats:
+* Tarbal – Generic tar.gz file containing the sourcecode and an install script
+* RPM – For RedHat, CentOS and other RPM based installs
+* SVN checkout – For developers
+

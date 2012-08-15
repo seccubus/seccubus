@@ -1,0 +1,85 @@
+#!/usr/bin/env perl
+# ------------------------------------------------------------------------------
+# $Id$
+# ------------------------------------------------------------------------------
+# This program run a scan given the workspace name and scan name
+# ------------------------------------------------------------------------------
+#  Copyright 2011 Frank Breedijk of Schuberg Philis
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# ------------------------------------------------------------------------------
+
+use strict;
+use SeccubusV2;
+use SeccubusWorkspaces;
+use SeccubusScans;
+use Getopt::Long;
+
+my (
+	$workspace,
+	$scan,
+	$help,
+	$verbose,
+	$quiet,
+   );
+
+$help = 0;
+
+GetOptions(	'workspace|w=s'	=> \$workspace,
+		'scan|s=s'	=> \$scan,
+		'verbose|v+'	=> \$verbose,
+		'help|h'	=> \$help,
+		'quiet|q'	=> \$quiet,
+	  );
+
+$verbose = -1 if $quiet;
+help() if $help;
+
+if ( ! $workspace ) {
+	help("You must specify a workspace");
+} elsif ( ! $scan ) {
+	help("You must specify a scan");
+};
+
+my $workspace_id = get_workspace_id($workspace);
+die "Workspace '$workspace' does not exist" unless $workspace_id;
+
+my $scan_id = get_scan_id($workspace_id, $scan);
+die "Scan '$scan' does not exist in workspace '$workspace'" unless $scan_id;
+
+print "Starting scan '$scan' from workspace '$workspace'\n" unless $quiet;
+my $result = run_scan($workspace_id, $scan_id, $verbose, "print");
+print $result if $verbose;
+print "\nDone\n" unless $quiet;
+
+
+exit();
+
+sub help() {
+	print "
+Usage: do-scan --workspace <workspace name> --scan <scan name> [--verbose] 
+               [--quiet] [--help]
+
+Executes a scan
+
+Arguments:
+--workspace (-w) - name of the workspace the scan is in
+--scan (-s)      - name of the scan
+--verbose (-v)   - Give verbose output, repeat to increase verbosity
+--quiet (-q)	 - Do not give any output unless an error occured
+--help		 - Print this message
+";
+	exit();
+}
+
+

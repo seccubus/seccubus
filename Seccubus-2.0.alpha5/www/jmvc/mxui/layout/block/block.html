@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>block</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+			#blocker {
+				width: 0;
+				height: 0;
+				background-color: green;
+			}
+        </style>
+	</head>
+	<body>
+<div id="demo-html">		
+<h1>Block</h1>
+<div id='blocker'></div>
+<a href='#' id='block'>Block</a>
+</div>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js?steal[app]=mxui/layout/block&steal[env]=development'>   
+        </script>
+<script id="demo-source" type='text/javascript'>
+$(function(){
+	$("#blocker").css("opacity",0.5);
+	$("#block").click(function(){
+		$("#blocker").mxui_layout_block().trigger('show')
+	});			
+})
+</script>
+	</body>
+</html>
