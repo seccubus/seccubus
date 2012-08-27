@@ -19,6 +19,7 @@ New features / Issues resolved
 Bigs fixed (tickets closed):
 ----------------------------
 * #6  - ConfigTest is more verbose when it fails due to a missing config file
+* #7  - Import error on scan results from OpenVAS 3.0.1
 * #15 - Ungroup Compliance Scans
 * #17 - File ~/scanners/Nikto/scan has no execute permission
 * ##  - Fixed a broken symlink in the development environment

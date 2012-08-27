@@ -35,5 +35,6 @@ print Dumper(
 		(join "", <>),
 		forcearray 	=> [ 'finding', 'references' ],
 		KeyAttr		=> undef,
+		SuppressEmpty	=> "",
 	) 
 );
