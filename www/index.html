@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 
 <html lang="en">
@@ -16,3 +17,161 @@
      enable it for Seccubus to work.</p>
   </body>
 </html>
+=======
+<HTML>
+	<HEAD>
+		<TITLE>Seccubus</TITLE>
+		<LINK HREF='style/sbp.css' TYPE='text/css' REL='stylesheet'>
+		<LINK HREF='style/layout.css' TYPE='text/css' REL='stylesheet'>
+
+		<SCRIPT type="text/javascript">
+			var Scan;
+			var Host = "";
+			var Port = "";
+			var Plugin = "";
+			var ScanStatus = "";
+
+			function getScans() {
+				AjaxRequestAndUpdate("getScans.pl", "txtScans");
+			}
+
+			function newScan(aScan) {
+				Scan = aScan;
+				clearFilter();
+				getScanInfo(aScan);
+				// BUG [ 1996757 ] Current "Mode" is not visible in the web GUI
+				// document.getElementById("txtScanName").innerHTML=aScan;
+			}
+
+			function getScanInfo(aScan) {
+				// BUG [ 1996757 ] Current "Mode" is not visible in the web GUI
+				document.getElementById("txtScanName").innerHTML=Scan + " - Scan information";
+				// BUG [ 2130293 ] Add a short helptext to each status
+				getHelp("ScanInfo");
+
+				document.getElementById("txtInfo").innerHTML="<blink>Loading...</blink>";
+				AjaxRequest("getScanInfo.pl?scan=" + aScan, updateInfo);
+			}
+
+			function updateCounts() {
+			        document.getElementById("numNew").innerHTML=document.getElementById("_numNew").innerHTML;
+				document.getElementById("numChanged").innerHTML=document.getElementById("_numChanged").innerHTML;
+				document.getElementById("numOpen").innerHTML=document.getElementById("_numOpen").innerHTML;
+				document.getElementById("numGone").innerHTML=document.getElementById("_numGone").innerHTML;
+				document.getElementById("numNoIssue").innerHTML=document.getElementById("_numNoIssue").innerHTML;
+				document.getElementById("numFixed").innerHTML=document.getElementById("_numFixed").innerHTML;
+				document.getElementById("numHardMasked").innerHTML=document.getElementById("_numHardMasked").innerHTML;
+			}
+
+			function getFindings(FindStatus) {
+				if (FindStatus)  {
+					ScanStatus = FindStatus;
+					// Ticket [ 2568643 ] - No help availabel for undefined
+					// Calling help only when ScanStatus changes
+					getHelp(FindStatus);
+				}
+				// BUG [ 1996757 ] Current "Mode" is not visible in the web GUI
+				document.getElementById("txtScanName").innerHTML=Scan + " - " + ScanStatus + " findings";
+				document.getElementById("txtFilter").innerHTML="<blink>Loading ...</blink>";
+				AjaxRequestAndUpdate("getFilter.pl?status=" + ScanStatus + "&scan=" + Scan + "&host=" + Host + "&port=" + Port + "&plugin=" + Plugin, "txtFilter");
+				document.getElementById("txtInfo").innerHTML="<blink>Loading...</blink";
+				AjaxRequest("getFindings.pl?status=" + ScanStatus + "&scan=" + Scan + "&host=" + Host + "&port=" + Port + "&plugin=" + Plugin, updateInfo);
+			}
+
+			// BUG [ 2130293 ] Add a short helptext to each status
+			function getHelp(HelpTopic) {
+				AjaxRequestAndUpdate("getHelp.pl?topic=" + HelpTopic, "txtHelp");
+			}
+
+			// Ticket [ 2981907 ] - Online up2date check
+			function upToDate() {
+				AjaxRequestAndUpdate("up2date.pl", "txtInfo");
+			}
+
+			function helpOnOff(helpState) {
+				createCookie("helpState", helpState, 365);
+				if ( helpState ) {
+					document.getElementById('txtHelp').style.display = 'block';
+				} else {
+					document.getElementById('txtHelp').style.display = 'none';
+				}
+			}
+			
+			function updateInfo () {
+				if ( xmlHttp.readyState==4 ) {
+					document.getElementById("txtInfo").innerHTML = xmlHttp.responseText;
+					updateCounts();
+				}
+			}
+
+
+			function clearFilter() {
+				Host = "";
+				Port = "";
+				Plugin = ""
+				document.getElementById("txtFilter").innerHTML="&nbsp;";
+			}
+			 function getHostFile() {
+				getHelp("HostFile");
+			 	// BUG [ 1996757 ] Current "Mode" is not visible in the web GUI
+				document.getElementById("txtScanName").innerHTML=Scan + " - Hostfile";
+			 	AjaxRequestAndUpdate("editHostfile.pl?scan=" + Scan, "txtInfo");
+			}
+
+		</SCRIPT>
+		<SCRIPT src=js/ajax.js language='javascript' type='text/javascript'></SCRIPT>
+		<!-- BUG [ 2130293 ] Add a short helptext to each status -->
+		<SCRIPT src=js/cookie.js language='javascript' type='text/javascript'></SCRIPT>
+	</HEAD>
+	<BODY
+		onLoad = '
+			upToDate();
+			nagState = readCookie("nagState");
+			if ( nagState != "http://seccubus.com/seccubus/contact-us" ) {
+				alert("Seccubus is CopyRighted by Frank Breedijk of Schuberg Philis\nWe would love to hear from you. Please leave a note at http://seccubus.com/seccubus/contact-us\n\n\n(This screen will only appear once)");
+				window.open("http://seccubus.com/seccubus/contact-us");
+				createCookie("nagState", "http://seccubus.com/seccubus/contact-us", 365);
+			}
+			helpState = readCookie("helpState");
+			// BUG [ 2139716 ] Help is off by default
+			if ( helpState == "false" ) {
+				helpState = false;
+			} else {
+				helpState = true;
+			}
+			document.helpForm.needHelp.checked = helpState;
+			helpOnOff(helpState);
+			getHelp("Start");
+			getScans();
+		'
+	>
+
+		<div id='scans' class=menu>
+			<h1>Available scans</h1>
+			<div id='txtScans'>
+				Available scans go here
+			</div>
+		</div>
+		<div id='menu' class='main_menu'>
+			<H1><span id='txtScanName'>Scan information</span></H1>
+			<form name='helpForm'>
+			[<a href='#' onClick='clearFilter();getScanInfo(Scan)'>Scan information</a>]&nbsp; 
+			[<a href='#' onClick='clearFilter();getHostFile(Scan)'>Edit hostfile</a>]&nbsp; 
+			[<a href='#' onClick='getFindings("NEW")'>New findings (<span id='numNew'>0</span>)</a>]&nbsp; 
+			[<a href='#' onClick='getFindings("CHANGED")'>Changed findings (<span id='numChanged'>0</span>)</a>]&nbsp; 
+			[<a href='#' onClick='getFindings("OPEN")'>Open findings (<span id='numOpen'>0</span>)</a>]&nbsp; 
+			[<a href='#' onClick='getFindings("GONE")'>Gone findings (<span id='numGone'>0</span>)</a>]&nbsp; 
+			[<a href='#' onClick='getFindings("NO ISSUE")'>No Issue findings (<span id='numNoIssue'>0</span>)</a>]&nbsp; 
+			[<a href='#' onClick='getFindings("FIXED")'>Fixed findings (<span id='numFixed'>0</span>)</a>]&nbsp; 
+			[<a href='#' onClick='getFindings("HARD MASKED")'>Hard Masked findings (<span id='numHardMasked'>0</span>)</a>]&nbsp; 
+			[<a href='http://seccubus.com/seccubus/contact-us'>Contact the author</a>]
+			<!-- BUG [ 2130293 ] Add a short helptext to each status -->
+				<input type='checkbox' name='needHelp' checked=true onClick='helpOnOff(this.checked);'>Help?
+			</form>
+		</div>
+		<div id='txtHelp' class='main'>&nbsp;</div>
+		<div id='txtFilter' class='main'>&nbsp;</div>
+		<div id='txtInfo' class='main'>&nbsp;</div>
+	</BODY>
+</HTML>
+>>>>>>> f01fefbeef51848e21c272957425e7cd92ce8a78
