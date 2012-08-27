@@ -87,6 +87,7 @@ sub load_ivil($;$$$$$$) {
 	my $ivil = $xml->XMLin($ivil_xml_data,
 			      	forcearray	=> [ 'finding', 'references' ],
 				KeyAttr		=> undef,
+				SuppressEmpty	=> "",
 	                      );
 
 	if ( exists $ivil->{addressee} && $ivil->{addressee}->{program} eq "Seccubus" ) {
