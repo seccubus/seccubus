@@ -60,6 +60,7 @@ my $nessus = XMLin($infile,
 
 # Lets clear some memory space
 $nessus->{Policy} = undef;
+#die Dumper($nessus);
 
 unless ( $outfile ) {
 	$outfile = $infile;
@@ -97,8 +98,9 @@ foreach my $host ( @{$nessus->{Report}->{ReportHost}} ) {
 		} elsif ( $item->{pluginFamily} eq 'Policy Compliance' ) {
 			# Compliance plugins behave funny. More findings per 
 			# PluginID
-			$item->{description} =~ /^\"?([^\"]+)\"?\s+\:/;
+			$item->{description} =~ /^\"?([^\"\:]+)/;
 			$item->{pluginID} .= "_$1";
+			print("\'$item->{description}\'\n\'$item->{pluginID}\'\n");
 		}
 		foreach my $key ( keys %{$item} ) {
 			if ( $key eq 'protocol' ) {
