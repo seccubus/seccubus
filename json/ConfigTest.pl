@@ -56,7 +56,7 @@ foreach my $config ( @configs ) {
 if( $config_found) {
 	result($data,"Configuration file", "Configuration file found at '$config_file'", 'OK');
 } else {
-	result($data,"Configuration file", "Configuration file could not be found. Please copy one of the example configuration files to config.xml and edit it", "Error");
+	result($data,"Configuration file", "Configuration file could not be found. Please copy one of the example configuration files to one of the following locations and edit it:" . join(", ",@configs), "Error");
 	bye($data);
 }
 
