@@ -29,7 +29,6 @@ config\.xml$
 \.openvasrc$
 \.update-nessusrc$
 
-
 # These files should be symlinks after the install
 ^www\/seccubus\/.*SeccubusV2\.pm$
 
@@ -44,6 +43,7 @@ json\/getNothing.pl$
 ^unit_test_jmvc
 ^make_
 ^db\/create_empty_db_v.$
+^buginfo
 \.pdn$
 
 # Misc
