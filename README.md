@@ -14,9 +14,11 @@ xx-x-2012 - 2.0.beta6
 
 New features / Issues resolved
 ------------------------------
-
+* Sourcecode repository is now [GitHub] (https://github.com/schubergphilis/Seccubus_v2/issues/6) in stead of SourceForge 
 
 Bigs fixed (tickets closed):
 ----------------------------
-
+* #6 - ConfigTest is more verbose when it fails due to a missing config file
+* #17 - File ~/scanners/Nikto/scan has no execute permission
+* ## - Fixed a broken symlink in the development environment
 
