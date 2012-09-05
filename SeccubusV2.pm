@@ -30,6 +30,8 @@ $config = "/home/seccubus/etc/config.xml" unless -e $config;
 					# Bug #62 - /home/seccubus/etc missing
 $config = "/etc/Seccubus/config.xml" unless -e $config;
 $config = "/opt/Seccubus/etc/config.xml" unless -e $config;
+# This line should prevent issue 21
+$config = "etc/dummy.config.xml" unless -e $config;
 
 # Module directory
 use lib "/opt/Seccubus/SeccubusV2";
