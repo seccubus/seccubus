@@ -1,7 +1,5 @@
 #!/bin/bash
 # ------------------------------------------------------------------------------
-# $Id$
-# ------------------------------------------------------------------------------
 # This shell script runs the command to make a valid distrbution including
 # making a MANIFEST
 # 
@@ -9,13 +7,14 @@
 # the jmvc unit test ha
 # ------------------------------------------------------------------------------
 
+# Updated this test to Git due to issue #20
 echo '*************************************************************************'
 echo "Make sure everything is checked in"
 echo '*************************************************************************'
-if [ `svn status|wc -l` -ne 0 ]
+if [ `git status|wc -l` -ne 2 ]
 then
 	echo "Something isn't checked in yet"
-	svn status
+	git status
 	exit 1
 fi 
 
