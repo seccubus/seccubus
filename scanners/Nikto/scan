@@ -66,6 +66,15 @@ if ( ! $nikto_path && -e $nikto_path ) {
 }
 print "Nikto found in $nikto_path\n" if $verbose;
 my $nikto_version = get_nikto_version($nikto_path);
+
+# This should fix issue #16
+if ( $nikto_version =~ /^ERROR/ ) {
+	print "There is a problem with your Nikto setup\n";
+	print "Note: The --nikto_options parameter can be used to pass options to Nikto itself\n";
+	print "$nikto_version";
+	help();
+}
+
 print "Nikto version is $nikto_version\n" if $verbose;
 if ( check_nikto_version($nikto_version) ) {
 	print "Nikto version $nikto_version is ok\n" if $verbose;
@@ -182,9 +191,13 @@ sub get_nikto_path() {
 sub get_nikto_version() {
 	my $nikto_path = shift;
 
-	my $version=`$nikto_path -Version`;
-	$version =~ /Nikto main\s+(\d+\.\d+\.\d+)/;
-	return $1;
+	# Added some error handling to fix #16
+	my $version=`$nikto_path -Version 2>&1`;
+	if ( $version =~ /Nikto main\s+(\d+\.\d+\.\d+)/ ) {
+		return $1;
+	} else {
+		return "ERROR: $version";
+	}
 }
 
 sub check_nikto_version() {
