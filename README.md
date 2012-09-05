@@ -21,6 +21,7 @@ Bigs fixed (tickets closed):
 * #6  - ConfigTest is more verbose when it fails due to a missing config file
 * #7  - Import error on scan results from OpenVAS 3.0.1
 * #7  - Error converting OpenVAS .nbe to IVIL
+* #12 - Installation error with tarball
 * #15 - Ungroup Compliance Scans
 * #16 - More gracefull error handling when Nikto doesn't find a config
 * #17 - File ~/scanners/Nikto/scan has no execute permission
