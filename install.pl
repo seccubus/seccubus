@@ -238,7 +238,12 @@ syst("cp -p -r $stage_dir/etc/* $build_root$conf_dir");
 syst("cp -p -r $stage_dir/db/* $build_root$db_dir");
 syst("cp -p -r $stage_dir/docs/* $build_root$doc_dir");
 
-# Link SeccubusV2.pm and api in www_dir
+# Link SeccubusV2.pm in www_dir
+if ( -e "$build_root$www_dir/seccubus/SeccubusV2.pm" ) {
+	print "Removing old symbolic links to SeccubusV2.pm in wwwdir/seccubus\n" if $verbose;
+	syst("rm $build_root$www_dir/seccubus/SeccubusV2.pm");
+}
+
 print "Creating symbolic links to SeccubusV2.pm in wwwdir/seccubus\n" if $verbose;
 syst("cd $build_root$www_dir/seccubus;ln -s $base_dir/SeccubusV2.pm");
 
