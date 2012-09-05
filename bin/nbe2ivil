@@ -91,8 +91,12 @@ while (<IN>) {
 		$finding{ip} = $ip;
 		# Unify the port numbers
 		$port .= "/tcp" if $port =~ /^\d+$/;
-		$port =~ /((\d+|general)\/(tcp|udp|icmp))/;
-		$finding{port} = $1;
+		# This code fixes Seccubus issue #7
+		if ( $port =~ /((\d+|general)\/(tcp|udp|icmp))/ ) {
+			$finding{port} = $1;
+		} else {
+			$finding{port} = $port;
+		}
 		$finding{id} = $id;
 		# If we have no finding id, we are dealing with a portscanner
 		$finding{id} = "portscan" unless $finding{id};

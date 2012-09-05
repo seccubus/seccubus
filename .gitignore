@@ -1,2 +1,3 @@
 # VI swap files
 .*.swp
+^tmp
