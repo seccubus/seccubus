@@ -10,6 +10,7 @@ MYMETA.yml
 *.old
 *.tar.gz
 *.tar
+*.bak
 blib/
 jmvc/seccubus/production.css
 jmvc/seccubus/production.js

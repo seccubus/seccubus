@@ -1,10 +1,5 @@
 # Version control files
-\bCVS\b
-,v$
-\.cvsignore$
-\b.svn\b
-\/\.svn\/
-^\.svn\/
+^\.git
 
 # Backups
 \.swp$
@@ -42,16 +37,21 @@ json\/getNothing.pl$
 ^perl_ok
 ^unit_test_jmvc
 ^make_
+^update_version
 ^db\/create_empty_db_v.$
 ^buginfo
 \.pdn$
 ^etc/dummy\.config\.xml$	# Don't package dummy config
+^update_version\.pl
 
 # Misc
 ^www\/tmp\/
 ^tmp\/
 
 # Don't bundle RPM building files
-^rmp\/
+^rpm\/
+
+# Don't bundle tests
+^t\/
 
 # JMVC files for now as well
