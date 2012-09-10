@@ -1,3 +1,6 @@
 # VI swap files
 .*.swp
 ^tmp
+
+# Temporary files
+Makefile
