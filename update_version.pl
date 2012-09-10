@@ -8,6 +8,6 @@ if ( $ENV{BUILD_NUMBER} ) {
 	use SeccubusV2;
 
 	my $line = $SeccubusV2::VERSION;
-	my $replace = $SeccubusV2::VERSION . ".$ENV{BUILD_NUMBER}";
+	my $replace = $SeccubusV2::VERSION . ".B$ENV{BUILD_NUMBER}";
 	system("sed -i 's:$line:$replace:' SeccubusV2.pm\n");
 }
