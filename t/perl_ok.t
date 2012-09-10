@@ -6,6 +6,9 @@
 # ------------------------------------------------------------------------------
 
 use strict;
+use Test::More;
+
+my $tests = 0;
 
 my @files = split(/\n/, `find . -type f`);
 
@@ -19,19 +22,14 @@ foreach my $file ( @files ) {
 		my $type = `file '$file'`;
 		chomp($type);
 		if ( $type =~ /Perl/i ) {
-			print "$file.";
-			if (! `grep 'use strict;' '$file'`) {
-				print "nok\n";
-				die("$file does not contain 'use strict;'\n");
-			}
-			print ".";
-			my $compile = `perl -ISeccubusV2 -c '$file' 2>&1`;
-			if ( $compile !~ /OK/) {
-				print "nok\n";
-				die("$file contains perl compile error:\n$compile\n");
-			} else {
-				print "ok\n";
+			if ( $file !~ qr|^./www/| ) { # Exclude www directory
+				isnt(`grep 'use strict;' '$file'`, '', "$file contains 'use strict'");
+				$tests++;
+			
+				like(`perl -ISeccubusV2 -c '$file' 2>&1`, qr/OK/, "$file perl compile test");
+				$tests++;
 			}
 		}
 	}
 }
+done_testing($tests);
