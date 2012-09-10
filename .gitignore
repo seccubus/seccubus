@@ -16,3 +16,4 @@ jmvc/seccubus/production.js
 pm_to_blib
 www/seccubus/*
 www/steal
+junit_output.xml
