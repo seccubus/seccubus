@@ -9,5 +9,5 @@ if ( $ENV{BUILD_NUMBER} ) {
 
 	my $line = $SeccubusV2::VERSION;
 	my $replace = $SeccubusV2::VERSION . ".$ENV{BUILD_NUMBER}";
-	print("sed -i 's:$line:$replace:' SeccubusV2.pm\n");
+	system("sed -i 's:$line:$replace:' SeccubusV2.pm\n");
 }

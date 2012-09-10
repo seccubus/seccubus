@@ -5,8 +5,8 @@
 # This shell script make the distribution tarball
 # ------------------------------------------------------------------------------
 
-./update_version
-if [ "$BUILD_NUMBER" eq "" ] 
+./update_version.pl
+if [ "$BUILD_NUMBER" -eq "" ] 
 then
 	echo '*************************************************************************'
 	echo "Unit testing time"
