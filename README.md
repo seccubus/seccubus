@@ -26,4 +26,5 @@ Bigs fixed (tickets closed):
 * #16 - More gracefull error handling when Nikto doesn't find a config
 * #17 - File ~/scanners/Nikto/scan has no execute permission
 * ##  - Fixed a broken symlink in the development environment
+* #23 - Nessus xmlRPC port can now be selected
 
