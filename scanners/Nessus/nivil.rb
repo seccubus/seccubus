@@ -53,6 +53,9 @@ optparse = OptionParser.new do |opts|
     opts.on('-c', '--check', 'Checks the status of a report supplied with -g') do
         options[:check] = true
     end
+    opts.on('--port PORT', 'Optional portnumber to connect to Nessus. Defaults to 8834.') do |port|
+    	options[:port] = port || "8834"
+    end
     case ARGV.length
     when 0
       puts opts
@@ -61,6 +64,10 @@ optparse = OptionParser.new do |opts|
     @fopts = opts
 end
 optparse.parse!
+
+if !options[:port]
+    options[:port] = "8834"
+end
 
 if !options[:cfile]
     if !(options[:username] and options[:passwd] and options[:server])
@@ -75,11 +82,12 @@ end
 # Our Connection Class
 
 class NessusConnection
-    def initialize(user, pass, server)
+    def initialize(user, pass, server, port)
         @username = user
         @passwd = pass
         @server = server
-        @nurl = "https://#{@server}:8834/"
+        @nurl = "https://#{@server}:" + port + "/"
+        # @nurl = "https://#{@server}:8834/"
         @token = nil
     end
     
@@ -198,7 +206,7 @@ def get_report(options)
 end
 
 
-@n = NessusConnection.new(options[:username], options[:passwd], options[:server])
+@n = NessusConnection.new(options[:username], options[:passwd], options[:server], options[:port])
 
 if options[:showpol]
     login(options)

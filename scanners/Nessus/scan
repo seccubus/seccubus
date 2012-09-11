@@ -19,6 +19,7 @@ my (
 	$password,
 	$server,
 	$policy,
+	$port,
 	$hosts_file,
 	$workspace,
 	$scan,
@@ -45,12 +46,12 @@ if ( $result ne "yes" ) {
 	die "This script requires Ruby to run succesfully\n";
 }
 
-
 GetOptions(	
 		'user|u=s'		=> \$user,
 		'password|p=s'		=> \$password,
 		'server|s=s'		=> \$server,
 		'policy|pol=s'		=> \$policy,
+		'port=s'		=> \$port,
 		'hosts|h=s'		=> \$hosts_file,
 		'workspace|ws=s'	=> \$workspace,
 		'scan|sc=s'		=> \$scan,
@@ -63,6 +64,8 @@ GetOptions(
 
 help() if $help;
 $verbose = 0 if $quiet;
+
+$port = 8834 unless $port;		# Default port is 8834
 
 my $config = get_config();
 
@@ -99,7 +102,7 @@ my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/
 my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
 
 print "Attempting to find policy ID for policy $policy\n" if $verbose;
-$cmd = "$nivil -u '$user' -p '$password' -s '$server' --show-policies";
+$cmd = "$nivil -u '$user' -p '$password' -s '$server' --port $port --show-policies";
 print "Execuing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
@@ -120,7 +123,7 @@ if ( $pol_id ) {
 }
 
 print "Starting scan\n" unless $quiet;
-my $cmd = "$nivil -u '$user' -p '$password' -s '$server' -l $pol_id -n '$tempscan'";
+my $cmd = "$nivil -u '$user' -p '$password' -s '$server' --port $port -l $pol_id -n '$tempscan'";
 if ( -e $hosts_file ) {			# Assume its a host spect rather then a
 					# hosts file if there is no file 
 	$cmd .= " -f '$hosts_file'";
@@ -140,7 +143,7 @@ my $status = "running";
 my $done;
 my $total;
 while ( $status eq "running" ) {
-	my $cmd = "$nivil -u '$user' -p '$password' -s '$server' --get-report $report_id -o '$tempfile'";
+	my $cmd = "$nivil -u '$user' -p '$password' -s '$server' --port $port --get-report $report_id -o '$tempfile'";
 	print "\nExecuing $cmd\n" if $verbose > 1;
 	$result = `$cmd 2>&1`;
 	print "$result\n" if $verbose > 1;
@@ -196,12 +199,14 @@ exit(0);
 sub help() {
 	print "
 Usage: scan       --user=<username> --password=<password> --server=<server> \\
-                  --policy=<policy name> --hosts=<hosts file|hosts spec> \\ 
-                  --workspace=<seccubus workspace> --scan=<seccubus scan>\\
+                  --port=<portnumber> --policy=<policy name> \\
+		  --hosts=<hosts file|hosts spec> \\
+		  --workspace=<seccubus workspace> --scan=<seccubus scan>\\
                   [--noerase] [--verbose] [--quiet] [--help]
 --user (-u)	  - Nessus username
 --password (-p)	  - Nessus password
 --server (-s)	  - Nessus server (ip or name)
+--port		  - Nessus server portnumber (default=8834)
 --policy	  - Name of Nessus policy
 --hosts		  - Specification of hosts to scan. Follows the Nessus rules 
 		    for specifying hosts, or path to a file containing such 
