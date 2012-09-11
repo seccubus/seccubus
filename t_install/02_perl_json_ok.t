@@ -9,6 +9,7 @@ use strict;
 use Test::More;
 
 my $tests = 0;
+my $pwd = `pwd`;
 
 my @files = split(/\n/, `cd tmp/install/seccubus/www/seccubus/json;find . -type f`);
 
@@ -19,10 +20,9 @@ foreach my $file ( @files ) {
 	) { #skip hidden files
 		my $type = `file 'tmp/install/seccubus/www/seccubus/json/$file'`;
 		chomp($type);
-		print "$file - $type\n";
 		if ( $type =~ /Perl/i ) {
 			
-			like(`(cd tmp/install/seccubus/www/seccubus/json;perl -c '$file' 2>&1)`, qr/OK/, "$file perl compile test");
+			like(`(cd tmp/install/seccubus/www/seccubus/json;perl -I$pwd/t -c '$file' 2>&1)`, qr/OK/, "$file perl compile test");
 			$tests++;
 		}
 	}
