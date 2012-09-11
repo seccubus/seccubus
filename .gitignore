@@ -1,6 +1,6 @@
 # VI swap files
 .*.swp
-^tmp
+tmp/
 
 # Temporary files used for building
 Makefile
