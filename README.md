@@ -8,13 +8,14 @@ If you are looking for stable code you might want to use the V1 branch of this
 project, but be aware that it only supports Nessus with a professional feed
 and is not longer under active development.
 
-xx-x-2012 - 2.0.beta6 
+11-9-2012 - 2.0.beta6 
 =====================
-
 
 New features / Issues resolved
 ------------------------------
 * Sourcecode repository is now [GitHub] (https://github.com/schubergphilis/Seccubus_v2/issues/6) in stead of SourceForge 
+* Build is now automated using a Jenkins server at Schuberg Philis
+* Fixed a few bugs
 
 Bigs fixed (tickets closed):
 ----------------------------
