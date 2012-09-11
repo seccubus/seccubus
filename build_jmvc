@@ -44,6 +44,10 @@ cp -r json www/seccubus
 cp jmvc/seccubus/production.* www/seccubus
 cp jmvc/seccubus/seccubus.html www/seccubus
 rm -rf www/steal/*
+if [ ! -d www/steal ]
+	mkdir www/steal
+	chmod 755 www/steal
+fi
 cp jmvc/steal/steal.production.js www/steal/
 (cd www/seccubus;ln -s ../../SeccubusV2.pm)
 
