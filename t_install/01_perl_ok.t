@@ -21,7 +21,7 @@ foreach my $file ( @files ) {
 		chomp($type);
 		if ( $type =~ /Perl/i ) {
 			
-			like(`cd tmp/install/seccubus;perl -ISeccubusV2 -c '$file' 2>&1`, qr/OK/, "$file perl compile test");
+			like(`cd tmp/install/seccubus;perl -ISeccubusV2 -c '$file' 2>&1`, qr/OK/, "Perl compile test: $file");
 			$tests++;
 		}
 	}

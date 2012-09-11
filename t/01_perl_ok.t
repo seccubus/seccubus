@@ -26,7 +26,7 @@ foreach my $file ( @files ) {
 				isnt(`grep 'use strict;' '$file'`, '', "$file contains 'use strict'");
 				$tests++;
 			
-				like(`perl -ISeccubusV2 -It -c '$file' 2>&1`, qr/OK/, "$file perl compile test");
+				like(`perl -ISeccubusV2 -It -c '$file' 2>&1`, qr/OK/, "Perl compile test: $file");
 				$tests++;
 			}
 		}
