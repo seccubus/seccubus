@@ -45,6 +45,7 @@ cp jmvc/seccubus/production.* www/seccubus
 cp jmvc/seccubus/seccubus.html www/seccubus
 rm -rf www/steal/*
 if [ ! -d www/steal ]
+then
 	mkdir www/steal
 	chmod 755 www/steal
 fi
