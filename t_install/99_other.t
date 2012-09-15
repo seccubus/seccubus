@@ -2,7 +2,7 @@
 # ------------------------------------------------------------------------------
 
 use strict;
-use Test::More tests => 7;
+use Test::More tests => 10;
 
 my $basedir = "tmp/install/seccubus";
 
@@ -24,3 +24,8 @@ foreach my $dir ( qw(
 	}
 }
 
+my $pwd = `pwd`;
+chomp $pwd;
+isnt(`grep $basedir/etc/config.xml  $basedir/SeccubusV2.pm`, "", "SeccubusV2.pm patched");
+isnt(`grep $basedir/etc/config.xml  $basedir/www/seccubus/json/ConfigTest.pl`, "", "ConfigTest.pl patched");
+is  (`grep $basedir  $basedir/etc/config.xml.mysql.example|wc -l`, "5\n", "config.xml.mysql.example patched");

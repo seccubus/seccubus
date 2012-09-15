@@ -49,7 +49,7 @@ my @dirs = qw(
 my @patches = qw(
 			SeccubusV2.pm
 			etc/config.xml.mysql.example
-			www/json/ConfigTest.pl
+			www/seccubus/json/ConfigTest.pl
 		);
 
 $base_dir = "/home/seccubus";
