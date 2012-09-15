@@ -11,7 +11,7 @@ if [ ! -d "$ZEPATH/tmp/install" ]
 then
 	mkdir $ZEPATH/tmp/install
 else
-	rm -rf $ZEPATH/tmp/install/Seccubus*
+	rm -rf $ZEPATH/tmp/install/*
 fi
 
 if [ ! -d "$ZEPATH/tmp/install/seccubus" ]
