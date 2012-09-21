@@ -1,4 +1,7 @@
-# VI swap files
+# Databases
+*.sqlite
+
+# Temp files
 .*.swp
 tmp/
 

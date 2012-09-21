@@ -69,14 +69,21 @@ Global variable $dbh to see it the database is allready open.
 =cut
 
 sub open_database() {
+	my $dsn;
 	unless ( $dbh ) {	# Skip database open when database is allready 
 				# open
 		my $config = SeccubusV2::get_config();
-		my $dsn = "DBI:" . $config->{database}->{engine} 
-			. ":database=" . $config->{database}->{database} 
-			. ";host=" . $config->{database}->{host} 
-			. ";port=" . $config->{database}->{port};
-		$dbh = DBI->connect($dsn, $config->{database}->{user}, $config->{database}->{password});
+		if ( $config->{database}->{engine} == "mysql" ) {
+			$dsn = "DBI:" . $config->{database}->{engine} 
+				. ":database=" . $config->{database}->{database} 
+				. ";host=" . $config->{database}->{host} 
+				. ";port=" . $config->{database}->{port};
+		} elsif (  $config->{database}->{engine} == "SQLite" ) {
+			$dsn = "DBI:SQLite:dbname=$config->{database}->{database}";
+		} else {
+			die "Database engine  $config->{database}->{engine} is currently not supported";
+		}
+	$dbh = DBI->connect($dsn, $config->{database}->{user}, $config->{database}->{password});
 	}
 	return $dbh;
 }
