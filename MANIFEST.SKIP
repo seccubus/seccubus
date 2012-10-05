@@ -43,6 +43,8 @@ json\/getNothing.pl$
 \.pdn$
 ^etc/dummy\.config\.xml$	# Don't package dummy config
 ^update_version\.pl
+^obs
+^junit_output\.xml$
 
 # Misc
 ^www\/tmp\/
