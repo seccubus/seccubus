@@ -2,7 +2,7 @@
 
 # Script to trigger build of packages on opensuse build server
 
-VERSION=`perl -I.. -MSeccubusV2 -e 'print "$SeccubusV2::VERSION\n";'`
+VERSION=`(cd ..;perl -ISeccubusV2 -MSeccubusV2 -e 'print "$SeccubusV2::VERSION\n";'; )`
 echo $VERSION
 if [ ! -e "home:seccubus/Seccubus" ]
 then
@@ -32,7 +32,7 @@ sleep 60
 BUILD=`osc results|grep building|wc -l`
 while [ $BUILD -gt 0 ] 
 do
-	echo "Still building $BUILD platforms"
+	echo "Still building on $BUILD platform(s)"
 	sleep 30
 	BUILD=`osc results|grep building|wc -l`
 done
