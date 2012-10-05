@@ -50,7 +50,7 @@ then
 	done
 	exit 255
 else
-	for PLATFORM in `osc results|grep failed|awk '{print $1}'|sort -u`
+	for PLATFORM in `osc results|awk '{print $1}'|sort -u`
 	do
 		osc getbinaries $PLATFORM
 	done
