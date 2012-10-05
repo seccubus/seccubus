@@ -50,5 +50,7 @@ then
 	done
 	exit 255
 else
+	cd ../..
+	./download.pl
 	exit 0
 fi
