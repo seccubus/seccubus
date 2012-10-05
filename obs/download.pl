@@ -25,10 +25,5 @@ foreach my $platform (split/\n/, $repos) {
 			}
 		}
 	}
-
-	#my $xml = get("https://api.opensuse.org/build/home:seccubus/$platform/$platform/Seccubus/");
-	#my $xml = XMLin(get("https://api.opensuse.org/build/home:seccubus/$platform/$platform/Seccubus/"));
-	#die $xml;
-	
 }
 
