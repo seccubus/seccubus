@@ -3,7 +3,7 @@
 # Script to trigger build of packages on opensuse build server
 
 VERSION=`(cd ..;perl -ISeccubusV2 -MSeccubusV2 -e 'print "$SeccubusV2::VERSION\n";'; )`
-echo $VERSION
+echo About to build version $VERSION on OpenSUSE build services
 if [ ! -e "home:seccubus/Seccubus" ]
 then
 	osc co home:seccubus Seccubus
@@ -50,6 +50,11 @@ then
 	done
 	exit 255
 else
+	for PLATFORM in `osc results|grep failed|awk '{print $1}'|sort -u`
+	do
+		osc getbinaries $PLATFORM
+	done
+	mv Seccubus-$VERSION*.rpm ../..
 	cd ..
 	osc copypac home:seccubus Seccubus home:seccubus Seccubus-$VERSION
 	cd ..
