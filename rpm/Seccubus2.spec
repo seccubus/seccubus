@@ -352,6 +352,10 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/upgrade_v1_v2.mysql
 
 %changelog
+* Sat Oct 05 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Building the rpm is now part of an automated build process. Unless there
+  are any changes to this file in the Git repository changes will not be
+  recorded here
 * Wed Aug 15 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Corrected major error in beta4
 * Tue Jul 10 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
