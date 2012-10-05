@@ -54,7 +54,7 @@ else
 	do
 		osc getbinaries $PLATFORM
 	done
-	mv Seccubus-$VERSION*.rpm ../..
+	mv binaries/* ../..
 	cd ..
 	osc copypac home:seccubus Seccubus home:seccubus Seccubus-$VERSION
 	cd ..
