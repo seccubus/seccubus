@@ -58,6 +58,5 @@ else
 	cd ..
 	osc copypac home:seccubus Seccubus home:seccubus Seccubus-$VERSION
 	cd ..
-	./download.pl
 	exit 0
 fi
