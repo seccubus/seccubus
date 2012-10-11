@@ -14,6 +14,7 @@
 			this.path = path;
 		}
 	}
+	
 	var copy = function( jFile1, jFile2 ) {
 		var fin = new java.io.FileInputStream(jFile1);
 		var fout = new java.io.FileOutputStream(jFile2);
@@ -132,6 +133,9 @@
 		after_domain: function() {
 			return this.path.match(/(?:https?:\/\/[^\/]*)(.*)/)[1];
 		},
+		afterDomain: function() {
+			return this.path.match(/https?:\/\/[^\/]*(.*)/)[1];
+		},
 		/**
 		 * 
 		 * @param {Object} url
@@ -200,6 +204,9 @@
 			}
 			copy(me, you)
 			return this;
+		},
+		moveTo: function(dest){
+			return new java.io.File(this.path).renameTo(new java.io.File(dest));
 		},
 		setExecutable: function(){
 			var me = new java.io.File(this.path)

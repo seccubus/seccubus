@@ -10,18 +10,21 @@ test("deparam", function(){
 
 	var obj = $.route.deparam("jQuery.Controller");
 	same(obj, {
-		page : "jQuery.Controller"
+		page : "jQuery.Controller",
+		route: ":page"
 	});
 
 	obj = $.route.deparam("");
 	same(obj, {
-		page : "index"
+		page : "index",
+		route: ":page"
 	});
 
 	obj = $.route.deparam("jQuery.Controller&where=there");
 	same(obj, {
 		page : "jQuery.Controller",
-		where: "there"
+		where: "there",
+		route: ":page"
 	});
     
     $.route.routes = {};
@@ -34,7 +37,8 @@ test("deparam", function(){
 	same(obj, {
 		page : "jQuery.Controller",
         index: "foo",
-		where: "there"
+		where: "there",
+		route: ":page/:index"
 	});
 })
 
@@ -57,8 +61,22 @@ test("deparam of invalid url", function(){
 	same(obj, {
         var1: 'val1',
         var2: 'val2',
-        var3: 'val3'
+        var3: 'val3',
+		route: "pages/:var1/:var2/:var3"
     });
+})
+
+test("deparam of url with non-generated hash (manual override)", function(){
+	$.route.routes = {};
+    
+	// This won't be set like this by route, but it could easily happen via a 
+	// user manually changing the URL or when porting a prior URL structure.
+	obj = $.route.deparam("page=foo&bar=baz&where=there");
+	same(obj, {
+		page: 'foo',
+		bar: 'baz',
+		where: 'there'
+	});
 })
 
 test("param", function(){
@@ -144,19 +162,31 @@ test("param-deparam", function(){
         type: "foo"
 	})
 
-    var data = {page: "jQuery.Controller", type: "document", bar: "baz", where: "there"};
+    var data = {page: "jQuery.Controller", 
+				type: "document", 
+				bar: "baz", 
+				where: "there"};
     var res = $.route.param(data);
     var obj = $.route.deparam(res);
-	same(data, obj)
-
+	delete obj.route
+	same(obj,data )
+	return;
     data = {page: "jQuery.Controller", type: "foo", bar: "baz", where: "there"};
     res = $.route.param(data);
     obj = $.route.deparam(res);
+	delete obj.route;
 	same(data, obj)
+	
+	data = {page: " a ", type: " / "};
+    res = $.route.param(data);
+    obj = $.route.deparam(res);
+	delete obj.route;
+	same(obj ,data ,"slashes and spaces")
 
     data = {page: "index", type: "foo", bar: "baz", where: "there"};
     res = $.route.param(data);
     obj = $.route.deparam(res);
+	delete obj.route;
 	same(data, obj)
 
     $.route.routes = {};
@@ -174,12 +204,14 @@ test("precident", function(){
 
 	var obj = $.route.deparam("jQuery.Controller");
 	same(obj, {
-		who : "jQuery.Controller"
+		who : "jQuery.Controller",
+		route: ":who"
 	});
 
 	obj = $.route.deparam("search/jQuery.Controller");
 	same(obj, {
-		search : "jQuery.Controller"
+		search : "jQuery.Controller",
+		route: "search/:search"
 	},"bad deparam");
 
 	equal( $.route.param({
@@ -210,6 +242,26 @@ test("linkTo", function(){
     $.route(":foo");
     var res = $.route.link("Hello",{foo: "bar", baz: 'foo'});
     equal( res, '<a href="#!bar&baz=foo" >Hello</a>');
+})
+
+test("param with route defined", function(){
+	$.route.routes = {};
+	$.route("holler")
+	$.route("foo");
+	
+	var res = $.route.param({foo: "abc",route: "foo"});
+	
+	equal(res, "foo&foo=abc")
+})
+
+test("route endings", function(){
+	$.route.routes = {};
+	$.route("foo",{foo: true});
+	$.route("food",{food: true})
+	
+	var res = $.route.deparam("food")
+	ok(res.food, "we get food back")
+	
 })
 
 })

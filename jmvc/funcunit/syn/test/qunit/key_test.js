@@ -398,4 +398,31 @@ test("shift characters", function(){
 		equals( st.g('key').value, "@", "@ character works" );
 		start();
 	})
+});
+
+test("number key codes", 2, function(){
+	stop()
+	
+	st.binder("key","keydown",function(ev){
+		ok(ev.keyCode === 40,"key codes are numbers" )
+		ok(ev.which === ev.keyCode, "which is normalized")
+		start();
+	} );
+	
+	Syn.type("[down]", 'key' , function(){
+	});
+})
+
+test("focus moves on keydown to another element", function(){
+	stop();
+	st.binder("key","keydown",function(ev){
+		st.g('synTextArea').focus();
+
+	});
+	st.binder("synTextArea","keypress",function(ev){
+		ok(true, "keypress called");
+		start();
+	});
+	Syn.type("a", 'key' , function(){
+	});
 })

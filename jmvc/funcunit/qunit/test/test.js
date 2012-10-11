@@ -1,3 +1,5 @@
+module("qunit")
+
 test("something",function(){
 	ok(true,"it's ok")
 })

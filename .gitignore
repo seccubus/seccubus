@@ -1,6 +1,9 @@
 # Databases
 *.sqlite
 
+# Mac Stuff
+*.DS_Store
+
 # Temp files
 .*.swp
 tmp/

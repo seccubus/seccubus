@@ -3,42 +3,35 @@
 <html lang="en">
     <head>
         <title>Coverage</title>
-        <style>
-        	#file{
-        		position:absolute;
-        		left:0;
-        		top:0;
-        		border:1px solid black;
-        		background-color:White;
-        		width: 97%;
-        		height: 100%;
-        		overflow: auto;
-        		display: none;
-        	}
-        	pre{
-        		margin: 0;
-        	}
-        	#closeButton {
-        		color: red;
-        		display: none;
-        		position: absolute;
-        		right: 10px;
-        		top: 10px;
-        		cursor: pointer;
-        	}
-        </style>
     </head>
     <body>
-    	<div id='closeButton'>X</div>
-    	<table id='coverage'>
-    		<tr>
-    			<th>File Name</th>
-    			<th>Number of Lines</th>
-    			<th>Lines Run</th>
-    			<th>Coverage Percentage</th>
-    		</tr>
-    	</table>
-    	<table id='file'></table>
-		<script type='text/javascript' src='../../steal/steal.js?funcunit/coverage'></script>
+		<script type='text/javascript' src='../../steal/steal.js'></script>
+		<script type='text/javascript'>
+			var data = {
+				"files": {
+					"funcunit/browser/core.js": {
+		                  "linesUsed": {
+		                        "0": 1
+		                  }, 
+		                  "src": "(function() {", 
+		                  "lineCoverage": 0.7368421052631579, 
+		                  "blockCoverage": 0.56, 
+		                  "lines": 1, 
+		                  "blocks": 25
+			        }
+			      }, 
+			      "total": {
+			            "lineCoverage": 0.4253306472803714, 
+			            "blockCoverage": 0.22422010398613518, 
+			            "lines": 11417, 
+			            "blocks": 4616
+			      }
+			};
+
+			QUnit = {};
+			steal('funcunit/coverage', function(){
+				QUnit.coverage(data);
+			})
+		</script>
     </body>
 </html>

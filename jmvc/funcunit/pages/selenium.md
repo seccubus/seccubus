@@ -38,27 +38,6 @@ browsers: ["*custom /path/to/my/browser"]
 See the [http://release.seleniumhq.org/selenium-remote-control/0.9.0/doc/java/com/thoughtworks/selenium/DefaultSelenium.html#DefaultSelenium Selenium docs] 
 for more information on customizing browsers.
 
-## Filesystem for Faster Tests
-
-You might want to use Selenium to open local FuncUnit pages, but test pages on your server.  This is possible, you 
-just have to change FuncUnit.href or FuncUnit.jmvcRoot.  This file can load locally while everything else is 
-using a server because it is a static file and loads static script files.
-
-Set jmvcRoot to point to the location you want your pages to load from.
-
-@codestart
-jmvcRoot: "localhost:8000"
-@codeend
-
-Then make sure your test paths contain // in them to signify something relative to the jmvcRoot.  
-For example, S.open("//funcunit/test/myapp.html") would open a page at 
-http://localhost:8000/funcunit/test/myapp.html.
-
-To load the command page from filesystem, start your test like you normally do:
-@codestart
-funcunit\envjs path\to\funcunit.html
-@codeend
-
 ## Troubleshooting
 
 ### 64-bit Java
@@ -75,24 +54,7 @@ FuncUnit.browsers = ["*firefox C:\\PROGRA~2\\MOZILL~1\\firefox.exe", "*iexplore"
 ### Running From Safari and Chrome
 
 Certain browsers, like Safari and Chrome, don't run Selenium tests from filesystem because 
-of security resrictions.  To get around this you have to run pages served from a server.  The 
-downside of this is the test takes longer to start up, compared to loading from filesystem.
-  
-To run served pages, you must 1) provide an absolute path in your envjs path and 2) provide an absolute path 
-in jmvcRoot.
-
-For example, to run cookbook FuncUnit tests from Chrome, set the browsers and jmvcRoot.
-
-@codestart
-browsers: ["*googlechrome"],
-jmvcRoot: "http://localhost:8000/framework/"
-@codeend
-
-Then start up Selenium.
-
-@codestart
-./js funcunit/run selenium http://localhost:8000/framework/cookbook/funcunit.html
-@codeend
+of security resrictions.  You must run pages from a server.
 
 To run Safari 5 in Windows, you should use the safariproxy browser string.
 

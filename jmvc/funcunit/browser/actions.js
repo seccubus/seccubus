@@ -71,7 +71,7 @@
 						this.bind.triggerSyn("_" + name, options, success);
 					},
 					success: success,
-					error: "Could not " + name + " " + this.selector,
+					error: "Could not " + name + " '" + this.selector+"'",
 					bind: this,
 					type: "action"
 				});
@@ -84,12 +84,9 @@
 	}
 	
 	$.extend(FuncUnit.prototype, {
+		// perform check even if last queued item is a wait beacuse certain waits don't guarantee the element is visible (like text)
 		_addExists: function(){
-			// if the previous item on the queue isn't a "wait"
-			var lastItem = FuncUnit._lastQueuedItem();
-			if(!(lastItem && lastItem.type === "wait")){
-				this.exists();
-			}
+			this.exists(false);
 		},
 		/**
 		 * Types text into an element.  This makes use of [Syn.type] and works in 

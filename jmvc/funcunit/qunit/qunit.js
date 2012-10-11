@@ -46,6 +46,13 @@ Test.prototype = {
 				li.className = "running";
 				li.id = this.id = "test-output" + testId++;
 			tests.appendChild( li );
+			
+			if(config.noautorun){
+				addEvent(li, "click", function(){
+					var id = parseInt(this.id.match(/(\d+)/)[1], 10)
+					config.deferred_queue[id]()
+				})
+			}
 		}
 	},
 	setup: function() {
@@ -157,6 +164,7 @@ Test.prototype = {
 					config.moduleStats.bad++;
 				}
 			}
+			this.assertions = [];
 
 			// store result when possible
 			if ( QUnit.config.reorder && defined.sessionStorage ) {
@@ -176,9 +184,18 @@ Test.prototype = {
 
 			var a = document.createElement("a");
 			a.innerHTML = "Rerun";
-			a.href = QUnit.url({ filter: getText([b]).replace(/\([^)]+\)$/, "").replace(/(^\s*|\s*$)/g, "") });
+			if(config.autorun){
+				a.href = "#"
+				addEvent(a, "click", function(ev){
+					ev.preventDefault();
+					// ev.stopPropagation()
+				})
+			} else {
+				a.href = QUnit.url({ filter: getText([b]).replace(/\([^)]+\)$/, "").replace(/(^\s*|\s*$)/g, "") });	
+			}
 
-			addEvent(b, "click", function() {
+			addEvent(b, "click", function(ev) {
+				ev.stopPropagation();
 				var next = b.nextSibling.nextSibling,
 					display = next.style.display;
 				next.style.display = display === "none" ? "block" : "none";
@@ -196,7 +213,9 @@ Test.prototype = {
 
 			var li = id(this.id);
 			li.className = bad ? "fail" : "pass";
-			li.removeChild( li.firstChild );
+			while(li.firstChild){
+				li.removeChild( li.firstChild );
+			}
 			li.appendChild( b );
 			li.appendChild( a );
 			li.appendChild( ol );
@@ -458,6 +477,9 @@ var config = {
 	// The queue of tests to run
 	queue: [],
 
+	// Deferred queue, for noautorun
+	deferred_queue: [],
+
 	// block until document ready
 	blocking: true,
 
@@ -664,7 +686,6 @@ extend(QUnit, {
 		output += "</table>";
 
 		runLoggingCallbacks( 'log', QUnit, details );
-
 		config.current.assertions.push({
 			result: !!result,
 			message: output
@@ -727,8 +748,19 @@ QUnit.load = function() {
 
 	var urlConfigHtml = '', len = config.urlConfig.length;
 	for ( var i = 0, val; i < len, val = config.urlConfig[i]; i++ ) {
-		config[val] = QUnit.urlParams[val];
-		urlConfigHtml += '<label><input name="' + val + '" type="checkbox"' + ( config[val] ? ' checked="checked"' : '' ) + '>' + val + '</label>';
+		var disable = false;
+		if(val === "coverage"){
+			if(QUnit.urlParams["noautorun"]){
+				disable = true;
+			}
+			config["coverage"] = QUnit.urlParams["steal[instrument]"];
+		} else {
+			config[val] = QUnit.urlParams[val];
+		}
+		if(val === "noautorun" && QUnit.urlParams["steal[instrument]"]){
+			disable = true;
+		}
+		urlConfigHtml += '<label><input name="' + val + '" type="checkbox"' + ( config[val] ? ' checked="checked"' : '' ) + ( disable ? ' disabled="disabled"' : '' ) + '>' + val + '</label>';
 	}
 
 	var userAgent = id("qunit-userAgent");
@@ -740,7 +772,13 @@ QUnit.load = function() {
 		banner.innerHTML = '<a href="' + QUnit.url({ filter: undefined }) + '"> ' + banner.innerHTML + '</a> ' + urlConfigHtml;
 		addEvent( banner, "change", function( event ) {
 			var params = {};
-			params[ event.target.name ] = event.target.checked ? true : undefined;
+			var name = event.target.name;
+			var val = true;
+			if(event.target.name === "coverage"){
+				name = "steal[instrument]";
+				val = "jquery,funcunit,steal,documentjs,*/test,*_test.js,mxui,*funcunit.js"
+			}
+			params[ name ] = event.target.checked ? val : undefined;
 			window.location = QUnit.url( params );
 		});
 	}
@@ -787,7 +825,7 @@ QUnit.load = function() {
 	// if (config.autostart) {
 		// QUnit.start();
 	// }
-	process()
+	process(true)
 };
 
 // on ready because that is when the window is loaded AND when 
@@ -795,6 +833,8 @@ QUnit.load = function() {
 steal.bind("ready", function(){
 	QUnit.config.autorun = false;
 	QUnit.config.reorder = false;
+	QUnit.config.testTimeout = false;
+	QUnit.config.urlConfig.push('coverage', 'noautorun');
 	QUnit.load();
 })
 
@@ -879,7 +919,7 @@ function validTest( name ) {
 		filter = filter.slice( 1 );
 	}
 
-	if ( name.indexOf( filter ) !== -1 ) {
+	if ( filter.indexOf( name ) !== -1 ) {
 		return !not;
 	}
 
@@ -939,7 +979,12 @@ function process( last ) {
 
 	while ( config.queue.length && !config.blocking ) {
 		if ( !defined.setTimeout || config.updateRate <= 0 || ( ( new Date().getTime() - start ) < config.updateRate ) ) {
-			config.queue.shift()();
+			var run = config.queue.shift();
+			if(config.noautorun && run.name === "run"){
+				config.deferred_queue.push(run);
+			} else {
+				run();
+			}
 		} else {
 			window.setTimeout( function(){
 				process( last );
@@ -1011,7 +1056,7 @@ function extend(a, b) {
 	for ( var prop in b ) {
 		if ( b[prop] === undefined ) {
 			delete a[prop];
-		} else {
+		} else if ( prop !== "constructor" || a !== window ) {
 			a[prop] = b[prop];
 		}
 	}
@@ -1298,19 +1343,20 @@ QUnit.jsDump = (function() {
 				type = "date";
 			} else if (QUnit.is("Function", obj)) {
 				type = "function";
+			} else if (
+				// native arrays
+				toString.call( obj ) === "[object Array]" ||
+				toString.call( obj ) === "[object JavaArray]" ||
+				// NodeList objects
+				( typeof obj.length === "number" && typeof obj.item !== "undefined" && ( obj.length ? obj.item(0) === obj[0] : ( obj.item( 0 ) === null && typeof obj[0] === "undefined" ) ) )
+			) {
+				type = "array";
 			} else if (typeof obj.setInterval !== undefined && typeof obj.document !== "undefined" && typeof obj.nodeType === "undefined") {
 				type = "window";
 			} else if (obj.nodeType === 9) {
 				type = "document";
 			} else if (obj.nodeType) {
 				type = "node";
-			} else if (
-				// native arrays
-				toString.call( obj ) === "[object Array]" ||
-				// NodeList objects
-				( typeof obj.length === "number" && typeof obj.item !== "undefined" && ( obj.length ? obj.item(0) === obj[0] : ( obj.item( 0 ) === null && typeof obj[0] === "undefined" ) ) )
-			) {
-				type = "array";
 			} else {
 				type = typeof obj;
 			}
@@ -1593,9 +1639,14 @@ QUnit.diff = (function() {
 	};
 })();
 
+if(steal.options.instrument){
+	steal("funcunit/coverage", function(){
+		QUnit.done(function(){
+			var data = steal.instrument.compileStats()
+			QUnit.coverage(data);
+		})
+	});
+}
+
 })
-
-
-if(steal.options.browser){
-	steal('funcunit/browser/events.js');
-};
+.then('funcunit/browser/events.js')

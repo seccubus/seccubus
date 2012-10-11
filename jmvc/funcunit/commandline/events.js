@@ -1,11 +1,11 @@
 // loaded into the commandline environment (shared by envjs, selenium)
 
-steal('funcunit/commandline/output/xunit.js', function(){
+steal('funcunit/commandline/output', function(){
 	var totalFailed = 0,
 		total = 0,
 		browserFailed, browserTotal;
 		
-		// bind all events
+	// bind all events
 	FuncUnit.bindEvents = function(browser){
 		browser.bind("begin", function(data){
 			FuncUnit.begin();
@@ -48,8 +48,7 @@ steal('funcunit/commandline/output/xunit.js', function(){
 			
 		})
 		.bind('coverage', function(data){
-			var stats = FuncUnit.getTotalStats(data);
-			FuncUnit.coverage(stats)
+			FuncUnit.coverage(data)
 		})
 	
 	}

@@ -131,8 +131,8 @@
 			var j = Syn.jquery()(el),
 				o = j.offset();
 			return {
-				pageX: o.left + (j.width() / 2),
-				pageY: o.top + (j.height() / 2)
+				pageX: o.left + (j.outerWidth() / 2),
+				pageY: o.top + (j.outerHeight() / 2)
 			}
 		},
 		convertOption = function( option, win, from ) {

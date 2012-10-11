@@ -149,9 +149,20 @@ $.extend(FuncUnit.prototype, {
 	 * @return {FuncUnit} returns the funcUnit for chaining. 
 	 */
 	exists: function( timeout, success, message ) {
-		return this.size(function(size){
-			return size > 0;
-		}, timeout, success, message);
+		var logMessage = "Waiting for '"+this.selector+"' to exist";
+		if(timeout === false){ // pass false to suppress this wait (make it not print any logMessage)
+			logMessage = false
+		}
+		return this.size({
+			condition: function(size){
+				return size > 0;
+			},
+			timeout: timeout,
+			success: success,
+			message: message,
+			errorMessage: "Exist failed: element with selector '"+this.selector+"' not found",
+			logMessage: logMessage
+		})
 	},
 	/**
 	 * Waits until no elements are matched by the selector.  Missing is equivalent to calling
@@ -207,14 +218,28 @@ $.extend(FuncUnit.prototype, {
 		}, timeout, success, message)
 	},
 	/**
-	 * Waits a timeout before calling the next action.  This is the same as
-	 * [FuncUnit.prototype.wait].
+	 * Waits until some condition is true before calling the next action.  Or if no checker function is provided, waits a 
+	 * timeout before calling the next queued method.  This can be used as a flexible wait condition to check various things in the tested page:
+	 * @codestart
+	 * 
+	 * S('#testData').wait(function(){
+	 * 	 return S.win.$(this).data('idval') === 1000;
+	 * }, "Data value matched");
+	 * @codeend
+	 * @param {Number|Function} [checker] a checking function.  It runs repeatedly until the condition becomes true or the timeout period passes.  
+	 * If a number is provided, a time in milliseconds to wait before running the next queued method.
 	 * @param {Number} [timeout] overrides FuncUnit.timeout.  If provided, the wait will fail if not completed before this timeout.
-	 * @param {Object} success
+	 * @param {Function} [success] a callback that will run after this action completes.
+	 * @param {String} [message] if provided, an assertion will be passed when this wait condition completes successfully
 	 */
-	wait: function( timeout, success ) {
-		FuncUnit.wait(timeout, success)
-		return this;
+	wait: function( checker, timeout, success, message ) {
+		if(typeof checker === "number"){
+			timeout = checker;
+			FuncUnit.wait(timeout, success)
+			return this;	
+		} else {
+			return this.size(checker, timeout, success, message)
+		}
 	},
 	/**
 	 * Calls the success function after all previous asynchronous actions have completed.  Then

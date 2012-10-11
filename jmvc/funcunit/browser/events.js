@@ -1,23 +1,47 @@
-steal('funcunit/browser/resources/jquery.js', function(){
+(function(){
 
-	if(steal.options.browser === "phantomjs"){
-		var ifrm = $("<iframe id='funcunit_app' height='800' width='960'></iframe")
-		$(document.body).prepend(ifrm);
+	if(steal.options.instrument){
+		QUnit.done(function(){
+			// send to console
+			if(steal.options.browser){
+				steal.client.trigger("coverage", steal.instrument.compileStats());
+			}
+		})
 	}
-
-	var evts = ['begin', 'testStart', 'testDone', 'moduleStart', 'moduleDone', 'done', 'log'], type;
 	
-	for (var i = 0; i < evts.length; i++) {
-		type = evts[i];
-		(function(type){
-			QUnit[type] = function(data){
-				if(type === "done"){
-					if (_$jscoverage) {
-						steal.client.trigger("coverage", _$jscoverage);
-					}
-				}
-				steal.client.trigger(type, data);
-			};
-		})(type);
+	// if there's a failed assertion, don't run the rest of this test, just fail and move on
+	QUnit.log(function(data){
+		if(data.result === false) {
+			FuncUnit._queue = [];
+			start();
+		}
+	})
+	
+	if(steal.options.browser === "phantomjs"){
+		var ifrm = document.createElement("iframe");
+		ifrm.id = 'funcunit_app';
+		ifrm.setAttribute("width", "960");
+		ifrm.setAttribute("height", "800");
+		document.body.insertBefore(ifrm, document.body.firstChild);
 	}
-})
+
+	if(steal.options.browser){
+		var evts = ['begin', 'testStart', 'testDone', 'moduleStart', 'moduleDone', 'done', 'log'], 
+			type,
+			orig = {};
+		
+		for (var i = 0; i < evts.length; i++) {
+			type = evts[i];
+			(function(type){
+				QUnit[type] (function(data){
+					if(orig[type]){
+						orig[type].apply(this, arguments);
+					}
+					
+					steal.client.trigger(type, data);
+				});
+			})(type);
+		}
+	}
+	
+})()

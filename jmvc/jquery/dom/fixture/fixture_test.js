@@ -1,10 +1,11 @@
+
 steal("jquery/dom/fixture", "jquery/model",'funcunit/qunit',function(){
 
 module("jquery/dom/fixture");
 
 
 test("static fixtures", function(){
-	stop(3000);
+	stop();
 	
 	$.fixture("GET something", "//jquery/dom/fixture/fixtures/test.json");
 	$.fixture("POST something", "//jquery/dom/fixture/fixtures/test.json");
@@ -40,7 +41,7 @@ test("dynamic fixtures",function(){
 test("fixture function", 3, function(){
 	
 	stop();
-	var url = steal.root.join("jquery/dom/fixture/fixtures/foo.json");
+	var url = steal.root.join("jquery/dom/fixture/fixtures/foo.json")+'';
 	$.fixture(url,"//jquery/dom/fixture/fixtures/foobar.json" );
 	
 	$.get(url,function(data){
@@ -76,7 +77,7 @@ test("fixtures with converters", function(){
 	
 	stop();
 	$.ajax( {
-	  url : steal.root.join("jquery/dom/fixture/fixtures/foobar.json"),
+	  url : steal.root.join("jquery/dom/fixture/fixtures/foobar.json")+'',
 	  dataType: "json fooBar",
 	  converters: {
 	    "json fooBar": function( data ) {
@@ -188,6 +189,11 @@ test("_getData", function(){
 	deepEqual(data, {}, "gets data");
 })
 
+test("_getData with double character value", function(){
+	var data = $.fixture._getData("/days/{id}/time_slots.json", "/days/17/time_slots.json");
+	equals(data.id, 17, "gets data");
+});
+
 test("_compare", function(){
 	var same = $.Object.same(
 		{url : "/thingers/5"},
@@ -236,7 +242,7 @@ test("fixture function gets id", function(){
 			name: "justin"
 		}
 	})
-	stop(3000);
+	stop();
 	$.get("/thingers/5", {}, function(data){
 		start();
 		ok(data.id)
@@ -244,7 +250,7 @@ test("fixture function gets id", function(){
 });
 
 test("replacing and removing a fixture", function(){
-	var url = steal.root.join("jquery/dom/fixture/fixtures/remove.json")
+	var url = steal.root.join("jquery/dom/fixture/fixtures/remove.json")+''
 	$.fixture("GET "+url, function(){
 		return {weird: "ness!"}
 	})
@@ -265,7 +271,7 @@ test("replacing and removing a fixture", function(){
 				equals(json.weird,"ness","fixture set right");
 
 				start();
-			});
+			},'json');
 			
 			
 		},'json')
@@ -273,8 +279,51 @@ test("replacing and removing a fixture", function(){
 		
 		
 	},'json')
+});
+
+return; // future fixture stuff
+
+// returning undefined means you want to control timing?
+$.fixture('GET /foo', function(orig, settings, headers, cb){
+	setTimeout(function(){
+		cb(200, "success",{json : "{}"},{})
+	},1000);
 })
 
+// fixture that hooks into model / vice versa?
+
+// fixture that creates a nice store
+
+var store = $.fixture.store(1000, function(){
+	
+})
+
+store.find()
+
+// make cloud
+
+var clouds =  $.fixture.store(1, function(){
+	return {
+		name: "ESCCloud",
+		DN : "ESCCloud-ESCCloud",
+		type : "ESCCloud"
+	}
+});
+
+var computeCluster = $.fixture.store(5, function(i){
+	return {
+		name : "",
+		parentDN : clouds.find()[0].DN,
+		type: "ComputeCluster",
+		DN : "ComputeCluster-ComputeCluster"+i
+	}
+});
+
+$.fixture("GET /computeclusters", function(){
+	return []
+});
+
+// hacking models?
 
 
 
