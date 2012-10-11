@@ -14,6 +14,7 @@ else
 fi
 
 cp ../../../rpm/Seccubus2.spec .
+cp ../../../deb/* .
 osc rm Seccubus-*.tar.gz
 if [ ! -e Seccubus-$VERSION.tar.gz ]
 then
@@ -23,6 +24,8 @@ else
 	cp ../../../Seccubus-$VERSION.tar.gz .
 fi
 sed -i "s:^Version\:.*:Version\:\t$VERSION:" Seccubus2.spec
+sed -i "s:^Version\:.*:Version\: $VERSION:" seccubus.dsc
+sed -i "s:Seccubus_.*\.tar\.gz.*:Seccubus_$VERSION.tar.gz:" seccubus.dsc
 
 # OK lets commit
 osc ci -m "Rebuild of $VERSION"
@@ -54,7 +57,7 @@ else
 	do
 		osc getbinaries $PLATFORM
 	done
-	mv binaries/* ../..
+	mv binaries/*.rpm binaries/*.deb ../..
 	cd ..
 	osc copypac home:seccubus Seccubus home:seccubus Seccubus-$VERSION
 	cd ..

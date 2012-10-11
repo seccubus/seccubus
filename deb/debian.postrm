@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+#DEBHELPER#
+
+if [ "$1" = "purge" ]; then
+    deluser --system --quiet seccubus || :
+    groupdel seccubus
+    rm -f /etc/apache2/conf.d/seccubus.conf
+    rm -rf /etc/seccubus/*
+fi
+

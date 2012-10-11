@@ -1,0 +1,13 @@
+Source: seccubus
+Section: net
+Priority: optional
+Maintainer: Sten Spans <sspans@schubergphilis.com>
+Build-Depends: debhelper (>= 4)
+Build-Depends-Indep: perl
+Standards-Version: 3.9.2
+Homepage: http://seccubus.com
+
+Package: seccubus
+Architecture: all
+Depends: apache2, mysql-server, ruby, libalgorithm-diff-perl, libjson-perl, libxml-simple-perl
+Description: Automated regular vulnerability scanning with delta reporting
