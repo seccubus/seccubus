@@ -10,20 +10,20 @@ test("closest", function(){
 		ok(this.hasClass("iWasClicked"),"we clicked #foo")
 	})
 	S(":contains('Holler')").closest(".baz").click(function(){
-		ok(S(".baz").hasClass("iWasClicked"),"we clicked .baz")
+		ok(this.hasClass("iWasClicked"),"we clicked .baz")
 	})
 	
 })
 
-test("find", function(){
+test("find with traversers", function(){
 	S(":contains('Holler')")
 		.closest("#foo")
 		.find(".combo")
 		.hasClass("combo", true)
-		.click(function(){
-			ok(S(".combo:eq(0)").hasClass("iWasClicked"),"we clicked the first combo")
-			ok(!S(".combo:eq(1)").hasClass("iWasClicked"),"we did not click the 2nd combo")
-		})
+		.click();
+		
+	S(".combo:eq(0)").hasClass("iWasClicked", true, "we clicked the first combo")
+	S(".combo:eq(1)").hasClass("iWasClicked", false, "we did not click the 2nd combo")
 })
 
 test("find this", function(){
@@ -36,9 +36,9 @@ test("find this", function(){
 	})
 })
 
-test("nested find", function(){
+test("nested find", 2, function(){
 	S(".baz").exists(function(obj) { 
-		obj.find(".foo").exists(); 
-		obj.find(".another").exists(); 
+		S(this).find("#foo").exists(".foo found");
+		S(this).find(".another").exists(".another found"); 
 	})
 })

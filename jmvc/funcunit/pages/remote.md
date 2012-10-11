@@ -1,5 +1,5 @@
 @page funcunit.remote Targeting Remote Sites
-@parent FuncUnit 6
+@parent FuncUnit 7
 
 FuncUnit provides the ability to run tests against any site on any domain.
 

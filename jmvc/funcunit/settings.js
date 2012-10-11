@@ -1,19 +1,20 @@
 FuncUnit = {
 	// the list of browsers that selenium runs tests on
-	// browsers: ["*firefox"],
+	// browsers: ["*firefox", "*googlechrome"],
 	
-	// the root for all paths in the tests, defaults to filesystem
-	jmvcRoot: null, // "http://localhost:8000/",
+	// the root where funcunit folder lives, used when running from commandline
+	// jmvcRoot: "http://localhost:3000/javascriptmvc",
 	
-	// the number of milliseconds between Selenium commands, "slow" is 500 ms
-	speed: null, //"slow"
+	// used for debugging
+	// the number of milliseconds between commands, "slow" is 500 ms
+	// speed: "slow",
 	
-	// a script in funcunit/commandline/output that formats the output
-	output: 'xunit',
-
-	// the name of the file to save results to (only when using xunit formatter)
-	xmlLogFilename: 'testresults.xml',  
-
-	// a prefix for the xml log file classes
-	xmlLogClassPrefix: 'Qunit.'
+	// turn on if you want to exit hard with the -e flag
+	// failOnError: true,
+	
+	// any files or directories that coverage calculations should ignore
+	coverageIgnore: ['*/test', "*_test.js", "*jquery.js", "*qunit.js"]
+	
+	// uncomment this to ignore all JMVC directories
+	// coverageIgnore: ["!jmvc"]
 }

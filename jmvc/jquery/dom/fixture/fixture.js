@@ -35,11 +35,11 @@ steal('jquery/dom',
 			var url = settings.fixture;
 			
 			if (/^\/\//.test(url) ) {
-				url = steal.root.mapJoin(settings.fixture.substr(2));
+				url = steal.root.mapJoin(settings.fixture.substr(2))+'';
 			}
-			//@steal-remove-start
+			//!steal-remove-start
 			steal.dev.log("looking for fixture in " + url);
-			//@steal-remove-end
+			//!steal-remove-end
 			settings.url = url;
 			settings.data = null;
 			settings.type = "GET";
@@ -50,9 +50,9 @@ steal('jquery/dom',
 			}
 
 		}else {
-			//@steal-remove-start
+			//!steal-remove-start
 			steal.dev.log("using a dynamic fixture for " +settings.type+" "+ settings.url);
-			//@steal-remove-end
+			//!steal-remove-end
 			
 			//it's a function ... add the fixture datatype so our fixture transport handles it
 			// TODO: make everything go here for timing and other fun stuff
@@ -432,7 +432,7 @@ steal('jquery/dom',
 				fixtureUrlAdjusted = fixtureUrl.replace('.', '\\.').replace('?', '\\?'),
 				res = new RegExp(fixtureUrlAdjusted.replace(replacer, function(whole, part){
 			  		order.push(part)
-			 		 return "([^\/])+"
+			 		 return "([^\/]+)"
 				})+"$").exec(url),
 				data = {};
 			
@@ -898,4 +898,6 @@ steal('jquery/dom',
 	 *     }
 	 * 
 	 */
+	 //Expose this for fixture debugging
+	 $.fixture.overwrites = overwrites;
 });

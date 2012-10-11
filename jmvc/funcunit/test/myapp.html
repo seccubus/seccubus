@@ -22,11 +22,37 @@
 				top:40px;
 			}
 		</style>
-		<script src="jquery.js" type='text/javascript'></script>
-		<script src="jquery.event.drag.js" type='text/javascript'></script>
-		<script src="jquery.event.drop.js" type='text/javascript'></script>
+	</head>
+	<body>
+		<h1>Hello World</h1>
+		<input id="typehere"/><input type='submit' value="Copy" id='copy'/>
+		<p id='seewhatyoutyped'></p>
+		<iframe src='myotherapp.html'></iframe>
+		<div id='clickToChange'>Change Thist Text</div>
+        <a href="javascript:changeText()" id='changelink'>Change</a>
+		<div id='drag'></div>
+		<div id='drop'></div>
+		<h3>hasClass</h3>
+		<div id='hasClass'>Click Me</div>
+		<h3>Exists</h3>
+		<div id='exists'>Click Me</div>
+		<h3>Trigger Custom Event</h3>
+		<div id='trigger'>Trigger Me</div>
+		<div id='confirm'>Confirm Me
+		<div class='result'></div>
+		</div>
+		<div id='rightclick'>Right Click Me</div>
+		<div class='rightclickResult'></div>
+		<div class='hidden' style='display:none;'></div>
+		
+		<div id="testData"></div>
+		<script type='text/javascript' src='../../steal/steal.js'></script>
 		<script type='text/javascript'>
-			$(function(){
+		steal('funcunit/browser/resources/jquery.js')
+			.then('funcunit/test/jquery.event.drag.js')
+			.then( 'funcunit/test/jquery.event.drop.js', function(){
+				$('#testData').data('idval', 1000);
+				
 				$("#rightclick").bind("contextmenu", function(){
 					$(".rightclickResult").text("Right Clicked")
 				})
@@ -79,48 +105,23 @@
 						$("#confirm .result").html("<p>I was not confirmed</p>")
 					}
 				})
-			})
-			changeText = function(){
-                $('#changelink').text('Changed')
-            }
-			
-			$('#drag').live("draginit", function(){})
-				.live("dragover", function(){
-					$(this).css('background-color', 'black').addClass("dragover")
+				window.changeText = function(){
+	                $('#changelink').text('Changed')
+	            }
+				
+				$('#drag').live("draginit", function(){})
+					.live("dragover", function(){
+						$(this).css('background-color', 'black').addClass("dragover")
+					})
+				$('#drop').live("dropover", function(){ 
+					$(this).css('background-color', 'blue').addClass("dropover")
 				})
-			$('#drop').live("dropover", function(){ 
-				$(this).css('background-color', 'blue').addClass("dropover")
+				$('#drop').live("dropout", function(){ 
+					$(this).css('background-color', 'green').addClass("dropout")
+				})
 			})
-			$('#drop').live("dropout", function(){ 
-				$(this).css('background-color', 'green').addClass("dropout")
-			})
-			
 			
 			
 		</script>
-	</head>
-	<body>
-		<h1>Hello World</h1>
-		<input id="typehere"/><input type='submit' value="Copy" id='copy'/>
-		<p id='seewhatyoutyped'></p>
-		<iframe src='myotherapp.html'></iframe>
-		<div id='clickToChange'>Change Thist Text</div>
-        <a href="javascript:changeText()" id='changelink'>Change</a>
-		<div id='drag'></div>
-		<div id='drop'></div>
-		<h3>hasClass</h3>
-		<div id='hasClass'>Click Me</div>
-		<h3>Exists</h3>
-		<div id='exists'>Click Me</div>
-		<h3>Trigger Custom Event</h3>
-		<div id='trigger'>Trigger Me</div>
-		<div id='confirm'>Confirm Me
-		<div class='result'></div>
-		</div>
-		<div id='rightclick'>Right Click Me</div>
-		<div class='rightclickResult'></div>
-		<div class='hidden' style='display:none;'></div>
-		
-		
 	</body>
 </html>

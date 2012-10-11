@@ -529,19 +529,26 @@
 		},
 		/**
 		 * @attribute support
+		 * 
 		 * Feature detected properties of a browser's event system.
 		 * Support has the following properties:
-		 * <ul>
-		 * 	<li><code>clickChanges</code> - clicking on an option element creates a change event.</li>
-		 *  <li><code>clickSubmits</code> - clicking on a form button submits the form.</li>
-		 *  <li><code>mouseupSubmits</code> - a mouseup on a form button submits the form.</li>
-		 *  <li><code>radioClickChanges</code> - clicking a radio button changes the radio.</li>
-		 *  <li><code>focusChanges</code> - focus/blur creates a change event.</li>
-		 *  <li><code>linkHrefJS</code> - An achor's href JavaScript is run.</li>
-		 *  <li><code>mouseDownUpClicks</code> - A mousedown followed by mouseup creates a click event.</li>
-		 *  <li><code>tabKeyTabs</code> - A tab key changes tabs.</li>
-		 *  <li><code>keypressOnAnchorClicks</code> - Keying enter on an anchor triggers a click.</li>
-		 * </ul>
+		 * 
+		 *   - `backspaceWorks` - typing a backspace removes a character
+		 *   - `clickChanges` - clicking on an option element creates a change event.
+		 *   - `clickSubmits` - clicking on a form button submits the form.
+		 *   - `focusChanges` - focus/blur creates a change event.
+		 *   - `keypressOnAnchorClicks` - Keying enter on an anchor triggers a click.
+		 *   - `keypressSubmits` - enter key submits
+		 *   - `keyCharacters` - typing a character shows up
+		 *   - `keysOnNotFocused` - enters keys when not focused.
+		 *   - `linkHrefJS` - An achor's href JavaScript is run.
+		 *   - `mouseDownUpClicks` - A mousedown followed by mouseup creates a click event.
+		 *   - `mouseupSubmits` - a mouseup on a form button submits the form.
+		 *   - `radioClickChanges` - clicking a radio button changes the radio.
+		 *   - `tabKeyTabs` - A tab key changes tabs.
+		 *   - `textareaCarriage` - a new line in a textarea creates a carriage return.
+		 *   
+		 * 
 		 */
 		support: {
 			clickChanges: false,
@@ -819,8 +826,11 @@
 		 * @param {String} type type of event, ex: 'click'
 		 * @param {optional:Object} options
 		 */
-		if ( window.jQuery || (window.FuncUnit && window.FuncUnit.jquery) ) {
-			((window.FuncUnit && window.FuncUnit.jquery) || window.jQuery).fn.triggerSyn = function( type, options, callback ) {
+		if ( (window.FuncUnit && window.FuncUnit.jQuery) || window.jQuery ) {
+			((window.FuncUnit && window.FuncUnit.jQuery) || window.jQuery).fn.triggerSyn = function( type, options, callback ) {
+				if(!this[0]){
+					throw "Can't "+type.substring(1)+" because no element matching '"+this.selector+"' was found"
+				}
 				Syn(type, options, this[0], callback);
 				return this;
 			};

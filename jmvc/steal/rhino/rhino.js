@@ -1,10 +1,17 @@
 // A Rhino-version of steal
 (function(win){
 	
+	if(typeof console == 'undefined'){
+		console = {
+			log: function(){
+				print.apply(null, arguments)
+			}
+		}
+	}
 	
 	win.steal = {
 		types : {
-			"js" : function(options, orig, success){
+			"js" : function(options, success){
 				if(options.text){
 					eval(text)
 				}else{

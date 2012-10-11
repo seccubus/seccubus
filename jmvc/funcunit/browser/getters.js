@@ -35,24 +35,6 @@
 	 */
 	'size' : 0,
 	/**
-	 * @function data
-	 * Gets data from jQuery.data or waits until data
-	 * equals some value.  
-	 * @codestart
-	 * S("#something").data("abc") //gets the abc data
-	 * 
-	 * S("#something").data("abc","some") //waits until the data == some
-	 * @codeend
-	 * @param {String} data The data to get, or wait for.
-	 * @param {Object|Function} [value] If provided uses this as a check before continuing to the next action.
-	 * @param {Number} [timeout] overrides FuncUnit.timeout.  If provided, the wait will fail if not completed before this timeout.
-	 * @param {Function} [success] a callback that will run after this action completes.
-	 * @param {String} [message] if provided, an assertion will be passed when this wait condition completes successfully
-	 * @return {Object} if the size parameter is not provided, returns
-	 * the object.
-	 */
-	'data': 1, 
-	/**
 	 * @function attr
 	 * Gets the value of an attribute from an element or waits until the attribute
 	 * equals the attr param.
@@ -411,8 +393,22 @@
 					message = args[argIndex+6],
 					testVal = tester,
 					errorMessage = "waiting for "+fname +" on " + this.selector,
-					frame = this.frame;
+					frame = this.frame,
+					logMessage = "Checking "+fname+" on '"+this.selector+"'";
 				
+				// can pass in an object or list of arguments
+				if(typeof tester == 'object'){
+					timeout = tester.timeout;
+					success = tester.success;
+					message = tester.message;
+					if(tester.errorMessage){
+						errorMessage = tester.errorMessage
+					}
+					if(typeof tester.logMessage !== "undefined"){
+						logMessage = tester.logMessage
+					}
+					tester = tester.condition;
+				}
 				if(typeof timeout == 'function'){
 					success = timeout;
 					message = success;
@@ -441,10 +437,12 @@
 				}
 				FuncUnit.repeat({
 					method : function(print){
-		// console.log(this, this.selector)
 						// keep getting new collection because the page might be updating, we need to keep re-checking
 						if(this.bind.prevObject && this.bind.prevTraverser){
+							var prev = this.bind;
 							this.bind = this.bind.prevObject[this.bind.prevTraverser](this.bind.prevTraverserSelector)
+							this.bind.prevTraverser = prev.prevTraverser;
+							this.bind.prevTraverserSelector = prev.prevTraverserSelector;
 						} else {
 							// pass false so it will only do one synchronous request
 							this.bind = S(this.selector, {
@@ -452,7 +450,9 @@
 								forceSync: true
 							})
 						}
-						print("Checking "+fname+" on "+this.selector)
+						if(logMessage){
+							print(logMessage)
+						}
 						var methodArgs = [];
 						// might need an argument
 						if(argIndex > 0){
@@ -470,6 +470,16 @@
 							passed = false;
 						}
 						
+						if(passed){
+							// if document is still loading
+							if(!FuncUnit.documentLoaded()){
+								passed = false;
+							} else {
+								// after every successful wait, check for a new document (if someone clicked a link), 
+								// and overwrite alert/confirm/prompt
+								FuncUnit.checkForNewDocument();
+							}
+						}
 						return passed;
 					},
 					success : function(){
@@ -487,7 +497,7 @@
 			}else{
 				// throw a warning if user tries to use a getter after the start of the test (if there are other async methods)
 				if(!FuncUnit._ignoreGetterError && !FuncUnit._incallback && FuncUnit._haveAsyncQueries()){
-					console && console.error("You can't run getters outside callbacks and after actions and waits. Please put your getters in a callback or at the beginning of the test.")
+					console && console.error("You can't run getters after actions and waits. Please put your getters in a callback or at the beginning of the test.")
 				}
 				// just call the original jQ method
 				var methodArgs = [];

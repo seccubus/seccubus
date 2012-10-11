@@ -3,7 +3,7 @@ module("funcunit - jQuery API",{
 		var self = this;
 		S.open("//funcunit/test/myapp.html", function(){
 			self.pageIsLoaded = true;
-		}, 10000)
+		})
 	}
 })
 
@@ -25,18 +25,12 @@ test("html with function", 1, function(){
 	S("#clickToChange").click()
 		.html(function(html){
 			return html == "changed"
-		}, function(){
-			equals(S("#clickToChange").html(),"changed","wait actually waits")
 		})
+		S("#clickToChange").html("changed","wait actually waits")
 	
 })
 test("Html with value", 1, function(){
-	S("#clickToChange").click()
-	
-		.html("changed", function(){
-			equals(S("#clickToChange").html(),"changed","wait actually waits")
-		})
-	
+	S("#clickToChange").click().html("changed","wait actually waits")
 })
 
 test("Wait", function(){

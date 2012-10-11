@@ -1,5 +1,5 @@
 @page funcunit.demos Demos
-@parent FuncUnit 6
+@parent FuncUnit 8
 
 This page contains examples of tests that solve common problems.
 

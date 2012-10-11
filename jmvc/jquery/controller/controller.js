@@ -80,6 +80,7 @@ steal('jquery/class', 'jquery/lang/string', 'jquery/event/destroyed', function( 
 	 * @download  http://jmvcsite.heroku.com/pluginify?plugins[]=jquery/controller/controller.js
 	 * @test jquery/controller/qunit.html
 	 * @inherits jQuery.Class
+	 * @description jQuery widget factory.
 	 * 
 	 * jQuery.Controller helps create organized, memory-leak free, rapidly performing
 	 * jQuery widgets.  Its extreme flexibility allows it to serve as both
@@ -222,7 +223,7 @@ steal('jquery/class', 'jquery/lang/string', 'jquery/event/destroyed', function( 
 	 *         el.css("backgroundColor","")
 	 *       },
 	 *       ".create click" : function() {
-	 *         this.find("ol").append("&lt;li class='todo'>New Todo&lt;/li>"); 
+	 *         this.find("ol").append("<li class='todo'>New Todo</li>"); 
 	 *       }
 	 *     })
 	 * 
@@ -393,11 +394,11 @@ steal('jquery/class', 'jquery/lang/string', 'jquery/event/destroyed', function( 
 			}
 
 			// make sure listensTo is an array
-			//@steal-remove-start
+			//!steal-remove-start
 			if (!isArray(this.listensTo) ) {
 				throw "listensTo is not an array in " + this.fullName;
 			}
-			//@steal-remove-end
+			//!steal-remove-end
 			// calculate and cache actions
 			this.actions = {};
 
@@ -611,7 +612,8 @@ steal('jquery/class', 'jquery/lang/string', 'jquery/event/destroyed', function( 
 			var funcName, ready, cls = this[STR_CONSTRUCTOR];
 
 			//want the raw element here
-			element = element.jquery ? element[0] : element;
+			element = (typeof element == 'string' ? $(element) :
+				(element.jquery ? element : [element]) )[0];
 
 			//set element and className on element
 			var pluginname = cls.pluginName || cls._fullName;
@@ -726,7 +728,12 @@ steal('jquery/class', 'jquery/lang/string', 'jquery/event/destroyed', function( 
 			 *       }
 			 *     }
 			 */
-			return this.element;
+			return [this.element, this.options].concat(makeArray(arguments).slice(2));
+			/**
+			 * @function init
+			 * 
+			 * Implement this.
+			 */
 		},
 		/**
 		 * Bind attaches event handlers that will be 

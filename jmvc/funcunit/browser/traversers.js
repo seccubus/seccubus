@@ -97,14 +97,14 @@ var traversers = [
 		FuncUnit.prototype[name] = function(selector){
 			var args = arguments;
 			// find is called (with "this" as document) from FuncUnit.fn.init, so in this case don't queue it up, just run the regular find
-			if (FuncUnit.win && this[0] !== FuncUnit.win.document) {
+			if (FuncUnit.win && this[0] && this[0].nodeType !== 9) { // document nodes are 9
 				FuncUnit.add({
 					method: function(success, error){
 						// adjust the collection by using the real traverser method
-						this.bind = orig.apply(this.bind, args);
-						this.bind.prevTraverser = name;
-						this.bind.prevTraverserSelector = selector;
-						success()
+						var newBind = orig.apply(this.bind, args);
+						newBind.prevTraverser = name;
+						newBind.prevTraverserSelector = selector;
+						success(newBind)
 					},
 					error: "Could not traverse: " + name + " " + selector,
 					bind: this

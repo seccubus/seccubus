@@ -16,6 +16,8 @@ steal("jquery").then(function( $ ) {
 	 * @test jquery/view/qunit.html
 	 * @download dist/jquery.view.js
 	 * 
+	 * @description A JavaScript template framework.
+	 * 
 	 * View provides a uniform interface for using templates with 
 	 * jQuery. When template engines [jQuery.View.register register] 
 	 * themselves, you are able to:
@@ -62,7 +64,7 @@ steal("jquery").then(function( $ ) {
 	 * <tr><td>[jQuery.fn.before before] </td><td> <code>$('#bar').before('temp.jaml',{});</code></td></tr>
 	 * <tr><td>[jQuery.fn.html html] </td><td> <code>$('#bar').html('temp.jaml',{});</code></td></tr>
 	 * <tr><td>[jQuery.fn.prepend prepend] </td><td> <code>$('#bar').prepend('temp.jaml',{});</code></td></tr>
-	 * <tr><td>[jQuery.fn.replaceWith replaceWith] </td><td> <code>$('#bar').replaceWidth('temp.jaml',{});</code></td></tr>
+	 * <tr><td>[jQuery.fn.replaceWith replaceWith] </td><td> <code>$('#bar').replaceWith('temp.jaml',{});</code></td></tr>
 	 * <tr><td>[jQuery.fn.text text] </td><td> <code>$('#bar').text('temp.jaml',{});</code></td></tr>
 	 * </table>
 	 * 
@@ -387,7 +389,7 @@ steal("jquery").then(function( $ ) {
 		// if we have an inline template, derive the suffix from the 'text/???' part
 		// this only supports '<script></script>' tags
 		if ( el = document.getElementById(url) ) {
-			suffix = el.type.match(/\/[\d\w]+$/)[0].replace(/^\//, '.');
+			suffix = "."+el.type.match(/\/(x\-)?(.+)/)[2];
 		}
 
 		// if there is no suffix, add one
@@ -405,7 +407,7 @@ steal("jquery").then(function( $ ) {
 			var sub = url.substr(2);
 			url = typeof steal === "undefined" ? 
 				url = "/" + sub : 
-				steal.root.mapJoin(sub);
+				steal.root.mapJoin(sub) +'';
 		}
 
 		//set the template engine type 
@@ -535,9 +537,9 @@ steal("jquery").then(function( $ ) {
 			this.types["." + info.suffix] = info;
 
 			if ( window.steal ) {
-				steal.type(info.suffix + " view js", function( options, orig, success, error ) {
+				steal.type(info.suffix + " view js", function( options, success, error ) {
 					var type = $view.types["." + options.type],
-						id = toId(options.rootSrc);
+						id = toId(options.rootSrc+'');
 
 					options.text = type.script(id, options.text)
 					success();
@@ -576,9 +578,9 @@ steal("jquery").then(function( $ ) {
 
 	});
 	if ( window.steal ) {
-		steal.type("view js", function( options, orig, success, error ) {
+		steal.type("view js", function( options, success, error ) {
 			var type = $view.types["." + options.type],
-				id = toId(options.rootSrc);
+				id = toId(options.rootSrc+'');
 
 			options.text = "steal('" + (type.plugin || "jquery/view/" + options.type) + "').then(function($){" + "$.View.preload('" + id + "'," + options.text + ");\n})";
 			success();

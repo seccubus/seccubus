@@ -13,19 +13,35 @@ steal('jquery/class').then(function() {
 		// - parent the parent object of prop
 		hookup = function( val, prop, parent ) {
 			// if it's an array make a list, otherwise a val
-			if ( isArray(val) ) {
+			if (val instanceof $.Observe){
+				// we have an observe already
+				// make sure it is not listening to this already
+				unhookup([val], parent._namespace)
+			} else if ( isArray(val) ) {
 				val = new $.Observe.List(val)
 			} else {
 				val = new $.Observe(val)
 			}
-
+			// attr (like target, how you (delegate) to get to the target)
+            // currentAttr (how to get to you)
+            // delegateAttr (hot to get to the delegated Attr)
+			
+			//
+			//
 			//listen to all changes and trigger upwards
-			val.bind("change" + parent._namespace, function( ev, attr, how, val, old ) {
+			val.bind("change" + parent._namespace, function( ev, attr ) {
 				// trigger the type on this ...
 				var args = $.makeArray(arguments),
 					ev = args.shift();
-				args[0] = prop + (args[0] != "*" ? "." + args[0] : ""); // change the attr
-				$([parent]).trigger(ev, args);
+				if(prop === "*"){
+					args[0] = parent.indexOf(val)+"." + args[0]
+				} else {
+					args[0] = prop +  "." + args[0]
+				}
+				// change the attr
+				//ev.origTarget = ev.origTarget || ev.target;
+				// the target should still be the original object ...
+				$.event.trigger(ev, args, parent)
 			});
 
 			return val;
@@ -55,28 +71,40 @@ steal('jquery/class').then(function() {
 		// - event - the event name ("change")
 		// - args - an array of arguments
 		trigger = function( item, event, args ) {
-			var THIS = $([item]);
+			// send no events if initalizing
+			if (item._init) {
+				return;
+			}
 			if (!collecting ) {
-				return THIS.trigger(event, args)
+				return $.event.trigger(event, args, item, true)
 			} else {
 				collecting.push({
-					t: THIS,
+					t: item,
 					ev: event,
 					args: args
 				})
 			}
 		},
+		// which batch of events this is for, might not want to send multiple
+		// messages on the same batch.  This is mostly for 
+		// event delegation
+		batchNum = 0,
 		// sends all pending events
 		sendCollection = function() {
 			var len = collecting.length,
 				items = collecting.slice(0),
 				cur;
 			collecting = null;
+			batchNum ++;
 			for ( var i = 0; i < len; i++ ) {
 				cur = items[i];
-				$(cur.t).trigger(cur.ev, cur.args)
+				// batchNum
+				$.event.trigger({
+					type: cur.ev,
+					batchNum : batchNum
+				}, cur.args, cur.t)
 			}
-
+			
 		},
 		// a helper used to serialize an Observe or Observe.List where:
 		// observe - the observable
@@ -100,12 +128,32 @@ steal('jquery/class').then(function() {
 	 * @parent jquerymx.lang
 	 * @test jquery/lang/observe/qunit.html
 	 * 
-	 * Observe provides observable behavior on 
-	 * JavaScript Objects and Arrays. 
+	 * Observe provides the awesome observable pattern for
+	 * JavaScript Objects and Arrays. It lets you
 	 * 
-	 * ## Use
+	 *   - Set and remove property or property values on objects and arrays
+	 *   - Listen for changes in objects and arrays
+	 *   - Work with nested properties
 	 * 
-	 * Create a new Observe with the data you want to observe:
+	 * ## Creating an $.Observe
+	 * 
+	 * To create an $.Observe, or $.Observe.List, you can simply use 
+	 * the `$.O(data)` shortcut like:
+	 * 
+	 *     var person = $.O({name: 'justin', age: 29}),
+	 *         hobbies = $.O(['programming', 'basketball', 'nose picking'])
+	 * 
+	 * Depending on the type of data passed to $.O, it will create an instance of either: 
+	 * 
+	 *   - $.Observe, which is used for objects like: `{foo: 'bar'}`, and
+	 *   - [jQuery.Observe.List $.Observe.List], which is used for arrays like `['foo','bar']`
+	 *   
+	 * $.Observe.List and $.Observe are very similar. In fact,
+	 * $.Observe.List inherits $.Observe and only adds a few extra methods for
+	 * manipulating arrays like [jQuery.Observe.List.prototype.push push].  Go to
+	 * [jQuery.Observe.List $.Observe.List] for more information about $.Observe.List.
+	 * 
+	 * You can also create a `new $.Observe` simply by pass it the data you want to observe:
 	 * 
 	 *     var data = { 
 	 *       addresses : [
@@ -122,8 +170,14 @@ steal('jquery/class').then(function() {
 	 *     },
 	 *     o = new $.Observe(data);
 	 *     
-	 * _o_ now represents an observable copy of _data_.  You
-	 * can read the property values of _o_ with
+	 * _o_ now represents an observable copy of _data_.  
+	 * 
+	 * ## Getting and Setting Properties
+	 * 
+	 * Use [jQuery.Observe.prototype.attr attr] and [jQuery.Observe.prototype.attr attrs]
+	 * to get and set properties.
+	 * 
+	 * For example, you can read the property values of _o_ with
 	 * `observe.attr( name )` like:
 	 * 
 	 *     // read name
@@ -146,6 +200,25 @@ steal('jquery/class').then(function() {
 	 *       state: 'NY'
 	 *     })
 	 * 
+	 * `attrs()` can be used to get all properties back from the observe:
+	 * 
+	 *     o.attrs() // -> 
+	 *     { 
+	 *       addresses : [
+	 *         {
+	 *           city: 'Chicago',
+	 *           state: 'IL'
+	 *         },
+	 *         {
+	 *           city: 'New York',
+	 *           state : 'MA'
+	 *         }
+	 *       ],
+	 *       name : "Brian Moschel"
+	 *     }
+	 * 
+	 * ## Listening to property changes
+	 * 
 	 * When a property value is changed, it creates events
 	 * that you can listen to.  There are two ways to listen
 	 * for events:
@@ -164,29 +237,20 @@ steal('jquery/class').then(function() {
 	 *     })
 	 * 
 	 * `delegate( attr, event, handler(ev, newVal, oldVal ) )` lets you listen
-	 * to a specific even on a specific attribute. 
+	 * to a specific event on a specific attribute. 
 	 * 
 	 *     // listen for name changes
 	 *     o.delegate("name","set", function(){
 	 *     
 	 *     })
 	 *     
-	 * `attrs()` can be used to get all properties back from the observe:
+	 * Delegate lets you specify multiple attributes and values to match 
+	 * for the callback. For example,
 	 * 
-	 *     o.attrs() // -> 
-	 *     { 
-	 *       addresses : [
-	 *         {
-	 *           city: 'Chicago',
-	 *           state: 'IL'
-	 *         },
-	 *         {
-	 *           city: 'New York',
-	 *           state : 'MA'
-	 *         }
-	 *       ],
-	 *       name : "Brian Moschel"
-	 *     }
+	 *     r = $.O({type: "video", id : 5})
+	 *     r.delegate("type=images id","set", function(){})
+	 *     
+	 * This is used heavily by [jQuery.route $.route].
 	 * 
 	 * @constructor
 	 * 
@@ -204,7 +268,9 @@ steal('jquery/class').then(function() {
 			// the namespace this object uses to listen to events
 			this._namespace = ".observe" + (++id);
 			// sets all attrs
-			this.attrs(obj)
+			this._init = true;
+			this.attrs(obj);
+			delete this._init;
 		},
 		/**
 		 * Get or set an attribute on the observe.
@@ -550,10 +616,81 @@ steal('jquery/class').then(function() {
 	 * @prototype
 	 */
 	{
-		init: function( instances ) {
+		init: function( instances, options ) {
 			this.length = 0;
 			this._namespace = ".list" + (++id);
+			this._init = true;
+			this.bind('change',this.proxy('_changes'));
 			this.push.apply(this, makeArray(instances || []));
+			$.extend(this, options);
+			if(this.comparator){
+				this.sort()
+			}
+			delete this._init;
+		},
+		_changes : function(ev, attr, how, newVal, oldVal){
+			// detects an add, sorts it, re-adds?
+			//console.log("")
+			
+			
+			
+			// if we are sorting, and an attribute inside us changed
+			if(this.comparator && /^\d+./.test(attr) ) {
+				
+				// get the index
+				var index = +(/^\d+/.exec(attr)[0]),
+					// and item
+					item = this[index],
+					// and the new item
+					newIndex = this.sortedIndex(item);
+				
+				if(newIndex !== index){
+					// move ...
+					[].splice.call(this, index, 1);
+					[].splice.call(this, newIndex, 0, item);
+					
+					trigger(this, "move", [item, newIndex, index]);
+					ev.stopImmediatePropagation();
+					trigger(this,"change", [
+						attr.replace(/^\d+/,newIndex),
+						how,
+						newVal,
+						oldVal
+					]);
+					return;
+				}
+			}
+			
+			
+			// if we add items, we need to handle 
+			// sorting and such
+			
+			// trigger direct add and remove events ...
+			if(attr.indexOf('.') === -1){
+				
+				if( how === 'add' ) {
+					trigger(this, how, [newVal,+attr]);
+				} else if( how === 'remove' ) {
+					trigger(this, how, [oldVal, +attr])
+				}
+				
+			}
+			// issue add, remove, and move events ...
+		},
+		sortedIndex : function(item){
+			var itemCompare = item.attr(this.comparator),
+				equaled = 0,
+				i;
+			for(var i =0; i < this.length; i++){
+				if(item === this[i]){
+					equaled = -1;
+					continue;
+				}
+				if(itemCompare <= this[i].attr(this.comparator) ) {
+					return i+equaled;
+				}
+			}
+			return i+equaled;
 		},
 		__get : function(attr){
 			return attr ? this[attr] : this;
@@ -611,7 +748,7 @@ steal('jquery/class').then(function() {
 		 * This creates 2 change events.  The first event is the removal of 
 		 * numbers one and two where it's callback values will be:
 		 * 
-		 *   - attr - "*" - to indicate that multiple values have been changed at once
+		 *   - attr - "1" - indicates where the remove event took place
 		 *   - how - "remove"
 		 *   - newVals - undefined
 		 *   - oldVals - [1,2] -the array of removed values
@@ -620,7 +757,7 @@ steal('jquery/class').then(function() {
 		 * The second change event is the addition of the "a", and "b" values where 
 		 * the callback values will be:
 		 * 
-		 *   - attr - "*" - to indicate that multiple values have been changed at once
+		 *   - attr - "1" - indicates where the add event took place
 		 *   - how - "added"
 		 *   - newVals - ["a","b"]
 		 *   - oldVals - [1, 2] - the array of removed values
@@ -634,10 +771,10 @@ steal('jquery/class').then(function() {
 			var args = makeArray(arguments),
 				i;
 
-			for ( i = 0; i < args.length; i++ ) {
+			for ( i = 2; i < args.length; i++ ) {
 				var val = args[i];
 				if ( isObject(val) ) {
-					args[i] = hookup(val, index + i, this)
+					args[i] = hookup(val, "*", this)
 				}
 			}
 			if ( count === undefined ) {
@@ -645,11 +782,11 @@ steal('jquery/class').then(function() {
 			}
 			var removed = [].splice.apply(this, args);
 			if ( count > 0 ) {
-				trigger(this, "change", ["*", "remove", undefined, removed, index]);
+				trigger(this, "change", [""+index, "remove", undefined, removed]);
 				unhookup(removed, this._namespace);
 			}
 			if ( args.length > 2 ) {
-				trigger(this, "change", ["*", "add", args.slice(2), removed, index]);
+				trigger(this, "change", [""+index, "add", args.slice(2), removed]);
 			}
 			return removed;
 		},
@@ -692,6 +829,18 @@ steal('jquery/class').then(function() {
 			if ( collectingStarted ) {
 				sendCollection()
 			}
+		},
+		sort: function(method, silent){
+			var comparator = this.comparator,
+				args = comparator ? [function(a, b){
+					a = a[comparator]
+					b = b[comparator]
+					return a === b ? 0 : (a < b ? -1 : 1);
+				}] : [],
+				res = [].sort.apply(this, args);
+				
+			!silent && trigger(this, "reset");
+
 		}
 	}),
 
@@ -753,19 +902,35 @@ steal('jquery/class').then(function() {
 			for ( var i = 0; i < args.length; i++ ) {
 				var val = args[i];
 				if ( isObject(val) ) {
-					args[i] = hookup(val, i, this)
+					args[i] = hookup(val, "*", this)
 				}
 			}
+			
+			// if we have a sort item, add that
+			if( args.length == 1 && this.comparator ) {
+				// add each item ...
+				// we could make this check if we are already adding in order
+				// but that would be confusing ...
+				var index = this.sortedIndex(args[0]);
+				this.splice(index, 0, args[0]);
+				return this.length;
+			}
+			
 			// call the original method
 			var res = [][name].apply(this, args)
-
+			
 			// cause the change where the args are:
-			// * - happend in an array
+			// len - where the additions happened
 			// add - items added
 			// args - the items added
 			// undefined - the old value
-			// len - where the additions happened
-			trigger(this, "change", ["*", "add", args, undefined, len])
+			if ( this.comparator  && args.length > 1) {
+				this.sort(null, true);
+				trigger(this,"reset", [args])
+			} else {
+				trigger(this, "change", [""+len, "add", args, undefined])
+			}
+			
 
 			return res;
 		}
@@ -809,6 +974,7 @@ steal('jquery/class').then(function() {
 
 	function( name, where ) {
 		list.prototype[name] = function() {
+			
 			var args = getArgs(arguments),
 				len = where && this.length ? this.length - 1 : 0;
 
@@ -821,7 +987,7 @@ steal('jquery/class').then(function() {
 			// undefined - the new values (there are none)
 			// res - the old, removed values (should these be unbound)
 			// len - where these items were removed
-			trigger(this, "change", ["*", "remove", undefined, [res], len])
+			trigger(this, "change", [""+len, "remove", undefined, [res]])
 
 			if ( res && res.unbind ) {
 				res.unbind("change" + this._namespace)
@@ -829,5 +995,27 @@ steal('jquery/class').then(function() {
 			return res;
 		}
 	});
+	
+	list.prototype.
+	/**
+	 * @function indexOf
+	 * Returns the position of the item in the array.  Returns -1 if the
+	 * item is not in the array.
+	 * @param {Object} item
+	 * @return {Number}
+	 */
+	indexOf = [].indexOf || function(item){
+		return $.inArray(item, this)
+	}
 
+	/**
+	 * @class $.O
+	 */
+	$.O = function(data, options){
+		if(isArray(data) || data instanceof $.Observe.List){
+			return new $.Observe.List(data, options)
+		} else {
+			return new $.Observe(data, options)
+		}
+	}
 });

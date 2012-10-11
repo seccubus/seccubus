@@ -129,124 +129,124 @@
 		 */
 		keycodes: {
 			//backspace
-			'\b': '8',
+			'\b': 8,
 
 			//tab
-			'\t': '9',
+			'\t': 9,
 
 			//enter
-			'\r': '13',
+			'\r': 13,
 
 			//special
-			'shift': '16',
-			'ctrl': '17',
-			'alt': '18',
+			'shift': 16,
+			'ctrl': 17,
+			'alt': 18,
 
 			//weird
-			'pause-break': '19',
-			'caps': '20',
-			'escape': '27',
-			'num-lock': '144',
-			'scroll-lock': '145',
-			'print': '44',
+			'pause-break': 19,
+			'caps': 20,
+			'escape': 27,
+			'num-lock': 144,
+			'scroll-lock': 145,
+			'print': 44,
 
 			//navigation
-			'page-up': '33',
-			'page-down': '34',
-			'end': '35',
-			'home': '36',
-			'left': '37',
-			'up': '38',
-			'right': '39',
-			'down': '40',
-			'insert': '45',
-			'delete': '46',
+			'page-up': 33,
+			'page-down': 34,
+			'end': 35,
+			'home': 36,
+			'left': 37,
+			'up': 38,
+			'right': 39,
+			'down': 40,
+			'insert': 45,
+			'delete': 46,
 
 			//normal characters
-			' ': '32',
-			'0': '48',
-			'1': '49',
-			'2': '50',
-			'3': '51',
-			'4': '52',
-			'5': '53',
-			'6': '54',
-			'7': '55',
-			'8': '56',
-			'9': '57',
-			'a': '65',
-			'b': '66',
-			'c': '67',
-			'd': '68',
-			'e': '69',
-			'f': '70',
-			'g': '71',
-			'h': '72',
-			'i': '73',
-			'j': '74',
-			'k': '75',
-			'l': '76',
-			'm': '77',
-			'n': '78',
-			'o': '79',
-			'p': '80',
-			'q': '81',
-			'r': '82',
-			's': '83',
-			't': '84',
-			'u': '85',
-			'v': '86',
-			'w': '87',
-			'x': '88',
-			'y': '89',
-			'z': '90',
+			' ': 32,
+			'0': 48,
+			'1': 49,
+			'2': 50,
+			'3': 51,
+			'4': 52,
+			'5': 53,
+			'6': 54,
+			'7': 55,
+			'8': 56,
+			'9': 57,
+			'a': 65,
+			'b': 66,
+			'c': 67,
+			'd': 68,
+			'e': 69,
+			'f': 70,
+			'g': 71,
+			'h': 72,
+			'i': 73,
+			'j': 74,
+			'k': 75,
+			'l': 76,
+			'm': 77,
+			'n': 78,
+			'o': 79,
+			'p': 80,
+			'q': 81,
+			'r': 82,
+			's': 83,
+			't': 84,
+			'u': 85,
+			'v': 86,
+			'w': 87,
+			'x': 88,
+			'y': 89,
+			'z': 90,
 			//normal-characters, numpad
-			'num0': '96',
-			'num1': '97',
-			'num2': '98',
-			'num3': '99',
-			'num4': '100',
-			'num5': '101',
-			'num6': '102',
-			'num7': '103',
-			'num8': '104',
-			'num9': '105',
-			'*': '106',
-			'+': '107',
-			'-': '109',
-			'.': '110',
+			'num0': 96,
+			'num1': 97,
+			'num2': 98,
+			'num3': 99,
+			'num4': 100,
+			'num5': 101,
+			'num6': 102,
+			'num7': 103,
+			'num8': 104,
+			'num9': 105,
+			'*': 106,
+			'+': 107,
+			'-': 109,
+			'.': 110,
 			//normal-characters, others
-			'/': '111',
-			';': '186',
-			'=': '187',
-			',': '188',
-			'-': '189',
-			'.': '190',
-			'/': '191',
-			'`': '192',
-			'[': '219',
-			'\\': '220',
-			']': '221',
-			"'": '222',
+			'/': 111,
+			';': 186,
+			'=': 187,
+			',': 188,
+			'-': 189,
+			'.': 190,
+			'/': 191,
+			'`': 192,
+			'[': 219,
+			'\\': 220,
+			']': 221,
+			"'": 222,
 
 			//ignore these, you shouldn't use them
-			'left window key': '91',
-			'right window key': '92',
-			'select key': '93',
+			'left window key': 91,
+			'right window key': 92,
+			'select key': 93,
 
 
-			'f1': '112',
-			'f2': '113',
-			'f3': '114',
-			'f4': '115',
-			'f5': '116',
-			'f6': '117',
-			'f7': '118',
-			'f8': '119',
-			'f9': '120',
-			'f10': '121',
-			'f11': '122',
-			'f12': '123'
+			'f1': 112,
+			'f2': 113,
+			'f3': 114,
+			'f4': 115,
+			'f5': 116,
+			'f6': 117,
+			'f7': 118,
+			'f8': 119,
+			'f9': 120,
+			'f10': 121,
+			'f11': 122,
+			'f12': 123
 		},
 
 		// what we can type in
@@ -349,6 +349,13 @@
 				result.charCode = charCode;
 			}
 
+			// all current browsers have which property to normalize keyCode/charCode
+			if(result.keyCode){
+				result.which = result.keyCode;
+			} else {
+				result.which = result.charCode;
+			}
+
 
 			return result
 		},
@@ -360,6 +367,8 @@
 			'function': ['f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12']
 		},
 		//returns the default function
+		// some keys have default functions
+		// some 'kinds' of keys have default functions
 		getDefault: function( key ) {
 			//check if it is described directly
 			if ( Syn.key.defaults[key] ) {
@@ -727,8 +736,9 @@
 				return;
 			}
 
-
-			var caret = Syn.typeable.test(element.nodeName) && getSelection(element),
+			// keep reference to current activeElement
+			var activeElement = h.getWindow(element).document.activeElement,			
+				caret = Syn.typeable.test(element.nodeName) && getSelection(element),
 				key = convert[options] || options,
 				// should we run default events
 				runDefaults = Syn.trigger('keydown', key, element),
@@ -741,9 +751,8 @@
 
 				// the result of the default event
 				defaultResult,
-
-				// options for keypress
-				keypressOptions = Syn.key.options(key, 'keypress')
+				
+				keypressOptions = Syn.key.options(key, 'keypress');
 
 
 				if ( runDefaults ) {
@@ -752,6 +761,11 @@
 						defaultResult = getDefault(key).call(element, keypressOptions, h.getWindow(element), key, undefined, caret)
 					} else {
 						//do keypress
+						// check if activeElement changed b/c someone called focus in keydown
+						if( activeElement !== h.getWindow(element).document.activeElement ) {
+							element = h.getWindow(element).document.activeElement;
+						}
+						
 						runDefaults = Syn.trigger('keypress', keypressOptions, element)
 						if ( runDefaults ) {
 							defaultResult = getDefault(key).call(element, keypressOptions, h.getWindow(element), key, undefined, caret)
@@ -760,6 +774,11 @@
 				} else {
 					//canceled ... possibly don't run keypress
 					if ( keypressOptions && h.inArray('keypress', prevent.keydown) == -1 ) {
+						// check if activeElement changed b/c someone called focus in keydown
+						if( activeElement !== h.getWindow(element).document.activeElement ) {
+							element = h.getWindow(element).document.activeElement;
+						}
+						
 						Syn.trigger('keypress', keypressOptions, element)
 					}
 				}
@@ -897,7 +916,8 @@
 		})
 		Syn.trigger("keypress", "\r", anchor);
 
-		S.support.textareaCarriage = textarea.value.length == 4
+		S.support.textareaCarriage = textarea.value.length == 4;
+		
 		document.documentElement.removeChild(div);
 
 		S.support.ready++;

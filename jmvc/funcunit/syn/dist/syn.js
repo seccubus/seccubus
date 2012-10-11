@@ -819,8 +819,8 @@
 		 * @param {String} type type of event, ex: 'click'
 		 * @param {optional:Object} options
 		 */
-		if ( window.jQuery || (window.FuncUnit && window.FuncUnit.jquery) ) {
-			((window.FuncUnit && window.FuncUnit.jquery) || window.jQuery).fn.triggerSyn = function( type, options, callback ) {
+		if ( (window.FuncUnit && window.FuncUnit.jQuery) || window.jQuery ) {
+			((window.FuncUnit && window.FuncUnit.jQuery) || window.jQuery).fn.triggerSyn = function( type, options, callback ) {
 				Syn(type, options, this[0], callback);
 				return this;
 			};
