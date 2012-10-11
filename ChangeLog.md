@@ -9,6 +9,16 @@ If you are looking for stable code you might want to use the V1 branch of this
 project, but be aware that it only supports Nessus with a professional feed
 and is not longer under active development.
 
+xx-xx-201x - 2.0.xxxxx
+======================
+
+New features / Issues resolved
+------------------------------
+
+Bigs fixed (tickets closed):
+----------------------------
+* #  -
+
 11-10-2012 - 2.0.beta6 - The final Beta
 =======================================
 
