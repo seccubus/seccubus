@@ -17,7 +17,7 @@ New features / Issues resolved
 * Sourcecode repository is now
   [GitHub] (https://github.com/schubergphilis/Seccubus_v2/issues/6) in stead of   SourceForge
 * Build is now automated using a Jenkins server at Schuberg Philis including
-  the creation of RPMs via OpenSuse build services
+  the creation of RPMs and Debian packages via OpenSuse build services
 * Fixed a few bugs
     
 Bigs fixed (tickets closed):
