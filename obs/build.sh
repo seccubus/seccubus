@@ -32,10 +32,10 @@ osc ci -m "Rebuild of $VERSION"
 echo "Sleeping 1 minute to allow OpenSUSE build services to start"
 sleep 60
 
-BUILD=`osc results|grep building|wc -l`
+BUILD=`osc results|grep -v succeeded|grep -v failed|wc -l`
 while [ $BUILD -gt 0 ] 
 do
-	echo "Still building on $BUILD platform(s)"
+	echo "Waiting for build to finish on $BUILD platform(s)"
 	sleep 30
 	BUILD=`osc results|grep building|wc -l`
 done
