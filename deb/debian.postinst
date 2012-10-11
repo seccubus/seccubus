@@ -1,0 +1,64 @@
+#!/bin/sh 
+
+set -e
+
+if [ "$1" = "configure" ]; then
+    if ! getent passwd seccubus >/dev/null; then
+	adduser --system --quiet --group --home /opt/seccubus --no-create-home \
+	    --disabled-password seccubus || :
+	addgroup www-data seccubus
+    fi
+
+    if [ ! -e "/etc/apache2/conf.d/seccubus.conf" ] ; then
+
+        cat >> /etc/apache2/conf.d/seccubus.conf <<EOF
+#
+# This configuration file maps the Seccubus directory
+# into the URL space. By default these results are
+# only accessible from the local host.
+#
+Alias /seccubus /opt/seccubus/www/
+
+<Location /seccubus>
+    Order deny,allow
+    Deny from all
+    Allow from 127.0.0.1
+    Allow from ::1
+    # Allow from .example.com
+    AddHandler cgi-script .pl
+    Options ExecCGI
+</Location>
+EOF
+
+        service apache2 reload
+
+    fi
+
+    if [ ! -e "/etc/seccubus/config.xml" ]; then
+
+        cat >> /etc/seccubus/config.xml <<EOF
+<?xml version="1.0" standalone='yes'?>
+<seccubus>
+        <database>
+          <engine>mysql</engine>
+          <database>seccubus</database>
+          <host>localhost</host>
+          <port>3306</port>
+          <user>seccubus</user>
+          <password>seccubus</password>
+        </database>
+        <paths>
+          <modules>/opt/seccubus/SeccubusV2</modules>
+          <scanners>/opt/seccubus/scanners</scanners>
+          <bindir>/opt/seccubus/bin</bindir>
+          <configdir>/etc/seccubus</configdir>
+          <dbdir>/var/lib/seccubus</dbdir>
+        </paths>
+</seccubus>
+EOF
+
+    fi
+fi
+
+#DEBHELPER#
+
