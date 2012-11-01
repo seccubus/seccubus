@@ -325,21 +325,21 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/previous.png
    
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/seccubus/json
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/ConfigTest.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/UpToDate.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/createScan.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/createWorkspace.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getAttachment.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getFindingHistory.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getFindings.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getRuns.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getScanners.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getScans.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getWorkspaces.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateFinding.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateFindings.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateScan.pl
-%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateWorkspace.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/ConfigTest.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/UpToDate.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/createScan.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/createWorkspace.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getAttachment.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getFindingHistory.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getFindings.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getRuns.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getScanners.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getScans.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getWorkspaces.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateFinding.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateFindings.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateScan.pl
+%attr(750, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateWorkspace.pl
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/steal
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/steal/steal.production.js
