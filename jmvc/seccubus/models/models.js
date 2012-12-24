@@ -9,4 +9,4 @@ steal(	"jquery/model",
 	'./scanner.js', 
 	'./history.js', 
 	'./run.js'
-, './event.js')
+, './event.js', './notification.js')
