@@ -11,11 +11,13 @@ CREATE  TABLE IF NOT EXISTS `Seccubus`.`notifications` (
   `id` INT(11) NOT NULL AUTO_INCREMENT ,
   `scan_id` INT(11) NOT NULL ,
   `event_id` INT(11) NOT NULL ,
+  `name` VARCHAR(45) NOT NULL ,
   `recipients` VARCHAR(1024) NOT NULL ,
   `message` TEXT NOT NULL ,
   `scans_id` INT(11) NOT NULL ,
   `triggers_id` INT(11) NOT NULL ,
-  PRIMARY KEY (`id`) );
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
 
 LOCK TABLES `events` WRITE;
 /*!40000 ALTER TABLE `events` DISABLE KEYS */;
