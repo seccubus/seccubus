@@ -18,7 +18,6 @@ use SeccubusRights;
 @ISA = ('Exporter');
 
 @EXPORT = qw ( 
-		VERSION
 		get_scan_id
 		get_scans
 		create_scan
