@@ -128,6 +128,26 @@ eval {
 	# my $api = "api/updateDB.pl?toVersion=&action=data";
 	# $message = "$msg. API Call: '$api'";
 };
+
+##### Test if the user exists in the database
+if ( exists $ENV{REMOTE_ADDR} ) {
+	if ( $ENV{REMOTE_USER} ) {
+		my @user = SeccubusDB::sql( return   => "array",
+					    query	=> 'SELECT 	username
+					    		    FROM	users
+							    WHERE	username = ?',
+					    values	=> [ $ENV{REMOTE_USER} ],
+			   );
+		if ( $user[0] eq $ENV{REMOTE_USER} ) {
+			result($data, "HTTP authentication", "Authetication is set up on your HTTP server, and user '$ENV{REMOTE_USER}' exists in the database", 'OK');
+		} else {
+			result($data, "HTTP authentication", "Authetication is set up on your HTTP server, but '$ENV{REMOTE_USER}' does not exist in the database, run the bin/add_user util", 'Error');
+			bye($data);
+		}
+	} else {
+		result($data, "HTTP authentication", "Authetication is not set up on your HTTP server, emulating user 'admin'", 'OK');
+	}
+}
 bye($data);
 exit;
 
