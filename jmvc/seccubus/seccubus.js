@@ -21,6 +21,8 @@ steal(
 	'seccubus/finding/edit',
 	'seccubus/history/table',
 	'widgets/modal',
+	'seccubus/event/create',
+	'seccubus/event/list',
 	function(){					// configure your application
 		/***********************************************************
 		 * Initialize gui state and hook into it
@@ -326,5 +328,7 @@ steal(
 				}
 			});
 		};
-	}
+		$('#events').seccubus_event_list();
+		$('#create').seccubus_event_create();
+}
 )

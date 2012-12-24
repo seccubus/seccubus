@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>Seccubus.Event.Select Demo</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+        </style>
+	</head>
+	<body>
+	    <h1>Seccubus.Event.Select Demo</h1>
+		<select id='events'></select>
+		<!-- <a href='javascript://' id='create'>Create Workspace</a> -->
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal(	
+				'seccubus/event/select',
+				'seccubus/seccubus.css',
+				//'seccubus/fixtures',
+				function(){
+				
+				$('#events').seccubus_event_select();
+
+				//$('#create').click(function(){
+				//	new Seccubus.Models.Workspace({
+				//		id :		"9999",
+				//		name :		"Client 9999",
+				//		scanCount :	"9999",
+				//		lastScan :	"2099-09-09 09:09:09"
+				//	}).save();
+				//})
+			})
+		</script>
+	</body>
+</html>
