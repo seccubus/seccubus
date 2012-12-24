@@ -15,7 +15,7 @@ use JSON;
 sub result($$$$);
 sub bye($);
 
-my $current_db_version = 2;
+my $current_db_version = 3;
 my $query = CGI::new();
 my $json = JSON->new();
 
@@ -112,9 +112,16 @@ eval {
 
 	if ( $version[0] != $current_db_version ) {
 		my $file = $config->{paths}->{dbdir} . "/";
-		if ( $version[0] eq "1" ) {
+		if ( $version[0] eq "" ) {
+			$file .= "data_v$current_db_version." . $config->{database}->{engine};
+		} elsif ( $version[0] eq "1" ) {
 			$file .= "upgrade_v1_v2." . $config->{database}->{engine};
-		} 
+		} elsif ( $version[0] eq "2" ) {
+			$file .= "upgrade_v2_v3." . $config->{database}->{engine};
+		} else {
+			result($data,"Database error", "Your database returned version number '$version[0]', the developers for Seccubus do not know what to do with this", "Error");
+			bye($data);
+		}
 		result($data,"Database version", "Your database is not current, please execute the sql statements in '$file' to update the database to the next version and rerun this test", 'Error');
 		bye($data);
 	} else {
@@ -128,6 +135,26 @@ eval {
 	# my $api = "api/updateDB.pl?toVersion=&action=data";
 	# $message = "$msg. API Call: '$api'";
 };
+
+##### Test if the user exists in the database
+if ( exists $ENV{REMOTE_ADDR} ) {
+	if ( $ENV{REMOTE_USER} ) {
+		my @user = SeccubusDB::sql( return   => "array",
+					    query	=> 'SELECT 	username
+					    		    FROM	users
+							    WHERE	username = ?',
+					    values	=> [ $ENV{REMOTE_USER} ],
+			   );
+		if ( $user[0] eq $ENV{REMOTE_USER} ) {
+			result($data, "HTTP authentication", "Authetication is set up on your HTTP server, and user '$ENV{REMOTE_USER}' exists in the database", 'OK');
+		} else {
+			result($data, "HTTP authentication", "Authetication is set up on your HTTP server, but '$ENV{REMOTE_USER}' does not exist in the database, run the bin/add_user util", 'Error');
+			bye($data);
+		}
+	} else {
+		result($data, "HTTP authentication", "Authetication is not set up on your HTTP server, emulating user 'admin'", 'OK');
+	}
+}
 bye($data);
 exit;
 

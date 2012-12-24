@@ -185,4 +185,11 @@ steal("jquery/dom/fixture", function(){
 			time: "201201"+ ( "0" + i).substr(-2)
 		}
 	})
+	$.fixture.make("event", 5, function(i, event){
+		var descriptions = ["grill fish", "make ice", "cut onions"]
+		return {
+			name: "event "+i,
+			description: $.fixture.rand( descriptions , 1)[0]
+		}
+	})
 });

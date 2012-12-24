@@ -8,4 +8,4 @@ steal("funcunit/qunit",
 	'./gui_state_test.js',
 	'./scanner_test.js',
 	'./history_test.js',
-	'./run_test.js');
+	'./run_test.js', './event_test.js');
