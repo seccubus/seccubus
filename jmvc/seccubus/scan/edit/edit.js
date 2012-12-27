@@ -35,7 +35,14 @@ $.Controller('Seccubus.Scan.Edit',
 		/* attribute options.scan
 		 * Scan object that needs to be edited
 		 */
-		scan : null
+		scan : null,
+		/* attribute options.onNotificationEdit
+		 * Function that is called when the edit link is click in the 
+		 * notification screen
+		 */
+		onNotificationEdit : function(not) {
+			alert("Seccubus.Scan.Table: no edit function specified for notification id: " + not.id );
+		}
 	}
 },
 /** @Prototype */
@@ -55,7 +62,8 @@ $.Controller('Seccubus.Scan.Edit',
 			selected : this.options.scan.scanner
 		});
 		$('#editScanNotifications').seccubus_notification_table({
-			scan	: this.options.scan.id
+			scan	: this.options.scan.id,
+			onEdit	: this.options.onNotificationEdit
 		});
 	},
 	submit : function(el, ev){

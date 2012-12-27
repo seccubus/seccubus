@@ -30,7 +30,7 @@ $.Controller('Seccubus.Notification.Table',
 		 * This function is triggered with an edit link is clicked
 		 */
 		onEdit : function(not) {
-			alert("Seccubus.Notification.Table: no edit function specified for notification id: " + sc.id );
+			alert("Seccubus.Notification.Table: no edit function specified for notification id: " + not.id );
 		}
 	}
 },
