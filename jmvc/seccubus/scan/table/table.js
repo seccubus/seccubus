@@ -27,7 +27,7 @@ $.Controller('Seccubus.Scan.Table',
 		 */
 		workspace : -1,
 		/*
-		 * @attribute options.workspace
+		 * @attribute options.onEdit
 		 * This function is triggered with an edit link is clicked
 		 */
 		onEdit : function(sc) {
