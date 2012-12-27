@@ -22,6 +22,7 @@ use SeccubusRights;
 		create_notification
 		update_notification
 		do_notification
+		del_notification
 	);
 
 use strict;
@@ -31,6 +32,7 @@ sub get_notifications($$;);
 sub create_notification($$$$$$;);
 sub update_notification($$$$$$$;);
 sub do_notification($$$;);
+sub del_notification($;);
 
 =head1 Data manipulation - notifications
 
@@ -80,6 +82,52 @@ sub get_notifications($$;) {
 	}
 }
 
+=head2 del_notification
+
+Delete a notification
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item notification - id of the notification
+
+
+=back 
+
+=item Checks
+
+User must be able to write workspace. 
+
+=back
+
+=cut
+
+sub del_notification($;) {
+	my $notification_id = shift or die "No notification_id provided";
+
+	my ($workspace_id) = sql(
+		"return"=> "array",
+		"query"	=> "SELECT	workspace_id
+			    FROM	notifications, scans
+			    WHERE	notifications.id = ? AND
+			    		notifications.scan_id = scans.id",
+		"value"	=> [ $notification_id ]
+	);
+
+	if ( may_write($workspace_id)) {
+		return sql( "return"	=> "handle",
+			    "query"	=> "
+			    	DELETE FROM notifications
+				WHERE	id = ?",
+			    "values"	=> [ $notification_id ]
+		);
+	} else {
+		return undef;
+	}
+}
 
 # Close the PM file.
 return 1;
