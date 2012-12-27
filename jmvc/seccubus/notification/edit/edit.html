@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Seccubus.Scan.Edit</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+	    .nok {background-color: red}
+        </style>
+	</head>
+	<body>
+	    <h1>Seccubus.Scan.Edit Demo</h1>
+		<select id='workspace'></select>
+		<br>
+		<select id='scan' size=5></select>
+		<br>
+		<table id='notifications'></table>
+		<br>
+		<form id='edit'></form>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal(	'seccubus/notification/edit',
+				'seccubus/workspace/select',
+				'seccubus/scan/select',
+				'seccubus/notification/table',
+				//'seccubus/fixtures',
+			function(){
+				
+				$("#workspace").seccubus_workspace_select();
+				$("#workspace").change( function() {
+					$("#scan").seccubus_scan_select({
+						workspace : $("#workspace").val()
+					});
+				});
+				$("#scan").seccubus_scan_select();
+				$("#scan").change( function() {
+					$("#notifications").seccubus_notification_table({
+						workspace : $("#workspace").val(),
+						scan	  : $("#scan").val(),
+						onEdit	  : function(not) {
+							$("#edit").seccubus_notification_edit({
+								notification : not
+							})
+						}
+					});
+				});
+			})
+		</script>
+	</body>
+</html>
