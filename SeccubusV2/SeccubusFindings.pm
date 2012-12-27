@@ -28,8 +28,6 @@ use Algorithm::Diff qw( diff );
 		diff_finding
 	);
 
-$VERSION = '0.1';
-
 use strict;
 use Carp;
 
