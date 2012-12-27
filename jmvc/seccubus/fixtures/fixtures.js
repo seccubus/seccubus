@@ -19,7 +19,7 @@ steal("jquery/dom/fixture", function(){
                 return {
                         name: "config_item "+i,
                         message: "Message "+i,
-                        result: $.fixture.rand( ['OK','Error'] , 1)[0]
+                        result: $.fixture.rand( ['OK','Warn','Error'] , 1)[0]
                 }
 
 	})
@@ -198,6 +198,7 @@ steal("jquery/dom/fixture", function(){
 		var domain = [ "seccubus.com", "autonessus.com" ]
 		var event_id =  $.fixture.rand(1)
 		var events = [ "Before scan", "After scan" ]
+		var descriptions = ["grill fish", "make ice", "cut onions"]
 		return {
 			id: i,
 			subject: "notification "+i,

@@ -155,6 +155,27 @@ if ( exists $ENV{REMOTE_ADDR} ) {
 		result($data, "HTTP authentication", "Authetication is not set up on your HTTP server, emulating user 'admin'", 'OK');
 	}
 }
+
+##### Test SMTP config
+if ( ! exists $config->{smtp} ) {
+	result($data, "SMTP configuration", "No smtp configuration specified in you config file, notification will NOT be sent", 'Warn');
+} elsif(  ! exists $config->{smtp}->{server} ) {
+	result($data, "SMTP configuration", "No smtp server specified", "Error");
+} elsif( ! gethostbyname($config->{smtp}->{server}) ) {
+	result($data, "SMTP configuration", "Cannot resolve smtp server $config->{smtp}->{server}", "Error");
+} elsif( ! exists $config->{smtp}->{port} ) {
+	result($data, "SMTP configuration", "No smtp port specified", "Error");
+} elsif( $config->{smtp}->{port} !~ /^\d+$/ || $config->{smtp}->{port} <1 or $config->{smtp}->{port} > 65535 ) {
+	result($data, "SMTP configuration", "$config->{smtp}->{port} is not a valid smtp port", "Error");
+} elsif( ! exists $config->{smtp}->{from} ) {
+	result($data, "SMTP configuration", "No from address specified", "Error");
+} elsif ( $config->{smtp}->{from} !~ /^[\w\.\+]+\@[\w\d\.]+$/ ) {
+	result($data, "SMTP configuration", "$config->{smtp}->{from} doesn't apear to be a valid email address", "Error");
+} else {
+	result($data, "SMTP configuration", "SMTP configuration OK", "OK");
+}
+
+##### return results and exit
 bye($data);
 exit;
 

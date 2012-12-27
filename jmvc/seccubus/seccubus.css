@@ -163,6 +163,13 @@ header h2 {
 	background-position: 0.5em;
 }
 
+.Warn {
+	padding-left: 30px;
+	background-image: url(img/warn.png);
+	background-repeat: no-repeat;
+	background-position: 0.5em;
+}
+
 .OK {
 	padding-left: 30px;
 	background-image: url(img/ok.png);
