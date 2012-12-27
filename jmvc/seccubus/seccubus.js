@@ -206,6 +206,7 @@ steal(
 					onEdit : function(sc) {
 						$('#editScan').seccubus_scan_edit({
 							scan : sc,
+							workspace : gui_state.workspace,
 							onClear	: function() {
 								$("#widgetsModalMask").click();
 							},
@@ -225,7 +226,25 @@ steal(
 									query : '#editNotificationDialog',
 									close : true
 								});
-							}
+							},
+							onNotificationCreate : function(ws,sc) {
+								$("#widgetsModalMask").click();
+								$('#createNotification').seccubus_notification_create({
+									workspace : ws,
+									scan	: sc,
+									onClear : function() {
+										$("#widgetsModalMask").click();
+										$('#modalDialog').widgets_modal({
+											query : "#editScanDialog",
+											close : true
+										});
+									}
+								});
+								$('#modalDialog').widgets_modal( {
+									query : '#createNotificationDialog',
+									close : true
+								});
+							},
 						});
 						$('#modalDialog').widgets_modal({
 							query : "#editScanDialog",
