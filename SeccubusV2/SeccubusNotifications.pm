@@ -28,7 +28,7 @@ use SeccubusRights;
 use strict;
 use Carp;
 
-sub get_notifications($$;);
+sub get_notifications($;);
 sub create_notification($$$$$$;);
 sub update_notification($$$$$;);
 sub do_notification($$$;);
@@ -46,8 +46,6 @@ Get all notification for a certain scan from the database
 
 =over 4
 
-=item workspace_id - id of the workspace
-
 =item scan_id - id of the scan
 
 =back 
@@ -60,11 +58,18 @@ User must be able to read workspace.
 
 =cut
 
-sub get_notifications($$;) {
-	my $workspace_id = shift or die "No workspace_id provided";
+sub get_notifications($;) {
 	my $scan_id = shift or die "No scan_id provided";
 
-	if ( may_read($workspace_id)) {
+	my ($workspace_id) = 
+		sql( 	return	=> "array",
+			query	=> "
+				SELECT	workspace_id
+				FROM	scans
+				WHERE	?",
+			values	=> [ $scan_id ]
+	);
+	if ( $workspace_id && may_read($workspace_id)) {
 		return sql( "return"	=> "ref",
 			    "query"	=> "
 			    	SELECT	notifications.id, subject, recipients, 

@@ -18,23 +18,15 @@ my $json = JSON->new();
 
 print $query->header("application/json");
 
-my $workspace_id = $query->param("workspaceId");
 my $scan_id = $query->param("scanId");
 
 # Return an error if the required parameters were not passed 
-if (not (defined ($workspace_id))) {
-	bye("Parameter workspaceId is missing");
-} elsif ( $workspace_id + 0 ne $workspace_id ) {
-	bye("WorkspaceId is not numeric");
-} elsif (not (defined ($scan_id))) {
-	bye("Parameter scanId is missing");
-} elsif ( $scan_id + 0 ne $scan_id ) {
-	bye("scanId is not numeric");
-};
+my $error;
+bye($error) if $error = check_param("ScanId", $scan_id, 1);
 
 eval {
 	my @data;
-	my $notifications = get_notifications($workspace_id, $scan_id);
+	my $notifications = get_notifications($scan_id);
 
 	foreach my $row ( @$notifications ) {
 		if ( $$row[2] ) {

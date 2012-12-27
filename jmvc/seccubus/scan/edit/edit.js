@@ -3,7 +3,8 @@ steal(	'jquery/controller',
 	'jquery/dom/form_params',
 	'jquery/controller/view',
 	'seccubus/models',
-	'seccubus/scanner/select'
+	'seccubus/scanner/select',
+	'seccubus/notification/table'
 ).then(	'./views/init.ejs',
 	function($){
 
@@ -52,6 +53,9 @@ $.Controller('Seccubus.Scan.Edit',
 		$('#editScanScanner').seccubus_scanner_select({
 			helpHere : '#editScanHelp',
 			selected : this.options.scan.scanner
+		});
+		$('#editScanNotifications').seccubus_notification_table({
+			scan	: this.options.scan.id
 		});
 	},
 	submit : function(el, ev){

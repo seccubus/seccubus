@@ -21,10 +21,10 @@ steal(
 	'seccubus/finding/edit',
 	'seccubus/history/table',
 	'widgets/modal',
-	'seccubus/event/create',
-	'seccubus/event/list',
+	'seccubus/event/select',
+	'seccubus/notification/table',
 	'seccubus/notification/create',
-	'seccubus/notification/list',
+	'seccubus/notification/edit',
 	function(){					// configure your application
 		/***********************************************************
 		 * Initialize gui state and hook into it
@@ -330,9 +330,5 @@ steal(
 				}
 			});
 		};
-		$('#events').seccubus_event_list();
-		$('#create').seccubus_event_create();
-	$('#notifications').seccubus_notification_list();
-		$('#create').seccubus_notification_create();
 }
 )

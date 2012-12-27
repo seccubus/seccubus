@@ -162,7 +162,8 @@ sub get_scans($;) {
 			    		   (SELECT COUNT(*) FROM runs WHERE runs.scan_id = scans.id) as total_runs,
 			    		   '' as total_findings,
 					   targets,
-					   workspace_id
+					   workspace_id,
+					   (SELECT COUNT(*) FROM notifications WHERE notifications.scan_id = scans.id) as total_notifications
 			    		   FROM scans  
 					   WHERE workspace_id = ?
 					   ORDER BY NAME",

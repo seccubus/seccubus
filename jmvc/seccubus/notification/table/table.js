@@ -21,12 +21,6 @@ $.Controller('Seccubus.Notification.Table',
 	 */
 	defaults : {
 		/*
-		 * @attribute options.workspace
-		 * The selected workspace. -1 (default) means on workspace is
-		 * selected.
-		 */
-		workspace : -1,
-		/*
 		 * @attribute options.scan
 		 * The selected scan. -1 (default) means on scan selected.
 		 */
@@ -49,17 +43,7 @@ $.Controller('Seccubus.Notification.Table',
 	 * This function renders the control
 	 */
 	updateView : function() {
-		if ( this.options.workspace == -1 ) {
-			console.warn("Seccubus.Notification.Table: workspace is not set");
-			this.element.html(
-				this.view(
-					'error',
-					{
-						message : "Please select a workspace to start"
-					}
-				)
-			);
-		} else if ( this.options.scan  == -1 ) {
+		if ( this.options.scan  == -1 ) {
 			console.warn("Seccubus.Notification.Table: scan is not set");
 			this.element.html(
 				this.view(
@@ -74,7 +58,6 @@ $.Controller('Seccubus.Notification.Table',
 				this.view(
 					'init',
 					Seccubus.Models.Notification.findAll({
-						workspaceId	: this.options.workspace,
 						scanId		: this.options.scan
 					})
 				)
