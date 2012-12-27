@@ -30,7 +30,7 @@ use Carp;
 
 sub get_notifications($$;);
 sub create_notification($$$$$$;);
-sub update_notification($$$$$$$;);
+sub update_notification($$$$$;);
 sub do_notification($$$;);
 sub del_notification($;);
 
@@ -168,6 +168,89 @@ sub create_notification($$$$$$;) {
 
 
 					
+	} else {
+		return undef;
+	}
+}
+
+=head2 update_notification
+
+Updates a notification
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item notification_id - Id of the notification
+
+=item scan_id - Id of the scan this notification belongs to
+
+=item event_id - Id of the event on which a scan has to be created
+
+=item subject
+
+=item recipents
+
+=item message
+
+=back 
+
+=item Checks
+
+User must be able to write workspace. 
+
+Scan must exist in workspace
+
+Event must exist
+
+=item Returns
+
+Description of the event
+
+=back
+
+=cut
+sub update_notification($$$$$;) {
+	my $notification_id = shift or die "No workspace_id provided";
+	my $event_id = shift or die "No event_id provided";
+	my $subject = shift or die "Subject is empty";
+	my $recipients = shift or die "Recipients empty";
+	my $message = shift or die "Message empty";
+
+	my ($workspace_id, $scan_id) = 
+		sql( 	return	=> "array",
+			query	=> "
+				SELECT	workspace_id, scans.id
+				FROM	scans, notifications
+				WHERE	notifications.id = ? AND 
+					scans.id = notifications.scan_id",
+			values	=> [ $notification_id ]
+	);
+	if ( $workspace_id && may_write($workspace_id) ) {
+		my ($event_name) = sql(
+			return 	=> "array",
+			query	=> "
+				SELECT 	name
+				FROM	events
+				WHERE	id = ?",
+			values	=> [ $event_id ]
+		);
+		if ( ! $event_name ) {
+			die ("Event_id $event_id not found");
+		};
+		my $id = sql(	return	=> "id",
+				query	=> "
+					UPDATE notifications 
+					SET	event_id = ?, subject = ?, 
+						recipients = ?,	message =? 
+					WHERE	id = ?",
+				values	=> [ $event_id, $subject, 
+					$recipients, $message, $notification_id
+					]
+		);
+		return( ($event_name) );
 	} else {
 		return undef;
 	}

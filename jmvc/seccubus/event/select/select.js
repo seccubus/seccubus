@@ -17,7 +17,16 @@ steal(
 $.Controller('Seccubus.Event.Select',
 /** @Static */
 {
-	defaults : {}
+	defaults : {
+		/*
+		 * @attribute options.selected
+		 * This attribute indicates which item in the dropdown is 
+		 * initially selected.
+		 * Default value: -1
+		 */
+		selected : -1
+
+	}
 },
 /** @Prototype */
 {
@@ -46,9 +55,19 @@ $.Controller('Seccubus.Event.Select',
 		this.element.html(
 			this.view(
 				'init',
-				Seccubus.Models.Event.findAll()
+				Seccubus.Models.Event.findAll(),
+				{
+					selected : this.options.selected
+
+				}
 			) 
 		);
+		/*
+		if ( this.options.selected != -1 ) {
+			//alert(this.element.attr("html"));
+			this.element.attr("value",this.options.selected);
+		};
+		*/
 	}
 
 }); // Controller

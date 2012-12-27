@@ -12,7 +12,7 @@ $.Model('Seccubus.Models.Notification',
 	findAll: "POST json/getNotifications.pl",
   	//findOne : "/notifications/{id}.json", 
   	create : "POST json/createNotification.pl",
- 	//update : "/notifications/{id}.json",
+ 	update : "POST json/updateNotification.pl",
   	destroy : "POST json/deleteNotification.pl"
 },
 /* @Prototype */
