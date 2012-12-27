@@ -2,11 +2,11 @@ steal('funcunit',function(){
 
 module("Seccubus.Notification.Create", { 
 	setup: function(){
-		S.open("//seccubus/notification/create/create.html");
+		S.open("//seccubus/scan/create/create.html");
 	}
 });
 
-test("create notifications", function(){
+test("create scans", function(){
 	S("[name=name]").type("Ice Water");
 	S("[name=description]").type("Pour water in a glass. Add ice cubes.");
 	S("[type=submit]").click();
