@@ -407,11 +407,9 @@ CREATE TABLE `notifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `scan_id` int(11) NOT NULL,
   `event_id` int(11) NOT NULL,
-  `name` VARCHAR(45) NOT NULL ,
+  `subject` VARCHAR(255) NOT NULL ,
   `recipients` varchar(1024) NOT NULL,
   `message` text NOT NULL,
-  `scans_id` int(11) NOT NULL,
-  `triggers_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
