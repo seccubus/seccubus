@@ -9,11 +9,11 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.Notification',
 /* @Static */
 {
-	findAll: "/notifications.json",
-  	findOne : "/notifications/{id}.json", 
-  	create : "/notifications.json",
- 	update : "/notifications/{id}.json",
-  	destroy : "/notifications/{id}.json"
+	findAll: "POST json/getNotifications.pl",
+  	//findOne : "/notifications/{id}.json", 
+  	//create : "/notifications.json",
+ 	//update : "/notifications/{id}.json",
+  	destroy : "POST json/deleteNotification.pl"
 },
 /* @Prototype */
 {});

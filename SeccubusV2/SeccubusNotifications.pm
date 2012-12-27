@@ -62,17 +62,17 @@ sub get_notifications($$;) {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_id = shift or die "No scan_id provided";
 
-	if ( may_read($workspace_id) {
-		return sql( "return"	=> "ref".
+	if ( may_read($workspace_id)) {
+		return sql( "return"	=> "ref",
 			    "query"	=> "
-			    	SELECT	id, name, recipients, message, event_id,
-					events.name
+			    	SELECT	notifications.id, subject, recipients, 
+					message, event_id, events.name
 				FROM	notifications, events, scans
 				WHERE	scans.workspace_id = ? AND
 					scans.id = ? AND
 					notifications.scan_id = scans.id AND
 					notifications.event_id = events.id
-				ORDER BY notifications.name"
+				ORDER BY subject",
 			    "values"	=> [ $workspace_id, $scan_id ]
 		);
 	} else {

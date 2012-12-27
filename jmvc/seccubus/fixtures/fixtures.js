@@ -193,10 +193,19 @@ steal("jquery/dom/fixture", function(){
 		}
 	})
 	$.fixture.make("notification", 5, function(i, notification){
-		var descriptions = ["grill fish", "make ice", "cut onions"]
+		var subject = ["grill fish", "make ice", "cut onions"]
+		var user = ["frank", "dan", "steven" ]
+		var domain = [ "seccubus.com", "autonessus.com" ]
+		var event_id =  $.fixture.rand(1)
+		var events = [ "Before scan", "After scan" ]
 		return {
-			name: "notification "+i,
-			description: $.fixture.rand( descriptions , 1)[0]
+			id: i,
+			subject: "notification "+i,
+			recipients: $.fixture.rand( user , 1)[0] + "@" + $.fixture.rand( domain, 1)[0],
+			message: $.fixture.rand( descriptions , 1)[0],
+			event_id: event_id + 1,
+			event_name: events[event_id]
+
 		}
 	})
 });
