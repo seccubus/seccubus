@@ -208,13 +208,30 @@ steal(
 							scan : sc,
 							onClear	: function() {
 								$("#widgetsModalMask").click();
+							},
+							onNotificationEdit : function(not) {
+								$("#widgetsModalMask").click();
+								$('#editNotification').seccubus_notification_edit({
+									notification : not,
+									onClear : function() {
+										$("#widgetsModalMask").click();
+										$('#modalDialog').widgets_modal({
+											query : "#editScanDialog",
+											close : true
+										});
+									}
+								});
+								$('#modalDialog').widgets_modal( {
+									query : '#editNotificationDialog',
+									close : true
+								});
 							}
 						});
 						$('#modalDialog').widgets_modal({
 							query : "#editScanDialog",
 							close : true
 						});
-					}
+					},
 				});
 			});
 		};
