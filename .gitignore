@@ -9,6 +9,7 @@
 tmp/
 
 # Temporary files used for building
+errors.txt
 Makefile
 MANIFEST
 MYMETA.json
