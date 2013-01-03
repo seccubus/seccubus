@@ -1,20 +1,21 @@
 This scanner takes the following parameters:
 <ul>
-	<li>--nikto_path (-p)	
-		<br>You can use this optional parameter to provide the script with
-(-p)		  the path to nikto.pl or nikto. If you do not provide this the 
-		  script tries to find the files itself and fail if it cannot 
-		  find them.
-	<li>--nikto_options	 (-o)
-		<br>Additional command line options to provide to nikto see 
-(-o)		  'nikto -Help' for more information.
-	<li>--hosts		  <br> Specification of hosts to scan. Follows the Nessus rules for specifying hosts, or path to a file containing such specification
+	<li>--sslyze_path (-p)
+		<br>- You can use this optional parameter to provide the script
+		with the path to sslyze.py or sslyze. If you do not provide this
+		the script tries to find the files itself and fails if it cannot
+		find them.
+	<li>--sslyze_options (-o)	
+		<br>- Additional command line options to provide to sslyze see 
+		'sslyze.py --help' for more information.
+	<li>--hosts
+		<br>- The file containing the 'hosts' to scan
 </ul>
+You must use --hosts @HOSTS
 <p>
-Subsitutions:
 <ul>
-	<li>$HOSTS is substituted with the contents of the host field
-	<li>@HOSTS is substituted with the path of a file containig the hosts field
-	<li>$WORSKPACE is substituted with the workspace name
+	<li>$HOSTS is subsituted with the contents of the host field
+	<li>@HOSTS is subsituted with the path of a file containig the hosts field
+	<li>$WORSKPACE is subsituted with the workspace name
 	<li>$SCAN is substituted with the scan name
 </ul>

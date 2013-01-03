@@ -63,8 +63,11 @@ $.Controller('Seccubus.Scanner.Select',
 	},
 	/* Renders the control */
 	"mouseover" : function() {
-		this.updateHelp();
-		this.updateParams();
+		if ( this.options.selected == this.element.val() ) {
+			this.updateHelp();
+			this.updateParams();
+			this.options.selcted = "none";
+		}
 	},
 	updateView : function() {
 		var dfd = Seccubus.Models.Scanner.findAll();
