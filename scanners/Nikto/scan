@@ -25,6 +25,7 @@ my (
    );
 
 $help = 0;
+$nodelete = undef;
 
 # Create default values
 
@@ -34,7 +35,7 @@ GetOptions(
 		'hosts=s'		=> \$hosts_file,
 		'workspace=s'		=> \$workspace,
 		'scan=s'		=> \$scan,
-		'nodelete'		=> \$nodelete,
+		'nodelete!'		=> \$nodelete,
 		'verbose|v+'		=> \$verbose,
 		'quiet|q!'		=> \$quiet,
 		'help|h'		=> \$help,

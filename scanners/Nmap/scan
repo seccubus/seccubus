@@ -180,6 +180,7 @@ Arguments:
 --scan		- Name of the scan to load the findings into
 --verbose (-v)	- Be verbose during execution
 --quiet (-q)	- Don't print output
+--nodelete      - Don't delete temporary files (use -v to find out which)
 --help (-h)	- Print this message
 ";
 	exit(1);

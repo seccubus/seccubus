@@ -33,7 +33,7 @@ sub get_scan_id($$;);
 sub get_scans($;);
 sub create_scan($$$$;$);
 sub update_scan($$$$$;$);
-sub run_scan($$;$$);
+sub run_scan($$;$$$);
 
 =head1 Data manipulation - scans
 
@@ -244,6 +244,12 @@ This function runs the scan identified by the scan-id
 
 =item scan_id - id of the scan to run
 
+=item verbose - (optional) pass the -v flag the scan command
+
+=item print - (optional) print scan output
+
+=item nodelete - (optional) pass the --nodelete option to the scan command
+
 =back
 
 =item Checks
@@ -254,11 +260,12 @@ User must be able to write workspace. The scan must exist in the workspace.
 
 =cut
 
-sub run_scan($$;$$) {
+sub run_scan($$;$$$) {
 	my $workspace_id = shift;
 	my $scan_id = shift;
 	my $verbose = shift;
 	my $print = shift;
+	my $nodelete = shift;
 
 	# Bug #37 - @HOSTS gets expanded to /tmp/seccus.hosts.PID in stead of 
 	# /tmp/seccubus.hosts.PID
@@ -312,6 +319,10 @@ sub run_scan($$;$$) {
 				$cmd .= " -q";
 			} else {
 				$cmd .= " -v" x $verbose;
+			}
+			# Nodelete (issue #14)
+			if ( $nodelete ) {
+				$cmd .= " --nodelete";
 			}
 
 			# Sending pre scan notifications

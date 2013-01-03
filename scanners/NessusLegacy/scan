@@ -25,9 +25,11 @@ my (
 	$help,
 	$verbose,
 	$quiet,
+	$nodelete,
    );
 
 $help = 0;
+$nodelete = undef;
 
 # Create default values
 $port = 1241;
@@ -44,6 +46,7 @@ GetOptions(
 		'scan=s'		=> \$scan,
 		'verbose|v+'		=> \$verbose,
 		'quiet|q!'		=> \$quiet,
+		'nodelete!'		=> \$nodelete,
 		'help'			=> \$help,
 	  );
 
@@ -150,9 +153,11 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
 # Cleanup
-unlink "$tempfile.nbe" if -e "$tempfile.nbe";
-unlink "$tempfile.html" if -e "$tempfile.html";
-unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+unless ( $nodelete ) {
+	unlink "$tempfile.nbe" if -e "$tempfile.nbe";
+	unlink "$tempfile.html" if -e "$tempfile.html";
+	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+}
 
 exit(0);
 
@@ -177,6 +182,7 @@ Arguments:
 --scan		   - Name of the scan to load the findings into
 --verbose (-v)	   - Be verbose during execution
 --quiet (-q)	   - Don't print output
+--nodelete         - Don't delete temporary files (use -v to find out which)
 --help (-h)	   - Print this message
 ";
 	exit(1);
