@@ -15,4 +15,8 @@
 		<configdir>/opt/Seccubus/etc</configdir>
 		<dbdir>/opt/Seccubus/db</dbdir>
 	</paths>
+	<smtp>
+		<server>localhost</server>
+		<from>seccubus@localhost</from>
+	</smtp>
 </seccubus>

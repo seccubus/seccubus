@@ -31,7 +31,6 @@ $.Model('Seccubus.Models.Scan',
 	},
   	// Not implemented
 	//findOne	: "/scans/{id}.json", 
-	// Not implemented (yet)
   	create	: "POST json/createScan.pl",
 	update	: "POST json/updateScan.pl"
   	// Not implemented yet

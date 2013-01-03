@@ -1,0 +1,30 @@
+<% if(typeof(noHead) == "undefined" || noHead == false) { %>
+	<thead>
+		<tr>
+			<th>Subject</th>
+			<th>Recipients</th>
+			<th>Trigger</th>
+			<%  //if(typeof(noEdit) == "undefined" || noEdit == false) { %>
+				<th>Action</th>
+			<% //} %>
+		</tr>
+	</thead>
+	<tbody>
+<% } %>
+<% count = 0  %>
+<% if(typeof this[0] != "undefined" && typeof this[0].error != "undefined" ) { %>
+	 <%== $.View('//seccubus/notification/table/views/error.ejs',{ message : this[0].error }) %>
+<% } else { %>
+	<%for ( var i = 0; i < this.length ; i++ ){%>
+		<tr <%= this[i] %> >
+			<%== $.View('//seccubus/notification/table/views/notification.ejs', this[i] ) %>
+		</tr>
+		<% count++ %>
+	<% } %>
+	<% if ( count == 0 ) { %>
+		<%== $.View('//seccubus/notification/table/views/error.ejs',{ message : "No notifications found"}) %>
+	<% } %>
+<% } %>
+<% if(typeof(noHead) == "undefined" || noHead == false) { %>
+	</tbody>
+<% } %>
