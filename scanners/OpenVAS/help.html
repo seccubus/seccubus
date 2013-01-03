@@ -1,16 +1,14 @@
 This scanner takes the following parameters:
 <ul>
 	<li>--openvas_path (-p) 
-		<br>Optional path of the openvas (client) binary. If it is not
-		     provided the script will try to find it for you
-	<li>--user (-u)	  <br> Nessus username
-	<li>--password (-p)	  <br> Nessus password
-	<li>--server (-s)	  <br> Nessus server (ip or name)
-	<li>--port		   
-		<br>Optional port of the OpenVAS server (defaults to 1241)
-	<li>--rc		   
-		<br>Path of the .nessusrc file to use
-	<li>--hosts		  <br> Specification of hosts to scan. Follows the Nessus rules for specifying hosts, or path to a file containing such specification
+		<br>- Optional path of the openvas (client) binary. If it is 
+		     not provided the script will try to find it for you
+	<li>--user (-u)	   	<br>- Username to use for OpenVAS login
+	<li>--password (--pw)	<br>- Password to use for OpenVAS login
+	<li>--server		<br>- IP address or hostname of the OpenVAS server
+	<li>--porti		<br>- Optional port of the OpenVAS server (defaults to 1241)
+	<li>--rc		<br>- Path of the .openvasrc file to use
+	<li>--hosts		<br>- The file containing the 'hosts' to scan
 </ul>
 You must use --hosts @HOSTS
 <p>

@@ -179,9 +179,9 @@ Usage: scan 	[--openvas_path=<path to openvas>] --user=<openvas username> \\
 Arguments:
 --openvas_path (-p) - Optional path of the openvas (client) binary. If it is not
 		     provided the script will try to find it for you
---user (-u)	   - Usernameto use for OpenVAS login
+--user (-u)	   - Username to use for OpenVAS login
 --password (--pw)  - Password to use for openvas login
---server	   - IP address of hostname of the OpenVAS server
+--server	   - IP address or hostname of the OpenVAS server
 --port		   - Optional port of the OpenVAS server (defaults to 1241)
 --rc		   - Path of the .openvasrc file to use
 --hosts		   - The file containing the 'hosts' to scan
