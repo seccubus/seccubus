@@ -28,6 +28,7 @@ Bigs fixed (tickets closed):
 ----------------------------
 * Issue #9 - Missing Hosts File in Nmap Scan
 * Issue #14 - Permit --nodelete option on do-scan
+* issue #26 - Update installation instructions
 * Issue #27 - Email Reporting
 * Issue #32 - RPM: Files in /opt/Seccubus/www/seccubus/json have no exec permissions
 * Issue #33 - User permission issues not reported correctly
