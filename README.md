@@ -26,24 +26,13 @@ Key new features / issues resolved
 
 Bigs fixed (tickets closed):
 ----------------------------
-Issue #9 - Missing Hosts File in Nmap Scan
-https://github.com/schubergphilis/Seccubus_v2/issues/9
-Issue #14 - Permit --nodelete option on do-scan
-https://github.com/schubergphilis/Seccubus_v2/issues/14
-Issue #27 - Email Reporting
-https://github.com/schubergphilis/Seccubus_v2/issues/27
-Issue #32 - RPM: Files in /opt/Seccubus/www/seccubus/json have no exec permissions
-https://github.com/schubergphilis/Seccubus_v2/issues/32
-Issue #33 - User permission issues not reported correctly
-https://github.com/schubergphilis/Seccubus_v2/issues/33
-Issue #34 - $HOSTS vs @HOSTS confusion
-https://github.com/schubergphilis/Seccubus_v2/issues/34
-Issue #35 - -p vs --pw (OpenVAS)
-https://github.com/schubergphilis/Seccubus_v2/issues/35
-Issue #39 - SeccubusScans exports uninitilized VERSION
-https://github.com/schubergphilis/Seccubus_v2/issues/39
-Issue #42 - Nessus help (and scan?) not consistent with regards to the use of -p
-https://github.com/schubergphilis/Seccubus_v2/issues/42
-Issue #43 - Sudo option missing from NMAP scanner help (web)
-https://github.com/schubergphilis/Seccubus_v2/issues/43
-
+* Issue #9 - Missing Hosts File in Nmap Scan
+* Issue #14 - Permit --nodelete option on do-scan
+* Issue #27 - Email Reporting
+* Issue #32 - RPM: Files in /opt/Seccubus/www/seccubus/json have no exec permissions
+* Issue #33 - User permission issues not reported correctly
+* Issue #34 - $HOSTS vs @HOSTS confusion
+* Issue #35 - -p vs --pw (OpenVAS)
+* Issue #39 - SeccubusScans exports uninitilized VERSION
+* Issue #42 - Nessus help (and scan?) not consistent with regards to the use of -p
+* Issue #43 - Sudo option missing from NMAP scanner help (web)
