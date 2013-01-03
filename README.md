@@ -1,16 +1,22 @@
 Seccubus V2 Change Log
 ======================
+Seccubus automates regular vulnerability scans with vrious tools and aids 
+security people in the fast analysis of its output, both on the first scan and 
+on repeated scans.
 
-Seccubus V2 is currently in early Beta phase. This code is currently actively
-maintained and developed and is the recommended branch. It works with 
-Nessus 4.x with both a home feed and professional feed license.
+On repeated scan delta reporting ensures that findings only need to be judged 
+when they first appear in the scan results or when their output changes.
 
-If you are looking for stable code you might want to use the V1 branch of this
-project, but be aware that it only supports Nessus with a professional feed
-and is not longer under active development.
+Seccubus 2.0 is nearing the end of the beta phase. This code is the active 
+developed and maintained version and all support for Seccubus V1 will be dropped
+soon. Seccubus V2 works with the following scanners:
+* Nessus 4.x and 5.x (professional and home feed)
+* OpenVAS
+* Nikto 
+* NMap
 
-xx-xx-201x - 2.0.xxxxx
-======================
+xx-xx-201x - 2.0.rc1
+====================
 
 Key new features / issues resolved
 ----------------------------------
