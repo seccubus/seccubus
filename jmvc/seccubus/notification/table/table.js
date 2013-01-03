@@ -31,7 +31,7 @@ $.Controller('Seccubus.Notification.Table',
 		 */
 		onEdit : function(not) {
 			alert("Seccubus.Notification.Table: no edit function specified for notification id: " + not.id );
-		},
+		}
 	}
 },
 /** @Prototype */
