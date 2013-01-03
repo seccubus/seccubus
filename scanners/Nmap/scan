@@ -175,6 +175,7 @@ Arguments:
 --nmap_options	- Additional command line options to provide to Nmap see 
 (-o)		  'nmap -Help' for more information.
 --hosts		- The file containing the 'hosts' to scan
+--sudo		- Use sudo to elevate privileges (needed for certain scans)
 --workspace	- Name of the workspace to load the findings into
 --scan		- Name of the scan to load the findings into
 --verbose (-v)	- Be verbose during execution

@@ -27,6 +27,7 @@ eval {
 			'name'		=> $$row[0],
 			'description'	=> $$row[1],
 			'help'		=> $$row[2],
+			'params'	=> $$row[3],
 		});
 	}
 	print $json->pretty->encode(\@data);

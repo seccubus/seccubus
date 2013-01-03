@@ -51,7 +51,8 @@ $.Controller('Seccubus.Scan.Create',
 	init : function(){
 		this.element.html(this.view());
 		$('#newScanScanner').seccubus_scanner_select({
-			helpHere : '#newScanHelp'
+			helpHere   : '#newScanHelp',
+			paramsHere : '#newScanParam'
 		});
 		$('#newScanOtherScannerRow').hide();
 	},

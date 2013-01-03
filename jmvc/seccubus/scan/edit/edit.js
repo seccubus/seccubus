@@ -70,6 +70,7 @@ $.Controller('Seccubus.Scan.Edit',
 		);
 		$('#editScanScanner').seccubus_scanner_select({
 			helpHere : '#editScanHelp',
+			paramsHere : '#defaultParams',
 			selected : this.options.scan.scanner
 		});
 		$('#editScanNotifications').seccubus_notification_table({
