@@ -3,7 +3,8 @@ steal(	'jquery/controller',
 	'jquery/dom/form_params',
 	'jquery/controller/view',
 	'seccubus/models',
-	'seccubus/scanner/select'
+	'seccubus/scanner/select',
+	'seccubus/notification/table'
 ).then(	'./views/init.ejs',
 	function($){
 
@@ -34,7 +35,25 @@ $.Controller('Seccubus.Scan.Edit',
 		/* attribute options.scan
 		 * Scan object that needs to be edited
 		 */
-		scan : null
+		scan : null,
+		/* attribute options.onNotificationEdit
+		 * Function that is called when the edit link is click in the 
+		 * notification screen
+		 */
+		onNotificationEdit : function(not) {
+			alert("Seccubus.Scan.Edit: no edit function specified for notification id: " + not.id );
+		},
+		/* attribute options.onNotificationCreate
+		 * Function that is called when the edit link is click in the 
+		 * notification screen
+		 */
+		onNotificationCreate : function(ws,sc) {
+			alert("Seccubus.Scan.Edit: no create function specified for notification " + ws + "," + sc);
+		},
+		/* attribute options.workspace
+		 * workspace id we are currently in
+		 */
+		workspace : -1
 	}
 },
 /** @Prototype */
@@ -52,6 +71,11 @@ $.Controller('Seccubus.Scan.Edit',
 		$('#editScanScanner').seccubus_scanner_select({
 			helpHere : '#editScanHelp',
 			selected : this.options.scan.scanner
+		});
+		$('#editScanNotifications').seccubus_notification_table({
+			scan	: this.options.scan.id,
+			onEdit	: this.options.onNotificationEdit,
+			onCreate : this.options.onNotificationCreate
 		});
 	},
 	submit : function(el, ev){
@@ -128,6 +152,10 @@ $.Controller('Seccubus.Scan.Edit',
 	},
 	".nok change" : function(el) {
 		el.removeClass("nok");
+	},
+	".createNotification click" : function(el, ev) {
+		ev.preventDefault();
+		this.options.onNotificationCreate(this.options.workspace, this.options.scan.id);
 	},
 	update : function(options) {
 		this._super(options);

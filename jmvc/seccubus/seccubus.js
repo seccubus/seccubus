@@ -21,6 +21,10 @@ steal(
 	'seccubus/finding/edit',
 	'seccubus/history/table',
 	'widgets/modal',
+	'seccubus/event/select',
+	'seccubus/notification/table',
+	'seccubus/notification/create',
+	'seccubus/notification/edit',
 	function(){					// configure your application
 		/***********************************************************
 		 * Initialize gui state and hook into it
@@ -202,15 +206,51 @@ steal(
 					onEdit : function(sc) {
 						$('#editScan').seccubus_scan_edit({
 							scan : sc,
+							workspace : gui_state.workspace,
 							onClear	: function() {
 								$("#widgetsModalMask").click();
-							}
+							},
+							onNotificationEdit : function(not) {
+								$("#widgetsModalMask").click();
+								$('#editNotification').seccubus_notification_edit({
+									notification : not,
+									onClear : function() {
+										$("#widgetsModalMask").click();
+										$('#modalDialog').widgets_modal({
+											query : "#editScanDialog",
+											close : true
+										});
+									}
+								});
+								$('#modalDialog').widgets_modal( {
+									query : '#editNotificationDialog',
+									close : true
+								});
+							},
+							onNotificationCreate : function(ws,sc) {
+								$("#widgetsModalMask").click();
+								$('#createNotification').seccubus_notification_create({
+									workspace : ws,
+									scan	: sc,
+									onClear : function() {
+										$("#widgetsModalMask").click();
+										$('#modalDialog').widgets_modal({
+											query : "#editScanDialog",
+											close : true
+										});
+									}
+								});
+								$('#modalDialog').widgets_modal( {
+									query : '#createNotificationDialog',
+									close : true
+								});
+							},
 						});
 						$('#modalDialog').widgets_modal({
 							query : "#editScanDialog",
 							close : true
 						});
-					}
+					},
 				});
 			});
 		};
@@ -326,5 +366,5 @@ steal(
 				}
 			});
 		};
-	}
+}
 )

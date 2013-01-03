@@ -1,0 +1,16 @@
+<% %>
+<% this.sort(function(a,b) { return a.name > b.name }); %>
+<% if ( this.length == 0 ) { %>
+	<%== $.View('//seccubus/event/select/views/no_event.ejs') %>
+<% } else { %>
+	<!--	<option selected value=-1 disabled=true>Select an event to start</option> -->
+	<% for(var i = 0; i < this.length ; i++) { %>
+		<option <%= this[i] %> value='<%= this[i].id %>'
+			<% if(i == selected) { %>
+				selected
+			<% } %>
+		>
+			<%== $.View('//seccubus/event/select/views/event.ejs', this[i] )%>
+		</option>
+	<% } %>
+<% } %>
