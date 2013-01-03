@@ -14,6 +14,7 @@ list of all functions within the module.
 
 use SeccubusDB;
 use SeccubusRights;
+use Net::SMTP;
 
 @ISA = ('Exporter');
 
@@ -21,7 +22,7 @@ use SeccubusRights;
 		get_notifications
 		create_notification
 		update_notification
-		do_notification
+		do_notifications
 		del_notification
 	);
 
@@ -31,7 +32,7 @@ use Carp;
 sub get_notifications($;);
 sub create_notification($$$$$$;);
 sub update_notification($$$$$;);
-sub do_notification($$$;);
+sub do_notifications($$$;);
 sub del_notification($;);
 
 =head1 Data manipulation - notifications
@@ -293,7 +294,7 @@ sub del_notification($;) {
 			    FROM	notifications, scans
 			    WHERE	notifications.id = ? AND
 			    		notifications.scan_id = scans.id",
-		"value"	=> [ $notification_id ]
+		"values"	=> [ $notification_id ]
 	);
 
 	if ( may_write($workspace_id)) {
@@ -305,6 +306,84 @@ sub del_notification($;) {
 		);
 	} else {
 		return undef;
+	}
+}
+
+=head2 do_notifications
+
+Send out notifications
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item workspace_id
+
+=item scan_id
+
+=item event_id - What event triggers this notification
+
+=back 
+
+=item Checks
+
+User must be able to read workspace. 
+
+=item Returns
+
+Number of notifications sent, -1 means error
+
+=back
+
+=cut
+
+sub do_notifications($$$;) {
+	my $workspace_id = shift or die "No workspace_id provided";
+	my $scan_id = shift or die "No scan_id provided";
+	my $event_id = shift or die "No event_id provided";
+
+	my $config = SeccubusV2::get_config();
+
+	if(may_read($workspace_id)) {
+		# O.K. lets figure out if we have any notification configured
+		my $notifications = sql (
+			"return"=> "ref",
+			"query"	=> "SELECT	subject, recipients, message
+				    FROM	notifications, scans
+				    WHERE	scan_id = scans.id AND
+				    		workspace_id = ? AND
+						scan_id = ? AND
+						event_id = ?",
+			"values"=> [ $workspace_id, $scan_id, $event_id ]
+		);
+		if ( 0 == @{$notifications} ) {
+			return 0 # Early exit, there are no notifications;
+		}
+		# TODO: Need to figure out the attachmens here...
+		my $smtp = Net::SMTP->new($config->{smtp}->{server});
+		my $count = 0;
+		foreach my $notification ( @{$notifications} ) {
+			$smtp->mail($config->{smtp}->{from});
+			foreach my $to ( split /\,/,  $$notification[1] ) {
+				$smtp->to($to);
+			}
+			$smtp->data();
+			foreach my $to ( split /\,/,  $$notification[1] ) {
+				$smtp->datasend("To: $to\n");
+			}
+			$smtp->datasend("From: $config->{smtp}->{from}\n");
+			$smtp->datasend("Subject: $$notification[0]\n");
+			$smtp->datasend("\n");
+			$smtp->datasend($$notification[2]);
+			$smtp->dataend();
+			$count++;
+		}
+		$smtp->quit;
+		return $count;
+	} else {
+		return -1;
 	}
 }
 

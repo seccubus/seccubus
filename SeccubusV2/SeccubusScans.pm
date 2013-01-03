@@ -14,6 +14,7 @@ all functions within the module.
 
 use SeccubusDB;
 use SeccubusRights;
+use SeccubusNotifications;
 
 @ISA = ('Exporter');
 
@@ -313,6 +314,13 @@ sub run_scan($$;$$) {
 			} else {
 				$cmd .= " -v" x $verbose;
 			}
+
+			# Sending pre scan notifications
+			print "Sending notifications for scan start...\n" if $print;
+			my $sent = do_notifications($workspace_id, $scan_id, 1);
+			print "$sent notification(s) sent\n" if $print;
+
+			# Starting the actual scan
 			print "cmd: $cmd\n" if $print;
 			my $result = "cmd: $cmd\n";
 			open CMD, "$cmd |" or die "Unable to open pipe to '$cmd'";
@@ -322,6 +330,12 @@ sub run_scan($$;$$) {
 			}
 			close CMD;
 			unlink $tempfile;
+
+			# Sending post scan notifications
+			print "Sending notifications for scan end...\n" if $print;
+			$sent = do_notifications($workspace_id, $scan_id, 2);
+			print "$sent notification(s) sent\n" if $print;
+
 			return $result;
 		} else {
 			die "Scan $scan_id in workspace $workspace_id does not exist";
