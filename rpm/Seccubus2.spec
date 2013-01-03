@@ -3,14 +3,14 @@
 %define bindir		%{installdir}/bin
 %define confdir		/etc/%{name}
 %define webdir		%{installdir}/www
-%define vardir		/var/lib/%{name}
+%define vardir		%{installdir}/var
 %define seccuser	seccubus
-%define docsdir		/usr/share/doc/%{name}
+%define docsdir		%{installdir}/doc/
 
 %define moddir		%{installdir}/SeccubusV2
 %define scandir		%{installdir}/scanners
 
-Name:		Seccubus
+Name:		seccubus
 Version:	2.0.beta5
 Release:	0
 Summary:	Automated regular vulnerability scanning with delta reporting
@@ -180,6 +180,8 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{moddir}/SeccubusScans.pm
 %attr(644, %{seccuser}, %{seccuser}) %{moddir}/SeccubusUsers.pm
 %attr(644, %{seccuser}, %{seccuser}) %{moddir}/SeccubusWorkspaces.pm
+%attr(644, %{seccuser}, %{seccuser}) %{moddir}/SeccubusEvents.pm
+%attr(644, %{seccuser}, %{seccuser}) %{moddir}/SeccubusNotifications.pm
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{bindir}
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/add_user
@@ -190,6 +192,7 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/nbe2ivil
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/nmap2ivil
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/nessus2ivil
+%attr(755, %{seccuser}, %{seccuser}) %{bindir}/sslyze2ivil
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/attach_file
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/convert_v1_v2
    
@@ -205,6 +208,8 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v1.pdf
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v2.mwb
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v2.pdf
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v3.mwb
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v3.pdf
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/GUI
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/GUI/UseCaseFindings.png
@@ -255,21 +260,31 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/Nessus/scan
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nessus/description.txt
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nessus/help.html
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nessus/defaults.txt
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Nmap
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/Nmap/scan
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nmap/description.txt
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nmap/help.html
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nmap/defaults.txt
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Nikto
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/Nikto/scan
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nikto/description.txt
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nikto/help.html
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nikto/defaults.txt
+
+%attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/SSLyze
+%attr(755, %{seccuser}, %{seccuser}) %{scandir}/SSLyze/scan
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/SSLyze/description.txt
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/SSLyze/help.html
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/SSLyze/defaults.txt
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/OpenVAS
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/OpenVAS/scan
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/OpenVAS/description.txt
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/OpenVAS/help.html
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/OpenVAS/defaults.txt
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/NessusLegacy
 %attr(644, %{seccuser}, %{seccuser}) "%{scandir}/NessusLegacy/(dot)update-nessusrc.example"
@@ -278,6 +293,7 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/update-rcs
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/description.txt
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/help.html
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/defaults.txt
 
 # GUI
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}
@@ -295,6 +311,7 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/header.gif
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/logo.png
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/ok.png
+%attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/warn.png
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/back_disabled.jpg
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/back_enabled.jpg
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/seccubus/img/checkbox_blank.png
@@ -325,19 +342,24 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/seccubus/json
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/ConfigTest.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/UpToDate.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/createNotification.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/createScan.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/createWorkspace.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getAttachment.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getEvents.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getFindingHistory.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getFindings.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getNotifications.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getRuns.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getScanners.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getScans.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getWorkspaces.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateFinding.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateFindings.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateNotification.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateScan.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateWorkspace.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/deleteNotification.pl
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}/steal
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/steal/steal.production.js
@@ -347,7 +369,10 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/structure_v1.mysql
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/data_v2.mysql
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/structure_v2.mysql
+%attr(644, %{seccuser}, %{seccuser}) %{vardir}/data_v3.mysql
+%attr(644, %{seccuser}, %{seccuser}) %{vardir}/structure_v3.mysql
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/upgrade_v1_v2.mysql
+%attr(644, %{seccuser}, %{seccuser}) %{vardir}/upgrade_v2_v3.mysql
 
 %changelog
 * Mon Dec 24 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
