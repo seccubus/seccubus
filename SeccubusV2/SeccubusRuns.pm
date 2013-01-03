@@ -189,8 +189,7 @@ This function gets and returns an attachment
 
 =item Returns
 
-Pointer to array of scan data
-blob
+Pointer to array of scan data blob
 
 =item Checks
 

@@ -14,7 +14,9 @@ list of all functions within the module.
 
 use SeccubusDB;
 use SeccubusRights;
+use SeccubusRuns;
 use Net::SMTP;
+use MIME::Base64;
 
 @ISA = ('Exporter');
 
@@ -361,7 +363,155 @@ sub do_notifications($$$;) {
 		if ( 0 == @{$notifications} ) {
 			return 0 # Early exit, there are no notifications;
 		}
-		# TODO: Need to figure out the attachmens here...
+
+		# First get some basic information for keyword expansion
+		my ( $workspace, $scan, $scanner, $param, $targets, $time) = sql(
+			"return"	=> "array",
+			"query"		=> "
+				SELECT	workspaces.name, scans.name, 
+					scannername, scannerparam, targets, 
+					max(runs.time)
+				FROM	workspaces, scans, runs
+				WHERE	workspaces.id = scans.workspace_id AND
+					runs.scan_id = scans.id AND
+					workspaces.id = ? AND
+					scans.id = ?",
+			"values"	=> [ $workspace_id, $scan_id ]
+		);
+
+		my ( $new ) = sql(
+			"return"	=> "array",
+			"query"		=> "
+				SELECT	count(*)
+				FROM	findings
+				WHERE	scan_id = ? AND
+					status = 1",
+			"values"	=> [ $scan_id ]
+		);
+		my ( $changed ) = sql(
+			"return"	=> "array",
+			"query"		=> "
+				SELECT	count(*)
+				FROM	findings
+				WHERE	scan_id = ? AND
+					status = 2",
+			"values"	=> [ $scan_id ]
+		);
+		my ( $open ) = sql(
+			"return"	=> "array",
+			"query"		=> "
+				SELECT	count(*)
+				FROM	findings
+				WHERE	scan_id = ? AND
+					status = 3",
+			"values"	=> [ $scan_id ]
+		);
+		my ( $noissue ) = sql(
+			"return"	=> "array",
+			"query"		=> "
+				SELECT	count(*)
+				FROM	findings
+				WHERE	scan_id = ? AND
+					status = 4",
+			"values"	=> [ $scan_id ]
+		);
+		my ( $gone ) = sql(
+			"return"	=> "array",
+			"query"		=> "
+				SELECT	count(*)
+				FROM	findings
+				WHERE	scan_id = ? AND
+					status = 5",
+			"values"	=> [ $scan_id ]
+		);
+		my ( $closed ) = sql(
+			"return"	=> "array",
+			"query"		=> "
+				SELECT	count(*)
+				FROM	findings
+				WHERE	scan_id = ? AND
+					status = 6",
+			"values"	=> [ $scan_id ]
+		);
+		my $att = $new + $changed + $open + $gone;
+		my $summary = 
+qq/$att finding(s) need your attention:
+NEW findings:     $new
+CHANGED findings: $changed
+OPEN findings:    $open
+GONE findings:	  $gone
+
+$noissue finding(s) have been marked as NO ISSUE
+$closed finding(s) have been marked as CLOSED/;
+
+		# Do keyword expansion
+		foreach my $notification ( @{$notifications} ) {
+			$$notification[0] =~ s/\$WORKSPACE/$workspace/g;
+			$$notification[0] =~ s/\$SCANNER/$scanner/g;
+			$$notification[0] =~ s/\$SCAN/$scan/g;
+			$$notification[0] =~ s/\$PARAMETERS/$param/g;
+			$$notification[0] =~ s/\$TIME/$time/g;
+			$$notification[0] =~ s/\$ATTN/$att/g;
+			$$notification[2] =~ s/\$WORKSPACE/$workspace/g;
+			$$notification[2] =~ s/\$SCANNER/$scanner/g;
+			$$notification[2] =~ s/\$SCAN/$scan/g;
+			$$notification[2] =~ s/\$PARAMETERS/$param/g;
+			$$notification[2] =~ s/\$TARGETS/$targets/g;
+			$$notification[2] =~ s/\$TIME/$time/g;
+			$$notification[2] =~ s/\$SUMMARY/$summary/g;
+			$$notification[2] =~ s/\$ATTN/$att/g;
+		}
+
+		# Attachments
+		foreach my $notification ( @{$notifications} ) {
+			my @attachments = ();
+			while ( $$notification[2] =~ /\$ATTACH:(\w+)/ ) {
+				my $ext = $1;
+				# Lets find the attachment
+				my ( $run_id ) = sql(
+					"return"	=> "array",
+					"query"		=> "
+						SELECT	id
+						FROM	runs
+						WHERE	scan_id = ?
+						ORDER BY time desc",
+					"values"	=> [ $scan_id ]
+				);
+				my ( $att_id ) = sql(
+					"return"	=> "array",
+					"query"		=> "
+						SELECT	id
+						FROM	attachments
+						WHERE	run_id = ? AND
+							name LIKE ?",
+					"values"	=> [ $run_id, "%.$ext" ]
+				);
+				if ( $att_id ) {
+					#my $att = encode_base64(get_attachment($workspace_id, $scan_id, $run_id, $att_id));
+					my $att = get_attachment($workspace_id, $scan_id, $run_id, $att_id);
+					$att = shift @$att;
+					push @attachments, "Content-Type: application/actet-stream; name=\"$$att[0]\"\nContent-Transfer-Encoding: base64\n\n" . encode_base64($$att[1]);
+				} else {
+					push @attachments, "Content-Type: text/plain; name\"$ext.txt\"\n\nUnable to find an attachment with extenstion $ext";
+				}
+				$$notification[2] =~ s/\$ATTACH:\w+//;
+			}
+			if ( @attachments ) {
+				$$notification[2] = "MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary=\"seccubus-message-part\"
+
+This is a message with multiple parts in MIME format.
+--seccubus-message-part
+Content-Type: text/plain\n\n" . $$notification[2];
+				$$notification[2] .= "--seccubus-message-part\n";
+				$$notification[2] .= join "--seccubus-message-part\n", @attachments;
+				$$notification[2] .= "--seccubus-message-part\n";
+			} else {
+				$$notification[2] = "\n$$notification[2]";
+			}
+		}
+
+		# Let start sending messages
 		my $smtp = Net::SMTP->new($config->{smtp}->{server});
 		my $count = 0;
 		foreach my $notification ( @{$notifications} ) {
@@ -370,12 +520,10 @@ sub do_notifications($$$;) {
 				$smtp->to($to);
 			}
 			$smtp->data();
-			foreach my $to ( split /\,/,  $$notification[1] ) {
-				$smtp->datasend("To: $to\n");
-			}
+			$smtp->datasend("To: $$notification[1]\n");
 			$smtp->datasend("From: $config->{smtp}->{from}\n");
 			$smtp->datasend("Subject: $$notification[0]\n");
-			$smtp->datasend("\n");
+			#$smtp->datasend("\n");
 			$smtp->datasend($$notification[2]);
 			$smtp->dataend();
 			$count++;
