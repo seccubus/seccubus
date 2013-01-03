@@ -163,10 +163,6 @@ if ( ! exists $config->{smtp} ) {
 	result($data, "SMTP configuration", "No smtp server specified", "Error");
 } elsif( ! gethostbyname($config->{smtp}->{server}) ) {
 	result($data, "SMTP configuration", "Cannot resolve smtp server $config->{smtp}->{server}", "Error");
-} elsif( ! exists $config->{smtp}->{port} ) {
-	result($data, "SMTP configuration", "No smtp port specified", "Error");
-} elsif( $config->{smtp}->{port} !~ /^\d+$/ || $config->{smtp}->{port} <1 or $config->{smtp}->{port} > 65535 ) {
-	result($data, "SMTP configuration", "$config->{smtp}->{port} is not a valid smtp port", "Error");
 } elsif( ! exists $config->{smtp}->{from} ) {
 	result($data, "SMTP configuration", "No from address specified", "Error");
 } elsif ( $config->{smtp}->{from} !~ /^[\w\.\+]+\@[\w\d\.]+$/ ) {
