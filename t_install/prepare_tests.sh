@@ -23,6 +23,6 @@ fi
 
 (cd $ZEPATH/tmp/install;tar -xvzf ../../Seccubus*.tar.gz)
 
-(cd $ZEPATH/tmp/install/Seccubus-*;./install.pl --basedir $ZEPATH/tmp/install/seccubus --create_dirs -vvv)
+(cd $ZEPATH/tmp/install/Seccubus-*;./install.pl --basedir $ZEPATH/tmp/install/seccubus --createdirs -v -v -v)
 cp $ZEPATH/tmp/install/seccubus/etc/config.xml.mysql.example $ZEPATH/tmp/install/seccubus/etc/config.xml
 cp -r $ZEPATH/t/Algorithm $ZEPATH/tmp/install/seccubus/SeccubusV2/
