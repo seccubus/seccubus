@@ -28,7 +28,9 @@ Bigs fixed (tickets closed):
 https://github.com/schubergphilis/Seccubus_v2/issues/27
 #32 - RPM: Files in /opt/Seccubus/www/seccubus/json have no exec permissions
 https://github.com/schubergphilis/Seccubus_v2/issues/32
-#39 - SeccubusScans exports uninitilized VERSION
-https://github.com/schubergphilis/Seccubus_v2/issues/39
 #33 - User permission issues not reported correctly
 https://github.com/schubergphilis/Seccubus_v2/issues/33
+#35 - -p vs --pw (OpenVAS)
+https://github.com/schubergphilis/Seccubus_v2/issues/35
+#39 - SeccubusScans exports uninitilized VERSION
+https://github.com/schubergphilis/Seccubus_v2/issues/39
