@@ -14,7 +14,9 @@ xx-xx-201x - 2.0.xxxxx
 
 New features / Issues resolved
 ------------------------------
+* Email notifications when a scan starts and a scan ends
 
 Bigs fixed (tickets closed):
 ----------------------------
-* #  - 
+* #27 - Email Reporting
+https://github.com/schubergphilis/Seccubus_v2/issues/27
