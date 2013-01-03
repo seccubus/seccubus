@@ -42,6 +42,7 @@ eval {
 			'findCount'	=> $$row[6],
 			'targets'	=> $$row[7],
 			'workspace'	=> $$row[8],
+			'notifications'	=> $$row[9],
 		});
 	}
 	print $json->pretty->encode(\@data);

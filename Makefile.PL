@@ -25,6 +25,8 @@ WriteMakefile (
 				'MIME::Base64'		=> 3.07,
 				'JSON'			=> 2.0,
 				'File::Basename'	=> 0.1,
+				'Socket'		=> 0.1,
+				'Net::SMTP'		=> 0.1,
 			},
 	PM		=> { 
 				'SeccubusV2.pm'				=> '$(INST_LIBDIR)/SeccubusV2.pm',

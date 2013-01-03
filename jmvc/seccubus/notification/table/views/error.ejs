@@ -1,0 +1,22 @@
+<% %>
+<% if(typeof(noHead) == "undefined" || noHead == false) { %>
+	<thead>
+		<tr>
+			<th>Subject</th>
+			<th>Recipients</th>
+			<th>Trigger</th>
+			<%  //if(typeof(noEdit) == "undefined" || noEdit == false) { %>
+				<th>Action</th>
+			<% //} %>
+		</tr>
+	</thead>
+	<tbody>
+<% } %>
+<tr><td colspan=4>
+	<% if ( typeof message != 'undefined') { %>
+		<%= message %>
+	<% } %>
+</td></tr>
+<% if(typeof(noHead) == "undefined" || noHead == false) { %>
+        </tbody>
+<% } %>

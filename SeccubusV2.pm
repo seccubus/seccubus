@@ -18,6 +18,7 @@ functions within the module.
 @EXPORT = qw( 
 		VERSION 
 		get_config
+		check_param
 	    );
 
 use XML::Simple;
@@ -50,11 +51,65 @@ push (@main::INC, @INC);
 $ENV{REMOTE_USER} = "admin" unless $ENV{REMOTE_USER};		# Run as admin user if the web server auth is not setup
 check_config();
 
+=head1 Utility functions
+
+=head2 get_config
+
+=over 2
+
+=item Returns
+
+Reference to a hash containing the config in XML
+
+=back
+
+=cut
+
 sub get_config() {
 	if ( ! ref($config) ) {
 		$config = XMLin($config);
 	}
 	return $config;
+}
+
+=head2 check_param
+
+Function to check CGI parameters
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item name - name of the parameter
+
+=item value - value of the parameter
+
+=item is_numeric - Optional parameter, if set the function checks if the parameter is numeric
+
+=item Returns
+
+False if parameter is ok, error text if otherwise
+
+=back
+
+=cut
+
+sub check_param($$;$) {
+	my $name = shift or die "No name provided";
+	my $value = shift;
+	my $is_numeric = shift;
+
+	if ( not defined $value ) {
+		return "Parameter $name is missing";
+	} elsif ( $is_numeric ) {
+		if ( $value + 0 eq $value ) {
+			return undef;
+		} else {
+			return "Parameter $name is not numeric";
+		}
+	}
 }
 
 # Close the PM file.

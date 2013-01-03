@@ -15,7 +15,7 @@ use JSON;
 sub result($$$$);
 sub bye($);
 
-my $current_db_version = 2;
+my $current_db_version = 3;
 my $query = CGI::new();
 my $json = JSON->new();
 
@@ -112,9 +112,16 @@ eval {
 
 	if ( $version[0] != $current_db_version ) {
 		my $file = $config->{paths}->{dbdir} . "/";
-		if ( $version[0] eq "1" ) {
+		if ( $version[0] eq "" ) {
+			$file .= "data_v$current_db_version." . $config->{database}->{engine};
+		} elsif ( $version[0] eq "1" ) {
 			$file .= "upgrade_v1_v2." . $config->{database}->{engine};
-		} 
+		} elsif ( $version[0] eq "2" ) {
+			$file .= "upgrade_v2_v3." . $config->{database}->{engine};
+		} else {
+			result($data,"Database error", "Your database returned version number '$version[0]', the developers for Seccubus do not know what to do with this", "Error");
+			bye($data);
+		}
 		result($data,"Database version", "Your database is not current, please execute the sql statements in '$file' to update the database to the next version and rerun this test", 'Error');
 		bye($data);
 	} else {
@@ -148,6 +155,23 @@ if ( exists $ENV{REMOTE_ADDR} ) {
 		result($data, "HTTP authentication", "Authetication is not set up on your HTTP server, emulating user 'admin'", 'OK');
 	}
 }
+
+##### Test SMTP config
+if ( ! exists $config->{smtp} ) {
+	result($data, "SMTP configuration", "No smtp configuration specified in you config file, notification will NOT be sent", 'Warn');
+} elsif(  ! exists $config->{smtp}->{server} ) {
+	result($data, "SMTP configuration", "No smtp server specified", "Error");
+} elsif( ! gethostbyname($config->{smtp}->{server}) ) {
+	result($data, "SMTP configuration", "Cannot resolve smtp server $config->{smtp}->{server}", "Error");
+} elsif( ! exists $config->{smtp}->{from} ) {
+	result($data, "SMTP configuration", "No from address specified", "Error");
+} elsif ( $config->{smtp}->{from} !~ /^[\w\.\+]+\@[\w\d\.]+$/ ) {
+	result($data, "SMTP configuration", "$config->{smtp}->{from} doesn't apear to be a valid email address", "Error");
+} else {
+	result($data, "SMTP configuration", "SMTP configuration OK", "OK");
+}
+
+##### return results and exit
 bye($data);
 exit;
 

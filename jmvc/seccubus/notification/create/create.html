@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>Seccubus.Notification.Create</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+	    .nok {background-color: red}
+        </style>
+	</head>
+	<body>
+	    <h1>Seccubus.Notification.Create Demo</h1>
+		<form id='create' action=''></form>
+		<div id='notifications'></div>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal(	'seccubus/notification/create',
+				//'seccubus/fixtures',
+			function(){
+				
+				$('#create').seccubus_notification_create({
+					workspace: 100,
+					scan: 1
+				});
+				Seccubus.Models.Notification.bind('created', function(ev, notification){
+					$('<div>').html("<h3>"+notification.subject+"</h3><p>"+notification.recipients+"</p>")
+					        .appendTo( $('#notifications') )
+				})
+				
+			})
+		</script>
+	</body>
+</html>
