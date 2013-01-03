@@ -244,13 +244,13 @@ steal(
 									query : '#createNotificationDialog',
 									close : true
 								});
-							},
+							}
 						});
 						$('#modalDialog').widgets_modal({
 							query : "#editScanDialog",
 							close : true
 						});
-					},
+					}
 				});
 			});
 		};
