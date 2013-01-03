@@ -21,6 +21,23 @@
 	</td><td class='noborder'>
 		<textarea rows=5 cols=59 name='message' id='newNotMessage'/>
 	</td></tr>
+	<tr><td class='noborder'>
+		&nbsp;
+	</td><td class='noborder'>
+		The following keywords can be used in the message and subject:
+		<ul>
+			<li>$WORKSPACE - name of the workspace
+			<li>$SCAN - Name of the scan
+			<li>$SCANNER - Name of the scanner used
+			<li>$PARAMETERS - Scanner parameters
+			<li>$TIME - Time of the scan
+			<li>$ATTN - Number of findings that need you attention (Only after scan)
+			<li>$TARGETS - Targets of the scan (Only in message)
+			<li>$SUMMARY - Summary of findings (Only in message, only after scan)
+			<li>$NEW, $OPEN, $CHANGED, $NOISSUE, $GONE, $CLOSED, $MASKED <br>- Number of findings of that status (Only after scan)
+			<LI>$ATTACH:<ext> - Attach run attachment with that extension to the mail (Only in message, only after scan)
+		</ul>
+	</td></tr>
 	<tr><td class='noborder' colspan=2 align='right'>
 		<input type='submit' value='Create Notification'/>
 		<button type='button' class='cancel'>Cancel</button>

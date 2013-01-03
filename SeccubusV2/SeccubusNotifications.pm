@@ -433,6 +433,15 @@ sub do_notifications($$$;) {
 					status = 6",
 			"values"	=> [ $scan_id ]
 		);
+		my ( $masked ) = sql(
+			"return"	=> "array",
+			"query"		=> "
+				SELECT	count(*)
+				FROM	findings
+				WHERE	scan_id = ? AND
+					status = 99",
+			"values"	=> [ $scan_id ]
+		);
 		my $att = $new + $changed + $open + $gone;
 		my $summary = 
 qq/$att finding(s) need your attention:
@@ -451,21 +460,35 @@ $closed finding(s) have been marked as CLOSED/;
 			$$notification[0] =~ s/\$SCAN/$scan/g;
 			$$notification[0] =~ s/\$PARAMETERS/$param/g;
 			$$notification[0] =~ s/\$TIME/$time/g;
-			$$notification[0] =~ s/\$ATTN/$att/g;
+			$$notification[0] =~ s/\$ATTN/$att/g if $event_id == 2;
+			$$notification[0] =~ s/\$NEW/$new/g if $event_id == 2;
+			$$notification[0] =~ s/\$OPEN/$open/g if $event_id == 2;
+			$$notification[0] =~ s/\$CHANGED/$changed/g if $event_id == 2;
+			$$notification[0] =~ s/\$NOISSUE/$noissue/g if $event_id == 2;
+			$$notification[0] =~ s/\$GONE/$gone/g if $event_id == 2;
+			$$notification[0] =~ s/\$CLOSED/$closed/g if $event_id == 2;
+			$$notification[0] =~ s/\$MASKED/$masked/g if $event_id == 2;
 			$$notification[2] =~ s/\$WORKSPACE/$workspace/g;
 			$$notification[2] =~ s/\$SCANNER/$scanner/g;
 			$$notification[2] =~ s/\$SCAN/$scan/g;
 			$$notification[2] =~ s/\$PARAMETERS/$param/g;
 			$$notification[2] =~ s/\$TARGETS/$targets/g;
 			$$notification[2] =~ s/\$TIME/$time/g;
-			$$notification[2] =~ s/\$SUMMARY/$summary/g;
-			$$notification[2] =~ s/\$ATTN/$att/g;
+			$$notification[2] =~ s/\$SUMMARY/$summary/g if $event_id == 2;
+			$$notification[2] =~ s/\$ATTN/$att/g if $event_id == 2;
+			$$notification[2] =~ s/\$NEW/$new/g if $event_id == 2;
+			$$notification[2] =~ s/\$OPEN/$open/g if $event_id == 2;
+			$$notification[2] =~ s/\$CHANGED/$changed/g if $event_id == 2;
+			$$notification[2] =~ s/\$NOISSUE/$noissue/g if $event_id == 2;
+			$$notification[2] =~ s/\$GONE/$gone/g if $event_id == 2;
+			$$notification[2] =~ s/\$CLOSED/$closed/g if $event_id == 2;
+			$$notification[2] =~ s/\$MASKED/$masked/g if $event_id == 2;
 		}
 
 		# Attachments
 		foreach my $notification ( @{$notifications} ) {
 			my @attachments = ();
-			while ( $$notification[2] =~ /\$ATTACH:(\w+)/ ) {
+			while ( $event_id == 2 && $$notification[2] =~ /\$ATTACH:(\w+)/ ) {
 				my $ext = $1;
 				# Lets find the attachment
 				my ( $run_id ) = sql(
