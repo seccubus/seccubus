@@ -1,0 +1,221 @@
+#!/usr/bin/env perl
+# ------------------------------------------------------------------------------
+# $Id$
+# ------------------------------------------------------------------------------
+# This program converts an SSLyze xml file to the IVIL format
+# ------------------------------------------------------------------------------
+
+use strict;
+use IVIL;
+use XML::Simple;
+use Data::Dumper;
+
+use Getopt::Long;
+use Carp;
+
+my (
+	$scanname,
+	$scanner,
+	$help,
+	$verbose,
+	$workspace,
+	$timestamp,
+	$infile,
+	$outfile,
+	@findings,
+	$quiet,
+   );
+
+# Create default values
+$help = 0;
+$scanner = "SSLyze";
+
+GetOptions(	'scan=s'		=> \$scanname,
+		'scanner=s'		=> \$scanner,
+		'help|h!'		=> \$help,
+		'verbose|v!'		=> \$verbose,
+		'workspace=s'		=> \$workspace,
+		'timestamp=s'		=> \$timestamp,
+		'infile=s'		=> \$infile,
+		'outfile=s'		=> \$outfile,
+		'quiet|q!'		=> \$quiet,
+	  );
+
+help() if $help;
+$scanname = $workspace unless $scanname;
+$verbose = undef if $quiet;
+
+if ( ! $timestamp ) {
+	print "You must specify a timestamp";
+	help();
+} elsif ( ! $infile ) {
+	print "You must specify the infile parameter";
+	help();
+};
+
+unless ( $outfile ) {
+	$outfile = $infile;
+	$outfile =~ s/\.xml$//;
+	$outfile .= ".ivil.xml";
+}
+print "Opening file $outfile for output\n" if $verbose;
+open(OUT, ">$outfile") or die "Unable to open output file $outfile";
+print OUT xml_header();
+print OUT ivil_open();
+if ($workspace) {
+	print "Creating addressee block\n" if $verbose;
+	print OUT ivil_addressee("Seccubus", {
+						"workspace" => $workspace,
+						"scan"		=> $scanname,
+			 		     });
+}
+print "Opening file $infile for input\n" if $verbose;
+my $sslyze = XMLin(
+	$infile,
+	forceArray	=> [ 'target', 'cipherSuite' ],
+	KeyAttr		=> undef,
+);
+
+# Scanner version
+my $scanner_version = $sslyze->{SSLyzeVersion};
+
+print "Creating sender block\n" if $verbose;
+print OUT ivil_sender($scanner, $scanner_version, $timestamp);
+
+#die Dumper($sslyze);
+#die Dumper(sort keys ${$$sslyze->{results}->{target}[0]});
+
+@findings = ();
+foreach my $target ( @{$sslyze->{results}->{target}} ) {
+	my $ip = $target->{host};
+	my $port = $target->{port};
+	my $severity = 0; # Not set
+	print "Processing host $ip\n" if $verbose;
+
+	foreach my $key ( sort keys %{$target} ) {
+		print "Processing key $ip->$key\n" if $verbose;
+		my %finding = {};
+		$finding{ip} = $ip;
+		$finding{port} = $port;
+		if ( $key =~ /^(tls|ssl)/ ) {
+			if (exists $target->{$key}->{exception}) {
+				$finding{id} = $key . "_exception";
+				$finding{finding} = $target->{$key}->{exception};
+				push @findings, \%finding;
+			} else {
+				$finding{id} = $target->{$key}->{title};
+				foreach my $key2 ( sort keys %{$target->{$key}} ) {
+					if ( $key2 eq "errors" ) {
+						if ( keys %{$target->{$key}->{errors}} ) {
+							$finding{finding} .= "errors: " . Dumper($target->{$key}->{errors}) . "\n\n";
+						}
+					} elsif ( $key2 =~ 'CipherSuites?$' ) {
+						$finding{finding} .= "\n$key2\n\n";
+						if ( exists $target->{$key}->{$key2}->{cipherSuite} ) {
+							foreach my $suite ( @{$target->{$key}->{$key2}->{cipherSuite}} ) {
+								$finding{finding} .= sprintf("%-25s %-15s %s\n", $suite->{name}, $suite->{keySize}, $suite->{connectionStatus});
+							}
+						}
+					} elsif ( $key2 eq "title" ) {
+						# Ignore
+					} else {
+						die "$key -> $key2 " . Dumper($target->{$key}->{$key2}) . " ";
+					}
+				}
+				push @findings, \%finding;
+			}
+		} elsif ( $key eq "certinfo" ) {
+			$finding{id} = $target->{$key}->{title};
+		} elsif ( $key eq "compression" ) {
+			$finding{id} = $target->{$key}->{title};
+			foreach my $key2 ( sort keys %{$target->{$key}->{compression}} ) {
+				if( $key2 eq "isSupported" ) {
+					$finding{finding} .= "Compression support: $target->{$key}->{compression}->{$key2}\n";
+				} elsif ( $key2 eq "type" ) {
+					$finding{finding} .= "Compression type: $target->{$key}->{compression}->{$key2}\n";
+				} else {
+					die $key2;
+				}
+			}
+			push @findings, \%finding;
+		} elsif ( $key eq "reneg" ) {
+			$finding{id} = $target->{$key}->{title};
+			foreach my $key2 ( sort keys %{$target->{$key}->{sessionRenegotiation}} ) {
+				if ( $key2 eq "isSecure" ) {
+					$finding{finding} .= "Session renegotiation is secure: $target->{$key}->{sessionRenegotiation}->{$key2}\n";
+				} elsif ( $key2 eq "canBeClientInitiated" ) {
+					$finding{finding} .= "Session renegotiation can be initiated by the client: $target->{$key}->{sessionRenegotiation}->{$key2}\n";
+				} else {
+					die $key2;
+				}
+			}
+			push @findings, \%finding;
+		} elsif ( $key eq "resum" ) {
+			$finding{id} = $target->{$key}->{title};
+			foreach my $key2 ( sort keys %{$target->{$key}} ) {
+				if ( $key2 eq "sessionResumptionWithSessionIDs" ) {
+					$finding{finding} .= "Session Resumption With Session IDs is supported: $target->{$key}->{$key2}->{isSupported}\n";
+					$finding{finding} .= "($target->{$key}->{$key2}->{successfulAttempts} succesfull, $target->{$key}->{$key2}->{failedAttempts} failed, $target->{$key}->{$key2}->{errors} errors. $target->{$key}->{$key2}->{totalAttempts} total attempts.)\n\n";
+				} elsif ( $key2 eq "sessionResumptionWithTLSTickets" ) {
+					$finding{finding} .= "Session Resumption With TLS Tickets is supported: $target->{$key}->{$key2}->{isSupported}\n";
+				} elsif ( $key2 eq "title" ) {
+					# ignore
+				} else {
+					die $key2;
+				}
+			}
+			push @findings, \%finding;
+		} elsif ( $key =~ /^(host|port|ip)$/ ) {
+			# ignore
+		} else {
+			$finding{id} = $target->{$key}->{title};
+			$finding{id} = $key;
+			$finding{finding} = "Unknown key $key, please notify the author with this information:\n\n";
+			$finding{finding} .= Dumper($target->{$key});
+			push @findings, \%finding;
+		}
+		print "Done processing key $ip->$key\n" if $verbose;
+	}
+}
+
+print OUT ivil_findings(\@findings) if (@findings);
+
+print OUT ivil_close();
+
+close OUT;
+
+exit();
+
+sub help() {
+	print "
+
+Usage: sslyze2ivil [--scanner <scanner>] --timestamp <timestamp> \\
+		   [--workspace <workspace>] [--scan <scan>] \\
+		   --infile <.xml file> [--outfile <.ivil.xml file>] \\
+		   [--verbose] [--help]
+
+Arguments:
+--scanner (--sc)- Optional: The name of the scanner used to create the .xml file
+		  Default value: SSLyze
+--timestamp	- Timestamp of when the file was created in the format 
+		  YYYYMMDDhhmmss or YYYYMMDDhhmm so 11 december 2011 1:14:00 pm
+		  is 20111211131400 or 201112111314
+--workspace (-w)- Optional: Which Seccubus workspace do you want to load this 
+		  in, this informaiton is used to create the addressee block. 
+		  If not value is given for workspace no addressee block is 
+		  generated
+--scan(-s)	- Optional: Which Seccubus scan do you want to load this in, 
+		  this informaiton is used to create the addressee block. If 
+		  scan is not specified then the value for workspace is used.
+--infile	- This defines the .xml file that will be converted to IVIL
+--outfile	- Optional: This defines the name of the file used to output 
+		  IVIL. If no filename is given, the infile value is used, 
+		  a trailing .xml is removed (if it exists) and .ivil.xml is 
+		  appended
+--verbose (-v)	- Be verbose
+--help (-h)	- Print this message
+";
+	exit();
+}
+
+

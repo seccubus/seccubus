@@ -1,8 +1,8 @@
-!/usr/bin/env perl
+#!/usr/bin/env perl
 # ------------------------------------------------------------------------------
 # $Id$
 # ------------------------------------------------------------------------------
-# This script will call the Nikto scanner and import the results as IVIL
+# This script will call the SSLyze scanner and import the results as IVIL
 # ------------------------------------------------------------------------------
 
 use strict;
@@ -13,8 +13,8 @@ use Getopt::Long;
 use Carp;
 
 my (
-	$nikto_path,
-	$nikto_options,
+	$sslyze_path,
+	$sslyze_options,
 	$hosts_file,
 	$workspace,
 	$scan,
@@ -24,16 +24,17 @@ my (
 	$quiet,
    );
 
-$help = 0;
-
 # Create default values
+$help = 0;
+$sslyze_options = "--regular";
+
 
 GetOptions(	
-		'nikto_path|p=s'	=> \$nikto_path,
-		'nikto_options|o=s'	=> \$nikto_options,
+		'sslyze_path|p=s'	=> \$sslyze_path,
+		'sslyze_options|o=s'	=> \$sslyze_options,
 		'hosts=s'		=> \$hosts_file,
-		'workspace=s'		=> \$workspace,
-		'scan=s'		=> \$scan,
+		'workspace|ws=s'	=> \$workspace,
+		'scan|sc=s'		=> \$scan,
 		'nodelete'		=> \$nodelete,
 		'verbose|v+'		=> \$verbose,
 		'quiet|q!'		=> \$quiet,
@@ -59,52 +60,36 @@ if ( ! $hosts_file || ! -e $hosts_file ) {
 	help();
 };
 
-$nikto_path = get_nikto_path() unless $nikto_path;
-if ( ! $nikto_path && -e $nikto_path ) {
-	print "Unable to find nikto on your system. I suggest you use the --nikto_path option\nto provide a path to nikto or nikto.pl\n";
+$sslyze_path = get_sslyze_path() unless $sslyze_path;
+if ( ! $sslyze_path || !  -e $sslyze_path ) {
+	print "Unable to find sslyze on your system. I suggest you use the --sslyze_path option\nto provide a path to sslyze\n";
 	help();
 }
-print "Nikto found in $nikto_path\n" if $verbose;
-my $nikto_version = get_nikto_version($nikto_path);
+print "SSLyze found in $sslyze_path\n" if $verbose;
+my $sslyze_version = get_sslyze_version($sslyze_path);
 
-# This should fix issue #16
-if ( $nikto_version =~ /^ERROR/ ) {
-	print "There is a problem with your Nikto setup\n";
-	print "Note: The --nikto_options parameter can be used to pass options to Nikto itself\n";
-	print "$nikto_version";
-	help();
-}
+my $tempfile = "/tmp/seccubus.sslyze.$$";
 
-print "Nikto version is $nikto_version\n" if $verbose;
-if ( check_nikto_version($nikto_version) ) {
-	print "Nikto version $nikto_version is ok\n" if $verbose;
-} else {
-	print "Your nikto version $nikto_version is too low. You should at least have nikto\nversion 2.1.2. Please upgrade\n";
-	help();
-}
+my $sslyze_options = "--targets_in='$hosts_file' --xml_out='$tempfile.xml' $sslyze_options";
+print "SSLyze options: $sslyze_options\n" if $verbose;
 
-my $tempfile = "/tmp/seccubus.$$";
-
-my $nikto_options = "-h $hosts_file -o $tempfile.nbe -F nbe $nikto_options";
-print "Nikto options: $nikto_options\n" if $verbose;
-
-open TMP, ">$tempfile" or die "Unable to open tempfile $tempfile for writing";
+open TMP, ">$tempfile.txt" or die "Unable to open tempfile $tempfile for writing";
 
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 
-print "Execuing $nikto_path $nikto_options\n" unless $quiet;
-open NIKTO, "$nikto_path $nikto_options |" or die "Unable to open pipe";
+print "Execuing $sslyze_path $sslyze_options\n" unless $quiet;
+open SSLYZE, "$sslyze_path $sslyze_options |" or die "Unable to open pipe";
 
-while ( <NIKTO> ) {
+while ( <SSLYZE> ) {
 	print $_ if $verbose;
 	print TMP $_;
 }
 close TMP;
-close NIKTO;
+close SSLYZE;
 
-print "Scanning done, converting .nbe to ivil\n" unless $quiet;
-my $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=Nikto --scannerversion=$nikto_version --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile=$tempfile.nbe ";
+print "Scanning done, converting .xml to ivil\n" unless $quiet;
+my $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/sslyze2ivil --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile=$tempfile.xml ";
 $cmd .= "-v" if $verbose > 1;
 
 print "Executing $cmd\n" if $verbose;
@@ -112,7 +97,7 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose;
 
 print "Importing ivil\n" unless $quiet;
-$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner Nikto --scannerversion $nikto_version --timestamp $timestamp";
+$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
 $cmd .= " $tempfile.ivil.xml";
 print "Execuing $cmd\n" if $verbose > 1;
@@ -121,13 +106,13 @@ print "$result\n" if $verbose > 1;
 
 print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
 
-$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile' --description 'Command line output'";
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.txt' --description 'Command line output'";
 $cmd .= " -v" if $verbose > 1;
 print "Execuing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
-$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.nbe' --description 'NBE output'";
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.xml' --description 'Native SSLyze xml output'";
 $cmd .= " -v" if $verbose > 1;
 print "Execuing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
@@ -141,8 +126,8 @@ print "$result\n" if $verbose > 1;
 
 # Cleanup
 unless ( $nodelete ) {
-	unlink "$tempfile" if -e "$tempfile";
-	unlink "$tempfile.nbe" if -e "$tempfile.nbe";
+	unlink "$tempfile.txt" if -e "$tempfile.txt";
+	unlink "$tempfile.xml" if -e "$tempfile.xml";
 	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
 }
 
@@ -151,17 +136,17 @@ exit(0);
 sub help() {
 	print "
 
-Usage: scan 	[--nikto_path|p <path to nikto>] \\
-		[--nikto_options <additional nikto options>]] \\
+Usage: scan 	[--sslyze_path|p <path to sslyze>] \\
+		[--sslyze_options <additional sslyze options>]] \\
 		--hosts <hosts file> [--verbose|v] [--quiet|q] [--help|h]
 
 Arguments:
---nikto_path	- You can use this optional parameter to provide the script with
-(-p)		  the path to nikto.pl or nikto. If you do not provide this the 
+--sslyze_path	- You can use this optional parameter to provide the script with
+(-p)		  the path to sslyze.py or sslyze. If you do not provide this the 
 		  script tries to find the files itself and fails if it cannot 
 		  fidn them.
---nikto_options	- Additional command line options to provide to nikto see 
-(-o)		  'nikto -Help' for more information.
+--sslyze_options	- Additional command line options to provide to sslyze see 
+(-o)		  'sslyze -Help' for more information.
 --hosts		- The file containing the 'hosts' to scan
 --workspace	- Name of the workspace to load the findings into
 --scan		- Name of the scan to load the findings into
@@ -173,34 +158,34 @@ Arguments:
 	exit(1);
 }
 
-sub get_nikto_path() {
-	my $path = `which nikto`;
-	if ( $path =~ /(^\/.*nikto)/ ) {
+sub get_sslyze_path() {
+	my $path = `which sslyze`;
+	if ( $path =~ /(^\/.*sslyze$)/ ) {
 		return $1;
 	}
-	$path = `which nikto.pl`;
-	if ( $path =~ /(^\/.*nikto\.pl)/ ) {
+	$path = `which sslyze.py`;
+	if ( $path =~ /(^\/.*sslyze\.py$)/ ) {
 		return $1;
 	}
-	if ( -e '/opt/nikto/nikto.pl' ) {
-		return '/opt/nikto/nikto.pl';
+	if ( -e '/opt/sslyze/sslyze.py' ) {
+		return '/opt/sslyze/sslyze.py';
 	}
 	return undef;
 }
 
-sub get_nikto_version() {
-	my $nikto_path = shift;
+sub get_sslyze_version() {
+	my $sslyze_path = shift;
 
 	# Added some error handling to fix #16
-	my $version=`$nikto_path -Version 2>&1`;
-	if ( $version =~ /Nikto main\s+(\d+\.\d+\.\d+)/ ) {
+	my $version=`$sslyze_path -Version 2>&1`;
+	if ( $version =~ /SSLyze main\s+(\d+\.\d+\.\d+)/ ) {
 		return $1;
 	} else {
 		return "ERROR: $version";
 	}
 }
 
-sub check_nikto_version() {
+sub check_sslyze_version() {
 	my $version = shift;
 	$version =~ /(\d+)\.(\d+)\.(\d+)/;
 	if ( ( $1 > 2 ) ||
