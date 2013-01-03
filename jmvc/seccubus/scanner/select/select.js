@@ -26,6 +26,15 @@ $.Controller('Seccubus.Scanner.Select',
 		 * Special value: null - Don't render help
 		 */
 		helpHere : null,
+		/*
+		 * @attribute options.paramsHere
+		 * jQuery query string that determines where the default 
+		 * parameters need to be put
+		 * should be put
+		 * Default value: null
+		 * Special value: null - Don't render default paramers
+		 */
+		paramsHere : null,
 		/* @attribute options.selected
 		 * Value of the selected option
 		 */
@@ -47,10 +56,16 @@ $.Controller('Seccubus.Scanner.Select',
 	"Seccubus.Models.Scanner updated" : function(Scanner, ev, scanner) {
 		this.updateView();
 	},
+	/* Renders the control */
 	"change" : function() {
 		this.updateHelp();
+		this.updateParams();
 	},
 	/* Renders the control */
+	"mouseover" : function() {
+		this.updateHelp();
+		this.updateParams();
+	},
 	updateView : function() {
 		var dfd = Seccubus.Models.Scanner.findAll();
 		this.element.html(
@@ -63,6 +78,7 @@ $.Controller('Seccubus.Scanner.Select',
 			)
 		);
 		this.updateHelp();
+		this.updateParams();
 	},
 	/* 
 	 * Renders the help text in the jQuery query string options.helpHere
@@ -79,7 +95,16 @@ $.Controller('Seccubus.Scanner.Select',
 				)
 			)
 		}
+	},
+	/* 
+	 * Updates the value of a control with default parameters
+	 */
+	updateParams : function() {
+		if( this.options.paramsHere != null ) {
+			$(this.options.paramsHere).val(this.element.children("option:selected").attr("params"));
+		}
 	}
+
 }); // Controller
 
 }); // Steal

@@ -1,0 +1,1 @@
+-o "<nmap options>" [--sudo] --hosts @HOSTS

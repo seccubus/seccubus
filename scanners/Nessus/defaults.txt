@@ -1,0 +1,1 @@
+-s <server> -u <user> -p <password> --policy <policy> --hosts @HOSTS

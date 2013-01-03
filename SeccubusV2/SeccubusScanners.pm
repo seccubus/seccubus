@@ -77,6 +77,13 @@ sub get_scanners(;) {
 		} else {
 			push @data, "No help available";
 		}
+		if ( -e "$scanpath/defaults.txt" ) {
+			open(PARAM, "$scanpath/defaults.txt") or die "Unable to open $scanpath/defaults.txt";
+			push @data, (join "", <PARAM>);
+			close PARAM;
+		} else {
+			push @data, "No default parameters available";
+		}
 		push @result, \@data;
 	}
 	return \@result;

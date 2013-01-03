@@ -21,16 +21,26 @@ xx-xx-201x - 2.0.rc1
 Key new features / issues resolved
 ----------------------------------
 * Email notifications when a scan starts and a scan ends
+* Scan create and edit dialog now display default parameters
 
 Bigs fixed (tickets closed):
 ----------------------------
+#9 - Missing Hosts File in Nmap Scan
+https://github.com/schubergphilis/Seccubus_v2/issues/9
 #27 - Email Reporting
 https://github.com/schubergphilis/Seccubus_v2/issues/27
 #32 - RPM: Files in /opt/Seccubus/www/seccubus/json have no exec permissions
 https://github.com/schubergphilis/Seccubus_v2/issues/32
 #33 - User permission issues not reported correctly
 https://github.com/schubergphilis/Seccubus_v2/issues/33
+#34 - $HOSTS vs @HOSTS confusion
+https://github.com/schubergphilis/Seccubus_v2/issues/34
 #35 - -p vs --pw (OpenVAS)
 https://github.com/schubergphilis/Seccubus_v2/issues/35
 #39 - SeccubusScans exports uninitilized VERSION
 https://github.com/schubergphilis/Seccubus_v2/issues/39
+#42 - Nessus help (and scan?) not consistent with regards to the use of -p
+https://github.com/schubergphilis/Seccubus_v2/issues/42
+#43 - Sudo option missing from NMAP scanner help (web)
+https://github.com/schubergphilis/Seccubus_v2/issues/43
+
