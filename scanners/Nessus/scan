@@ -23,7 +23,7 @@ my (
 	$hosts_file,
 	$workspace,
 	$scan,
-	$noerase,
+	$nodelete,
 	$help,
 	$verbose,
 	$quiet,
@@ -56,7 +56,7 @@ GetOptions(
 		'workspace|ws=s'	=> \$workspace,
 		'scan|sc=s'		=> \$scan,
 		'sleep=s'		=> \$sleep,
-		'noerase'		=> \$noerase,
+		'nodelete'		=> \$nodelete,
 		'verbose|v+'		=> \$verbose,
 		'quiet|q!'		=> \$quiet,
 		'help'			=> \$help,
@@ -187,7 +187,7 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
 # Cleanup
-unless ( $noerase ) {
+unless ( $nodelete ) {
 	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
 	unlink "$tempfile.nessus" if -e "$tempfile.nessus";
 }
@@ -202,7 +202,7 @@ Usage: scan       --user=<username> --password=<password> --server=<server> \\
                   --port=<portnumber> --policy=<policy name> \\
 		  --hosts=<hosts file|hosts spec> \\
 		  --workspace=<seccubus workspace> --scan=<seccubus scan>\\
-                  [--noerase] [--verbose] [--quiet] [--help]
+                  [--nodelete] [--verbose] [--quiet] [--help]
 --user (-u)	  - Nessus username
 --password (-p)	  - Nessus password
 --server (-s)	  - Nessus server (ip or name)
@@ -213,7 +213,7 @@ Usage: scan       --user=<username> --password=<password> --server=<server> \\
 		    specification
 --workspace (-ws) - Seccubus workspace the scan in in
 --scan (-sc)	  - Seccubus scan the data should be saved in
---noerase         - Don't erase temporary files
+--nodelete        - Don't erase temporary files
 --sleep           - Seconds to sleep between polls of the Nessus engine 
                     (default=10)
 --verbose (-v)    - Be verbose during execution

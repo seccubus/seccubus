@@ -17,15 +17,18 @@ my (
 	$help,
 	$verbose,
 	$quiet,
+	$nodelete,
    );
 
 $help = 0;
+$nodelete = undef;
 
 GetOptions(	'workspace|w=s'	=> \$workspace,
 		'scan|s=s'	=> \$scan,
 		'verbose|v+'	=> \$verbose,
 		'help|h'	=> \$help,
 		'quiet|q'	=> \$quiet,
+		'nodelete|n=s'	=> \$nodelete,
 	  );
 
 $verbose = -1 if $quiet;
@@ -44,7 +47,7 @@ my $scan_id = get_scan_id($workspace_id, $scan);
 die "Scan '$scan' does not exist in workspace '$workspace'" unless $scan_id;
 
 print "Starting scan '$scan' from workspace '$workspace'\n" unless $quiet;
-my $result = run_scan($workspace_id, $scan_id, $verbose, "print");
+my $result = run_scan($workspace_id, $scan_id, $verbose, "print", $nodelete);
 print $result if $verbose;
 print "\nDone\n" unless $quiet;
 
@@ -61,6 +64,7 @@ Executes a scan
 Arguments:
 --workspace (-w) - name of the workspace the scan is in
 --scan (-s)      - name of the scan
+--nodelete (-n)  - Don't delete temporary files (use -v to find out which)
 --verbose (-v)   - Give verbose output, repeat to increase verbosity
 --quiet (-q)	 - Do not give any output unless an error occured
 --help		 - Print this message
