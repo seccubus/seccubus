@@ -1,7 +1,7 @@
-%define installdir	/opt/%{name}
+%define installdir	/opt/seccubus
 %define homedir		%{installdir}
 %define bindir		%{installdir}/bin
-%define confdir		/etc/%{name}
+%define confdir		/etc/seccubus
 %define webdir		%{installdir}/www
 %define vardir		%{installdir}/var
 %define seccuser	seccubus
@@ -10,7 +10,7 @@
 %define moddir		%{installdir}/SeccubusV2
 %define scandir		%{installdir}/scanners
 
-Name:		seccubus
+Name:		Seccubus
 Version:	2.0.beta5
 Release:	0
 Summary:	Automated regular vulnerability scanning with delta reporting
