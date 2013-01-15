@@ -26,8 +26,8 @@ print $query->header("application/json");
 # /home/seccubus/etc/config.xml
 my @configs = qw(
 			/home/seccubus/etc/config.xml
-			/etc/Seccubus/config.xml
-			/opt/Seccubus/etc/config.xml
+			/etc/seccubus/config.xml
+			/opt/seccubus/etc/config.xml
 	    	);
 
 my @dirs = qw (

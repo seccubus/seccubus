@@ -115,11 +115,11 @@ foreach my $dir ( @dirs ) {
 print "Patching file paths\n" if $verbose;
 foreach my $file ( @patches ) {
 	$file = "$stage_dir/$file";
-	syst("sed -i 's:/opt/Seccubus/SeccubusV2:$mod_dir:' $file");
-	syst("sed -i 's:/opt/Seccubus/scanners:$scan_dir:' $file");
-	syst("sed -i 's:/opt/Seccubus/bin:$bin_dir:' $file");
-	syst("sed -i 's:/opt/Seccubus/etc:$conf_dir:' $file");
-	syst("sed -i 's:/opt/Seccubus/db:$db_dir:' $file");
+	syst("sed -i 's:/opt/seccubus/SeccubusV2:$mod_dir:' $file");
+	syst("sed -i 's:/opt/seccubus/scanners:$scan_dir:' $file");
+	syst("sed -i 's:/opt/seccubus/bin:$bin_dir:' $file");
+	syst("sed -i 's:/opt/seccubus/etc:$conf_dir:' $file");
+	syst("sed -i 's:/opt/seccubus/db:$db_dir:' $file");
 }
 
 print "Changing file ownership\n" if $verbose && ( $owner || $wwwowner );
