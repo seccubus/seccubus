@@ -20,8 +20,8 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
-22-01-2012 - 2.0
-================
+22-01-2012 - 2.0 - The Alt-S version
+====================================
 
 Key new features / issues resolved
 ----------------------------------
