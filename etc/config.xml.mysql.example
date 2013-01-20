@@ -2,18 +2,18 @@
 <seccubus>
 	<database>
 		<engine>mysql</engine>
-		<database>Seccubus</database>
+		<database>seccubus</database>
 		<host>localhost</host>
 		<port>3306</port>
-		<user>Seccubus</user>
-		<password>Seccubus</password>
+		<user>seccubus</user>
+		<password>seccubus</password>
 	</database>
 	<paths>
-		<modules>/opt/Seccubus/SeccubusV2</modules>
-		<scanners>/opt/Seccubus/scanners</scanners>
-		<bindir>/opt/Seccubus/bin</bindir>
-		<configdir>/opt/Seccubus/etc</configdir>
-		<dbdir>/opt/Seccubus/db</dbdir>
+		<modules>/opt/seccubus/SeccubusV2</modules>
+		<scanners>/opt/seccubus/scanners</scanners>
+		<bindir>/opt/seccubus/bin</bindir>
+		<configdir>/opt/seccubus/etc</configdir>
+		<dbdir>/opt/seccubus/db</dbdir>
 	</paths>
 	<smtp>
 		<server>localhost</server>
