@@ -40,7 +40,7 @@ $config = "/opt/seccubus/etc/config.xml" unless -e $config;
 use lib "/opt/Seccubus/SeccubusV2";
 push (@main::INC, @INC);
 
-$VERSION = '2.0.rc1';
+$VERSION = '2.0';
 
 use strict;
 use Carp;
