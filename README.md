@@ -7,22 +7,28 @@ on repeated scans.
 On repeated scan delta reporting ensures that findings only need to be judged 
 when they first appear in the scan results or when their output changes.
 
-Seccubus 2.0 is nearing the end of the beta phase. This code is the active 
-developed and maintained version and all support for Seccubus V1 will be dropped
-soon. Seccubus V2 works with the following scanners:
+Seccubus 2.0 is marks the end of the beta phase for the 2.0 branch.
+This code is the only actively developed and maintained branch and all support 
+for Seccubus V1 has officially been dropped. 
+
+Seccubus V2 works with the following scanners:
 * Nessus 4.x and 5.x (professional and home feed)
 * OpenVAS
 * Nikto 
 * NMap
+* SSLyze
 
-xx-xx-201x - 2.0.rc1
-====================
+For more information visit [www.seccubus.com]
+
+22-01-2012 - 2.0
+================
 
 Key new features / issues resolved
 ----------------------------------
 * Email notifications when a scan starts and a scan ends
 * Scan create and edit dialog now display default parameters
 * do-scan now has a --no-delete option to preserve temporary files
+* SSLyze support
 
 Bigs fixed (tickets closed):
 ----------------------------
