@@ -104,6 +104,10 @@ cat > %{buildroot}/%{confdir}/config.xml <<- EOF
 		<configdir>%{confdir}</configdir>
 		<dbdir>%{vardir}</dbdir>
 	</paths>
+	<smtp>
+		<server>localhost</server>
+		<from>seccubus@localhost</from>
+	</smtp>
 </seccubus>
 
 EOF
