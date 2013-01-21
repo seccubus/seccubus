@@ -126,13 +126,13 @@ After installation, create a database and database user. Populate the db with pr
 scripts:
 
   # mysql << EOF
-  create database Seccubus;
-  grant all privileges on Seccubus.* to seccubus@localhost identified by 'seccubus';
+  create database seccubus;
+  grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus';
   flush privileges;
   EOF
 
-  # mysql -u seccubus -pseccubus Seccubus < %{vardir}/structure_v1.mysql
-  # mysql -u seccubus -pseccubus Seccubus < %{vardir}/data_v1.mysql
+  # mysql -u seccubus -pseccubus seccubus < %{vardir}/structure_v3.mysql
+  # mysql -u seccubus -pseccubus seccubus < %{vardir}/data_v3.mysql
 
 You can change the db name and username/password, make sure you update
 %{confdir}/config.xml accordingly
