@@ -91,7 +91,7 @@ cat > %{buildroot}/%{confdir}/config.xml <<- EOF
 <seccubus>
 	<database>
 		<engine>mysql</engine>
-		<database>%{name}</database>
+		<database>seccubus</database>
 		<host>localhost</host>
 		<port>3306</port>
 		<user>%{seccuser}</user>
