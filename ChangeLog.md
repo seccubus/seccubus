@@ -21,6 +21,21 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+31-01-2012 - 2.1 - Bugfix release
+=================================
+
+Key new features / issues resolved
+----------------------------------
+* Bugfixes
+
+Bigs fixed (tickets closed):
+----------------------------
+* Issue #50 & #51 - Scan notifications are not listed and cannot be editted
+* Issue #52 - When running do-can with nmap as user seccubus with --sudo, chown on tmp files fails.
+* Issue #53 - Broken path in debian package
+* Issue #55 - Notifications table creates double header in certain cases
+
+
 22-01-2012 - 2.0 - The Alt-S version
 ====================================
 
