@@ -91,7 +91,7 @@ To install Seccubus v2:
 
 # rpm --install Seccubus-2.x.x-x.noarch.rpm
 
-* Update the configuration file in /etc/Seccubus/config.xml and 
+* Update the configuration file in /etc/ceccubus/config.xml and 
 
 * Now create the database and populate the database with the following commands:
 # mysql << EOF
