@@ -5,6 +5,7 @@ steal(	'jquery/controller',
 ).then(	
 	'./views/init.ejs',
 	'./views/error.ejs',
+	'./views/notification.ejs',
 function($){
 
 /**
