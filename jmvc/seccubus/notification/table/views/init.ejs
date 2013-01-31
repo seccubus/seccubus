@@ -13,7 +13,7 @@
 <% } %>
 <% count = 0  %>
 <% if(typeof this[0] != "undefined" && typeof this[0].error != "undefined" ) { %>
-	 <%== $.View('//seccubus/notification/table/views/error.ejs',{ message : this[0].error }) %>
+	 <%== $.View('//seccubus/notification/table/views/error.ejs',{ message : this[0].error, noHead : true }) %>
 <% } else { %>
 	<%for ( var i = 0; i < this.length ; i++ ){%>
 		<tr <%= this[i] %> >
@@ -22,7 +22,7 @@
 		<% count++ %>
 	<% } %>
 	<% if ( count == 0 ) { %>
-		<%== $.View('//seccubus/notification/table/views/error.ejs',{ message : "No notifications found"}) %>
+		<%== $.View('//seccubus/notification/table/views/error.ejs',{ message : "No notifications found", noHead : true}) %>
 	<% } %>
 <% } %>
 <% if(typeof(noHead) == "undefined" || noHead == false) { %>
