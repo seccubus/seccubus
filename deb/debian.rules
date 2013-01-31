@@ -35,7 +35,7 @@ install:
 	mkdir -p $(CURDIR)/debian/tmp/${BASEDIR}
 	mkdir -p $(CURDIR)/debian/tmp/${DOCDIR}/db
 	mkdir -p $(CURDIR)/debian/tmp/${DOCDIR}/GUI
-	mkdir -p $(CURDIR)/debian/tmp/etc/pache2/conf.d
+	mkdir -p $(CURDIR)/debian/tmp/etc/apache2/conf.d
 
 	./install.pl -v --buildroot=$(CURDIR)/debian/tmp \
 	    --confdir=${CONFDIR} --bindir=${BINDIR} --dbdir=${VARDIR} \
