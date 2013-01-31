@@ -100,8 +100,8 @@ grant all privileges on Seccubus.* to seccubus@localhost identified by 'seccubus
 flush privileges;
 EOF
 
-# mysql -u seccubus -pseccubus Seccubus < /var/lib/Seccubus/structure_v1.mysql
-# mysql -u seccubus -pseccubus Seccubus < /var/lib/Seccubus/data_v1.mysql
+# mysql -u seccubus -pseccubus Seccubus < /.../structure_vX.mysql # Use version and path indicated on the screen
+# mysql -u seccubus -pseccubus Seccubus < /.../data_vX.mysql # Use version and path indicated on the screen
 
 * Restart the webserver and surf to http://localhost/seccubus/ to start using seccubus
 # service httpd restart
