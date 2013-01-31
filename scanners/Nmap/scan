@@ -99,7 +99,8 @@ while ( <NMAP> ) {
 close NMAP;
 
 if ( $sudo ) {
-	$cmd = "chown $username $tempfile\.*";
+	# Fixes issue #52
+	$cmd = "sudo chown $username $tempfile\.*";
 
 	print "Execuing $cmd\n" unless $quiet;
 	open NMAP, "$cmd |" or die "Unable to open pipe";

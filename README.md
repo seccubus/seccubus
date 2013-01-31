@@ -30,3 +30,4 @@ Key new features / issues resolved
 Bigs fixed (tickets closed):
 ----------------------------
 * Issue #50 & #51 - Scan notifications are not listed and cannot be editted
+* Issue #52 - When running do-can with nmap as user seccubus with --sudo, chown on tmp files fails.
