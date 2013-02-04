@@ -113,7 +113,7 @@ if ( $sudo ) {
 
 
 print "Scanning done, converting .xml to ivil\n" unless $quiet;
-$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nmap2ivil --scannerversion=$nmap_version --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile=$tempfile.xml ";
+$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nmap2ivil --scannerversion=$nmap_version --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile '$tempfile.xml' ";
 $cmd .= "-v" if $verbose > 1;
 
 print "Executing $cmd\n" if $verbose;

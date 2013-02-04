@@ -159,7 +159,7 @@ while ( $status eq "running" ) {
 }
 
 print "Converting $tempfile.nessus to $tempfile.ivil.xml\n" unless $quiet;
-$cmd = "$nessus2ivil --infile $tempfile.nessus";
+$cmd = "$nessus2ivil --infile '$tempfile.nessus'";
 $cmd .= " -v" if $verbose > 1;
 print "Execuing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
