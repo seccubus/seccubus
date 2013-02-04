@@ -117,7 +117,7 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose;
 
 print "Converting .nbe to IVIL\n" unless $quiet;
-$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=NessusLegacy --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile=$tempfile.nbe";
+$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=NessusLegacy --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile '$tempfile.nbe'";
 print "Executing $cmd\n" if $verbose;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose;
