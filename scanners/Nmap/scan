@@ -73,7 +73,7 @@ my $nmap_version = get_nmap_version($nmap_path);
 
 my $tempfile = "/tmp/seccubus.$$";
 
-my $nmap_options = "-iL $hosts_file -oA $tempfile $nmap_options";
+my $nmap_options = "-iL $hosts_file -oA '$tempfile' $nmap_options";
 print "Nmap options: $nmap_options\n" if $verbose;
 
 my $timestamp = make_timestamp();
@@ -100,7 +100,10 @@ close NMAP;
 
 if ( $sudo ) {
 	# Fixes issue #52
-	$cmd = "sudo chown $username $tempfile\.*";
+	$cmd = "sudo chown $username '$tempfile.nmap'";
+	$cmd = "sudo chown $username '$tempfile.gmap'";
+	$cmd = "sudo chown $username '$tempfile.xml'";
+	$cmd = "sudo chown $username '$tempfile.ivil.xml'";
 
 	print "Execuing $cmd\n" unless $quiet;
 	open NMAP, "$cmd |" or die "Unable to open pipe";
@@ -123,7 +126,7 @@ print "$result\n" if $verbose;
 print "Importing ivil\n" unless $quiet;
 $cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner Nmap --scannerversion $nmap_version --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
-$cmd .= " $tempfile.ivil.xml";
+$cmd .= " '$tempfile.ivil.xml'";
 print "Execuing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;

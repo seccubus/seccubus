@@ -99,7 +99,7 @@ print "$result\n" if $verbose;
 print "Importing ivil\n" unless $quiet;
 $cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
-$cmd .= " $tempfile.ivil.xml";
+$cmd .= " '$tempfile.ivil.xml'";
 print "Execuing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
