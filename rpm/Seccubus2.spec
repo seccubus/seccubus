@@ -199,6 +199,9 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/sslyze2ivil
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/attach_file
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/convert_v1_v2
+%attr(755, %{seccuser}, %{seccuser}) %{bindir}/nthweek.sh
+%attr(755, %{seccuser}, %{seccuser}) %{bindir}/onlyonxday.sh
+
    
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/apache-license.txt
