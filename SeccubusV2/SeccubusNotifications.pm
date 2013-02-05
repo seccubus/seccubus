@@ -69,7 +69,7 @@ sub get_notifications($;) {
 			query	=> "
 				SELECT	workspace_id
 				FROM	scans
-				WHERE	?",
+				WHERE	scans.id = ?",
 			values	=> [ $scan_id ]
 	);
 	if ( $workspace_id && may_read($workspace_id)) {
