@@ -25,7 +25,8 @@ xx-xx-2012 - 2.1 - Bugfix release
 
 Key new features / issues resolved
 ----------------------------------
-* 
+* Added shell script to execute crontab job only on a certain day
+* Added shell script to execute crontab job only on a weeknumber that can be devided by a certain number
 
 Bigs fixed (tickets closed):
 ----------------------------
