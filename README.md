@@ -29,4 +29,5 @@ Key new features / issues resolved
 
 Bigs fixed (tickets closed):
 ----------------------------
+* Issue #50 - Notification table not displayed on edit scan
 * Issue #56 - IVIL conversion sheel call needs qoutes around filename
