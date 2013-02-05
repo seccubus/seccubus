@@ -103,20 +103,20 @@ my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 
 print "Starting scan\n" if $verbose;
-my $cmd = "$openvas_path -c $rcfile -q $server $port $user '$password' $hosts_file $tempfile.nbe -x";
+my $cmd = "$openvas_path -c $rcfile -q $server $port $user '$password' $hosts_file '$tempfile.nbe' -x";
 print "Execuing $cmd\n" unless $quiet;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose;
 
 print "Scanning done, converting .nbe to html\n" unless $quiet;
-my $cmd = "$openvas_path -c $rcfile -q -i $tempfile.nbe -o $tempfile.html";
+my $cmd = "$openvas_path -c $rcfile -q -i '$tempfile.nbe' -o '$tempfile.html'";
 $cmd .= " -v" if $verbose > 1;
 print "Executing $cmd\n" if $verbose;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose;
 
 print "Converting .nbe to xml\n" unless $quiet;
-my $cmd = "$openvas_path -c $rcfile -q -i $tempfile.nbe -o $tempfile.xml";
+my $cmd = "$openvas_path -c $rcfile -q -i '$tempfile.nbe' -o '$tempfile.xml'";
 $cmd .= " -v" if $verbose > 1;
 print "Executing $cmd\n" if $verbose;
 my $result = `$cmd 2>&1`;
@@ -131,7 +131,7 @@ print "$result\n" if $verbose;
 print "Importing ivil\n" unless $quiet;
 $cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner OpenVAS --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
-$cmd .= " $tempfile.ivil.xml";
+$cmd .= " '$tempfile.ivil.xml'";
 print "Execuing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;

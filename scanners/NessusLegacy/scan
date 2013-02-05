@@ -102,14 +102,14 @@ my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 
 print "Starting scan\n" if $verbose;
-my $cmd = "$nessus_path -c $rcfile -q -x $server $port $user '$password' $hosts_file $tempfile.nbe";
+my $cmd = "$nessus_path -c $rcfile -q -x $server $port $user '$password' $hosts_file '$tempfile.nbe'";
 $cmd .= " -v" if $verbose > 1;
 print "Execuing $cmd\n" unless $quiet;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose;
 
 print "Scanning done, converting .nbe to html\n" unless $quiet;
-my $cmd = "$nessus_path -c $rcfile -q -i $tempfile.nbe -o $tempfile.html";
+my $cmd = "$nessus_path -c $rcfile -q -i '$tempfile.nbe' -o '$tempfile.html'";
 $cmd .= " -v" if $verbose > 1;
 
 print "Executing $cmd\n" if $verbose;
@@ -125,7 +125,7 @@ print "$result\n" if $verbose;
 print "Importing ivil\n" unless $quiet;
 $cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner NessusLegacy --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
-$cmd .= " $tempfile.ivil.xml";
+$cmd .= " '$tempfile.ivil.xml'";
 print "Execuing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
