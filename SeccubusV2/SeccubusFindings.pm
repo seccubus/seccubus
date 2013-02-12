@@ -494,7 +494,15 @@ sub process_status($$$;$) {
 			# Get differences in diff format
 			my @diff = diff_finding("diff", $workspace_id, $id, $run_id, $previous_run); 
 			# update the finding to changed if there is a diff
-			if ( @diff ) {
+			if ( @diff[0] eq "NEW" ) {
+				# Handle a erronious situation
+				print "Finding wasn't present in previous run, while it should have been, resetting to NEW\n" if $verbose;
+				update_finding (
+					"workspace_id"  => $workspace_id,
+					"finding_id"    => $id,
+					"status"        => 1,
+				);
+			} elsif ( @diff ) {
 				update_finding (
 					"workspace_id"  => $workspace_id,
 					"finding_id"    => $id,
@@ -551,7 +559,7 @@ sub diff_finding($$$$$;) {
 	my $prev_run =shift;
 
 	if ( may_read($workspace_id) ) {
-		my @findings = sql( return	=> "arrya",
+		my @findings = sql( return	=> "array",
 				    query	=> "SELECT id
 				    		    FROM findings
 						    WHERE id = ? 
@@ -577,19 +585,25 @@ sub diff_finding($$$$$;) {
 					    LIMIT 1",
 				   values	=> [ $finding_id, $prev_run ],
 				 );
-		die "Unable to load previous or current findings" unless ( @current && @prev );
-		@current = split(/\n/, $current[0]);
-		@prev = split(/\n/, $prev[0]);
-		my @diff = diff(\@prev, \@current);
-
-		if ( $type eq "diff" ) {
-			return @diff;
-		} elsif ( $type eq "txt" ) {
-			return join "\n", @diff;
-		} elsif ( $type eq "html" ) {
-			return join "<br>\n", @diff;
+		die "Unable to load current finding, ws: $workspace_id, id: $finding_id, run: $this_run" unless ( @current );
+		if ( @prev ) {
+			@current = split(/\n/, $current[0]);
+			@prev = split(/\n/, $prev[0]);
+			my @diff = diff(\@prev, \@current);
+	
+			if ( $type eq "diff" ) {
+				return @diff;
+			} elsif ( $type eq "txt" ) {
+				return join "\n", @diff;
+			} elsif ( $type eq "html" ) {
+				return join "<br>\n", @diff;
+			} else {
+				die "Unknown return type '$type'";
+			}
 		} else {
-			die "Unknown return type '$type'";
+			# There is no previous run, this should technically not
+			# happen, but can apparently happen with imported scans
+			return ( "NEW" );
 		}
 	} else {
 		die("You are not allowed to read workspace '$workspace_id'")
