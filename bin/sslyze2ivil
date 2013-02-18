@@ -126,6 +126,16 @@ foreach my $target ( @{$sslyze->{results}->{target}} ) {
 			}
 		} elsif ( $key eq "certinfo" ) {
 			$finding{id} = $target->{$key}->{title};
+			foreach my $key2 ( sort keys %{$target->{$key}->{certificate}} ) {
+				print $key2;
+				if( $key2 eq "hasMatchingHostname" ) {
+					$finding{finding} .= "Matching hostname: $target->{$key}->{certificate}->{$key2}\n";
+				}
+				if ($key2 eq "isTrustedByMozillaCAStore") {
+					$finding{finding} .= "Trusted: $target->{$key}->{certificate}->{$key2}\n"; 
+				} 
+			}	
+			push @findings, \%finding;
 		} elsif ( $key eq "compression" ) {
 			$finding{id} = $target->{$key}->{title};
 			foreach my $key2 ( sort keys %{$target->{$key}->{compression}} ) {
