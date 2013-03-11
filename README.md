@@ -27,8 +27,10 @@ Key new features / issues resolved
 ----------------------------------
 * Added shell script to execute crontab job only on a certain day
 * Added shell script to execute crontab job only on a weeknumber that can be devided by a certain number
+* Correct application of Apache license is now part of the unit tests
 
 Bigs fixed (tickets closed):
 ----------------------------
 * Issue #50 - Notification table not displayed on edit scan
 * Issue #56 - IVIL conversion sheel call needs qoutes around filename
+* Issue #72 - Apache license isn't applied correctly
