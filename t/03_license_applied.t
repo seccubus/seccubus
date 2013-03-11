@@ -130,14 +130,14 @@ sub hasauthors {
 	my $file = shift;
 	
 	my %authors;
-	foreach my $auth ( split /\n/, `git blame $file` ) {
+	foreach my $auth ( split /\n/, `git blame '$file'` ) {
 		$auth =~ /\((.*?)\s+\d\d\d\d\-\d\d\-\d\d/;
 		#print "$auth - $1\n";
 		if ( $auth != "Not Committed Yet" ) {
 			$authors{$1}++;
 		}
 	}
-	my $head = `head -20 $file|grep Copyright`;
+	my $head = `head -20 '$file'|grep Copyright`;
 	foreach my $auth (keys %authors) {
 		if ( $head !~ /$auth/ ) {
 			print "Author $auth not in $file\n";
