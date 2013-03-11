@@ -1,0 +1,23 @@
+Seccubus includes the following software:
+
+jQuery
+http://jquery.org
+Licensed under the MIT license
+http://jquery.org/license
+
+JavascriptMVC
+Licensed under the MIT license
+http://javascriptmvc.com/
+
+IVIL
+https://github.com/seccubus/ivil
+Licensed under the MIT License
+Author: Frank Breedijk
+
+update-nessusrc
+http://www.tifaware.com/perl/update-nessusrc/
+Written by George A. Theall, theall@tifaware.com
+Copyright (c) 2003-2010, George A. Theall. All rights reserved.
+This module is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
