@@ -39,4 +39,4 @@ fi
 
 (cd $ZEPATH/tmp/install/Seccubus-*;./install.pl --basedir $ZEPATH/tmp/install/seccubus --createdirs -v -v -v)
 cp $ZEPATH/tmp/install/seccubus/etc/config.xml.mysql.example $ZEPATH/tmp/install/seccubus/etc/config.xml
-cp -r $ZEPATH/t/Algorithm $ZEPATH/tmp/install/seccubus/SeccubusV2/
+#cp -r $ZEPATH/t/Algorithm $ZEPATH/tmp/install/seccubus/SeccubusV2/
