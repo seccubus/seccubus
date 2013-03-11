@@ -60,6 +60,7 @@ json\/getNothing.pl$
 ^update_version\.pl
 ^obs
 ^junit_output\.xml$
+^HEADERS\.txt$
 
 # Misc
 ^www\/tmp\/
