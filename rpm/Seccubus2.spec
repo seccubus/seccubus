@@ -41,6 +41,7 @@ Source0:	http://downloads.sourceforge.net/project/%{name}/%{name}_v2/%{name}-%{v
 
 #BuildRequires:	
 Requires:	perl-Algorithm-Diff
+Requires:	perl-DBD-mysql
 Requires:	httpd
 Requires:	mysql
 Requires:	ruby
