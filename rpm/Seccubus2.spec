@@ -79,7 +79,7 @@ make
 %install
 ./install.pl --buildroot=%{buildroot} --confdir=%{confdir} --bindir=%{bindir} --dbdir=%{vardir} --wwwdir=%{webdir} --basedir=%{homedir} --docdir=%{docsdir}
 
-cp apache-license.txt ChangeLog.md gpl-3.0.txt LICENSE.txt mit-license.txt %{buildroot}/%{docsdir}
+cp ChangeLog.md LICENSE.txt NOTICE.txt README.md AUTHORS.txt %{buildroot}/%{docsdir}
 
 cat > %{buildroot}/etc/httpd/conf.d/%{name}.conf <<-EOF
 #
@@ -218,11 +218,11 @@ OEF
 
    
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/apache-license.txt
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/ChangeLog.md
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/gpl-3.0.txt
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/LICENSE.txt
-%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/mit-license.txt
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/AUTHORS.txt
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/NOTICE.txt
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/README.md
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/db
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v1.mwb
