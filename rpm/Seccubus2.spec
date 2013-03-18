@@ -150,8 +150,8 @@ scripts:
   flush privileges;
   EOF
 
-  # mysql -u seccubus -pseccubus seccubus < %{vardir}/structure_v3.mysql
-  # mysql -u seccubus -pseccubus seccubus < %{vardir}/data_v3.mysql
+  # mysql -u seccubus -pseccubus seccubus < %{vardir}/structure_v4.mysql
+  # mysql -u seccubus -pseccubus seccubus < %{vardir}/data_v4.mysql
 
 You can change the db name and username/password, make sure you update
 %{confdir}/config.xml accordingly
@@ -232,6 +232,8 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v2.pdf
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v3.mwb
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v3.pdf
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v4.mwb
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/db/SeccubusV2_v4.pdf
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/GUI
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/GUI/UseCaseFindings.png
@@ -393,10 +395,15 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/structure_v2.mysql
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/data_v3.mysql
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/structure_v3.mysql
+%attr(644, %{seccuser}, %{seccuser}) %{vardir}/data_v4.mysql
+%attr(644, %{seccuser}, %{seccuser}) %{vardir}/structure_v4.mysql
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/upgrade_v1_v2.mysql
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/upgrade_v2_v3.mysql
+%attr(644, %{seccuser}, %{seccuser}) %{vardir}/upgrade_v3_v4.mysql
 
 %changelog
+* Tue Mar 19 2013 Frank Breedijk <fbreedijk@schubergphilis.com>
+- New DB version
 * Mon Dec 24 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Fixed permissions of files in  %{webdir}/seccubus/json/updateWorkspace.pl
 * Sat Oct 05 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
