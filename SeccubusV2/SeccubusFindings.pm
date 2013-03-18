@@ -61,6 +61,8 @@ This function returns a reference to an array of findings
 
 =item scan_id - id of the scan if 0 this parameter is disregarded
 
+=item filter - reference to a hash containing filters
+
 =back 
 
 =item Checks
@@ -100,12 +102,19 @@ sub get_findings($;$$) {
 		}
 
 		if ( $filter ) {
+			if ( $filter->{status} ) {
+				$query .= " AND status = ? ";
+				push @$params, $filter->{status};
+			}
 			if ( $filter->{host} ) {
-				$query .= " AND host = ? ";
+				$filter->{host} =~ s/\*/\%/;
+				$query .= " AND host LIKE ? ";
 				push @$params, $filter->{host};
 			}
 			if ( $filter->{hostname} ) {
-				$query .= " AND host_names.name = ? ";
+				$filter->{hostname} =~ s/\*/\%/;
+				$filter->{hostname} = "%$filter->{hostname}%";
+				$query .= " AND host_names.name LIKE ? ";
 				push @$params, $filter->{hostname};
 			}
 			if ( $filter->{port} ) {

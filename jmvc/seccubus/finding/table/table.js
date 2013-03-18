@@ -75,7 +75,7 @@ $.Controller('Seccubus.Finding.Table',
 		 * @attribute options.severity
 		 * The current severity filter
 		 */
-		severity		: "*",
+		severity	: "*",
 		/*
 		 * @attribute options.finding
 		 * The current finding filter
@@ -180,7 +180,16 @@ $.Controller('Seccubus.Finding.Table',
 					'init',
 					Seccubus.Models.Finding.findAll({
 						workspaceId	: this.options.workspace,
-						scanIds		: this.options.scans
+						scanIds		: this.options.scans,
+						Status		: this.options.status,
+						Scans		: this.options.scans,
+						Host		: this.options.host,
+						HostName	: this.options.hostName,
+						Port		: this.options.port,
+						Plugin		: this.options.plugin,
+						Severity	: this.options.severity,
+						Finding		: this.options.finding,
+						Remark		: this.options.remark
 					}), 
 					{
 						columns		: this.options.columns,
