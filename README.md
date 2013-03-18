@@ -35,4 +35,5 @@ Bigs fixed (tickets closed):
 * Issue #50 - Notification table not displayed on edit scan
 * Issue #56 - IVIL conversion sheel call needs qoutes around filename
 * Issue #65 - Each CGI response header now invalidates caching
+* Issue #66 - Username field too small
 * Issue #72 - Apache license isn't applied correctly
