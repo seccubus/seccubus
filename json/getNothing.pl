@@ -27,7 +27,7 @@ use SeccubusScans;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header("application/json");
+print $query->header(-type => "application/json", -expires => "-1d");
 
 my $workspace_id = $query->param("workspaceId");
 

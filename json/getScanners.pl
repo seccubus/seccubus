@@ -27,7 +27,7 @@ use SeccubusScanners;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header("application/json");
+print $query->header(-type => "application/json", -expires => "-1d");
 
 eval {
 	my @data;
