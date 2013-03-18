@@ -30,7 +30,7 @@ my $current_db_version = 3;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header("application/json");
+print $query->header(-type => "application/json", -expires => "-1d");
 
 # This is where configurations can be found
 # Ticket #62 - Default locations for config.xml does not include 
