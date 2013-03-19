@@ -189,37 +189,26 @@ sub get_status($$;$) {
 
 	if ( may_read($workspace_id) ) {
 		$filter = undef;
-		my $params = [ $workspace_id, $workspace_id ];
+		my $params = [ $workspace_id ];
 
 		my $query = "
 			SELECT	finding_status.id, finding_status.name, count(findings.id)
 			FROM
 				finding_status
-			LEFT JOIN findings on findings.status =  finding_status.id
-			LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
-			LEFT JOIN severity on findings.severity = severity.id
-			WHERE
-				findings.workspace_id = ?";
-
-		#$query .= " AND findings.scan_id in ( ? ";
-		#push @$params, shift ( @$scan_ids );
-		#while ( @$scan_ids ) {
-		#	$query .= " , ? ";
-		#	push @$params, shift ( @$scan_ids );
-		#}
-		#$query .= " ) ";
-
+			LEFT JOIN findings on ( findings.status =  finding_status.id AND findings.workspace_id = ?";
+		$query .= " AND findings.scan_id in ( ? ";
+		push @$params, shift ( @$scan_ids );
+		while ( @$scan_ids ) {
+			$query .= " , ? ";
+			push @$params, shift ( @$scan_ids );
+		}
+		$query .= " ) ";
+		
 		if ( $filter ) {
 			if ( $filter->{host} ) {
 				$filter->{host} =~ s/\*/\%/;
 				$query .= " AND host LIKE ? ";
 				push @$params, $filter->{host};
-			}
-			if ( $filter->{hostname} ) {
-				$filter->{hostname} =~ s/\*/\%/;
-				$filter->{hostname} = "%$filter->{hostname}%";
-				$query .= " AND host_names.name LIKE ? ";
-				push @$params, $filter->{hostname};
 			}
 			if ( $filter->{port} ) {
 				$query .= " AND port = ? ";
@@ -241,9 +230,28 @@ sub get_status($$;$) {
 				$query .= " AND remark LIKE ?";
 				push @$params, "%" . $filter->{remark} . "%";
 			}
+
+		$query .= " ) ";
+
+		$query .= "
+			LEFT JOIN host_names on ( host_names.ip = host and host_names.workspace_id = ?
+			WHERE
+				findings.workspace_id = ?";
+		push @$params, $workspace_id;
+
 		}
+		if ( $filter ) {
+			if ( $filter->{hostname} ) {
+				$filter->{hostname} =~ s/\*/\%/;
+				$filter->{hostname} = "%$filter->{hostname}%";
+				$query .= " AND host_names.name LIKE ? ";
+				push @$params, $filter->{hostname};
+			}
+		}
+
+		$query .= " ) ";
 		
-		$query .= " ORDER BY finding_status.id";
+		$query .= " GROUP BY finding_status.id";
 
 		return sql( "return"	=> "ref",
 			    "query"	=> $query,
