@@ -188,8 +188,8 @@ sub get_status($$;$) {
 	die "Must specify scanids for function get_status" unless @$scan_ids;
 
 	if ( may_read($workspace_id) ) {
-		$filter = undef;
-		my $params = [ $workspace_id ];
+		my $params;
+		push @$params, $workspace_id;
 
 		my $query = "
 			SELECT	finding_status.id, finding_status.name, count(findings.id)
@@ -197,6 +197,7 @@ sub get_status($$;$) {
 				finding_status
 			LEFT JOIN findings on ( findings.status =  finding_status.id AND findings.workspace_id = ?";
 		$query .= " AND findings.scan_id in ( ? ";
+
 		push @$params, shift ( @$scan_ids );
 		while ( @$scan_ids ) {
 			$query .= " , ? ";
@@ -234,9 +235,7 @@ sub get_status($$;$) {
 		$query .= " ) ";
 
 		$query .= "
-			LEFT JOIN host_names on ( host_names.ip = host and host_names.workspace_id = ?
-			WHERE
-				findings.workspace_id = ?";
+			LEFT JOIN host_names on ( host_names.ip = host and host_names.workspace_id = ?";
 		push @$params, $workspace_id;
 
 		}
