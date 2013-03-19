@@ -133,7 +133,6 @@ $.Controller('Seccubus.Status.Status',
 					Seccubus.Models.Status.findAll({
 						workspaceId	: this.options.workspace,
 						scanIds		: this.options.scans,
-						Status		: this.options.status,
 						Host		: this.options.host,
 						HostName	: this.options.hostName,
 						Port		: this.options.port,
