@@ -29,10 +29,8 @@ my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d");
 
-my $workspace_id = 101;
-#my $workspace_id = $query->param("workspaceId");
-my @scan_ids = [ 1 ];
-#my @scan_ids = $query->param("scanIds[]");
+my $workspace_id = $query->param("workspaceId");
+my @scan_ids = $query->param("scanIds[]");
 
 # Return an error if the required parameters were not passed 
 if (not (defined ($workspace_id))) {
