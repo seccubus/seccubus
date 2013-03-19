@@ -50,7 +50,14 @@ eval {
 		}
 	}
 
-	my @data = @{get_status($workspace_id, \@scan_ids, \%filter)};
+	my @data;
+	foreach my $status ( @{get_status($workspace_id, \@scan_ids, \%filter)} ) {
+		my %button = ();
+		$button{id} = $$status[0];
+		$button{name} = $$status[1];
+		$button{count} = $$status[2];
+		push @data, \%button;
+	}
 
 	print $json->pretty->encode(\@data);
 } or do {

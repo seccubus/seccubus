@@ -30,7 +30,7 @@ steal(
 	'seccubus/scan/edit',
 	'seccubus/run/table',
 	'seccubus/finding/table',
-	'seccubus/finding/status',
+	//'seccubus/finding/status',
 	'seccubus/finding/filter',
 	'seccubus/finding/bulkedit',
 	'seccubus/finding/edit',
@@ -40,6 +40,7 @@ steal(
 	'seccubus/notification/table',
 	'seccubus/notification/create',
 	'seccubus/notification/edit',
+	'seccubus/status/status',
 	function(){					// configure your application
 		/***********************************************************
 		 * Initialize gui state and hook into it
@@ -313,7 +314,7 @@ steal(
 		};
 
 		function render_status() {
-			$('#status_buttons').seccubus_finding_status({
+			$('#status_buttons').seccubus_status_status({
 				workspace	: gui_state.workspace,
 				scans		: gui_state.scans,
 				status		: gui_state.findStatus,
