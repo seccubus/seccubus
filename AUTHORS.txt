@@ -4,3 +4,4 @@ Steve Launius
 Zate Berg
 Peter Slootweg
 Jasper Nugteren
+Trelor (http://github.com/trelor)
