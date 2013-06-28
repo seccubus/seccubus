@@ -39,6 +39,7 @@ Bigs fixed (tickets closed):
 * Issue #65 - Each CGI response header now invalidates caching
 * Issue #66 - Username field too small
 * Issue #72 - Apache license isn't applied correctly
+* Issue #75 - Typo: datatbase in ConfigTest.pl
 * Issue #77 - Seccubus incompatible with Nessus API 5.2.1
 * Updated dependancies in RPM
 * Fixed some minor DB error scripts
