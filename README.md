@@ -20,16 +20,17 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
-xx-xx-2012 - 2.1 - Bugfix release
-=================================
+28-06-2013 - 2.2 - Nessus 5.2.1 and Unicode
+===========================================
 
 Key new features / issues resolved
 ----------------------------------
+* Resolved an issue that cause incomptibility with Nessus API version 5.2.1 (Thanks Trelor)
+* Resolved an issue around encoding of Unicode chracters in Nessus output
 * Added shell script to execute crontab job only on a certain day
 * Added shell script to execute crontab job only on a weeknumber that can be devided by a certain number
 * Correct application of Apache license is now part of the unit tests
 * Resolved some caching issues with IE
-* Resolved an issue that cause incomptibility with Nessus API version 5.2.1 (Thanks Trelor)
 
 Bigs fixed (tickets closed):
 ----------------------------
