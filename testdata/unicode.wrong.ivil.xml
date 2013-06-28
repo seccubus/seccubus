@@ -1,4 +1,3 @@
-<?xml version="1.0" standalone='yes'?>
 <!--
      Copyright 2013 Frank Breedijk
 
@@ -14,6 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+<?xml version="1.0" standalone='yes'?>
 <IVIL version="0.2">
 <findings>
 		<finding>
