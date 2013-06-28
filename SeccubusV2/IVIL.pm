@@ -48,7 +48,7 @@ my $IVIL_VERSION = "0.2";
 
 use strict;
 use Carp;
-use HTML::Entities;
+use HTML::Entities qw(encode_entities_numeric);
 use XML::Simple;
 use Data::Dumper;
 
@@ -171,7 +171,7 @@ sub ivil_addressee($;$) {
 	my $prog_data = shift;
 
 	my $block = "\t<addressee>\n";
-	$block .= "\t\t<program>" . encode_entities($program) . "</program>\n";
+	$block .= "\t\t<program>" . encode_entities_numeric($program) . "</program>\n";
 	if ( $prog_data ) {
 		$block .= "\t\t<programSpecificData>\n";
 		foreach my $key ( keys %{$prog_data} ) {
@@ -218,8 +218,8 @@ sub ivil_sender($$$) {
 
 	$timestamp .= "00" if $timestamp =~ /^\d{6}$/;
 	if ( $timestamp =~ /^\d{8}/ ) {
-		$block .= "\t\t<scanner_type>" . encode_entities($scanner) . "</scanner_type>\n";
-		$block .= "\t\t<version>" . encode_entities($version) . "</version>\n" if defined($version);
+		$block .= "\t\t<scanner_type>" . encode_entities_numeric($scanner) . "</scanner_type>\n";
+		$block .= "\t\t<version>" . encode_entities_numeric($version) . "</version>\n" if defined($version);
 		$block .= "\t\t<timestamp>$timestamp</timestamp>\n";
 	} else {
 		confess "Invalid timestamp $timestamp";
@@ -322,7 +322,7 @@ sub get_refs($) {
 			confess "Unknown reference type $type";
 		}
 	
-		my $txt = encode_entities($text);
+		my $txt = encode_entities_numeric($text);
 		while ( $txt =~ m/^.*?($pattern)/ ) {
 			my $ref = $1;			# Get ref text
 			$txt =~ s/^.*?$pattern//;	# Strip it from text
@@ -400,10 +400,10 @@ sub ivil_finding($) {
 	$block .= "\t\t<finding>\n";
 	$block .= "\t\t\t<ip>$finding->{ip}<\/ip>\n";
 	$block .= "\t\t\t<port>$finding->{port}<\/port>\n";
-	$block .= "\t\t\t<id>" . encode_entities($finding->{id}) . "<\/id>\n";
+	$block .= "\t\t\t<id>" . encode_entities_numeric($finding->{id}) . "<\/id>\n";
 	$block .= "\t\t\t<severity>$finding->{severity}<\/severity>\n";
 	$block .= "\t\t\t<finding_txt>";
-	$block .= encode_entities($finding->{finding});
+	$block .= encode_entities_numeric($finding->{finding});
 	$block .= "<\/finding_txt>\n";
 	if ( $finding->{references} ) {
 		$block .= "\t\t\t<references>\n";

@@ -41,5 +41,6 @@ Bigs fixed (tickets closed):
 * Issue #72 - Apache license isn't applied correctly
 * Issue #75 - Typo: datatbase in ConfigTest.pl
 * Issue #77 - Seccubus incompatible with Nessus API 5.2.1
+* Issue #78 - Unicode in nessus file breaks ivil import
 * Updated dependancies in RPM
 * Fixed some minor DB error scripts
