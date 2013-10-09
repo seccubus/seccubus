@@ -30,7 +30,7 @@ $.Model('Seccubus.Models.Status',
 	 * json/getFndings.pl
 	 * @return {Deferred} Deferred with all findings in it
 	 */
-	findAll: "POST json/getStatus.pl",
+	findAll: "POST json/getStatus.pl"
   	//findOne : "/findings/{id}.json", 
   	//create : "/findings.json",
  	//update : "POST json/updateStatus.pl"
