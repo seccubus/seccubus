@@ -11,40 +11,19 @@
 <%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
 <%# See the License for the specific language governing permissions and      %>
 <%# limitations under the License.                                           %>
-<% if(typeof this[0] != "undefined" && typeof this[0].error != "undefined" ) { %>
-	<%== $.View('//seccubus/finding/table/views/error.ejs', { 
-		message		: this[0].error,
-		columns		: columns,
-		orderBy		: orderBy,
-		descending	: descending,
-		checked		: checked
-	}) %>
+<% if(typeof this[0] != "undefined" && typeof this[0].error != "undefined") { %>
+	<%== $.View('//seccubus/finding/status/views/error.ejs',{ message : this[0].error, sStatus : sStatus }) %>
 <% } else { %>
-	<% if(typeof noHeader == "undefined" || ! noHeader ) { %>
-		<%== $.View('//seccubus/finding/table/views/header.ejs', {
-			columns		: columns,
-			orderBy		: orderBy,
-			descending	: descending,
-			checked		: checked
-		}) %>
+	<% for ( var i = 0; i < this.length ; i++ ) { %>
+		<button value='<%= this[i].id %>' 
+			<% if(sStatus == this[i].id) { %>
+				disabled=true
+				class='setStatus selected'
+			<% } else { %>
+				class='setStatus'
+			<% } %>
+			>
+			<%= this[i].name %> (<%= this[i].count %>)
+		</button>
 	<% } %>
-	<tbody>
-		<% this.sort(fn) %>
-		<%for ( var i = 0; i < this.length ; i++ ){%>
-			<tr <%= this[i] %> class='sev_<%= this[i].severity %>'>
-				<%== $.View('//seccubus/finding/table/views/finding.ejs', 
-					this[i], 
-					{
-						columns : columns,
-						state	: fStatus,
-						checked : checked
-					} 
-				) %>
-			</tr>
-			<% count++ %>
-		<% } %>
-		<% if ( this.length == 0 ) { %>
-			<tr><td colspan=<%= columns.length/2 %>>No findings match you selection</td></tr>
-		<% } %>
-	</tbody>
 <% } %>

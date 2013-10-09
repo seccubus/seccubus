@@ -75,18 +75,18 @@ $.Controller('Seccubus.Finding.Table',
 		 * @attribute options.severity
 		 * The current severity filter
 		 */
-		severity		: "*",
+		severity	: "*",
 		/*
 		 * @attribute options.finding
 		 * The current finding filter
 		 */
-		finding		: "",
+		finding		: "*",
 		/*
 		 * @attribute options.remark
 		 * The current remark filter
 		 */
-		remark		: "",
-		/*
+		remark		: "*",
+		/**
 		 * @attribute options.orderBy
 		 * By what attribute the table is sorted by
 		 */
@@ -180,19 +180,20 @@ $.Controller('Seccubus.Finding.Table',
 					'init',
 					Seccubus.Models.Finding.findAll({
 						workspaceId	: this.options.workspace,
-						scanIds		: this.options.scans
+						scanIds		: this.options.scans,
+						Status		: this.options.status,
+						Scans		: this.options.scans,
+						Host		: this.options.host,
+						HostName	: this.options.hostName,
+						Port		: this.options.port,
+						Plugin		: this.options.plugin,
+						Severity	: this.options.severity,
+						Finding		: this.options.finding,
+						Remark		: this.options.remark
 					}), 
 					{
-						columns		: this.options.columns,
 						fStatus		: this.options.status,
-						fScans		: this.options.scans,
-						fHost		: this.options.host,
-						fHostName	: this.options.hostName,
-						fPort		: this.options.port,
-						fPlugin		: this.options.plugin,
-						fSeverity	: this.options.severity,
-						fFinding	: this.options.finding,
-						fRemark		: this.options.remark,
+						columns		: this.options.columns,
 						orderBy		: this.options.orderBy,
 						descending	: this.options.descending,
 						fn		: this.sortFunc(this.options.orderBy,this.options.descending),

@@ -17,7 +17,7 @@ limitations under the License.
 <!DOCTYPE HTML>
 <html lang="en">
 	<head>
-		<title>Seccubus.Finding.Filter</title>
+		<title>Seccubus.Status.Status</title>
         <style type='text/css'>
             body {font-family: verdana}
             .error {border: solid 1px red;}
@@ -31,24 +31,17 @@ limitations under the License.
         </style>
 	</head>
 	<body>
-	    <h1>Seccubus.Finding.Filter Demo</h1>
+	    <h1>Seccubus.Status.Status Demo</h1>
 		Workspace: <select id='workspace'></select><br>
 		Scan(s):<br>
 		<select multiple id='scans' size=8></select><br><br>
-                Status:
-		<a href='javascript://' class='setStatus' value=1>1</a>
-		<a href='javascript://' class='setStatus' value=2>2</a>
-		<a href='javascript://' class='setStatus' value=3>3</a>
-		<a href='javascript://' class='setStatus' value=4>4</a>
-		<a href='javascript://' class='setStatus' value=5>5</a>
-		<a href='javascript://' class='setStatus' value=6>6</a>
-		<a href='javascript://' class='setStatus' value=99>99</a><br>
-		<div id='filter'>Filter goes here</div>
+		<div id='status' border=1></div><br>
+		<table id='findings' border=1></table>
 		<script type='text/javascript' 
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
-			steal(	'seccubus/finding/filter',
+			steal(	'seccubus/status/status',
 				'seccubus/workspace/select',
 				'seccubus/scan/select',
 				//'seccubus/fixtures',
@@ -60,15 +53,11 @@ limitations under the License.
 					$('#scans').seccubus_scan_select({
 						workspace	: gui_state.attr("workspace"),
 					});
-					update_filter();
+					update_findings();
 				});
 				gui_state.bind("scans", function(ev, sc){
-					update_filter();
+					update_findings();
 				});
-				gui_state.bind("status", function(ev, sc){
-					update_filter();
-				});
-
 				$('#workspace').change(function() {
 					gui_state.attr("workspace",$(this).attr("value"));
 				});
@@ -79,19 +68,13 @@ limitations under the License.
 				$('#workspace').seccubus_workspace_select();
 				$('#workspace').attr("value", -1);
 				$('#scans').seccubus_scan_select();
-				
-				$('.setStatus').click( function(){
-					s = $(this).attr("value");
-					gui_state.attr("status",s);
-				});
+				$('#status').seccubus_status_status();
 
-				$('#filter').seccubus_finding_filter();
-
-				function update_filter() {
-					$('#filter').seccubus_finding_filter({
+				function update_findings() {
+					$('#status').seccubus_status_status({
 						workspace	: gui_state.attr("workspace"),
 						scans		: gui_state.attr("scans"),
-						status		: gui_state.attr("status"),
+						onClick		: function(val) { alert(val); },
 					});
 				};
 			})
