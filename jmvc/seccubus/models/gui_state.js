@@ -75,7 +75,27 @@ $.Model('Seccubus.GuiState',
 	 * - Default value: *
 	 * - Special value: * - No plugin filtering
 	 */
-		plugin		: "*"
+		plugin		: "*",
+	/*
+         * @attribute severity
+         * Determines which severity is filtered on
+         * - Default value: *
+         * - Special value: * - No Severity specified
+         */
+		severity	: "*",
+	/*
+	 * @attribute finding
+	 * Determines which string should occur in the the findings
+	 * - Default value: *
+	 * - Special value: * - Don't filter on finding
+	 */
+		finding		: "*",
+	/* @attribute remark
+	 * Determines whcih string should occur in the finding
+	 * - default value: *
+	 * - special value: * - Don't filter on remark
+	 */
+		remark		: "*"
 	}
 },
 /* @Prototype */
@@ -113,6 +133,9 @@ $.Model('Seccubus.GuiState',
 			this.attr("hostName","*");
 			this.attr("port","*");
 			this.attr("plugin","*");
+			this.attr("severity","*");
+			this.attr("finding","*");
+			this.attr("remark","*");
 		}
 		return(ws);
 	}
