@@ -8,6 +8,9 @@
 .*.swp
 tmp/
 
+# Config
+etc/config.xml
+
 # Temporary files used for building
 errors.txt
 Makefile

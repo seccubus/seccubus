@@ -30,6 +30,7 @@ use Algorithm::Diff qw( diff );
 
 @EXPORT = qw ( 
 		get_findings
+		get_status
 		get_finding
 		update_finding
 		process_status
@@ -40,6 +41,7 @@ use strict;
 use Carp;
 
 sub get_findings($;$$);
+sub get_status($$;$);
 sub get_finding($$;);
 sub update_finding(@);
 sub diff_finding($$$$$;);
@@ -60,6 +62,8 @@ This function returns a reference to an array of findings
 =item workspace_id - id of the workspace
 
 =item scan_id - id of the scan if 0 this parameter is disregarded
+
+=item filter - reference to a hash containing filters
 
 =back 
 
@@ -100,12 +104,19 @@ sub get_findings($;$$) {
 		}
 
 		if ( $filter ) {
+			if ( $filter->{status} ) {
+				$query .= " AND status = ? ";
+				push @$params, $filter->{status};
+			}
 			if ( $filter->{host} ) {
-				$query .= " AND host = ? ";
+				$filter->{host} =~ s/\*/\%/;
+				$query .= " AND host LIKE ? ";
 				push @$params, $filter->{host};
 			}
 			if ( $filter->{hostname} ) {
-				$query .= " AND host_names.name = ? ";
+				$filter->{hostname} =~ s/\*/\%/;
+				$filter->{hostname} = "%$filter->{hostname}%";
+				$query .= " AND host_names.name LIKE ? ";
 				push @$params, $filter->{hostname};
 			}
 			if ( $filter->{port} ) {
@@ -132,6 +143,114 @@ sub get_findings($;$$) {
 		
 		$query .= " ORDER BY host, port, plugin ";
 
+
+		return sql( "return"	=> "ref",
+			    "query"	=> $query,
+			    "values"	=> $params,
+		          );
+	} else {
+		die "Permission denied!";
+	}
+}
+
+=head2 get_status
+
+This function returns an array of statusses and the amount of findings in it, 
+given a specific filter
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item workspace_id - id of the workspace
+
+=item scan_ids - reference to an araay of scan ids
+
+=item filter - reference to a hash containing filters
+
+=back 
+
+=item Checks
+
+Must have at least read rights
+
+=back
+
+=cut
+
+sub get_status($$;$) {
+	my $workspace_id = shift or die "No workspace_id provided";
+	my $scan_ids = shift;
+	my $filter = shift;
+
+	die "Must specify scanids for function get_status" unless @$scan_ids;
+
+	if ( may_read($workspace_id) ) {
+		my $params;
+		push @$params, $workspace_id;
+
+		my $query = "
+			SELECT	finding_status.id, finding_status.name, count(findings.id)
+			FROM
+				finding_status
+			LEFT JOIN findings on ( findings.status =  finding_status.id AND findings.workspace_id = ?";
+		$query .= " AND findings.scan_id in ( ? ";
+
+		push @$params, shift ( @$scan_ids );
+		while ( @$scan_ids ) {
+			$query .= " , ? ";
+			push @$params, shift ( @$scan_ids );
+		}
+		$query .= " ) ";
+		
+		if ( $filter ) {
+			if ( $filter->{host} ) {
+				$filter->{host} =~ s/\*/\%/;
+				$query .= " AND host LIKE ? ";
+				push @$params, $filter->{host};
+			}
+			if ( $filter->{port} ) {
+				$query .= " AND port = ? ";
+				push @$params, $filter->{port};
+			}
+			if ( $filter->{plugin} ) {
+				$query .= " AND plugin = ? ";
+				push @$params, $filter->{plugin};
+			}
+			if ( $filter->{severity} ) {
+				$query .= " AND findings.severity = ? ";
+				push @$params, $filter->{severity};
+			}
+			if ( $filter->{finding} ) {
+				$query .= " AND finding LIKE ? ";
+				push @$params, "%" . $filter->{finding} . "%";
+			}
+			if ( $filter->{remark} ) {
+				$query .= " AND remark LIKE ?";
+				push @$params, "%" . $filter->{remark} . "%";
+			}
+
+		$query .= " ) ";
+
+		$query .= "
+			LEFT JOIN host_names on ( host_names.ip = host and host_names.workspace_id = ?";
+		push @$params, $workspace_id;
+
+		}
+		if ( $filter ) {
+			if ( $filter->{hostname} ) {
+				$filter->{hostname} =~ s/\*/\%/;
+				$filter->{hostname} = "%$filter->{hostname}%";
+				$query .= " AND host_names.name LIKE ? ";
+				push @$params, $filter->{hostname};
+			}
+		}
+
+		$query .= " ) ";
+		
+		$query .= " GROUP BY finding_status.id";
 
 		return sql( "return"	=> "ref",
 			    "query"	=> $query,

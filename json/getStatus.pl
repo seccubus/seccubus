@@ -49,29 +49,16 @@ eval {
 			$filter{lc($key)} = $query->param($key); 
 		}
 	}
-	#$filter{finding} = $query->param("finding") if $query->param("finding");
-	#$filter{remark} = $query->param("remark") if $query->param("remark");
 
-	foreach my $scan_id ( @scan_ids ) {
-		my $findings = get_findings($workspace_id, $scan_id, \%filter);
-
-		foreach my $row ( @$findings ) {
-			push (@data, {
-				'id'		=> $$row[0],
-				'host'		=> $$row[1],
-				'hostName'	=> $$row[2],
-				'port'		=> $$row[3],
-				'plugin'	=> $$row[4],
-				'find'		=> $$row[5],
-				'remark'	=> $$row[6],
-		 		'severity'	=> $$row[7],
-				'severityName'	=> $$row[8],
-				'status'	=> $$row[9],
-				'statusName'	=> $$row[10],
-				'scanId'	=> $$row[11],
-			});
-		}
+	my @data;
+	foreach my $status ( @{get_status($workspace_id, \@scan_ids, \%filter)} ) {
+		my %button = ();
+		$button{id} = $$status[0];
+		$button{name} = $$status[1];
+		$button{count} = $$status[2];
+		push @data, \%button;
 	}
+
 	print $json->pretty->encode(\@data);
 } or do {
 	bye(join "\n", $@);

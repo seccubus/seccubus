@@ -26,9 +26,11 @@
 	severitys["*"] = 0;
 
 	for ( var i = 0; i < this.length ; i++ ) { 
+/*
 		if(this[i].isMatch({ 			// Only consider stuff in scans
 			scans : fScans
 		})) {
+*/
 			if ( typeof hosts[this[i].host] == 'undefined' ) {
 				hosts[this[i].host] = 0;
 			}
@@ -66,7 +68,7 @@
 				severitys["*"]++;
 			} 
 		}
-	} 
+//	} 
 
 	for(var ip in hosts) {
 		var octets = ip.split(".");
