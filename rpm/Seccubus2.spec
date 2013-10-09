@@ -380,6 +380,7 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getRuns.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getScanners.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getScans.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getStatus.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getWorkspaces.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateFinding.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/updateFindings.pl
