@@ -161,7 +161,16 @@ $.Controller('Seccubus.Finding.Filter',
 					'init',
 					Seccubus.Models.Finding.findAll({
 						workspaceId	: this.options.workspace,
-						scanIds		: this.options.scans
+						scanIds		: this.options.scans//,
+						//Status		: this.options.status,
+						//Host		: this.options.host,
+						//HostName	: this.options.hostName,
+						//Port		: this.options.port,
+						//Plugin		: this.options.plugin,
+						//Severity	: this.options.severity,
+						//Finding		: this.options.finding,
+						//Remark		: this.options.remark
+						
 					}), 
 					{
 						fScans : this.options.scans,
