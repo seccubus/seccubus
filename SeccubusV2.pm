@@ -39,10 +39,10 @@ $config = "/home/seccubus/etc/config.xml" unless -e $config;
 					# Bug #62 - /home/seccubus/etc missing
 $config = "/etc/seccubus/config.xml" unless -e $config;
 
+$config = "/opt/seccubus/etc/config.xml" unless -e $config;
+
 # This line should prevent issue 21 dummy.config.xml should never exist
 $config = "etc/dummy.config.xml" unless -e $config;
-
-$config = "/opt/seccubus/etc/config.xml" unless -e $config;
 
 # Module directory
 use lib "/opt/seccubus/SeccubusV2";

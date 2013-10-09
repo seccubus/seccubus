@@ -89,7 +89,7 @@ require SeccubusDB;
 my $dbh = SeccubusDB::open_database();
 
 if ( ! $dbh ) {
-	result($data, "Datatbase login", "Unable to log into the the database. Either the definitions in '$config_file' are incorrect or you need to create '$config->{database}->{engine}' database '$config->{database}->{database}' on host '$config->{database}->{host}' and grant user '$config->{database}->{user}' the rights to login in with the specified password and use the database", "Error");
+	result($data, "Database login", "Unable to log into the the database. Either the definitions in '$config_file' are incorrect or you need to create '$config->{database}->{engine}' database '$config->{database}->{database}' on host '$config->{database}->{host}' and grant user '$config->{database}->{user}' the rights to login in with the specified password and use the database", "Error");
 	bye($data);
 } else {
 	result($data, "Database login", "Login to database '$config->{database}->{database}' on host '$config->{database}->{host}' with the credentials from '$config_file', was successful", "OK");
@@ -129,6 +129,8 @@ eval {
 			$file .= "upgrade_v1_v2." . $config->{database}->{engine};
 		} elsif ( $version[0] eq "2" ) {
 			$file .= "upgrade_v2_v3." . $config->{database}->{engine};
+		} elsif ( $version[0] eq "3" ) {
+			$file .= "upgrade_v3_v4." . $config->{database}->{engine};
 		} else {
 			result($data,"Database error", "Your database returned version number '$version[0]', the developers for Seccubus do not know what to do with this", "Error");
 			bye($data);

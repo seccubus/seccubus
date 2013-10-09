@@ -132,7 +132,11 @@ def show_policy(options)
         entry=Hash.new
         entry['id']=policy.elements['policyID'].text
         entry['name']=policy.elements['policyName'].text
-        entry['comment']=policy.elements['policyComments'].text
+        if policy.elements['policyComments'] == nil
+	    entry['comment']=" "
+	else
+	    entry['comment']=policy.elements['policyComments'].text
+	end
         policies.push(entry)
     }
     puts("ID\tName")
@@ -251,7 +255,11 @@ docxml.elements.each('/reply/contents/policies/policies/policy') { |policy|
     entry=Hash.new
     entry['id']=policy.elements['policyID'].text
     entry['name']=policy.elements['policyName'].text
-    entry['comment']=policy.elements['policyComments'].text
+    if policy.elements['policyComments'] == nil
+        entry['comment']=" "
+    else
+	entry['comment']=policy.elements['policyComments'].text
+    end
     policies.push(entry)
 }
 match = nil
