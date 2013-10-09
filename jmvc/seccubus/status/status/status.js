@@ -142,7 +142,7 @@ $.Controller('Seccubus.Status.Status',
 						Remark		: this.options.remark
 					}),
 					{
-						sStatus		: this.options.status,
+						sStatus		: this.options.status
 					}
 				)
 			);
