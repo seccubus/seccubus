@@ -53,14 +53,12 @@ steal(
 			render_scan_selectors();
 			render_scan_table();
 			render_scan_lists();
-			render_status();
 			render_findings();
 			render_runs();
 			render_create_scan();
 			render_bulkedit();
 		});
 		gui_state.bind("scans", function(ev, scan){
-			render_status();
 			render_findings();
 			render_runs();
 		});
@@ -69,33 +67,38 @@ steal(
 			render_bulkedit();
 		});
 		gui_state.bind("host", function(ev, scan){
-			render_status();
 			render_findings();
 		});
 		gui_state.bind("hostName", function(ev, scan){
-			render_status();
 			render_findings();
 		});
 		gui_state.bind("port", function(ev, scan){
-			render_status();
 			render_findings();
 		});
 		gui_state.bind("plugin", function(ev, scan){
-			render_status();
 			render_findings();
 		});
 		gui_state.bind("severity", function(ev, scan){
-			render_status();
 			render_findings();
 		});
 		gui_state.bind("finding", function(ev, scan){
-			render_status();
 			render_findings();
 		});
 		gui_state.bind("remark", function(ev, scan){
-			render_status();
 			render_findings();
 		});
+
+
+		/***********************************************************
+		 * Hook into findings model to update findings view that
+		 * are not rendered from findings model
+		 **********************************************************/
+		Seccubus.Models.Finding.bind(
+			"updated",
+			function(ev,model) {
+				render_status();
+			}
+		);
 
 		/***********************************************************
 		 * Setup the screen
@@ -205,6 +208,7 @@ steal(
 		function render_findings() {
 			render_finding_table();
 			render_filters();
+			render_status();
 		}
 
 		function render_scan_selectors() {
