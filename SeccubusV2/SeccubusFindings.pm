@@ -31,6 +31,7 @@ use Algorithm::Diff qw( diff );
 @EXPORT = qw ( 
 		get_findings
 		get_status
+		get_filters
 		get_finding
 		update_finding
 		process_status
@@ -42,6 +43,7 @@ use Carp;
 
 sub get_findings($;$$);
 sub get_status($$;$);
+sub get_filters($$;$);
 sub get_finding($$;);
 sub update_finding(@);
 sub diff_finding($$$$$;);
@@ -256,6 +258,384 @@ sub get_status($$;$) {
 			    "query"	=> $query,
 			    "values"	=> $params,
 		          );
+	} else {
+		die "Permission denied!";
+	}
+}
+=head2 get_filters
+
+This function returns an hash of filters needed with a specific filter given a specific filter
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item workspace_id - id of the workspace
+
+=item scan_ids - reference to an araay of scan ids
+
+=item filter - reference to a hash containing filter
+
+=back 
+
+=item Checks
+
+Must have at least read rights
+
+=back
+
+=cut
+
+sub get_filters($$;$) {
+	my $workspace_id = shift or die "No workspace_id provided";
+	my $scan_ids = shift;
+	my $filter = shift;
+
+	die "Must specify scanids for function get_status" unless @$scan_ids;
+
+	if ( may_read($workspace_id) ) {
+		my $params = [];
+		my %filters;
+		@$params = ( $workspace_id, $workspace_id , @$scan_ids);
+
+		# Host
+
+		my $query = "
+			SELECT  host, count(*)
+			FROM	findings
+			LEFT JOIN
+				host_names on ( host_names.ip = host and host_names.workspace_id = ? )
+			WHERE	findings.workspace_id = ? 
+			AND	findings.scan_id in ( ?";
+		my $count = -1+@$scan_ids;
+		while ( $count > 0 ) {
+			$query .= ", ?";
+			$count--;
+		}
+		$query .= " ) ";
+
+		if ( $filter ) {
+			#if ( $filter->{host} ) {
+			#	$filter->{host} =~ s/\*/\%/;
+			#	$query .= " AND host LIKE ? ";
+			#	push @$params, $filter->{host};
+			#}
+			if ( $filter->{hostname} ) {
+				$filter->{hostname} =~ s/\*/\%/;
+				$filter->{hostname} = "%$filter->{hostname}%";
+				$query .= " AND host_names.name LIKE ? ";
+				push @$params, $filter->{hostname};
+			}
+			if ( $filter->{port} ) {
+				$query .= " AND port = ? ";
+				push @$params, $filter->{port};
+			}
+			if ( $filter->{plugin} ) {
+				$query .= " AND plugin = ? ";
+				push @$params, $filter->{plugin};
+			}
+			if ( $filter->{severity} ) {
+				$query .= " AND findings.severity = ? ";
+				push @$params, $filter->{severity};
+			}
+			if ( $filter->{finding} ) {
+				$query .= " AND finding LIKE ? ";
+				push @$params, "%" . $filter->{finding} . "%";
+			}
+			if ( $filter->{remark} ) {
+				$query .= " AND remark LIKE ?";
+				push @$params, "%" . $filter->{remark} . "%";
+			}
+		}
+		
+		$query .= " GROUP BY findings.host order by findings.host";
+
+		my $data = sql( 	"return"	=> "ref",
+					"query"		=> $query,
+					"values"	=> $params,
+		          );
+		my @result = ();
+		$filters{'host'} = [];
+		my $count = 0;
+		foreach my $row ( @$data ) {
+			my $line = {};
+			$line->{'value'} = $$row[0];
+			$line->{'count'} = $$row[1];
+			$count += $$row[1];
+			push @{$filters{'host'}}, $line;
+		}
+
+		# Host name
+
+		@$params = ( $workspace_id, $workspace_id , @$scan_ids);
+		my $query = "
+			SELECT  name, count(*)
+			FROM	findings
+			LEFT JOIN
+				host_names on ( host_names.ip = host and host_names.workspace_id = ? )
+			WHERE	findings.workspace_id = ? 
+			AND	findings.scan_id in ( ? ";
+
+		while ( $count > 0 ) {
+			$query .= ", ?";
+			$count--;
+		}
+		$query .= " ) ";
+
+		if ( $filter ) {
+			if ( $filter->{host} ) {
+				$filter->{host} =~ s/\*/\%/;
+				$query .= " AND host LIKE ? ";
+				push @$params, $filter->{host};
+			}
+			#if ( $filter->{hostname} ) {
+			#	$filter->{hostname} =~ s/\*/\%/;
+			#	$filter->{hostname} = "%$filter->{hostname}%";
+			#	$query .= " AND host_names.name LIKE ? ";
+			#	push @$params, $filter->{hostname};
+			#}
+			if ( $filter->{port} ) {
+				$query .= " AND port = ? ";
+				push @$params, $filter->{port};
+			}
+			if ( $filter->{plugin} ) {
+				$query .= " AND plugin = ? ";
+				push @$params, $filter->{plugin};
+			}
+			if ( $filter->{severity} ) {
+				$query .= " AND findings.severity = ? ";
+				push @$params, $filter->{severity};
+			}
+			if ( $filter->{finding} ) {
+				$query .= " AND finding LIKE ? ";
+				push @$params, "%" . $filter->{finding} . "%";
+			}
+			if ( $filter->{remark} ) {
+				$query .= " AND remark LIKE ?";
+				push @$params, "%" . $filter->{remark} . "%";
+			}
+		}
+		
+		$query .= " GROUP BY name ORDER BY name";
+
+		my $data = sql( 	"return"	=> "ref",
+					"query"		=> $query,
+					"values"	=> $params,
+		          );
+		$filters{'hostname'} = [];
+		foreach my $row ( @$data ) {
+			my $line = {};
+			$line->{'value'} = $$row[0];
+			$line->{'count'} = $$row[1];
+			push @{$filters{'hostname'}}, $line;
+
+		}
+
+		# Port
+
+		@$params = ( $workspace_id, $workspace_id , @$scan_ids);
+		my $query = "
+			SELECT  port, count(*)
+			FROM	findings
+			LEFT JOIN
+				host_names on ( host_names.ip = host and host_names.workspace_id = ? )
+			WHERE	findings.workspace_id = ? 
+			AND	findings.scan_id in ( ? ";
+
+		while ( $count > 0 ) {
+			$query .= ", ?";
+			$count--;
+		}
+		$query .= " ) ";
+
+		if ( $filter ) {
+			if ( $filter->{host} ) {
+				$filter->{host} =~ s/\*/\%/;
+				$query .= " AND host LIKE ? ";
+				push @$params, $filter->{host};
+			}
+			if ( $filter->{hostname} ) {
+				$filter->{hostname} =~ s/\*/\%/;
+				$filter->{hostname} = "%$filter->{hostname}%";
+				$query .= " AND host_names.name LIKE ? ";
+				push @$params, $filter->{hostname};
+			}
+			#if ( $filter->{port} ) {
+			#	$query .= " AND port = ? ";
+			#	push @$params, $filter->{port};
+			#}
+			if ( $filter->{plugin} ) {
+				$query .= " AND plugin = ? ";
+				push @$params, $filter->{plugin};
+			}
+			if ( $filter->{severity} ) {
+				$query .= " AND findings.severity = ? ";
+				push @$params, $filter->{severity};
+			}
+			if ( $filter->{finding} ) {
+				$query .= " AND finding LIKE ? ";
+				push @$params, "%" . $filter->{finding} . "%";
+			}
+			if ( $filter->{remark} ) {
+				$query .= " AND remark LIKE ?";
+				push @$params, "%" . $filter->{remark} . "%";
+			}
+		}
+		
+		$query .= " GROUP BY port ORDER BY port";
+
+		my $data = sql( 	"return"	=> "ref",
+					"query"		=> $query,
+					"values"	=> $params,
+		          );
+
+		$filters{'port'} = [];
+		foreach my $row ( @$data ) {
+			my $line = {};
+			$line->{'value'} = $$row[0];
+			$line->{'count'} = $$row[1];
+			push @{$filters{'port'}}, $line;
+
+		}
+
+		# Plugin
+
+		@$params = ( $workspace_id, $workspace_id , @$scan_ids);
+		my $query = "
+			SELECT  plugin, count(*)
+			FROM	findings
+			LEFT JOIN
+				host_names on ( host_names.ip = host and host_names.workspace_id = ? )
+			WHERE	findings.workspace_id = ? 
+			AND	findings.scan_id in ( ? ";
+
+		while ( $count > 0 ) {
+			$query .= ", ?";
+			$count--;
+		}
+		$query .= " ) ";
+
+		if ( $filter ) {
+			if ( $filter->{host} ) {
+				$filter->{host} =~ s/\*/\%/;
+				$query .= " AND host LIKE ? ";
+				push @$params, $filter->{host};
+			}
+			if ( $filter->{hostname} ) {
+				$filter->{hostname} =~ s/\*/\%/;
+				$filter->{hostname} = "%$filter->{hostname}%";
+				$query .= " AND host_names.name LIKE ? ";
+				push @$params, $filter->{hostname};
+			}
+			if ( $filter->{port} ) {
+				$query .= " AND port = ? ";
+				push @$params, $filter->{port};
+			}
+			#if ( $filter->{plugin} ) {
+			#	$query .= " AND plugin = ? ";
+			#	push @$params, $filter->{plugin};
+			#}
+			if ( $filter->{severity} ) {
+				$query .= " AND findings.severity = ? ";
+				push @$params, $filter->{severity};
+			}
+			if ( $filter->{finding} ) {
+				$query .= " AND finding LIKE ? ";
+				push @$params, "%" . $filter->{finding} . "%";
+			}
+			if ( $filter->{remark} ) {
+				$query .= " AND remark LIKE ?";
+				push @$params, "%" . $filter->{remark} . "%";
+			}
+		}
+		
+		$query .= " GROUP BY port ORDER BY port";
+
+		my $data = sql( 	"return"	=> "ref",
+					"query"		=> $query,
+					"values"	=> $params,
+		          );
+
+		$filters{'plugin'} = [];
+		foreach my $row ( @$data ) {
+			my $line = {};
+			$line->{'value'} = $$row[0];
+			$line->{'count'} = $$row[1];
+			push @{$filters{'plugin'}}, $line;
+
+		}
+
+		# Severity
+
+		@$params = ( $workspace_id, $workspace_id , @$scan_ids);
+		my $query = "
+			SELECT  severity, count(*)
+			FROM	findings
+			LEFT JOIN
+				host_names on ( host_names.ip = host and host_names.workspace_id = ? )
+			WHERE	findings.workspace_id = ? 
+			AND	findings.scan_id in ( ? ";
+
+		while ( $count > 0 ) {
+			$query .= ", ?";
+			$count--;
+		}
+		$query .= " ) ";
+
+		if ( $filter ) {
+			if ( $filter->{host} ) {
+				$filter->{host} =~ s/\*/\%/;
+				$query .= " AND host LIKE ? ";
+				push @$params, $filter->{host};
+			}
+			if ( $filter->{hostname} ) {
+				$filter->{hostname} =~ s/\*/\%/;
+				$filter->{hostname} = "%$filter->{hostname}%";
+				$query .= " AND host_names.name LIKE ? ";
+				push @$params, $filter->{hostname};
+			}
+			if ( $filter->{port} ) {
+				$query .= " AND port = ? ";
+				push @$params, $filter->{port};
+			}
+			if ( $filter->{plugin} ) {
+				$query .= " AND plugin = ? ";
+				push @$params, $filter->{plugin};
+			}
+			#if ( $filter->{severity} ) {
+			#	$query .= " AND findings.severity = ? ";
+			#	push @$params, $filter->{severity};
+			#}
+			if ( $filter->{finding} ) {
+				$query .= " AND finding LIKE ? ";
+				push @$params, "%" . $filter->{finding} . "%";
+			}
+			if ( $filter->{remark} ) {
+				$query .= " AND remark LIKE ?";
+				push @$params, "%" . $filter->{remark} . "%";
+			}
+		}
+		
+		$query .= " GROUP BY port ORDER BY port";
+
+		my $data = sql( 	"return"	=> "ref",
+					"query"		=> $query,
+					"values"	=> $params,
+		          );
+
+		$filters{'severity'} = [];
+		foreach my $row ( @$data ) {
+			my $line = {};
+			$line->{'value'} = $$row[0];
+			$line->{'count'} = $$row[1];
+			push @{$filters{'severity'}}, $line;
+
+		}
+
+		# Return result
+		return %filters;
 	} else {
 		die "Permission denied!";
 	}
