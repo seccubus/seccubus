@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// steal model files
-steal(	"jquery/model", 
-	'./up_to_date.js', 
-	'./config_item.js',
-	'./workspace.js',
-	'./scan.js', 
-	'./finding.js', 
-	'./filter.js',
-	'./status.js', 
-	'./gui_state.js', 
-	'./scanner.js', 
-	'./history.js', 
-	'./run.js',
-	'./event.js',
-	'./notification.js')
+steal('funcunit').then(function(){
+
+module("Seccubus.Finding.Filter", { 
+	setup: function(){
+		S.open("//seccubus/finding/filter/filter.html");
+	}
+});
+
+test("Text Test", function(){
+	equals(S("h1").text(), "Seccubus.Finding.Filter Demo","demo text");
+});
+
+
+});
