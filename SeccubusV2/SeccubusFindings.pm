@@ -25,6 +25,7 @@ use SeccubusDB;
 use SeccubusRights;
 use SeccubusUsers;
 use Algorithm::Diff qw( diff );
+use JSON;
 
 @ISA = ('Exporter');
 
