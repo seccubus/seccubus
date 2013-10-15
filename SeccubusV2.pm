@@ -48,7 +48,7 @@ $config = "etc/dummy.config.xml" unless -e $config;
 use lib "/opt/seccubus/SeccubusV2";
 push (@main::INC, @INC);
 
-$VERSION = '2.2';
+$VERSION = '2.3';
 
 use strict;
 use Carp;
