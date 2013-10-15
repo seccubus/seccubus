@@ -290,355 +290,268 @@ Must have at least read rights
 
 sub get_filters($$;$) {
 	my $workspace_id = shift or die "No workspace_id provided";
-	my $scan_ids = shift;
+	my $scan_ids = shift or die "Must specify scanids for function get_status";
 	my $filter = shift;
 
-	die "Must specify scanids for function get_status" unless @$scan_ids;
 
+	# finding -> id, host, hostname, port, plugin, findingl, remark, severity, status, status_txt
+	# filter -> host hostname port plugin finding remark severity status
 	if ( may_read($workspace_id) ) {
-		my $params = [];
+		my @findings;
 		my %filters;
-		@$params = ( $workspace_id, $workspace_id , @$scan_ids);
-
+		foreach my $scan ( @$scan_ids ) {
+			my $finds = get_findings($workspace_id,$scan);
+			push @findings, @$finds;
+		}
+		foreach my $find ( @findings ) {
+			$filters{"host"}{$$find[1]} += match($find,$filter,[ "hostname", "port", "plugin", "finding", "remark", "severity", "status"]);
+			$filters{"hostname"}{$$find[2]} += match($find,$filter,[ "host", "port", "plugin", "finding", "remark", "severity", "status"]);
+			$filters{"port"}{$$find[3]} += match($find,$filter,[ "host", "hostname", "plugin", "finding", "remark", "severity", "status"]);
+			$filters{"plugin"}{$$find[4]} += match($find,$filter,[ "host", "hostname", "port", "finding", "remark", "severity", "status"]);
+			$filters{"severity"}{"$$find[7] - $$find[8]"} += match($find,$filter,[ "host", "hostname", "port", "plugin", "finding", "remark", "status"]);
+		}
 		# Host
-
-		my $query = "
-			SELECT  host, count(*)
-			FROM	findings
-			LEFT JOIN
-				host_names on ( host_names.ip = host and host_names.workspace_id = ? )
-			WHERE	findings.workspace_id = ? 
-			AND	findings.scan_id in ( ?";
-		my $count = -1+@$scan_ids;
-		while ( $count > 0 ) {
-			$query .= ", ?";
-			$count--;
-		}
-		$query .= " ) ";
-
-		if ( $filter ) {
-			#if ( $filter->{host} ) {
-			#	$filter->{host} =~ s/\*/\%/;
-			#	$query .= " AND host LIKE ? ";
-			#	push @$params, $filter->{host};
-			#}
-			if ( $filter->{hostname} ) {
-				$filter->{hostname} =~ s/\*/\%/;
-				$filter->{hostname} = "%$filter->{hostname}%";
-				$query .= " AND host_names.name LIKE ? ";
-				push @$params, $filter->{hostname};
-			}
-			if ( $filter->{port} ) {
-				$query .= " AND port = ? ";
-				push @$params, $filter->{port};
-			}
-			if ( $filter->{plugin} ) {
-				$query .= " AND plugin = ? ";
-				push @$params, $filter->{plugin};
-			}
-			if ( $filter->{severity} ) {
-				$query .= " AND findings.severity = ? ";
-				push @$params, $filter->{severity};
-			}
-			if ( $filter->{finding} ) {
-				$query .= " AND finding LIKE ? ";
-				push @$params, "%" . $filter->{finding} . "%";
-			}
-			if ( $filter->{remark} ) {
-				$query .= " AND remark LIKE ?";
-				push @$params, "%" . $filter->{remark} . "%";
+		# Generate wildcard values
+		foreach my $host ( keys %{$filters{"host"}} ) {
+			$filters{"host"}{"*"} += $filters{"host"}{$host};
+			my @subs = split(/\./, $host);
+			my $addr = "";
+			while ( 1 < @subs ) {
+				$addr .= shift @subs;
+				$addr .= ".";
+				$filters{"host"}{"$addr*"} += $filters{"host"}{$host};
 			}
 		}
-		
-		$query .= " GROUP BY findings.host order by findings.host";
-
-		my $data = sql( 	"return"	=> "ref",
-					"query"		=> $query,
-					"values"	=> $params,
-		          );
-		my @result = ();
-		$filters{'host'} = [];
-		my $count = 0;
-		foreach my $row ( @$data ) {
-			my $line = {};
-			$line->{'value'} = $$row[0];
-			$line->{'count'} = $$row[1];
-			$count += $$row[1];
-			push @{$filters{'host'}}, $line;
-		}
-
-		# Host name
-
-		@$params = ( $workspace_id, $workspace_id , @$scan_ids);
-		my $query = "
-			SELECT  name, count(*)
-			FROM	findings
-			LEFT JOIN
-				host_names on ( host_names.ip = host and host_names.workspace_id = ? )
-			WHERE	findings.workspace_id = ? 
-			AND	findings.scan_id in ( ? ";
-
-		while ( $count > 0 ) {
-			$query .= ", ?";
-			$count--;
-		}
-		$query .= " ) ";
-
-		if ( $filter ) {
-			if ( $filter->{host} ) {
-				$filter->{host} =~ s/\*/\%/;
-				$query .= " AND host LIKE ? ";
-				push @$params, $filter->{host};
-			}
-			#if ( $filter->{hostname} ) {
-			#	$filter->{hostname} =~ s/\*/\%/;
-			#	$filter->{hostname} = "%$filter->{hostname}%";
-			#	$query .= " AND host_names.name LIKE ? ";
-			#	push @$params, $filter->{hostname};
-			#}
-			if ( $filter->{port} ) {
-				$query .= " AND port = ? ";
-				push @$params, $filter->{port};
-			}
-			if ( $filter->{plugin} ) {
-				$query .= " AND plugin = ? ";
-				push @$params, $filter->{plugin};
-			}
-			if ( $filter->{severity} ) {
-				$query .= " AND findings.severity = ? ";
-				push @$params, $filter->{severity};
-			}
-			if ( $filter->{finding} ) {
-				$query .= " AND finding LIKE ? ";
-				push @$params, "%" . $filter->{finding} . "%";
-			}
-			if ( $filter->{remark} ) {
-				$query .= " AND remark LIKE ?";
-				push @$params, "%" . $filter->{remark} . "%";
+		# Sort by IP (See http://www.perlmonks.org/?node_id=22432)
+		my %hosts = %{$filters{"host"}};
+		my @hosts = map  { $_->[0] }
+			sort { $a->[1] cmp $b->[1] }
+			map  { [$_, sprintf("%03.f%03.f%03.f%03.f", split(/\./, $_))] }
+			keys %{$filters{"host"}} ;
+		my @hosts2 = ( );
+		my @hosts3 = ( );
+		foreach my $host ( @hosts ) {
+			my $selected = JSON::false;
+			$selected = JSON::true if $host eq $filter->{"host"};
+			if ( $hosts{$host} > 0 ) {
+				push @hosts2, { 
+					"name" => $host,
+					"selected" => $selected,
+					"number" => $hosts{$host}
+				};
+			} else {
+				push @hosts3, { 
+					"name" => $host,
+					"selected" => $selected,
+					"number" => $hosts{$host}
+				};
 			}
 		}
-		
-		$query .= " GROUP BY name ORDER BY name";
+		@hosts = ( @hosts2, { "name" => "---", "number" => -1 }, @hosts3 );
+		$filters{"host"} = \@hosts;
 
-		my $data = sql( 	"return"	=> "ref",
-					"query"		=> $query,
-					"values"	=> $params,
-		          );
-		$filters{'hostname'} = [];
-		foreach my $row ( @$data ) {
-			my $line = {};
-			$line->{'value'} = $$row[0];
-			$line->{'count'} = $$row[1];
-			push @{$filters{'hostname'}}, $line;
-
-		}
-
-		# Port
-
-		@$params = ( $workspace_id, $workspace_id , @$scan_ids);
-		my $query = "
-			SELECT  port, count(*)
-			FROM	findings
-			LEFT JOIN
-				host_names on ( host_names.ip = host and host_names.workspace_id = ? )
-			WHERE	findings.workspace_id = ? 
-			AND	findings.scan_id in ( ? ";
-
-		while ( $count > 0 ) {
-			$query .= ", ?";
-			$count--;
-		}
-		$query .= " ) ";
-
-		if ( $filter ) {
-			if ( $filter->{host} ) {
-				$filter->{host} =~ s/\*/\%/;
-				$query .= " AND host LIKE ? ";
-				push @$params, $filter->{host};
-			}
-			if ( $filter->{hostname} ) {
-				$filter->{hostname} =~ s/\*/\%/;
-				$filter->{hostname} = "%$filter->{hostname}%";
-				$query .= " AND host_names.name LIKE ? ";
-				push @$params, $filter->{hostname};
-			}
-			#if ( $filter->{port} ) {
-			#	$query .= " AND port = ? ";
-			#	push @$params, $filter->{port};
-			#}
-			if ( $filter->{plugin} ) {
-				$query .= " AND plugin = ? ";
-				push @$params, $filter->{plugin};
-			}
-			if ( $filter->{severity} ) {
-				$query .= " AND findings.severity = ? ";
-				push @$params, $filter->{severity};
-			}
-			if ( $filter->{finding} ) {
-				$query .= " AND finding LIKE ? ";
-				push @$params, "%" . $filter->{finding} . "%";
-			}
-			if ( $filter->{remark} ) {
-				$query .= " AND remark LIKE ?";
-				push @$params, "%" . $filter->{remark} . "%";
+		# Hostnames
+		my @hostnames1 = ();
+		my @hostnames2 = ();
+		my $total = 0;
+		foreach my $hostname ( sort keys %{$filters{"hostname"}} ) {
+			$total += $filters{"hostname"}{$hostname};
+			my $selected = JSON::false;
+			$selected = JSON::true if $filter->{"hostname"} eq $hostname;
+			if ( $filters{"hostname"}{$hostname} > 0 ) {
+				push @hostnames1, {
+					"name" => $hostname,
+					"selected" => $selected,
+					"number" => $filters{"hostname"}{$hostname}
+				};
+			} else {
+				push @hostnames2, {
+					"name" => $hostname,
+					"selected" => $selected,
+					"number" => $filters{"hostname"}{$hostname}
+				};
 			}
 		}
-		
-		$query .= " GROUP BY port ORDER BY port";
+		my @hostnames = ( { "name" => "*", "number" => $total }, @hostnames1, { "name" => "---", "number" => -1 }, @hostnames2 );
+		$filters{"hostname"} = \@hostnames;
 
-		my $data = sql( 	"return"	=> "ref",
-					"query"		=> $query,
-					"values"	=> $params,
-		          );
-
-		$filters{'port'} = [];
-		foreach my $row ( @$data ) {
-			my $line = {};
-			$line->{'value'} = $$row[0];
-			$line->{'count'} = $$row[1];
-			push @{$filters{'port'}}, $line;
-
+		# port
+		my @ports1 = ();
+		my @ports2 = ();
+		my $total = 0;
+		foreach my $port ( sort { $a <=> $b} keys %{$filters{"port"}} ) {
+			$total += $filters{"port"}{$port};
+			my $selected = JSON::false;
+			$selected = JSON::true if $filter->{"port"} eq $port;
+			if ( $filters{"port"}{$port} > 0 ) {
+				push @ports1, {
+					"name" => $port,
+					"selected" => $selected,
+					"number" => $filters{"port"}{$port}
+				};
+			} else {
+				push @ports2, {
+					"name" => $port,
+					"selected" => $selected,
+					"number" => $filters{"port"}{$port}
+				};
+			}
 		}
+		my @ports = ( { "name" => "*", "number" => $total }, @ports1, { "name" => "---", "number" => -1 }, @ports2 );
+		$filters{"port"} = \@ports;
 
 		# Plugin
-
-		@$params = ( $workspace_id, $workspace_id , @$scan_ids);
-		my $query = "
-			SELECT  plugin, count(*)
-			FROM	findings
-			LEFT JOIN
-				host_names on ( host_names.ip = host and host_names.workspace_id = ? )
-			WHERE	findings.workspace_id = ? 
-			AND	findings.scan_id in ( ? ";
-
-		while ( $count > 0 ) {
-			$query .= ", ?";
-			$count--;
-		}
-		$query .= " ) ";
-
-		if ( $filter ) {
-			if ( $filter->{host} ) {
-				$filter->{host} =~ s/\*/\%/;
-				$query .= " AND host LIKE ? ";
-				push @$params, $filter->{host};
-			}
-			if ( $filter->{hostname} ) {
-				$filter->{hostname} =~ s/\*/\%/;
-				$filter->{hostname} = "%$filter->{hostname}%";
-				$query .= " AND host_names.name LIKE ? ";
-				push @$params, $filter->{hostname};
-			}
-			if ( $filter->{port} ) {
-				$query .= " AND port = ? ";
-				push @$params, $filter->{port};
-			}
-			#if ( $filter->{plugin} ) {
-			#	$query .= " AND plugin = ? ";
-			#	push @$params, $filter->{plugin};
-			#}
-			if ( $filter->{severity} ) {
-				$query .= " AND findings.severity = ? ";
-				push @$params, $filter->{severity};
-			}
-			if ( $filter->{finding} ) {
-				$query .= " AND finding LIKE ? ";
-				push @$params, "%" . $filter->{finding} . "%";
-			}
-			if ( $filter->{remark} ) {
-				$query .= " AND remark LIKE ?";
-				push @$params, "%" . $filter->{remark} . "%";
+		my @plugins1 = ();
+		my @plugins2 = ();
+		my $total = 0;
+		foreach my $plugin ( sort keys %{$filters{"plugin"}} ) {
+			$total += $filters{"plugin"}{$plugin};
+			my $selected = JSON::false;
+			$selected = JSON::true if $filter->{"plugin"} eq $plugin;
+			if ( $filters{"plugin"}{$plugin} > 0 ) {
+				push @plugins1, {
+					"name" => $plugin,
+					"selected" => $selected,
+					"number" => $filters{"plugin"}{$plugin}
+				};
+			} else {
+				push @plugins2, {
+					"name" => $plugin,
+					"selected" => $selected,
+					"number" => $filters{"plugin"}{$plugin}
+				};
 			}
 		}
-		
-		$query .= " GROUP BY port ORDER BY port";
-
-		my $data = sql( 	"return"	=> "ref",
-					"query"		=> $query,
-					"values"	=> $params,
-		          );
-
-		$filters{'plugin'} = [];
-		foreach my $row ( @$data ) {
-			my $line = {};
-			$line->{'value'} = $$row[0];
-			$line->{'count'} = $$row[1];
-			push @{$filters{'plugin'}}, $line;
-
-		}
+		my @plugins = ( { "name" => "*", "number" => $total }, @plugins1, { "name" => "---", "number" => -1 }, @plugins2 );
+		$filters{"plugin"} = \@plugins;
 
 		# Severity
-
-		@$params = ( $workspace_id, $workspace_id , @$scan_ids);
-		my $query = "
-			SELECT  severity, count(*)
-			FROM	findings
-			LEFT JOIN
-				host_names on ( host_names.ip = host and host_names.workspace_id = ? )
-			WHERE	findings.workspace_id = ? 
-			AND	findings.scan_id in ( ? ";
-
-		while ( $count > 0 ) {
-			$query .= ", ?";
-			$count--;
-		}
-		$query .= " ) ";
-
-		if ( $filter ) {
-			if ( $filter->{host} ) {
-				$filter->{host} =~ s/\*/\%/;
-				$query .= " AND host LIKE ? ";
-				push @$params, $filter->{host};
-			}
-			if ( $filter->{hostname} ) {
-				$filter->{hostname} =~ s/\*/\%/;
-				$filter->{hostname} = "%$filter->{hostname}%";
-				$query .= " AND host_names.name LIKE ? ";
-				push @$params, $filter->{hostname};
-			}
-			if ( $filter->{port} ) {
-				$query .= " AND port = ? ";
-				push @$params, $filter->{port};
-			}
-			if ( $filter->{plugin} ) {
-				$query .= " AND plugin = ? ";
-				push @$params, $filter->{plugin};
-			}
-			#if ( $filter->{severity} ) {
-			#	$query .= " AND findings.severity = ? ";
-			#	push @$params, $filter->{severity};
-			#}
-			if ( $filter->{finding} ) {
-				$query .= " AND finding LIKE ? ";
-				push @$params, "%" . $filter->{finding} . "%";
-			}
-			if ( $filter->{remark} ) {
-				$query .= " AND remark LIKE ?";
-				push @$params, "%" . $filter->{remark} . "%";
+		my @sev1 = ();
+		my @sev2 = ();
+		my $total = 0;
+		foreach my $sev ( sort keys %{$filters{"severity"}} ) {
+			$total += $filters{"severity"}{$sev};
+			my $selected = JSON::false;
+			$selected = JSON::true if $sev =~ /^$filter->{"severity"} /;
+			if ( $filters{"severity"}{$sev} > 0 ) {
+				$sev =~ /^(\d+)/;
+				push @sev1, {
+					"name" => $sev,
+					"selected" => $selected,
+					"value" => $1,
+					"number" => $filters{"severity"}{$sev},
+				};
+			} else {
+				$sev =~ /^(\d+)/;
+				push @sev2, {
+					"name" => $sev,
+					"selected" => $selected,
+					"value" => $1,
+					"number" => $filters{"severity"}{$sev},
+				};
 			}
 		}
-		
-		$query .= " GROUP BY port ORDER BY port";
+		my @sev = ( { "name" => "*", "number" => $total }, @sev1, { "name" => "---", "number" => -1 }, @sev2 );
+		$filters{"severity"} = \@sev;
 
-		my $data = sql( 	"return"	=> "ref",
-					"query"		=> $query,
-					"values"	=> $params,
-		          );
+		$filter->{"finding"} = "" unless $filter->{"finding"};
+		$filters{"finding"} = $filter->{"finding"};
+		$filter->{"remark"} = "" unless $filter->{"remark"};
+		$filters{"remark"} = $filter->{"remark"};
 
-		$filters{'severity'} = [];
-		foreach my $row ( @$data ) {
-			my $line = {};
-			$line->{'value'} = $$row[0];
-			$line->{'count'} = $$row[1];
-			push @{$filters{'severity'}}, $line;
-
-		}
-
-		# Return result
 		return %filters;
 	} else {
 		die "Permission denied!";
 	}
+}
+
+=head2 match
+
+Private function that returns 1 if a finding matches a filter or 0 if it doesn't
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item finding - Reference to an array that containst the finding as returned by get_findings
+
+=item filter - Reference to a hash containing the filter
+
+=item fields (Optional) - Only match on these fields
+
+=back
+
+=back
+
+=cut
+
+sub match($$;$) {
+	my $finding = shift or die "No finding specified for match";
+	my $filter = shift or die "No filter specified for match";
+	my $fields = shift;
+
+	unless ($fields) {
+		$fields = [];
+		push @$fields, qw( host hostname port plugin finding remark severity status);
+	}
+	my %filter2;
+	foreach my $field ( @$fields ) {
+		$filter2{$field} = $filter->{$field};
+	}
+	my $match = 1;
+	#id
+	#host
+	if ( $filter2{"host"} && $filter2{"host"} && $filter2{"host"} ne "*" ) {# We have to filter
+		my $re = $filter2{"host"};
+		$re =~ s/\./\\\./g;
+		$re =~ s/\*/\.\*/g;
+		if ( $$finding[1] !~ /^$re$/ ) {
+			$match = 0;
+		}
+	}
+	#hostname
+	if ( $match && $filter2{"hostname"} && $filter2{"hostname"} ne "*" ) {
+		my $re = $filter2{"hostname"};
+		$re =~ s/\*/\.\*/g;
+		if ( $$finding[2] !~ /^$re$/ ) {
+			$match = 0;
+		}
+	}
+	#port
+	if ( $match && $filter2{"port"} && $filter2{"port"} ne "*" && $$finding[3] ne $filter2{"port"} ) {
+		$match = 0;
+	}
+	#plugin
+	if ( $match && $filter2{"plugin"} && $filter2{"plugin"} ne "*" && $$finding[4] ne $filter2{"plugin"} ) {
+		$match = 0;
+	}
+	#finding
+	if ( $match && $filter2{"finding"} && $filter2{"finding"} ne "*" ) {
+		my $re = $filter2{"finding"};
+		$re =~ s/\*/\.\*/g;
+		if ( $$finding[5] !~ /$re/ ) {
+			$match = 0;
+		}
+	}
+	#remark
+	if ( $match && $filter2{"remark"} && $filter2{"remark"} ne "*" ) {
+		my $re = $filter2{"remark"};
+		$re =~ s/\*/\.\*/g;
+		if ( $$finding[6] !~ /$re/ ) {
+			$match = 0;
+		}
+	}
+	#severity
+	if ( $match && $filter2{"severity"} ne undef && $filter2{"severity"} ne "*" && $$finding[7] ne $filter2{"severity"} ) {
+		$match = 0;
+	}
+	#status
+	if ( $match && $filter2{"status"} && $filter2{"status"} ne "*" && $$finding[9] ne $filter2{"status"} ) {
+		$match = 0;
+	}
+	return $match;
 }
 
 =head2 get_finding

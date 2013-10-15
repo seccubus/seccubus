@@ -29,9 +29,10 @@ steal(
 	'seccubus/scan/table',
 	'seccubus/scan/edit',
 	'seccubus/run/table',
+	'seccubus/filter/filter',
 	'seccubus/finding/table',
 	//'seccubus/finding/status',
-	'seccubus/finding/filter',
+	//'seccubus/finding/filter',
 	'seccubus/finding/bulkedit',
 	'seccubus/finding/edit',
 	'seccubus/history/table',
@@ -97,6 +98,7 @@ steal(
 			"updated",
 			function(ev,model) {
 				render_status();
+				render_filter();
 			}
 		);
 
@@ -336,7 +338,7 @@ steal(
 			});
 		};
 		function render_filters() {
-			$('#filters').seccubus_finding_filter({
+			$('#filters').seccubus_filter_filter({
 				workspace 	: gui_state.workspace,
 				scans		: gui_state.scans,
 				status		: gui_state.findStatus,

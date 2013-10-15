@@ -1,0 +1,216 @@
+<%# Copyright 2013 Frank Breedijk                                            %>
+<%#                                                                          %>
+<%# Licensed under the Apache License, Version 2.0 (the "License");          %>
+<%# you may not use this file except in compliance with the License.         %>
+<%# You may obtain a copy of the License at                                  %>
+<%#                                                                          %>
+<%# http://www.apache.org/licenses/LICENSE-2.0                               %>
+<%#                                                                          %>
+<%# Unless required by applicable law or agreed to in writing, software      %>
+<%# distributed under the License is distributed on an "AS IS" BASIS,        %>
+<%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
+<%# See the License for the specific language governing permissions and      %>
+<%# limitations under the License.                                           %>
+<% if ( typeof this[0] != "undefined" && typeof this[0].error != "undefined" ) { %>
+	 <%== $.View('//seccubus/finding/filter/views/error.ejs',{ message : this[0].error }) %>
+<% } else { 
+/*	var hosts = {};
+	hosts["*"] = 0;
+	var hostNames = {};
+	hostNames["*"] = 0;
+	var ports= {};
+	ports["*"] = 0;
+	var plugins= {};
+	plugins["*"] = 0;
+	var severitys= {};
+	severitys["*"] = 0;
+
+	for ( var i = 0; i < this.length ; i++ ) { 
+*/
+/*
+		if(this[i].isMatch({ 			// Only consider stuff in scans
+			scans : fScans
+		})) {
+*/
+/*
+			if ( typeof hosts[this[i].host] == 'undefined' ) {
+				hosts[this[i].host] = 0;
+			}
+			if ( typeof hostNames[this[i].hostName] == 'undefined' ) {
+				hostNames[this[i].hostName] = 0;
+			}
+			if ( typeof ports[this[i].port] == 'undefined' ) {
+				ports[this[i].port] = 0;
+			}
+			if ( typeof plugins[this[i].plugin] == 'undefined' ) {
+				plugins[this[i].plugin] = 0;
+			}
+			if ( typeof severitys[this[i].severity] == 'undefined' ) {
+				severitys[this[i].severity] = 0;
+			}
+			if(this[i].isMatch({ 
+				status : fStatus,
+				host : fHost,
+				hostName : fHostName,
+				port : fPort,
+				plugin : fPlugin,
+				severity : fSeverity,
+				finding : fFinding,
+				remark : fRemark
+			})) { 
+				hosts[this[i].host]++; 
+				hosts["*"]++;
+				hostNames[this[i].hostName]++; 
+				hostNames["*"]++;
+				ports[this[i].port]++;
+				ports["*"]++;
+				plugins[this[i].plugin]++;
+				plugins["*"]++;
+				severitys[this[i].severity]++;
+				severitys["*"]++;
+			} 
+		}
+//	} 
+
+	for(var ip in hosts) {
+		var octets = ip.split(".");
+		for(i=1;i<octets.length;i++) {
+			var f = "";
+			for(j=0;j<i;j++) {
+				f = f + octets[j] + ".";
+			}
+			f = f + "*";
+			if ( typeof hosts[f] == "undefined" ) {
+				hosts[f] = 0;
+			}
+			hosts[f] += hosts[ip];
+		}
+	}
+	hostList = [];
+	for(var i in hosts) {
+		hostList.push(i);
+	}
+	hostList.sort();
+
+	hostNameList = [];
+	for(var i in hostNames) {
+		hostNameList.push(i);
+	}
+	hostNameList.sort();
+
+	portList = [];
+	for(var i in ports) {
+		portList.push(i);
+	}
+	portList.sort();
+
+	pluginList = [];
+	for(var i in plugins) {
+		pluginList.push(i);
+	}
+	pluginList.sort(); 
+
+	severityList = [];
+	for(var i in severitys) {
+		severityList.push(i);
+	}
+	severityList.sort(); 
+*/
+%>
+
+	Host:
+	<select filter='host' class='filter hostFilter'>
+		<% for(var i=0;i<this.host.length;i++) { %>
+			<option 
+				<% if (this.host[i].number == -1 ) { %>
+					disabled
+				<% } %>
+				value='<%= this.host[i].name %>'
+				<% if (this.host[i].selected) { %> selected <% } %>
+			>
+				<%= this.host[i].name %>
+				<% if ( this.host[i].number > 0 ) { %>
+					(<%= this.host[i].number %>)
+				<% } %>
+			</option>
+		<% } %>
+	</select>
+	
+	Hostname:
+	<select filter='hostname' class='filter hostnameFilter'>
+		<% for(var i=0;i<this.hostname.length;i++) { %>
+			<option 
+				<% if (this.hostname[i].number == -1 ) { %>
+					disabled
+				<% } %>
+				value='<%= this.hostname[i].name %>'
+				<% if (this.hostname[i].selected) { %> selected <% } %>
+			>
+				<%= this.hostname[i].name %> 
+				<% if ( this.hostname[i].number > 0 ) { %>
+					(<%= this.hostname[i].number %>)
+				<% } %>
+			</option>
+		<% } %>
+	</select>
+	
+	Port:
+	<select filter='port' class='filter portFilter'>
+		<% for(var i=0;i<this.port.length;i++) { %>
+			<option 
+				<% if (this.port[i].number == -1 ) { %>
+					disabled
+				<% } %>
+				value='<%= this.port[i].name %>'
+				<% if (this.port[i].selected) { %> selected <% } %>
+			>
+				<%= this.port[i].name %>
+				<% if ( this.port[i].number > 0 ) { %>
+					(<%= this.port[i].number %>)
+				<% } %>
+			</option>
+		<% } %>
+	</select>
+	
+	Plugin:
+	<select filter='plugin' class='filter pluginFilter'>
+		<% for(var i=0;i<this.plugin.length;i++) { %>
+			<option 
+				<% if (this.plugin[i].number == -1 ) { %>
+					disabled
+				<% } %>
+				value='<%= this.plugin[i].name %>'
+				<% if (this.plugin[i].selected) { %> selected <% } %>
+			>
+				<%= this.plugin[i].name %>
+				<% if ( this.plugin[i].number > 0 ) { %>
+					(<%= this.plugin[i].number %>)
+				<% } %>
+			</option>
+		<% } %>
+	</select>
+	
+	Severity:
+	<select filter='severity' class='filter severityFilter'>
+		<% for(var i=0;i<this.severity.length;i++) { %>
+			<option 
+				<% if (this.severity[i].number == -1 ) { %>
+					disabled
+				<% } %>
+				value='<%= this.severity[i].value %>'
+				<% if (this.severity[i].selected) { %> selected <% } %>
+			>
+				<%= this.severity[i].name %>
+				<% if ( this.severity[i].number > 0 ) { %>
+					(<%= this.severity[i].number %>)
+				<% } %>
+			</option>
+		<% } %>
+	</select>
+	
+	Finding: <input type='text' filter='finding' class='filter findingFilter' value='<%= this.finding %>'>
+
+	Remark: <input type='text' filter='remark' class='filter remarkFilter' value='<%= this.remark %>'>
+
+	<a href='javascript://' class='clearFilter'>Clear</a>
+<% } %>

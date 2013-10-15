@@ -1,0 +1,44 @@
+<%# Copyright 2013 Frank Breedijk                                            %>
+<%#                                                                          %>
+<%# Licensed under the Apache License, Version 2.0 (the "License");          %>
+<%# you may not use this file except in compliance with the License.         %>
+<%# You may obtain a copy of the License at                                  %>
+<%#                                                                          %>
+<%# http://www.apache.org/licenses/LICENSE-2.0                               %>
+<%#                                                                          %>
+<%# Unless required by applicable law or agreed to in writing, software      %>
+<%# distributed under the License is distributed on an "AS IS" BASIS,        %>
+<%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
+<%# See the License for the specific language governing permissions and      %>
+<%# limitations under the License.                                           %>
+
+Host:
+<select disabled=true filter='host' class='filter hostFilter'>
+	<option selected disabled=true>-----</option>
+</select>
+
+Hostname:
+<select disabled=true filter='hostName' class='filter hostNameFilter'>
+	<option selected disabled=true>-----</option>
+</select>
+
+Port:
+<select disabled=true filter='port' class='filter portFilter'>
+	<option selected disabled=true>-----</option>
+</select>
+
+Plugin:
+<select disabled=true filter='plugin' class='filter pluginFilter'>
+	<option selected disabled=true>-----</option>
+</select>
+
+Severity:
+<select disabled=true filter='severity' class='filter severityFilter'>
+	<option selected disabled=true>-----</option>
+</select>
+
+Finding: <input type='text' disabled=disabled value=''>
+
+Remark: <input type='text' disabled=disabled class='filter remarkFilter' value=''>
+
+<% if( typeof message != "undefined" ) { %><br><%= message %><% } %>
