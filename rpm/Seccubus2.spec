@@ -374,6 +374,7 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/createWorkspace.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getAttachment.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getEvents.pl
+%attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getFilters.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getFindingHistory.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getFindings.pl
 %attr(755, %{seccuser}, %{seccuser}) %{webdir}/seccubus/json/getNotifications.pl
