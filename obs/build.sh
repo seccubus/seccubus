@@ -17,6 +17,7 @@
 
 VERSION=`(cd ..;perl -ISeccubusV2 -MSeccubusV2 -e 'print "$SeccubusV2::VERSION\n";'; )`
 echo About to build version $VERSION on OpenSUSE build services
+echo "See https://build.opensuse.org/package/show/home:seccubus/Seccubus for progress"
 if [ ! -e "home:seccubus/Seccubus" ]
 then
 	osc co home:seccubus Seccubus
