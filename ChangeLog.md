@@ -21,11 +21,13 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
-28-06-2013 - 2.2 - Nessus 5.2.1 and Unicode
-===========================================
+15-10-2013 - 2.2 - Nessus 5.2.1, unicode and performance
+========================================================
 
 Key new features / issues resolved
 ----------------------------------
+* Major performance increase by moving processing of sttus buttons and filters to bac
+kend
 * Resolved an issue that cause incomptibility with Nessus API version 5.2.1 (Thanks Trelor)
 * Resolved an issue around encoding of Unicode chracters in Nessus output
 * Added shell script to execute crontab job only on a certain day
@@ -35,6 +37,7 @@ Key new features / issues resolved
 
 Bigs fixed (tickets closed):
 ----------------------------
+* Issue #48 - Filters need to be processed in backend, not front end
 * Issue #50 - Notification table not displayed on edit scan
 * Issue #56 - IVIL conversion shell call needs qoutes around filename
 * Issue #64 - New scan dialog shows 'new workspace' in title
@@ -44,6 +47,7 @@ Bigs fixed (tickets closed):
 * Issue #75 - Typo: datatbase in ConfigTest.pl
 * Issue #77 - Seccubus incompatible with Nessus API 5.2.1
 * Issue #78 - Unicode in nessus file breaks ivil import
+* Issue #86 - getFilters API
 * Updated dependancies in RPM
 * Fixed some minor DB error scripts
 
