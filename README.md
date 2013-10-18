@@ -20,8 +20,8 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
-xx-10-2013 - 2.3 - Improved stability
-=====================================
+18-10-2013 - 2.3 - Improved stability, Nmap and Nikto on remote hosts
+=====================================================================
 
 Key new features / issues resolved
 ----------------------------------
@@ -31,6 +31,7 @@ Fixed some issues related to the new backend filters
 
 Bugs fixed (tickets closed):
 ----------------------------
+* #62 - Would like to be able to run Nmap/Nikto/SSLyze scans on a remote host
 * #84 - Nessus critical findings got severity 0
 * #87 - Hostname ordering was weird because of wildards for hostnames
 * #88 - '*' is not selected in filters when no filter is given
