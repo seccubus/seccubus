@@ -1,5 +1,5 @@
-Seccubus V2 Change Log
-======================
+Seccubus V2 Read Me
+===================
 Seccubus automates regular vulnerability scans with vrious tools and aids 
 security people in the fast analysis of its output, both on the first scan and 
 on repeated scans.
@@ -14,8 +14,8 @@ for Seccubus V1 has officially been dropped.
 Seccubus V2 works with the following scanners:
 * Nessus 4.x and 5.x (professional and home feed)
 * OpenVAS
-* Nikto 
-* NMap
+* Nikto (local and remote)
+* NMap (local and remote)
 * SSLyze
 
 For more information visit [www.seccubus.com]

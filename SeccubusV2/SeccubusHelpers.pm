@@ -30,6 +30,7 @@ of all functions within the module.
 		dirlist
 		api_error
 		api_result
+		run_cmd
 	);
 
 use strict;
@@ -40,6 +41,7 @@ sub check_config();
 sub dirlist($;$);
 sub api_error($$);
 sub api_result($;$$$);
+sub run_cmd($;$$$$);
 
 =head2 check_config
 
@@ -226,5 +228,109 @@ sub api_result($;$$$) {
 	print "</seccubusAPI>\n";
 	exit;
 }
+
+=head2 run_cmd
+
+Runs a command and returns stdout
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item cmd	- The command that should be run 
+
+=item print	- Optional Print cmd output to STDOUT is set to a true value.
+		  A value greater then 1 also echo's commands
+
+=item remote    - Optional Comma separated list of host,username,key used to 
+		  connect to a remote host and run the command
+
+=item fetch	- Optional arrayref of files to fetch to /tmp
+
+=item put	- optional arrayref of files to put in /tmp on the remote host and remove them when done
+
+=back
+
+=item Returns
+
+STD out
+
+=item Checks
+
+None
+
+=back
+
+=back
+
+=cut
+
+sub run_cmd($;$$$$) {
+	my $cmd = shift;
+	my $print = shift;
+	my $remote = shift;
+	my $files = shift;
+	my $put = shift;
+
+	my ( $host, $user, $key ) = split /,/, $remote;
+	if ( $remote ) {
+		confess "Remote specified, but host empty" unless $host;
+		confess "Remote specified, but user emprty" unless $user;
+		confess "Remote specified, but key empty" unless $key;
+		confess "Remote specified, but key doesn't exist" unless $key;
+	} else {
+		confess "No remote specified, but fetch IS..." if $files;
+		confess "No remote specified, but put IS..." if $put;
+	}
+
+	# Put files we need to put
+	if ( $remote && $put && @$put ) {
+		foreach my $file ( @$put ) {
+			confess "File $file specified in put argument doesn't exist" unless -e $file;
+			run_cmd("scp -i $key $file $user\@$host:/tmp",$print);
+		}
+	}
+
+	# Run the actual command
+	my @out;
+	print "\nRunning $cmd" if $print > 1;
+	if ( $remote ) {
+		$cmd = "ssh -t -t -i $key $user\@$host \"$cmd\"";
+		print " as user $user on $host" if $print > 1;
+	}
+	print "\n" if $print >1;
+	open CMD, "$cmd |" or confess "Unable to execute";
+	while ( <CMD> ) {
+		print $_ if $print;
+		push @out, $_;
+	}
+	close CMD;
+
+	if ( $remote ) {
+		# Fetch files
+		if ( $files && @$files ) {
+			$cmd = "scp -i $key ";
+			foreach my $file ( @$files ) {
+				$cmd .= "$user\@$host:$file ";
+			}
+			$cmd .= " /tmp 2>&1";
+			run_cmd($cmd,$print);
+		}
+
+		# Cleanup
+		if ( $put && @$put ) {
+			foreach my $file ( @$put ) {
+				confess "File $file specified in put argument doesn't exist" unless -e $file;
+				$file =~/^.*\/(.*)$/;
+				run_cmd("rm /tmp/$1",$print,$remote);
+			}
+		}
+	}
+
+	return join "", @out;
+}
+
 # Close the PM file.
 return 1;
