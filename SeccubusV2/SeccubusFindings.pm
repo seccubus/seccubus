@@ -470,7 +470,7 @@ sub get_filters($$;$) {
 			my $selected = JSON::false;
 			$sev =~ /^(\d+)/;
 			my $val = $1;
-			$selected = JSON::true if $val == $filter->{"severity"};
+			$selected = JSON::true if $val eq $filter->{"severity"};
 			if ( $filters{"severity"}{$sev} > 0 ) {
 				push @sev1, {
 					"name" => $sev,
