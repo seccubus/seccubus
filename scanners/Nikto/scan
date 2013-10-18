@@ -19,6 +19,7 @@
 use strict;
 use SeccubusV2;
 use SeccubusIVIL;
+use SeccubusHelpers;
 
 use Getopt::Long;
 use Carp;
@@ -30,6 +31,7 @@ my (
 	$workspace,
 	$scan,
 	$nodelete,
+	$remote,
 	$help,
 	$verbose,
 	$quiet,
@@ -47,6 +49,7 @@ GetOptions(
 		'workspace=s'		=> \$workspace,
 		'scan=s'		=> \$scan,
 		'nodelete!'		=> \$nodelete,
+		'remote|r=s'            => \$remote,
 		'verbose|v+'		=> \$verbose,
 		'quiet|q!'		=> \$quiet,
 		'help|h'		=> \$help,
@@ -106,56 +109,41 @@ my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 
 print "Execuing $nikto_path $nikto_options\n" unless $quiet;
-open NIKTO, "$nikto_path $nikto_options |" or die "Unable to open pipe";
-
-while ( <NIKTO> ) {
-	print $_ if $verbose;
-	print TMP $_;
-}
-close TMP;
-close NIKTO;
+run_cmd("$nikto_path $nikto_options",$verbose,$remote,[ $tempfile,"$tempfile.*" ], [ $hosts_file ]);
 
 print "Scanning done, converting .nbe to ivil\n" unless $quiet;
 my $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=Nikto --scannerversion=$nikto_version --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile '$tempfile.nbe' ";
 $cmd .= "-v" if $verbose > 1;
-
-print "Executing $cmd\n" if $verbose;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose;
+run_cmd($cmd,$verbose);
 
 print "Importing ivil\n" unless $quiet;
 $cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner Nikto --scannerversion $nikto_version --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
 $cmd .= " '$tempfile.ivil.xml'";
-print "Execuing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
+run_cmd($cmd,$verbose);
 
 print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
 
 $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile' --description 'Command line output'";
 $cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
+run_cmd($cmd,$verbose);
 
 $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.nbe' --description 'NBE output'";
 $cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
+run_cmd($cmd,$verbose);
 
 $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
 $cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
+run_cmd($cmd,$verbose);
 
 # Cleanup
 unless ( $nodelete ) {
 	unlink "$tempfile" if -e "$tempfile";
 	unlink "$tempfile.nbe" if -e "$tempfile.nbe";
 	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+}
+if ( $remote ) {
+	run_cmd("rm -f $tempfile $tempfile.*",$verbose,$remote);
 }
 
 exit(0);
@@ -186,14 +174,17 @@ Arguments:
 }
 
 sub get_nikto_path() {
-	my $path = `which nikto`;
+	my $path = run_cmd("which nikto",0,$remote);
+	$path =~ s/[\n\r]*//g;
 	if ( $path =~ /(^\/.*nikto)/ ) {
 		return $1;
 	}
-	$path = `which nikto.pl`;
+	$path = run_cmd("which nikto.pl",0,$remote);
+	$path =~ s/[\n\r]*//g;
 	if ( $path =~ /(^\/.*nikto\.pl)/ ) {
 		return $1;
 	}
+	$path = run_cmd("ls /opt/nikto/nikto.pl",0,$remote);
 	if ( -e '/opt/nikto/nikto.pl' ) {
 		return '/opt/nikto/nikto.pl';
 	}
@@ -204,7 +195,7 @@ sub get_nikto_version() {
 	my $nikto_path = shift;
 
 	# Added some error handling to fix #16
-	my $version=`$nikto_path -Version 2>&1`;
+	my $version=run_cmd("$nikto_path -Version 2>&1",0,$remote);
 	if ( $version =~ /Nikto main\s+(\d+\.\d+\.\d+)/ ) {
 		return $1;
 	} else {
