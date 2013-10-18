@@ -19,6 +19,7 @@
 use strict;
 use SeccubusV2;
 use SeccubusIVIL;
+use SeccubusHelpers;
 
 use Getopt::Long;
 use Carp;
@@ -35,6 +36,7 @@ my (
 	$quiet,
 	$username,
 	$nodelete,
+	$remote,
    );
 
 $help = 0;
@@ -52,6 +54,7 @@ GetOptions(
 		'quiet|q!'		=> \$quiet,
 		'help|h'		=> \$help,
 		'nodelete'		=> \$nodelete,
+		'remote|r=s'		=> \$remote,
 	  );
 
 help() if $help;
@@ -97,74 +100,46 @@ if ( $sudo ) {
 	$cmd = "sudo $cmd";
 }
 if ( $sudo ) {
-	$username = `whoami`;
-	chomp($username);
+	$username = run_cmd("whoami",0,$remote);
+	$username =~ s/^\n*//;
+	$username =~ s/[\n\r]*$//;
 }
 
 print "Execuing $cmd\n" unless $quiet;
-open NMAP, "$cmd |" or die "Unable to open pipe";
-
-while ( <NMAP> ) {
-	print $_ if $verbose;
-}
-close NMAP;
+run_cmd($cmd,$verbose,$remote,[ "$tempfile.*" ],[ $hosts_file ]);
 
 if ( $sudo ) {
 	# Fixes issue #52
-	$cmd = "sudo chown $username '$tempfile.nmap'";
-	$cmd = "sudo chown $username '$tempfile.gmap'";
-	$cmd = "sudo chown $username '$tempfile.xml'";
-	$cmd = "sudo chown $username '$tempfile.ivil.xml'";
-
-	print "Execuing $cmd\n" unless $quiet;
-	open NMAP, "$cmd |" or die "Unable to open pipe";
-
-	while ( <NMAP> ) {
-		print $_ if $verbose;
-	}
-	close NMAP;
+	run_cmd("sudo chown $username \"$tempfile.*\"",$verbose,$remote);
 }
 
 
 print "Scanning done, converting .xml to ivil\n" unless $quiet;
 $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nmap2ivil --scannerversion=$nmap_version --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile '$tempfile.xml' ";
 $cmd .= "-v" if $verbose > 1;
-
-print "Executing $cmd\n" if $verbose;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose;
+run_cmd($cmd,$verbose);
 
 print "Importing ivil\n" unless $quiet;
 $cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner Nmap --scannerversion $nmap_version --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
 $cmd .= " '$tempfile.ivil.xml'";
-print "Execuing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
+run_cmd($cmd,$verbose);
 
 $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.nmap' --description 'Command output'";
 $cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
+run_cmd($cmd,$verbose);
 
 $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.gnmap' --description 'Greppable output'";
 $cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
+run_cmd($cmd,$verbose);
 
 $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.xml' --description 'XML output'";
 $cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
+run_cmd($cmd,$verbose);
 
 $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
 $cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
+run_cmd($cmd,$verbose);
 
 # Cleanup
 unless( $nodelete ) {
@@ -173,6 +148,9 @@ unless( $nodelete ) {
 	unlink "$tempfile.xml" if -e "$tempfile.xml";
 	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
 }
+if ( $remote ) {
+	run_cmd("rm -f $tempfile.*",$verbose,$remote);;
+}
 
 exit(0);
 
@@ -180,7 +158,8 @@ sub help() {
 	print "
 Usage: scan 	[--nmap_path|p <path to nmap>] \\
 		[--nmap_options <additional Nmap options>]] \\
-		--hosts <hosts file> [--verbose|v] [--quiet|q] [--help|h]
+		--hosts <hosts file> [--remote|r <host,user,keyfile>] 
+		[--verbose|v] [--quiet|q] [--help|h]
 
 Arguments:
 --nmap_path	- You can use this optional parameter to provide the script with
@@ -193,6 +172,8 @@ Arguments:
 --sudo		- Use sudo to elevate privileges (needed for certain scans)
 --workspace	- Name of the workspace to load the findings into
 --scan		- Name of the scan to load the findings into
+--remote (-r)	- Comma separated list of host,username,keyfile representing the
+		  host and credetials which should be used to execute the scan
 --verbose (-v)	- Be verbose during execution
 --quiet (-q)	- Don't print output
 --nodelete      - Don't delete temporary files (use -v to find out which)
@@ -202,15 +183,15 @@ Arguments:
 }
 
 sub get_nmap_path() {
-	my $path = `which nmap`;
+	my $path = run_cmd("which nmap",0,$remote);
 	if ( $path =~ /(^\/.*nmap)/ ) {
 		return $1;
 	}
-	$path = `which nmap.pl`;
+	$path = run_cmd("which nmap.pl",0,$remote);
 	if ( $path =~ /(^\/.*nmap\.pl)/ ) {
 		return $1;
 	}
-	if ( -e '/opt/nmap/nmap.pl' ) {
+	if ( run_cmd("ls /opt/nmap/nmap.pl",0,$remote) ) {
 		return '/opt/nmap/nmap.pl';
 	}
 	return undef;
@@ -219,7 +200,7 @@ sub get_nmap_path() {
 sub get_nmap_version() {
 	my $nmap_path = shift;
 
-	my $version=`$nmap_path -V`;
+	my $version=run_cmd("$nmap_path -V",$verbose,$remote);
 	$version =~ /Nmap version\s+(\d+\.\d+)/;
 	return $1;
 }
