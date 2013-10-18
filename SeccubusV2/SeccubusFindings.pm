@@ -327,7 +327,7 @@ sub get_filters($$;$) {
 		my %hosts = %{$filters{"host"}};
 		my @hosts = map  { $_->[0] }
 			sort { $a->[1] cmp $b->[1] }
-			map  { [$_, sprintf("%03.f%03.f%03.f%03.f", split(/\./, $_))] }
+			map  {  $_ =~ /^\d+\.\d+\.\d+\.\d+$/ ? [$_, sprintf("%03.f%03.f%03.f%03.f", split(/\./, $_))],[$_,$_] }
 			keys %{$filters{"host"}} ;
 		my @hosts2 = ( );
 		my @hosts3 = ( );
