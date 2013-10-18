@@ -20,12 +20,20 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
-xx-xx-2013 - 2.3 -
-==================
+xx-10-2013 - 2.3 - Improved stability
+=====================================
 
 Key new features / issues resolved
 ----------------------------------
+Seccubus now checks the state of the DBI handle before performing queries
+Improved handling of Nessus 5.2 file format
+Fixed some issues related to the new backend filters
 
 Bugs fixed (tickets closed):
 ----------------------------
+* #84 - Nessus critical findings got severity 0
+* #87 - Hostname ordering was weird because of wildards for hostnames
+* #88 - '*' is not selected in filters when no filter is given
+* #89 - Scans fail to import due to database timeouts
+* #90 - Hostnames are not sorted in filters, IP addresses are
 * OBS build script now echos link to OBS project
