@@ -116,7 +116,7 @@ sub get_findings($;$$) {
 				$query .= " AND host LIKE ? ";
 				push @$params, $filter->{host};
 			}
-			if ( $filter->{hostname} ) {
+			if ( defined $filter->{hostname} ) {
 				$filter->{hostname} =~ s/\*/\%/;
 				$filter->{hostname} = "%$filter->{hostname}%";
 				$query .= " AND host_names.name LIKE ? ";
@@ -130,7 +130,7 @@ sub get_findings($;$$) {
 				$query .= " AND plugin = ? ";
 				push @$params, $filter->{plugin};
 			}
-			if ( $filter->{severity} ) {
+			if ( defined $filter->{severity} ) {
 				$query .= " AND findings.severity = ? ";
 				push @$params, $filter->{severity};
 			}
@@ -327,10 +327,11 @@ sub get_filters($$;$) {
 		my %hosts = %{$filters{"host"}};
 		my @hosts = map  { $_->[0] }
 			sort { $a->[1] cmp $b->[1] }
-			map  {  $_ =~ /^\d+\.\d+\.\d+\.\d+$/ ? [$_, sprintf("%03.f%03.f%03.f%03.f", split(/\./, $_))],[$_,$_] }
+			map  {  $_ =~ /^\d+\.\d+\.\d+\.\d+$/ ? [$_, sprintf("%03.f%03.f%03.f%03.f", split(/\./, $_))] : [$_,$_] }
 			keys %{$filters{"host"}} ;
 		my @hosts2 = ( );
 		my @hosts3 = ( );
+		$filter->{"host"} = "*" unless $filter->{"host"};
 		foreach my $host ( @hosts ) {
 			my $selected = JSON::false;
 			$selected = JSON::true if $host eq $filter->{"host"};
@@ -355,6 +356,7 @@ sub get_filters($$;$) {
 		my @hostnames1 = ();
 		my @hostnames2 = ();
 		my $total = 0;
+		$filter->{"hostname"} = "*" unless defined $filter->{"hostname"};
 		foreach my $hostname ( sort keys %{$filters{"hostname"}} ) {
 			$total += $filters{"hostname"}{$hostname};
 			my $selected = JSON::false;
@@ -373,13 +375,24 @@ sub get_filters($$;$) {
 				};
 			}
 		}
-		my @hostnames = ( { "name" => "*", "number" => $total }, @hostnames1, { "name" => "---", "number" => -1 }, @hostnames2 );
+		my @hostnames = ( 
+			{ "name" => "*", 
+			  "number" => $total, 
+			  "selected" => ($filter->{"hostname"} eq "*" ? JSON::true : JSON::false) 
+			}, 
+			@hostnames1, 
+			{ "name" => "---", 
+			  "number" => -1 
+			}, 
+			@hostnames2 
+		);
 		$filters{"hostname"} = \@hostnames;
 
 		# port
 		my @ports1 = ();
 		my @ports2 = ();
 		my $total = 0;
+		$filter->{"port"} = "*" unless $filter->{"port"};
 		foreach my $port ( sort { $a <=> $b} keys %{$filters{"port"}} ) {
 			$total += $filters{"port"}{$port};
 			my $selected = JSON::false;
@@ -398,13 +411,24 @@ sub get_filters($$;$) {
 				};
 			}
 		}
-		my @ports = ( { "name" => "*", "number" => $total }, @ports1, { "name" => "---", "number" => -1 }, @ports2 );
+		my @ports = ( 
+			{ "name" => "*", 
+			  "number" => $total,
+			  "selected" => ($filter->{"port"} eq "*" ? JSON::true : JSON::false )
+			}, 
+			@ports1, 
+			{ "name" => "---", 
+			  "number" => -1 
+			}, 
+			@ports2 
+		);
 		$filters{"port"} = \@ports;
 
 		# Plugin
 		my @plugins1 = ();
 		my @plugins2 = ();
 		my $total = 0;
+		$filter->{"plugin"} = "*" unless $filter->{"plugin"};
 		foreach my $plugin ( sort keys %{$filters{"plugin"}} ) {
 			$total += $filters{"plugin"}{$plugin};
 			my $selected = JSON::false;
@@ -423,36 +447,57 @@ sub get_filters($$;$) {
 				};
 			}
 		}
-		my @plugins = ( { "name" => "*", "number" => $total }, @plugins1, { "name" => "---", "number" => -1 }, @plugins2 );
+		my @plugins = ( 
+			{ "name" => "*", 
+			  "number" => $total,
+			  "selected" => ($filter->{"plugin"} eq "*" ? JSON::true : JSON::false ),
+			}, 
+			@plugins1, 
+			{ "name" => "---", 
+			  "number" => -1 
+			}, 
+			@plugins2 
+		);
 		$filters{"plugin"} = \@plugins;
 
 		# Severity
 		my @sev1 = ();
 		my @sev2 = ();
 		my $total = 0;
+		$filter->{"severity"} = "*" unless defined $filter->{"severity"};
 		foreach my $sev ( sort keys %{$filters{"severity"}} ) {
 			$total += $filters{"severity"}{$sev};
 			my $selected = JSON::false;
-			$selected = JSON::true if $sev =~ /^$filter->{"severity"} /;
+			$sev =~ /^(\d+)/;
+			my $val = $1;
+			$selected = JSON::true if $val == $filter->{"severity"};
 			if ( $filters{"severity"}{$sev} > 0 ) {
-				$sev =~ /^(\d+)/;
 				push @sev1, {
 					"name" => $sev,
 					"selected" => $selected,
-					"value" => $1,
+					"value" => $val,
 					"number" => $filters{"severity"}{$sev},
 				};
 			} else {
-				$sev =~ /^(\d+)/;
 				push @sev2, {
 					"name" => $sev,
 					"selected" => $selected,
-					"value" => $1,
+					"value" => $val,
 					"number" => $filters{"severity"}{$sev},
 				};
 			}
 		}
-		my @sev = ( { "name" => "*", "number" => $total }, @sev1, { "name" => "---", "number" => -1 }, @sev2 );
+		my @sev = ( 
+			{ "name" => "*", 
+			  "number" => $total,
+			  "selected" => ( $filter->{"severity"} eq "*" ? JSON::true : JSON::false ),
+			}, 
+			@sev1, 
+			{ "name" => "---", 
+			  "number" => -1 
+			}, 
+			@sev2 
+		);
 		$filters{"severity"} = \@sev;
 
 		$filter->{"finding"} = "" unless $filter->{"finding"};
