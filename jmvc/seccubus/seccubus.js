@@ -98,7 +98,7 @@ steal(
 			"updated",
 			function(ev,model) {
 				render_status();
-				render_filter();
+				render_filters();
 			}
 		);
 
