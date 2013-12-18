@@ -20,6 +20,15 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+xx-xx-201[34] - 2.4 - Current development release
+=====================================================================
+
+Key new features / issues resolved
+----------------------------------
+
+Bugs fixed (tickets closed):
+----------------------------
+
 18-10-2013 - 2.3 - Improved stability, Nmap and Nikto on remote hosts
 =====================================================================
 
