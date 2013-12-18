@@ -19,11 +19,13 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
-xx-xx-201[34] - 2.4 - Current development release
-=====================================================================
+18-12-20134 - 2.4 - GUI auto-update again
+=========================================
 
 Key new features / issues resolved
 ----------------------------------
+A bug that broke the automatic updating of the GUI mast fixed
 
 Bugs fixed (tickets closed):
 ----------------------------
+#97 - Screen refresh doesn't work anywhere (basically)
