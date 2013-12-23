@@ -280,9 +280,6 @@ sub run_cmd($;$$$$) {
 		confess "Remote specified, but user emprty" unless $user;
 		confess "Remote specified, but key empty" unless $key;
 		confess "Remote specified, but key doesn't exist" unless $key;
-	} else {
-		confess "No remote specified, but fetch IS..." if $files;
-		confess "No remote specified, but put IS..." if $put;
 	}
 
 	# Put files we need to put
