@@ -19,13 +19,14 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
-19-12-2013 - 2.4 - Screen updates, restored
+xx-xx-2014 - 2.5 - Screen updates, restored
 ============================================
+* Local Nikto and NMap scanning is working again
 
 Key new features / issues resolved
 ----------------------------------
-A bug that broke the automatic updating of the GUI mast fixed
+Fixed issue that broke local Nikto and NMap scanning
 
 Bugs fixed (tickets closed):
 ----------------------------
-#97 - Screen refresh doesn't work anywhere (basically)
+#102 - Local Nikto scanning is broken
