@@ -20,6 +20,15 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+xx-xx-2014 - 2.5 - Screen updates, restored
+============================================
+
+Key new features / issues resolved
+----------------------------------
+
+Bugs fixed (tickets closed):
+----------------------------
+
 19-12-2013 - 2.4 - Screen updates, restored
 ===========================================
 
