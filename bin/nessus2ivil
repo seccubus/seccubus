@@ -138,7 +138,7 @@ foreach my $host ( @{$nessus->{Report}->{ReportHost}} ) {
 			} elsif ( $key eq 'cve' ) {
 			} elsif ( $key eq 'bid' ) {
 			} elsif ( $key eq 'severity' ) {
-				if ( $item->{severity} => 3 ) {
+				if ( $item->{severity} >= 3 ) {
 					$finding->{severity} = 1;
 				} elsif ( $item->{severity} > 0 ) {
 					$finding->{severity} = 4 - $item->{severity};
