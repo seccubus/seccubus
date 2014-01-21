@@ -22,7 +22,7 @@ use XML::Simple;
 use Data::Dumper;
 #use File::Slurp;
 use JSON qw( decode_json );
-use Path::Class;
+#use Path::Class;
 use Getopt::Long;
 use Carp;
 
@@ -127,7 +127,6 @@ sub issuesInfo($$){
 
         my $file = $_[0];
 	my $infile = $_[1];
-	print $file;
 
 	open SMPL, $infile."/".$file or die "Unable to open samples.js";
 
@@ -209,22 +208,21 @@ sub issuesInfo($$){
 sub items($){
 
         my $fileRes = $_[0];
-	open F, $fileRes."/index.html" or die
+        my $foo = $fileRes."/index.html";
+	open F, $foo or die "Cannot open index.html";
 	my @linesRes = grep { /": / } <F>;
 	close F;
         #my @linesRes = grep { /": / } read_file($fileRes."/index.html", chomp => 1);
         my @dataRes;
-
         foreach (@linesRes) {
 
                 my $stringRes = $_;
-
                 my $lineRes = $stringRes;
 
                 $lineRes =~ s/"//g;
                 $lineRes =~ s/://g;
                 $lineRes =~ s/,//g;
-                push(@dataRes,$lineRes."\n");
+               push(@dataRes,$lineRes."\n");
         }
         return @dataRes;
 }
@@ -232,7 +230,7 @@ sub items($){
 sub issuesDataReq($){
 
         my $file = $_[0];
-        open F, $file or die
+        open F, $file or die "Cannot open request.js";
         my @lines = grep { /^var req = {/ } <F>;
         close F;
         #my @lines = grep { /^var req = {/ } read_file($file, chomp => 1);
