@@ -20,9 +20,7 @@ use strict;
 use IVIL;
 use XML::Simple;
 use Data::Dumper;
-#use File::Slurp;
 use JSON qw( decode_json );
-#use Path::Class;
 use Getopt::Long;
 use Carp;
 
@@ -212,7 +210,6 @@ sub items($){
 	open F, $foo or die "Cannot open index.html";
 	my @linesRes = grep { /": / } <F>;
 	close F;
-        #my @linesRes = grep { /": / } read_file($fileRes."/index.html", chomp => 1);
         my @dataRes;
         foreach (@linesRes) {
 
@@ -233,7 +230,6 @@ sub issuesDataReq($){
         open F, $file or die "Cannot open request.js";
         my @lines = grep { /^var req = {/ } <F>;
         close F;
-        #my @lines = grep { /^var req = {/ } read_file($file, chomp => 1);
         my @data;
 
         foreach (@lines) {
