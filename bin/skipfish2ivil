@@ -20,11 +20,19 @@ use strict;
 use IVIL;
 use XML::Simple;
 use Data::Dumper;
-use File::Slurp;
+#use File::Slurp;
 use JSON qw( decode_json );
 use Path::Class;
 use Getopt::Long;
 use Carp;
+
+sub find($$);
+sub issuesInfo($$);
+sub find($$);
+sub issuesDataReq($);
+sub items($);
+sub issuesDataReq($);
+sub grep_pattern($);
 
 my (
 	$scanname,
@@ -99,7 +107,7 @@ close OUT;
 exit();
 
 
-sub find{
+sub find($$){
 
         my $search = $_[0];
 	my $dir = $_[1];
@@ -115,7 +123,7 @@ sub find{
         return @files;
 }
 
-sub issuesInfo{
+sub issuesInfo($$){
 
         my $file = $_[0];
 	my $infile = $_[1];
@@ -198,10 +206,13 @@ sub issuesInfo{
 
 }
 
-sub items{
+sub items($){
 
         my $fileRes = $_[0];
-        my @linesRes = grep { /": / } read_file($fileRes."/index.html", chomp => 1);
+	open F, $fileRes."/index.html" or die
+	my @linesRes = grep { /": / } <F>;
+	close F;
+        #my @linesRes = grep { /": / } read_file($fileRes."/index.html", chomp => 1);
         my @dataRes;
 
         foreach (@linesRes) {
@@ -218,10 +229,13 @@ sub items{
         return @dataRes;
 }
 
-sub issuesDataReq{
+sub issuesDataReq($){
 
         my $file = $_[0];
-        my @lines = grep { /^var req = {/ } read_file($file, chomp => 1);
+        open F, $file or die
+        my @lines = grep { /^var req = {/ } <F>;
+        close F;
+        #my @lines = grep { /^var req = {/ } read_file($file, chomp => 1);
         my @data;
 
         foreach (@lines) {
@@ -239,7 +253,7 @@ sub issuesDataReq{
         return @data;
 }
 
-sub grep_pattern{
+sub grep_pattern($){
         my $pattern = $_[0];
 	my $issue;
 	foreach my $itm (@typeList){
