@@ -1,0 +1,203 @@
+#!/usr/bin/env perl
+# Copyright 2013 Frank Breedijk, Dan McGinn-Combs
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+# This script will call the Nikto scanner and import the results as IVIL
+# ------------------------------------------------------------------------------
+
+use strict;
+use SeccubusV2;
+use SeccubusIVIL;
+use SeccubusHelpers;
+
+use Getopt::Long;
+use Carp;
+
+my (
+	$skipfish_path,
+	$skipfish_options,
+	$hosts_file,
+	$workspace,
+	$scan,
+	$nodelete,
+	$remote,
+	$help,
+	$verbose,
+	$quiet,
+   );
+
+$help = 0;
+$nodelete = undef;
+
+# Create default values
+
+GetOptions(	
+		'skipfish_path|p=s'	=> \$skipfish_path,
+		'skipfish_options|o=s'	=> \$skipfish_options,
+		'hosts=s'		=> \$hosts_file,
+		'workspace=s'		=> \$workspace,
+		'scan=s'		=> \$scan,
+		'nodelete!'		=> \$nodelete,
+		'remote|r=s'            => \$remote,
+		'verbose|v+'		=> \$verbose,
+		'quiet|q!'		=> \$quiet,
+		'help|h'		=> \$help,
+	  );
+
+help() if $help;
+$verbose = 0 if $quiet;
+
+my $config = get_config();
+my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
+my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
+
+print "Hosts file specified $hosts_file\n" if $verbose;
+ if ( ! $workspace ) {
+	print "You must specify a workspace name";
+	help();
+} elsif ( ! $scan ){
+	print "You must specify a scan name";
+	help();
+};
+
+$skipfish_path = get_skipfish_path() unless $skipfish_path;
+if ( ! $skipfish_path && -e $skipfish_path ) {
+	print "Unable to find skipfish on your system. I suggest you use the --skipfish_path option\nto provide a path to skipfish\n";
+	help();
+}
+print "Skipfish found in $skipfish_path\n" if $verbose;
+my $skipfish_version = get_skipfish_version($skipfish_path);
+
+
+if ( $skipfish_version =~ /^ERROR/ ) {
+	print "There is a problem with your skipfish setup\n";
+	print "Note: The --skipfish_options parameter can be used to pass options to Skipfish itself\n";
+	print "$skipfish_version";
+	help();
+}
+
+print "Skipfish version is $skipfish_version\n" if $verbose;
+
+my $tempfile = "/tmp/seccubus.$$";
+
+my $skipfish_options = " -o $tempfile.dr $skipfish_options $hosts_file";
+
+print "Skipfish options: $skipfish_options\n" if $verbose;
+
+my $timestamp = make_timestamp();
+print "Timestamp = $timestamp\n" if $verbose;
+
+print "Executing $skipfish_path $skipfish_options\n" unless $quiet;
+#run_cmd("$skipfish_path $skipfish_options",$verbose,$remote,[ $tempfile,"$tempfile.*" ], [ $hosts_file ]);
+run_cmd("$skipfish_path -Q $skipfish_options ",1,$remote,[ $tempfile,"$tempfile.*" ], [ $hosts_file ]);
+
+#TO-DO rebuild so it do html to ivil
+print "Scanning done, converting html dir to ivil\n" unless $quiet;
+my $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/skipfish2ivil -v --scanner=Skipfish  --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile '$tempfile.dr' ";
+$cmd .= "-v" if $verbose > 1;
+run_cmd($cmd,$verbose);
+#print $cmd;
+
+print "Importing ivil\n" unless $quiet;
+$cmd = "$load_ivil -v --workspace '$workspace' --scan '$scan' --scanner Skipfish --timestamp $timestamp";
+$cmd .= " -v" if $verbose > 1;
+$cmd .= " '$tempfile.ivil.xml'";
+run_cmd($cmd,$verbose);
+#print $cmd;
+
+print "Adding files to scan $scan in workspace $workspace\n" unless $quiet;
+run_cmd("zip -r ".$tempfile.".zip ".$tempfile.".dr ");
+
+$cmd = "$attach_file -v --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.zip' --description 'Command line output'";
+$cmd .= " -v" if $verbose > 1;
+run_cmd($cmd,$verbose);
+#print $cmd;
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
+$cmd .= " -v" if $verbose > 1;
+run_cmd($cmd,$verbose);
+#print $cmd;
+
+# Cleanup
+unless ( $nodelete ) {
+	unlink "$tempfile" if -e "$tempfile";
+	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+}
+if ( $remote ) {
+	run_cmd("rm -f $tempfile $tempfile.*",$verbose,$remote);
+}
+
+exit(0);
+
+sub help() {
+	print "
+
+Usage: scan 	[--skipfish_path|p <path to skipfish>] \\
+		[--skipfish_options <additional skipfish options>]] \\
+		--hosts <hosts file> [--verbose|v] [--quiet|q] [--help|h]
+
+Arguments:
+--skipfish_path	- You can use this optional parameter to provide the script with
+(-p)		  the path to skipfish. If you do not provide this the 
+		  script tries to find the files itself and fails if it cannot 
+		  fidn them.
+--skipfish_options	- Additional command line options to provide to nikto see 
+(-o)		  'skipfish -h' for more information.
+--hosts		- The file containing the 'hosts' to scan
+--workspace	- Name of the workspace to load the findings into
+--scan		- Name of the scan to load the findings into
+--verbose (-v)	- Be verbose during execution
+--nodelete	- Don't delete temporary files
+--quiet (-q)	- Don't print output
+--help (-h)	- Print this message
+";
+	exit(1);
+}
+
+sub get_skipfish_path() {
+	my $path = run_cmd("which skipfish",0,$remote);
+	$path =~ s/[\n\r]*//g;
+	if ( $path =~ /(^\/.*skipfish)/ ) {
+		return $1;
+	}
+	$path = run_cmd("ls /opt/skipfish/skipfish",0,$remote);
+	if ( -e '/opt/skipfish/skipfish' ) {
+		return '/opt/skipfish/skipfish';
+	}
+	return undef;
+}
+
+sub get_skipfish_version() {
+	my $skipfish_path = shift;
+
+	# Added some error handling to fix #16
+	my $version=run_cmd("$skipfish_path -h 2>&1",0,$remote);
+	return ": $version";
+}
+
+
+sub make_timestamp() {
+	my ($second, $minute, $hour, $day, $month, $year) = localtime();
+	$month++;
+	$second = "0" . $second if $second < 10;
+	$minute = "0" . $minute if $minute <10;
+	$hour = "0". $hour if $hour < 10;
+	$day = "0". $day if $day <10;
+	$month = "0" . $month if $month <10;
+	$year += 1900;
+
+	return "$year$month$day$hour$minute$second";
+}
+
+
