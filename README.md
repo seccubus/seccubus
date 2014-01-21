@@ -12,21 +12,21 @@ for Seccubus V1 has officially been dropped.
 
 Seccubus V2 works with the following scanners:
 * Nessus 4.x and 5.x (professional and home feed)
+* Skipfish
 * OpenVAS
 * Nikto (local and remote)
 * NMap (local and remote)
 * SSLyze
 
 For more information visit [www.seccubus.com]
-
-xx-xx-2014 - 2.5 - Screen updates, restored
+21-01-2014 - 2.5 - Scanner addon
 ============================================
-* Local Nikto and NMap scanning is working again
+Added the Skipfish scanning support
 
 Key new features / issues resolved
 ----------------------------------
-Fixed issue that broke local Nikto and NMap scanning
+A bug that set the severety wrong 
 
 Bugs fixed (tickets closed):
 ----------------------------
-#102 - Local Nikto scanning is broken
+#94 - Fix severity number
