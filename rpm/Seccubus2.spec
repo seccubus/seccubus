@@ -1,5 +1,5 @@
 #
-# Copyright 2013 Frank Breedijk, Peter Slootweg
+# Copyright 2013 Frank Breedijk, Peter Slootweg, Glenn ten Cate
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -219,6 +219,7 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/convert_v1_v2
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/nthweek.sh
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/onlyonxday.sh
+%attr(755, %{seccuser}, %{seccuser}) %{bindir}/skipfish2ivil
 
    
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}
@@ -312,6 +313,14 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/OpenVAS/description.txt
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/OpenVAS/help.html
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/OpenVAS/defaults.txt
+
+
+%attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Skipfish
+%attr(755, %{seccuser}, %{seccuser}) %{scandir}/Skipfish/scan
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Skipfish/description.txt
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Skipfish/help.html
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Skipfish/defaults.txt
+
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/NessusLegacy
 %attr(644, %{seccuser}, %{seccuser}) "%{scandir}/NessusLegacy/(dot)update-nessusrc.example"
