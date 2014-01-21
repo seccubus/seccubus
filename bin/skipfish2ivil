@@ -1,0 +1,282 @@
+#!/usr/bin/env perl
+#Copyright 2013 Frank Breedijk, Jasper Nugteren
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+# This program converts an Skipfish  dir  to the IVIL format
+# ------------------------------------------------------------------------------
+
+use strict;
+use IVIL;
+use XML::Simple;
+use Data::Dumper;
+use File::Slurp;
+use JSON qw( decode_json );
+use Path::Class;
+use Getopt::Long;
+use Carp;
+
+my (
+	$scanname,
+	$scanner,
+	$help,
+	$verbose,
+	$workspace,
+	$timestamp,
+	$infile,
+	$outfile,
+	@findings,
+	$quiet,
+   );
+
+$help = 0;
+my @typeList;
+
+$scanner = "Skipfish";
+
+GetOptions(	'scan=s'		=> \$scanname,
+		'scanner=s'		=> \$scanner,
+		'help|h!'		=> \$help,
+		'verbose|v!'		=> \$verbose,
+		'workspace=s'		=> \$workspace,
+		'timestamp=s'		=> \$timestamp,
+		'infile=s'		=> \$infile,
+		'outfile=s'		=> \$outfile,
+		'quiet|q!'		=> \$quiet,
+	  );
+
+help() if $help;
+$scanname = $workspace unless $scanname;
+$verbose = undef if $quiet;
+
+if ( ! $timestamp ) {
+	print "You must specify a timestamp";
+	help();
+} elsif ( ! $infile ) {
+	print "You must specify the infile parameter";
+	help();
+};
+
+unless ( $outfile ) {
+	$outfile = $infile;
+	$outfile =~ s/\.dr$//;
+	$outfile .= ".ivil.xml";
+}
+
+print "Opening file $outfile for output\n" if $verbose;
+open(OUT, ">$outfile") or die "Unable to open output file $outfile";
+print OUT xml_header();
+print OUT ivil_open();
+if ($workspace) {
+	print "Creating addressee block\n" if $verbose;
+	print OUT ivil_addressee("Seccubus", {
+						"workspace" => $workspace,
+						"scan"		=> $scanname,
+			 		     });
+}
+
+print "Creating sender block\n" if $verbose;
+print OUT ivil_sender($scanner, "Skipfish", $timestamp);
+print OUT "<findings>";
+
+
+print "Issues found: \n";
+&issuesInfo("samples.js",$infile);
+
+print OUT "</findings>";
+print OUT ivil_close();
+close OUT;
+exit();
+
+
+sub find{
+
+        my $search = $_[0];
+	my $dir = $_[1];
+	my @files;
+        my $file;
+        dir($dir)->recurse(callback => sub {
+            $file = shift;
+            if($file =~ /$search/) {
+                push @files, $file->absolute->stringify;
+            }
+        });
+
+        return @files;
+}
+
+sub issuesInfo{
+
+        my $file = $_[0];
+	my $infile = $_[1];
+	print $file;
+
+	open SMPL, $infile."/".$file or die "Unable to open samples.js";
+
+	my $sample = "[";
+	while(<SMPL>) {
+        	if ( $_ =~ /issue_samples/ ) {
+                	$sample .= join "", <SMPL>;
+        	}
+	}
+	close SMPL;
+
+	$sample =~ s/\'/\"/g;
+	$sample =~ s/\]\;/\]/g;
+	$sample =~ s/\\//g;
+
+	my @typelist;
+
+	my $json = decode_json($sample);
+
+	for my $record (@$json) {
+   	       for my $key (keys(%$record)){
+
+     		  my $type     = $record->{type};
+      		  my $severity = $record->{severity};
+      		  my $samples  = $record->{samples};
+
+
+      		  @typeList = &items($infile);
+      		  my $issue = &grep_pattern($record->{type});
+
+                  my $finding = {};
+                  
+  		  if($severity >= 3 ){
+                  	$finding->{severity} = 1;
+                  }elsif($severity > 0 ){
+                  	$finding->{severity} = 4 - $severity;
+                  }else{
+                  	$finding->{severity} = $severity;
+                 }
+	
+                  $finding->{id} = $type;
+                  $finding->{finding} = 
+                  "Security item:\n
+                  ".$issue;
+		  my $countSamp = 0;
+
+       		  for my $sample (@$samples){
+			$countSamp++;
+	
+			my $url = $sample->{url};
+			my ($domain) = $url =~ m!(https?://[^:/]+)!;
+                        $finding->{ip} = $domain;
+    			my $port  = substr $url, 0, 5;
+			if($port eq "http:"){
+	                	$finding->{port} = "80";
+			}
+                        if($port eq "https"){
+	                	$finding->{port} = "443";
+
+			}
+			my @dataReq = &issuesDataReq($infile."/".$sample->{dir}."/request.js");
+                        $dataReq[0]  =~ s/x0dx0a/ \n/g;
+
+			$finding->{finding} .= "
+			PoC ".$countSamp." Request:\n
+                        ".$dataReq[0]."\n
+			Extra info:\n".$sample->{extra}."\n
+			#############end-PoC#############\n";
+
+			print OUT ivil_finding($finding);
+
+        	  }
+    	       }
+	}
+       
+
+}
+
+sub items{
+
+        my $fileRes = $_[0];
+        my @linesRes = grep { /": / } read_file($fileRes."/index.html", chomp => 1);
+        my @dataRes;
+
+        foreach (@linesRes) {
+
+                my $stringRes = $_;
+
+                my $lineRes = $stringRes;
+
+                $lineRes =~ s/"//g;
+                $lineRes =~ s/://g;
+                $lineRes =~ s/,//g;
+                push(@dataRes,$lineRes."\n");
+        }
+        return @dataRes;
+}
+
+sub issuesDataReq{
+
+        my $file = $_[0];
+        my @lines = grep { /^var req = {/ } read_file($file, chomp => 1);
+        my @data;
+
+        foreach (@lines) {
+
+                my $string = join('', $_,"\n");
+
+                my $line = $string;
+                $line =~ s/'/"/g;
+                $line =~ s/},/}/g;
+                $line =~ s/\\//g;
+
+                my $decoded = decode_json(substr($line,"10"));
+                @data = $decoded->{'data'};
+        }
+        return @data;
+}
+
+sub grep_pattern{
+        my $pattern = $_[0];
+	my $issue;
+	foreach my $itm (@typeList){
+		$issue = "$itm\n" if $itm =~ /$pattern/;
+        }
+	return $issue;
+}
+
+sub help() {
+	print "
+
+Usage: skipfish2ivil [--scanner <scanner>] --timestamp <timestamp> \\
+		   [--workspace <workspace>] [--scan <scan>] \\
+		   --infile <skipfish dir> [--outfile <.ivil.xml file>] \\
+		   [--verbose] [--help]
+
+Arguments:
+--scanner (--sc)- Default value: Skipfish
+--timestamp	- Timestamp of when the file was created in the format 
+		  YYYYMMDDhhmmss or YYYYMMDDhhmm so 11 december 2011 1:14:00 pm
+		  is 20111211131400 or 201112111314
+--workspace (-w)- Optional: Which Seccubus workspace do you want to load this 
+		  in, this informaiton is used to create the addressee block. 
+		  If not value is given for workspace no addressee block is 
+		  generated
+--scan(-s)	- Optional: Which Seccubus scan do you want to load this in, 
+		  this informaiton is used to create the addressee block. If 
+		  scan is not specified then the value for workspace is used.
+--infile	- This defines the dir that will be converted to IVIL
+--outfile	- Optional: This defines the name of the file used to output 
+		  IVIL. If no filename is given, the infile value is used, 
+		  a trailing .xml is removed (if it exists) and .ivil.xml is 
+		  appended
+--verbose (-v)	- Be verbose
+--help (-h)	- Print this message
+";
+	exit();
+}
+
+
