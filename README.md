@@ -29,4 +29,4 @@ A bug that set the severity wrong
 
 Bugs fixed (tickets closed):
 ----------------------------
-#94 - Fix severity number
+Issue #94 - Fix severity number
