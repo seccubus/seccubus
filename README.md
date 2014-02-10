@@ -19,7 +19,7 @@ Seccubus V2 works with the following scanners:
 * SSLyze
 
 For more information visit [www.seccubus.com]
-21-01-2014 - 2.5 - Scanner addon
+21-01-2014 - 2.5 - Scanner addon Skipfish
 ============================================
 Added the Skipfish scanning support
 
