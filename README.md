@@ -25,7 +25,7 @@ Added the Skipfish scanning support
 
 Key new features / issues resolved
 ----------------------------------
-A bug that set the severety wrong 
+A bug that set the severity wrong 
 
 Bugs fixed (tickets closed):
 ----------------------------
