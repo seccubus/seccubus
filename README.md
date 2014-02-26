@@ -19,6 +19,11 @@ Seccubus V2 works with the following scanners:
 * SSLyze
 
 For more information visit [www.seccubus.com]
+
+26-02-2014 - 2.5 - Skipfish remote option
+============================================
+Added the Skipfish remote option support
+
 21-01-2014 - 2.5 - Scanner addon Skipfish
 ============================================
 Added the Skipfish scanning support
@@ -30,3 +35,4 @@ A bug that set the severity wrong
 Bugs fixed (tickets closed):
 ----------------------------
 Issue #94 - Fix severity number
+
