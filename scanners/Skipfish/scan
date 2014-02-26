@@ -64,79 +64,82 @@ my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}
 
 print "Hosts file specified $hosts_file\n" if $verbose;
  if ( ! $workspace ) {
-	print "You must specify a workspace name";
-	help();
+        print "You must specify a workspace name";
+        help();
 } elsif ( ! $scan ){
-	print "You must specify a scan name";
-	help();
+        print "You must specify a scan name";
+        help();
 };
 
 $skipfish_path = get_skipfish_path() unless $skipfish_path;
 if ( ! $skipfish_path && -e $skipfish_path ) {
-	print "Unable to find skipfish on your system. I suggest you use the --skipfish_path option\nto provide a path to skipfish\n";
-	help();
+        print "Unable to find skipfish on your system. I suggest you use the --skipfish_path option\nto provide a path to skipfish\n";
+        help();
 }
 print "Skipfish found in $skipfish_path\n" if $verbose;
 my $skipfish_version = get_skipfish_version($skipfish_path);
 
 
 if ( $skipfish_version =~ /^ERROR/ ) {
-	print "There is a problem with your skipfish setup\n";
-	print "Note: The --skipfish_options parameter can be used to pass options to Skipfish itself\n";
-	print "$skipfish_version";
-	help();
+        print "There is a problem with your skipfish setup\n";
+        print "Note: The --skipfish_options parameter can be used to pass options to Skipfish itself\n";
+        print "$skipfish_version";
+        help();
 }
 
 print "Skipfish version is $skipfish_version\n" if $verbose;
 
 my $tempfile = "/tmp/seccubus.$$";
 
-my $skipfish_options = " -o $tempfile.dr $skipfish_options $hosts_file";
+open FILE, $hosts_file or die "Couldn't open file: $!";
 
+my $host = join("", <FILE>);
+close FILE;
+
+my $skipfish_options = " -o $tempfile $skipfish_options $host";
 print "Skipfish options: $skipfish_options\n" if $verbose;
 
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 
 print "Executing $skipfish_path $skipfish_options\n" unless $quiet;
-#run_cmd("$skipfish_path $skipfish_options",$verbose,$remote,[ $tempfile,"$tempfile.*" ], [ $hosts_file ]);
-run_cmd("$skipfish_path -Q $skipfish_options ",1,$remote,[ $tempfile,"$tempfile.*" ], [ $hosts_file ]);
+run_cmd("$skipfish_path -Q $skipfish_options ",$verbose,$remote,[ $tempfile,"$tempfile.*" ], [ $hosts_file ]);
 
-#TO-DO rebuild so it do html to ivil
 print "Scanning done, converting html dir to ivil\n" unless $quiet;
-my $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/skipfish2ivil -v --scanner=Skipfish  --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile '$tempfile.dr' ";
+my $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/skipfish2ivil -v --scanner=Skipfish  --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile '$tempfile' ";
 $cmd .= "-v" if $verbose > 1;
 run_cmd($cmd,$verbose);
-#print $cmd;
 
 print "Importing ivil\n" unless $quiet;
 $cmd = "$load_ivil -v --workspace '$workspace' --scan '$scan' --scanner Skipfish --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
 $cmd .= " '$tempfile.ivil.xml'";
 run_cmd($cmd,$verbose);
-#print $cmd;
 
 print "Adding files to scan $scan in workspace $workspace\n" unless $quiet;
-run_cmd("zip -r ".$tempfile.".zip ".$tempfile.".dr ");
+run_cmd("zip -r ".$tempfile.".zip ".$tempfile." ");
 
 $cmd = "$attach_file -v --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.zip' --description 'Command line output'";
 $cmd .= " -v" if $verbose > 1;
 run_cmd($cmd,$verbose);
-#print $cmd;
 
 $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
 $cmd .= " -v" if $verbose > 1;
 run_cmd($cmd,$verbose);
-#print $cmd;
+
 
 # Cleanup
 unless ( $nodelete ) {
-	unlink "$tempfile" if -e "$tempfile";
-	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+        unlink "$tempfile" if -e "$tempfile";
+        unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+        unlink "$tempfile.zip" if -e "$tempfile.zip";
+        run_cmd("rm -r -f $tempfile/",$verbose);
+
 }
 if ( $remote ) {
-	run_cmd("rm -f $tempfile $tempfile.*",$verbose,$remote);
+        run_cmd("rm -r -f $tempfile $tempfile.*",$verbose,$remote);
 }
+
 
 exit(0);
 
