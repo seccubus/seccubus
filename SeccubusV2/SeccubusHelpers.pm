@@ -310,7 +310,7 @@ sub run_cmd($;$$$$) {
 		if ( $files && @$files ) {
 			$cmd = "scp -i $key ";
 			foreach my $file ( @$files ) {
-				$cmd .= "$user\@$host:$file ";
+				$cmd .= " -r $user\@$host:$file ";
 			}
 			$cmd .= " /tmp 2>&1";
 			run_cmd($cmd,$print);
