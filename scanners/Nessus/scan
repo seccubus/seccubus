@@ -46,6 +46,7 @@ my (
 $help = 0;
 $quiet = 0;
 $sleep = 10;
+$verbose = 1;
 
 # Check for Ruby
 print "Lets see if you have Ruby on your system\n" if $verbose;
@@ -153,7 +154,8 @@ print "Polling to determin that report has finished\n" if $verbose > 1;
 my $status = "running";
 my $done;
 my $total;
-while ( $status eq "running" ) {
+#while ( $status eq "running" || $status eq "pending" ) {
+while ( not -e "$tempfile.nessus" ) {
 	my $cmd = "$nivil -u '$user' -p '$password' -s '$server' --port $port --get-report $report_id -o '$tempfile'";
 	print "\nExecuing $cmd\n" if $verbose > 1;
 	$result = `$cmd 2>&1`;
@@ -166,7 +168,7 @@ while ( $status eq "running" ) {
 			last;
 		} 
 	}
-	sleep(10) if $status eq "running";
+	sleep(10) if ($status eq "running") || ($status eq "pending");
 }
 
 print "Converting $tempfile.nessus to $tempfile.ivil.xml\n" unless $quiet;
