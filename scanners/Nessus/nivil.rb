@@ -101,6 +101,8 @@ class NessusConnection
         @nurl = "https://#{@server}:" + port + "/"
         # @nurl = "https://#{@server}:8834/"
         @token = nil
+        @status = nil
+
     end
     
     def connect(uri, post_data)
@@ -151,13 +153,26 @@ def login(options)
     #p post_data
     stuff = @n.connect(uri, post_data)
     docxml = REXML::Document.new(stuff)
-    if docxml == ''
+    if docxml == '' 
             @token=''
     else
+	    begin
+	    @status = docxml.root.elements['status'].text
             @token = docxml.root.elements['contents'].elements['token'].text
             @name = docxml.root.elements['contents'].elements['user'].elements['name'].text
             @admin = docxml.root.elements['contents'].elements['user'].elements['admin'].text
+	    rescue
+	    	puts "error #{@status}"
+		sleep 60
+		exit
+	    end
     end
+end
+
+def logout(options)
+    uri = "logout"
+    post_data = { "token" => @token }
+    stuff = @n.connect(uri, post_data)
 end
 
 def show_reports(options)
@@ -187,6 +202,7 @@ def get_report(options)
     uri = "scan/list"
     post_data = { "token" => @token }
     stuff = @n.connect(uri, post_data)
+    begin
     docxml = REXML::Document.new(stuff)
     docxml.elements.each('/reply/contents/scans/scanList/scan') {|scan|
         
@@ -196,10 +212,13 @@ def get_report(options)
             @total = scan.elements['completion_total'].text   
         end
     }
+    rescue
+#	puts ("Warning: cannot get scan status")
+    end
     
-    if @status == "running"
+    puts("#{@status}|#{@now}|#{@total}")
+    if @status != "OK"
         #puts("Scan it not completed, cannot download")
-        puts("#{@status}|#{@now}|#{@total}")
         exit
     end
     stuff = nil
@@ -227,18 +246,21 @@ end
 if options[:showpol]
     login(options)
     show_policy(options)
+    logout(options)
     exit
 end
 
 if options[:showrpt]
     login(options)
     show_reports(options)
+    logout(options)
     exit
 end
 
 if options[:rptid]
     login(options)
     get_report(options)
+    logout(options)
     exit
 end
 
