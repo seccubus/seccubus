@@ -1,0 +1,221 @@
+#!/usr/bin/env perl
+# Copyright 2013 Frank Breedijk, Glenn ten Cate, blabla1337 
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+# This program converts an NBE file to the IVIL format
+# ------------------------------------------------------------------------------
+#
+# You can blame @Ar0xA for burp2ivil 
+#
+
+use strict;
+use IVIL;
+
+use Getopt::Long;
+use Carp;
+use XML::Simple;
+use Data::Dumper;
+
+use Digest::MD5 qw(md5_base64);
+
+my (
+	$scanname,
+	$scanner,
+	$scannerversion,
+	$help,
+	$verbose,
+	$workspace,
+	$timestamp,
+	$infile,
+	$outfile,
+	@findings,
+        $number,
+   );
+
+$help = 0;
+
+# Create default values
+
+GetOptions(	'scan=s'		=> \$scanname,
+		'scanner=s'		=> \$scanner,
+		'scannerversion=s'	=> \$scannerversion,
+		'help|h!'		=> \$help,
+		'verbose|v!'		=> \$verbose,
+		'workspace=s'		=> \$workspace,
+		'timestamp=s'		=> \$timestamp,
+		'infile=s'		=> \$infile,
+		'outfile=s'		=> \$outfile,
+	  );
+
+help() if $help;
+$scanname = $workspace unless $scanname;
+
+if ( ! $infile || ! -e $infile ) {
+	print "You must specify the infile parameter";
+	help();
+} elsif ( ( $workspace && ! $scanname ) || ( ! $workspace && $scanname ) ) {
+	print "workspace and scan have to specified both or not at all";
+	help();
+};
+
+print "Reading in .burp file\n" if $verbose;
+my $burp = XMLin($infile,
+		   KeyAttr	=> undef,
+	          );
+
+# Lets clear some memory space
+$burp->{Policy} = undef;
+#die Dumper($burp);
+
+unless ( $outfile ) {
+	$outfile = $infile;
+	$outfile =~ s/\.burp$//;
+	$outfile .= ".ivil.xml";
+}
+print "Opening file $outfile for output\n" if $verbose;
+open(OUT, ">$outfile") or die "Unable to open output file $outfile";
+print OUT xml_header();
+print OUT ivil_open();
+
+if ($workspace) {
+	print "Creating addressee block\n" if $verbose;
+	print OUT ivil_addressee("Seccubus", {
+						"workspace" => $workspace,
+						"scan"		=> $scanname,
+			 		     });
+}
+
+print "Creating findings\n" if $verbose;
+print OUT "<findings>\n";
+
+#lets go through all issues
+
+$number = 0;
+foreach my $issue ( @{$burp->{issue}}) {
+
+	my $finding = {};
+	#get the IP and the Hostname from the burp export
+        my $ip = $issue->{host}->{ip};
+        my $hostname = $issue->{host}->{content};
+        
+        #convert severity
+        my $severity = $issue->{severity};
+        if ($severity eq 'Information' ) {
+		$severity = 0;
+        } elsif ($severity eq 'High') {
+		$severity = 1;
+	}  elsif ($severity eq 'Medium') {
+                $severity = 2;
+        }  elsif ($severity eq 'Low') {
+                $severity = 3;
+        } else {
+        	print Dumper($issue);
+                die "Unknown severity";
+        } 
+
+        #find the port
+        my $port;
+	#if : occurs more than once..
+        my $count = () = $hostname =~ /:/g;
+        if ( $count > 1)  {
+		#port defined at the end of the hostname, we use that
+ 		$port= substr $hostname, rindex($hostname, ':')+1;
+	} else {
+		#look at the protocol instead
+		if (index($hostname, 'http://') != -1) {
+			$port = 80;
+		} elsif (index($hostname, 'https://') != -1) {
+			$port = 443;
+		}
+	}
+
+	#now we fill the finding_txt 
+	my $txt ="";	
+
+	$txt = join ("", $txt, "Name: ", $issue -> {name}, "\n\nPath: $hostname", $issue ->{path}, "\nLocation: $hostname", $issue->{location}, "\n\nConfidence: ", $issue->{confidence});
+        $txt = join ("", $txt,"\n\nIssue Background: ", $issue->{issueBackground}, "\n\nRemediation: ", $issue->{remediationBackground});
+        #add ip to finding
+        $finding->{ip} =  $issue->{host}->{ip};        
+
+	#the ID needs to be only once per finding, but the same between scans
+        #$issue->{id} is not good, because multiple findings can have that same id
+        #so lets make up something
+	# lets get the type (multiple per scan) and add to it, the location..
+	my $scanID = $issue->{type} . md5_base64($issue->{location});
+        # unique enough...id + url
+
+	$finding->{id} = $scanID;
+	#add severity to finding
+	$finding->{severity} = $severity;
+
+	#add port to finding
+	$finding->{port} = $port;
+
+	#add finding to finding
+	$finding->{finding} = $txt;
+        
+	#debug: dump the $finding
+        #print "\n";
+	#print Dumper($finding);
+
+	#write to ivil
+	print OUT ivil_finding($finding);
+} 
+
+print OUT "</findings>\n";
+
+#print "Creating sender block\n" if $verbose;
+#print OUT ivil_sender($scanner, $scannerversion, $timestamp);
+
+
+print OUT ivil_close();
+
+close OUT;
+
+exit();
+
+sub help() {
+	print "
+
+Usage: burp2ivil --scanner <scanner> [--scannerversion <versionstring>] \\
+                   --timestamp <timestamp> [--workspace <workspacename>] \\
+		   [--scan <scanname>] --infile <filename input> \\
+		   [--outfile <filename output>] [--verbose] [--help]
+
+Arguments:
+--scanner	- The name of the scanner used to create the .burp file
+			Logical options are Burp Suite, OpenVAS or Nikto
+--scannerversion- Optional: the version of the scanner used to create the 
+		  .burp file
+--timestamp	- Timestamp of when the file was created in the format 
+		  YYYYMMDDhhmmss or YYYYMMDDhhmm so 11 december 2011 1:14:00 pm
+		  is 20111211131400 or 201112111314
+--workspace	- Optional: Which Seccubus workspace do you want to load this 
+		  in, this informaiton is used to create the addressee block. 
+		  If not value is given for workspace no addressee block is 
+		  generated
+--scan		- Optional: Which Seccubus scan do you want to load this in, 
+		  this informaiton is used to create the addressee block. If 
+		  scan is not specified then the value for workspace is used.
+--infile	- This defines the .burp file that will be converted to IVIL
+--outfile	- Optional: This defines the name of the file used to output 
+		  IVIL. If no filename is given, the infile value is used, 
+		  a trailing .burp is removed (if it exists) and .ivil.xml is 
+		  appended
+--verbose (-v)	- Be verbose
+--help (-h)	- Print this message
+";
+	exit();
+}
+
