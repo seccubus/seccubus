@@ -105,7 +105,6 @@ $number = 0;
 foreach my $issue ( @{$burp->{issue}}) {
 
 	my $finding = {};
-	#get the IP and the Hostname from the burp export
         my $ip = $issue->{host}->{ip};
         my $hostname = $issue->{host}->{content};
         
@@ -124,15 +123,13 @@ foreach my $issue ( @{$burp->{issue}}) {
                 die "Unknown severity";
         } 
 
-        #find the port
+        #Find the port, check hostname. if more than one :, the url contains
+	#a port. Otherwise use the protocol identifier. 
         my $port;
-	#if : occurs more than once..
         my $count = () = $hostname =~ /:/g;
         if ( $count > 1)  {
-		#port defined at the end of the hostname, we use that
  		$port= substr $hostname, rindex($hostname, ':')+1;
 	} else {
-		#look at the protocol instead
 		if (index($hostname, 'http://') != -1) {
 			$port = 80;
 		} elsif (index($hostname, 'https://') != -1) {
@@ -142,33 +139,21 @@ foreach my $issue ( @{$burp->{issue}}) {
 
 	#now we fill the finding_txt 
 	my $txt ="";	
-
 	$txt = join ("", $txt, "Name: ", $issue -> {name}, "\n\nPath: $hostname", $issue ->{path}, "\nLocation: $hostname", $issue->{location}, "\n\nConfidence: ", $issue->{confidence});
         $txt = join ("", $txt,"\n\nIssue Background: ", $issue->{issueBackground}, "\n\nRemediation: ", $issue->{remediationBackground});
-        #add ip to finding
-        $finding->{ip} =  $issue->{host}->{ip};        
 
 	#the ID needs to be only once per finding, but the same between scans
         #$issue->{id} is not good, because multiple findings can have that same id
         #so lets make up something
 	# lets get the type (multiple per scan) and add to it, the location..
 	my $scanID = $issue->{type} . md5_base64($issue->{location});
-        # unique enough...id + url
 
+        $finding->{ip} =  $issue->{host}->{ip};        
 	$finding->{id} = $scanID;
-	#add severity to finding
 	$finding->{severity} = $severity;
-
-	#add port to finding
 	$finding->{port} = $port;
-
-	#add finding to finding
 	$finding->{finding} = $txt;
         
-	#debug: dump the $finding
-        #print "\n";
-	#print Dumper($finding);
-
 	#write to ivil
 	print OUT ivil_finding($finding);
 } 
