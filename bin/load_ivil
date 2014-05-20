@@ -72,7 +72,6 @@ my $test =eval { $parser->parse_uri($filename) };
 die "File failed validation: $@" if $@;
 print "File $filename validated OK against schema.\n" if $verbose;
 
-die "end";
 print "Reading file $filename into memory\n" if $verbose;
 open(IVIL, $filename) or die "Unable to open file $filename for read";
 my $ivil = join("", <IVIL>);
@@ -126,4 +125,5 @@ sub make_timestamp() {
 
         return "$year$month$day$hour$minute$second";
 }
+
 

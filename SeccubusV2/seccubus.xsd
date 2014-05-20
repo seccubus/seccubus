@@ -2,15 +2,15 @@
   <xs:element name="IVIL">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="addressee">
+        <xs:element name="addressee" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
-              <xs:element type="xs:string" name="program"/>
+              <xs:element type="xs:string" name="program" minOccurs="0" maxOccurs="1"/>
               <xs:element name="programSpecificData">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element type="xs:string" name="workspace"/>
-                    <xs:element type="xs:string" name="scan"/>
+                    <xs:element type="xs:string" name="workspace"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element type="xs:string" name="scan"  minOccurs="0" maxOccurs="1"/>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
