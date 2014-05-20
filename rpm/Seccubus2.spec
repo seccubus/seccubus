@@ -267,20 +267,29 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/3-ScanConfiguration_files/filelist.xml
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/3-ScanConfiguration_files/themedata.thmx
 
+%attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/HTML/4-Skipfish-installation_files
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/4-Skipfish-installation.htm
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/4-Skipfish-installation_files/colorschememapping.xml
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/4-Skipfish-installation_files/filelist.xml
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/HTML/4-Skipfish-installation_files/themedata.thmx
+
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/MSWord
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/MSWord/1-HowToGet.doc
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/MSWord/2-Installation.doc
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/MSWord/3-ScanConfiguration.doc
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/MSWord/4-Skipfish-installation.doc
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/PDF
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/PDF/1-HowToGet.pdf
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/PDF/2-Installation.pdf
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/PDF/3-ScanConfiguration.pdf
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/PDF/4-Skipfish-installation.pdf
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{docsdir}/TXT
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/TXT/1-HowToGet.txt
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/TXT/2-Installation.txt
 %attr(644, %{seccuser}, %{seccuser}) %{docsdir}/TXT/3-ScanConfiguration.txt
+%attr(644, %{seccuser}, %{seccuser}) %{docsdir}/TXT/4-Skipfish-installation.txt
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Nessus
