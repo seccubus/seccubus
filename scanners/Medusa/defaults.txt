@@ -1,0 +1,1 @@
+-o "-U /usr/share/medusa/usernames.txt -P /usr/share/medusa/passwords.txt -T 20 -t 5 -L -M ssh" --hosts @HOSTS

@@ -1,0 +1,155 @@
+#!/usr/bin/env perl
+# Copyright 2013 Frank Breedijk, Steve Launius, Alex Smirnoff
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+# This program converts an NBE file to the IVIL format
+# ------------------------------------------------------------------------------
+
+use strict;
+use IVIL;
+
+use Getopt::Long;
+use Carp;
+
+my (
+	$scanname,
+	$scanner,
+	$scannerversion,
+	$help,
+	$verbose,
+	$workspace,
+	$timestamp,
+	$infile,
+	$outfile,
+	@findings,
+   );
+
+my %sev = ( 
+		"Weak Password"		=> 1
+	  );
+$help = 0;
+
+# Create default values
+
+GetOptions(	'scan=s'		=> \$scanname,
+		'scanner=s'		=> \$scanner,
+		'scannerversion=s'	=> \$scannerversion,
+		'help|h!'		=> \$help,
+		'verbose|v!'		=> \$verbose,
+		'workspace=s'		=> \$workspace,
+		'timestamp=s'		=> \$timestamp,
+		'infile=s'		=> \$infile,
+		'outfile=s'		=> \$outfile,
+	  );
+
+help() if $help;
+$scanname = $workspace unless $scanname;
+
+if ( ! $scanner ) {
+	$scanner = "Medusa";
+}
+
+if ( ! $timestamp ) {
+	print "You must specify a timestamp";
+	help();
+} elsif ( ! $infile ) {
+	print "You must specify the infile parameter";
+	help();
+};
+
+print "Opening file $infile for input\n" if $verbose;
+open(IN, $infile) or die "Unable to open $infile";
+unless ( $outfile ) {
+	$outfile = $infile;
+	$outfile =~ s/\.medusa$//;
+	$outfile .= ".ivil.xml";
+}
+print "Opening file $outfile for output\n" if $verbose;
+open(OUT, ">$outfile") or die "Unable to open output file $outfile";
+print OUT xml_header();
+print OUT ivil_open();
+if ($workspace) {
+	print "Creating addressee block\n" if $verbose;
+	print OUT ivil_addressee("Seccubus", {
+						"workspace" => $workspace,
+						"scan"		=> $scanname,
+			 		     });
+}
+print "Creating sender block\n" if $verbose;
+print OUT ivil_sender($scanner, $scannerversion, $timestamp);
+
+print "Reading findings\n" if $verbose;
+@findings = ();
+while (<IN>) {
+	if (/ACCOUNT FOUND: \[(\S+)\] Host: (\S+).*/) {
+		my $plugin = $1;
+		my $ip = $2;
+		my $user = $3;
+		my $pass = $4;
+
+		print "Finding: $port|$ip|$user\n" if $verbose;
+		my %finding = ();
+		$finding{ip} = $ip;
+		$finding{port} = "generic";
+		$finding{plugin} = $plugin;
+		$finding{id} = "medusa";
+		$finding{severity} = 1;
+		$finding{finding} = $_;
+		push @findings, \%finding;
+	}
+}
+print OUT ivil_findings(\@findings) if (@findings);
+print ivil_findings(\@findings) if $verbose and @findings;
+
+print OUT ivil_close();
+
+close OUT;
+
+exit();
+
+sub help() {
+	print "
+
+Usage: medusa2ivil --scanner <scanner> [--scannerversion <versionstring>] \\
+                --timestamp <timestamp> [--workspace <workspacename>] \\
+		[--scan <scanname>] --infile <filename input> \\
+		[--outfile <filename output>] [--verbose] [--help]
+
+Arguments:
+--scanner	- The name of the scanner used to create the .medusa file
+			Default value: Medusa
+--scannerversion- Optional: the version of the scanner used to create the .medusa
+		  file
+--timestamp	- Timestamp of when the file was created in the format 
+		  YYYYMMDDhhmmss or YYYYMMDDhhmm so 11 december 2011 1:14:00 pm
+		  is 20111211131400 or 201112111314
+--workspace	- Optional: Which Seccubus workspace do you want to load this 
+		  in, this informaiton is used to create the addressee block. 
+		  If not value is given for workspace no addressee block is 
+		  generated
+--scan		- Optional: Which Seccubus scan do you want to load this in, 
+		  this informaiton is used to create the addressee block. If 
+		  scan is not specified then the value for workspace is used.
+--infile	- This defines the .medusa file that will be converted to IVIL
+--outfile	- Optional: This defines the name of the file used to output 
+		  IVIL. If no filename is given, the infile value is used, 
+		  a trailing .nbe is removed (if it exists) and .ivil.xml is 
+		  appended
+--verbose (-v)	- Be verbose
+--help (-h)	- Print this message
+";
+	exit();
+}
+
+
