@@ -1,0 +1,42 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="IVIL">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="addressee">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="program"/>
+              <xs:element name="programSpecificData">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="workspace"/>
+                    <xs:element type="xs:string" name="scan"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="findings">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="finding" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="ip"/>
+                    <xs:element type="xs:short" name="port"/>
+                    <xs:element type="xs:int" name="id"/>
+                    <xs:element type="xs:byte" name="severity"/>
+                    <xs:element type="xs:string" name="finding_txt"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute type="xs:float" name="version"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+
