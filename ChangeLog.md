@@ -21,6 +21,25 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+21-05-2014 - 2.6 - Bug Fixes
+============================================
+A couple of bugs are now fixed thanks to Arkanoi and SphaZ
+
+26-02-2014 - 2.5 - Skipfish remote option
+============================================
+
+Key new features / issues resolved
+----------------------------------
+Large nessus scans failed
+Password are not masked on screen
+
+Bugs fixed (tickets closed):
+----------------------------
+Issue #105 - please mask scanner passwords
+Issue #106 - long Nessus scan results are not loaded
+
+============================================
+
 xx-xx-2014 - 2.5 - Screen updates, restored
 ============================================
 
