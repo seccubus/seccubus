@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2013 Frank Breedijk
+# Copyright 2013 Frank Breedijk, blabla1337
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ $config = "etc/dummy.config.xml" unless -e $config;
 use lib "/opt/seccubus/SeccubusV2";
 push (@main::INC, @INC);
 
-$VERSION = '2.5';
+$VERSION = '2.6';
 
 use strict;
 use Carp;
