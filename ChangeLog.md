@@ -13,6 +13,7 @@ for Seccubus V1 has officially been dropped.
 
 Seccubus V2 works with the following scanners:
 * Nessus 4.x and 5.x (professional and home feed)
+* Skipfish
 * OpenVAS
 * Nikto (local and remote)
 * NMap (local and remote)
