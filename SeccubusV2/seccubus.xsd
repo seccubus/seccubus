@@ -24,7 +24,7 @@
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element type="xs:string" name="ip"/>
-                    <xs:element type="xs:short" name="port"/>
+                    <xs:element type="xs:string" name="port"/>
                     <xs:element type="xs:int" name="id"/>
                     <xs:element type="xs:byte" name="severity"/>
                     <xs:element type="xs:string" name="finding_txt"/>
