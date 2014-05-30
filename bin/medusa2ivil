@@ -95,15 +95,11 @@ while (<IN>) {
 	if (/ACCOUNT FOUND: \[(\S+)\] Host: (\S+).*/) {
 		my $plugin = $1;
 		my $ip = $2;
-		my $user = $3;
-		my $pass = $4;
 
-		print "Finding: $port|$ip|$user\n" if $verbose;
 		my %finding = ();
 		$finding{ip} = $ip;
 		$finding{port} = "generic";
-		$finding{plugin} = $plugin;
-		$finding{id} = "medusa";
+		$finding{id} = $plugin;
 		$finding{severity} = 1;
 		$finding{finding} = $_;
 		push @findings, \%finding;
