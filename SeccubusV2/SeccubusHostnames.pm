@@ -23,6 +23,7 @@ of all functions within the module.
 
 use SeccubusDB;
 use SeccubusRights;
+use Socket;
 
 @ISA = ('Exporter');
 
@@ -68,7 +69,9 @@ sub update_hostname($$$;) {
 	my $ip = shift;
 	my $name = shift;
 
-	confess "Invalid parameters" unless ( $workspace_id && $ip && $name );
+	$name = gethostbyaddr(inet_aton($ip), AF_INET) unless $name;
+	confess "Invalid parameters" unless ( $workspace_id && $ip );
+	return 0 unless $name;
 
 	if ( may_write($workspace_id) ) {
 		my $count = sql( "return"	=> "array",
@@ -83,12 +86,12 @@ sub update_hostname($$$;) {
 			     "values"	=> [ $workspace_id, $ip, $name ],
 			   );
 		} else {
-			sql( "return"	=> "id",
-			     "query"	=> "UPDATE host_names 
-			     		    SET name = ? 
-					    WHERE workspace_id = ? AND ip = ?",
-			     "values"	=> [ $name, $workspace_id, $ip ],
-			   );
+#			sql( "return"	=> "id",
+#			     "query"	=> "UPDATE host_names 
+#			     		    SET name = ? 
+#					    WHERE workspace_id = ? AND ip = ?",
+#			     "values"	=> [ $name, $workspace_id, $ip ],
+#			   );
 		}
 	} else {
 		confess "You have no rights to write workspace $workspace_id";
@@ -97,3 +100,4 @@ sub update_hostname($$$;) {
 
 # Close the PM file.
 return 1;
+

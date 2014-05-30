@@ -32,6 +32,7 @@ use SeccubusWorkspaces;
 use SeccubusScans;
 use SeccubusRuns;
 use SeccubusFindings;
+use SeccubusHostnames;
 
 use strict;
 use Carp;
@@ -146,6 +147,7 @@ sub load_ivil($;$$$$$$) {
 					finding		=> $finding->{finding_txt},
 					severity	=> $finding->{severity},
 				      );
+			update_hostname($workspace_id, $finding->{ip}, $finding->{hostname});
 			print "Finding: $finding->{ip}, $finding->{port}, $finding->{id}\n$finding->{finding_txt}\n" if $print >1;
 		}
 	}
