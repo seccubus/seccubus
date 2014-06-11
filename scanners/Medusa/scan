@@ -26,6 +26,8 @@ use Carp;
 
 my (
 	$medusa_path,
+	$nmap_path,
+	$nmap_port,
 	$medusa_options,
 	$hosts_file,
 	$workspace,
@@ -45,6 +47,8 @@ $help = 0;
 
 GetOptions(	
 		'medusa_path|p=s'	=> \$medusa_path,
+		'nmap_path=s'		=> \$nmap_path,
+		'nmap_port|p=s'		=> \$nmap_port,
 		'medusa_options|o=s'	=> \$medusa_options,
 		'hosts=s'		=> \$hosts_file,
 		'workspace=s'		=> \$workspace,
@@ -77,6 +81,15 @@ if ( ! $hosts_file || ! -e $hosts_file ) {
 	help();
 };
 
+$nmap_path = get_nmap_path() unless $nmap_path;
+$nmap_port = 22 unless $nmap_port;
+
+if ( ! $nmap_path && -e $nmap_path ) {
+	print "Unable to find Nmap on your system. I suggest you use the --nmap_path option\nto provide a path to the medusa executable\n";
+	help();
+}
+
+
 $medusa_path = get_medusa_path() unless $medusa_path;
 if ( ! $medusa_path && -e $medusa_path ) {
 	print "Unable to find Medusa on your system. I suggest you use the --medusa_path option\nto provide a path to the medusa executable\n";
@@ -87,17 +100,25 @@ print "Medusa $medusa_version found in $medusa_path\n" if $verbose;
 
 my $tempfile = "/tmp/seccubus.$$";
 
-my $medusa_options = "-H $hosts_file -O '$tempfile' $medusa_options";
 print "Medusa options: $medusa_options\n" if $verbose;
 
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
 
-my $cmd = "$medusa_path $medusa_options";
+my $cmd = "$nmap_path -iL $hosts_file -oG $tempfile.nmap -sT -p $nmap_port";
+print "Execuing $cmd\n" unless $quiet;
+run_cmd($cmd,$verbose);
+
+$cmd = "/bin/grep \/open\/ $tempfile.nmap|/bin/cut -d ' ' -f 2 >$tempfile.hosts";
+run_cmd($cmd,$verbose);
+
+my $medusa_options = "-H $tempfile.hosts -O $tempfile $medusa_options";
+
+$cmd = "$medusa_path $medusa_options";
 
 print "Execuing $cmd\n" unless $quiet;
-run_cmd($cmd,$verbose,$remote,[ "$tempfile.*" ],[ $hosts_file ]);
+run_cmd($cmd,$verbose,$remote,[ "$tempfile.*" ],[ "$tempfile.hosts" ]);
 
 print "Scanning done, converting medusa to ivil\n" unless $quiet;
 $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/medusa2ivil --scanner Medusa --scannerversion=$medusa_version --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile '$tempfile' ";
@@ -121,6 +142,8 @@ run_cmd($cmd,$verbose);
 # Cleanup
 unless( $nodelete ) {
 	unlink "$tempfile" if -e "$tempfile";
+	unlink "$tempfile.hosts" if -e "$tempfile.hosts";
+	unlink "$tempfile.nmap" if -e "$tempfile.nmap";
 	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
 }
 if ( $remote ) {
@@ -154,6 +177,29 @@ Arguments:
 --help (-h)	- Print this message
 ";
 	exit(1);
+}
+
+sub get_nmap_path() {
+        my $path = run_cmd("which nmap",0,$remote);
+        if ( $path =~ /(^\/.*nmap)/ ) {
+                return $1;
+        }
+        $path = run_cmd("which nmap.pl",0,$remote);
+        if ( $path =~ /(^\/.*nmap\.pl)/ ) {
+                return $1;
+        }
+        if ( run_cmd("ls /opt/nmap/nmap.pl",0,$remote) ) {
+                return '/opt/nmap/nmap.pl';
+        }
+        return undef;
+}
+
+sub get_nmap_version() {
+        my $nmap_path = shift;
+
+        my $version=run_cmd("$nmap_path -V",$verbose,$remote);
+        $version =~ /Nmap version\s+(\d+\.\d+)/;
+        return $1;
 }
 
 sub get_medusa_path() {
