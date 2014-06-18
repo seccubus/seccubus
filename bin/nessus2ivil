@@ -98,11 +98,14 @@ print OUT "<findings>\n";
 foreach my $host ( @{$nessus->{Report}->{ReportHost}} ) {
 	my ($hostname, $ip);
 
+	$ip = $host->{name};
 	foreach my $tag ( @{$host->{HostProperties}->{tag}} ) {
 		if ($tag->{name} eq 'host-fqdn') {
 			$hostname = $tag->{content};
 		} elsif ($tag->{name} eq 'host-ip') {
 			$ip = $tag->{content}; 
+		} elsif ($tag->{name} eq 'netbios-name') {
+			$hostname = $tag->{content} unless $hostname;
 		}
 	}
 
