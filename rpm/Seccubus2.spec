@@ -433,6 +433,9 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/upgrade_v3_v4.mysql
 
 %changelog
+* Fri Jul 2014 
+- New scanner Medusa added by Arkanoi
+- Burp parser by SphaZ
 * Tue Mar 19 2013 Frank Breedijk <fbreedijk@schubergphilis.com>
 - New DB version
 * Mon Dec 24 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
