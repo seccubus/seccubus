@@ -433,7 +433,7 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/upgrade_v3_v4.mysql
 
 %changelog
-* Fri Aug 1 2014 
+* Fri Aug 1 2014 Glenn ten Cate <gtencate@schubergphilis.com>
 - New scanner Medusa added by Arkanoi
 - Burp parser by SphaZ
 * Tue Mar 19 2013 Frank Breedijk <fbreedijk@schubergphilis.com>
