@@ -1,0 +1,233 @@
+#!/usr/bin/env perl
+# Copyright 2013, 2014 Frank Breedijk, Dan McGinn-Combs, Alex Smirnoff
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+# This script will call the Medusa scanner and import the results as IVIL
+# ------------------------------------------------------------------------------
+
+use strict;
+use SeccubusV2;
+use SeccubusIVIL;
+use SeccubusHelpers;
+
+use Getopt::Long;
+use Carp;
+
+my (
+	$medusa_path,
+	$nmap_path,
+	$nmap_port,
+	$medusa_options,
+	$hosts_file,
+	$workspace,
+	$scan,
+	$sudo,
+	$help,
+	$verbose,
+	$quiet,
+	$username,
+	$nodelete,
+	$remote,
+   );
+
+$help = 0;
+
+# Create default values
+
+GetOptions(	
+		'medusa_path|p=s'	=> \$medusa_path,
+		'nmap_path=s'		=> \$nmap_path,
+		'nmap_port|p=s'		=> \$nmap_port,
+		'medusa_options|o=s'	=> \$medusa_options,
+		'hosts=s'		=> \$hosts_file,
+		'workspace=s'		=> \$workspace,
+		'scan=s'		=> \$scan,
+		'sudo'			=> \$sudo,
+		'verbose|v+'		=> \$verbose,
+		'quiet|q!'		=> \$quiet,
+		'help|h'		=> \$help,
+		'nodelete'		=> \$nodelete,
+		'remote|r=s'		=> \$remote,
+	  );
+
+help() if $help;
+$verbose = 0 if $quiet;
+$nodelete = 0 unless $nodelete;
+
+my $config = get_config();
+my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
+my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
+
+print "Hosts file specified $hosts_file\n" if $verbose;
+if ( ! $hosts_file || ! -e $hosts_file ) {
+	print "You must specify a valid hosts file";
+	help();
+} elsif ( ! $workspace ) {
+	print "You must specify a workspace name";
+	help();
+} elsif ( ! $scan ){
+	print "You must specify a scan name";
+	help();
+};
+
+$nmap_path = get_nmap_path() unless $nmap_path;
+$nmap_port = 22 unless $nmap_port;
+
+if ( ! $nmap_path && -e $nmap_path ) {
+	print "Unable to find Nmap on your system. I suggest you use the --nmap_path option\nto provide a path to the medusa executable\n";
+	help();
+}
+
+
+$medusa_path = get_medusa_path() unless $medusa_path;
+if ( ! $medusa_path && -e $medusa_path ) {
+	print "Unable to find Medusa on your system. I suggest you use the --medusa_path option\nto provide a path to the medusa executable\n";
+	help();
+}
+my $medusa_version = get_medusa_version($medusa_path);
+print "Medusa $medusa_version found in $medusa_path\n" if $verbose;
+
+my $tempfile = "/tmp/seccubus.$$";
+
+print "Medusa options: $medusa_options\n" if $verbose;
+
+my $timestamp = make_timestamp();
+print "Timestamp = $timestamp\n" if $verbose;
+my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
+
+my $cmd = "$nmap_path -iL $hosts_file -oG $tempfile.nmap -sT -p $nmap_port";
+print "Execuing $cmd\n" unless $quiet;
+run_cmd($cmd,$verbose);
+
+$cmd = "/bin/grep \/open\/ $tempfile.nmap|/bin/cut -d ' ' -f 2 >$tempfile.hosts";
+run_cmd($cmd,$verbose);
+
+my $medusa_options = "-H $tempfile.hosts -O $tempfile $medusa_options";
+
+$cmd = "$medusa_path $medusa_options";
+
+print "Execuing $cmd\n" unless $quiet;
+run_cmd($cmd,$verbose,$remote,[ "$tempfile.*" ],[ "$tempfile.hosts" ]);
+
+print "Scanning done, converting medusa to ivil\n" unless $quiet;
+$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/medusa2ivil --scanner Medusa --scannerversion=$medusa_version --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile '$tempfile' ";
+$cmd .= "-v" if $verbose > 1;
+run_cmd($cmd,$verbose);
+
+print "Importing ivil\n" unless $quiet;
+$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner Medusa --scannerversion $medusa_version --timestamp $timestamp";
+$cmd .= " -v" if $verbose > 1;
+$cmd .= " '$tempfile.ivil.xml'";
+run_cmd($cmd,$verbose);
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile' --description 'Command output'";
+$cmd .= " -v" if $verbose > 1;
+run_cmd($cmd,$verbose);
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
+$cmd .= " -v" if $verbose > 1;
+run_cmd($cmd,$verbose);
+
+# Cleanup
+unless( $nodelete ) {
+	unlink "$tempfile" if -e "$tempfile";
+	unlink "$tempfile.hosts" if -e "$tempfile.hosts";
+	unlink "$tempfile.nmap" if -e "$tempfile.nmap";
+	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+}
+if ( $remote ) {
+	run_cmd("rm -f $tempfile.*",$verbose,$remote);;
+}
+
+exit(0);
+
+sub help() {
+	print "
+Usage: scan 	[--medusa_path|p <path to medusa>] \\
+		[--medusa_options <additional Medusa options>]] \\
+		--hosts <hosts file> [--remote|r <host,user,keyfile>] 
+		[--verbose|v] [--quiet|q] [--help|h]
+
+Arguments:
+--medusa_path	- You can use this optional parameter to provide the script with
+(-p)		  the path to medusa. If you do not provide this the 
+		  script tries to find the files itself and fail if it cannot 
+		  find them.
+--medusa_options- Additional command line options to provide to Medusa see 
+(-o)		  'medusa' without arguments for more information.
+--hosts		- The file containing the 'hosts' to scan
+--workspace	- Name of the workspace to load the findings into
+--scan		- Name of the scan to load the findings into
+--remote (-r)	- Comma separated list of host,username,keyfile representing the
+		  host and credetials which should be used to execute the scan
+--verbose (-v)	- Be verbose during execution
+--quiet (-q)	- Don't print output
+--nodelete      - Don't delete temporary files (use -v to find out which)
+--help (-h)	- Print this message
+";
+	exit(1);
+}
+
+sub get_nmap_path() {
+        my $path = run_cmd("which nmap",0,$remote);
+        if ( $path =~ /(^\/.*nmap)/ ) {
+                return $1;
+        }
+        $path = run_cmd("which nmap.pl",0,$remote);
+        if ( $path =~ /(^\/.*nmap\.pl)/ ) {
+                return $1;
+        }
+        if ( run_cmd("ls /opt/nmap/nmap.pl",0,$remote) ) {
+                return '/opt/nmap/nmap.pl';
+        }
+        return undef;
+}
+
+sub get_nmap_version() {
+        my $nmap_path = shift;
+
+        my $version=run_cmd("$nmap_path -V",$verbose,$remote);
+        $version =~ /Nmap version\s+(\d+\.\d+)/;
+        return $1;
+}
+
+sub get_medusa_path() {
+	my $path = run_cmd("which medusa",0,$remote);
+	if ( $path =~ /(^\/.*medusa)/ ) {
+		return $1;
+	}
+	return undef;
+}
+
+sub get_medusa_version() {
+	my $medusa_path = shift;
+
+	my $version=run_cmd("$medusa_path -V",$verbose,$remote);
+	$version =~ /Medusa v(\S+) /;
+	return $1;
+}
+
+sub make_timestamp() {
+	my ($second, $minute, $hour, $day, $month, $year) = localtime();
+	$month++;
+	$second = "0" . $second if $second < 10;
+	$minute = "0" . $minute if $minute <10;
+	$hour = "0". $hour if $hour < 10;
+	$day = "0". $day if $day <10;
+	$month = "0" . $month if $month <10;
+	$year += 1900;
+
+	return "$year$month$day$hour$minute$second";
+}
+
