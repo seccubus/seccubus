@@ -209,6 +209,8 @@ OEF
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/add_user
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/do-scan
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/dump_ivil
+%attr(755, %{seccuser}, %{seccuser}) %{bindir}/burp2ivil
+%attr(755, %{seccuser}, %{seccuser}) %{bindir}/medusa2ivil
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/dump_nmap
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/load_ivil
 %attr(755, %{seccuser}, %{seccuser}) %{bindir}/nbe2ivil
@@ -298,6 +300,12 @@ OEF
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nessus/description.txt
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nessus/help.html
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/Nessus/defaults.txt
+
+%attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Medusa
+%attr(755, %{seccuser}, %{seccuser}) %{scandir}/Medusa/scan
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Medusa/description.txt
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Medusa/help.html
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/Medusa/defaults.txt
 
 %attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/Nmap
 %attr(755, %{seccuser}, %{seccuser}) %{scandir}/Nmap/scan
