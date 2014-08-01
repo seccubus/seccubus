@@ -21,7 +21,7 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
-01-08-2014 - 2.8 - Bug Fixes
+01-08-2014 - 2.8 - New scanner and Burp parser
 ============================================
 Medusa is added to scanner tools thnx to Arkanoi
 Added burp parser to ivil thnx to SphaZ 
