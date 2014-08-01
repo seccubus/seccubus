@@ -14,25 +14,20 @@ Seccubus V2 works with the following scanners:
 * Nessus 4.x and 5.x (professional and home feed)
 * Skipfish
 * OpenVAS
+* Medusa (local and remote)
 * Nikto (local and remote)
 * NMap (local and remote)
 * SSLyze
 
 For more information visit [www.seccubus.com]
 
+01-08-2014 - 2.8 - Bug Fixes
+============================================
+Medusa is added to scanner tools thnx to Arkanoi
+Added burp parser to ivil thnx to SphaZ 
+
 21-05-2014 - 2.6 - Bug Fixes
 ============================================
 A couple of bugs are now fixed thanks to Arkanoi and SphaZ
 
-26-02-2014 - 2.5 - Skipfish remote option
-============================================
 
-Key new features / issues resolved
-----------------------------------
-Large nessus scans failed
-Password are not masked on screen
-
-Bugs fixed (tickets closed):
-----------------------------
-Issue #105 - please mask scanner passwords
-Issue #106 - long Nessus scan results are not loaded
