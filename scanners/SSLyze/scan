@@ -157,7 +157,9 @@ Arguments:
 		  script tries to find the files itself and fails if it cannot 
 		  fidn them.
 --sslyze_options	- Additional command line options to provide to sslyze see 
-(-o)		  'sslyze -Help' for more information.
+(-o)		  'sslyze -Help' for more information. Please quote the options so that they 
+		  are passed as a single block. E.g. -o '-option1 -option2'
+
 --hosts		- The file containing the 'hosts' to scan
 --workspace	- Name of the workspace to load the findings into
 --scan		- Name of the scan to load the findings into

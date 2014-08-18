@@ -30,3 +30,4 @@ Bug Fixes
 * #122 - SSLlabs integration
 * #120 - SELinux problem on RHEL6
 * #99 - The ability to remote is not reflected in the scanner help text
+* #67 - -o usage needs to be more specific for e.g. nikto and nmap scanner 
