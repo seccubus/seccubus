@@ -9,5 +9,5 @@ Homepage: http://seccubus.com
 
 Package: seccubus
 Architecture: all
-Depends: apache2, mysql-server, ruby, libalgorithm-diff-perl, libjson-perl, libxml-simple-perl
+Depends: apache2, mysql-server, ruby, libalgorithm-diff-perl, libjson-perl, libxml-simple-perl, libhtml-tree-perl
 Description: Automated regular vulnerability scanning with delta reporting
