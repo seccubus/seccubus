@@ -352,6 +352,13 @@ chcon -t httpd_sys_script_exec_t %{webdir}/seccubus/json/*.pl
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/help.html
 %attr(644, %{seccuser}, %{seccuser}) %{scandir}/NessusLegacy/defaults.txt
 
+
+%attr(755, %{seccuser}, %{seccuser}) %dir %{scandir}/SSLlabs
+%attr(755, %{seccuser}, %{seccuser}) %{scandir}/SSLlabs/scan
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/SSLlabs/description.txt
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/SSLlabs/help.html
+%attr(644, %{seccuser}, %{seccuser}) %{scandir}/SSLlabs/defaults.txt
+
 # GUI
 %attr(755, %{seccuser}, %{seccuser}) %dir %{webdir}
 %attr(644, %{seccuser}, %{seccuser}) %{webdir}/index.html
@@ -437,6 +444,9 @@ chcon -t httpd_sys_script_exec_t %{webdir}/seccubus/json/*.pl
 %attr(644, %{seccuser}, %{seccuser}) %{vardir}/upgrade_v3_v4.mysql
 
 %changelog
+* Mon Aug 18 2014 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Fixed SE Linux isseu thanks to Arkenoi
+- Added support for Qualys SSLlabs
 * Fri Aug 1 2014 Glenn ten Cate <gtencate@schubergphilis.com>
 - New scanner Medusa added by Arkanoi
 - Burp parser by SphaZ
