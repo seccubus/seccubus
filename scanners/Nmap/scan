@@ -167,7 +167,8 @@ Arguments:
 		  script tries to find the files itself and fail if it cannot 
 		  find them.
 --nmap_options	- Additional command line options to provide to Nmap see 
-(-o)		  'nmap -Help' for more information.
+(-o)		  'nmap -Help' for more information. Please quote the options so that they are
+                  passed to Nikto as a single block. E.g. -o '-sS -Pn'
 --hosts		- The file containing the 'hosts' to scan
 --sudo		- Use sudo to elevate privileges (needed for certain scans)
 --workspace	- Name of the workspace to load the findings into

@@ -152,7 +152,7 @@ sub help() {
 	print "
 
 Usage: scan 	[--nikto_path|p <path to nikto>] \\
-		[--nikto_options <additional nikto options>]] \\
+		[--nikto_options '<additional nikto options>'] \\
 		--hosts <hosts file> [--remote|r <host>,<user>,<key>] [--verbose|v] [--quiet|q]
 		[--help|h]
 
@@ -162,7 +162,8 @@ Arguments:
 		  script tries to find the files itself and fails if it cannot 
 		  fidn them.
 --nikto_options	- Additional command line options to provide to nikto see 
-(-o)		  'nikto -Help' for more information.
+(-o)		  'nikto -Help' for more information. Please quote the options so that they are
+		  passed to Nikto as a single block. E.g. -o '--port 80,443 --ssl'
 --hosts		- The file containing the 'hosts' to scan
 --workspace	- Name of the workspace to load the findings into
 --scan		- Name of the scan to load the findings into
