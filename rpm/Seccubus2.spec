@@ -45,6 +45,8 @@ Requires:	perl-DBD-mysql
 Requires:	perl-CGI
 Requires:	perl-JSON
 Requires:	perl-XML-Simple
+Requires:	perl-libwww
+Requires:	perl-HTML-Tree
 Requires:	httpd
 Requires:	mysql
 Requires:	ruby

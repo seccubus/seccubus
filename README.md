@@ -21,13 +21,10 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
-01-08-2014 - 2.8 - New scanner and Burp parser
+01-08-2014 - 2.9 - Qualys SSLlabs integration
+=============================================
+Seccubus can now fetch the results of www.ssllabs.com automatic scanner and monitor for deltas
+
+Bug Fixes
 ============================================
-Medusa is added to scanner tools thnx to Arkanoi
-Added burp parser to ivil thnx to SphaZ 
-
-21-05-2014 - 2.6 - Bug Fixes
-============================================
-A couple of bugs are now fixed thanks to Arkanoi and SphaZ
-
-
+* #122 - SSLlabs integration
