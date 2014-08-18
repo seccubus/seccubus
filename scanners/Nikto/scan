@@ -153,7 +153,8 @@ sub help() {
 
 Usage: scan 	[--nikto_path|p <path to nikto>] \\
 		[--nikto_options <additional nikto options>]] \\
-		--hosts <hosts file> [--verbose|v] [--quiet|q] [--help|h]
+		--hosts <hosts file> [--remote|r <host>,<user>,<key>] [--verbose|v] [--quiet|q]
+		[--help|h]
 
 Arguments:
 --nikto_path	- You can use this optional parameter to provide the script with
@@ -165,6 +166,8 @@ Arguments:
 --hosts		- The file containing the 'hosts' to scan
 --workspace	- Name of the workspace to load the findings into
 --scan		- Name of the scan to load the findings into
+--remote (-r)	- Comma separated list of hostname, username and key used to ssh into the host
+		  specified and run the command
 --verbose (-v)	- Be verbose during execution
 --nodelete	- Don't delete temporary files
 --quiet (-q)	- Don't print output

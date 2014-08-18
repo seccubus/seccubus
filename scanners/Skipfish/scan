@@ -160,6 +160,8 @@ Arguments:
 --hosts		- The file containing the 'hosts' to scan
 --workspace	- Name of the workspace to load the findings into
 --scan		- Name of the scan to load the findings into
+--remote (-r)   - Comma separated list of hostname, username and key used to ssh into the host
+                  specified and run the command
 --verbose (-v)	- Be verbose during execution
 --nodelete	- Don't delete temporary files
 --quiet (-q)	- Don't print output
