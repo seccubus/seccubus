@@ -28,3 +28,4 @@ Seccubus can now fetch the results of www.ssllabs.com automatic scanner and moni
 Bug Fixes
 ============================================
 * #122 - SSLlabs integration
+* #120 - SELinux problem on RHEL6
