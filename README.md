@@ -21,7 +21,7 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
-01-08-2014 - 2.9 - Qualys SSLlabs integration
+18-08-2014 - 2.9 - Qualys SSLlabs integration
 =============================================
 Seccubus can now fetch the results of www.ssllabs.com automatic scanner and monitor for deltas
 
