@@ -20,10 +20,31 @@ Seccubus V2 works with the following scanners:
 * SSLyze
 
 For more information visit [www.seccubus.com]
+18-08-2014 - 2.9 - Qualys SSLlabs integration
+=============================================
+Seccubus can now fetch the results of www.ssllabs.com automatic scanner and monitor for deltas
+
+Bug Fixes
+============================================
+* #122 - SSLlabs integration
+* #120 - SELinux problem on RHEL6
+* #99 - The ability to remote is not reflected in the scanner help text
+* #67 - -o usage needs to be more specific for e.g. nikto and nmap scanner
+* #63 - Scan table does not display scanner correctly
+* #59 - Explanation of $ATTACH: in notifications is not very clear
+
+01-08-2014 - 2.8 - New scanner and Burp parser
+============================================
+Medusa is added to scanner tools thnx to @Arkanoi
+Added burp parser to ivil thnx to @SphaZ 
+
+Bug Fixes
+============================================
+A couple of bugs are now fixed thanks to Arkanoi and SphaZ
 
 21-05-2014 - 2.6 - Bug Fixes
 ============================================
-A couple of bugs are now fixed thanks to Arkanoi and SphaZ
+A couple of bugs are now fixed thanks to @Arkanoi and @SphaZ
 
 26-02-2014 - 2.5 - Skipfish remote option
 ============================================
