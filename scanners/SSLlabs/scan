@@ -23,7 +23,7 @@ use IVIL;
 
 use Getopt::Long;
 use Carp;
-use LWP::Simple;
+use LWP::UserAgent;
 use HTML::TreeBuilder;
 use Data::Dumper;
 
