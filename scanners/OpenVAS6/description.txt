@@ -3,6 +3,7 @@ Script for Seccubus providing use of OpenVAS6 vulnerability scanner via omp inte
 Prerequise : 
 This script use OpenVAS-OMP perl module from Winfried Neessen (cf http://search.cpan.org/dist/OpenVAS-OMP/)
 Limitation : 
+- this script do not manage multiple hosts
 - this script currently allow only one ip per host target while OpenVas6 allow multiple ip for one host target 
 - this script may create host target and scans in OpenVAS6, but do not allow their deletion.
 
@@ -37,5 +38,6 @@ Parameters description :
 --workspace or --ws : Seccubus workspace name (for do-scan script)
 
 Todo : 
--  Allow creation and scan of host target with more than one ip
+- Manage multiple host for one Seccubus scan.
+- Allow creation and scan of host target with more than one ip
 - Allow deletion of scan and host target from OpenVas6 -> storage of scans and targets in Seccubus only.
