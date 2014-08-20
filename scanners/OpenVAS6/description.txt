@@ -1,0 +1,41 @@
+Script for Seccubus providing use of OpenVAS6 vulnerability scanner via omp interface
+
+Prerequise : 
+This script use OpenVAS-OMP perl module from Winfried Neessen (cf http://search.cpan.org/dist/OpenVAS-OMP/)
+Limitation : 
+- this script currently allow only one ip per host target while OpenVas6 allow multiple ip for one host target 
+- this script may create host target and scans in OpenVAS6, but do not allow their deletion.
+
+This script first check if specified target name and ip correspond to a target host in OpenVas6, if not it create it. If no target name is provided, it is defaulted to the ip adress of the target.
+After the corresponding OpenVas6 target id is retrieved, an OpenVas6 scan is initiated with provided policy. 
+Scan report is retrieved in IVIL format. In addition, html, pdf and txt format can also be retrieved if specified.
+
+
+Usage : 
+minimum arguments : 
+-s <server> -u <user> --pw <password> --policy <policy> --targetip @HOSTS
+
+Parameters description :
+
+--help : display help message
+--port : OpenVAS manager port (default 9390)
+--targetip or --tip : ip adress of scan target 
+--targetname or --tname : name of the target existing in OpenVas6, or to be created in OpenVas6 if does not already exist
+--user or --u OpenVas6 username
+--password or --pw OpenVas6 password
+--reporthtml or --rhtml : also retrieve scan report in html format
+--reportpdf  or --rpdf : also retrieve scan report in pdf format
+--reporttxt or --rtxt  : also retrieve scan report in txt format
+--server or --s : specify OpenVAS6 server adress
+--quiet or --q : quiet mode, do not print output
+--sleep : seconds to sleep between polls of OpenVAS manager (default : 10)
+--policy or --pol : OpenVas6 scan policy 
+--verbose --v : display additionnal output messages. -v -v : level 2 debug. -v -v -v : max debug level.
+--nodelete : do not delete temporary files located in /tmp.
+--scan or --sc : Seccubus scan name (for do-scan script)
+--timeout : scan timeout in seconds : if scan duration exeed this time, exit. Default is 14400 seconds (ie 4 hours)
+--workspace or --ws : Seccubus workspace name (for do-scan script)
+
+Todo : 
+-  Allow creation and scan of host target with more than one ip
+- Allow deletion of scan and host target from OpenVas6 -> storage of scans and targets in Seccubus only.
