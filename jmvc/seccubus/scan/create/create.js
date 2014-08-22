@@ -70,6 +70,7 @@ $.Controller('Seccubus.Scan.Create',
 			paramsHere : '#newScanParam'
 		});
 		$('#newScanOtherScannerRow').hide();
+		$('#newScanPasswordRow').hide();
 	},
 	submit : function(el, ev){
 		ev.preventDefault();
@@ -92,6 +93,11 @@ $.Controller('Seccubus.Scan.Create',
 			elements.push("#newScanParam");
 			ok = false;
 		}
+               	if ( params.password == '' ) {
+                       	elements.push("#newScanPassword");
+                       	ok = false;
+                }
+
 		if ( params.targets == '' ) {
 			elements.push("#newScanTargets");
 			ok = false;
@@ -140,6 +146,12 @@ $.Controller('Seccubus.Scan.Create',
 		} else {
 			$('#newScanOtherScannerRow').hide();
 		}
+		if ( $('#newScanScanner').val() == 'Nessus' || $('#newScanScanner').val() == 'OpenVAS' || $('#newScanScanner').val() == 'NessusLegacy' ) {
+			$('#newScanPasswordRow').show();
+		} else {
+			$('#newScanPasswordRow').hide();
+		}
+		//if scanner is Nessus, nessuslegacy or openvas, show password field
 	},
 	".nok change" : function(el) {
 		el.removeClass("nok");
