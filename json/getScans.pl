@@ -51,13 +51,17 @@ eval {
 			$paramline =~ s/\Q$wanted\E/ <password>/;
 			if ($wanted =~ /"(.+?)"/) {
 				$password = $1;
+			} else {
+				$password = $wanted;
 			}
 		} elsif (index($paramline, '--pw ') != -1) {
 			($wanted) = $paramline =~ /-pw (.*) --rc/;
                         $paramline =~ s/\Q$wanted\E/ <password>/;
 			if ($wanted =~ /"(.+?)"/) {
                                 $password = $1;
-                        }
+                        } else {
+				$password = $wanted;
+			}
 
 		}
 		push (@data, {
