@@ -111,10 +111,12 @@ $.Controller('Seccubus.Scan.Edit',
 			elements.push("#editScanScanner", "#editScanOtherScanner");
 			ok = false;
 		}
+		
 		if ( params.parameters == '' ) {
 			elements.push("#editScanParam");
 			ok = false;
 		}
+
 		if ( params.targets == '' ) {
 			elements.push("#editScanTargets");
 			ok = false;
@@ -126,8 +128,9 @@ $.Controller('Seccubus.Scan.Edit',
 			sc.name = params.name;
 			sc.scanner = params.scanner;
 			sc.parameters = params.parameters;
+			sc.password = params.password;
 			sc.targets = params.targets;
-
+			
 			sc.save(this.callback('saved'));
 		} else {
 			this.nok(elements);
@@ -165,6 +168,12 @@ $.Controller('Seccubus.Scan.Edit',
 		} else {
 			$('#editScanOtherScannerRow').hide();
 		}
+		if ( $('#editScanScanner').val() == 'Nessus' || $('#editScanScanner').val() == 'OpenVAS' || $('#editScanScanner').val() == 'NessuLegacy'  ) {
+                        $('#editScanPasswordRow').show();
+                } else {
+                        $('#editScanPasswordRow').hide();
+                }
+
 	},
 	".nok change" : function(el) {
 		el.removeClass("nok");

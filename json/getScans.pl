@@ -45,18 +45,27 @@ eval {
 	foreach my $row ( @$scans ) {
 		$paramline = $$row[3];
 		my $wanted;
+		my $password;
 		if (index($paramline, '-p ') != -1) {	
-		($wanted) = $paramline =~ /-p(.*) --policy/;
+		($wanted) = $paramline =~ /-p (.*) --policy/;
 			$paramline =~ s/\Q$wanted\E/ <password>/;
+			if ($wanted =~ /"(.+?)"/) {
+				$password = $1;
+			}
 		} elsif (index($paramline, '--pw ') != -1) {
-			($wanted) = $paramline =~ /-pw(.*) --rc/;
-                        $paramline =~ s/\Q$wanted\E/ <password>/;    
+			($wanted) = $paramline =~ /-pw (.*) --rc/;
+                        $paramline =~ s/\Q$wanted\E/ <password>/;
+			if ($wanted =~ /"(.+?)"/) {
+                                $password = $1;
+                        }
+
 		}
 		push (@data, {
 			'id'		=> $$row[0],
 			'name'		=> $$row[1],
 			'scanner'	=> $$row[2],
 			'parameters'	=> $paramline,
+			'password'	=> $password,
 			'lastScan'	=> $$row[4],
 			'runs'		=> $$row[5],
 			'findCount'	=> $$row[6],
