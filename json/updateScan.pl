@@ -34,6 +34,7 @@ my $workspace_id = $query->param("workspace");
 my $name = $query->param("name");
 my $scanner = $query->param("scanner");
 my $parameters = $query->param("parameters");
+my $password = $query->param("password");
 my $targets = $query->param("targets");
 
 # Return an error if the required parameters were not passed 
@@ -57,6 +58,16 @@ if (not (defined ($targets))) {
 };
 
 eval {
+        #Add password field to the $parameters, depending on the scanner
+
+        #escape password to be sure
+        $password = "\"". $password ."\"";
+
+        #replace <password> string with actual password
+        if (index($parameters,'<password>') != -1) {
+                $parameters =~ s/<password>/$password/;
+        };
+
 	my @data = ();
 	update_scan($workspace_id,$scan_id,$name,$scanner,$parameters,$targets);
 	push @data, {

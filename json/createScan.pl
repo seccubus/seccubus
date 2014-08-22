@@ -51,9 +51,6 @@ if (not (defined ($parameters))) {
 if (not (defined ($targets))) {
 	bye("Parameter targets is missing");
 };
-if (not (defined ($password))) {
-        bye("Parameter password is missing");
-};
 
 eval {
 	#Add password field to the $parameters, depending on the scanner
