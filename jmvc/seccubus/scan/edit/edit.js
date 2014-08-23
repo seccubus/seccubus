@@ -116,7 +116,6 @@ $.Controller('Seccubus.Scan.Edit',
 			elements.push("#editScanParam");
 			ok = false;
 		}
-
 		if ( params.targets == '' ) {
 			elements.push("#editScanTargets");
 			ok = false;
@@ -168,7 +167,7 @@ $.Controller('Seccubus.Scan.Edit',
 		} else {
 			$('#editScanOtherScannerRow').hide();
 		}
-		if ( $('#editScanScanner').val() == 'Nessus' || $('#editScanScanner').val() == 'OpenVAS' || $('#editScanScanner').val() == 'NessuLegacy'  ) {
+		if ( $('#editScanScanner').val() == 'Nessus' || $('#editScanScanner').val() == 'OpenVAS' || $('#editScanScanner').val() == 'NessusLegacy'  ) {
                         $('#editScanPasswordRow').show();
                 } else {
                         $('#editScanPasswordRow').hide();

@@ -48,28 +48,22 @@ if (not (defined ($scanner))) {
 if (not (defined ($parameters))) {
 	bye("Parameter parameters is missing");
 };
+if (not (defined ($password))) {
+	bye("Parameter password is missing");
+};
 if (not (defined ($targets))) {
-	bye("Parameter targets is missing");
+        bye("Parameter targets is missing");
 };
 
 eval {
-	#Add password field to the $parameters, depending on the scanner
-
-	#escape password to be sure
-	$password = "\"". $password ."\"";
-
-	#replace <password> string with actual password
-	if (index($parameters,'<password>') != -1) {
-		$parameters =~ s/<password>/$password/;
-	};	
-
 	my @data = ();
-	my $newid = create_scan($workspace_id,$name,$scanner,$parameters,$targets);
+	my $newid = create_scan($workspace_id,$name,$scanner,$parameters,$password,$targets);
 	push @data, {
 		id		=> $newid,
 		name		=> $name,
 		scanner		=> $scanner,
 		parameters	=> $parameters,
+		password	=> $password,
 		targets		=> $targets,
 		workspace	=> $workspace_id,
 	};

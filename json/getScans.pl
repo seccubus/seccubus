@@ -43,33 +43,11 @@ eval {
 	my $scans = get_scans($workspace_id);
         my $paramline;
 	foreach my $row ( @$scans ) {
-		$paramline = $$row[3];
-		my $wanted;
-		my $password;
-		if (index($paramline, '-p ') != -1) {	
-		($wanted) = $paramline =~ /-p (.*) --policy/;
-			$paramline =~ s/\Q$wanted\E/ <password>/;
-			if ($wanted =~ /"(.+?)"/) {
-				$password = $1;
-			} else {
-				$password = $wanted;
-			}
-		} elsif (index($paramline, '--pw ') != -1) {
-			($wanted) = $paramline =~ /-pw (.*) --rc/;
-                        $paramline =~ s/\Q$wanted\E/ <password>/;
-			if ($wanted =~ /"(.+?)"/) {
-                                $password = $1;
-                        } else {
-				$password = $wanted;
-			}
-
-		}
 		push (@data, {
 			'id'		=> $$row[0],
 			'name'		=> $$row[1],
 			'scanner'	=> $$row[2],
-			'parameters'	=> $paramline,
-			'password'	=> $password,
+			'parameters'	=> $$row[3],
 			'lastScan'	=> $$row[4],
 			'runs'		=> $$row[5],
 			'findCount'	=> $$row[6],
