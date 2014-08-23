@@ -54,6 +54,7 @@ eval {
 			'targets'	=> $$row[7],
 			'workspace'	=> $$row[8],
 			'notifications'	=> $$row[9],
+			'password'	=> $$row[10],
 		});
 	}
 	print $json->pretty->encode(\@data);
