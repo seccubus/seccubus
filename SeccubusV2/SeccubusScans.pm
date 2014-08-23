@@ -289,7 +289,7 @@ sub run_scan($$;$$$) {
 		my @scan = sql( "return"	=> "array",
 				"query"	=> "
 					SELECT scans.name, scannername, 
-					scannerparam, targets, workspaces.name
+					scannerparam, password, targets, workspaces.name
 					FROM scans, workspaces
 					WHERE scans.workspace_id = workspaces.id
 					AND workspaces.id = ?
@@ -297,11 +297,19 @@ sub run_scan($$;$$$) {
 				"values"	=> [$workspace_id, $scan_id]
 			      );
 		if ( @scan ) {
-			my ( $scanname, $scanner, $param, $targets, $workspace ) = @scan;
+			my ( $scanname, $scanner, $param, $password, $targets, $workspace ) = @scan;
 			my $config = SeccubusV2::get_config();
 			if ( ! -e $config->{paths}->{scanners} . "/$scanner/scan" ) {
 				die "Scan script for $scanner is not installed";
 			}
+                        if ($scanner eq 'Nessus') {
+				print "scanner is:" . $scanner . '\n';
+				$param = $param .' -p \''. $password. '\' ';
+			};
+			if ($scanner eq "NessusLegacy" || $scanner eq "OpenVAS") {
+				$param = $param .' --pw \''. $password. '\' ';
+			};
+
 			if ( $param =~ /\@HOSTS/ ) {
 				open TMP, ">$tempfile" or die "Unable to open $tempfile for write";
 				print TMP "$targets\n";
