@@ -54,7 +54,7 @@ if (not (defined ($parameters))) {
 	bye("Parameter parameters is missing");
 };
 if (not (defined ($password))) {
-        bye("Parameter password is missing");
+        bye("update Parameter password is missing");
 };
 if (not (defined ($targets))) {
 	bye("Parameter targets is missing");
