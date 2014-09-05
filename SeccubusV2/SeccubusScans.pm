@@ -229,16 +229,27 @@ sub update_scan($$$$$;$$) {
 	my $scanner_param = shift or die "No scanner parameters specified";
 	my $password = shift;
 	my $targets = shift;
-
 	if ( may_write($workspace_id) ) {
-		return sql( "return"	=> "rows",
-			    "query"	=> "UPDATE scans
-			    		    SET name = ?, scannername = ?, 
-					    scannerparam = ?, password = ?, targets = ?
-					    WHERE id = ? AND workspace_id = ?;
-					   ",
-			    "values"	=> [$scanname, $scanner_name, $scanner_param, $password, $targets, $scan_id, $workspace_id],
-			  );
+		if (length($password) > 0 ) {
+			return sql( "return"	=> "rows",
+				    "query"	=> "UPDATE scans
+				    		    SET name = ?, scannername = ?, 
+						    scannerparam = ?, password = ?, targets = ?
+						    WHERE id = ? AND workspace_id = ?;
+						   ",
+				    "values"	=> [$scanname, $scanner_name, $scanner_param, $password, $targets, $scan_id, $workspace_id],
+				  );
+		} else {
+			return sql( "return"	=> "rows",
+				    "query"	=> "UPDATE scans
+				    		    SET name = ?, scannername = ?, 
+						    scannerparam = ?, targets = ?
+						    WHERE id = ? AND workspace_id = ?;
+						   ",
+				    "values"	=> [$scanname, $scanner_name, $scanner_param, $targets, $scan_id, $workspace_id],
+				  );
+	
+		}
 	} else {
 		die "Permission denied";
 	}
