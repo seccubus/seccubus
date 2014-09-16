@@ -42,7 +42,7 @@ use JSON;
 use strict;
 use Carp;
 
-sub get_findings($;$$);
+sub get_findings($;$$$);
 sub get_status($$;$);
 sub get_filters($$;$);
 sub get_finding($$;);
@@ -78,16 +78,17 @@ Must have at least read rights
 
 =cut
 
-sub get_findings($;$$) {
+sub get_findings($;$$$) {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_id = shift;
+	my $asset_id = shift;
 	my $filter = shift;
 
 	if ( may_read($workspace_id) ) {
 		my $params = [ $workspace_id, $workspace_id ];
 
 		my $query = "
-			SELECT DISTINCT findings.id, host, host_names.name as hostname, 
+			SELECT DISTINCT findings.id, findings.host, host_names.name as hostname, 
 				port, plugin, finding, remark, 
 				findings.severity as severity_id, 
 				severity.name as severity_name, 
@@ -99,11 +100,40 @@ sub get_findings($;$$) {
 			LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
 			LEFT JOIN severity on findings.severity = severity.id
 			LEFT JOIN finding_status on findings.status = finding_status.id
+			-- LEFT JOIN assets on assets.workspace_id = findings.workspace_id
+ 			-- LEFT JOIN asset_hosts on asset_hosts.asset_id = assets.id and (asset_hosts.ip = findings.`host` or asset_hosts.`host` = findings.`host`)
 			WHERE
 				findings.workspace_id = ?";
 		if ( $scan_id != 0 ) {
 			$query .= " AND findings.scan_id = ? ";
 			push @$params, $scan_id;
+		}
+		if($asset_id != 0){
+			$query = "
+			SELECT DISTINCT findings.id, findings.host, host_names.name as hostname, 
+				port, plugin, finding, remark, 
+				findings.severity as severity_id, 
+				severity.name as severity_name, 
+				findings.status as status_id, 
+				finding_status.name as status,
+				findings.scan_id as scan_id
+			FROM
+				findings
+				LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
+				LEFT JOIN severity on findings.severity = severity.id
+				LEFT JOIN finding_status on findings.status = finding_status.id
+				,	
+				assets,
+				asset_hosts
+			
+			WHERE
+				findings.workspace_id = ? AND
+				assets.workspace_id = findings.workspace_id AND
+				asset_hosts.asset_id = assets.id and (asset_hosts.ip = findings.`host` or asset_hosts.`host` = findings.`host`)
+				";
+			$query .= "AND assets.id = ?";
+			push @$params, $asset_id;
+
 		}
 
 		if ( $filter ) {
@@ -625,7 +655,7 @@ Must have at least read rights
 
 =cut
 
-sub get_finding($$;) {
+sub get_finding($$$;) {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $finding_id = shift or die "No finding_id provided";
 
