@@ -42,6 +42,7 @@ limitations under the License.
 	       <li><a href="#workspaces">Manage Workspaces</a></li>
 	       <li><a href="#scans">Manage Scans</a></li>
 	       <li><a href="#reports">Reports</a></li>
+	       <li><a href="#assets">Manage Assets</a></li>
 	     </ul>
 	   </nav>
 	 </div>
@@ -91,6 +92,10 @@ limitations under the License.
 	   <select class='left scanSelector' id='scan_multiselector_findings' MULTIPLE size=20>
 	     <option>Select a workspace to start</option>
 	   </select>
+      <BR>Assets:<BR>
+      <select class='left assetSelector' id='asset_multiselector_findings' MULTIPLE size=20>
+        <option>Select a workspace to start</option>
+      </select>
 	 </div>
 	 <div class=main>
 	   <h2>Show findings with this status:</h2>
@@ -160,6 +165,24 @@ limitations under the License.
 	 </div>
        </div>
 
+       <div id='assets' class='tab'>
+       <div class='left'>
+	   Workspace:<br>
+           <select class='left workspaceSelector' id='workspace_selector_assets'>
+	     <option>Workspace selector</option>
+	     <option>----</option>
+	     <option>This is where we load the workspace selector</option>
+	   </select>
+	 </div>
+	 <div class='main'>
+	   <h1>Manage your assets below</h1>
+	   <button class='addAsset'>New Asset</button>
+           <table id='asset_table'>
+	   	<tr><td>Asset table goes here</td></tr>
+	   </table>
+	 </div>
+       </div>
+
      </div>
      <!-- This is where the modal diaglog windows live -->
      <div id="createWorkspaceDialog" class='hidden'>
@@ -207,6 +230,30 @@ limitations under the License.
 	 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 	</td></tr>
        </table>
+     </div>
+     <div id="editAssetDialog" class='hidden'>
+       <h1>Update your Asset</h1>
+       <form id="editAsset">
+         Room for modal Edit Asset
+       </form>
+     </div>
+     <div id="createAssetDialog" class='hidden'>
+       <h1>Create your Asset</h1>
+       <form id="createAsset">
+         Room for modal Create Asset
+       </form>
+     </div>
+     <div id="editAssetHostDialog" class='hidden'>
+       <h1>Update your Asset</h1>
+       <form id="editHostAsset">
+         Room for modal Edit Asset
+       </form>
+     </div>
+     <div id="createAssetHostDialog" class='hidden'>
+       <h1>Create your Asset Host</h1>
+       <form id="createHostAsset">
+         Room for modal Create Asset Host
+       </form>
      </div>
      <div id="modalDialog">
      </div>

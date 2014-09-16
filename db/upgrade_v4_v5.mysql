@@ -1,0 +1,84 @@
+/*
+Copyright 2013 Frank Breedijk
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
+
+
+--
+-- Table structure for table `assets`
+--
+
+CREATE TABLE IF NOT EXISTS  `assets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `workspace_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `hosts` longtext,
+  `recipients` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_assets_workspace` (`workspace_id`)
+) ENGINE=InnoDB;
+
+LOCK TABLES `assets` WRITE;
+/*!40000 ALTER TABLE `assets` DISABLE KEYS */;
+/*!40000 ALTER TABLE `assets` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+--
+-- Table structure for table `asset2scan`
+--
+
+CREATE TABLE IF NOT EXISTS  `asset2scan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `asset_id` int(11) NOT NULL DEFAULT '0',
+  `scan_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `fk_asset2scan_asset_id` (`asset_id`),
+  KEY `fk_asset2scan_scan_id` (`scan_id`)
+) ENGINE=InnoDB;
+
+LOCK TABLES `asset2scan` WRITE;
+/*!40000 ALTER TABLE `asset2scan` DISABLE KEYS */;
+/*!40000 ALTER TABLE `asset2scan` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+--
+-- Table structure for table `asset_hosts`
+--
+
+CREATE TABLE IF NOT EXISTS `asset_hosts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `asset_id` int(11) NOT NULL DEFAULT '0',
+  `ip` varchar(16) NOT NULL,
+  `host` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_asset_hosts_asset_id` (`asset_id`),
+  KEY `fk_asset_hosts_ip` (`ip`),
+  KEY `fk_asset_hosts_host` (`host`)
+) ENGINE=InnoDB;
+
+LOCK TABLES `asset_hosts` WRITE;
+/*!40000 ALTER TABLE `asset_hosts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `asset_hosts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+update config set value=5 where name = 'version';
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

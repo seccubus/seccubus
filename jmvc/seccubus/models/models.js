@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 // steal model files
+
 steal(	"jquery/model", 
 	'./up_to_date.js', 
 	'./config_item.js',
@@ -27,4 +28,6 @@ steal(	"jquery/model",
 	'./history.js', 
 	'./run.js',
 	'./event.js',
-	'./notification.js')
+	'./notification.js',
+	'./asset.js',
+	'./asset_host.js')

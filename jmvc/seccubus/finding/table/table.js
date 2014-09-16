@@ -47,6 +47,11 @@ $.Controller('Seccubus.Finding.Table',
 		 */
 		scans		: null,
 		/*
+		 * @attribute options.assets
+		 * Array of selected assets, null is no assets selected
+		 */
+		assets		: null,
+		/*
 		 * @attribute options.status
 		 * The current status, prevents incorrect status selections
 		 */
@@ -164,23 +169,25 @@ $.Controller('Seccubus.Finding.Table',
 					checked		: this.options.checked
 				})
 			);
-		} else if ( this.options.scans == null ) {
+		} else if ( this.options.scans == null && this.options.assets == null ) {
 			this.element.html(
 				this.view('error',{
 					columns		: this.options.columns,
 					orderBy		: this.options.orderBy,
 					descending	: this.options.descending,
-					message 	: "Please select one or more scans",
+					message 	: "Please select one or more scans or assets",
 					checked		: this.options.checked
 				})
 			);
 		} else {
+			// console.log("OK")
 			this.element.html(
 				this.view(
 					'init',
 					Seccubus.Models.Finding.findAll({
 						workspaceId	: this.options.workspace,
 						scanIds		: this.options.scans,
+						assetIds	: this.options.assets,
 						Status		: this.options.status,
 						Scans		: this.options.scans,
 						Host		: this.options.host,
