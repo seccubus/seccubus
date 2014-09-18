@@ -169,7 +169,7 @@ The default config makes Seccubus available on http://localhost/seccubus
 
 ################################################################################
 OEF
-chcon -t httpd_sys_script_exec_t %{webdir}/seccubus/json/*.pl
+chcon -t unconfined_u:object_r:httpd_sys_script_exec_t %{webdir}/seccubus/json/*.pl
 ## %post
 
 %postun
