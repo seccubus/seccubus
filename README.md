@@ -30,3 +30,4 @@ Bug Fixes
 * #134 - SSLlabs scanner did not handle submit errors
 * #127 - rpm defendancy name is wrong
 * #120 - Post install chcon action gives error
+* #96 - Incorrect temp file usage Nikto scanner
