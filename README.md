@@ -28,3 +28,4 @@ Fixed some bugs
 Bug Fixes
 ============================================
 * #134 - SSLlabs scanner did not handle submit errors
+* #127 - rpm defendancy name is wrong
