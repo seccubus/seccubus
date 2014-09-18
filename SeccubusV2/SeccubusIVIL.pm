@@ -147,7 +147,9 @@ sub load_ivil($;$$$$$$) {
 					finding		=> $finding->{finding_txt},
 					severity	=> $finding->{severity},
 				      );
-			update_hostname($workspace_id, $finding->{ip}, $finding->{hostname}) if $finding->{ip};
+			if ( $finding->{ip} =~ /^\d+\.\d+\.\d+\.\d+$/ ) {
+				update_hostname($workspace_id, $finding->{ip}, $finding->{hostname});
+			}
 			print "Finding: $finding->{ip}, $finding->{port}, $finding->{id}\n$finding->{finding_txt}\n" if $print >1;
 		}
 	}
