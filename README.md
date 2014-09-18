@@ -32,3 +32,4 @@ Bug Fixes
 * #120 - Post install chcon action gives error
 * #96  - Incorrect temp file usage Nikto scanner
 * #124 - Multi file attachments
+* #135 - Host name creation not handled correctly with SSLlabs
