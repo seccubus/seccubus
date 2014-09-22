@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk, Your Name, blabla1337, Sphaz
+# Copyright 2014 Frank Breedijk, Your Name, blabla1337, Sphaz, Artien Bel (Ar0xA)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
