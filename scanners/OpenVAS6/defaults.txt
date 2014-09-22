@@ -1,0 +1,1 @@
+-s <server> -u <user> --pw <password> --policy <policy> --targetip $HOSTS

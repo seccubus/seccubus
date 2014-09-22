@@ -1,0 +1,66 @@
+<!--
+Copyright 2013 Frank Breedijk
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+Prerequise : 
+Use OpenVAS-OMP perl module from Winfried Neessen (cf http://search.cpan.org/dist/OpenVAS-OMP/)
+<br><br>
+Usage : 
+<br>
+minimum arguments : 
+<p>
+-s &lt;server> -u &lt;user> --pw &lt;password> --policy &lt;policy> --targetip $HOSTS
+<p>
+<br><br>
+Parameters description :
+<ul>
+<li> --help : display help message
+<li> --port : OpenVAS manager port (default 9390)
+<li> --targetip or --tip : ip adress of scan target 
+<li> --targetname or --tname : name of the target existing in OpenVas6, or to be created in OpenVas6 if does not already exist
+<li> --user or --u OpenVas6 username
+<li> --password or --pw OpenVas6 password
+<li> --reporthtml or --rhtml : also retrieve scan report in html format
+<li> --reportpdf  or --rpdf : also retrieve scan report in pdf format
+<li> --reporttxt or --rtxt  : also retrieve scan report in txt format
+<li> --server or --s : specify OpenVAS6 server adress
+<li> --quiet or --q : quiet mode, do not print output
+<li> --sleep : seconds to sleep between polls of OpenVAS manager (default : 10)
+<li> --policy or --pol : OpenVas6 scan policy 
+<li> --verbose --v : display additionnal output messages. <br> -v -v : level 2 debug. <br> -v -v -v : max debug level.
+<li> --nodelete : do not delete temporary files located in /tmp.
+<li> --timeout : scan timeout in seconds : if scan duration exeed this time, exit. Default is 14400 seconds (ie 4 hours)
+</ul>
+<br><br>
+This script first check if specified target name and ip correspond to a target host in OpenVas6, if not it create it. 
+<br> If no target name is provided, it is defaulted to the ip adress of the target.
+<br> After the corresponding OpenVas6 target id is retrieved, an OpenVas6 scan is initiated with provided policy. 
+<br> Scan report is retrieved in IVIL format.
+In addition, html, pdf and txt format can also be retrieved if specified.
+<p>
+<br><br>
+Limitation : 
+<ul>
+<li> this script do not manage multiple hosts
+<li> this script currently allow only one ip per host target while OpenVas6 allow multiple ip for one host target 
+<li> this script may create host target and scans in OpenVAS6, but not delete them.
+</ul>
+<br><br>
+Todo : 
+<p>
+- Manage multiple host for one Seccubus scan.
+<br>- Allow creation and scan of host target with more than one ip
+<br>- Allow management of target port list during target creation
+<br>- Allow deletion of scan and host target from OpenVas6 -> storage of scans and targets in Seccubus only.
