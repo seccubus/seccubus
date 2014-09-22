@@ -39,7 +39,15 @@ $.Controller('Seccubus.Asset.Select',
 	 * -1 (default value) means no workspace is selected
 	 */
 	defaults : {
-		workspace : -1
+		/* attribute options.workspace
+		 * workspace id we are currently in
+		 */
+		workspace : -1,
+		/* attribute options.selected
+		 * Which options are selected now 
+		 * Obj: key: scan_id, val: asset_id
+		 */
+		selected : []
 	}
 },
 /** @Prototype */
@@ -93,6 +101,14 @@ $.Controller('Seccubus.Asset.Select',
 	 * A deferred containing all scans
 	 */
 	dataReady : function(items) {
+		if(this.options.selected.length != false){
+			var sel = this.options.selected;
+			$.map(items,function(item){ 
+				if(item.id in sel){
+					item.selected = true;
+				}
+			});
+		}
 		this.element.html(this.view(
 			'init',
 			items,

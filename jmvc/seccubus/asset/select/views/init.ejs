@@ -17,7 +17,7 @@
 <% } else { %>
 	<%for ( var i = 0; i < this.length ; i++ ){%>
 		<% if ( this[i].workspace == selectedWorkspace ) { %>
-			<option <%= this[i] %> value='<%= this[i].id %>'>
+			<option <%= this[i] %> value='<%= this[i].id %>' <% if(this[i].selected) { %>selected<% }%> >
 				<%== $.View('//seccubus/asset/select/views/asset.ejs', this[i] )%>
 			</option>
 			<% count++ %>
