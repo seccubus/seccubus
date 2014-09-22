@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2013 Frank Breedijk, Steve Launius
+# Copyright 2014 Frank Breedijk, Steve Launius, Artien Bel (Ar0xA)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -314,7 +314,7 @@ sub run_scan($$;$$$) {
 			if ( ! -e $config->{paths}->{scanners} . "/$scanner/scan" ) {
 				die "Scan script for $scanner is not installed";
 			}
-			if ($canner eq 'Nessus' || $scanner eq "NessusLegacy" || $scanner eq "OpenVAS") {
+			if ($scanner eq 'Nessus' || $scanner eq "NessusLegacy" || $scanner eq "OpenVAS") {
 				$param = $param .' --pw \''. $password. '\' ';
 			};
 			if ( $param =~ /\@HOSTS/ ) {
