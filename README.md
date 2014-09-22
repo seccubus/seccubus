@@ -23,14 +23,16 @@ For more information visit [www.seccubus.com]
 
 18-08-2014 - 2.10 - Quick fixes
 =============================================
-Fixed some bugs
+* Password fields are used to store passwords and hide them in de GUI (#127)
+* Fixed some bugs
 
 Bug Fixes
 ============================================
 * #134 - SSLlabs scanner did not handle submit errors
-* #127 - rpm defendancy name is wrong
+* #125 - rpm defendancy name is wrong
 * #120 - Post install chcon action gives error
 * #96  - Incorrect temp file usage Nikto scanner
 * #124 - Multi file attachments
 * #135 - Host name creation not handled correctly with SSLlabs
 * #136 - Workspaces are now sorted by name
+* #127 - Passwords can be hidden in the GUI

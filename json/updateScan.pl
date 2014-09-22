@@ -34,6 +34,7 @@ my $workspace_id = $query->param("workspace");
 my $name = $query->param("name");
 my $scanner = $query->param("scanner");
 my $parameters = $query->param("parameters");
+my $password = $query->param("password");
 my $targets = $query->param("targets");
 
 # Return an error if the required parameters were not passed 
@@ -52,17 +53,21 @@ if (not (defined ($scanner))) {
 if (not (defined ($parameters))) {
 	bye("Parameter parameters is missing");
 };
+if (not (defined ($password))) {
+        bye("update Parameter password is missing");
+};
 if (not (defined ($targets))) {
 	bye("Parameter targets is missing");
 };
 
 eval {
 	my @data = ();
-	update_scan($workspace_id,$scan_id,$name,$scanner,$parameters,$targets);
+	update_scan($workspace_id,$scan_id,$name,$scanner,$parameters,$password,$targets);
 	push @data, {
 		name		=> $name,
 		scanner		=> $scanner,
 		parameters	=> $parameters,
+		password	=> $password,
 		targets		=> $targets,
 	};
 	print $json->pretty->encode(\@data);
