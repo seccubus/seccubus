@@ -33,3 +33,4 @@ Bug Fixes
 * #96  - Incorrect temp file usage Nikto scanner
 * #124 - Multi file attachments
 * #135 - Host name creation not handled correctly with SSLlabs
+* #136 - Workspaces are now sorted by name
