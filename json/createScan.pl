@@ -32,6 +32,7 @@ my $workspace_id = $query->param("workspaceId");
 my $name = $query->param("name");
 my $scanner = $query->param("scanner");
 my $parameters = $query->param("parameters");
+my $password = $query->param("password");
 my $targets = $query->param("targets");
 
 # Return an error if the required parameters were not passed 
@@ -47,18 +48,22 @@ if (not (defined ($scanner))) {
 if (not (defined ($parameters))) {
 	bye("Parameter parameters is missing");
 };
+if (not (defined ($password))) {
+	bye("Parameter password is missing");
+};
 if (not (defined ($targets))) {
-	bye("Parameter targets is missing");
+        bye("Parameter targets is missing");
 };
 
 eval {
 	my @data = ();
-	my $newid = create_scan($workspace_id,$name,$scanner,$parameters,$targets);
+	my $newid = create_scan($workspace_id,$name,$scanner,$parameters,$password,$targets);
 	push @data, {
 		id		=> $newid,
 		name		=> $name,
 		scanner		=> $scanner,
 		parameters	=> $parameters,
+		password	=> $password,
 		targets		=> $targets,
 		workspace	=> $workspace_id,
 	};

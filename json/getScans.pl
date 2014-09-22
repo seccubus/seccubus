@@ -43,26 +43,18 @@ eval {
 	my $scans = get_scans($workspace_id);
         my $paramline;
 	foreach my $row ( @$scans ) {
-		$paramline = $$row[3];
-		my $wanted;
-                if (index($paramline,'-p ') != -1) {
-                   ($wanted) = $paramline =~ /-p(.*) --policy/;
-		   $paramline =~ s/$wanted/ \[maskedpassword\]/;
- 		} elsif (index($paramline,'--pw ') != -1) {
-                   ($wanted) = $paramline =~ /--pw(.*) --rc/;
-                   $paramline =~ s/$wanted/ \[maskedpassword\]/;
-		}
 		push (@data, {
 			'id'		=> $$row[0],
 			'name'		=> $$row[1],
 			'scanner'	=> $$row[2],
-			'parameters'	=> $paramline,
+			'parameters'	=> $$row[3],
 			'lastScan'	=> $$row[4],
 			'runs'		=> $$row[5],
 			'findCount'	=> $$row[6],
 			'targets'	=> $$row[7],
 			'workspace'	=> $$row[8],
 			'notifications'	=> $$row[9],
+			'password'	=> $$row[10],
 		});
 	}
 	print $json->pretty->encode(\@data);
