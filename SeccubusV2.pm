@@ -75,7 +75,7 @@ Reference to a hash containing the config in XML
 
 sub get_config() {
 	if ( ! ref($config) ) {
-		$config = XMLin($config, forcearray => [qw(monkey)]);
+		$config = XMLin($config, ForceArray => [qw(monkey)]);
 	}
 	return $config;
 }
