@@ -33,6 +33,8 @@ my $json = JSON->new();
 my $data = [];
 
 print $query->header(-type => "application/json", -expires => "-1d");
+print $query->header(-"Cache-Control"=>"no-store, no-cache, must-revalidate");
+print $query->header(-"Cache-Control"=>"post-check=0, pre-check=0");
 
 my $verdict = get("http://v2.seccubus.com/up2date.json.pl?version=$SeccubusV2::VERSION");
 if ( ! $verdict ) {

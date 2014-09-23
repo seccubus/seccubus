@@ -31,6 +31,8 @@ my $count = 0;
 my @data;
 
 print $query->header(-type => "application/json", -expires => "-1d");
+print $query->header(-"Cache-Control"=>"no-store, no-cache, must-revalidate");
+print $query->header(-"Cache-Control"=>"post-check=0, pre-check=0");
 
 my $events = get_events;
 foreach my $row ( @$events ) {
