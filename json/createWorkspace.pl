@@ -27,6 +27,8 @@ my $query = CGI::new();
 my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d");
+print $query->header(-"Cache-Control"=>"no-store, no-cache, must-revalidate");
+print $query->header(-"Cache-Control"=>"post-check=0, pre-check=0");
 
 my $workspace_id = $query->param("workspaceId");
 my $id = $query->param("id");
