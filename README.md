@@ -26,6 +26,7 @@ For more information visit [www.seccubus.com]
 * Password fields are used to store passwords and hide them in de GUI (#127)
 * Fixed some bugs
 * Limited support for OpenVAS6 and OpenVAS7 thanks to @FGuillaume
+* Extra cache control headers because of Chrome
 
 Bug Fixes
 ============================================
