@@ -26,9 +26,7 @@ use SeccubusNotifications;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d");
-print $query->header(-"Cache-Control"=>"no-store, no-cache, must-revalidate");
-print $query->header(-"Cache-Control"=>"post-check=0, pre-check=0");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
 
 my $notification_id = $query->param("id");
 my $subject = $query->param("subject");
