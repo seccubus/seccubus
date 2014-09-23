@@ -126,7 +126,7 @@ eval {
 		if ( $version[0] eq "" ) {
 			$file .= "data_v$current_db_version." . $config->{database}->{engine};
 		} elsif ( $version[0] < $current_db_version ) {
-			$file .= "upgrade_v" . $version[0] . "_v" . $version[0]+1 . "." . $config->{database}->{engine};
+			$file .= "upgrade_v$version[0]_v" . ($version[0]+1) . "." . $config->{database}->{engine};
 		} else {
 			result($data,"Database error", "Your database returned version number '$version[0]', the developers for Seccubus do not know what to do with this", "Error");
 			bye($data);
