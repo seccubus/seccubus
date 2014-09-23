@@ -30,9 +30,7 @@ my $current_db_version = 5;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d");
-print $query->header(-"Cache-Control"=>"no-store, no-cache, must-revalidate");
-print $query->header(-"Cache-Control"=>"post-check=0, pre-check=0");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
 
 # This is where configurations can be found
 # Ticket #62 - Default locations for config.xml does not include 
