@@ -148,10 +148,6 @@ CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 ADD INDEX `fk_attachments_runs1_idx` (`run_id` ASC);
 
 ALTER TABLE `seccubus`.`notifications` 
-DROP COLUMN `event_id`,
-DROP COLUMN `scan_id`,
-ADD COLUMN `scan_id` INT(11) NOT NULL AFTER `id`,
-ADD COLUMN `event_id` INT(11) NOT NULL AFTER `scan_id`,
 ADD INDEX `fk_notifications_scans1_idx` (`scan_id` ASC),
 ADD INDEX `fk_notifications_events1_idx` (`event_id` ASC);
 
