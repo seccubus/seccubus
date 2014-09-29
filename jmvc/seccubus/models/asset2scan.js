@@ -47,7 +47,7 @@ $.Model('Seccubus.Models.Asset2Scan',
   	// Not implemented
 	//findOne	: "/scans/{id}.json", 
   	// create	: "POST json/create2Scan.pl",
-	update	: "POST json/updateAsset2Scan.pl",
+	update	: "POST json/updateAsset2Scan.pl"
 	// destroy	: "POST json/delete2Scan.pl",
   	// Not implemented yet
 	//destroy	: "/scans/{id}.json"
