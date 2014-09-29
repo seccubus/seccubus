@@ -49,7 +49,7 @@ $.Model('Seccubus.Models.Assethost',
 	//findOne	: "/scans/{id}.json", 
 	create : "POST json/createAssetHost.pl",
 	update : "POST json/updateAssetHost.pl",
-	destroy : "POST json/deleteAssetHost.pl",
+	destroy : "POST json/deleteAssetHost.pl"
   	// Not implemented yet
 	//destroy	: "/scans/{id}.json"
 },

@@ -48,11 +48,11 @@ $.Model('Seccubus.Models.Asset',
 	//findOne	: "/scans/{id}.json", 
   	create	: "POST json/createAsset.pl",
 	update	: "POST json/updateAsset.pl",
-	destroy	: "POST json/deleteAsset.pl",
+	destroy	: "POST json/deleteAsset.pl"
   	// Not implemented yet
 	//destroy	: "/scans/{id}.json"
 },
 /* @Prototype */
 {});
 
-})
+});
