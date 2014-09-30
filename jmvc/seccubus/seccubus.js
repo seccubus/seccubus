@@ -416,7 +416,7 @@ steal(
 							query : "#editAssetDialog",
 							close : true
 						});
-					},
+					}
 				});
 			});
 		};

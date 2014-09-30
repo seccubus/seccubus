@@ -16,12 +16,12 @@
 steal('jquery/model', function(){
 
 /**
- * @class Seccubus.Models.Assethost
+ * @class Seccubus.Models.Asset
  * @parent Asset
  * @inherits jQuery.Model
  * Wraps backend assets services.  
  */
-$.Model('Seccubus.Models.Assethost',
+$.Model('Seccubus.Models.Asset2Scan',
 /* @Static */
 {
 	/*
@@ -36,20 +36,19 @@ $.Model('Seccubus.Models.Assethost',
 	 */
 	findAll : function(params,success,error){
 		return $.ajax({
-			url	: "json/getAssetHosts.pl",
+			url	: "json/getAsset2Scan.pl",
 			type	: "POST",
-			dataType: "json assethost.models",
+			dataType: "json asset.models",
 			data	: params,
 			success	: success,
 			error	: error
 		});
 	},
-
   	// Not implemented
 	//findOne	: "/scans/{id}.json", 
-	create : "POST json/createAssetHost.pl",
-	update : "POST json/updateAssetHost.pl",
-	destroy : "POST json/deleteAssetHost.pl"
+  	// create	: "POST json/create2Scan.pl",
+	update	: "POST json/updateAsset2Scan.pl"
+	// destroy	: "POST json/delete2Scan.pl",
   	// Not implemented yet
 	//destroy	: "/scans/{id}.json"
 },

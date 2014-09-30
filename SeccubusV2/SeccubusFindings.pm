@@ -43,9 +43,10 @@ use strict;
 use Carp;
 
 sub get_findings($;$$$);
+sub get_finding($$$;);
 sub get_status($$;$);
 sub get_filters($$;$);
-sub get_finding($$;);
+# sub get_finding($$;);
 sub update_finding(@);
 sub diff_finding($$$$$;);
 
