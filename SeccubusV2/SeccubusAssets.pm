@@ -35,6 +35,8 @@ use Exporter;
 		delete_asset_host
 		create_asset_host
 		update_asset_host
+		get_asset2scan
+		update_asset2scan
 	);
 
 use SeccubusDB;
@@ -43,7 +45,7 @@ use SeccubusRights;
 sub get_asset_id($$;);
 sub get_assets($;);
 sub create_asset($$;$$);
-sub update_asset($$$;$);
+sub update_asset($$$;$$);
 sub delete_asset($;);
 
 sub create_asset_host($$$;$);
@@ -51,6 +53,8 @@ sub get_asset_hosts($$;);
 sub update_asset_host($$;$);
 sub delete_asset_host($;);
 
+sub get_asset2scan($;);
+sub update_asset2scan($@;);
 
 use strict;
 use Carp;
@@ -84,17 +88,17 @@ exist in the same workspace
 
 =cut
 
-sub create_asset($$;) {
-	my $workspace_id = shift or confess "No workspace_id provided";
-	my $asset_name = shift or confess "No asset_name provided";
-	my $asset_hosts = shift ;
-	die "Asset name '".$asset_name."' already exists in workspace ".$workspace_id if(get_asset_id($workspace_id, $asset_name));
-	die "Permission denied" if(! may_write($workspace_id));
-	return sql( "return " => "id",
-		"query"=>"insert into assets (workspace_id,name,hosts) values(?,?);",
-		"values"=>[$workspace_id,$asset_name,$asset_hosts]
-		);
-}
+# sub create_asset($$;$) {
+# 	my $workspace_id = shift or confess "No workspace_id provided";
+# 	my $asset_name = shift or confess "No asset_name provided";
+# 	my $asset_hosts = shift ;
+# 	die "Asset name '".$asset_name."' already exists in workspace ".$workspace_id if(get_asset_id($workspace_id, $asset_name));
+# 	die "Permission denied" if(! may_write($workspace_id));
+# 	return sql( "return " => "id",
+# 		"query"=>"insert into assets (workspace_id,name,hosts) values(?,?);",
+# 		"values"=>[$workspace_id,$asset_name,$asset_hosts]
+# 		);
+# }
 
 
 =head2 get_asset_id
@@ -442,6 +446,75 @@ sub update_asset_host($$;$){
 	);
 	die "Permission denied" if (! may_write($workspace_id) );
 	return sql ("return"	=> "rows", "query" => "update asset_hosts set ip=?, host=? where id=?","values"=>[$ip,$host,$host_id]);
+}
+
+
+=head2 get_asset2scan
+
+This function selects asset scans
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item scan_id - id of the scan
+
+=back 
+
+=back
+
+=cut
+sub get_asset2scan($;){
+	my $scan_id = shift or die "no scan_id provided";
+	my ($workspace_id) = sql( "return"=> "array", 
+		"query" => "SELECT	a.workspace_id FROM scans a where a.id = ? ",
+		"values" => [ $scan_id ]
+	);
+	die "Permission denied" if (! may_write($workspace_id) );
+	return sql ( "return" => "ref",
+		"query" => "select a.scan_id,a.asset_id from asset2scan a where a.scan_id=?",
+		"values" => [$scan_id]);
+}
+
+=head2 get_asset2scan
+
+This function edits asset scans
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item scan_id - id of the scan
+
+=item array selected assets - ids of assets
+
+=back 
+
+=back
+
+=cut
+sub update_asset2scan($@;){
+	my $scan_id = shift or die "no scan_id provided";
+	my @assets = @_;
+	my ($workspace_id) = sql( "return"=> "array", 
+		"query"	=> "SELECT	a.workspace_id FROM scans a where a.id = ? ",
+		"values"	=> [ $scan_id ]
+	);
+	die "Permission denied" if (! may_write($workspace_id) );
+	sql("return" => "rows",
+		"query" => "delete from asset2scan where scan_id=?", "values" => [$scan_id]);
+	my @ids = ();
+	map {
+		my $id = sql ( "return" => "id", 
+			"query" => "insert into asset2scan set scan_id=?, asset_id=?", 
+			"values" => [$scan_id, $_]);
+		push @ids,$id;
+		} @assets;
+	return @ids
 }
 
 1;

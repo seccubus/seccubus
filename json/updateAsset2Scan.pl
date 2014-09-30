@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# List the scans
+# Gets notificationdata
 # ------------------------------------------------------------------------------
 
 use strict;
@@ -22,36 +22,26 @@ use CGI::Carp qw(fatalsToBrowser);
 use JSON;
 use lib "..";
 use SeccubusV2;
-use SeccubusScans;
+use SeccubusAssets;
 
 my $query = CGI::new();
 my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d");
 
-my $workspace_id = $query->param("workspaceId");
-
+my $scan_id = $query->param("id[id]");
 # Return an error if the required parameters were not passed 
-if (not (defined ($workspace_id))) {
-	bye("Parameter workspaceId is missing");
-} elsif ( $workspace_id + 0 ne $workspace_id ) {
-	bye("WorkspaceId is not numeric");
-};
-
+bye("Parameter id (scanid) is missing") if (not (defined ($scan_id)));
+bye("scanid is not numeric") if ( $scan_id + 0 ne $scan_id );
+my @assets = $query->param('id[assets][]');
+	
 eval {
-	my @data;
-	my $scans = (); # Get somethin here
-
-	foreach my $row ( @$scans ) {
-		push (@data, {
-			'id'		=> $$row[0],
-		});
-	}
+	my @data = update_asset2scan($scan_id,@assets);
 	print $json->pretty->encode(\@data);
-} or do {
-	bye(join "\n", $@);
-};
+} or do { bye(join "\n", $@); };
 
+
+	
 sub bye($) {
 	my $error=shift;
 	print $json->pretty->encode([{ error => $error }]);

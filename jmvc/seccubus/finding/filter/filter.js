@@ -169,7 +169,7 @@ $.Controller('Seccubus.Finding.Filter',
 					Seccubus.Models.Finding.findAll({
 						workspaceId	: this.options.workspace,
 						scanIds		: this.options.scans,
-						assetIds	: this.options.assets//,
+						assetIds	: this.options.assets //,
 						//Status		: this.options.status,
 						//Host		: this.options.host,
 						//HostName	: this.options.hostName,
