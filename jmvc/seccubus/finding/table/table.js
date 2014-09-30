@@ -335,10 +335,12 @@ $.Controller('Seccubus.Finding.Table',
 	sortFunc : function(at, rev) {
 		var fn;
 		if ( at == "host" ) {
-			var lines = this.hostSort.toString().split('\n');
-			lines[0] = "\n";
-			lines[lines.length-2] = "";
-			fn = lines.join('\n');
+			var funcStr = this.hostSort.toString(); //.split('\n');
+			fn = funcStr.substring(funcStr.indexOf("{") + 1, funcStr.lastIndexOf("}"));
+			// var lines = this.hostSort.toString().split('\n');
+			// lines[0] = "\n";
+			// lines[lines.length-2] = "";
+			// fn = lines.join('\n');
 		} else {
 			fn = "if (a.attr('" + at + "') < b.attr('" + at + "')) { return -1; } else if ( a.attr('" + at + "') == b.attr('" + at + "')) { return 0; } else { return 1; }";
 		}
