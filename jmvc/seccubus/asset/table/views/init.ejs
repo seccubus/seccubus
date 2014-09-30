@@ -27,10 +27,9 @@
 	 <%== $.View('//seccubus/asset/table/views/error.ejs',{ message : this[0].error }) %>
 <% } else { %>
 
-	<%for ( var i = 0; i < this.length ; i++ ){%>
+	<% for ( var i = 0; i < this.length ; i++ ){%>
 
 			<tr <%= this[i] %> >
-				<% //var txt = "";for(var a in sc) { txt = txt + a + ": " + sc[a] + "\n"; };alert(txt); %>
 				<%== $.View('//seccubus/asset/table/views/asset.ejs', this[i] ) %>
 			</tr>
 			<% count++ %>
