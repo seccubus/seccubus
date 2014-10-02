@@ -43,7 +43,7 @@ use strict;
 use Carp;
 
 sub get_findings($;$$$);
-sub get_finding($$$;);
+sub get_finding($$;);
 sub get_status($$;$);
 sub get_filters($$;$);
 # sub get_finding($$;);
@@ -122,8 +122,7 @@ sub get_findings($;$$$) {
 				findings
 				LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
 				LEFT JOIN severity on findings.severity = severity.id
-				LEFT JOIN finding_status on findings.status = finding_status.id
-				,	
+				LEFT JOIN finding_status on findings.status = finding_status.id,	
 				assets,
 				asset_hosts
 			
@@ -144,7 +143,7 @@ sub get_findings($;$$$) {
 			}
 			if ( $filter->{host} ) {
 				$filter->{host} =~ s/\*/\%/;
-				$query .= " AND host LIKE ? ";
+				$query .= " AND findings.host LIKE ? ";
 				push @$params, $filter->{host};
 			}
 			if ( defined $filter->{hostname} ) {
@@ -656,7 +655,7 @@ Must have at least read rights
 
 =cut
 
-sub get_finding($$$;) {
+sub get_finding($$;) {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $finding_id = shift or die "No finding_id provided";
 
