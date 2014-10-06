@@ -181,7 +181,6 @@ $.Controller('Seccubus.Finding.Table',
 				})
 			);
 		} else {
-			// console.log("OK")
 			this.element.html(
 				this.view(
 					'init',

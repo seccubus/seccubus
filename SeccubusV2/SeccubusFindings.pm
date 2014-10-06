@@ -44,7 +44,7 @@ use Carp;
 
 sub get_findings($;$$$);
 sub get_finding($$;);
-sub get_status($$;$);
+sub get_status($$$;$);
 sub get_filters($$$;$);
 # sub get_finding($$;);
 sub update_finding(@);
@@ -205,6 +205,8 @@ given a specific filter
 
 =item scan_ids - reference to an araay of scan ids
 
+=item asset_ids - reference to an araay of asset ids
+
 =item filter - reference to a hash containing filters
 
 =back 
@@ -217,12 +219,13 @@ Must have at least read rights
 
 =cut
 
-sub get_status($$;$) {
+sub get_status($$$;$) {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_ids = shift;
+	my $asset_ids = shift;
 	my $filter = shift;
 
-	die "Must specify scanids for function get_status" unless @$scan_ids;
+	die "Must specify scanids or assetids for function get_status" unless (@$scan_ids or @$asset_ids);
 
 	if ( may_read($workspace_id) ) {
 		my $params;
@@ -232,16 +235,18 @@ sub get_status($$;$) {
 			SELECT	finding_status.id, finding_status.name, count(findings.id)
 			FROM
 				finding_status
-			LEFT JOIN findings on ( findings.status =  finding_status.id AND findings.workspace_id = ?";
-		$query .= " AND findings.scan_id in ( ? ";
+			LEFT JOIN findings on ( findings.status =  finding_status.id AND findings.workspace_id = ? ";
 
-		push @$params, shift ( @$scan_ids );
-		while ( @$scan_ids ) {
-			$query .= " , ? ";
-			push @$params, shift ( @$scan_ids );
+		
+		$query .= " AND findings.scan_id in (  ";
+		$query .= join ",", map { push @$params,$_; '?'; } @$scan_ids if(@$scan_ids);
+		if(@$asset_ids){
+			$query .= "select scan_id from asset2scan where asset_id in (";
+			$query .= join ",", map { push @$params,$_; '?'; } @$asset_ids;
+			$query .= " )";
 		}
 		$query .= " ) ";
-		
+
 		if ( $filter ) {
 			if ( $filter->{host} ) {
 				$filter->{host} =~ s/\*/\%/;
@@ -270,6 +275,8 @@ sub get_status($$;$) {
 			}
 
 		$query .= " ) ";
+
+				
 
 		$query .= "
 			LEFT JOIN host_names on ( host_names.ip = host and host_names.workspace_id = ?";
@@ -725,6 +732,8 @@ parameter list with the following parameters:
 =item run_id      
 
 =item scan_id     - Manditory if no finding_id is given
+
+=item asset_id     - Manditory if no finding_id is given
 
 =item host        - Manditory if no finding_id is given
 

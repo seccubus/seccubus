@@ -171,6 +171,7 @@ steal(
 			$(this).change(function() {
 				$('.assetSelector').val('');
 				var val = $(this).val();
+				gui_state.attr("assets",'');
 				gui_state.attr("scans",val);
 				$('.scanSelector').val(val);
 			});
@@ -182,6 +183,7 @@ steal(
 				$('.scanSelector').val('');
 				var val = $(this).val();
 				gui_state.attr("assets",val);
+				gui_state.attr("scans",'');
 				$('.assetSelector').val(val);
 			});
 		});
