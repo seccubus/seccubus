@@ -110,6 +110,7 @@ $.Controller('Seccubus.Finding.Table',
 		 */
 		columns		: [ 	"", "select",
 					"host", "IP", 
+					"scanName","ScanName",
 					"hostName", "HostName", 
 					"port", "Port", 
 					"plugin", "Plugin", 
