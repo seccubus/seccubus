@@ -69,6 +69,7 @@ eval {
 					'status'	=> $$row[9],
 					'statusName'	=> $$row[10],
 					'scanId'	=> $$row[11],
+					'scanName'	=> "",
 				});
 			}
 		}
@@ -89,6 +90,7 @@ eval {
 					'status'	=> $$row[9],
 					'statusName'	=> $$row[10],
 					'scanId'	=> $$row[11],
+					'scanName'	=> $$row[12],
 				});
 			}
 		}

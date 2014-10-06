@@ -425,6 +425,7 @@ steal(
 			$('#status_buttons').seccubus_status_status({
 				workspace	: gui_state.workspace,
 				scans		: gui_state.scans,
+				assets 		: gui_state.assets,
 				status		: gui_state.findStatus,
 				host		: gui_state.host,
 				hostName	: gui_state.hostName,
@@ -443,6 +444,7 @@ steal(
 			$('#filters').seccubus_filter_filter({
 				workspace 	: gui_state.workspace,
 				scans		: gui_state.scans,
+				assets 		: gui_state.assets,
 				status		: gui_state.findStatus,
 				host		: gui_state.host,
 				hostName	: gui_state.hostName,

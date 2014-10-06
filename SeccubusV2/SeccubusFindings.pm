@@ -45,7 +45,7 @@ use Carp;
 sub get_findings($;$$$);
 sub get_finding($$;);
 sub get_status($$;$);
-sub get_filters($$;$);
+sub get_filters($$$;$);
 # sub get_finding($$;);
 sub update_finding(@);
 sub diff_finding($$$$$;);
@@ -95,12 +95,14 @@ sub get_findings($;$$$) {
 				severity.name as severity_name, 
 				findings.status as status_id, 
 				finding_status.name as status,
-				findings.scan_id as scan_id
+				findings.scan_id as scan_id,
+				scans.name as scan_name
 			FROM
 				findings
 			LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
 			LEFT JOIN severity on findings.severity = severity.id
 			LEFT JOIN finding_status on findings.status = finding_status.id
+			LEFT JOIN scans on scans.id = findings.scan_id
 			-- LEFT JOIN assets on assets.workspace_id = findings.workspace_id
  			-- LEFT JOIN asset_hosts on asset_hosts.asset_id = assets.id and (asset_hosts.ip = findings.`host` or asset_hosts.`host` = findings.`host`)
 			WHERE
@@ -117,12 +119,14 @@ sub get_findings($;$$$) {
 				severity.name as severity_name, 
 				findings.status as status_id, 
 				finding_status.name as status,
-				findings.scan_id as scan_id
+				findings.scan_id as scan_id,
+				scans.name as scan_name
 			FROM
 				findings
 				LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
 				LEFT JOIN severity on findings.severity = severity.id
-				LEFT JOIN finding_status on findings.status = finding_status.id,	
+				LEFT JOIN finding_status on findings.status = finding_status.id
+				LEFT JOIN scans on scans.id = findings.scan_id,
 				assets,
 				asset_hosts
 			
@@ -307,6 +311,8 @@ This function returns an hash of filters needed with a specific filter given a s
 
 =item scan_ids - reference to an araay of scan ids
 
+=item asset_ids - reference to an araay of scan ids
+
 =item filter - reference to a hash containing filter
 
 =back 
@@ -319,9 +325,11 @@ Must have at least read rights
 
 =cut
 
-sub get_filters($$;$) {
+sub get_filters($$$;$) {
 	my $workspace_id = shift or die "No workspace_id provided";
-	my $scan_ids = shift or die "Must specify scanids for function get_status";
+	my $scan_ids = shift;
+	my $asset_ids = shift;
+	if(!$scan_ids && !$asset_ids)  { die "Must specify scanids or assetids for function get_status"; }
 	my $filter = shift;
 
 
@@ -332,6 +340,10 @@ sub get_filters($$;$) {
 		my %filters;
 		foreach my $scan ( @$scan_ids ) {
 			my $finds = get_findings($workspace_id,$scan);
+			push @findings, @$finds;
+		}
+		foreach my $asset ( @$asset_ids ){
+			my $finds = get_findings($workspace_id,undef,$asset);
 			push @findings, @$finds;
 		}
 		foreach my $find ( @findings ) {

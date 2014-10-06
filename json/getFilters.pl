@@ -31,14 +31,15 @@ print $query->header(-type => "application/json", -expires => "-1d");
 
 my $workspace_id = $query->param("workspaceId");
 my @scan_ids = $query->param("scanIds[]");
+my @asset_ids = $query->param("assetIds[]");
 
 # Return an error if the required parameters were not passed 
 if (not (defined ($workspace_id))) {
 	bye("Parameter workspaceId is missing");
 } elsif ( $workspace_id + 0 ne $workspace_id ) {
 	bye("WorkspaceId is not numeric");
-} elsif ( 0 == @scan_ids ) {
-	bye("Scan_ids is a mandatory parameter");
+} elsif ( 0 == @scan_ids && 0 == @asset_ids  ) {
+	bye("Scan_ids or Asset_ids a mandatory parameter");
 };
 
 eval {
@@ -50,7 +51,7 @@ eval {
 		}
 	}
 
-	my %filters = get_filters($workspace_id, \@scan_ids, \%filter);
+	my %filters = get_filters($workspace_id, \@scan_ids, \@asset_ids, \%filter);
 
 	print $json->pretty->encode(\%filters);
 } or do {
