@@ -58,6 +58,7 @@ sub update_asset2scan($@;);
 
 use strict;
 use Carp;
+use Net::IP;
 
 =head1 Data manipulation - assets
 
@@ -235,12 +236,31 @@ sub create_asset($$;$$) {
 		die "A asset named '".$asset_name."' already exists in workspace ".$workspace_id;
 	}
 	if ( may_write($workspace_id) ) {
-		return sql( "return"	=> "id",
+		my $assetid = sql( "return"	=> "id",
 			    "query"	=> "INSERT into assets
 			    		    SET name = ?, hosts = ?, recipients = ?, workspace_id = ?;
 					   ",
 			    "values"	=> [$asset_name, $hosts, $recipients, $workspace_id],
 			  );
+		$hosts =~ s/\s+-\s+/-/g;
+		map {
+			my $error;
+			my $ipObj = new Net::IP($_) or $error = 1;
+			if(!$error){
+				do {
+					sql("return"=>"id", 
+						"query"=>"INSERT into asset_hosts set asset_id=?,ip=?",
+						"values"=>[$assetid,$ipObj->ip()]
+					);		
+				} while (++$ipObj);
+			} else {
+				sql("return"=>"id", 
+					"query"=>"INSERT into asset_hosts set asset_id=?,host=?",
+					"values"=>[$assetid,$_]
+				);
+			}
+		} split /[\s\n\r,]+/, $hosts;
+		return $assetid;
 	} else {
 		die "Permission denied";
 	}
