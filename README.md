@@ -25,6 +25,7 @@ For more information visit [www.seccubus.com]
 ================================================
 * Password fields are used to store passwords and hide them in de GUI (#127)
 * Limited support for OpenVAS6 and OpenVAS7 thanks to @FGuillaume
+* Python script by @Ar0Xa to email findings from a scan
 * Fixed some bugs
 
 Bug Fixes
