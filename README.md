@@ -21,20 +21,20 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
-18-08-2014 - 2.10 - Quick fixes
-=============================================
+18-08-2014 - 2.10 - Quick fixes and new features
+================================================
 * Password fields are used to store passwords and hide them in de GUI (#127)
-* Fixed some bugs
 * Limited support for OpenVAS6 and OpenVAS7 thanks to @FGuillaume
-* Extra cache control headers because of Chrome
+* Fixed some bugs
 
 Bug Fixes
 ============================================
-* #134 - SSLlabs scanner did not handle submit errors
-* #125 - rpm defendancy name is wrong
-* #120 - Post install chcon action gives error
 * #96  - Incorrect temp file usage Nikto scanner
+* #120 - Post install chcon action gives error
 * #124 - Multi file attachments
+* #125 - rpm dependancy name is wrong
+* #127 - Passwords can be hidden in the GUI
+* #134 - SSLlabs scanner did not handle submit errors
 * #135 - Host name creation not handled correctly with SSLlabs
 * #136 - Workspaces are now sorted by name
-* #127 - Passwords can be hidden in the GUI
+* Extra cache control headers because of Chrome
