@@ -18,11 +18,14 @@ Seccubus V2 works with the following scanners:
 * Nikto (local and remote)
 * NMap (local and remote)
 * SSLyze
+* Medusa
+* Burp Suite
+* Qualys SSL labs
 
 For more information visit [www.seccubus.com]
 
-18-08-2014 - 2.10 - Quick fixes and new features
-================================================
+10-10-2014 - 2.10 - Miami vice edition
+======================================
 * Password fields are used to store passwords and hide them in de GUI (#127)
 * Limited support for OpenVAS6 and OpenVAS7 thanks to @FGuillaume
 * Python script by @Ar0Xa to email findings from a scan
