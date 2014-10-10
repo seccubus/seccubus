@@ -77,6 +77,7 @@ LOCK TABLES `asset_hosts` WRITE;
 /*!40000 ALTER TABLE `asset_hosts` ENABLE KEYS */;
 UNLOCK TABLES;
 
+insert into Seccubus.events set id='3', name='On Open';
 update config set value=5 where name = 'version';
 
 SET SQL_MODE=@OLD_SQL_MODE;

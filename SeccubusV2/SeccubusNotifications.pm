@@ -35,6 +35,7 @@ use MIME::Base64;
 		update_notification
 		do_notifications
 		del_notification
+		send_notification_from_finding
 	);
 
 use strict;
@@ -43,8 +44,9 @@ use Carp;
 sub get_notifications($;);
 sub create_notification($$$$$$;);
 sub update_notification($$$$$;);
-sub do_notifications($$$;);
+sub do_notifications($$$;$);
 sub del_notification($;);
+sub send_notification_from_finding($;);
 
 =head1 Data manipulation - notifications
 
@@ -350,10 +352,11 @@ Number of notifications sent, -1 means error
 
 =cut
 
-sub do_notifications($$$;) {
+sub do_notifications($$$;$) {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_id = shift or die "No scan_id provided";
 	my $event_id = shift or die "No event_id provided";
+	my $email = shift;
 
 	my $config = SeccubusV2::get_config();
 
@@ -552,7 +555,7 @@ Content-Type: text/plain\n\n" . $$notification[2];
 				$smtp->to($to);
 			}
 			$smtp->data();
-			$smtp->datasend("To: $$notification[1]\n");
+			$smtp->datasend("To:".($email || $$notification[1])." \n");
 			$smtp->datasend("From: $config->{smtp}->{from}\n");
 			$smtp->datasend("Subject: $$notification[0]\n");
 			#$smtp->datasend("\n");
@@ -565,6 +568,34 @@ Content-Type: text/plain\n\n" . $$notification[2];
 	} else {
 		return -1;
 	}
+}
+
+sub send_notification_from_finding($;){
+	my $findingId = shift;
+	my ($email,$workspace_id,$scan_id) = sql(
+		query => "SELECT 
+				a.recipients,
+				f.workspace_id,
+				f.scan_id
+				
+			FROM 
+				findings f,
+				asset2scan s,
+				assets a,
+				asset_hosts h
+			where 
+				s.scan_id = f.scan_id and
+				s.asset_id = a.id and
+				a.id = h.asset_id and
+				(f.host = h.host or f.host = h.ip)
+				and f.id = ?
+			group by a.recipients",
+		values=>[$findingId],
+		'return'=>'array'
+		);
+		return if(!$workspace_id || !$email || !$scan_id);
+		do_notifications($workspace_id,$scan_id,3,$email);
+
 }
 
 # Close the PM file.

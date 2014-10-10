@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# Updates the findings passed by ID with the data passed
+# Gets notificationdata
 # ------------------------------------------------------------------------------
 
 use strict;
@@ -22,61 +22,30 @@ use CGI::Carp qw(fatalsToBrowser);
 use JSON;
 use lib "..";
 use SeccubusV2;
-use SeccubusFindings;
-use SeccubusNotifications;
+use SeccubusCustomSQL;
 
 my $query = CGI::new();
 my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d");
 
-my $workspace_id = $query->param("workspaceId");
-my $id = $query->param("id");
-my $remark = $query->param("remark");
-my $status = $query->param("status");
-my $overwrite = $query->param("overwrite");
-
-if ( $overwrite eq "true" || $overwrite == 1 ) {
-	$overwrite = 1;
-} else {
-	$overwrite = 0;
-}
+my $sql = $query->param("sql");
 
 # Return an error if the required parameters were not passed 
-if (not (defined ($workspace_id))) {
-	bye("Parameter workspaceId is missing");
-} elsif ( $workspace_id + 0 ne $workspace_id ) {
-	bye("WorkspaceId is not numeric");
-};
-if (not (defined ($id))) {
-	bye("Parameter Id is missing");
-} elsif ( $id + 0 ne $id ) {
-	bye("Id is not numeric");
-};
-
-if ( $status < 0 || ( $status > 6 && $status != 99 ) ) {
-	bye("Invalid status code");
+if (not (defined ($sql))) {
+	bye("Parameter sql is missing");
 }
 
 eval {
-	my @data = ();
-	update_finding(	"finding_id"	=> $id,
-		"workspace_id"	=> $workspace_id,
-		"status"	=> $status,
-		"remark"	=> $remark,
-		"overwrite"	=> $overwrite,
-	);
-	if($status eq '3') { send_notification_from_finding($id); }
-	print $json->pretty->encode(\@data);
-} or do {
-	bye(join "\n", $@);
-};
 
+	my @data = @{get_customsql($sql)};
+	print $json->pretty->encode(\@data);
+} or do { bye(join "\n", $@); };
+
+
+	
 sub bye($) {
 	my $error=shift;
 	print $json->pretty->encode([{ error => $error }]);
 	exit;
 }
-
-
-
