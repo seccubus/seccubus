@@ -48,6 +48,7 @@ steal(
 	'seccubus/asset/host/create',
 	'seccubus/asset/host/edit',
 	'seccubus/asset/select',
+	'seccubus/custsql/table',
 	function(){					// configure your application
 		/***********************************************************
 		 * Initialize gui state and hook into it
@@ -187,6 +188,8 @@ steal(
 				$('.assetSelector').val(val);
 			});
 		});
+
+		$('#custSQL_table').seccubus_custsql_table();
 
 		// Setup finding table
 		render_finding_table();

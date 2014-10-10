@@ -46,7 +46,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `events` WRITE;
 /*!40000 ALTER TABLE `events` DISABLE KEYS */;
-INSERT INTO `events` VALUES (1,'Before scan'),(2,'After scan');
+INSERT INTO `events` VALUES (1,'Before scan'),(2,'After scan'),(3,'On Open');
 /*!40000 ALTER TABLE `events` ENABLE KEYS */;
 UNLOCK TABLES;
 
