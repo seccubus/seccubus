@@ -78,7 +78,7 @@ LOCK TABLES `asset_hosts` WRITE;
 UNLOCK TABLES;
 
 insert into events set id='3', name='On Open';
-update config set value=5 where name = 'version';
+update config set value=6 where name = 'version';
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
