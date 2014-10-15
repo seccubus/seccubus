@@ -28,6 +28,7 @@ use Carp;
 my (
 	$user,
 	$password,
+	$password2,
 	$server,
 	$policy,
 	$port,
@@ -61,6 +62,7 @@ if ( $result ne "yes" ) {
 GetOptions(	
 		'user|u=s'		=> \$user,
 		'password|p=s'		=> \$password,
+		'pw=s'			=> \$password2,
 		'server|s=s'		=> \$server,
 		'policy|pol=s'		=> \$policy,
 		'port=s'		=> \$port,
@@ -77,7 +79,8 @@ GetOptions(
 help() if $help;
 $verbose = 0 if $quiet;
 
-$port = 8834 unless $port;		# Default port is 8834
+$port = 8834 unless $port;		 # Default port is 8834
+$password = $password2 unless $password; # Equalize the use of --pw
 
 my $config = get_config();
 

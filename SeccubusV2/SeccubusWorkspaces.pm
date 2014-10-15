@@ -380,7 +380,8 @@ sub get_workspaces(;) {
 				   LEFT JOIN users ON user2group.user_id = users.id
 				   WHERE 
 				   	(users.username= ? and rights.allow_read=1 or rights.allow_write=1) 
-				   OR (1=?);
+				   OR (1=?)
+				   ORDER BY workspaces.name;
 				   ",
 		    "values"	=> [ $ENV{REMOTE_USER}, $user_is_admin ],
 	       );

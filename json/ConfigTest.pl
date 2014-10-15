@@ -30,7 +30,7 @@ my $current_db_version = 5;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
 
 # This is where configurations can be found
 # Ticket #62 - Default locations for config.xml does not include 
@@ -125,14 +125,8 @@ eval {
 		my $file = $config->{paths}->{dbdir} . "/";
 		if ( $version[0] eq "" ) {
 			$file .= "data_v$current_db_version." . $config->{database}->{engine};
-		} elsif ( $version[0] eq "1" ) {
-			$file .= "upgrade_v1_v2." . $config->{database}->{engine};
-		} elsif ( $version[0] eq "2" ) {
-			$file .= "upgrade_v2_v3." . $config->{database}->{engine};
-		} elsif ( $version[0] eq "3" ) {
-			$file .= "upgrade_v3_v4." . $config->{database}->{engine};
-		} elsif ( $version[0] eq "4" ) {
-			$file .= "upgrade_v4_v5." . $config->{database}->{engine};
+		} elsif ( $version[0] < $current_db_version ) {
+			$file .= "upgrade_v$version[0]_v" . ($version[0]+1) . "." . $config->{database}->{engine};
 		} else {
 			result($data,"Database error", "Your database returned version number '$version[0]', the developers for Seccubus do not know what to do with this", "Error");
 			bye($data);

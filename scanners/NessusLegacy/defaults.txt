@@ -1,1 +1,1 @@
--s <server> -u <user> --pw <password> --rc <path to .nessusrc> --hosts @HOSTS
+-s <server> -u <user> --rc <path to .nessusrc> --hosts @HOSTS

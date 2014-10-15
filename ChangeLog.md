@@ -18,8 +18,31 @@ Seccubus V2 works with the following scanners:
 * Nikto (local and remote)
 * NMap (local and remote)
 * SSLyze
+* Medusa
+* Burp Suite
+* Qualys SSL labs
 
 For more information visit [www.seccubus.com]
+
+10-10-2014 - 2.10 - Miami vice edition
+======================================
+* Password fields are used to store passwords and hide them in de GUI (#127)
+* Limited support for OpenVAS6 and OpenVAS7 thanks to @FGuillaume
+* Python script by @Ar0Xa to email findings from a scan
+* Fixed some bugs
+
+Bug Fixes
+============================================
+* #96  - Incorrect temp file usage Nikto scanner
+* #120 - Post install chcon action gives error
+* #124 - Multi file attachments
+* #125 - rpm dependancy name is wrong
+* #127 - Passwords can be hidden in the GUI
+* #134 - SSLlabs scanner did not handle submit errors
+* #135 - Host name creation not handled correctly with SSLlabs
+* #136 - Workspaces are now sorted by name
+* Extra cache control headers because of Chrome
+
 18-08-2014 - 2.9 - Qualys SSLlabs integration
 =============================================
 Seccubus can now fetch the results of www.ssllabs.com automatic scanner and monitor for deltas

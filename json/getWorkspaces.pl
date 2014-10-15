@@ -30,7 +30,7 @@ my $json = JSON->new();
 my $count = 0;
 my @data;
 
-print $query->header(-type => "application/json", -expires => "-1d");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
 
 my $workspaces = get_workspaces;
 foreach my $row ( @$workspaces ) {

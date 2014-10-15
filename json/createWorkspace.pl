@@ -26,7 +26,7 @@ use SeccubusWorkspaces;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
 
 my $workspace_id = $query->param("workspaceId");
 my $id = $query->param("id");

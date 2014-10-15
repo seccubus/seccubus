@@ -512,8 +512,8 @@ $closed finding(s) have been marked as CLOSED/;
 						ORDER BY time desc",
 					"values"	=> [ $scan_id ]
 				);
-				my ( $att_id ) = sql(
-					"return"	=> "array",
+				my $atts = sql(
+					"return"	=> "ref",
 					"query"		=> "
 						SELECT	id
 						FROM	attachments
@@ -521,11 +521,14 @@ $closed finding(s) have been marked as CLOSED/;
 							name LIKE ?",
 					"values"	=> [ $run_id, "%.$ext" ]
 				);
-				if ( $att_id ) {
+				if ( $atts ) {
 					#my $att = encode_base64(get_attachment($workspace_id, $scan_id, $run_id, $att_id));
-					my $att = get_attachment($workspace_id, $scan_id, $run_id, $att_id);
-					$att = shift @$att;
-					push @attachments, "Content-Type: application/actet-stream; name=\"$$att[0]\"\nContent-Transfer-Encoding: base64\n\n" . encode_base64($$att[1]);
+					foreach my $att_row ( @$atts ) {
+						my $att_id = $$att_row[0];
+						my $att = get_attachment($workspace_id, $scan_id, $run_id, $att_id);
+						$att = shift @$att;
+						push @attachments, "Content-Type: application/actet-stream; name=\"$$att[0]\"\nContent-Transfer-Encoding: base64\n\n" . encode_base64($$att[1]);
+					}
 				} else {
 					push @attachments, "Content-Type: text/plain; name\"$ext.txt\"\n\nUnable to find an attachment with extenstion $ext";
 				}

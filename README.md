@@ -18,18 +18,27 @@ Seccubus V2 works with the following scanners:
 * Nikto (local and remote)
 * NMap (local and remote)
 * SSLyze
+* Medusa
+* Burp Suite
+* Qualys SSL labs
 
 For more information visit [www.seccubus.com]
 
-18-08-2014 - 2.9 - Qualys SSLlabs integration
-=============================================
-Seccubus can now fetch the results of www.ssllabs.com automatic scanner and monitor for deltas
+10-10-2014 - 2.10 - Miami vice edition
+======================================
+* Password fields are used to store passwords and hide them in de GUI (#127)
+* Limited support for OpenVAS6 and OpenVAS7 thanks to @FGuillaume
+* Python script by @Ar0Xa to email findings from a scan
+* Fixed some bugs
 
 Bug Fixes
 ============================================
-* #122 - SSLlabs integration
-* #120 - SELinux problem on RHEL6
-* #99 - The ability to remote is not reflected in the scanner help text
-* #67 - -o usage needs to be more specific for e.g. nikto and nmap scanner 
-* #63 - Scan table does not display scanner correctly
-* #59 - Explanation of $ATTACH: in notifications is not very clear
+* #96  - Incorrect temp file usage Nikto scanner
+* #120 - Post install chcon action gives error
+* #124 - Multi file attachments
+* #125 - rpm dependancy name is wrong
+* #127 - Passwords can be hidden in the GUI
+* #134 - SSLlabs scanner did not handle submit errors
+* #135 - Host name creation not handled correctly with SSLlabs
+* #136 - Workspaces are now sorted by name
+* Extra cache control headers because of Chrome
