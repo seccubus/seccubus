@@ -26,45 +26,46 @@ going to install the Skipfish in the /opt</p>
 <p>Edit the Skipfish config file located in the src/config.h of Skipfish and add
 the full path where you want use the Skipfish:</p>
 
-<p>/* Default paths to runtime files: */</p>
+<pre><code>/* Default paths to runtime files: */
 
-<h1 id="define-assetsdir-optskipfishassets">define ASSETS_DIR “/opt/skipfish/assets”</h1>
-<p>#define DEF_WORDLIST “/opt/skipfish/skipfish.wl”</p>
+#define ASSETS_DIR “/opt/skipfish/assets”  
+#define DEF_WORDLIST “/opt/skipfish/skipfish.wl”
 
-<p>/* Default signature file */<br />
-#define SIG_FILE “/opt/skipfish/signatures/signatures.conf”</p>
+/* Default signature file */  
+#define SIG_FILE “/opt/skipfish/signatures/signatures.conf”
 
-<p>Now make the Skipfish installation and when it’s compiled copy the skipfish
-dir to /opt<br />
+Now make the Skipfish installation and when it’s compiled copy the skipfish
+dir to /opt  
 The last file we need to edit is the /opt/skipfish/signatures/signatures.conf
-and add the path prefix:</p>
+and add the path prefix:
 
-<h6 id="section">#</h6>
-<p>##<br />
-## Master signature file.<br />
-### The mime signatures warn about server responses that have an interesting<br />
-# mime. For example anything that is presented as php-source will likely<br />
-# be interesting<br />
-include /opt/skipfish/signatures/mime.sigs</p>
+#############################################  
+##  
+## Master signature file.  
+### The mime signatures warn about server responses that have an interesting  
+# mime. For example anything that is presented as php-source will likely  
+# be interesting  
+include /opt/skipfish/signatures/mime.sigs
 
-<h1 id="the-files-signature-will-use-the-content-to-determine-if-a-response">The files signature will use the content to determine if a response</h1>
-<p># is an interesting file. For example, a SVN file.<br />
-include /opt/skipfish/signatures/files.sigs</p>
+# The files signature will use the content to determine if a response  
+# is an interesting file. For example, a SVN file.  
+include /opt/skipfish/signatures/files.sigs
 
-<h1 id="the-messages-signatures-look-for-interesting-server-messages-most">The messages signatures look for interesting server messages. Most</h1>
-<p># are based on errors, such as caused by incorrect SQL queries or PHP<br />
-# execution failures.<br />
-include /opt/skipfish/signatures/messages.sigs</p>
+# The messages signatures look for interesting server messages. Most  
+# are based on errors, such as caused by incorrect SQL queries or PHP  
+# execution failures.  
+include /opt/skipfish/signatures/messages.sigs
 
-<h1 id="the-apps-signatures-will-help-to-find-pages-and-applications-whos">The apps signatures will help to find pages and applications who’s</h1>
-<p># functionality is a security risk by default. For example, phpinfo()<br />
-# pages that leak information or CMS admin interfaces.<br />
-include /opt/skipfish/signatures/apps.sigs</p>
+# The apps signatures will help to find pages and applications who’s  
+# functionality is a security risk by default. For example, phpinfo()  
+# pages that leak information or CMS admin interfaces.  
+include /opt/skipfish/signatures/apps.sigs
 
-<h1 id="context-signatures-are-linked-to-injection-tests-they-look-for-strings">Context signatures are linked to injection tests. They look for strings</h1>
-<p># that are relevant to the current injection test and help to highlight<br />
-# potential vulnerabilities.<br />
-include /opt/skipfish/signatures/context.sigs</p>
+# Context signatures are linked to injection tests. They look for strings  
+# that are relevant to the current injection test and help to highlight  
+# potential vulnerabilities.  
+include /opt/skipfish/signatures/context.sigs
+</code></pre>
 
 <p>Skipfish is now installed and ready to use in Seccubus.</p>
 
