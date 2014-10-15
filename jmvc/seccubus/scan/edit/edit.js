@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2014 Frank Breedijk, Artien Bel (Ar0xA)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,6 +149,7 @@ $.Controller('Seccubus.Scan.Edit',
 			sc.name = params.name;
 			sc.scanner = params.scanner;
 			sc.parameters = params.parameters;
+			sc.password = params.password;
 			sc.targets = params.targets;
 			sc.assets = params.assets;
 			Seccubus.Models.Asset2Scan.update({
@@ -192,6 +193,12 @@ $.Controller('Seccubus.Scan.Edit',
 		} else {
 			$('#editScanOtherScannerRow').hide();
 		}
+		if ( $('#editScanScanner').val() == 'Nessus' || $('#editScanScanner').val() == 'OpenVAS' || $('#editScanScanner').val() == 'NessusLegacy'  ) {
+                        $('#editScanPasswordRow').show();
+                } else {
+                        $('#editScanPasswordRow').hide();
+                }
+
 	},
 	".nok change" : function(el) {
 		el.removeClass("nok");

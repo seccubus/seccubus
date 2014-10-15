@@ -149,8 +149,15 @@ while ( $todo ) {
 							$hosts{$url}->{status} = 2;
 						}
 					} else {
-						$p->dump();
-						die "Page not recognized";
+						my $warning = $p->look_down('class',"submitError");
+						if ( $warning ) {
+							print "$url has submit error: '" . $warning->as_text() . "', dropping from scan\n" unless $quiet;
+							# Disable site
+							$hosts{$url}->{status} = 2;
+						} else {
+							$p->dump();
+							die "Page not recognized";
+						}
 					}
 				}
 			}
@@ -168,20 +175,20 @@ print IOUT ivil_addressee("Seccubus", { workspace => $workspace, scan => $scan }
 print IOUT "<findings>\n";
 
 foreach my $url ( sort keys %hosts ) {
+	print "Processing results for $url\n" if $verbose;
+	my $finding = {};
+	$finding->{ip} = $url;
+	$finding->{ip} =~ s/\&/\-/g;
+	#$finding->{hostname} = $url;
+	$finding->{port} = "443/tcp";
+
+	# URL
+	$finding->{id} = "url";
+	$finding->{finding} = "https://www.ssllabs.com/ssltest/analyze.html?d=$url";
+	print IOUT ivil_finding($finding);
 	if ( $hosts{$url}->{status} == 1 ) { # Valid data
-		print "Processing results for $url\n" if $verbose;
 		my $p = HTML::TreeBuilder->new();
 		$p -> parse($hosts{$url}->{data});
-		my $finding = {};
-		$finding->{ip} = $url;
-		$finding->{ip} =~ s/\&/\-/g;
-		#$finding->{hostname} = $url;
-		$finding->{port} = "443/tcp";
-
-		# URL
-		$finding->{id} = "url";
-		$finding->{finding} = "https://www.ssllabs.com/ssltest/analyze.html?d=$url";
-		print IOUT ivil_finding($finding);
 
 		# Ratings
 		$finding->{id} = "ratings";
@@ -238,6 +245,9 @@ foreach my $url ( sort keys %hosts ) {
 		$p->delete;
 	} else {
 		print "Skipping not processed url: $url\n" if $verbose;
+		$finding->{id} = "skipped";
+		$finding->{finding} = "This url was skipped due to an error";
+		print IOUT ivil_finding($finding);
 	}
 }
 print IOUT "</findings>\n";

@@ -21,6 +21,7 @@ use Test::More;
 
 my %exclude = (
 	"./SeccubusV2/IVIL.pm" 	=> "MIT Licensed project",
+	"./SeccubusV2/OpenVAS/OMP.pm" 	=> "Artistic License 2.0",
 	"./bin/dump_ivil" 	=> "MIT Licensed project",
 	"./AUTHORS.txt"		=> "Part of the license",
 	"./NOTICE.txt"		=> "Part of the license",

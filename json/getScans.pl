@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk, Your Name, blabla1337, Sphaz
+# Copyright 2014 Frank Breedijk, Your Name, blabla1337, Sphaz, Artien Bel (Ar0xA)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ use SeccubusScans;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
 
 my $workspace_id = $query->param("workspaceId");
 
@@ -43,26 +43,18 @@ eval {
 	my $scans = get_scans($workspace_id);
         my $paramline;
 	foreach my $row ( @$scans ) {
-		$paramline = $$row[3];
-		my $wanted;
-                if (index($paramline,'-p ') != -1) {
-                   ($wanted) = $paramline =~ /-p(.*) --policy/;
-		   $paramline =~ s/$wanted/ \[maskedpassword\]/;
- 		} elsif (index($paramline,'--pw ') != -1) {
-                   ($wanted) = $paramline =~ /--pw(.*) --rc/;
-                   $paramline =~ s/$wanted/ \[maskedpassword\]/;
-		}
 		push (@data, {
 			'id'		=> $$row[0],
 			'name'		=> $$row[1],
 			'scanner'	=> $$row[2],
-			'parameters'	=> $paramline,
+			'parameters'	=> $$row[3],
 			'lastScan'	=> $$row[4],
 			'runs'		=> $$row[5],
 			'findCount'	=> $$row[6],
 			'targets'	=> $$row[7],
 			'workspace'	=> $$row[8],
 			'notifications'	=> $$row[9],
+			'password'	=> $$row[10],
 		});
 	}
 	print $json->pretty->encode(\@data);

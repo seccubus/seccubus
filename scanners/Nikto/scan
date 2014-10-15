@@ -103,8 +103,6 @@ my $tempfile = "/tmp/seccubus.$$";
 my $nikto_options = "-h $hosts_file -o $tempfile.nbe -F nbe $nikto_options";
 print "Nikto options: $nikto_options\n" if $verbose;
 
-open TMP, ">$tempfile" or die "Unable to open tempfile $tempfile for writing";
-
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 

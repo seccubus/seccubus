@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2013 Frank Breedijk, Steve Launius
+# Copyright 2014 Frank Breedijk, Steve Launius, Artien Bel (Ar0xA)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ This Pod documentation generated from the module SeccubusScans gives a list of
 all functions within the module.
 
 =cut
-
 use SeccubusDB;
 use SeccubusRights;
 use SeccubusNotifications;
@@ -40,8 +39,8 @@ use Carp;
 
 sub get_scan_id($$;);
 sub get_scans($;);
-sub create_scan($$$$;$);
-sub update_scan($$$$$;$);
+sub create_scan($$$$;$$);
+sub update_scan($$$$$;$$);
 sub run_scan($$;$$$);
 
 =head1 Data manipulation - scans
@@ -64,6 +63,8 @@ This function creates a scan with the name provided in the workspace
 
 =item scanner_param - scanner parameters
 
+=item password = scanner password (Optional)
+
 =item targets - targets of this scan (Optional)
 
 =back 
@@ -77,11 +78,12 @@ exist in the same workspace
 
 =cut
 
-sub create_scan($$$$;$) {
+sub create_scan($$$$;$$) {
 	my $workspace_id = shift or confess "No workspace_id provided";
 	my $scanname = shift or confess "No scanname provide to getscanid";
 	my $scanner_name = shift or confess "No scanner_name provided";
 	my $scanner_param = shift or confess "No scanner parameters specified";
+	my $password = shift;
 	my $targets = shift;
 
 	if ( get_scan_id($workspace_id, $scanname) ) {
@@ -93,11 +95,12 @@ sub create_scan($$$$;$) {
 			    			name, 
 						scannername, 
 						scannerparam,
+						password,
 						workspace_id,
 						targets)
-					    VALUES(?, ?, ?, ?, ?);
+					    VALUES(?, ?, ?, ?, ?, ?);
 					   ",
-			    "values"	=> [$scanname, $scanner_name, $scanner_param, $workspace_id, $targets],
+			    "values"	=> [$scanname, $scanner_name, $scanner_param, $password, $workspace_id, $targets],
 			  );
 	} else {
 		die "Permission denied";
@@ -172,7 +175,8 @@ sub get_scans($;) {
 			    		   '' as total_findings,
 					   targets,
 					   workspace_id,
-					   (SELECT COUNT(*) FROM notifications WHERE notifications.scan_id = scans.id) as total_notifications
+					   (SELECT COUNT(*) FROM notifications WHERE notifications.scan_id = scans.id) as total_notifications,
+					   password
 			    		   FROM scans  
 					   WHERE workspace_id = ?
 					   ORDER BY NAME",
@@ -203,6 +207,8 @@ This function updates a scan with the data provided
 
 =item scanner_param - scanner parameters
 
+=item password - scanner password (Optional)
+
 =item targets - targets of this scan (Optional)
 
 =back 
@@ -216,23 +222,35 @@ The scan must exist in the workspace.
 
 =cut
 
-sub update_scan($$$$$;$) {
+sub update_scan($$$$$;$$) {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_id = shift or die "No scan_id provided";
 	my $scanname = shift or die "No scanname provide to getscanid";
 	my $scanner_name = shift or die "No scanner_name provided";
 	my $scanner_param = shift or die "No scanner parameters specified";
+	my $password = shift;
 	my $targets = shift;
-
 	if ( may_write($workspace_id) ) {
-		return sql( "return"	=> "rows",
-			    "query"	=> "UPDATE scans
-			    		    SET name = ?, scannername = ?, 
-					    scannerparam = ?, targets = ?
-					    WHERE id = ? AND workspace_id = ?;
-					   ",
-			    "values"	=> [$scanname, $scanner_name, $scanner_param, $targets, $scan_id, $workspace_id],
-			  );
+		if (length($password) > 0 ) {
+			return sql( "return"	=> "rows",
+				    "query"	=> "UPDATE scans
+				    		    SET name = ?, scannername = ?, 
+						    scannerparam = ?, password = ?, targets = ?
+						    WHERE id = ? AND workspace_id = ?;
+						   ",
+				    "values"	=> [$scanname, $scanner_name, $scanner_param, $password, $targets, $scan_id, $workspace_id],
+				  );
+		} else {
+			return sql( "return"	=> "rows",
+				    "query"	=> "UPDATE scans
+				    		    SET name = ?, scannername = ?, 
+						    scannerparam = ?, targets = ?
+						    WHERE id = ? AND workspace_id = ?;
+						   ",
+				    "values"	=> [$scanname, $scanner_name, $scanner_param, $targets, $scan_id, $workspace_id],
+				  );
+	
+		}
 	} else {
 		die "Permission denied";
 	}
@@ -283,7 +301,7 @@ sub run_scan($$;$$$) {
 		my @scan = sql( "return"	=> "array",
 				"query"	=> "
 					SELECT scans.name, scannername, 
-					scannerparam, targets, workspaces.name
+					scannerparam, password, targets, workspaces.name
 					FROM scans, workspaces
 					WHERE scans.workspace_id = workspaces.id
 					AND workspaces.id = ?
@@ -291,11 +309,14 @@ sub run_scan($$;$$$) {
 				"values"	=> [$workspace_id, $scan_id]
 			      );
 		if ( @scan ) {
-			my ( $scanname, $scanner, $param, $targets, $workspace ) = @scan;
+			my ( $scanname, $scanner, $param, $password, $targets, $workspace ) = @scan;
 			my $config = SeccubusV2::get_config();
 			if ( ! -e $config->{paths}->{scanners} . "/$scanner/scan" ) {
 				die "Scan script for $scanner is not installed";
 			}
+			if ($scanner eq 'Nessus' || $scanner eq "NessusLegacy" || $scanner eq "OpenVAS") {
+				$param = $param .' --pw \''. $password. '\' ';
+			};
 			if ( $param =~ /\@HOSTS/ ) {
 				open TMP, ">$tempfile" or die "Unable to open $tempfile for write";
 				print TMP "$targets\n";
@@ -337,6 +358,9 @@ sub run_scan($$;$$$) {
 
 			if ( $param =~ /\$SCAN/ ) {
 				$param =~ s/\$SCAN/$scanname/g;
+			}
+			if ( $param =~ /\$PASSWORD/ ) {
+				$param =~ s/\$PASSWORD/$password/g;
 			}
 			# Bug #42 - Scan parameters --workspace and --scan 
 			# should be added automatically

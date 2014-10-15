@@ -27,7 +27,7 @@ use SeccubusNotifications;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
 
 my $scan_id = $query->param("scanId");
 
