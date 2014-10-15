@@ -1,0 +1,76 @@
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="/css/style.css" id="rel">
+        <script src="//use.typekit.net/jpd2bkc.js"></script>
+        <script>try{Typekit.load();}catch(e){}</script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="nav"></div>
+            <div class="content">
+                <article>
+                    <h1>Skipfish installation for Seccubus v2.5</h1>
+                    <p>This post will describe step by step how to configure Skipfish for Seccubus.</p>
+
+<p>You can grab the latest release of Skipfish here:</p>
+
+<p>https://code.google.com/p/skipfish/downloads/list</p>
+
+<p>Before you compile the Skipfish src we need to edit 2 files so Skipfish can be
+used in Seccubus.<br />
+In my current setup the Seccubus files are located in /opt/seccubus and I’m
+going to install the Skipfish in the /opt</p>
+
+<p>Edit the Skipfish config file located in the src/config.h of Skipfish and add
+the full path where you want use the Skipfish:</p>
+
+<p>/* Default paths to runtime files: */</p>
+
+<h1 id="define-assetsdir-optskipfishassets">define ASSETS_DIR “/opt/skipfish/assets”</h1>
+<p>#define DEF_WORDLIST “/opt/skipfish/skipfish.wl”</p>
+
+<p>/* Default signature file */<br />
+#define SIG_FILE “/opt/skipfish/signatures/signatures.conf”</p>
+
+<p>Now make the Skipfish installation and when it’s compiled copy the skipfish
+dir to /opt<br />
+The last file we need to edit is the /opt/skipfish/signatures/signatures.conf
+and add the path prefix:</p>
+
+<h6 id="section">#</h6>
+<p>##<br />
+## Master signature file.<br />
+### The mime signatures warn about server responses that have an interesting<br />
+# mime. For example anything that is presented as php-source will likely<br />
+# be interesting<br />
+include /opt/skipfish/signatures/mime.sigs</p>
+
+<h1 id="the-files-signature-will-use-the-content-to-determine-if-a-response">The files signature will use the content to determine if a response</h1>
+<p># is an interesting file. For example, a SVN file.<br />
+include /opt/skipfish/signatures/files.sigs</p>
+
+<h1 id="the-messages-signatures-look-for-interesting-server-messages-most">The messages signatures look for interesting server messages. Most</h1>
+<p># are based on errors, such as caused by incorrect SQL queries or PHP<br />
+# execution failures.<br />
+include /opt/skipfish/signatures/messages.sigs</p>
+
+<h1 id="the-apps-signatures-will-help-to-find-pages-and-applications-whos">The apps signatures will help to find pages and applications who’s</h1>
+<p># functionality is a security risk by default. For example, phpinfo()<br />
+# pages that leak information or CMS admin interfaces.<br />
+include /opt/skipfish/signatures/apps.sigs</p>
+
+<h1 id="context-signatures-are-linked-to-injection-tests-they-look-for-strings">Context signatures are linked to injection tests. They look for strings</h1>
+<p># that are relevant to the current injection test and help to highlight<br />
+# potential vulnerabilities.<br />
+include /opt/skipfish/signatures/context.sigs</p>
+
+<p>Skipfish is now installed and ready to use in Seccubus.</p>
+
+
+                </article>
+            </div>
+        </div>
+    </body>
+</html>
