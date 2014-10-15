@@ -26,4 +26,6 @@ p, span, h1, h2 { font-family: "proxima-nova", "arial"; }
 
 p { margin-bottom: 1.5em; }
 
+code { font-family: "menlo"; background-color: #eeebe9; display: block; padding: 1em; }
+
 h1 { font-size: 32px; line-height: 2.25em; margin-top: 0.75em; color: #9A0404; font-family: "proxima-nova", "arial"; }

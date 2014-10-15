@@ -12,6 +12,13 @@ p {
     @include margin-trailer(1, $base-font-size);
 }
 
+code {
+    font-family: $monospaceFamily;
+    background-color: #eeebe9;
+    display:block;
+    padding:1em;
+}
+
 h1 {
     font-size: 32px;
     @include adjust-leading-to(3, 32px);

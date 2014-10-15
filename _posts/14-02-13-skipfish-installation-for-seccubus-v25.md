@@ -56,5 +56,6 @@ the full path where you want use the Skipfish:
     # potential vulnerabilities.  
     include /opt/skipfish/signatures/context.sigs
 
+
 Skipfish is now installed and ready to use in Seccubus.
 
