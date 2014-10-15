@@ -14,7 +14,7 @@ This release has some new features and bug fixes, and you can download it
 * Password fields are used to store passwords and hide them in de GUI (#127)  
 * Limited support for OpenVAS6 and OpenVAS7 thanks to @FGuillaume  
 * Python script by @Ar0Xa to email findings from a scan  
-* Fixed some bugs
+* Fixed some bugs concerning issue #1
 
 Bug Fixes  
 ---  
