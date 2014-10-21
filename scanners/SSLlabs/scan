@@ -123,14 +123,19 @@ while ( $todo ) {
 				# Let see if multiple elements were returned
 				my $multi = $p->look_down('id','multiTable');
 				if ( $multi ) { # Lets add them all to the hash
-					# Disable main site
-					$hosts{$url}->{status} = 2;
 					print "$url has multiple IPs, adding them to the hostlist\n" if $verbose;
 					foreach my $ip ( $multi->look_down('class','ip') ) {
-						my $newurl = "$url&s=" . $ip->as_text();
-						print "Adding host $newurl to targets\n" if $verbose;
-						$hosts{$newurl}->{status}=0;
-						$todo = 1;
+						if (index ($url, "&s=" . $ip->as_text()) == -1) { # ugly hack
+							# Disable main site
+							$hosts{$url}->{status} = 3;
+							$url =~ s/\&s=.*//g;
+							my $newurl = "$url&s=" . $ip->as_text();
+							print "Adding host $newurl to targets\n" if $verbose;
+							$hosts{$newurl}->{status}=0;
+							$todo = 1;
+						} else {
+							print "IP is already in target $url\n" if $verbose;
+						}
 					}
 				} else {
 					my $warning = $p->look_down('id','warningBox');
@@ -143,7 +148,7 @@ while ( $todo ) {
 							print "$url has certificate name mismatch, dropping from scan\n" unless $quiet;
 							# Disable site
 							$hosts{$url}->{status} = 2;
-						} else{
+						} else {
 							print "$url has unknown error: '" . $warning->as_text() . "', dropping from scan\n" unless $quiet;
 							# Disable site
 							$hosts{$url}->{status} = 2;
@@ -177,8 +182,8 @@ print IOUT "<findings>\n";
 foreach my $url ( sort keys %hosts ) {
 	print "Processing results for $url\n" if $verbose;
 	my $finding = {};
-	$finding->{ip} = inet_ntoa(inet_aton($url));
 	$finding->{hostname} = $url;
+	$finding->{hostname} =~ s/\&.*//g;
 	$finding->{port} = "443/tcp";
 
 
@@ -204,6 +209,9 @@ foreach my $url ( sort keys %hosts ) {
 		my $rating = $p->look_down('id','rating');
 		if (!$rating) {
 			print "SOMETHING WENT REALLY WRONG";
+			$finding->{id} = "skipped";
+			$finding->{finding} = "$url was skipped due to internal error, please investigate";
+			print IOUT ivil_finding($finding);
 			next;
 		}
 		$rating = $rating->as_text;
@@ -298,7 +306,11 @@ foreach my $url ( sort keys %hosts ) {
 	} else {
 		print "Skipping not processed url: $url\n" if $verbose;
 		$finding->{id} = "skipped";
-		$finding->{finding} = "This url was skipped due to an error";
+		if ( $hosts{$url}->{status} == 3 ) { 
+			$finding->{finding} = "$url was expanded to multiple IPs";
+		} else {
+			$finding->{finding} = "$url was skipped due to an error";
+		}
 		print IOUT ivil_finding($finding);
 	}
 }
