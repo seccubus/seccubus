@@ -1,1 +1,7 @@
-limit_posts: 10
+paginate: 10
+
+permalink: /news/:year/:month/:day/:title/
+highlighter: true
+paginate_path: "news/:num"
+markdown: redcarpet
+pygments: true

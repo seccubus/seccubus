@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Releasing version 2.10, The Miami Vice edition
+author: Frank Breedijk
 ---
 Today I release Seccubus version 2.10 which I have dubbed ‘The Miami Vice’
 edition because I’m currently visiting the Akamai Edge conference in Miami,

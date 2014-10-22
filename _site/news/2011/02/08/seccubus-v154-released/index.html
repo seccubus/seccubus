@@ -1,0 +1,169 @@
+
+<!doctype html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Seccubus</title>
+
+    <link href="/css/app.css" rel="stylesheet" />
+    <script src="/js/vendor/modernizr.js"></script>
+</head>
+<body class="antialiased hide-extras">
+    <nav class="top-bar" data-topbar role="navigation">
+    <ul class="title-area">
+        <li class="name">
+            <h1><a href="/">Seccubus</a></h1>
+        </li>
+        <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+        <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+
+    <section class="top-bar-section">
+        <!-- Right Nav Section -->
+        <ul class="right">
+            <li class="divider"></li>
+            <li><a href="/news/">News</a></li>
+            <li class="divider"></li>
+            <li>
+                <a href="https://github.com/schubergphilis/Seccubus_v2">Fork on GitHub</a>
+            </li>
+            <li class="divider"></li>
+            <li class="has-form"><a href="https://github.com/schubergphilis/Seccubus_v2/archive/master.zip" class="button">Download</a></li>
+        </ul>
+    </section>
+</nav>
+
+    <section class="main-content article">
+    <div class="large-9 medium-10 small-11 small-centered column">
+        <h2>
+            Seccubus v1.5.4 released
+        </h2>
+        <span class="published">
+            08 February 2011
+            
+        </span>
+        <div class="content post">
+            <h1>Seccubus 1.5.4 – OpenVAS-Client 3.x compatibility release</h1>
+
+<p>Today I released version 1.5.4 of Seccubus, this is a OpenVAS-Client 3.x
+compatibility release that does not fix any other issues. If you are not an
+OpenVAS user there is no need to upgrade.</p>
+
+<p>Currently there is only a tar.gz file on SourceForge, the two rpm files will
+follow soon.</p>
+
+<p>Here are the releasenotes:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">7-2-2011 - OpenVAS-Client 3.x compatibility release
+
+
+
+This release fixes an OpenVAS-Client 3.x compatibility issue reported and
+
+
+fixed
+
+
+by Brad Alexander
+
+
+
+Frank,
+
+
+
+Please find the attached do-scan script. The problem was that OpenVAS-clients
+
+
+versions 2 and before as well as nessus (all versions that I was able to test)
+
+
+use -v to determine the version, whereas OpenVAS-Client version 3 (and
+
+
+presumably version 4, which is in alpha/beta now) uses -V
+
+
+
+As a quick fix, I reversed the test, so that it tests for nessus rather than
+
+
+openvas-client, as follows
+
+
+
+Is it nikto? -&gt; yes -&gt; run nikto test
+
+
+  | no
+
+
+ V
+
+
+Is it nessus? -&gt; yes -&gt; run nessus
+
+
+  |
+
+
+ V
+
+
+It&#39;s openvas -&gt; run openvas
+
+
+
+Note that I have the following versions of the tools to test against:
+
+
+OpenVAS-Client -&gt; 2.0.5, 3.0.0 (server version 3.0.4) Nessus -&gt; 2.2.10, 4.2.2
+
+
+and 4.4.0
+
+
+
+In any case, let me know your comments on my changes. I can send you a diff
+
+
+file, if you prefer, when I get home. The license, obviously, on my changes
+
+
+are gpl, but I got bitten on not specifically stating that on my blog.
+
+
+
+Thanks,
+
+
+--b
+</code></pre></div>
+        </div>
+        <div class="readmore pagination">
+            
+            <a class="newer" href="/news/2011/02/17/bugtracker-switch/">
+                Bugtracker switch
+            </a>
+            
+            
+            <a class="older" href="/news/2011/02/02/code-repository-moved/">
+                Code repository moved
+            </a>
+            
+        </div>
+    </div>
+</section>
+
+    </section>
+    <script src="/js/vendor/jquery.js"></script>
+    <script src="/js/foundation/foundation.js"></script>
+    <script src="/js/foundation/foundation.topbar.js"></script>
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+    <script>
+    $(document).foundation();
+    </script>
+</body>
+</html>

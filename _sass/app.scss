@@ -1,0 +1,92 @@
+@import "settings";
+@import "foundation";
+@import "highlight";
+
+section.callout {
+    background-color:#E3E3E3;
+    border-bottom: 1px solid darken(#E3E3E3, 5%);
+    padding: 2rem 0;
+}
+div.callout-container {
+    @extend .row;
+    text-align:center;
+}
+div.callout {
+    @extend .medium-8;
+    @extend .large-6;
+    @extend .column;
+    @extend .medium-centered;
+    h2 {
+        color:$primary-color;
+        font-weight:bold;
+    }
+}
+.main-content{
+    @extend .row;
+}
+.why, .how {
+    @extend .medium-6;
+    @extend .column;
+    margin-top:1rem;
+    text-align:justify;
+}
+.published {
+    // font-weight:bold;
+    margin-top:-0.5em;
+    margin-bottom:1em;
+    display:block;
+    // border-bottom:1px solid #E3E3E3;
+}
+.author {
+    &:before{
+        content: " - ";
+    }
+}
+.posts, .article {
+    padding-top:2rem;
+}
+.post-entry {
+    margin:3rem 0;
+    // border-bottom:1px solid grey;
+}
+.post {
+    h1, h2, h3, h4, h5{
+        font-size:100%;
+        font-weight:bold;
+    }
+    margin-bottom:0;
+}
+.pagination {
+    @extend .clearfix;
+    a {
+        padding:0.4rem 1rem;
+        border:1px solid $primary-color;
+    }
+    .older {
+        float:right;
+    }
+    .newer {
+        float:left;
+    }
+    margin-bottom:2rem;
+}
+div.readmore {
+    border-top: 1px solid grey;
+    padding:1rem 0;
+    a {
+        border:0;
+        padding:0;
+        max-width:45%;
+    }
+}
+code {
+    background-color:transparent;
+    border-color:transparent;
+    color:white;
+}
+.highlight {
+    margin-bottom:1em;
+    background-color: #282828;
+    padding: 1em;
+    overflow:auto;
+}

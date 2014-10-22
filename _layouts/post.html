@@ -1,20 +1,31 @@
-
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="/css/style.css" id="rel">
-        <script src="//use.typekit.net/jpd2bkc.js"></script>
-        <script>try{Typekit.load();}catch(e){}</script>
-    </head>
-    <body>
-        <div class="container">
-            <div class="nav"></div>
-            <div class="content">
-                <article>
-                    <h1>{{ page.title }}</h1>
-                    {{ content }}
-                </article>
-            </div>
+---
+layout: default
+---
+<section class="main-content article">
+    <div class="large-9 medium-10 small-11 small-centered column">
+        <h2>
+            {{ page.title }}
+        </h2>
+        <span class="published">
+            {{ page.date | date_to_long_string}}
+            {% if page.author %}
+            <span class="author">{{ page.author }}</span>
+            {% endif %}
+        </span>
+        <div class="content post">
+            {{ content }}
         </div>
-    </body>
-</html>
+        <div class="readmore pagination">
+            {% if page.next.url %}
+            <a class="newer" href="{{ page.next.url }}">
+                {{ page.next.title }}
+            </a>
+            {% endif %}
+            {% if page.previous.url %}
+            <a class="older" href="{{ page.previous.url }}">
+                {{ page.previous.title }}
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
