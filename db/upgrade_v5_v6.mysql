@@ -77,6 +77,21 @@ LOCK TABLES `asset_hosts` WRITE;
 /*!40000 ALTER TABLE `asset_hosts` ENABLE KEYS */;
 UNLOCK TABLES;
 
+--
+-- Table structure for table `customsql`
+--
+
+CREATE TABLE `customsql` (
+  `id` INT NOT NULL,
+  `name` CHAR(255) NULL,
+  `sql` TEXT NULL,
+  PRIMARY KEY (`id`));
+
+LOCK TABLES `customsql` WRITE;
+/*!40000 ALTER TABLE `customsql` DISABLE KEYS */;
+/*!40000 ALTER TABLE `customsql` ENABLE KEYS */;
+UNLOCK TABLES;
+
 insert into events set id='3', name='On Open';
 update config set value=6 where name = 'version';
 

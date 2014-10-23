@@ -20,7 +20,7 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/finding.js", funct
 		expect(14);
 		stop();
 		Seccubus.Models.Finding.findAll({}, function(findings){
-			ok(findings)
+				ok(findings)
 	        	ok(findings.length)
 	        	ok(findings[0].id)
 	        	ok(findings[0].host)
@@ -40,7 +40,7 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/finding.js", funct
 	})
 	
 	test("create", function(){
-		expect(0)
+		expect(3)
 		stop();
 		new Seccubus.Models.Finding({name: "dry cleaning", description: "take to street corner"}).save(function(finding){
 			ok(finding);
@@ -51,7 +51,7 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/finding.js", funct
 		})
 	})
 	test("update" , function(){
-		expect(0);
+		expect(2);
 		stop();
 		new Seccubus.Models.Finding({name: "cook dinner", description: "chicken"}).
 	            save(function(finding){
@@ -65,7 +65,7 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/finding.js", funct
 	
 	});
 	test("destroy", function(){
-		expect(0);
+		expect(1);
 		stop();
 		new Seccubus.Models.Finding({name: "mow grass", description: "use riding mower"}).
 	            destroy(function(finding){
