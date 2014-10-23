@@ -1,4 +1,4 @@
-nguage: perl
+language: perl
 perl:
   - "5.16"
   - "5.14"
