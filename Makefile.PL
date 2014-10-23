@@ -38,6 +38,7 @@ WriteMakefile (
 				'File::Basename'	=> 0.1,
 				'Socket'		=> 0.1,
 				'Net::SMTP'		=> 0.1,
+				'HTML::TreeBuilder'	=> 0.1,
 			},
 	PM		=> { 
 				'SeccubusV2.pm'				=> '$(INST_LIBDIR)/SeccubusV2.pm',
