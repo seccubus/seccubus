@@ -29,11 +29,15 @@ use Exporter;
 
 @EXPORT = qw ( 
 		get_customsql
+		get_savedsql
+		set_customsql
 	);
 
 use SeccubusDB;
 
 sub get_customsql($);
+sub get_savedsql();
+sub set_customsql($$;)
 
 =head2 get_customsql
 
@@ -60,5 +64,50 @@ sub get_customsql($){
 		);
 }
 
+
+=head2 get_savedsql
+
+This function returns all saved sqls
+
+=back 
+
+=back
+
+=cut
+
+sub get_savedsql() {
+	return sql ( "return" => "arrayref",
+		"query" => "select * from `customsql` order by id"
+		);
+}
+
+=head2 get_savedsql
+
+This function saves custom sql
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item name - name for custom sql
+
+=item sql - custom sql
+
+=back 
+
+=back
+
+=cut
+
+sub set_customsql($$;) {
+	my $name = shift or die "no name provided";
+	my $sql = shift or die "no sql procided";
+	return sql ( "return" => "arrayref",
+		"query" => "insert into `customsql` set name=?, sql=?",
+		"values" => [$name,$sql]
+		);
+}
 
 1;

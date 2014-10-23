@@ -41,10 +41,10 @@ steal("jquery/dom/fixture", function(){
 	/* Workspaces */
 	$.fixture.make("workspace", 15, function(i, workspace){
 		return {
-			id 		: i,
-			name		: "Client "+i,
-			findCount	: $.fixture.rand(9999),
-			scanCount	: $.fixture.rand(3),
+			id 		: i+1,
+			name		: "Client "+i+1,
+			findCount	: $.fixture.rand(9999)+1,
+			scanCount	: $.fixture.rand(3)+1,
 			lastScan	: "2011-11-11 11:11:11"
 		}
 	})
@@ -78,26 +78,26 @@ steal("jquery/dom/fixture", function(){
 		"Remote listeners enumeration\nUsing netstat, it is possible to identify daemons listening on the remote\nport.\n\nPlugin output:\nThe Linux process '/opt/nessus/sbin/nessusd' is listening on this port.\n\nDescription:\nBy logging into the remote host and using the Linux-specific 'netstat\n-anp' command, it was possible to obtain the name of the processe\nlistening on the remote port.\n\nSolution:\nn/a\n\nSeverity: 1\n\nRisk factor: None",
 		"Service Detection\nThe remote service could be identified.\n\nPlugin output:\nA web server is running on this port.\n\nDescription:\nIt was possible to identify the remote service by its banner or by looking\nat the error message it sends when it receives an HTTP request.\n\nSolution:\nn/a\n\nSeverity: 1\n\nRisk factor: None"
 	];
-	var remarks = ["Fix it", "Disable it", "Remove it","","","Duh..."];
+	var remarks = ["","Fix it", "Disable it", "Remove it","Duh..."];
 	var severity = ["Not set","High", "Medium", "Low", "Note"];
 	for(var i = 0;i < findCount;i++) {
-		var severity_id = $.fixture.rand(5);
+		var severity_id = $.fixture.rand(5)+1;
 		var status_id = $.fixture.rand(7);
 		var status_name = ["New","Changed", "Open", "No issue", "Gone", "Closed", "MASKED"][status_id];
 		status_id = [1,2,3,4,5,6,99][status_id];
 		findingFixtures[i] = {
-			id		: i,
+			id		: i+1,
 			host		: "192.168." + $.fixture.rand(20) + "." + $.fixture.rand(255),
-			hostName	: $.fixture.rand(["","FakeHostName_" + i],1)[0],
+			hostName	: $.fixture.rand(["","FakeHostName_" + i],1)[0]+(i+1),
 			port		: $.fixture.rand(1024) + "/" + $.fixture.rand(["tcp","udp"],1),
 			plugin		: 1000 + $.fixture.rand(100),
 			find		: $.fixture.rand(finds, 1)[0],
-			remark		: $.fixture.rand( remarks , 1)[0],
+			remark		: $.fixture.rand( remarks , 1)[0]+1,
 			severity	: severity_id,
-			severityName	: severity[severity_id],
+			severityName	: severity[severity_id]||"No severityName for: "+severity_id,
 			status		: status_id,
 			statusName	: status_name,
-			scanId		: $.fixture.rand(15)
+			scanId		: $.fixture.rand(15)+1
 		};
 	}
 
@@ -138,18 +138,21 @@ steal("jquery/dom/fixture", function(){
 			parameters : "some params will go here",
 			targets	: $.fixture.rand(255) + "." + $.fixture.rand(255) + "." + $.fixture.rand(255) + "." + $.fixture.rand(255),
 			findCount : $.fixture.rand(255),
-			lastScan : $.fixture.rand(["", "2011-11-11 11:11:11" ],1)
+			lastScan : $.fixture.rand(["", "2011-11-11 11:11:11" ],1),
+			noFindings : true
 		}
 	}
 
 	$.fixture("json/getScans.pl", function(orig, settings, headers) {
 		var selected = {};
 		for(var i = 0; i < scanFixtures.length;i++) {
+			// console.log("scanFixtures:", scanFixtures);
 			if ( scanFixtures[i].workspace == orig.data.workspaceId ) {
 				if ( typeof selected[0] == "undefined" ) {
 					selected = [];
 				}
-				selected.push(scanFixtures[i]);
+			if(!scanFixtures[i].workspace) scanFixtures[i].workspace = $.fixture.rand(7)+1;
+			selected.push(scanFixtures[i]);
 			}
 		}
 		return [selected];
@@ -175,8 +178,9 @@ steal("jquery/dom/fixture", function(){
 	status_id = [1,2,3,4,5,6,99][status_id];
 	for(var i=0;i<10;i++) {
 		historyFixtures[i] = {
-			id: i,
-			name: i,
+			id: i+1,
+			name: i+1,
+			description:"Description of history "+(i+1),
 			finding: $.fixture.rand( finds, 1)[0],
 			remark: $.fixture.rand( remarks, 1)[0],
 			severity: severity_id,
@@ -194,12 +198,25 @@ steal("jquery/dom/fixture", function(){
 	});
 
 	// Runs
+	$.fixture("json/getRuns.pl",function(orig, settings, headers){
+		var runs = [];
+		for(var i=0; i<8; i++){
+			runs.push({
+				id: i,
+				name:"testRun"+i,
+				description: "Test run "+i+" description",
+				time: "201201"+ ( "0" + i).substr(-2)
+			});
+		}
+		return [runs];
+	});
 	$.fixture.make("runs", 15, function(i, attachment){
 		return {
 			id: i,
 			time: "201201"+ ( "0" + i).substr(-2)
 		}
 	})
+	// Events
 	$.fixture.make("event", 5, function(i, event){
 		var descriptions = ["grill fish", "make ice", "cut onions"]
 		return {
@@ -207,6 +224,8 @@ steal("jquery/dom/fixture", function(){
 			description: $.fixture.rand( descriptions , 1)[0]
 		}
 	})
+
+	// Notifications
 	$.fixture.make("notification", 5, function(i, notification){
 		var subject = ["grill fish", "make ice", "cut onions"]
 		var user = ["frank", "dan", "steven" ]
@@ -217,6 +236,8 @@ steal("jquery/dom/fixture", function(){
 		return {
 			id: i,
 			subject: "notification "+i,
+			name:"Notification"+i,
+			description:"Description of notification "+i,
 			recipients: $.fixture.rand( user , 1)[0] + "@" + $.fixture.rand( domain, 1)[0],
 			message: $.fixture.rand( descriptions , 1)[0],
 			event_id: event_id + 1,
@@ -224,4 +245,30 @@ steal("jquery/dom/fixture", function(){
 
 		}
 	})
+
+	// Asset
+	$.fixture("json/createAsset.pl",function(orig,settings,headers){
+		var data = orig.data;
+		data['id'] = 1;
+		return data;
+	});
+
+	$.fixture("json/updateAsset.pl",function(orig,settings,headers){
+		return [settings.data];
+	});
+
+	$.fixture("json/getAssets.pl",function(orig,settings,headers){
+		var assets = [];
+		for(var i=1; i<10; i++){
+			assets.push({
+				id : i,
+				name : "Asset name of: "+i,
+				hosts : "192.168.0."+i,
+				recipients : "test"+i+"@recipient",
+				recipientsHtml : "<a href='test"+i+"@recipient'>test"+i+"@recipient</a>",
+				workspace : "1"
+			});
+		}
+		return [assets];
+	});
 });
