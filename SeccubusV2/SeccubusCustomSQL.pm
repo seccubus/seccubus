@@ -37,7 +37,7 @@ use SeccubusDB;
 
 sub get_customsql($);
 sub get_savedsql();
-sub set_customsql($$;)
+sub set_customsql($$;);
 
 =head2 get_customsql
 
