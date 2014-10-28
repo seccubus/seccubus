@@ -98,72 +98,116 @@ print OUT ivil_sender($scanner, $scanner_version, $timestamp);
 
 @findings = ();
 foreach my $target ( @{$sslyze->{results}->{target}} ) {
-	my $ip = $target->{host};
+	my $ip = $target->{ip};
+	my $hostname = $target->{host};
 	my $port = $target->{port};
 	my $severity = 0; # Not set
 	print "Processing host $ip\n" if $verbose;
 
 	foreach my $key ( sort keys %{$target} ) {
+		if ( $key =~ /^(host|port|ip)$/ ) {
+			next;
+		}
 		print "Processing key $ip->$key\n" if $verbose;
 		my %finding = {};
 		$finding{ip} = $ip;
+		$finding{hostname} = $hostname;
 		$finding{port} = $port;
-		if ( $key =~ /^(tls|ssl)/ ) {
-			if (exists $target->{$key}->{exception}) {
-				$finding{id} = $key . "_exception";
-				$finding{finding} = $target->{$key}->{exception};
-				push @findings, \%finding;
-			} else {
-				$finding{id} = $target->{$key}->{title};
-				foreach my $key2 ( sort keys %{$target->{$key}} ) {
-					if ( $key2 eq "errors" ) {
-						if ( keys %{$target->{$key}->{errors}} ) {
-							$finding{finding} .= "errors: " . Dumper($target->{$key}->{errors}) . "\n\n";
+		$finding{severity} = 4;
+		$finding{id} = $key;
+		if (exists $target->{$key}->{exception}) {
+			$finding{id} = $key . "_exception";
+			$finding{severity} = 3;
+			$finding{finding} = $target->{$key}->{exception};
+			push @findings, \%finding;
+		} elsif ( $key =~ /^(tls|ssl)/ ) {
+#			$finding{id} = $target->{$key}->{title};
+			my $haveciphers = 0;
+			foreach my $key2 ( sort keys %{$target->{$key}} ) {
+				if ( $key2 eq "errors" ) {
+					if ( keys %{$target->{$key}->{errors}} ) {
+						$finding{finding} .= "Errors:\n";
+						foreach my $suite ( @{$target->{$key}->{$key2}->{cipherSuite}} ) {
+							$finding{finding} .= sprintf("%-25s %-15s %s\n", $suite->{name}, $suite->{keySize}, $suite->{connectionStatus});
+							$haveciphers = 1;
+							$finding{severity} = 3 if ($finding{severity} == 4);
 						}
-					} elsif ( $key2 =~ 'CipherSuites?$' ) {
-						$finding{finding} .= "\n$key2\n\n";
-						if ( exists $target->{$key}->{$key2}->{cipherSuite} ) {
-							foreach my $suite ( @{$target->{$key}->{$key2}->{cipherSuite}} ) {
-								$finding{finding} .= sprintf("%-25s %-15s %s\n", $suite->{name}, $suite->{keySize}, $suite->{connectionStatus});
+					}
+				} elsif ( $key2 =~ 'CipherSuites?$' ) {
+					$finding{finding} .= "\n$key2\n\n";
+					if ( exists $target->{$key}->{$key2}->{cipherSuite} ) {
+						foreach my $suite ( @{$target->{$key}->{$key2}->{cipherSuite}} ) {
+							$finding{finding} .= sprintf("%-25s %-15s %s\n", $suite->{name}, $suite->{keySize}, $suite->{connectionStatus});
+							if ($key2 eq "acceptedCipherSuites") {
+								$haveciphers = 1;
+								if ($key eq "sslv2") {
+									$finding{severity} = 1;
+								} else {
+								$finding{severity} = 2 if (($key eq "sslv3") ||
+											   ($suite->{keysize} < 128) || 
+											   ($suite->{name} =~ /MD2|MD4|MD5|RC4|EXP|NULL/ )); 
+								} 
 							}
 						}
-					} elsif ( $key2 eq "title" ) {
-						# Ignore
-					} else {
-						die "$key -> $key2 " . Dumper($target->{$key}->{$key2}) . " ";
 					}
+				} elsif ( $key2 eq "title" ) {
+					# Ignore
+				} else {
+					die "$key -> $key2 " . Dumper($target->{$key}->{$key2}) . " ";
 				}
-				push @findings, \%finding;
 			}
+			push @findings, \%finding if $haveciphers;
 		} elsif ( $key eq "certinfo" ) {
-			$finding{id} = $target->{$key}->{title};
+#			$finding{id} = $target->{$key}->{title};
 			foreach my $key2 ( sort keys %{$target->{$key}->{certificate}} ) {
 				print $key2;
-				if( $key2 eq "hasMatchingHostname" ) {
+				if ( $key2 eq "errors" ) {
+					if ( keys %{$target->{$key}->{errors}} ) {
+						$finding{finding} .= "errors: " . Dumper($target->{$key}->{errors}) . "\n\n";
+						$finding{severity} = 3 if ($finding{severity} == 4);
+					}
+				} elsif( $key2 eq "hasMatchingHostname" ) {
 					$finding{finding} .= "Matching hostname: $target->{$key}->{certificate}->{$key2}\n";
-				}
-				if ($key2 eq "isTrustedByMozillaCAStore") {
+				} elsif ($key2 eq "isTrustedByMozillaCAStore") {
 					$finding{finding} .= "Trusted: $target->{$key}->{certificate}->{$key2}\n"; 
-				} 
+				}
 			}	
 			push @findings, \%finding;
 		} elsif ( $key eq "compression" ) {
-			$finding{id} = $target->{$key}->{title};
-			foreach my $key2 ( sort keys %{$target->{$key}->{compression}} ) {
-				if( $key2 eq "isSupported" ) {
-					$finding{finding} .= "Compression support: $target->{$key}->{compression}->{$key2}\n";
+#			$finding{id} = $target->{$key}->{title};
+			foreach my $key2 ( sort keys %{$target->{$key}->{compressionMethod}} ) {
+				if ( $key2 eq "errors" ) {
+					if ( keys %{$target->{$key}->{errors}} ) {
+						$finding{finding} .= "errors: " . Dumper($target->{$key}->{errors}) . "\n\n";
+						$finding{severity} = 3 if ($finding{severity} == 4);
+					}
+				} elsif( $key2 eq "isSupported" ) {
+					$finding{finding} .= "Compression support: $target->{$key}->{compressionMethod}->{$key2}\n";
+					$finding{severity} = 2 if ($target->{$key}->{compressionMethod}->{$key2} eq "True");
 				} elsif ( $key2 eq "type" ) {
-					$finding{finding} .= "Compression type: $target->{$key}->{compression}->{$key2}\n";
+					$finding{finding} .= "Compression type: $target->{$key}->{compressionMethod}->{$key2}\n";
 				} else {
 					die $key2;
-				}
+				}					
 			}
 			push @findings, \%finding;
 		} elsif ( $key eq "reneg" ) {
-			$finding{id} = $target->{$key}->{title};
+#			$finding{id} = $target->{$key}->{title};
+		if (exists $target->{reneg}->{exception}) {
+			$finding{id} = $key . "_exception";
+			$finding{severity} = 3;
+			$finding{finding} = $target->{$key}->{exception};
+			push @findings, \%finding;
+		} 
 			foreach my $key2 ( sort keys %{$target->{$key}->{sessionRenegotiation}} ) {
-				if ( $key2 eq "isSecure" ) {
+				if ( $key2 eq "errors" ) {
+					if ( keys %{$target->{$key}->{errors}} ) {
+						$finding{finding} .= "errors: " . Dumper($target->{$key}->{errors}) . "\n\n";
+						$finding{severity} = 3 if ($finding{severity} == 4);
+					}
+				} elsif ( $key2 eq "isSecure" ) {
 					$finding{finding} .= "Session renegotiation is secure: $target->{$key}->{sessionRenegotiation}->{$key2}\n";
+					$finding{severity} = 2 if ($target->{$key}->{sessionRenegotiation}->{$key2} eq "False");
 				} elsif ( $key2 eq "canBeClientInitiated" ) {
 					$finding{finding} .= "Session renegotiation can be initiated by the client: $target->{$key}->{sessionRenegotiation}->{$key2}\n";
 				} else {
@@ -172,9 +216,14 @@ foreach my $target ( @{$sslyze->{results}->{target}} ) {
 			}
 			push @findings, \%finding;
 		} elsif ( $key eq "resum" ) {
-			$finding{id} = $target->{$key}->{title};
+#			$finding{id} = $target->{$key}->{title};
 			foreach my $key2 ( sort keys %{$target->{$key}} ) {
-				if ( $key2 eq "sessionResumptionWithSessionIDs" ) {
+				if ( $key2 eq "errors" ) {
+					if ( keys %{$target->{$key}->{errors}} ) {
+						$finding{finding} .= "errors: " . Dumper($target->{$key}->{errors}) . "\n\n";
+						$finding{severity} = 3 if ($finding{severity} == 4);
+					}
+				} elsif ( $key2 eq "sessionResumptionWithSessionIDs" ) {
 					$finding{finding} .= "Session Resumption With Session IDs is supported: $target->{$key}->{$key2}->{isSupported}\n";
 					$finding{finding} .= "($target->{$key}->{$key2}->{successfulAttempts} succesfull, $target->{$key}->{$key2}->{failedAttempts} failed, $target->{$key}->{$key2}->{errors} errors. $target->{$key}->{$key2}->{totalAttempts} total attempts.)\n\n";
 				} elsif ( $key2 eq "sessionResumptionWithTLSTickets" ) {
@@ -186,6 +235,26 @@ foreach my $target ( @{$sslyze->{results}->{target}} ) {
 				}
 			}
 			push @findings, \%finding;
+                } elsif ( $key eq "hsts" ) {
+#                        $finding{id} = $target->{$key}->{title};
+                        if ($target->{$key}->{hsts}->{sentHstsHeader} eq "True") {
+                                $finding{finding} = "HSTS is supported";
+                                $finding{severity} = 4;
+                        } else {
+                                $finding{finding} = "HSTS is NOT supported";
+                                $finding{severity} = 2;
+                        }
+                        push @findings, \%finding;
+                } elsif ( $key eq "heartbleed" ) {
+                        if ($target->{$key}->{heartbleed}->{isVulnerable} eq "True") {
+                                $finding{finding} = "The server is vulnerable to Heatbleed";
+                                $finding{severity} = 1;
+			} elsif ($target->{$key}->{heartbleed}->{isVulnerable} eq "False") {
+                                $finding{finding} = "The server is NOT vulnerable to Heatbleed";
+                        } else {
+				die $key;
+			}
+                       	push @findings, \%finding;
 		} elsif ( $key =~ /^(host|port|ip)$/ ) {
 			# ignore
 		} else {
@@ -193,6 +262,7 @@ foreach my $target ( @{$sslyze->{results}->{target}} ) {
 			$finding{id} = $key;
 			$finding{finding} = "Unknown key $key, please notify the author with this information:\n\n";
 			$finding{finding} .= Dumper($target->{$key});
+                        $finding{severity} = 0;
 			push @findings, \%finding;
 		}
 		print "Done processing key $ip->$key\n" if $verbose;
