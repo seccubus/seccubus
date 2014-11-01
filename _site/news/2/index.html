@@ -20,18 +20,114 @@
         <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
         <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
     </ul>
-
     <section class="top-bar-section">
         <!-- Right Nav Section -->
         <ul class="right">
-            <li class="divider"></li>
-            <li><a href="/news/">News</a></li>
-            <li class="divider"></li>
-            <li>
-                <a href="https://github.com/schubergphilis/Seccubus_v2">Fork on GitHub</a>
-            </li>
-            <li class="divider"></li>
-            <li class="has-form"><a href="https://github.com/schubergphilis/Seccubus_v2/archive/master.zip" class="button">Download</a></li>
+            
+
+<li class="divider"></li>
+<li class="
+    
+    
+     has-dropdown
+">
+    <a href="">
+        About
+    </a>
+    
+        <ul class="dropdown">
+            
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/what-is-seccubus/">
+        What is Seccubus?
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/about-the-authors/">
+        About the authors
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/about-the-name/">
+        About the name
+    </a>
+    
+</li>
+
+
+        </ul>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/documentation">
+        Documentation
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+     active
+    
+    
+">
+    <a href="/news/">
+        News
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="https://github.com/schubergphilis/Seccubus_v2/">
+        Fork on GitHub
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+     has-form
+    
+">
+    <a href="https://github.com/schubergphilis/Seccubus_v2/archive/master.zip" class="button">
+        Download
+    </a>
+    
+</li>
+
+
         </ul>
     </section>
 </nav>
@@ -41,24 +137,24 @@
         <h2>News</h2>
         
         <div class="post-entry">
-            <h3><a href="/news/2013/01/22/seccubus-20-the-alt-s-edition-beta-no-more/" class="readmore">Seccubus 2.0 – The Alt-S edition (Beta no more)</a></h3>
+            <h3><a href="/2013/01/22/seccubus-20-the-alt-s-edition-beta-no-more/" class="readmore">Seccubus 2.0 – The Alt-S edition (Beta no more)</a></h3>
             <span class="published">
                 22 January 2013
                 
             </span>
             <section class="post">
-                <p>Seccubus V2 works with the following scanners:<br>
-* Nessus 4.x and 5.x (professional and home feed)<br>
-* OpenVAS<br>
-* Nikto<br>
-* NMap<br>
-* SSLyze  </p>
+                <p>Seccubus V2 works with the following scanners:
+* Nessus 4.x and 5.x (professional and home feed)
+* OpenVAS
+* Nikto
+* NMap
+* SSLyze</p>
 
             </section>
         </div>
         
         <div class="post-entry">
-            <h3><a href="/news/2013/01/15/seccubus-20-to-go-out-of-beta-at-alt-s-conference/" class="readmore">Seccubus 2.0 to go out of beta at alt-s conference</a></h3>
+            <h3><a href="/2013/01/15/seccubus-20-to-go-out-of-beta-at-alt-s-conference/" class="readmore">Seccubus 2.0 to go out of beta at alt-s conference</a></h3>
             <span class="published">
                 15 January 2013
                 
@@ -70,44 +166,41 @@
         </div>
         
         <div class="post-entry">
-            <h3><a href="/news/2012/10/11/releasing-seccubus-20beta6-the-final-beta/" class="readmore">Releasing Seccubus-2.0beta6 – The final beta</a></h3>
+            <h3><a href="/2012/10/11/releasing-seccubus-20beta6-the-final-beta/" class="readmore">Releasing Seccubus-2.0beta6 – The final beta</a></h3>
             <span class="published">
                 11 October 2012
                 
             </span>
             <section class="post">
-                <h2>11-10-2012 - 2.0.beta6 - The final Beta</h2>
+                <div class="highlight"><pre><code class="language-text" data-lang="text">11-10-2012 - 2.0.beta6 - The final Beta
+---
 
-<h2>New features / Issues resolved</h2>
+New features / Issues resolved
+------------------------------
+* Sourcecode repository is now  GitHub (https://github.com/schubergphilis/Seccubus_v2/issues/6) in stead of  SourceForge
+* Build is now automated using a Jenkins server at Schuberg Philis including
+  the creation of RPMs and Debian packages via OpenSuse build services
+* Fixed a few bugs
 
-<ul>
-<li>Sourcecode repository is now  GitHub (https://github.com/schubergphilis/Seccubus_v2/issues/6) in stead of  SourceForge</li>
-<li>Build is now automated using a Jenkins server at Schuberg Philis including
-the creation of RPMs and Debian packages via OpenSuse build services</li>
-<li>Fixed a few bugs</li>
-</ul>
-
-<h2>Bigs fixed (tickets closed):</h2>
-
-<ul>
-<li>#7  - Import error on scan results from OpenVAS 3.0.1</li>
-<li>#7  - Error converting OpenVAS .nbe to IVIL</li>
-<li>#11 - ConfigTest is more verbose when it fails due to a missing config file</li>
-<li>#12 - Installation error with tarball</li>
-<li>#15 - Ungroup Compliance Scans</li>
-<li>#16 - More gracefull error handling when Nikto doesn&#39;t find a config</li>
-<li>#17 - File ~/scanners/Nikto/scan has no execute permission</li>
-<li>##  - Fixed a broken symlink in the development environment</li>
-<li>#23 - Nessus xmlRPC port can now be selected</li>
-<li>#25 - Fixed tarball installation error</li>
-<li>#29 - JMVC framework updated to version 3.2.2</li>
-</ul>
-
+Bigs fixed (tickets closed):
+----------------------------
+* #7  - Import error on scan results from OpenVAS 3.0.1
+* #7  - Error converting OpenVAS .nbe to IVIL
+* #11 - ConfigTest is more verbose when it fails due to a missing config file
+* #12 - Installation error with tarball
+* #15 - Ungroup Compliance Scans
+* #16 - More gracefull error handling when Nikto doesn&#39;t find a config
+* #17 - File ~/scanners/Nikto/scan has no execute permission
+* ##  - Fixed a broken symlink in the development environment
+* #23 - Nessus xmlRPC port can now be selected
+* #25 - Fixed tarball installation error
+* #29 - JMVC framework updated to version 3.2.2
+</code></pre></div>
             </section>
         </div>
         
         <div class="post-entry">
-            <h3><a href="/news/2012/08/27/seccubus-moved-from-sourceforge-to-github/" class="readmore">Seccubus moved from SourceForge to GitHub</a></h3>
+            <h3><a href="/2012/08/27/seccubus-moved-from-sourceforge-to-github/" class="readmore">Seccubus moved from SourceForge to GitHub</a></h3>
             <span class="published">
                 27 August 2012
                 
@@ -120,7 +213,7 @@ tickets from SourceForge to GitHub.</p>
         </div>
         
         <div class="post-entry">
-            <h3><a href="/news/2012/08/15/oops-i-did-it-again-seccubus-20beta5-released/" class="readmore">Oops I did it again – Seccubus 2.0.beta5 released</a></h3>
+            <h3><a href="/2012/08/15/oops-i-did-it-again-seccubus-20beta5-released/" class="readmore">Oops I did it again – Seccubus 2.0.beta5 released</a></h3>
             <span class="published">
                 15 August 2012
                 
@@ -133,7 +226,7 @@ New version is available on SourceForge.</p>
         </div>
         
         <div class="post-entry">
-            <h3><a href="/news/2012/07/10/seccubus-20beta4-released/" class="readmore">Seccubus 2.0.beta4 released</a></h3>
+            <h3><a href="/2012/07/10/seccubus-20beta4-released/" class="readmore">Seccubus 2.0.beta4 released</a></h3>
             <span class="published">
                 10 July 2012
                 
@@ -146,7 +239,7 @@ version adresses three specific issues:</p>
         </div>
         
         <div class="post-entry">
-            <h3><a href="/news/2012/03/13/seccubus-20beta3-the-black-hat-edition/" class="readmore">Seccubus 2.0.beta3 – The Black Hat edition</a></h3>
+            <h3><a href="/2012/03/13/seccubus-20beta3-the-black-hat-edition/" class="readmore">Seccubus 2.0.beta3 – The Black Hat edition</a></h3>
             <span class="published">
                 13 March 2012
                 
@@ -158,7 +251,7 @@ version adresses three specific issues:</p>
         </div>
         
         <div class="post-entry">
-            <h3><a href="/news/2012/01/30/seccubus-20beta2-released/" class="readmore">Seccubus 2.0.beta2 released</a></h3>
+            <h3><a href="/2012/01/30/seccubus-20beta2-released/" class="readmore">Seccubus 2.0.beta2 released</a></h3>
             <span class="published">
                 30 January 2012
                 
@@ -194,7 +287,7 @@ Bigs fixed (tickets closed):
         </div>
         
         <div class="post-entry">
-            <h3><a href="/news/2012/01/08/new-milestone-seccubus-20beta1/" class="readmore">New Milestone Seccubus 20beta1</a></h3>
+            <h3><a href="/2012/01/08/new-milestone-seccubus-20beta1/" class="readmore">New Milestone Seccubus 20beta1</a></h3>
             <span class="published">
                 08 January 2012
                 
@@ -206,7 +299,7 @@ Bigs fixed (tickets closed):
         </div>
         
         <div class="post-entry">
-            <h3><a href="/news/2012/01/02/2011-inforgraph/" class="readmore">2011 Inforgraph</a></h3>
+            <h3><a href="/2012/01/02/2011-inforgraph/" class="readmore">2011 Inforgraph</a></h3>
             <span class="published">
                 02 January 2012
                 
@@ -220,11 +313,11 @@ Bigs fixed (tickets closed):
         
         <div class="pagination">
             
-            <a class="newer" href="/news/index.html">&laquo; Newer Posts</a>
+            <a class="newer" href="/news/">&laquo; Newer Posts</a>
             
 
             
-            <a class="older" href="/news/3">Older Posts &raquo;</a>
+            <a class="older" href="/news/3/">Older Posts &raquo;</a>
             
         </div>
         
@@ -236,7 +329,6 @@ Bigs fixed (tickets closed):
     <script src="/js/vendor/jquery.js"></script>
     <script src="/js/foundation/foundation.js"></script>
     <script src="/js/foundation/foundation.topbar.js"></script>
-    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
     <script>
     $(document).foundation();
     </script>

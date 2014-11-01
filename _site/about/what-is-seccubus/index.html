@@ -1,0 +1,211 @@
+
+<!doctype html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Seccubus</title>
+
+    <link href="/css/app.css" rel="stylesheet" />
+    <script src="/js/vendor/modernizr.js"></script>
+</head>
+<body class="antialiased hide-extras">
+    <nav class="top-bar" data-topbar role="navigation">
+    <ul class="title-area">
+        <li class="name">
+            <h1><a href="/">Seccubus</a></h1>
+        </li>
+        <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+        <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+    <section class="top-bar-section">
+        <!-- Right Nav Section -->
+        <ul class="right">
+            
+
+<li class="divider"></li>
+<li class="
+    
+    
+     has-dropdown
+">
+    <a href="">
+        About
+    </a>
+    
+        <ul class="dropdown">
+            
+
+<li class="divider"></li>
+<li class="
+     active
+    
+    
+">
+    <a href="/about/what-is-seccubus/">
+        What is Seccubus?
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/about-the-authors/">
+        About the authors
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/about-the-name/">
+        About the name
+    </a>
+    
+</li>
+
+
+        </ul>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/documentation">
+        Documentation
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/news/">
+        News
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="https://github.com/schubergphilis/Seccubus_v2/">
+        Fork on GitHub
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+     has-form
+    
+">
+    <a href="https://github.com/schubergphilis/Seccubus_v2/archive/master.zip" class="button">
+        Download
+    </a>
+    
+</li>
+
+
+        </ul>
+    </section>
+</nav>
+
+    <section class="main-content article">
+    <div class="large-9 medium-10 small-11 small-centered column">
+        <h2>
+            What is Seccubus?
+        </h2>
+        <div class="content post">
+            <h1>Seccubus automates regular vulnerability scans and provides delta reporting.</h1>
+
+<p>The goal is to reduce the analysis time for subsequent scans of the same
+infrastructure by only reporting delta findings.</p>
+
+<h3>What’s the issue?</h3>
+
+<p>Anyone who has ever used Nessus, OpenVAS, Nikto or another vulnerability
+scanner will be familiar with the drawback of such tools. Tools like Nessus
+are very valuable tools, but unfortunately the results contain a lot of noise.
+Time needed to interpret and create a report using the results of a scan will
+often be two or three times the time needed to do the actual scan. Seccubus was created in order to more effectively analyze the results of
+regular scans of the same infrastructure by efficiently interpreting results.</p>
+
+<h3>How does it work?</h3>
+
+<p>Seccubus runs scans at regular intervals and compares the findings of the last
+scan with the findings of the previous scan. The results of this comparison
+are available in a web GUI Findings have and can be tagged with one of the following statuses:</p>
+
+<table border="0">
+<tbody>
+<tr>
+<td><strong>New </strong><br /></td>
+<td>Finding was detected for the first time</td>
+</tr>
+<tr>
+<td><strong>Open </strong></td>
+<td>Finding was previously detected and has not been altered by the user</td>
+</tr>
+<tr>
+<td valign="top"><strong>Changed</strong></td>
+<td valign="top">Flinging has changed since it was last detected. This status remains until it is changed by the user</td>
+</tr>
+<tr>
+<td valign="top"><strong>No Issue</strong></td>
+<td valign="top">The finding does not pose any security risk and will remain this status until it changes. If the finding changes it will be marked as changed.</td>
+</tr>
+<tr>
+<td valign="top"><strong>Gone</strong></td>
+<td valign="top">The finding had been found in a previous run, but has done been fixed in this run.</td>
+</tr>
+<tr>
+<td valign="top"><strong>Fixed </strong></td>
+<td valign="top">The finding has been fixed and should not reappear. If this finding reappears it will be marked as changed.</td>
+</tr>
+<tr>
+<td valign="top"><strong>Hard Masked</strong></td>
+<td valign="top">The finding is bogus and will not leave this status unless the user changes it.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Because the number of reported findings from Seccubus, especially on the
+second or later run, is much smaller then the number of findings of a regular
+scan, there will be much less time involved in the analysis of subsequent
+runs.</p>
+
+        </div>
+    </div>
+</section>
+
+    </section>
+    <script src="/js/vendor/jquery.js"></script>
+    <script src="/js/foundation/foundation.js"></script>
+    <script src="/js/foundation/foundation.topbar.js"></script>
+    <script>
+    $(document).foundation();
+    </script>
+</body>
+</html>

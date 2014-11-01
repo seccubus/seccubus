@@ -80,11 +80,16 @@ div.readmore {
     }
 }
 code {
-    background-color:transparent;
+    background-color:#EEE;
     border-color:transparent;
-    color:white;
+    color:#282828;
+    padding: 0;
 }
-.highlight {
+pre code {
+    color: white;
+    background-color:transparent;
+}
+pre {
     margin-bottom:1em;
     background-color: #282828;
     padding: 1em;

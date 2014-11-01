@@ -24,10 +24,10 @@ the full path where you want use the Skipfish:
     /* Default signature file */  
     #define SIG_FILE “/opt/skipfish/signatures/signatures.conf”
 
-    Now make the Skipfish installation and when it’s compiled copy the skipfish
-    dir to /opt  
-    The last file we need to edit is the /opt/skipfish/signatures/signatures.conf
-    and add the path prefix:
+Now make the Skipfish installation and when it’s compiled copy the skipfish
+dir to /opt  
+The last file we need to edit is the /opt/skipfish/signatures/signatures.conf
+and add the path prefix:
 
     #############################################  
     ##  

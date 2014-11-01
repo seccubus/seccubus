@@ -1905,6 +1905,8 @@ div.callout h2 { color: #a50303; font-weight: bold; }
 div.readmore { border-top: 1px solid grey; padding: 1rem 0; }
 div.readmore a { border: 0; padding: 0; max-width: 45%; }
 
-code { background-color: transparent; border-color: transparent; color: white; }
+code { background-color: #EEE; border-color: transparent; color: #282828; padding: 0; }
 
-.highlight { margin-bottom: 1em; background-color: #282828; padding: 1em; overflow: auto; }
+pre code { color: white; background-color: transparent; }
+
+pre { margin-bottom: 1em; background-color: #282828; padding: 1em; overflow: auto; }

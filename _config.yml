@@ -1,7 +1,12 @@
 paginate: 10
 
-permalink: /news/:year/:month/:day/:title/
+permalink: pretty
+paginate_path: "news/:num/"
 highlighter: true
-paginate_path: "news/:num"
 markdown: redcarpet
-pygments: true
+redcarpet:
+    extensions:
+        - no_intra_emphasis
+        - autolink
+        - strikethrough
+        - fenced_code_blocks

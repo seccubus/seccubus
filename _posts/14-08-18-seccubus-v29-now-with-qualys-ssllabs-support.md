@@ -19,7 +19,6 @@ Bug Fixes
 * [#63](https://github.com/schubergphilis/Seccubus_v2/issues/63) – Scan table does not display scanner correctly  
 * [#59](https://github.com/schubergphilis/Seccubus_v2/issues/59) – Explanation of $ATTACH: in notifications is not very clear
 
-Got to our [Github
-page](https://github.com/schubergphilis/Seccubus_v2/releases) to download the
+Got to our [Github page](https://github.com/schubergphilis/Seccubus_v2/releases) to download the
 binary package.
 

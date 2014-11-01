@@ -1,6 +1,6 @@
 ---
 layout: post
-title: New milestone: Seccubus 2.0.beta1
+title: New milestone\: Seccubus 2.0.beta1
 ---
 Here are the release notes:
 
@@ -13,7 +13,7 @@ Here are the release notes:
     Seccubus V1 is still maintained at a minimum level, meaning that if bugs are
     found and they are not too complex to fix, they will be fixed, but no new
     features will be added to the V1 branch of the product.
-    
+
     GUI rewrite
     -----------
     Old GUI is in /oldstyle
@@ -21,7 +21,7 @@ Here are the release notes:
     Those www api calls needed to make this current GUI work have been rewritten
     to JSON
     New, less confusing, layout of Findings screen
-    
+
     Bigs fixed (tickets closed):
     ----------------------------
     49 - Incorrect status selection possible in GUI for Gone findings

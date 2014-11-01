@@ -1,0 +1,21 @@
+- text: About
+  subitems:
+    - text: What is Seccubus?
+      url: /about/what-is-seccubus/
+    - text: About the authors
+      url: /about/about-the-authors/
+    - text: About the name
+      url: /about/about-the-name/
+
+- text: Documentation
+  url: /documentation
+
+- text: News
+  url: /news/
+
+- text: Fork on GitHub
+  url: https://github.com/schubergphilis/Seccubus_v2/
+
+- text: Download
+  url: https://github.com/schubergphilis/Seccubus_v2/archive/master.zip
+  button: true
