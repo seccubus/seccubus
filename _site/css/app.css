@@ -1910,3 +1910,10 @@ code { background-color: #EEE; border-color: transparent; color: #282828; paddin
 pre code { color: white; background-color: transparent; }
 
 pre { margin-bottom: 1em; background-color: #282828; padding: 1em; overflow: auto; }
+
+.documentation { padding-top: 2em; }
+.documentation ul { list-style: none; margin: 0; padding: 0; }
+
+.faq, .licence { margin-top: 2em; padding-top: 2em; border-top: 1px solid #383838; }
+
+.licence { padding-bottom: 2em; }

@@ -1,0 +1,228 @@
+
+<!doctype html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Seccubus</title>
+
+    <link href="/css/app.css" rel="stylesheet" />
+    <script src="/js/vendor/modernizr.js"></script>
+</head>
+<body class="antialiased hide-extras">
+    <nav class="top-bar" data-topbar role="navigation">
+    <ul class="title-area">
+        <li class="name">
+            <h1><a href="/">Seccubus</a></h1>
+        </li>
+        <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+        <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+    <section class="top-bar-section">
+        <!-- Right Nav Section -->
+        <ul class="right">
+            
+
+<li class="divider"></li>
+<li class="
+    
+    
+     has-dropdown
+">
+    <a href="">
+        About
+    </a>
+    
+        <ul class="dropdown">
+            
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/what-is-seccubus/">
+        What is Seccubus?
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/about-the-authors/">
+        About the authors
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/about-the-name/">
+        About the name
+    </a>
+    
+</li>
+
+
+        </ul>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+     active
+    
+    
+">
+    <a href="/documentation">
+        Documentation
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/news/">
+        News
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="https://github.com/schubergphilis/Seccubus_v2/">
+        Fork on GitHub
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+     has-form
+    
+">
+    <a href="https://github.com/schubergphilis/Seccubus_v2/archive/master.zip" class="button">
+        Download
+    </a>
+    
+</li>
+
+
+        </ul>
+    </section>
+</nav>
+
+    <section class="main-content article">
+    <div class="large-9 medium-10 small-11 small-centered column">
+        <h2>
+            Is it possible to import a previous scan
+        </h2>
+        <div class="content post">
+            <p>Older Nessus scan results can be imported into Seccubus if you have a .nbe
+file.</p>
+
+<p>Caution: make sure you import the scans in the order they were executed, or
+Seccubus’ delta engine may produce unwanted results.</p>
+
+<p>Say you want to import two scans into Seccubus under the scanname “Incubus”.</p>
+
+<p>First scan</p>
+
+<p>NBE file: first.nbe<br>
+Date scanned: 12 Jan 2010 02:00</p>
+
+<p>Second scan</p>
+
+<p>NBE file: second.nbe|<br>
+Date scanned 12 Feb 2010 02:00</p>
+
+<p>This is how you do it.</p>
+
+<h1>Log in as the user running seccubus.</h1>
+
+<h1>Go to the scan directory for “Incubus”</h1>
+
+<blockquote>
+<p>cd ~/var/Incubus  </p>
+
+<h1>Copy the first nbe file to the output directory name the file as the date</h1>
+
+<p><yyyymmddhhmm.nb><br>
+cp ~/first.nbe output/201001120200.nbe  </p>
+
+<h1>Convert the files to html and xml</h1>
+
+<p>/opt/nessus/bin/nessus -c ~/etc/full-nessusrc -i output/201001120200.nbe -o
+201001120200.xml<br>
+/opt/nessus/bin/nessus -c ~/etc/full-nessusrc -i output/201001120200.nbe -o
+201001120200.html  </p>
+
+<h1>Run process scan</h1>
+
+<p>~/bin/processs-scan.pl Incubus <a href="mailto:your-email@drress.com">your-email@drress.com</a>  </p>
+
+<h1>Correct file permission</h1>
+
+<p>find . -type f |xargs chmod 660<br>
+find . -type d |xargs chmod 775</p>
+</blockquote>
+
+<h1>Copy the second nbe file to the output directory name the file as the date</h1>
+
+<p><yyyymmddhhmm.nb>  </p>
+
+<blockquote>
+<p>cp ~/first.nbe output/201002120200.nbe  </p>
+
+<h1>Convert the files to html and xml</h1>
+
+<p>/opt/nessus/bin/nessus -c ~/etc/full-nessusrc -i output/201002120200.nbe -o
+201002120200.xml<br>
+/opt/nessus/bin/nessus -c ~/etc/full-nessusrc -i output/201002120200.nbe -o
+201002120200.html  </p>
+
+<h1>Run process scan</h1>
+
+<p>~/bin/processs-scan.pl Incubus <a href="mailto:your-email@drress.com">your-email@drress.com</a>  </p>
+
+<h1>Correct file permission</h1>
+
+<p>find . -type f |xargs chmod 660<br>
+find . -type d |xargs chmod 775</p>
+</blockquote>
+
+<p>Your are done</p>
+
+        </div>
+    </div>
+</section>
+
+    </section>
+    <script src="/js/vendor/jquery.js"></script>
+    <script src="/js/foundation/foundation.js"></script>
+    <script src="/js/foundation/foundation.topbar.js"></script>
+    <script>
+    $(document).foundation();
+    </script>
+</body>
+</html>

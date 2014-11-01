@@ -1,0 +1,401 @@
+
+<!doctype html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Seccubus</title>
+
+    <link href="/css/app.css" rel="stylesheet" />
+    <script src="/js/vendor/modernizr.js"></script>
+</head>
+<body class="antialiased hide-extras">
+    <nav class="top-bar" data-topbar role="navigation">
+    <ul class="title-area">
+        <li class="name">
+            <h1><a href="/">Seccubus</a></h1>
+        </li>
+        <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+        <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+    <section class="top-bar-section">
+        <!-- Right Nav Section -->
+        <ul class="right">
+            
+
+<li class="divider"></li>
+<li class="
+    
+    
+     has-dropdown
+">
+    <a href="">
+        About
+    </a>
+    
+        <ul class="dropdown">
+            
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/what-is-seccubus/">
+        What is Seccubus?
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/about-the-authors/">
+        About the authors
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/about-the-name/">
+        About the name
+    </a>
+    
+</li>
+
+
+        </ul>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+     active
+    
+    
+">
+    <a href="/documentation">
+        Documentation
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/news/">
+        News
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="https://github.com/schubergphilis/Seccubus_v2/">
+        Fork on GitHub
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+     has-form
+    
+">
+    <a href="https://github.com/schubergphilis/Seccubus_v2/archive/master.zip" class="button">
+        Download
+    </a>
+    
+</li>
+
+
+        </ul>
+    </section>
+</nav>
+
+    <section class="main-content article">
+    <div class="large-9 medium-10 small-11 small-centered column">
+        <h2>
+            Installing Seccubus V1 on Debian
+        </h2>
+        <div class="content post">
+            <p>libalgorithm-diff-xs-perl</p>
+
+<p>liblwp2</p>
+
+<p>libwww-perl</p>
+
+<p>make</p>
+
+<p>nikto (optional)</p>
+
+<p>all of which can be installed through apt-get or aptitude.</p>
+
+<p>If you plan to use OpenVAS instead of Nessus, you need to</p>
+
+<p>apt-get -t experimental install openvas-scanner openvas-client</p>
+
+<p>Seccubus install</p>
+
+<p>This can be followed from the Seccubus website.</p>
+
+<ul>
+<li><p>Get the tarball seccubus-.tar.gz via the download link at <a href="http://www.seccubus.com/">http://www.seccubus.com</a> and place it in a temporary location (e.g./tmp/seccubus)</p></li>
+<li><p>It is recommended that you run Seccubus via a dedicated seccubus user if you have not created it, create it now. Make sure it is part of apache’s group and apache is part of its group.</p></li>
+<li><p>Extract the tarball</p></li>
+</ul>
+
+<h1>tar -xvzf seccubus-0.1.tar.gz</h1>
+
+<p>seccubus-0.1/</p>
+
+<p>seccubus-0.1/bin/</p>
+
+<ul>
+<li><p>cd into the newly created directory</p></li>
+<li><p>Run perl makefile.PL to install</p></li>
+</ul>
+
+<h1>perl Makefile.PL</h1>
+
+<p>Checking if your kit is complete…</p>
+
+<p>Looks good</p>
+
+<p>Writing Makefile for seccubus</p>
+
+<ul>
+<li>run make</li>
+</ul>
+
+<h1>make</h1>
+
+<p>cp install.pl blib/lib/install.pl</p>
+
+<p>cp dist_install.pl blib/lib/dist_install.pl cp www/index.html
+blib/script/index.html</p>
+
+<p>/usr/bin/perl5.8.8 “-MExtUtils::MY” -e “MY-&gt;fixin(shift)”
+blib/script/index.html</p>
+
+<ul>
+<li>run the installer command ‘blib/script/install ‘ where is the directory you want Seccubus to install, e.g. /home/seccubus</li>
+</ul>
+
+<h1>blib/script/install.pl /home/seccubus</h1>
+
+<p>cp blib/script/EveryXXXWeek.sh /home/seccubus/bin</p>
+
+<p>Creating www directory</p>
+
+<p>mkdir /home/seccubus/www</p>
+
+<p>cp blib/script/seccubusweb.pm /home/seccubus/www</p>
+
+<p>Updating /home/seccubus/etc/config.dist</p>
+
+<p>rm /home/seccubus/etc/config.dist.orig</p>
+
+<p>rm: cannot remove `/home/seccubusetc/config.dist.orig’: No such file or
+directory mv /home/seccubus/etc/config.dist
+/home/seccubus/etc/config.dist.orig</p>
+
+<p>sed -e ‘s:HOME=/home/seccubus:HOME=/home/seccubus:’
+/home/seccubus/etc/config.dist.orig &gt;</p>
+
+<p>/home/seccubus/etc/config.dist</p>
+
+<p>Updating /home/seccubus/www/seccubusweb.pm rm
+/home/seccubus/www/seccubusweb.pm.orig</p>
+
+<p>rm: cannot remove `/home/seccubus/www/seccubusweb.pm.orig’: No such file or
+directory mv /home/seccubus/www/seccubusweb.pm
+/home/seccubus/www/seccubusweb.pm.orig</p>
+
+<p>sed -e ‘s:our $HOME = “/home/seccubus”:our $HOME = “/home/seccubus”:’</p>
+
+<p>/home/seccubus/www/seccubusweb.pm.orig &gt;/home/seccubus/www/seccubusweb.pm</p>
+
+<p>You do not have a config file please copy config.dist to config, and edit it
+to match your system</p>
+
+<p>Installation finished</p>
+
+<p>Post-installation tasks</p>
+
+<p>After the installation, there are a couple of things that you need to do:</p>
+
+<ul>
+<li><p>Changing file ownership and permissions</p></li>
+<li><p>Setting up the www directory</p></li>
+<li><p>Setting up the web server</p></li>
+<li><p>Edit etc/config</p></li>
+<li><p>Update www/seccubus.pm</p></li>
+<li><p>Setting up update cron jobs</p></li>
+</ul>
+
+<p>Changing file ownership and permissions</p>
+
+<p>Your webserver will need to be able to read and execute files in the www
+directory and read and write files in the var directory.</p>
+
+<p>Assuming apache is your webserver user and seccubus is the user running
+Seccubus you will need to do the following:</p>
+
+<h1>cd ~seccubus</h1>
+
+<h1>chown -R seccubus:www-data www var</h1>
+
+<h1>cd var</h1>
+
+<h1>find . -type f -exec chmod 664 {} ;</h1>
+
+<h1>find . -type d -exec chmod 775 {} ;</h1>
+
+<h1>cd ../www</h1>
+
+<h1>chmod 770 *</h1>
+
+<p>Information</p>
+
+<p>Note: The web group on Debian is www-data rather than apache.</p>
+
+<p>Setting up the www directory</p>
+
+<p>By default the Seccubus installer stores the files for the Web GUI in a www
+subdirectory of you install directory, this could be a place where your
+webserver cannot go. You can move the directory to a place where it can be
+read by the webserver and replace the www directory with a symlink. E.g. in
+the demo setup we have chosen to install in /home/seccubus but we want the
+demo gui to be in /var/www/seccubus.com/htdocs/demo</p>
+
+<h1>cd ~seccubus</h1>
+
+<h1>mv www /var/www//htdocs/</h1>
+
+<h1>ln -s /var/www/sonsofthunder/htdocs/nessus www</h1>
+
+<p>For instance, the directory may be called /var/www/sonsofthunder/htdocs/nessus</p>
+
+<p>If you do not create a symlink like this you may experience upgrade problems
+in the future.</p>
+
+<p>Setting up the webserver</p>
+
+<p>By default your webserver will not run the .pl files, but simply serve them.
+You need to put the following directive in the right part of you apache
+configuration. On Debian, this is in /etc/apache2/mods-available/mime.conf:</p>
+
+<p>AddHandler cgi-script .pl</p>
+
+<p>I usually place this after the commented line</p>
+
+<h1>AddHandler cgi-script .cgi</h1>
+
+<p>Then in the directory directive you have to add “ExecCGI” to the “Options”
+directive. You may also want to use the Indexes directive. This portion of the
+configuration goes in /etc/apache/sites-available/default. Add the following
+Directory directive to this file:</p>
+
+<p>Options ExecCGI</p>
+
+<p>Order deny,allow</p>
+
+<p>Update etc/config</p>
+
+<p>The etc directory in your installdir contains the file config which contains
+the default configuration parameters of Seccubus which can be overwritten with
+per scan settings.</p>
+
+<p>If you do not allready have a configfile, you can copy config.dist to config.
+The installer script will allready have updated the path to your installation
+directory.</p>
+
+<p>You will have to update the following parameters:</p>
+
+<p>Configuration directive  What to put there</p>
+
+<p>HOST= # This is the host running your nessusd  The IP address or hostname of
+the host running the nessus scanner here. If you have nessus installed on the
+same box you can set it to localhost</p>
+
+<p>PORT=1241 # Nessusd port (1241 = default)  This is the port you nessus daemon
+is listening on. 1241 is the default. OpenVAS default is 9390.</p>
+
+<p>USER= # Nessusd user name  This is the default user name you will use to
+authenticate to your nessus daemon</p>
+
+<p>PASS= # Nessusd password  This is the default user name you will use to
+authenticate to your nessus daemon</p>
+
+<p>NESSUSBIN=/usr/bin/nessus # The full path to your nessus client  This is the
+full path to your nessus client binary</p>
+
+<p>EMAIL= # This is the default email address  Default email address to mail
+results to</p>
+
+<p>HOME=/home/seccubus/ # Home location of seccubus  This is set to the install
+directory by the installer script</p>
+
+<p>VAR=$HOME/var # This is where the ‘database’ lives  This should point to the
+var directory where the ‘database’ lives</p>
+
+<p>SENDMAIL=/usr/sbin/sendmail # Path to sendmail  The full path of you sendmail
+binary.</p>
+
+<p>Update autopnessus.pm</p>
+
+<p>The seccubusweb.pm file in www contains a line like this:</p>
+
+<h1>You need to point this to where seccubus lives our $HOME =</h1>
+
+<p>“/home/seccubus/”;</p>
+
+<p>This tells the web GUI part where to find the database. Normally this line
+should be set by the install script.</p>
+
+<p>You should now be ready to setup the first scan.</p>
+
+<p>Setting up update cron jobs</p>
+
+<p>In order to make sure your configuration files are updated it is recommended
+to setup a cronjob that runs bin/update-rcs e.g.</p>
+
+<p>0 21 * * * ~/bin/update-rcs</p>
+
+<p>This will update etc/full -nessusrc and etc/safe-nessusrc with theplug id’s
+and preferences of the plugin’s loaded by the nessus daemon. update-rcs uses
+you primary nessus scanner which you specified in etc/config.</p>
+
+        </div>
+    </div>
+</section>
+
+    </section>
+    <script src="/js/vendor/jquery.js"></script>
+    <script src="/js/foundation/foundation.js"></script>
+    <script src="/js/foundation/foundation.topbar.js"></script>
+    <script>
+    $(document).foundation();
+    </script>
+</body>
+</html>

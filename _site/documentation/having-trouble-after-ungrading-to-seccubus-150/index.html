@@ -1,0 +1,183 @@
+
+<!doctype html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Seccubus</title>
+
+    <link href="/css/app.css" rel="stylesheet" />
+    <script src="/js/vendor/modernizr.js"></script>
+</head>
+<body class="antialiased hide-extras">
+    <nav class="top-bar" data-topbar role="navigation">
+    <ul class="title-area">
+        <li class="name">
+            <h1><a href="/">Seccubus</a></h1>
+        </li>
+        <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+        <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+    <section class="top-bar-section">
+        <!-- Right Nav Section -->
+        <ul class="right">
+            
+
+<li class="divider"></li>
+<li class="
+    
+    
+     has-dropdown
+">
+    <a href="">
+        About
+    </a>
+    
+        <ul class="dropdown">
+            
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/what-is-seccubus/">
+        What is Seccubus?
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/about-the-authors/">
+        About the authors
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/about/about-the-name/">
+        About the name
+    </a>
+    
+</li>
+
+
+        </ul>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+     active
+    
+    
+">
+    <a href="/documentation">
+        Documentation
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="/news/">
+        News
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+    
+    
+">
+    <a href="https://github.com/schubergphilis/Seccubus_v2/">
+        Fork on GitHub
+    </a>
+    
+</li>
+
+<li class="divider"></li>
+<li class="
+    
+     has-form
+    
+">
+    <a href="https://github.com/schubergphilis/Seccubus_v2/archive/master.zip" class="button">
+        Download
+    </a>
+    
+</li>
+
+
+        </ul>
+    </section>
+</nav>
+
+    <section class="main-content article">
+    <div class="large-9 medium-10 small-11 small-centered column">
+        <h2>
+            Having trouble after ungrading to Seccubus 1.5.0?
+        </h2>
+        <div class="content post">
+            <p>There have been some reports about troubles after upgrading from Seccubus 1.4
+and earlier to version 1.5.0</p>
+
+<p>I have analysed what causes these problems and have found the following: In
+order to support installation via RPM we had to alter a few things. In the
+original design the etc and var directories lived directly below the Seccubus
+home directory, but OS maintainers like to break this apart. They like to e.g.
+stor the var directory in /var/lib/Seccubus and the etc durectory in
+/etc/Seccubus. In order to facilitate this the reference to $HOME or
+$ENV{HOME} in certain scripts have been to explicit references to these
+directories in both the software and the configuration.</p>
+
+<p>Those users upgrading from a previous version are lacking these configuration
+items in their etc/config file. THe missing entires are:</p>
+
+<p>VAR=$HOME/var # This is where the ‘database’ lives<br>
+BIN=$HOME/bin # This is where the binaries live<br>
+CONFIG=$HOME/bin # This is where the config lives</p>
+
+<p>If you add these three lines to your configuration file scanning with Seccubus
+should work as expected again.</p>
+
+<p>There is also an issue with viewing idividual findigns (view_finding.pl call)
+in the web interface. An emergency release hto adress this issue has been
+uploaded to SourceForge (tar.gz verison only)</p>
+
+<p><img src="http://farm3.static.flickr.com/2240/2219132087_373029368d.jpg" alt="Sorry - On Australia Day a Creative Commons SHare Alike picutre from Dave
+Keeashan&#39;s fotostream
+"></p>
+
+        </div>
+    </div>
+</section>
+
+    </section>
+    <script src="/js/vendor/jquery.js"></script>
+    <script src="/js/foundation/foundation.js"></script>
+    <script src="/js/foundation/foundation.topbar.js"></script>
+    <script>
+    $(document).foundation();
+    </script>
+</body>
+</html>
