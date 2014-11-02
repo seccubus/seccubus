@@ -18,6 +18,7 @@ nav_position: 1
             <section class="post">
                 {{ article.excerpt }}
             </section>
+	    <a href="{{ article.url| prepend: site.baseurl }}" class="readmore">More...</a>
         </div>
         {% endfor %}
         {% if paginator.total_pages > 1 %}
