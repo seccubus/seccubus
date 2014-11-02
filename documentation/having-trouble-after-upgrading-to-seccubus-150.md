@@ -2,7 +2,7 @@
 
 category: faq
 layout: page
-title: Having trouble after ungrading to Seccubus 1.5.0?
+title: Having trouble after upgrading to Seccubus 1.5.0?
 ---
 There have been some reports about troubles after upgrading from Seccubus 1.4
 and earlier to version 1.5.0
