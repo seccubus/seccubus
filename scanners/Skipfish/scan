@@ -178,7 +178,7 @@ sub get_skipfish_path() {
                 return $1;
         }
         $path = run_cmd("ls /opt/skipfish/skipfish",0,$remote);
-        if ( $path == -e '/opt/skipfish/skipfish' ) {
+        if ( $path == '/opt/skipfish/skipfish' ) {
                 return '/opt/skipfish/skipfish';
         }
         return undef;
