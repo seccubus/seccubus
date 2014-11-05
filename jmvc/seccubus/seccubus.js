@@ -49,6 +49,7 @@ steal(
 	'seccubus/asset/host/edit',
 	'seccubus/asset/select',
 	'seccubus/custsql/table',
+	'seccubus/custsql/create',
 	function(){					// configure your application
 		/***********************************************************
 		 * Initialize gui state and hook into it
@@ -170,6 +171,10 @@ steal(
 		render_scan_selectors();
 		$('.scanSelector').each( function() {
 			$(this).change(function() {
+				if(!$(this).val()) {
+					gui_state.attr("scans","");
+					return;
+				}
 				$('.assetSelector').val('');
 				var val = $(this).val();
 				gui_state.attr("assets",'');
@@ -181,15 +186,41 @@ steal(
 		render_asset_selectors();
 		$('.assetSelector').each( function() {
 			$(this).change(function() {
+				if(!$(this).val()) {
+					gui_state.attr("assets","");
+					return;
+				}
 				$('.scanSelector').val('');
 				var val = $(this).val();
-				gui_state.attr("assets",val);
 				gui_state.attr("scans",'');
+				gui_state.attr("assets",val);
+				
 				$('.assetSelector').val(val);
 			});
 		});
 
-		$('#custSQL_table').seccubus_custsql_table();
+		$('#custSQL_table').each(function(){
+			$(this).seccubus_custsql_table({
+				saveSQL: function(sql,updateView){
+					$("#widgetsModalMask").click();
+					$('#saveSQL').seccubus_custsql_create({
+						'sql':sql,
+						afterSave:updateView,
+						onClear:function(){
+							$("#widgetsModalMask").click();
+							// $('#modalDialog').widgets_modal({
+							// 	query : "#saveSQLDialog",
+							// 	close : true
+							// });
+						}
+					});
+					$('#modalDialog').widgets_modal({
+						query : '#saveSQLDialog',
+						close : true
+					});
+				}
+			});
+		});
 
 		// Setup finding table
 		render_finding_table();

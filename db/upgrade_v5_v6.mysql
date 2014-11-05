@@ -82,7 +82,7 @@ UNLOCK TABLES;
 --
 
 CREATE TABLE `customsql` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` CHAR(255) NULL,
   `sql` TEXT NULL,
   PRIMARY KEY (`id`));

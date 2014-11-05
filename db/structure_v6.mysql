@@ -143,7 +143,7 @@ CREATE TABLE `config` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE IF NOT EXISTS `customsql` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` CHAR(255) NULL,
   `sql` TEXT NULL,
   PRIMARY KEY (`id`));

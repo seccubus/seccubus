@@ -247,10 +247,37 @@ steal("jquery/dom/fixture", function(){
 	})
 
 	// Asset
+
+	var assets = [];
+	for(var i=1; i<10; i++){
+		assets.push({
+			id : i,
+			name : "Asset name of: "+i,
+			hosts : "192.168.0."+i,
+			recipients : "test"+i+"@recipient",
+			recipientsHtml : "<a href='test"+i+"@recipient'>test"+i+"@recipient</a>",
+			workspace : "1"
+		});
+	}
+
 	$.fixture("json/createAsset.pl",function(orig,settings,headers){
 		var data = orig.data;
 		data['id'] = 1;
+		console.log("Data: ",data);
+		data['recipientsHtml'] = "<a href='mailto:"+data['recipients']+"'>"+data['recipients']+"</a>";
+		assets.push(data);
 		return data;
+	});
+
+	$.fixture("json/deleteAsset.pl",function(orig,settings,headers){
+		var id = orig.data.id;
+		var foundNum;
+		for(var i=0;i<assets.length;i++){
+			if(assets[i].id == id) foundNum = i;
+		}
+
+		if(foundNum) assets.splice(foundNum,1)
+		return [{'id':id}];
 	});
 
 	$.fixture("json/updateAsset.pl",function(orig,settings,headers){
@@ -258,17 +285,6 @@ steal("jquery/dom/fixture", function(){
 	});
 
 	$.fixture("json/getAssets.pl",function(orig,settings,headers){
-		var assets = [];
-		for(var i=1; i<10; i++){
-			assets.push({
-				id : i,
-				name : "Asset name of: "+i,
-				hosts : "192.168.0."+i,
-				recipients : "test"+i+"@recipient",
-				recipientsHtml : "<a href='test"+i+"@recipient'>test"+i+"@recipient</a>",
-				workspace : "1"
-			});
-		}
 		return [assets];
 	});
 });
