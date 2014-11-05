@@ -59,6 +59,7 @@ sub update_asset2scan($@;);
 use strict;
 use Carp;
 use Net::IP;
+use Socket;
 
 =head1 Data manipulation - assets
 
@@ -245,6 +246,11 @@ sub create_asset($$;$$) {
 		$hosts =~ s/\s+-\s+/-/g;
 		map {
 			my $error;
+			if($_ =~ /^(\d{1,3})(\.\d{1,3})(\.\d{1,3})(\.\d{1,3})-(\d{1,3})$/){
+				my $left = $1.$2.$3.$4;
+				my $right = $1.$2.$3.".".$5;
+				$_ = $left."-".$right;
+			}
 			my $ipObj = new Net::IP($_) or $error = 1;
 			if(!$error){
 				do {
@@ -254,10 +260,20 @@ sub create_asset($$;$$) {
 					);		
 				} while (++$ipObj);
 			} else {
-				sql("return"=>"id", 
-					"query"=>"INSERT into asset_hosts set asset_id=?,host=?",
-					"values"=>[$assetid,$_]
-				);
+				my ($name, $aliases, $addrtype,$length,@addrs) = gethostbyname($_);
+				if(@addrs){
+					map {
+						my $ip = inet_ntoa($_);
+							sql("return"=>"id", 
+								"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?",
+								"values"=>[$assetid,$name,$ip]
+								);
+						} @addrs;
+						
+				} else{
+					warn "Address [ ".$_." ] have no resolved IP and not added.";
+				}
+				
 			}
 		} split /[\s\n\r,]+/, $hosts;
 		return $assetid;

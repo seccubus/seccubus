@@ -103,11 +103,12 @@ This function saves custom sql
 
 sub set_customsql($$;) {
 	my $name = shift or die "no name provided";
-	my $sql = shift or die "no sql procided";
-	return sql ( "return" => "arrayref",
-		"query" => "insert into `customsql` set name=?, sql=?",
+	my $sql = shift or die "no sql provided";
+	my $id = sql ( "return" => "id",
+		"query" => "insert into `customsql` set name=?, `sql`=?",
 		"values" => [$name,$sql]
 		);
+	return [$id];
 }
 
 1;

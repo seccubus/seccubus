@@ -15,14 +15,17 @@
  */
 steal("funcunit", 
 	'seccubus/up_to_date/list/list_test.js', 
-	'seccubus/config_item/create/create_test.js', 
+	// 'seccubus/config_item/create/create_test.js', 
 	'seccubus/config_item/list/list_test.js', 
 	'seccubus/workspace/create/create_test.js', 
-	'seccubus/workspace/list/list_test.js', 
+	'seccubus/workspace/table/table_test.js', 
 	'seccubus/scan/create/create_test.js', 
-	'seccubus/scan/list/list_test.js', 
-	'seccubus/event/create/create_test.js', 
-	'seccubus/event/list/list_test.js', 
-	'seccubus/notification/create/create_test.js', 
-	'seccubus/notification/list/list_test.js')
+	'seccubus/scan/table/table_test.js', 
+	// 'seccubus/event/create/create_test.js', 
+	'seccubus/event/select/select_test.js', 
+	// 'seccubus/notification/create/create_test.js', 
+	'seccubus/notification/table/table_test.js',
+	'seccubus/asset/create/create_test.js',
+	'seccubus/asset/table/table_test.js'
+	)
  .then("./seccubus_test.js");

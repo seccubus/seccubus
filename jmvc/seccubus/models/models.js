@@ -32,4 +32,5 @@ steal(	"jquery/model",
 	'./asset.js',
 	'./asset_host.js',
 	'./asset2scan.js',
-	'./custsql.js')
+	'./custsql.js',
+	'./savedsql.js')

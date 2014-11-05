@@ -15,27 +15,23 @@
  */
 steal('funcunit',function(){
 
-module("Seccubus.UpToDate.List", { 
+module("Seccubus.Asset.Create", { 
 	setup: function(){
-		S.open("//seccubus/up_to_date/list/list.html");
+		S.open("//seccubus/asset/create/create.html");
 	}
 });
 
-test("up_to_dates", function(){
-	// S('#create').click()
-	
-	// wait until grilled cheese has been added
-	S('h1:contains(Seccubus.UpToDate.List Demo)').exists(function(){
-		ok(true, "up_to_date ok")
-	});
-	S.confirm(true);
-	// S('h3:last a').click();
-	
-	
-	// S('h3:contains(Configuration file)').missing(function(){
-	// 	ok(true,"Configuration file Removed")
-	// });
-	
+test("create asset", function(){
+	S("input[name=name]").type("Ice Water");
+	S("textarea[name=hosts]").type('127.0.0.1 192.168.0.1-12');
+	S("input[name=recipients]").type("Recipient@res.test");
+	S("[type=submit]").click();
+	S('h3:contains(Ice Water)')
+		.exists(function(){
+			ok(true, "Ice Water added");
+			S("button:contains(Cancel)").click();
+			equals(S("[name=name]").val() , "", "form reset");
+		})
 });
 
 

@@ -16,7 +16,8 @@
  steal(	'jquery/controller',
 	'jquery/view/ejs',
 	'jquery/controller/view',
-	'seccubus/models'
+	'seccubus/models',
+	'seccubus/custsql/select'
 ).then( './views/init.ejs',
 	'./views/error.ejs',
 function($){
@@ -36,7 +37,12 @@ $.Controller('Seccubus.Custsql.Table',
 		 * @attribute options.sql
 		 * current SQL if "" is null
 		 */
-		 sql : ""
+		 sql : "",
+		 /*
+		 * @attribute options.saveSQL
+		 * function which using when save button clicked
+		 */
+		 saveSQL:function(sql,updateView){ $.warn('no save sql function given'); }
 
 	}
 },
@@ -60,6 +66,10 @@ $.Controller('Seccubus.Custsql.Table',
 	"#custsql_button click":function(el){
 		this.updateView();
 	},
+	"#custsql_save click":function(el){
+		this.options.sql = $('#custsql_input').val();
+		this.options.saveSQL(this.options.sql,this.options.updateView);
+	},
 	"{Seccubus.Models.Asset} updated" : function(Asset, ev, asset){
 		asset.elements(this.element)
 			.html(this.view('asset', asset) );
@@ -79,6 +89,18 @@ $.Controller('Seccubus.Custsql.Table',
 				this.callback('dataReady')
 			);
 		}
+		$("#sqls_selector").each(function(){ 
+			$(this).seccubus_custsql_select({
+				getItems:function(options){
+					$('#sqls_selector').change(function(){
+						if($(this).val() == "") return;
+						var val = options[$(this).val()];
+						$('#custsql_input').html(val);
+					})
+				}
+			});
+		});
+
 	},
 	dataReady : function(items) {
 		var error = "";

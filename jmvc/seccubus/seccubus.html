@@ -167,7 +167,16 @@ limitations under the License.
    </div>
 
    <div id='custSQL' class='tab'>
-     <div class='full'>
+    
+     <div class='left'>
+     Load Saved SQLs:<br>
+     <select class='left SQLsSelector' id='sqls_selector'>
+       <option>SQLs selector</option>
+       <option>----</option>
+       <option>This is where we load the SQLs selector</option>
+     </select>
+    </div>
+    <div class='main'>
      <h1>Run custom SQL bellow</h1>
      <span id='custSQL_table'>
            <table>
@@ -265,6 +274,12 @@ limitations under the License.
        <h1>Create your Asset Host</h1>
        <form id="createHostAsset">
          Room for modal Create Asset Host
+       </form>
+     </div>
+     <div id="saveSQLDialog" class='hidden'>
+       <h1>Save your SQL</h1>
+       <form id="saveSQL">
+         Room for modal Save SQL
        </form>
      </div>
      <div id="modalDialog">
