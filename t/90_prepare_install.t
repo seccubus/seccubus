@@ -48,17 +48,17 @@ if ( $count ) {
 	$tests++;
 }
 
-`make clean`;
-ok("Clean build created");
-$tests++;
+#`make clean`;
+#ok("Clean build created");
+#$tests++;
 
-`perl Makefile.PL`;
-ok("New makefile created");
-$tests++;
+#`perl Makefile.PL`;
+#ok("New makefile created");
+#$tests++;
 
-`make manifest`;
-ok("Manifest created");
-$tests++;
+#`make manifest`;
+#ok("Manifest created");
+#$tests++;
 
 `make`;
 ok("Build created");
