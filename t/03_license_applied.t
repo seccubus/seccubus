@@ -158,7 +158,7 @@ sub hasauthors {
 	$head =~ /Copyright (\d+)/;
 	my $copyright = $1
 	foreach my $y (sort keys %years) {
-		if ($y > $copyright)
+		if ($y > $copyright) {
 			fail("File '$file' touched in $y but copyrighted $copyright");
 			$tests++;
 		} else {
