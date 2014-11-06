@@ -164,5 +164,6 @@ sub hasauthors {
 		ok("File '$file' has correct copyright year");
 		$tests++;
 	}
+	$year -= $year;
 	return $result;
 }
