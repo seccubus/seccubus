@@ -138,7 +138,8 @@ sub hasauthors {
 	my $year = 0;
 	foreach my $auth ( split /\n/, `git blame '$file'` ) {
 		$auth =~ /\((.*?)\s+(\d\d\d\d)\-\d\d\-\d\d/;
-		$year = $2 if $2 > $year;
+		my $blameyear = $2;
+		$year = $blameyear if $blameyear > $year;
 		#print "$auth - $1\n";
 		if ( $1 ne "Not Committed Yet" ) {
 			$authors{$1}++;
