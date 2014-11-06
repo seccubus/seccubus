@@ -1,4 +1,5 @@
 language: perl
 perl:
   - "5.20"
+  - "5.15"
   - "5.10"
