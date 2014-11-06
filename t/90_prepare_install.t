@@ -40,9 +40,12 @@ if ( ! -e "$ZEPATH/tmp/install" ) {
 ok("Install directory prepared");
 $tests++;
 
-`rm Seccubus-*.tar.gz`;
-ok("Old tarball removed");
-$tests++;
+my $count = chomp(`ls Seccubus-*.tar.gz|wc -l`);
+if ( $count ) {
+	`rm Seccubus-*.tar.gz`;
+	ok("Old tarball removed");
+	$tests++;
+}
 
 `make clean`;
 ok("Clean build created");
