@@ -135,11 +135,10 @@ sub hasauthors {
 	my $result = 1;
 
 	my %authors = ();
-	my $year = 0;
+	my %years = ();
 	foreach my $auth ( split /\n/, `git blame '$file'` ) {
 		$auth =~ /\((.*?)\s+(\d\d\d\d)\-\d\d\-\d\d/;
-		my $blameyear = $2;
-		$year = $blameyear if $blameyear > $year;
+		$years{$2}++;
 		#print "$auth - $1\n";
 		if ( $1 ne "Not Committed Yet" ) {
 			$authors{$1}++;
@@ -156,14 +155,16 @@ sub hasauthors {
 			$tests++;
 		}
 	}
-	if ( $head !~ /Copyright $year/ ) {
-		$head =~ /Copyright (\d+)/;
-		fail("File '$file' last touched in $year but copyrighted $1");
-		$tests++;
-	} else {
-		ok("File '$file' has correct copyright year");
-		$tests++;
+	$head =~ /Copyright (\d+)/;
+	my $copyright = $1
+	foreach my $y (sort keys %years) {
+		if ($y > $copyright)
+			fail("File '$file' touched in $y but copyrighted $copyright");
+			$tests++;
+		} else {
+			ok("File '$file' touched in $y and copyrighted $copyright");
+			$tests++;
+		}
 	}
-	$year -= $year;
 	return $result;
 }
