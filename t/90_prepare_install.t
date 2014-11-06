@@ -60,9 +60,9 @@ if ( $count ) {
 ok("Manifest created");
 $tests++;
 
-`make`;
-ok("Build created");
-$tests++;
+#`make`;
+#ok("Build created");
+#$tests++;
 
 `make dist`;
 ok("New tarball created");
