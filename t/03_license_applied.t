@@ -134,41 +134,19 @@ sub hasauthors {
 	my $file = shift;
 	my $result = 1;
 
-	my %authors = ();
-	my %years = ();
+	my $head = `head -20 '$file'|grep Copyright`;
+	$head =~ /Copyright (\d+)/;
+	my $year = $1;
+
 	foreach my $auth ( split /\n/, `git blame '$file'` ) {
 		if ( $auth =~ /\((.*?)\s+(\d\d\d\d)\-\d\d\-\d\d/ ) {
-			$years{$2}++;
-			#print "$auth - $1\n";
 			if ( $1 ne "Not Committed Yet" ) {
-				$authors{$1}++;
+				like($head, qr/$1/, "Blamed author $1 in header of file '$file'");
+				$tests++;
+				cmp_ok($2, "<=", $year, "Change from $2 match copyright of $year for file '$file'");
+				$tests++;
 			}
-		} else {
-			fail("Unknow blame format '$auth'");
-			$tests++;
 		}
 	}
-	my $head = `head -20 '$file'|grep Copyright`;
-	foreach my $auth (keys %authors) {
-		if ( $head !~ /$auth/ ) {
-			fail("Author '$auth' not in '$file'");
-			$tests++;
-			$result =  0;
-		} else {
-			ok("Author '$auth' in '$file'");
-			$tests++;
-		}
-	}
-	$head =~ /Copyright (\d+)/;
-	my $copyright = $1;
-	foreach my $y (sort keys %years) {
-		if ($y > $copyright) {
-			fail("File '$file' touched in $y but copyrighted $copyright");
-			$tests++;
-		} else {
-			ok("File '$file' touched in $y and copyrighted $copyright");
-			$tests++;
-		}
-	}
-	return $result;
+	return 1;
 }
