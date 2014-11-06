@@ -21,42 +21,58 @@ use Test::More;
 
 my $tests = 0;
 
-`rm -f errors.txt`
+`rm -f errors.txt`;
 
+my $ZEPATH=`pwd`;
+chomp($ZEPATH);
 
-my $ZEPATH=`pwd`
-
-if [ ! -d "$ZEPATH/tmp" ] {
-	`mkdir $ZEPATH/tmp`
+if ( ! -e "$ZEPATH/tmp" ) {
+	`mkdir $ZEPATH/tmp`;
 }
 
-if [ ! -d "$ZEPATH/tmp/install" ] {
-	`mkdir $ZEPATH/tmp/install`
+if ( ! -e "$ZEPATH/tmp/install" ) {
+	`mkdir $ZEPATH/tmp/install`;
 } else {
-	`rm -rf $ZEPATH/tmp/install/*`
+	`rm -rf $ZEPATH/tmp/install/*`;
 }
-
-if [ ! -d "$ZEPATH/tmp/install/seccubus" ] {
-	`mkdir $ZEPATH/tmp/install/seccubus`
-} else {
-	`rm -rf $ZEPATH/tmp/install/seccubus/*`
-}
+`mkdir $ZEPATH/tmp/install/seccubus`;
 
 ok("Install directory prepared");
 $tests++;
 
-`cd $ZEPATH/tmp/install;tar -xvzf ../../Seccubus*.tar.gz`
+`rm Seccubus-*.tar.gz`;
+ok("Old tarball removed");
+$tests++;
 
+`make clean`;
+ok("Clean build created");
+$tests++;
+
+`perl Makefile.PL`;
+ok("New makefile created");
+$tests++;
+
+`make manifest`;
+ok("Manifest created");
+$tests++;
+
+`make`;
+ok("Build created");
+$tests++;
+
+`make dist`;
+ok("New tarball created");
+$tests++;
+
+`cd $ZEPATH/tmp/install;tar -xvzf ../../Seccubus*.tar.gz`;
 ok("Untarred");
 $tests++;
 
-`cd $ZEPATH/tmp/install/Seccubus-*;./install.pl --basedir $ZEPATH/tmp/install/seccubus --createdirs -v -v -v`
-
+`cd $ZEPATH/tmp/install/Seccubus-*;./install.pl --basedir $ZEPATH/tmp/install/seccubus --createdirs -v -v -v`;
 ok("Installed");
 $tests++;
 
-`cp $ZEPATH/tmp/install/seccubus/etc/config.xml.mysql.example $ZEPATH/tmp/install/seccubus/etc/config.xml`
-
+`cp $ZEPATH/tmp/install/seccubus/etc/config.xml.mysql.example $ZEPATH/tmp/install/seccubus/etc/config.xml`;
 ok("Configured");
 $tests++;
 

@@ -21,7 +21,7 @@ use Test::More;
 
 my $tests = 0;
 
-`rm -f errors.txt`
+`rm -f errors.txt`;
 
 ok("errors.txt removed");
 $tests++;

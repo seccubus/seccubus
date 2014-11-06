@@ -74,25 +74,25 @@ foreach my $file ( @files ) {
 					# License starts at line 2
 					is(checklic($file,2), 0, "Is the Apache license applied to $file");
 					$tests++;
-					is(hasauthors($file), 1, "Has the file got all 'git blame' authors in it?");
+					is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
 					$tests++;
 				} elsif ( $file =~ /jmvc\/.*\.md$/ ) {
 					# License starts at line 3
 					is(checklic($file,3), 0, "Is the Apache license applied to $file");
 					$tests++;
-					is(hasauthors($file), 1, "Has the file got all 'git blame' authors in it?");
+					is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
 					$tests++;
 				} elsif ( $file =~ /\.ejs$/ ) {
 					# License starts at line 0
 					is(checklic($file,0), 0, "Is the Apache license applied to $file");
 					$tests++;
-					is(hasauthors($file), 1, "Has the file got all 'git blame' authors in it?");
+					is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
 					$tests++;
 				} else {
 					# License starts at line 1
 					is(checklic($file,1), 0, "Is the Apache license applied to $file");
 					$tests++;
-					is(hasauthors($file), 1, "Has the file got all 'git blame' authors in it?");
+					is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
 					$tests++;
 				}
 			}
@@ -108,7 +108,7 @@ done_testing($tests);
 sub checklic {
 	my $file = shift;
 	my $start = shift;
-	$start = 1 if $start eq undef;
+	$start = 1 unless defined $start;
 
 	open F, $file or die "Unable to open file $file";
 	my @data = (<F>);
@@ -132,21 +132,26 @@ sub checklic {
 
 sub hasauthors {
 	my $file = shift;
-	
+	my $result = 1;
+
 	my %authors;
 	foreach my $auth ( split /\n/, `git blame '$file'` ) {
 		$auth =~ /\((.*?)\s+\d\d\d\d\-\d\d\-\d\d/;
 		#print "$auth - $1\n";
-		if ( $auth != "Not Committed Yet" ) {
+		if ( $1 ne "Not Committed Yet" ) {
 			$authors{$1}++;
 		}
 	}
 	my $head = `head -20 '$file'|grep Copyright`;
 	foreach my $auth (keys %authors) {
 		if ( $head !~ /$auth/ ) {
-			print "Author $auth not in $file\n";
-			return 0;
+			fail("Author '$auth' not in '$file'");
+			$tests++;
+			$result =  0;
+		} else {
+			ok("Author '$auth' in '$file'");
+			$tests++;
 		}
 	}
-	return 1;
+	return $result;
 }
