@@ -56,9 +56,9 @@ if ( $count ) {
 #ok("New makefile created");
 #$tests++;
 
-#`make manifest`;
-#ok("Manifest created");
-#$tests++;
+`make manifest`;
+ok("Manifest created");
+$tests++;
 
 `make`;
 ok("Build created");
