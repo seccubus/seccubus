@@ -45,7 +45,7 @@ $config = "/opt/seccubus/etc/config.xml" unless -e $config;
 $config = "etc/dummy.config.xml" unless -e $config;
 
 # Module directory
-use lib "/opt/seccubus/SeccubusV2";
+use lib "/home/frank/Seccubus_v2/SeccubusV2";
 push (@main::INC, @INC);
 
 $VERSION = '2.11';
