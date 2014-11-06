@@ -72,7 +72,7 @@ $tests++;
 ok("Untarred");
 $tests++;
 
-`cd $ZEPATH/tmp/install/Seccubus-*;./install.pl --basedir $ZEPATH/tmp/install/seccubus --createdirs -v -v -v`;
+`$ZEPATH/tmp/install/Seccubus-*/install.pl --basedir $ZEPATH/tmp/install/seccubus --createdirs -v -v -v`;
 ok("Installed");
 $tests++;
 
