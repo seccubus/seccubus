@@ -138,15 +138,19 @@ sub hasauthors {
 	$head =~ /Copyright (\d+)/;
 	my $year = $1;
 
+	my %authors = ();
 	open BLAME, "git blame '$file'|";
 	foreach my $auth ( <BLAME> ) {
 		chomp ($auth);
 		if ( $auth =~ /\((.*?)\s+(\d\d\d\d)\-\d\d\-\d\d/ ) {
 			if ( $1 ne "Not Committed Yet" ) {
-				like($head, qr/$1/, "Blamed author $1 in header of file '$file'");
-				$tests++;
-				cmp_ok($2, "<=", $year, "Change from $2 match copyright of $year for file '$file'\n$auth");
-				$tests++;
+				unless ( $authors{$1} ) {
+					$authors{$1} = 1;
+					like($head, qr/$1/, "Blamed author $1 in header of file '$file'\n$auth");
+					$tests++;
+				}
+				#cmp_ok($2, "<=", $year, "Change from $2 match copyright of $year for file '$file'\n$auth");
+				#$tests++;
 			}
 		}
 	}
