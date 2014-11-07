@@ -139,6 +139,7 @@ sub hasauthors {
 	my $year = $1;
 
 	my %authors = ();
+	my %years = ();
 	open BLAME, "git blame '$file'|";
 	foreach my $auth ( <BLAME> ) {
 		chomp ($auth);
@@ -149,8 +150,11 @@ sub hasauthors {
 					like($head, qr/$1/, "Blamed author $1 in header of file '$file'\n$auth");
 					$tests++;
 				}
-				#cmp_ok($2, "<=", $year, "Change from $2 match copyright of $year for file '$file'\n$auth");
-				#$tests++;
+				unless ( $years{$2} ) {
+					$years{$2} = 1;
+					cmp_ok($2, "<=", $year, "Change from $2 match copyright of $year for file '$file'\n$auth");
+					$tests++;
+				}
 			}
 		}
 	}
