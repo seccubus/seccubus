@@ -46,13 +46,13 @@ my @files = qw(
 		SeccubusV2.pm
 	      );
 my @dirs = qw(
+		www
 	     	SeccubusV2
 		bin
 		db
 		docs
 		etc
 		scanners
-		www
 	     );
 
 # Ticket #62 - Default locations for config.xml does not include
@@ -168,7 +168,7 @@ if ( -d "$build_root$bin_dir" ) {
 	print "Bindir '$build_root$bin_dir' exists\n" if $verbose;
 } else {
 	if ( $create_dirs || index $bin_dir,$base_dir == 0 ) {
-		print "Creating wwwdir '$build_root$bin_dir'\n" if $verbose;
+		print "Creating bindir '$build_root$bin_dir'\n" if $verbose;
 		syst("mkdir -p '$build_root$bin_dir'");
 		syst("chown $owner $build_root$bin_dir") if $owner;
 	} else {
