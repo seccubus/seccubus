@@ -147,12 +147,12 @@ sub hasauthors {
 			if ( $1 ne "Not Committed Yet" ) {
 				unless ( $authors{$1} ) {
 					$authors{$1} = 1;
-					like($head, qr/$1/, "Blamed author $1 in header of file '$file'\n$auth");
+					like($head, qr/$1/, "Blamed author $1 in header of file '$file'");
 					$tests++;
 				}
-				unless ( $ENV{PERLBREW_ROOT} =~ /^\/home\/travis/ && $years{$2} ) {
+				if ( $ENV{PERLBREW_ROOT} !=~ /^\/home\/travis/ && (! defined $years{$2}) ) {
 					$years{$2} = 1;
-					cmp_ok($2, "<=", $year, "Change from $2 match copyright of $year for file '$file'\n$auth");
+					cmp_ok($2, "<=", $year, "Change from $2 match copyright of $year for file '$file'");
 					$tests++;
 				}
 			}
