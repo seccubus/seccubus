@@ -138,8 +138,9 @@ sub hasauthors {
 	$head =~ /Copyright (\d+)/;
 	my $year = $1;
 
-	my $blame = `git blame '$file'`;
-	foreach my $auth ( split /\n/, $blame ) {
+	open BLAME, "git blame '$file'|";
+	foreach my $auth ( <BLAME> ) {
+		chomp ($auth);
 		if ( $auth =~ /\((.*?)\s+(\d\d\d\d)\-\d\d\-\d\d/ ) {
 			if ( $1 ne "Not Committed Yet" ) {
 				like($head, qr/$1/, "Blamed author $1 in header of file '$file'");
@@ -149,6 +150,6 @@ sub hasauthors {
 			}
 		}
 	}
-	$blame = "";
+	close BLAME;
 	return 1;
 }
