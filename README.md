@@ -30,3 +30,4 @@ For more information visit [www.seccubus.com]
 Bug Fixes
 ============================================
 * #141 - Multiple issues with Qualys SSLlabs scanner
+* #144 - Perl-CGI is bundled with perl 5.8 rpm's so no need to bundle it
