@@ -34,7 +34,7 @@ foreach my $file ( @files ) {
 		chomp($type);
 		if ( $type =~ /Perl/i ) {
 			
-			like(`(cd tmp/install/seccubus/www/seccubus/json;perl -I$pwd/t -c '$file' 2>&1)`, qr/OK/, "Perl compile test: $file");
+			like(`(cd tmp/install/seccubus/www/seccubus/json;perl -c '$file' 2>&1)`, qr/OK/, "Perl compile test: $file");
 			$tests++;
 		}
 	}
