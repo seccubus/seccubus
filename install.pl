@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk
+# Copyright 2014 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -237,7 +237,7 @@ if ( -d "$build_root$doc_dir" ) {
 } 
 
 # Moving files
-print "Copying files and directories" if $verbose;
+print "Copying files and directories\n" if $verbose;
 foreach my $file ( @files ) {
 	syst("cp -p $stage_dir/$file $build_root$base_dir");
 }
