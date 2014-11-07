@@ -138,6 +138,7 @@ sub hasauthors {
 	$head =~ /Copyright (\d+)/;
 	my $year = $1;
 
+	$ENV{PERLBREW_ROOT} = "" unless $ENV{PERLBREW_ROOT};
 	my %authors = ();
 	my %years = ();
 	open BLAME, "git blame '$file'|";
@@ -150,7 +151,7 @@ sub hasauthors {
 					like($head, qr/$1/, "Blamed author $1 in header of file '$file'");
 					$tests++;
 				}
-				if ( $ENV{PERLBREW_ROOT} !=~ /^\/home\/travis/ && (! defined $years{$2}) ) {
+				if ( $ENV{PERLBREW_ROOT} !~ /^\/home\/travis/ && (! defined $years{$2}) ) {
 					$years{$2} = 1;
 					cmp_ok($2, "<=", $year, "Change from $2 match copyright of $year for file '$file'");
 					$tests++;
