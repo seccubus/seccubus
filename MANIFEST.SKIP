@@ -46,7 +46,6 @@ config\.xml$
 ^jmvc\/
 ^www\/jmvc
 ^json\/.*$
-^json$
 json\/getNothing.pl$
 ^testdata\/
 ^build_jmvc
