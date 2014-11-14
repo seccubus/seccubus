@@ -8,7 +8,7 @@ layout: default
         </h2>
         <div class="row documentation">
             <div class="medium-6 small-12 column">
-                <h3>Version 2</h3>
+                <h3 id="version2">Version 2</h3>
                 {% for p in site.pages%}
                     <ul>
                     {% if p.category == 'documentation' and p.version == 2 %}
@@ -18,7 +18,7 @@ layout: default
                 {% endfor %}
             </div>
             <div class="medium-6 small-12 column">
-                <h3>Version 1</h3>
+                <h3 id="version1">Version 1</h3>
                 {% for p in site.pages%}
                     <ul>
                     {% if p.category == 'documentation' and p.version == 1 %}
@@ -29,7 +29,7 @@ layout: default
             </div>
             <div class="small-12 column">
                 <div class="faq">
-                    <h3>FAQ</h3>
+                    <h3 id="faq">FAQ</h3>
                 {% for p in site.pages%}
                     <ul>
                     {% if p.category == 'faq' %}
