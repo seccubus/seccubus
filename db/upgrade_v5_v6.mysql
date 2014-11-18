@@ -66,10 +66,12 @@ CREATE TABLE IF NOT EXISTS `asset_hosts` (
   `asset_id` int(11) NOT NULL DEFAULT '0',
   `ip` varchar(16) NOT NULL,
   `host` varchar(255) DEFAULT NULL,
+  `auto_gen` INT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `fk_asset_hosts_asset_id` (`asset_id`),
   KEY `fk_asset_hosts_ip` (`ip`),
-  KEY `fk_asset_hosts_host` (`host`)
+  KEY `fk_asset_hosts_host` (`host`),
+  KEY `fk_asset_hosts_auto_gen` (`auto_gen`)
 ) ENGINE=InnoDB;
 
 LOCK TABLES `asset_hosts` WRITE;

@@ -48,9 +48,9 @@ sub create_asset($$;$$);
 sub update_asset($$$;$$);
 sub delete_asset($;);
 
-sub create_asset_host($$$;$);
+sub create_asset_host($$;$$);
 sub get_asset_hosts($$;);
-sub update_asset_host($$;$);
+sub update_asset_host($;$$);
 sub delete_asset_host($;);
 
 sub get_asset2scan($;);
@@ -243,43 +243,74 @@ sub create_asset($$;$$) {
 					   ",
 			    "values"	=> [$asset_name, $hosts, $recipients, $workspace_id],
 			  );
-		$hosts =~ s/\s+-\s+/-/g;
-		map {
-			my $error;
-			if($_ =~ /^(\d{1,3})(\.\d{1,3})(\.\d{1,3})(\.\d{1,3})-(\d{1,3})$/){
-				my $left = $1.$2.$3.$4;
-				my $right = $1.$2.$3.".".$5;
-				$_ = $left."-".$right;
-			}
-			my $ipObj = new Net::IP($_) or $error = 1;
-			if(!$error){
-				do {
-					sql("return"=>"id", 
-						"query"=>"INSERT into asset_hosts set asset_id=?,ip=?",
-						"values"=>[$assetid,$ipObj->ip()]
-					);		
-				} while (++$ipObj);
-			} else {
-				my ($name, $aliases, $addrtype,$length,@addrs) = gethostbyname($_);
-				if(@addrs){
-					map {
-						my $ip = inet_ntoa($_);
-							sql("return"=>"id", 
-								"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?",
-								"values"=>[$assetid,$name,$ip]
-								);
-						} @addrs;
-						
-				} else{
-					warn "Address [ ".$_." ] have no resolved IP and not added.";
-				}
-				
-			}
-		} split /[\s\n\r,]+/, $hosts;
+		&_set_asset_host_auto_gen($assetid,$hosts);
 		return $assetid;
 	} else {
 		die "Permission denied";
 	}
+}
+
+=head2 _set_asset_host_auto_gen
+
+Function for internal use only
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item assetid - id of the asset
+
+=item hosts - hosts of this asset (Optional)
+
+=back 
+
+=back
+
+=cut
+
+sub _set_asset_host_auto_gen($;$){
+	my $assetid = shift or die "No asset Id Given";
+	my $hosts = shift;
+	sql( "return"	=> "handle",
+	    "query"	=> " DELETE FROM asset_hosts WHERE	asset_id = ? and auto_gen=1",
+	    "values"	=> [ $assetid ]
+		);
+	return if(!$hosts);
+	$hosts =~ s/\s+-\s+/-/g;
+	map {
+		my $error;
+		if($_ =~ /^(\d{1,3})(\.\d{1,3})(\.\d{1,3})(\.\d{1,3})-(\d{1,3})$/){
+			my $left = $1.$2.$3.$4;
+			my $right = $1.$2.$3.".".$5;
+			$_ = $left."-".$right;
+		}
+		my $ipObj = new Net::IP($_) or $error = 1;
+		if(!$error){
+			do {
+				sql("return"=>"id", 
+					"query"=>"INSERT into asset_hosts set asset_id=?,ip=?, auto_gen=1",
+					"values"=>[$assetid,$ipObj->ip()]
+				);		
+			} while (++$ipObj);
+		} else {
+			my ($name, $aliases, $addrtype,$length,@addrs) = gethostbyname($_);
+			if(@addrs){
+				map {
+					my $ip = inet_ntoa($_);
+						sql("return"=>"id", 
+							"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?, auto_gen=1",
+							"values"=>[$assetid,$name,$ip]
+							);
+					} @addrs;
+					
+			} else{
+				warn "Address [ ".$_." ] have no resolved IP and not added.";
+			}
+			
+		}
+	} split /[\s\n\r,]+/, $hosts;
 }
 
 =head2 update_asset
@@ -321,8 +352,9 @@ sub update_asset($$$;$$) {
 	my $recipients = shift;
 
 	if ( may_write($workspace_id) ) {
-		my ($have) = sql("return" => "array", "query" => "select id from assets where id=? and workspace_id=?","values"=>[$asset_id,$workspace_id]);
+		my ($have) = sql("return" => "array", "query" => "select id, hosts from assets where id=? and workspace_id=?","values"=>[$asset_id,$workspace_id]);
 		die "asset_id: ".$asset_id." not exists on workspace_id: ".$workspace_id." "  if(!$have);
+		&_set_asset_host_auto_gen($asset_id,$hosts);
 		return sql( "return"	=> "rows",
 			    "query"	=> "UPDATE assets
 			    		    SET name = ?, hosts = ?, recipients = ?
@@ -421,7 +453,7 @@ This function creates asset host
 
 =asset_id- asset id
 
-=item ip - IP of the asset
+=item ip - IP of the asset (optional)
 
 =item name - host name of the asset (optional)
 
@@ -435,15 +467,20 @@ workspace id need to be equal with asset workspace id
 =back
 
 =cut
-sub create_asset_host($$$;$){
+sub create_asset_host($$;$$){
 	my $workspace_id = shift or die "no workspace_id provided";
 	my $asset_id = shift or die "no asset_id provided";
-	my $ip = shift or die "no ip provided";
+	my $ip = shift;
 	my $host = shift;
+	die "no IP or host provided" if(!$ip && ! $host );
+	if($host && ! $ip){
+		my ($name, $aliases, $addrtype,$length,@addrs) = gethostbyname($host);
+		if(@addrs){ map { $ip = inet_ntoa($_); } @addrs; }
+	}
 	die "Permission denied" if (! may_write($workspace_id) );
 	my ($checkWSId) = sql( "return"=> "array", "query"	=> "SELECT	a.workspace_id FROM assets a where a.id = ? ", "values"	=> [ $asset_id ] );
 	die "Permission denied"  if( $checkWSId ne $workspace_id);
-	return sql ("return"	=> "id", "query" => "insert into asset_hosts set ip=?, host=?, asset_id=?","values"=>[$ip,$host,$asset_id]);
+	return sql ("return"	=> "id", "query" => "insert into asset_hosts set ip=?, host=?, asset_id=?,auto_gen=0","values"=>[$ip,$host,$asset_id]);
 }
 
 =head2 update_asset_host
@@ -458,7 +495,7 @@ This function edits asset host
 
 =item host_id - id of the workspace
 
-=item ip - IP of the asset
+=item ip - IP of the asset (optional)
 
 =item name - host name of the asset (optional)
 
@@ -472,16 +509,21 @@ workspace id need to be equal with asset workspace id
 =back
 
 =cut
-sub update_asset_host($$;$){
+sub update_asset_host($;$$){
 	my $host_id = shift or die "no host_id provided";
-	my $ip = shift or die "no ip provided";
+	my $ip = shift;
 	my $host = shift;
+	die "no IP or host provided" if(!$ip && ! $host );
+	if($host && ! $ip){
+		my ($name, $aliases, $addrtype,$length,@addrs) = gethostbyname($host);
+		if(@addrs){ map { $ip = inet_ntoa($_); } @addrs; }
+	}
 	my ($workspace_id) = sql( "return"=> "array", "query"	=> "SELECT	a.workspace_id
 			    FROM assets a, asset_hosts b where b.asset_id = a.id and b.id = ? ",
 		"values"	=> [ $host_id ]
 	);
 	die "Permission denied" if (! may_write($workspace_id) );
-	return sql ("return"	=> "rows", "query" => "update asset_hosts set ip=?, host=? where id=?","values"=>[$ip,$host,$host_id]);
+	return sql ("return"	=> "rows", "query" => "update asset_hosts set ip=?, host=?, auto_gen=0 where id=?","values"=>[$ip,$host,$host_id]);
 }
 
 

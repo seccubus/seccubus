@@ -57,22 +57,12 @@ $.Controller('Seccubus.Custsql.Table',
 		var as = el.closest('.asset').model();
 		this.options.onEdit(as);
 	},
-	"{Seccubus.Models.Asset} destroyed" : function(Asset, ev, asset) {
-		this.updateView();
-	},
-	"{Seccubus.Models.Asset} created" : function(Asset, ev, asset){
-		this.updateView();
-	},
 	"#custsql_button click":function(el){
 		this.updateView();
 	},
 	"#custsql_save click":function(el){
 		this.options.sql = $('#custsql_input').val();
 		this.options.saveSQL(this.options.sql,this.options.updateView);
-	},
-	"{Seccubus.Models.Asset} updated" : function(Asset, ev, asset){
-		asset.elements(this.element)
-			.html(this.view('asset', asset) );
 	},
 	updateView : function() {
 		this.options.sql = $('#custsql_input').val();
