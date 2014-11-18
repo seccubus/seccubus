@@ -79,7 +79,7 @@ steal(	'jquery/controller',
 		var params = el.formParams();
 		var elements = [];
 		var ok = true;
-		if(params.ip == ''){
+		if(params.ip == '' && params.host == ''){
 			ok = false;
 			elements.push('#newAssetHostIp');
 		}
