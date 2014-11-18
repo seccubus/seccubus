@@ -579,7 +579,7 @@ sub send_notification_from_finding($;){
 		query => "SELECT 
 				a.recipients,
 				f.workspace_id,
-				f.scan_id
+				s.scan_id
 				
 			FROM 
 				findings f,
