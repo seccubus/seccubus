@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk, Dan McGinn-Combs
+# Copyright 2014 Frank Breedijk, Dan McGinn-Combs, Glenn ten Cate (blabla1337)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -187,7 +187,7 @@ sub get_nikto_path() {
 		return $1;
 	}
 	$path = run_cmd("ls /opt/nikto/nikto.pl",0,$remote);
-	if ( -e '/opt/nikto/nikto.pl' ) {
+	if ( $path == '/opt/nikto/nikto.pl' ) {
 		return '/opt/nikto/nikto.pl';
 	}
 	return undef;

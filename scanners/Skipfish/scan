@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk, Dan McGinn-Combs, Glenn ten Cate
+# Copyright 2014 Frank Breedijk, Dan McGinn-Combs, Glenn ten Cate (blabla1337)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -172,16 +172,16 @@ Arguments:
 }
 
 sub get_skipfish_path() {
-	my $path = run_cmd("which skipfish",0,$remote);
-	$path =~ s/[\n\r]*//g;
-	if ( $path =~ /(^\/.*skipfish)/ ) {
-		return $1;
-	}
-	$path = run_cmd("ls /opt/skipfish/skipfish",0,$remote);
-	if ( -e '/opt/skipfish/skipfish' ) {
-		return '/opt/skipfish/skipfish';
-	}
-	return undef;
+        my $path = run_cmd("which skipfish",0,$remote);
+        $path =~ s/[\n\r]*//g;
+        if ( $path =~ /(^\/.*skipfish$)/ ) {
+                return $1;
+        }
+        $path = run_cmd("ls /opt/skipfish/skipfish",0,$remote);
+        if ( $path == '/opt/skipfish/skipfish' ) {
+                return '/opt/skipfish/skipfish';
+        }
+        return undef;
 }
 
 sub get_skipfish_version() {
