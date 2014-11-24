@@ -19,8 +19,8 @@ steal(	'jquery/controller',
 	'jquery/controller/view',
 	'seccubus/models',
 	'seccubus/scanner/select',
-	'seccubus/notification/table',
-	'seccubus/asset/select'
+	'seccubus/notification/table'
+	// ,'seccubus/asset/select'
 ).then(	'./views/init.ejs',
 	function($){
 
@@ -95,18 +95,18 @@ $.Controller('Seccubus.Scan.Edit',
 			onEdit	: to.options.onNotificationEdit,
 			onCreate : to.options.onNotificationCreate
 		});
-		Seccubus.Models.Asset2Scan.findAll({
-			scanid:to.options.scan.id,
-			workspace : to.options.workspace},
-			function(selAssets){
-				var selAssObj = {};
-				$.map(selAssets,function(val){ selAssObj[val['asset_id']] = true; });
-				$('#editScanAssets').seccubus_asset_select({
-			 		workspace : to.options.workspace,
-			 		selected : selAssObj
-				});
+		// Seccubus.Models.Asset2Scan.findAll({
+		// 	scanid:to.options.scan.id,
+		// 	workspace : to.options.workspace},
+		// 	function(selAssets){
+		// 		var selAssObj = {};
+		// 		$.map(selAssets,function(val){ selAssObj[val['asset_id']] = true; });
+		// 		$('#editScanAssets').seccubus_asset_select({
+		// 	 		workspace : to.options.workspace,
+		// 	 		selected : selAssObj
+		// 		});
 
-			})
+		// 	})
 		
 	},
 	submit : function(el, ev){
@@ -131,16 +131,16 @@ $.Controller('Seccubus.Scan.Edit',
 			elements.push("#editScanParam");
 			ok = false;
 		}
-		console.log("Assets: "+params.assets);
 		if( ( paramStr.indexOf('@HOSTS') != -1 || paramStr.indexOf('$HOSTS') != -1  ) && params.targets == ''){
 			elements.push("#editScanTargets");
 			ok = false;
 		}
-		if( (paramStr.indexOf('$ASSETS') != -1 || paramStr.indexOf('@ASSETS') != -1) && (params.assets == null) ){
-			elements.push('#editScanAssets');
-			ok = false;
-			console.log("Assets False");
-		}
+		// console.log("Assets: "+params.assets);
+		// if( (paramStr.indexOf('$ASSETS') != -1 || paramStr.indexOf('@ASSETS') != -1) && (params.assets == null) ){
+		// 	elements.push('#editScanAssets');
+		// 	ok = false;
+		// 	console.log("Assets False");
+		// }
 		
 		if ( ok ) {
 			this.element.find('[type=submit]').val('Updating...')
@@ -151,11 +151,11 @@ $.Controller('Seccubus.Scan.Edit',
 			sc.parameters = params.parameters;
 			sc.password = params.password;
 			sc.targets = params.targets;
-			sc.assets = params.assets;
-			Seccubus.Models.Asset2Scan.update({
-				id:sc.id,
-				assets:params.assets
-			})
+			// sc.assets = params.assets;
+			// Seccubus.Models.Asset2Scan.update({
+			// 	id:sc.id,
+			// 	assets:params.assets
+			// })
 			sc.save(this.callback('saved'));
 		} else {
 			this.nok(elements);

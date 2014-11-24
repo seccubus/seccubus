@@ -237,16 +237,20 @@ sub get_status($$$;$) {
 				finding_status
 			LEFT JOIN findings on ( findings.status =  finding_status.id AND findings.workspace_id = ? ";
 
-		
-		$query .= " AND findings.scan_id in (  ";
-		$query .= join ",", map { push @$params,$_; '?'; } @$scan_ids if(@$scan_ids);
 		if(@$asset_ids){
-			$query .= "select scan_id from asset2scan where asset_id in (";
+			$query .= "AND findings.`host` in (";
+			$query .= "select ip from asset_hosts ho where asset_id in (";
 			$query .= join ",", map { push @$params,$_; '?'; } @$asset_ids;
-			$query .= " )";
+			$query .= " ) union ";
+			$query .= "select `host` from asset_hosts ho where asset_id in (";
+			$query .= join ",", map { push @$params,$_; '?'; } @$asset_ids;
+			$query .= ")";
+			$query .= ")";
+		} else{
+			$query .= " AND findings.scan_id in (  ";	
+			$query .= join ",", map { push @$params,$_; '?'; } @$scan_ids if(@$scan_ids);	
+			$query .= " ) ";
 		}
-		$query .= " ) ";
-
 		if ( $filter ) {
 			if ( $filter->{host} ) {
 				$filter->{host} =~ s/\*/\%/;
