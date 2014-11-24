@@ -579,16 +579,13 @@ sub send_notification_from_finding($;){
 		query => "SELECT 
 				a.recipients,
 				f.workspace_id,
-				s.scan_id
+				f.scan_id
 				
 			FROM 
 				findings f,
-				asset2scan s,
 				assets a,
 				asset_hosts h
 			where 
-				s.scan_id = f.scan_id and
-				s.asset_id = a.id and
 				a.id = h.asset_id and
 				(f.host = h.host or f.host = h.ip)
 				and f.id = ?
