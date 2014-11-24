@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk
+# Copyright 2014 Frank Breedijk, Alex Smirnoff
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ use IVIL;
 
 use Getopt::Long;
 use Carp;
+use Socket;
 use LWP::UserAgent;
 use HTML::TreeBuilder;
 use Data::Dumper;
@@ -109,7 +110,7 @@ while ( $todo ) {
 		if ($hosts{$url}->{status} < 1 ) {
 			# Fetch results
 			print "Fetching results for $url\n" if $verbose;
-			my $response = $ua->get("https://www.ssllabs.com/ssltest/analyze.html?d=$url");
+			my $response = $ua->get("https://www.ssllabs.com/ssltest/analyze.html?d=$url&ignoreMismatch=on");
 			$hosts{$url}->{data} = $response->content();
 		
 			my $p = HTML::TreeBuilder->new();
@@ -122,19 +123,23 @@ while ( $todo ) {
 				# Let see if multiple elements were returned
 				my $multi = $p->look_down('id','multiTable');
 				if ( $multi ) { # Lets add them all to the hash
-					# Disable main site
-					$hosts{$url}->{status} = 2;
 					print "$url has multiple IPs, adding them to the hostlist\n" if $verbose;
 					foreach my $ip ( $multi->look_down('class','ip') ) {
-						my $newurl = "$url&s=" . $ip->as_text();
-						print "Adding host $newurl to targets\n" if $verbose;
-						$hosts{$newurl}->{status}=0;
-						$todo = 1;
+						if (index ($url, "&s=" . $ip->as_text()) == -1) { # ugly hack
+							# Disable main site
+							$hosts{$url}->{status} = 3;
+							$url =~ s/\&s=.*//g;
+							my $newurl = "$url&s=" . $ip->as_text();
+							print "Adding host $newurl to targets\n" if $verbose;
+							$hosts{$newurl}->{status}=0;
+							$todo = 1;
+						} else {
+							print "IP is already in target $url\n" if $verbose;
+						}
 					}
 				} else {
 					my $warning = $p->look_down('id','warningBox');
-					if ( $warning ) {
-						
+					if ($warning) {
 						if ( $warning->as_text =~ /^ Please wait/ ) {
 							# Simply not finished yet
 							$todo = 1;
@@ -143,11 +148,11 @@ while ( $todo ) {
 							print "$url has certificate name mismatch, dropping from scan\n" unless $quiet;
 							# Disable site
 							$hosts{$url}->{status} = 2;
-						} else{
+						} else {
 							print "$url has unknown error: '" . $warning->as_text() . "', dropping from scan\n" unless $quiet;
 							# Disable site
 							$hosts{$url}->{status} = 2;
-						}
+						}	
 					} else {
 						my $warning = $p->look_down('class',"submitError");
 						if ( $warning ) {
@@ -177,26 +182,49 @@ print IOUT "<findings>\n";
 foreach my $url ( sort keys %hosts ) {
 	print "Processing results for $url\n" if $verbose;
 	my $finding = {};
-	$finding->{ip} = $url;
-	$finding->{ip} =~ s/\&/\-/g;
-	#$finding->{hostname} = $url;
+	$finding->{hostname} = $url;
+	$finding->{hostname} =~ s/\&.*//g;
 	$finding->{port} = "443/tcp";
 
-	# URL
-	$finding->{id} = "url";
-	$finding->{finding} = "https://www.ssllabs.com/ssltest/analyze.html?d=$url";
-	print IOUT ivil_finding($finding);
+
 	if ( $hosts{$url}->{status} == 1 ) { # Valid data
 		my $p = HTML::TreeBuilder->new();
 		$p -> parse($hosts{$url}->{data});
+
+		my ($hostip) = $p->look_down('class','ip');
+		$hostip = $hostip -> as_trimmed_text;
+		$hostip =~ s/[\(\)]//g;
+		$finding->{ip} = $hostip;
+
+		# URL
+		$finding->{id} = "url";
+		$finding->{finding} = "https://www.ssllabs.com/ssltest/analyze.html?d=$url&ignoreMismatch=on";
+		$finding->{severity} = 4;
+		print IOUT ivil_finding($finding);
 
 		# Ratings
 		$finding->{id} = "ratings";
 		my $txt = "";
 
 		my $rating = $p->look_down('id','rating');
+		if (!$rating) {
+			print "SOMETHING WENT REALLY WRONG";
+			$finding->{id} = "skipped";
+			$finding->{finding} = "$url was skipped due to internal error, please investigate";
+			print IOUT ivil_finding($finding);
+			next;
+		}
 		$rating = $rating->as_text;
 		$rating =~ s/Rating/Rating /;
+		if ($rating =~ /A-/) {
+			$finding->{severity} = 3;
+		} elsif ($rating =~ /A/) {
+			$finding->{severity} = 4;
+		} else {
+			$finding->{severity} = 2;
+		}
+			
+			
 		$txt = $rating;
 		$txt .= "\n\n";
 
@@ -211,22 +239,54 @@ foreach my $url ( sort keys %hosts ) {
 
 		print IOUT ivil_finding($finding);
 
-		# Warnings
-		$finding->{id} = "warnings";
-		my $txt = "";
-		my @warnings = $p->look_down('class','warningBox');
-		foreach my $warning ( @warnings ) {
-			$txt .= $warning->as_text() . "\n";
-		}
-		@warnings = $p->look_down('class','highlightBox');
-		foreach my $warning ( @warnings ) {
-			$txt .= $warning->as_text() . "\n";
-		}
-		$txt =~ s/[\xA0-\xFF]/ /g;
-		$txt =~ s/MORE INFO/ /g;
-		$finding->{finding} = $txt;
 
-		print IOUT ivil_finding($finding);
+		# Warnings
+		my @warnings = $p->look_down('class','reportSection')->look_down('class','warningBox');
+		if (@warnings) {
+			$finding->{id} = "warnings";
+			my $txt = "";
+			foreach my $warning ( @warnings ) {
+				$txt .= $warning->as_text() . "\n";
+			}
+			$txt =~ s/[\xA0-\xFF]/ /g;
+			$txt =~ s/MORE INFO/ /g;
+			$finding->{finding} = $txt;
+			$finding->{severity} = 2;
+
+			print IOUT ivil_finding($finding);
+		}
+
+		# Errors
+		@warnings = $p->look_down('class','reportSection')->look_down('class','errorBox');
+		if (@warnings) {
+			$finding->{id} = "errors";
+			my $txt = "";
+			foreach my $warning ( @warnings ) {
+				$txt .= $warning->as_text() . "\n" unless $warning->as_text() =~ /^ Due to a rectently discovered bug in Apple/;
+			}
+			$txt =~ s/[\xA0-\xFF]/ /g;
+			$txt =~ s/MORE INFO/ /g;
+			$finding->{finding} = $txt;
+			$finding->{severity} = 1;
+
+			print IOUT ivil_finding($finding);
+		}
+		#info
+		@warnings = $p->look_down('class','highlightBox');
+		if (@warnings) {
+			$finding->{id} = "info";
+			my $txt = "";
+			foreach my $warning ( @warnings ) {
+				$txt .= $warning->as_text() . "\n";
+			}
+			$txt =~ s/[\xA0-\xFF]/ /g;
+			$txt =~ s/MORE INFO/ /g;
+			$finding->{finding} = $txt;
+			$finding->{severity} = 4;
+
+			print IOUT ivil_finding($finding);
+		}
+
 
 		my $file = "$tempfile.$url.html";
 		$tempfile =~ s/\&/\-/g;
@@ -246,7 +306,11 @@ foreach my $url ( sort keys %hosts ) {
 	} else {
 		print "Skipping not processed url: $url\n" if $verbose;
 		$finding->{id} = "skipped";
-		$finding->{finding} = "This url was skipped due to an error";
+		if ( $hosts{$url}->{status} == 3 ) { 
+			$finding->{finding} = "$url was expanded to multiple IPs";
+		} else {
+			$finding->{finding} = "$url was skipped due to an error";
+		}
 		print IOUT ivil_finding($finding);
 	}
 }

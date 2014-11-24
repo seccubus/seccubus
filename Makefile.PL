@@ -1,5 +1,5 @@
 #/usr/bin/perl
-# Copyright 2013 Frank Breedijk
+# Copyright 2014 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ WriteMakefile (
 				'File::Basename'	=> 0.1,
 				'Socket'		=> 0.1,
 				'Net::SMTP'		=> 0.1,
+				'HTML::TreeBuilder'	=> 0.1,
 				'Net::IP'		=> 1.26
 			},
 	PM		=> { 
