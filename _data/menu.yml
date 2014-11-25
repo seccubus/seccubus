@@ -19,12 +19,10 @@
       url: /documentation#v2
     - text: FAQ
       url: /documentation#faq
-    - text: Mailing List
-      subitems:
-      - text: Subscribe
-        url: /mailing_list/subscribe/
-      - text: Archive
-        url: /mailing_list/archive/
+    - text: Subscribe to Mailing List
+      url: /mailing_list/subscribe/
+    - text: Mailing List Archive
+      url: /mailing_list/archive/
 
 
 - text: GitHub
