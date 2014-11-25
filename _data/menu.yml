@@ -1,11 +1,14 @@
+- text: News
+  url: /news/
+
 - text: About
   subitems:
-    - text: What is Seccubus?
-      url: /about/what-is-seccubus/
-    - text: About the authors
-      url: /about/about-the-authors/
-    - text: About the name
-      url: /about/about-the-name/
+  - text: What is Seccubus?
+    url: /about/what-is-seccubus/
+  - text: About the authors
+    url: /about/about-the-authors/
+  - text: About the name
+    url: /about/about-the-name/
 
 - text: Documentation
   url: /documentation
@@ -16,16 +19,24 @@
       url: /documentation#v2
     - text: FAQ
       url: /documentation#faq
+    - text: Mailing List
+      subitems:
+      - text: Subscribe
+        url: /mailing_list/subscribe/
+      - text: Archive
+        url: /mailing_list/archive/
 
-- text: Mailing List
-  subitems:
-    - text: Subscribe
-      url: /mailing_list/subscribe/
-    - text: Archieve
-      url: /mailing_list/archive/
 
-- text: News
-  url: /news/
-
-- text: Fork on GitHub
+- text: GitHub
   url: https://github.com/schubergphilis/Seccubus_v2/
+  subitems:
+  - text: Fork
+    url: https://github.com/schubergphilis/Seccubus_v2/
+  - text: Issue tracker
+    url: https://github.com/schubergphilis/Seccubus_v2/issues
+  - text: Download
+    url: https://github.com/schubergphilis/Seccubus_v2/releases
+
+- text: Download
+  url: https://github.com/schubergphilis/Seccubus_v2/releases
+  button: true
