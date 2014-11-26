@@ -70,7 +70,7 @@ foreach my $file ( @files ) {
 		chomp($type);
 		if ( $type =~ /Perl|shell script|ASCII|XML\s+document text|HTML document|script text|exported SGML document|Unicode text/i ) {
 			if ( ! $exclude{$file} ) {
-				if ( $file =~ /\.xml\..*\.example|config\.xml$/ ) {
+				if ( $file =~ /\.xml\..*\.example|\.xml$/ ) {
 					# License starts at line 2
 					is(checklic($file,2), 0, "Is the Apache license applied to $file");
 					$tests++;
