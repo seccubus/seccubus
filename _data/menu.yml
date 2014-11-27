@@ -1,26 +1,26 @@
 - text: News
-  url: /Seccubus_v2/news/
+  url: /news/
 
 - text: About
   subitems:
   - text: What is Seccubus?
-    url: /Seccubus_v2/about/what-is-seccubus/
+    url: /about/what-is-seccubus/
   - text: About the authors
-    url: /Seccubus_v2/about/about-the-authors/
+    url: /about/about-the-authors/
   - text: About the name
-    url: /Seccubus_v2/about/about-the-name/
+    url: /about/about-the-name/
 
 - text: Documentation
-  url: /Seccubus_v2/documentation
+  url: /documentation
   subitems:
     - text: Version 2
-      url: /Seccubus_v2/documentation#v2
+      url: /documentation#v2
     - text: FAQ
-      url: /Seccubus_v2/documentation#faq
+      url: /documentation#faq
     - text: Subscribe to Mailing List
-      url: /Seccubus_v2/mailing_list/subscribe/
+      url: /mailing_list/subscribe/
     - text: Mailing List Archive
-      url: /Seccubus_v2/mailing_list/archive/
+      url: /mailing_list/archive/
 
 
 - text: GitHub
