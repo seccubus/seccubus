@@ -11,6 +11,7 @@
 	
 	// if there's a failed assertion, don't run the rest of this test, just fail and move on
 	QUnit.log(function(data){
+		if(!window.FuncUnit) FuncUnit = {};
 		if(data.result === false) {
 			FuncUnit._queue = [];
 			start();
