@@ -21,19 +21,20 @@ module("Seccubus.UpToDate.List", {
 	}
 });
 
-test("delete up_to_dates", function(){
-	S('#create').click()
+test("up_to_dates", function(){
+	// S('#create').click()
 	
 	// wait until grilled cheese has been added
-	S('h3:contains(Grilled Cheese X)').exists();
-	
-	S.confirm(true);
-	S('h3:last a').click();
-	
-	
-	S('h3:contains(Grilled Cheese)').missing(function(){
-		ok(true,"Grilled Cheese Removed")
+	S('h1:contains(Seccubus.UpToDate.List Demo)').exists(function(){
+		ok(true, "up_to_date ok")
 	});
+	S.confirm(true);
+	// S('h3:last a').click();
+	
+	
+	// S('h3:contains(Configuration file)').missing(function(){
+	// 	ok(true,"Configuration file Removed")
+	// });
 	
 });
 

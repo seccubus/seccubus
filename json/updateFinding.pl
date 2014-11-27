@@ -23,6 +23,7 @@ use JSON;
 use lib "..";
 use SeccubusV2;
 use SeccubusFindings;
+use SeccubusNotifications;
 
 my $query = CGI::new();
 my $json = JSON->new();
@@ -65,6 +66,7 @@ eval {
 		"remark"	=> $remark,
 		"overwrite"	=> $overwrite,
 	);
+	if($status eq '3') { send_notification_from_finding($id); }
 	print $json->pretty->encode(\@data);
 } or do {
 	bye(join "\n", $@);

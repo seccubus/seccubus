@@ -152,7 +152,7 @@ $.Controller('Seccubus.Filter.Filter',
 			this.element.html(
 				this.view('error', {sStatus : this.options.status})
 			);
-		} else if ( this.options.scans == null ) {
+		} else if ( this.options.scans == null && this.options.assets == null ) {
 			this.element.html(
 				this.view('error', {sStatus : this.options.status})
 			);
@@ -163,6 +163,7 @@ $.Controller('Seccubus.Filter.Filter',
 					Seccubus.Models.Filter.findAll({
 						workspaceId	: this.options.workspace,
 						scanIds		: this.options.scans,
+						assetIds	: this.options.assets,
 						Status		: this.options.status,
 						Host		: this.options.host,
 						HostName	: this.options.hostName,

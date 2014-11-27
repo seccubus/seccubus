@@ -43,11 +43,16 @@
         </td><td class='noborder'>
                 <input type='password' size=78 name='password' id='editScanPassword' value='<%= password %>'/>
         </td></tr>
-	<tr><td class='noborder'>
+	<tr id="editScanTargetsPlace"><td class='noborder'>
 		<label for='targets'>Hosts</label> 
 	</td><td class='noborder'>
 		<textarea rows=5 cols=59 name='targets' id='editScanTargets'><%= targets %></textarea>
 	</td></tr>
+<!--	<tr id="editScanAssetsPlace"><td class='noborder'>
+		<label for='assets'>Assets</label> 
+	</td><td class='noborder'>
+		<select id='editScanAssets' MULTIPLE size="6" style="width:400px;" name='assets' ></select>
+	</td></tr> -->
 	<tr><td class='noborder' colspan=2 align='right'>
 		<input type='submit' value='Update'/>
 		<button type='button' class='cancel'>Cancel</button>

@@ -45,6 +45,11 @@ $.Controller('Seccubus.Status.Status',
 	 	 */
 		scans		: null,
 		/*
+	 	 * @attribute options.assets
+		 * Array of currently selected assets
+	 	 */
+		assets		: null,
+		/*
 	 	 * @attribute options.status
 		 * The current findStatus
 	 	 */
@@ -133,6 +138,7 @@ $.Controller('Seccubus.Status.Status',
 					Seccubus.Models.Status.findAll({
 						workspaceId	: this.options.workspace,
 						scanIds		: this.options.scans,
+						assetIds	: this.options.assets,
 						Host		: this.options.host,
 						HostName	: this.options.hostName,
 						Port		: this.options.port,
