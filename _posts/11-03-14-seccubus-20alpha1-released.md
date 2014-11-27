@@ -27,24 +27,24 @@ me out a great deal.
 
 Seccubus V2 is the next thing for the Seccubus project because:
 
-· Unlike V1 it actually has a design  
-· V2 uses a real relational database unlike V1 which used the filesystem as  
+* Unlike V1 it actually has a design  
+* V2 uses a real relational database unlike V1 which used the filesystem as  
 a hierarchical database  
-· The V2 web API is a real API which returns XML in stead of HTML thus  
+* The V2 web API is a real API which returns XML in stead of HTML thus  
 returning the X to AJAX..  
-· As quite a few people pointed out .I.m not a GUI designer.. Steve put  
+* As quite a few people pointed out .I.m not a GUI designer.. Steve put  
 together a great new user interface .That doesn.t suck..  
-· All imports into V2 are based on IVIL. This makes the scanners  
+* All imports into V2 are based on IVIL. This makes the scanners  
 extendible.  
-· Unlike V1, the V2 version does not require the webserver to be able to  
+* Unlike V1, the V2 version does not require the webserver to be able to  
 read files from the Seccubus user.  
-· Seccubus V2 has workspaces, which hold multiple scans of the same  
+* Seccubus V2 has workspaces, which hold multiple scans of the same  
 target.  
-· Seccubus V2 will have lots of new features in time:  
-o Importing scans (allready supported via CLI)  
-o Manual findings  
-o Issues that group multiple findings together  
-o Trouble ticket system integration  
-o Reporting  
-o Full audit trail
+* Seccubus V2 will have lots of new features in time:  
+    * Importing scans (allready supported via CLI)  
+    * Manual findings  
+    * Issues that group multiple findings together  
+    * Trouble ticket system integration  
+    * Reporting  
+    * Full audit trail
 

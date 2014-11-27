@@ -1,6 +1,6 @@
 ---
 layout: post
-title: New milestone\: Seccubus 2.0.beta1
+title: New milestone - Seccubus 2.0.beta1
 ---
 
 Here are the release notes:
@@ -25,8 +25,6 @@ New, less confusing, layout of Findings screen
 
 Bigs fixed (tickets closed)
 ----------------------------
-49 - Incorrect status selection possible in GUI for Gone findings
-<https://sourceforge.net/apps/trac/seccubus/ticket/49>
-58 - Cannot give GONE findings the status CLOSED
-<https://sourceforge.net/apps/trac/seccubus/ticket/58>
+* [49](https://sourceforge.net/apps/trac/seccubus/ticket/49) - Incorrect status selection possible in GUI for Gone findings
+* [58](https://sourceforge.net/apps/trac/seccubus/ticket/58) - Cannot give GONE findings the status CLOSED
 

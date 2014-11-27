@@ -12,10 +12,9 @@ application scanner.
 You can download the latest version from GitHub
 
 Key new features  
-———————————-  
-Added Skipfish Web-application scanner to Seccubus scanner tools
+---  
+* Added Skipfish Web-application scanner to Seccubus scanner tools
 
 Bugs fixed (tickets closed):  
-—————————-  
-#94 – Fix severity number
-
+---  
+* #94 – Fix severity number

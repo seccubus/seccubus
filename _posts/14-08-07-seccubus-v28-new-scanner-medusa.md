@@ -12,8 +12,8 @@ guys!
 A couple of bugs are now fixed thanks to Arkanoi and SphaZ
 
 Key new features / issues resolved  
-———————————-
+---
 
-Medusa is added to scanner tools thnx to Arkanoi  
-Added burp parser to ivil thnx to SphaZ
+* Medusa is added to scanner tools thnx to Arkanoi  
+* Added burp parser to ivil thnx to SphaZ
 

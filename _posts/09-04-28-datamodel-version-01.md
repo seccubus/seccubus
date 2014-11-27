@@ -8,6 +8,5 @@ There are some parts of programming which seem to go better without a computer
 at hand. Last weekend, during a quite moment I took pen and paper drew upthe
 first draft of the datamodel of Seccubus v2.
 
-![AutoNessus 2 datamodel v0.1](https://www.seccubus.com/wp-
-content/uploads/2009/04/DataModelv0.1.jpg)
+![AutoNessus 2 datamodel v0.1](../../../../assets/DataModelv0.1.jpg)
 

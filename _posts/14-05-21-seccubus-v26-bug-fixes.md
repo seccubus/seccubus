@@ -10,12 +10,12 @@ thank you guys.
 A couple of bugs are now fixed thanks to Arkanoi and SphaZ
 
 Key new features / issues resolved  
-———————————-  
+---
 Large Nessus scans failed  
 Password are not masked on screen
 
 Bugs fixed (tickets closed):  
-—————————-  
+---  
 Issue #105 – please mask scanner passwords  
 Issue #106 – long Nessus scan results are not loaded
 

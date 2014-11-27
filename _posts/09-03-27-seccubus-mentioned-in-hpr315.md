@@ -2,8 +2,7 @@
 layout: post
 title: Seccubus mentioned in HPR315
 ---
-# ![HPR
-Logo](http://www.hackerpublicradio.org/images/hpr_feed_small.png)Seccubus
+![HPR Logo](http://www.hackerpublicradio.org/images/hpr_feed_small.png)Seccubus
 (AutoNessus) was mentioned in Hacker Public Radio episode 315
 
 In [Hacker Publick Radio](http://www.hackerpublicradio.org/) [Episode

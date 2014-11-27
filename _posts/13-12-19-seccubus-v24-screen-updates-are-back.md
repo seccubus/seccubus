@@ -19,18 +19,15 @@ GitHub](https://github.com/schubergphilis/Seccubus_v2/releases/tag/v2.4)
 
 Release notes:
 
-    
-    
-    
-    19-12-20134 - 2.4 - Screen updates, restored
-    ---
-    
-    Key new features / issues resolved
-    ----------------------------------
-    A bug that broke the automatic updating of the GUI mast fixed
-    
-    Bugs fixed (tickets closed):
-    ----------------------------
-    #97 - Screen refresh doesn't work anywhere (basically)
-    
+---
 
+19-12-20134 - 2.4 - Screen updates, restored
+---
+
+Key new features / issues resolved
+----------------------------------
+* A bug that broke the automatic updating of the GUI mast fixed
+
+Bugs fixed (tickets closed):
+----------------------------
+* #97 - Screen refresh doesn't work anywhere (basically)

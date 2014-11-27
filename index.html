@@ -29,18 +29,23 @@ layout: default
 	the last scan with the findings of the previous scan. The delta of this scan is 
 	presented in a web GUI where findings can be easily marked as either real findings or 
 	non-issues. Non issues get ignored until they change. This causes a dramatic 
-	reduction in analysis time.</p>
+	reduction in analysis time.
+	
+	Before the results of a vulnerability scan are imported into Seccubus they are first 
+	converted to the Intermediate Vulnerability Information Language (IVIL) format, to make
+	sure Seccubus can work with many different scanners</p>
     </div>
-</section>
-<section class="main-content posts">
-    <div class="large-9 medium-10 small-11 small-centered column">
+    <div class="how">
         <h2>News</h2>
 	<ul>
             {% for post in site.posts %}
-	        <li>
-		    <a href="{{ post.url }}">{{ post.title }}</a>
-		</li>
+		{% if forloop.index <= 10 %} 
+	            <li>
+		        <a href="{{ post.url }}">{{ post.title }}</a>
+		    </li>
+		{% endif %}
             {% endfor %}
 	</ul>
+	<a href='news'>More news...</a>
     </div>
 </section>

@@ -11,41 +11,27 @@ version adresses three specific issues:
 
 Release notes:
 
-10-6-2012 – 2.0.beta4
-
 ---
 
-New features / Issues resolved
+10-6-2012 – 2.0.beta4
+===
 
-——————————
+New features / Issues resolved
+---
 
 Fixed major performance issues
 
 Fixed installer bug
 
 Bigs fixed (tickets closed):
+---
 
-—————————-
-
-[82](https://sourceforge.net/apps/trac/seccubus/ticket/82) – Install.pl fails
+* [82](https://sourceforge.net/apps/trac/seccubus/ticket/82) – Install.pl fails
 to write all necesary files
-
-[83](https://sourceforge.net/apps/trac/seccubus/ticket/83) – convert_v2_v2
-does not work with default install directory from RPM
-
-(/var/lib/seccubus)
-
-[84](https://sourceforge.net/apps/trac/seccubus/ticket/84) – getWorkspaces
+* [83](https://sourceforge.net/apps/trac/seccubus/ticket/83) – convert_v2_v2 does not work with default install directory from RPM (/var/lib/seccubus)
+* [84](https://sourceforge.net/apps/trac/seccubus/ticket/84) – getWorkspaces
 slow with large database
-
-[85](https://sourceforge.net/apps/trac/seccubus/ticket/85) – getScans slow
+* [85](https://sourceforge.net/apps/trac/seccubus/ticket/85) – getScans slow
 with large databases
-
-[86](https://sourceforge.net/apps/trac/seccubus/ticket/86) – getFindings slow
+* [86](https://sourceforge.net/apps/trac/seccubus/ticket/86) – getFindings slow
 with workspaces with lots of findings
-
-    
-    
-      
-    
-
