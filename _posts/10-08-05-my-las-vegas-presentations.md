@@ -5,15 +5,11 @@ title: My Las Vegas Presentations
 The slides of my presentations at DefCon 18 and Security B Sides Las Vegas are
 available for download.
 
-DefCon 18 – Seccubus – [PPTX (61MB)](https://www.seccubus.com/wp-
-content/uploads/2010/08/Seccubus%20DefCon%20v1%200.pptx) -[ PDF
-(4MB)](https://www.seccubus.com/wp-
-content/uploads/2010/08/Seccubus%20DefCon%20v1%200.pptx)
+DefCon 18 – Seccubus – [PPTX (61MB)](../../../../assets/Seccubus%20DefCon%20v1%200.pptx) - 
+[ PDF (4MB)](../../../../assets/Seccubus%20DefCon%20v1%200.pdf)
 
-BSidesLV – The road to hell -[ PPTX (17MB)](https://www.seccubus.com/wp-
-content/uploads/2010/08/The%20road%20to%20Hell%20v0.6.pptx) – [PDF
-(4MB)](https://www.seccubus.com/wp-
-content/uploads/2010/08/The%20road%20to%20Hell%20v0.6.pdf)
+BSidesLV – The road to hell -[ PPTX (17MB)](../../../../assets/The%20road%20to%20Hell%20v0.6.pptx) – 
+[PDF (4MB)](../../../../assets/The%20road%20to%20Hell%20v0.6.pdf)
 
 The recordings of the LiveStream of BSides LV are available for [Track
 1](http://www.livestream.com/BSidesLVTrack1), [Track

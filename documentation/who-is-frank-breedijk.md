@@ -4,9 +4,8 @@ category: faq
 layout: page
 title: Who is Frank Breedijk?
 ---
-![Black and White photo of Frank Breedijk](/wp-
-content/uploads/2008/02/frank%20in%20bandw_small.jpg)Frank Breedijk CISSP B
-ICT is employed as a Security Engineer at Schuberg Philis since 2006. He is
+![Black and White photo of Frank Breedijk](../../assets/frank%20in%20bandw_small.jpg)
+Frank Breedijk CISSP B ICT is employed as a Security Engineer at Schuberg Philis since 2006. He is
 responsible for the technical information security of Schuberg Philis Mission
 Critical outsourcing services. This includes, but is not limited to
 

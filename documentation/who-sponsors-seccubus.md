@@ -14,7 +14,3 @@ provided:
   * Many cups of coffee
   * The development hardware
   * Much much more…
-
-[AboveNet Netherlands](http://www.abovenet.nl/) is providing the bandwidth for
-this website.
-

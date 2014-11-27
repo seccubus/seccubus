@@ -19,41 +19,21 @@ that in the near future into either Seccubus v1, v2 or both.
 
 Here is the relevant portion of the change log:
 
+---
     
+18-03-2010
+===
+Seccubus v1.4.1 - Nessus 4.2 compatibility release - Thanks Isac Balder
     
-    18-03-2010
-    
-    
-      
-    Seccubus v1.4.1 - Nessus 4.2 compatibility release - Thanks Isac Balder
-    
-    
-    Ticket [ 2954813 ] - Parsing of hostnames
-    
-    
-    The get_hostnames routine of SeccubusWeb.pm does not parse the hostnames  
-    file correctly if it is a symlink to /etc/hosts.
-    
-    
-    An entry like:  
-    1.2.3.4 abcmadm1 abcmadm1.abc.local cvs #This is a comment
-    
-    
-    Returns 'abcmadm1 abcmadm1.abc.local cvs #This is a comment' as the  
-    hostname.
-    
-    
-    Ticket [ 2962660 ] - update-nessusrc not comptible with Nessus 4.2
-    
-    
-    Update-nessusrc did not handle Nessus 4.2 port 1241 connections right
-    
-    
-    Thanks to Isac Balder for providing a fixes update-nessusrc file
-    
-    
-    Ticket [ 2954186 ] - Still some AutoNessus references
-    
-    
-    Removed last autonessus references (I hope)
-
+* Ticket [ 2954813 ] - Parsing of hostnames
+The get_hostnames routine of SeccubusWeb.pm does not parse the hostnames  
+file correctly if it is a symlink to /etc/hosts.
+An entry like:  
+1.2.3.4 abcmadm1 abcmadm1.abc.local cvs #This is a comment
+Returns 'abcmadm1 abcmadm1.abc.local cvs #This is a comment' as the  
+hostname.
+* Ticket [ 2962660 ] - update-nessusrc not comptible with Nessus 4.2
+Update-nessusrc did not handle Nessus 4.2 port 1241 connections right
+Thanks to Isac Balder for providing a fixes update-nessusrc file
+* Ticket [ 2954186 ] - Still some AutoNessus references
+Removed last autonessus references (I hope)

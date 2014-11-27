@@ -26,14 +26,37 @@ scan with the findings of the previous scan. The results of this comparison
 are available in a web GUI  
 Findings have and can be tagged with one of the following statuses:
 
-**New ** | Finding was detected for the first time  
----|---  
-**Open ** | Finding was previously detected and has not been altered by the user  
-**Changed** | Flinging has changed since it was last detected. This status remains until it is changed by the user  
-**No Issue** | The finding does not pose any security risk and will remain this status until it changes. If the finding changes it will be marked as changed.  
-**Gone** | The finding had been found in a previous run, but has done been fixed in this run.  
-**Fixed ** | The finding has been fixed and should not reappear. If this finding reappears it will be marked as changed.  
-**Hard Masked** | The finding is bogus and will not leave this status unless the user changes it.  
+<table>
+	<tr><td>
+		New
+	</td><td>
+		Finding was detected for the first time
+	</td></tr> <tr><td>
+		Open
+	</td><td>
+		Finding was previously detected and has not been altered by the user  
+	</td></tr> <tr><td>
+		Changed
+	</td><td>
+		Finding has changed since it was last detected. This status remains until it is changed by the user  
+	</td></tr> <tr><td>
+		No Issue
+	</td><td>
+		The finding does not pose any security risk and will remain this status until it changes. If the finding changes it will be marked as changed.  
+	</td></tr> <tr><td>
+		Gone
+	</td><td>
+		The finding had been found in a previous run, but has done been fixed in this run.  
+	</td></tr> <tr><td>
+		Fixed
+	</td><td>
+		The finding has been fixed and should not reappear. If this finding reappears it will be marked as changed.  
+	</td></tr> <tr><td>
+		Hard masked
+	</td><td>
+		The finding is bogus and will not leave this status unless the user changes it.  
+	</td></tr>
+</table>
   
 Because the number of reported findings from Seccubus, especially on the
 second or later run, is much smaller then the number of findings of a regular
