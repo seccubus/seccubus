@@ -136,6 +136,7 @@ $.Model('Seccubus.GuiState',
 			this.attr("severity","*");
 			this.attr("finding","*");
 			this.attr("remark","*");
+			this.attr("assets","*");
 		}
 		return(ws);
 	}

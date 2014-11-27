@@ -329,6 +329,33 @@ sub run_scan($$;$$$) {
 			if ( $param =~ /\$WORKSPACE/ ) {
 				$param =~ s/\$WORKSPACE/$workspace/g;
 			}
+			if( $param =~ /\@ASSETS/ ){
+
+				my $assets = join ' ', map { $_->[0]; } @{sql(
+					"query"=>"SELECT a.ip
+						from asset_hosts a, asset2scan b
+						where b.asset_id = a.asset_id and b.scan_id = ? 
+						group by a.ip",
+					'values'=>[$scan_id]
+					)};
+				open TMP, ">$tempfile" or die "Unable to open $tempfile for write";
+				print TMP "$assets\n";
+				close TMP;
+				$param =~ s/\@ASSETS/$tempfile/g;
+			}
+
+			if( $param =~ /\$ASSETS/ ){
+
+				my $assets = join ' ', map { $_->[0]; } @{sql(
+					"query"=>"SELECT a.ip
+						from asset_hosts a, asset2scan b
+						where b.asset_id = a.asset_id and b.scan_id = ? 
+						group by a.ip",
+					'values'=>[$scan_id]
+					)};
+				$param =~ s/\$ASSETS/$assets/g;
+			}
+
 			if ( $param =~ /\$SCAN/ ) {
 				$param =~ s/\$SCAN/$scanname/g;
 			}
