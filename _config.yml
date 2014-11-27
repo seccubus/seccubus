@@ -3,6 +3,7 @@ paginate: 10
 name: Seccubus
 description: Easy Automated vulnerability scanning and reporting
 url: https://www.seccubus.com
+timezone: Europe/Amsterdam
 
 permalink: pretty
 paginate_path: "news/:num/"

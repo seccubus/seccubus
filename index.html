@@ -35,31 +35,12 @@ layout: default
 <section class="main-content posts">
     <div class="large-9 medium-10 small-11 small-centered column">
         <h2>News</h2>
-        {% for article in paginator.posts %}
-        <div class="post-entry">
-            <h3><a href="{{ article.url| prepend: site.baseurl }}" class="readmore">{{ article.title }}</a></h3>
-            <span class="published">
-                {{ article.date | date_to_long_string}}
-                {% if article.author %}
-                <span class="author">{{ article.author }}</span>
-                {% endif %}
-            </span>
-            <section class="post">
-                {{ article.excerpt }}
-            </section>
-            <a href="{{ article.url| prepend: site.baseurl }}" class="readmore">More...</a>
-        </div>
-        {% endfor %}
-        {% if paginator.total_pages > 1 %}
-        <div class="pagination">
-            {% if paginator.previous_page %}
-            <a class="newer" href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&laquo; Newer Posts</a>
-            {% endif %}
-
-            {% if paginator.next_page %}
-            <a class="older" href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Older Posts &raquo;</a>
-            {% endif %}
-        </div>
-        {% endif %}
+	<ul>
+            {% for post in site.posts %}
+	        <li>
+		    <a href="{{ post.url }}">{{ post.title }}</a>
+		</li>
+            {% endfor %}
+	</ul>
     </div>
 </section>
