@@ -21,19 +21,29 @@ module("Seccubus.Workspace.Table", {
 	}
 });
 
-test("delete workspaces", function(){
-	S('#create').click()
+test("edit workspace", function(){
+	// S('#create').click()
 	
 	// wait until grilled cheese has been added
-	S('h3:contains(Grilled Cheese X)').exists();
+	S('a:contains(Create Workspace)').exists();
+	// console.log(S('a.edit').length);
+	S('a.edit:first-child').click();
+	S('#editws input[name=name]').exists(function(){
+		ok(S('#editws input[name=name]').length,"exist name");
+		ok(S('#editws input[type=submit]').length,"exist submit button");
+		ok(S('#editws input[value=Cancel]').length,"exist cancel button");
+		
+		S('#editws input[value=Cancel]').click();
+
+	});
 	
 	S.confirm(true);
-	S('h3:last a').click();
+	// S('h3:last a').click();
 	
 	
-	S('h3:contains(Grilled Cheese)').missing(function(){
-		ok(true,"Grilled Cheese Removed")
-	});
+	// S('h3:contains(Grilled Cheese)').missing(function(){
+	// 	ok(true,"Grilled Cheese Removed")
+	// });
 	
 });
 

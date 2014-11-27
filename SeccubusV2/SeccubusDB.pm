@@ -167,6 +167,8 @@ sub sql(@) {
 		return $sth;
 	} elsif ( $arg{return} eq "array" ) {
 		return $sth->fetchrow_array();
+	} elsif ( $arg{return} eq 'arrayref') {
+		return $sth->fetchall_arrayref({});
 	} else {
 		return $sth->fetchall_arrayref();
 	}

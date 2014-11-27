@@ -45,6 +45,11 @@ $.Controller('Seccubus.Finding.Status',
 	 	 */
 		scans		: null,
 		/*
+	 	 * @attribute options.scan
+		 * Array of currently selected assets
+	 	 */
+		assets		: null,
+		/*
 	 	 * @attribute options.status
 		 * The current findStatus
 	 	 */
@@ -118,11 +123,12 @@ $.Controller('Seccubus.Finding.Status',
 	 * This function renders the controller
 	 */
 	updateView : function() {
+
 		if ( this.options.workspace < 0  ) {
 			this.element.html(
 				this.view('error', {sStatus : this.options.status})
 			);
-		} else if ( this.options.scans == null ) {
+		} else if ( this.options.scans == null && this.options.assets == null ) {
 			this.element.html(
 				this.view('error', {sStatus : this.options.status})
 			);
@@ -132,10 +138,12 @@ $.Controller('Seccubus.Finding.Status',
 					'init',
 					Seccubus.Models.Finding.findAll({
 						workspaceId	: this.options.workspace,
-						scanIds		: this.options.scans
+						scanIds		: this.options.scans,
+						assetIds	: this.options.assets
 					}),
 					{
 						fScans		: this.options.scans,
+						fAssets		: this.options.assets,
 						sStatus		: this.options.status,
 						fHost		: this.options.host,
 						fHostName	: this.options.hostName,
