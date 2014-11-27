@@ -12,7 +12,7 @@ layout: default
                 {% for p in site.pages%}
                     <ul>
                     {% if p.category == 'documentation' and p.version == 2 %}
-                        <li><a href="{{p.url}}">{{ p.title }}</a></li>
+                        <li><a href="{{p.url | prepend: site.baseurl }}">{{ p.title }}</a></li>
                     {% endif %}
                     </ul>
                 {% endfor %}
@@ -23,7 +23,7 @@ layout: default
                 {% for p in site.pages%}
                     <ul>
                     {% if p.category == 'faq' %}
-                        <li><a href="{{p.url}}">{{ p.title }}</a></li>
+                        <li><a href="{{p.url | prepend: site.baseurl }}">{{ p.title }}</a></li>
                     {% endif %}
                     </ul>
                 {% endfor %}
@@ -35,7 +35,7 @@ layout: default
                 {% for p in site.pages%}
                     <ul>
                     {% if p.category == 'licence' %}
-                        <li><a href="{{p.url}}">{{ p.title }}</a></li>
+                        <li><a href="{{p.url | prepend: site.baseurl }}">{{ p.title }}</a></li>
                     {% endif %}
                     </ul>
                 {% endfor %}
