@@ -27,7 +27,9 @@ my %exclude = (
 	"./NOTICE.txt"		=> "Part of the license",
 	"./ChangeLog.md"	=> "No license needed",
 	"./README.md"		=> "No license needed",
-	"./Development_environment.md"
+	"./docs/Development_environment.md"
+				=> "No license needed",
+	"./docs/Development_on_MacOS.md"
 				=> "No license needed",
 	"./LICENSE.txt"		=> "It is the license itself",
 	"./MANIFEST"		=> "Auto generated",
@@ -70,7 +72,7 @@ foreach my $file ( @files ) {
 		chomp($type);
 		if ( $type =~ /Perl|shell script|ASCII|XML\s+document text|HTML document|script text|exported SGML document|Unicode text/i ) {
 			if ( ! $exclude{$file} ) {
-				if ( $file =~ /\.xml\..*\.example|config\.xml$/ ) {
+				if ( $file =~ /\.xml\..*\.example|\.xml$/ ) {
 					# License starts at line 2
 					is(checklic($file,2), 0, "Is the Apache license applied to $file");
 					$tests++;
