@@ -1,5 +1,5 @@
 #
-# Copyright 2013 Frank Breedijk, Peter Slootweg, Glenn ten Cate, blabla1337
+# Copyright 2014 Frank Breedijk, Peter Slootweg, Glenn ten Cate, blabla1337
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,7 +42,6 @@ Source0:	http://downloads.sourceforge.net/project/%{name}/%{name}_v2/%{name}-%{v
 #BuildRequires:	
 Requires:	perl-Algorithm-Diff
 Requires:	perl-DBD-mysql
-Requires:	perl-CGI
 Requires:	perl-JSON
 Requires:	perl-XML-Simple
 Requires:	perl-libwww-perl

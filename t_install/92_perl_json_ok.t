@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk
+# Copyright 2014 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ foreach my $file ( @files ) {
 		chomp($type);
 		if ( $type =~ /Perl/i ) {
 			
-			like(`(cd tmp/install/seccubus/www/seccubus/json;perl -I$pwd/t -c '$file' 2>&1)`, qr/OK/, "Perl compile test: $file");
+			like(`(cd tmp/install/seccubus/www/seccubus/json;perl -c '$file' 2>&1)`, qr/OK/, "Perl compile test: $file");
 			$tests++;
 		}
 	}

@@ -1,5 +1,6 @@
+<?xml version="1.0"?>
 <!--
-     Copyright 2013 Frank Breedijk
+     Copyright 2014 Frank Breedijk
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<?xml version="1.0"?>
 <?xml-stylesheet href="file:///usr/share/nmap/nmap.xsl" type="text/xsl"?>
 <!-- Nmap 5.51 scan initiated Sat Aug 20 22:07:33 2011 as: /usr/bin/nmap -iL /home/seccubus/s2/tmp/hosts -oA /tmp/seccubus.28041 -O -sV -->
 <nmaprun scanner="nmap" args="/usr/bin/nmap -iL /home/seccubus/s2/tmp/hosts -oA /tmp/seccubus.28041 -O -sV" start="1313870853" startstr="Sat Aug 20 22:07:33 2011" version="5.51" xmloutputversion="1.03">
