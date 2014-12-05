@@ -314,7 +314,7 @@ sub run_scan($$;$$$) {
 			if ( ! -e $config->{paths}->{scanners} . "/$scanner/scan" ) {
 				die "Scan script for $scanner is not installed";
 			}
-			if ($scanner eq 'Nessus' || $scanner eq "NessusLegacy" || $scanner eq "OpenVAS") {
+			if ($scanner =~ /^Nessus/ || $scanner eq "OpenVAS") {
 				$param = $param .' --pw \''. $password. '\' ';
 			};
 			if ( $param =~ /\@HOSTS/ ) {
