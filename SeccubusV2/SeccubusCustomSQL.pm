@@ -33,8 +33,10 @@ use Exporter;
 		set_customsql
 	);
 
+use strict;
 use SeccubusDB;
 use SeccubusRights;
+use Carp;
 
 sub get_customsql($);
 sub get_savedsql();
