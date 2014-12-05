@@ -19,6 +19,9 @@
 use strict;
 use Test::More;
 
+my $travis = 0;
+$travis = 1 if ( `pwd` =~ /\/travis\// );
+
 my %exclude = (
 	"./SeccubusV2/IVIL.pm" 	=> "MIT Licensed project",
 	"./SeccubusV2/OpenVAS/OMP.pm" 	=> "Artistic License 2.0",
@@ -48,6 +51,7 @@ my %exclude = (
 	"./deb/seccubus.dsc"	=> "No comments supported",
 	"./Makefile"		=> "Generated",
 	"./junit_output.xml"	=> "Build file",
+	"./etc/config.xml"	=> "Local config file",
 );
 my $tests = 0;
 
@@ -76,24 +80,21 @@ foreach my $file ( @files ) {
 					# License starts at line 2
 					is(checklic($file,2), 0, "Is the Apache license applied to $file");
 					$tests++;
-					is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
-					$tests++;
 				} elsif ( $file =~ /jmvc\/.*\.md$/ ) {
 					# License starts at line 3
 					is(checklic($file,3), 0, "Is the Apache license applied to $file");
-					$tests++;
-					is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
 					$tests++;
 				} elsif ( $file =~ /\.ejs$/ ) {
 					# License starts at line 0
 					is(checklic($file,0), 0, "Is the Apache license applied to $file");
 					$tests++;
-					is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
-					$tests++;
 				} else {
 					# License starts at line 1
 					is(checklic($file,1), 0, "Is the Apache license applied to $file");
 					$tests++;
+				}
+				unless ( $travis ) {
+					# Travis does weird stuff with git
 					is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
 					$tests++;
 				}
