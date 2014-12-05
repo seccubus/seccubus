@@ -31,6 +31,9 @@ use REST::Client;
 use Data::Dumper;
 use LWP::Simple;
 
+sub help();
+sub make_timestamp();
+
 my (
 	$user,
 	$password,
@@ -47,6 +50,7 @@ my (
 	$quiet,
 	$sleep,
 	$cmd,
+	$nosslcheck,
    );
 
 # Default values for command line values
@@ -54,6 +58,7 @@ $help = 0;
 $quiet = 0;
 $sleep = 10;
 $verbose = 0;
+$nosslcheck = 0;
 
 GetOptions(	
 		'user|u=s'		=> \$user,
@@ -67,6 +72,7 @@ GetOptions(
 		'scan|sc=s'		=> \$scan,
 		'sleep=s'		=> \$sleep,
 		'nodelete'		=> \$nodelete,
+		'nosslcheck!'		=> \$nosslcheck,
 		'verbose|v+'		=> \$verbose,
 		'quiet|q!'		=> \$quiet,
 		'help'			=> \$help,
@@ -74,6 +80,9 @@ GetOptions(
 
 help() if $help;
 $verbose = 0 if $quiet;
+
+# Disable SSL checking if needed
+$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0 unless $nosslcheck;
 
 $port = 8834 unless $port;		 # Default port is 8834
 $password = $password2 unless $password; # Equalize the use of --pw
@@ -137,28 +146,51 @@ $client->GET("/editor/policy/templates", {
 die "Cannot get policy list" if ($client->responseCode() != 200);
 $json = decode_json($client->responseContent());
 
-my $puuid;
+my $tuuid;
+my $pid = -1;
 
 for my $pol (@{$json->{templates}} ) {
 	if ($pol->{name} eq $policy) {
-		$puuid = $pol->{uuid};
+		$tuuid = $pol->{uuid};
+		last;
 	}
 }
 
-if (!$puuid) {
+if (!$tuuid) {
+	$client->GET("/policies", {
+				'Content-Type' => 'application/json',
+			      	'Accept' => 'application/json',
+				'X-Cookie' => 'token=' . $token});
+
+	die "Cannot get policy list" if ($client->responseCode() != 200);
+	$json =	 decode_json($client->responseContent());
+
+	foreach my $pol (@{$json->{policies}} ) {
+		if ($pol->{name} eq $policy) {
+			$tuuid = $pol->{template_uuid};
+			$pid = $pol->{id};
+			last;
+		}
+	}
+	#die Dumper($json);
+}
+
+if (!$tuuid) {
 	die "Policy $policy not found";
 } else {
-	print "Found policy $policy as $puuid\n" if $verbose;
+	print "Found policy $policy as tempalte $tuuid policy $pid\n" if $verbose;
 }
 
 my $scandata = {
-	'uuid' 		=> $puuid,
+	'uuid' 		=> $tuuid,
 	'settings'	=> {
 		'name'		=> $tempscan,
 		'description'	=> 'Seccubus automated scan',
-#		'text_targets'  => '127.0.0.1'
 	}
 };
+if ( $pid != -1 ) {
+	$scandata->{settings}->{policy_id} = $pid;
+}
 
 if ( -e $hosts_file ) {			# Assume its a host spect rather then a
 					# hosts file if there is no file 
