@@ -29,8 +29,10 @@ Release notes
 
 ??-??-2014 - 2.11 - 
 ======================================
+Added asset management and the ability to execute custom SQL to Seccubus
 
 Bug Fixes
 ============================================
 * #141 - Multiple issues with Qualys SSLlabs scanner
 * #144 - Perl-CGI is bundled with perl 5.8 rpm's so no need to bundle it
+* #152 - Pull request for Asset management
