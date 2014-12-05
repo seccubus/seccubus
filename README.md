@@ -24,6 +24,9 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+Release notes
+=============
+
 ??-??-2014 - 2.11 - 
 ======================================
 
