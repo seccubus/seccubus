@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk
+# Copyright 2014 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,20 +21,9 @@ use Test::More;
 
 my $tests = 0;
 
-my @files = split(/\n/, `cd tmp/install/seccubus;find . -type f`);
+`rm -f errors.txt`;
 
-foreach my $file ( @files ) {
-	if ( $file !~ /\/\./ &&			# Skip hidden files
-	     $file !~ /\.(html|css|js|ejs|3pm|gif|jpg|png|pdf|doc|xml|nbe|txt)/i
-	     					# Skip know extensions
-	) { #skip hidden files
-		my $type = `file 'tmp/install/seccubus/$file'`;
-		chomp($type);
-		if ( $type =~ /Perl/i ) {
-			
-			like(`cd tmp/install/seccubus;perl -ISeccubusV2 -c '$file' 2>&1`, qr/OK/, "Perl compile test: $file");
-			$tests++;
-		}
-	}
-}
+ok("errors.txt removed");
+$tests++;
+
 done_testing($tests);
