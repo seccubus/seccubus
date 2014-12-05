@@ -46,7 +46,6 @@ sub get_findings($;$$$);
 sub get_finding($$;);
 sub get_status($$$;$);
 sub get_filters($$$;$);
-# sub get_finding($$;);
 sub update_finding(@);
 sub diff_finding($$$$$;);
 
@@ -103,8 +102,6 @@ sub get_findings($;$$$) {
 			LEFT JOIN severity on findings.severity = severity.id
 			LEFT JOIN finding_status on findings.status = finding_status.id
 			LEFT JOIN scans on scans.id = findings.scan_id
-			-- LEFT JOIN assets on assets.workspace_id = findings.workspace_id
- 			-- LEFT JOIN asset_hosts on asset_hosts.asset_id = assets.id and (asset_hosts.ip = findings.`host` or asset_hosts.`host` = findings.`host`)
 			WHERE
 				findings.workspace_id = ?";
 		if ( $scan_id != 0 ) {
