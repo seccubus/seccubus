@@ -39,11 +39,8 @@ WriteMakefile (
 				'Socket'		=> 0.1,
 				'Net::SMTP'		=> 0.1,
 				'HTML::TreeBuilder'	=> 0.1,
-<<<<<<< HEAD
 				'Net::IP'		=> 1.26
-=======
 				'REST::Client'		=> 0.1,
->>>>>>> master
 			},
 	PM		=> { 
 				'SeccubusV2.pm'				=> '$(INST_LIBDIR)/SeccubusV2.pm',
