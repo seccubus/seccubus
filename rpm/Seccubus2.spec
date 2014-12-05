@@ -46,6 +46,7 @@ Requires:	perl-JSON
 Requires:	perl-XML-Simple
 Requires:	perl-libwww-perl
 Requires:	perl-HTML-Tree
+Requires:	perl-REST-Client
 Requires:	httpd
 Requires:	mysql
 Requires:	ruby
