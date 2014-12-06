@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2014 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,13 @@ $.Controller('Seccubus.Finding.Filter',
 		 * - Special value: null - no scans selected
 		 */
 		scans		: null,
+		/*
+		 * @attribute options.assets
+		 * Array of selected assets
+		 * - Default value: null
+		 * - Special value: null - no assets selected
+		 */
+		assets		: null,
 		/*
 		 * @attribute options.status
 		 * Integer that determines the current status of the gui
@@ -151,7 +158,7 @@ $.Controller('Seccubus.Finding.Filter',
 			this.element.html(
 				this.view('error', {sStatus : this.options.status})
 			);
-		} else if ( this.options.scans == null ) {
+		} else if ( this.options.assets == null && this.options.scans == null  ){
 			this.element.html(
 				this.view('error', {sStatus : this.options.status})
 			);
@@ -161,7 +168,8 @@ $.Controller('Seccubus.Finding.Filter',
 					'init',
 					Seccubus.Models.Finding.findAll({
 						workspaceId	: this.options.workspace,
-						scanIds		: this.options.scans//,
+						scanIds		: this.options.scans,
+						assetIds	: this.options.assets //,
 						//Status		: this.options.status,
 						//Host		: this.options.host,
 						//HostName	: this.options.hostName,
@@ -174,6 +182,7 @@ $.Controller('Seccubus.Finding.Filter',
 					}), 
 					{
 						fScans : this.options.scans,
+						fAssets : this.options.assets,
 						fStatus : this.options.status,
 						fHost : this.options.host,
 						fHostName : this.options.hostName,

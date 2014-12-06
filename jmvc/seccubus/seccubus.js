@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2014 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,14 @@ steal(
 	'seccubus/notification/create',
 	'seccubus/notification/edit',
 	'seccubus/status/status',
+	'seccubus/asset/table',
+	'seccubus/asset/edit',
+	'seccubus/asset/create',
+	'seccubus/asset/host/create',
+	'seccubus/asset/host/edit',
+	'seccubus/asset/select',
+	'seccubus/custsql/table',
+	'seccubus/custsql/create',
 	function(){					// configure your application
 		/***********************************************************
 		 * Initialize gui state and hook into it
@@ -52,16 +60,22 @@ steal(
 		});
 		gui_state.bind("workspace", function(ev, ws){
 			render_scan_selectors();
+			render_asset_selectors();
 			render_scan_table();
 			render_scan_lists();
+			render_asset_table();
 			render_findings();
 			render_runs();
 			render_create_scan();
+			render_create_asset();
 			render_bulkedit();
 		});
 		gui_state.bind("scans", function(ev, scan){
 			render_findings();
 			render_runs();
+		});
+		gui_state.bind("assets", function(ev, asset){
+			render_findings();
 		});
 		gui_state.bind("findStatus", function(ev, scan){
 			render_findings();
@@ -88,7 +102,6 @@ steal(
 		gui_state.bind("remark", function(ev, scan){
 			render_findings();
 		});
-
 
 		/***********************************************************
 		 * Hook into findings model to update findings view that
@@ -158,9 +171,54 @@ steal(
 		render_scan_selectors();
 		$('.scanSelector').each( function() {
 			$(this).change(function() {
+				if(!$(this).val()) {
+					gui_state.attr("scans","");
+					return;
+				}
+				$('.assetSelector').val('');
 				var val = $(this).val();
+				gui_state.attr("assets",'');
 				gui_state.attr("scans",val);
 				$('.scanSelector').val(val);
+			});
+		});
+
+		render_asset_selectors();
+		$('.assetSelector').each( function() {
+			$(this).change(function() {
+				if(!$(this).val()) {
+					gui_state.attr("assets","");
+					return;
+				}
+				$('.scanSelector').val('');
+				var val = $(this).val();
+				gui_state.attr("scans",'');
+				gui_state.attr("assets",val);
+				
+				$('.assetSelector').val(val);
+			});
+		});
+
+		$('#custSQL_table').each(function(){
+			$(this).seccubus_custsql_table({
+				saveSQL: function(sql,updateView){
+					$("#widgetsModalMask").click();
+					$('#saveSQL').seccubus_custsql_create({
+						'sql':sql,
+						afterSave:updateView,
+						onClear:function(){
+							$("#widgetsModalMask").click();
+							// $('#modalDialog').widgets_modal({
+							// 	query : "#saveSQLDialog",
+							// 	close : true
+							// });
+						}
+					});
+					$('#modalDialog').widgets_modal({
+						query : '#saveSQLDialog',
+						close : true
+					});
+				}
 			});
 		});
 
@@ -204,6 +262,20 @@ steal(
 			}
 		});
 
+
+		// Setup create asset
+		$('.addAsset').click(function(){
+
+			if(gui_state.workspace == -1){
+				alert('Please select a workspace first');
+			} else{
+				$('#modalDialog').widgets_modal({
+					query: '#createAssetDialog',
+					close : true
+				})
+			}
+		})
+
 		/**********************************************************
 		 * Functions
 		 *********************************************************/
@@ -216,6 +288,14 @@ steal(
 		function render_scan_selectors() {
 			$('select.scanSelector').each( function() {
 				$(this).seccubus_scan_select({
+					workspace : gui_state.workspace
+				});
+			});
+		};
+
+		function render_asset_selectors() {
+			$('select.assetSelector').each( function() {
+				$(this).seccubus_asset_select({
 					workspace : gui_state.workspace
 				});
 			});
@@ -289,6 +369,7 @@ steal(
 			$('#finding_table').seccubus_finding_table({
 				workspace	: gui_state.workspace,
 				scans		: gui_state.scans,
+				assets 		: gui_state.assets,
 				status		: gui_state.findStatus,
 				host		: gui_state.host,
 				hostName	: gui_state.hostName,
@@ -319,10 +400,68 @@ steal(
 			});
 		};
 
+		function render_asset_table(){
+			$('#asset_table').each(function(){
+				$(this).seccubus_asset_table({
+					workspace : gui_state.workspace,
+					onEdit : function(as){
+						$('#editAsset').seccubus_asset_edit({
+							asset : as,
+							workspace : gui_state.workspace,
+							onClear	: function() {
+								$("#widgetsModalMask").click();
+							},
+							onHostCreate : function(ws,as){
+								$("#widgetsModalMask").click();
+								$('#createHostAsset').seccubus_asset_host_create({
+									asset : as,
+									workspace : gui_state.workspace,
+									onClear : function(){
+										$("#widgetsModalMask").click();
+										$('#modalDialog').widgets_modal({
+											query : "#editAssetDialog",
+											close : true
+										});
+									}
+								});
+								$('#modalDialog').widgets_modal({
+									query : "#createAssetHostDialog",
+									close : true
+								});
+
+							},
+							onHostEdit : function(ash){
+								$("#widgetsModalMask").click();
+								$('#editHostAsset').seccubus_asset_host_edit({
+									'host' : ash,
+									onClear:function(){
+										$("#widgetsModalMask").click();
+										$('#modalDialog').widgets_modal({
+											query : "#editAssetDialog",
+											close : true
+										});
+									}
+								});
+								$('#modalDialog').widgets_modal({
+									query : '#editAssetHostDialog',
+									close : true
+								})
+							}
+						});
+						$('#modalDialog').widgets_modal({
+							query : "#editAssetDialog",
+							close : true
+						});
+					}
+				});
+			});
+		};
+
 		function render_status() {
 			$('#status_buttons').seccubus_status_status({
 				workspace	: gui_state.workspace,
 				scans		: gui_state.scans,
+				assets 		: gui_state.assets,
 				status		: gui_state.findStatus,
 				host		: gui_state.host,
 				hostName	: gui_state.hostName,
@@ -341,6 +480,7 @@ steal(
 			$('#filters').seccubus_filter_filter({
 				workspace 	: gui_state.workspace,
 				scans		: gui_state.scans,
+				assets 		: gui_state.assets,
 				status		: gui_state.findStatus,
 				host		: gui_state.host,
 				hostName	: gui_state.hostName,
@@ -385,6 +525,15 @@ steal(
 				workspace	: gui_state.workspace,
 				onClear		: function() {
 					$("#widgetsModalMask").click();
+				}
+			});
+		};
+
+		function render_create_asset(){
+			$('#createAsset').seccubus_asset_create({
+				workspace 	: gui_state.workspace,
+				onClear 	: function(){
+					$('#widgetsModalMask').click();
 				}
 			});
 		};

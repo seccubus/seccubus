@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Frank Breedijk, Artien Bel (Ar0xA)
+ * Copyright 2014 Frank Breedijk, Artien Bel (Ar0xA), Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ steal(	'jquery/controller',
 	'seccubus/models',
 	'seccubus/scanner/select',
 	'seccubus/notification/table'
+	// ,'seccubus/asset/select'
 ).then(	'./views/init.ejs',
 	function($){
 
@@ -51,10 +52,10 @@ $.Controller('Seccubus.Scan.Edit',
 		 * Scan object that needs to be edited
 		 */
 		scan : null,
-		/* attribute options.onNotificationEdit
-		 * Function that is called when the edit link is click in the 
-		 * notification screen
+		/* attribute options.assets
+		 * Assets objects which are in workplace
 		 */
+
 		onNotificationEdit : function(not) {
 			alert("Seccubus.Scan.Edit: no edit function specified for notification id: " + not.id );
 		},
@@ -76,23 +77,37 @@ $.Controller('Seccubus.Scan.Edit',
 	init : function(){
 		this.updateView();
 	},
-	updateView : function() {
-		this.element.html(
-			this.view(
+	updateView:function(){
+		var to = this;
+		to.element.html(
+			to.view(
 				'init',
-				this.options.scan
+				to.options.scan
 			)
 		);
 		$('#editScanScanner').seccubus_scanner_select({
 			helpHere : '#editScanHelp',
 			paramsHere : '#defaultParams',
-			selected : this.options.scan.scanner
+			selected : to.options.scan.scanner
 		});
 		$('#editScanNotifications').seccubus_notification_table({
-			scan	: this.options.scan.id,
-			onEdit	: this.options.onNotificationEdit,
-			onCreate : this.options.onNotificationCreate
+			scan	: to.options.scan.id,
+			onEdit	: to.options.onNotificationEdit,
+			onCreate : to.options.onNotificationCreate
 		});
+		// Seccubus.Models.Asset2Scan.findAll({
+		// 	scanid:to.options.scan.id,
+		// 	workspace : to.options.workspace},
+		// 	function(selAssets){
+		// 		var selAssObj = {};
+		// 		$.map(selAssets,function(val){ selAssObj[val['asset_id']] = true; });
+		// 		$('#editScanAssets').seccubus_asset_select({
+		// 	 		workspace : to.options.workspace,
+		// 	 		selected : selAssObj
+		// 		});
+
+		// 	})
+		
 	},
 	submit : function(el, ev){
 		ev.preventDefault();
@@ -111,15 +126,22 @@ $.Controller('Seccubus.Scan.Edit',
 			elements.push("#editScanScanner", "#editScanOtherScanner");
 			ok = false;
 		}
-		
-		if ( params.parameters == '' ) {
+		var paramStr = params.parameters;
+		if ( paramStr == '' ) {
 			elements.push("#editScanParam");
 			ok = false;
 		}
-		if ( params.targets == '' ) {
+		if( ( paramStr.indexOf('@HOSTS') != -1 || paramStr.indexOf('$HOSTS') != -1  ) && params.targets == ''){
 			elements.push("#editScanTargets");
 			ok = false;
 		}
+		// console.log("Assets: "+params.assets);
+		// if( (paramStr.indexOf('$ASSETS') != -1 || paramStr.indexOf('@ASSETS') != -1) && (params.assets == null) ){
+		// 	elements.push('#editScanAssets');
+		// 	ok = false;
+		// 	console.log("Assets False");
+		// }
+		
 		if ( ok ) {
 			this.element.find('[type=submit]').val('Updating...')
 
@@ -129,7 +151,11 @@ $.Controller('Seccubus.Scan.Edit',
 			sc.parameters = params.parameters;
 			sc.password = params.password;
 			sc.targets = params.targets;
-			
+			// sc.assets = params.assets;
+			// Seccubus.Models.Asset2Scan.update({
+			// 	id:sc.id,
+			// 	assets:params.assets
+			// })
 			sc.save(this.callback('saved'));
 		} else {
 			this.nok(elements);

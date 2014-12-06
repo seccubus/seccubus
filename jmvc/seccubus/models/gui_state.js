@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2014 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -136,6 +136,7 @@ $.Model('Seccubus.GuiState',
 			this.attr("severity","*");
 			this.attr("finding","*");
 			this.attr("remark","*");
+			this.attr("assets","*");
 		}
 		return(ws);
 	}

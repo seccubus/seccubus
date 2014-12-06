@@ -1,0 +1,512 @@
+/*
+Copyright 2014 Frank Breedijk, Petr
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+--
+-- Table structure for table `assets`
+--
+
+CREATE TABLE IF NOT EXISTS  `assets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `workspace_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `hosts` longtext,
+  `recipients` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_assets_workspace` (`workspace_id`)
+) ENGINE=InnoDB;
+
+LOCK TABLES `assets` WRITE;
+/*!40000 ALTER TABLE `assets` DISABLE KEYS */;
+/*!40000 ALTER TABLE `assets` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+--
+-- Table structure for table `asset2scan`
+--
+
+CREATE TABLE IF NOT EXISTS  `asset2scan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `asset_id` int(11) NOT NULL DEFAULT '0',
+  `scan_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `fk_asset2scan_asset_id` (`asset_id`),
+  KEY `fk_asset2scan_scan_id` (`scan_id`)
+) ENGINE=InnoDB;
+
+LOCK TABLES `asset2scan` WRITE;
+/*!40000 ALTER TABLE `asset2scan` DISABLE KEYS */;
+/*!40000 ALTER TABLE `asset2scan` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+--
+-- Table structure for table `asset_hosts`
+--
+
+CREATE TABLE IF NOT EXISTS `asset_hosts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `asset_id` int(11) NOT NULL DEFAULT '0',
+  `ip` varchar(16) NOT NULL,
+  `host` varchar(255) DEFAULT NULL,
+  `auto_gen` INT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `fk_asset_hosts_asset_id` (`asset_id`),
+  KEY `fk_asset_hosts_ip` (`ip`),
+  KEY `fk_asset_hosts_host` (`host`),
+  KEY `fk_asset_hosts_auto_gen` (`auto_gen`)
+) ENGINE=InnoDB;
+
+LOCK TABLES `asset_hosts` WRITE;
+/*!40000 ALTER TABLE `asset_hosts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `asset_hosts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `attachments`
+--
+
+DROP TABLE IF EXISTS `attachments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `attachments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `run_id` int(11) NOT NULL,
+  `name` longtext CHARACTER SET latin1 NOT NULL,
+  `description` longtext CHARACTER SET latin1,
+  `data` longblob NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_attachments_runs1_idx` (`run_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `checkpoints`
+--
+
+DROP TABLE IF EXISTS `checkpoints`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `checkpoints` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `workspace_id` int(11) NOT NULL,
+  `label` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `tags` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_checkpoints_workspaces1_idx` (`workspace_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `config`
+--
+
+DROP TABLE IF EXISTS `config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `config` (
+  `name` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `value` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
+-- Table structure for table `customsql`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE IF NOT EXISTS `customsql` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` CHAR(255) NULL,
+  `sql` TEXT NULL,
+  PRIMARY KEY (`id`));
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
+-- Table structure for table `events`
+--
+
+DROP TABLE IF EXISTS `events`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `events` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `finding_changes`
+--
+
+DROP TABLE IF EXISTS `finding_changes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `finding_changes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `finding_id` int(11) NOT NULL,
+  `finding` longtext,
+  `remark` longtext,
+  `severity` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `run_id` int(11) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_finding_changes_findings1_idx` (`finding_id`),
+  KEY `fk_finding_changes_finding_status1_idx` (`status`),
+  KEY `fk_finding_changes_severity1_idx` (`severity`),
+  KEY `fk_finding_changes_users1_idx` (`user_id`),
+  KEY `fk_finding_changes_runs1_idx` (`run_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `finding_status`
+--
+
+DROP TABLE IF EXISTS `finding_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `finding_status` (
+  `id` int(11) NOT NULL,
+  `name` char(20) NOT NULL,
+  `description` char(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `findings`
+--
+
+DROP TABLE IF EXISTS `findings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `findings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `workspace_id` int(11) NOT NULL,
+  `scan_id` char(20) NOT NULL,
+  `host` char(255) NOT NULL,
+  `port` char(20) NOT NULL,
+  `plugin` char(255) NOT NULL,
+  `finding` longtext,
+  `remark` longtext,
+  `severity` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `run_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_findings_sessions1_idx` (`workspace_id`),
+  KEY `fk_findings_scans1_idx` (`scan_id`),
+  KEY `fk_findings_finding_status1_idx` (`status`),
+  KEY `fk_findings_severity1_idx` (`severity`),
+  KEY `fk_findings_runs1_idx` (`run_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `groups`
+--
+
+DROP TABLE IF EXISTS `groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` char(255) NOT NULL,
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `host_names`
+--
+
+DROP TABLE IF EXISTS `host_names`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `host_names` (
+  `workspace_id` int(11) NOT NULL,
+  `ip` char(16) NOT NULL,
+  `name` char(255) NOT NULL,
+  PRIMARY KEY (`workspace_id`,`ip`),
+  KEY `fk_hosts_sessions1_idx` (`workspace_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `issue2finding_changes`
+--
+
+DROP TABLE IF EXISTS `issue2finding_changes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `issue2finding_changes` (
+  `issue_id` int(11) NOT NULL,
+  `finding_id` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY `fk_issue2finding_changes_issues1_idx` (`issue_id`),
+  KEY `fk_issue2finding_changes_findings1_idx` (`finding_id`),
+  KEY `fk_issue2finding_changes_issue_status1_idx` (`status`),
+  KEY `fk_issue2finding_changes_users1_idx` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `issue_changes`
+--
+
+DROP TABLE IF EXISTS `issue_changes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `issue_changes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `issue_id` int(11) NOT NULL,
+  `name` char(255) NOT NULL,
+  `ext_ref` char(255) DEFAULT NULL,
+  `description` longtext,
+  `severity` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_issue_changes_issues1_idx` (`issue_id`),
+  KEY `fk_issue_changes_issue_status1_idx` (`status`),
+  KEY `fk_issue_changes_severity1_idx` (`severity`),
+  KEY `fk_issue_changes_users1_idx` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `issue_status`
+--
+
+DROP TABLE IF EXISTS `issue_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `issue_status` (
+  `id` int(11) NOT NULL,
+  `name` char(20) NOT NULL,
+  `description` char(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `issues`
+--
+
+DROP TABLE IF EXISTS `issues`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `issues` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `session_id` int(11) NOT NULL,
+  `name` char(255) NOT NULL,
+  `ext_ref` char(255) DEFAULT NULL,
+  `description` longtext,
+  `severity` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_issues_issue_status1_idx` (`status`),
+  KEY `fk_issues_severity1_idx` (`severity`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `issues2findings`
+--
+
+DROP TABLE IF EXISTS `issues2findings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `issues2findings` (
+  `issue_id` int(11) NOT NULL,
+  `finding_id` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  KEY `fk_issue2finding_findings1_idx` (`finding_id`),
+  KEY `fk_issue2finding_issues1_idx` (`issue_id`),
+  KEY `fk_issue2finding_issue_status1_idx` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `notifications`
+--
+
+DROP TABLE IF EXISTS `notifications`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `scan_id` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `recipients` varchar(1024) NOT NULL,
+  `message` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_notifications_scans1_idx` (`scan_id`),
+  KEY `fk_notifications_events1_idx` (`event_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `rights`
+--
+
+DROP TABLE IF EXISTS `rights`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rights` (
+  `workspace_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  `allow_read` int(1) NOT NULL,
+  `allow_write` int(1) NOT NULL,
+  KEY `fk_rights_groups1_idx` (`group_id`),
+  KEY `fk_rights_sessions1_idx` (`workspace_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `runs`
+--
+
+DROP TABLE IF EXISTS `runs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `runs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `scan_id` int(11) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_runs_scans1_idx` (`scan_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `scans`
+--
+
+DROP TABLE IF EXISTS `scans`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `scans` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` char(255) NOT NULL,
+  `scannername` char(255) NOT NULL,
+  `scannerparam` char(255) DEFAULT NULL,
+  `password` char(255) DEFAULT NULL,
+  `targets` longtext,
+  `workspace_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_scans_workspaces1_idx` (`workspace_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `severity`
+--
+
+DROP TABLE IF EXISTS `severity`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `severity` (
+  `id` int(11) NOT NULL,
+  `name` char(20) NOT NULL,
+  `description` char(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user2group`
+--
+
+DROP TABLE IF EXISTS `user2group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user2group` (
+  `user_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  KEY `fk_user2group_users_idx` (`user_id`),
+  KEY `fk_user2group_groups1_idx` (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` char(255) DEFAULT NULL,
+  `name` char(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `workspaces`
+--
+
+DROP TABLE IF EXISTS `workspaces`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `workspaces` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` char(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2014-08-27 10:44:26

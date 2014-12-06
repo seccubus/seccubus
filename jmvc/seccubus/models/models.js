@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2014 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 // steal model files
+
 steal(	"jquery/model", 
 	'./up_to_date.js', 
 	'./config_item.js',
@@ -27,4 +28,9 @@ steal(	"jquery/model",
 	'./history.js', 
 	'./run.js',
 	'./event.js',
-	'./notification.js')
+	'./notification.js',
+	'./asset.js',
+	'./asset_host.js',
+	'./asset2scan.js',
+	'./custsql.js',
+	'./savedsql.js')

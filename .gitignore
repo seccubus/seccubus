@@ -29,3 +29,5 @@ www/seccubus/*
 www/steal
 junit_output.xml
 etc/config.xml
+logs
+jmvc/testresults.xml

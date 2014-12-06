@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2014 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,11 @@ $.Controller('Seccubus.Finding.Table',
 		 * Array of selected scans, null is no scans selected
 		 */
 		scans		: null,
+		/*
+		 * @attribute options.assets
+		 * Array of selected assets, null is no assets selected
+		 */
+		assets		: null,
 		/*
 		 * @attribute options.status
 		 * The current status, prevents incorrect status selections
@@ -105,6 +110,7 @@ $.Controller('Seccubus.Finding.Table',
 		 */
 		columns		: [ 	"", "select",
 					"host", "IP", 
+					"scanName","ScanName",
 					"hostName", "HostName", 
 					"port", "Port", 
 					"plugin", "Plugin", 
@@ -164,13 +170,13 @@ $.Controller('Seccubus.Finding.Table',
 					checked		: this.options.checked
 				})
 			);
-		} else if ( this.options.scans == null ) {
+		} else if ( this.options.scans == null && this.options.assets == null ) {
 			this.element.html(
 				this.view('error',{
 					columns		: this.options.columns,
 					orderBy		: this.options.orderBy,
 					descending	: this.options.descending,
-					message 	: "Please select one or more scans",
+					message 	: "Please select one or more scans or assets",
 					checked		: this.options.checked
 				})
 			);
@@ -181,6 +187,7 @@ $.Controller('Seccubus.Finding.Table',
 					Seccubus.Models.Finding.findAll({
 						workspaceId	: this.options.workspace,
 						scanIds		: this.options.scans,
+						assetIds	: this.options.assets,
 						Status		: this.options.status,
 						Scans		: this.options.scans,
 						Host		: this.options.host,
@@ -328,10 +335,12 @@ $.Controller('Seccubus.Finding.Table',
 	sortFunc : function(at, rev) {
 		var fn;
 		if ( at == "host" ) {
-			var lines = this.hostSort.toString().split('\n');
-			lines[0] = "\n";
-			lines[lines.length-2] = "";
-			fn = lines.join('\n');
+			var funcStr = this.hostSort.toString(); //.split('\n');
+			fn = funcStr.substring(funcStr.indexOf("{") + 1, funcStr.lastIndexOf("}"));
+			// var lines = this.hostSort.toString().split('\n');
+			// lines[0] = "\n";
+			// lines[lines.length-2] = "";
+			// fn = lines.join('\n');
 		} else {
 			fn = "if (a.attr('" + at + "') < b.attr('" + at + "')) { return -1; } else if ( a.attr('" + at + "') == b.attr('" + at + "')) { return 0; } else { return 1; }";
 		}

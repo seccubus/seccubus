@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2014 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,16 @@ module("Seccubus.Scan.Create", {
 
 test("create scans", function(){
 	S("[name=name]").type("Ice Water");
-	S("[name=description]").type("Pour water in a glass. Add ice cubes.");
+	S("[name=parameters]").type('Parameters');
+	S("[name=targets]").type('127.0.0.1 192.168.0.1');
+	S("select[name=scanner] option[value=Medusa]").click();
+	S("[name=password]").type("Password");
 	S("[type=submit]").click();
 	S('h3:contains(Ice Water)')
 		.exists(function(){
 			ok(true, "Ice Water added");
 			equals(S("[name=name]").val() , "", "form reset");
-			equals(S("[name=description]").val() , "", "form reset");
+			// equals(S("[name=description]").val() , "", "form reset");
 		})
 });
 

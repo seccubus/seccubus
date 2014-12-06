@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2013 Frank Breedijk, Steve Launius
+# Copyright 2014 Frank Breedijk, Steve Launius, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,10 +42,10 @@ use JSON;
 use strict;
 use Carp;
 
-sub get_findings($;$$);
-sub get_status($$;$);
-sub get_filters($$;$);
+sub get_findings($;$$$);
 sub get_finding($$;);
+sub get_status($$$;$);
+sub get_filters($$$;$);
 sub update_finding(@);
 sub diff_finding($$$$$;);
 
@@ -78,32 +78,63 @@ Must have at least read rights
 
 =cut
 
-sub get_findings($;$$) {
+sub get_findings($;$$$) {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_id = shift;
+	my $asset_id = shift;
 	my $filter = shift;
 
 	if ( may_read($workspace_id) ) {
 		my $params = [ $workspace_id, $workspace_id ];
 
 		my $query = "
-			SELECT DISTINCT findings.id, host, host_names.name as hostname, 
+			SELECT DISTINCT findings.id, findings.host, host_names.name as hostname, 
 				port, plugin, finding, remark, 
 				findings.severity as severity_id, 
 				severity.name as severity_name, 
 				findings.status as status_id, 
 				finding_status.name as status,
-				findings.scan_id as scan_id
+				findings.scan_id as scan_id,
+				scans.name as scan_name
 			FROM
 				findings
 			LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
 			LEFT JOIN severity on findings.severity = severity.id
 			LEFT JOIN finding_status on findings.status = finding_status.id
+			LEFT JOIN scans on scans.id = findings.scan_id
 			WHERE
 				findings.workspace_id = ?";
 		if ( $scan_id != 0 ) {
 			$query .= " AND findings.scan_id = ? ";
 			push @$params, $scan_id;
+		}
+		if($asset_id != 0){
+			$query = "
+			SELECT DISTINCT findings.id, findings.host, host_names.name as hostname, 
+				port, plugin, finding, remark, 
+				findings.severity as severity_id, 
+				severity.name as severity_name, 
+				findings.status as status_id, 
+				finding_status.name as status,
+				findings.scan_id as scan_id,
+				scans.name as scan_name
+			FROM
+				findings
+				LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
+				LEFT JOIN severity on findings.severity = severity.id
+				LEFT JOIN finding_status on findings.status = finding_status.id
+				LEFT JOIN scans on scans.id = findings.scan_id,
+				assets,
+				asset_hosts
+			
+			WHERE
+				findings.workspace_id = ? AND
+				assets.workspace_id = findings.workspace_id AND
+				asset_hosts.asset_id = assets.id and (asset_hosts.ip = findings.`host` or asset_hosts.`host` = findings.`host`)
+				";
+			$query .= "AND assets.id = ?";
+			push @$params, $asset_id;
+
 		}
 
 		if ( $filter ) {
@@ -113,7 +144,7 @@ sub get_findings($;$$) {
 			}
 			if ( $filter->{host} ) {
 				$filter->{host} =~ s/\*/\%/;
-				$query .= " AND host LIKE ? ";
+				$query .= " AND findings.host LIKE ? ";
 				push @$params, $filter->{host};
 			}
 			if ( defined $filter->{hostname} ) {
@@ -171,6 +202,8 @@ given a specific filter
 
 =item scan_ids - reference to an araay of scan ids
 
+=item asset_ids - reference to an araay of asset ids
+
 =item filter - reference to a hash containing filters
 
 =back 
@@ -183,12 +216,13 @@ Must have at least read rights
 
 =cut
 
-sub get_status($$;$) {
+sub get_status($$$;$) {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_ids = shift;
+	my $asset_ids = shift;
 	my $filter = shift;
 
-	die "Must specify scanids for function get_status" unless @$scan_ids;
+	die "Must specify scanids or assetids for function get_status" unless (@$scan_ids or @$asset_ids);
 
 	if ( may_read($workspace_id) ) {
 		my $params;
@@ -198,16 +232,22 @@ sub get_status($$;$) {
 			SELECT	finding_status.id, finding_status.name, count(findings.id)
 			FROM
 				finding_status
-			LEFT JOIN findings on ( findings.status =  finding_status.id AND findings.workspace_id = ?";
-		$query .= " AND findings.scan_id in ( ? ";
+			LEFT JOIN findings on ( findings.status =  finding_status.id AND findings.workspace_id = ? ";
 
-		push @$params, shift ( @$scan_ids );
-		while ( @$scan_ids ) {
-			$query .= " , ? ";
-			push @$params, shift ( @$scan_ids );
+		if(@$asset_ids){
+			$query .= "AND findings.`host` in (";
+			$query .= "select ip from asset_hosts ho where asset_id in (";
+			$query .= join ",", map { push @$params,$_; '?'; } @$asset_ids;
+			$query .= " ) union ";
+			$query .= "select `host` from asset_hosts ho where asset_id in (";
+			$query .= join ",", map { push @$params,$_; '?'; } @$asset_ids;
+			$query .= ")";
+			$query .= ")";
+		} else{
+			$query .= " AND findings.scan_id in (  ";	
+			$query .= join ",", map { push @$params,$_; '?'; } @$scan_ids if(@$scan_ids);	
+			$query .= " ) ";
 		}
-		$query .= " ) ";
-		
 		if ( $filter ) {
 			if ( $filter->{host} ) {
 				$filter->{host} =~ s/\*/\%/;
@@ -236,6 +276,8 @@ sub get_status($$;$) {
 			}
 
 		$query .= " ) ";
+
+				
 
 		$query .= "
 			LEFT JOIN host_names on ( host_names.ip = host and host_names.workspace_id = ?";
@@ -277,6 +319,8 @@ This function returns an hash of filters needed with a specific filter given a s
 
 =item scan_ids - reference to an araay of scan ids
 
+=item asset_ids - reference to an araay of scan ids
+
 =item filter - reference to a hash containing filter
 
 =back 
@@ -289,9 +333,11 @@ Must have at least read rights
 
 =cut
 
-sub get_filters($$;$) {
+sub get_filters($$$;$) {
 	my $workspace_id = shift or die "No workspace_id provided";
-	my $scan_ids = shift or die "Must specify scanids for function get_status";
+	my $scan_ids = shift;
+	my $asset_ids = shift;
+	if(!$scan_ids && !$asset_ids)  { die "Must specify scanids or assetids for function get_status"; }
 	my $filter = shift;
 
 
@@ -302,6 +348,10 @@ sub get_filters($$;$) {
 		my %filters;
 		foreach my $scan ( @$scan_ids ) {
 			my $finds = get_findings($workspace_id,$scan);
+			push @findings, @$finds;
+		}
+		foreach my $asset ( @$asset_ids ){
+			my $finds = get_findings($workspace_id,undef,$asset);
 			push @findings, @$finds;
 		}
 		foreach my $find ( @findings ) {
@@ -683,6 +733,8 @@ parameter list with the following parameters:
 =item run_id      
 
 =item scan_id     - Manditory if no finding_id is given
+
+=item asset_id     - Manditory if no finding_id is given
 
 =item host        - Manditory if no finding_id is given
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2014 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/workspace.js", fun
 		expect(7);
 		stop();
 		Seccubus.Models.Workspace.findAll({}, function(workspaces){
-			ok(workspaces)
+				ok(workspaces)
 		        ok(workspaces.length)
 		        ok(workspaces[0].id)
 		        ok(workspaces[0].name)
@@ -33,7 +33,7 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/workspace.js", fun
 	})
 	
 	test("create", function(){
-		expect(0)
+		expect(3)
 		stop();
 		new Seccubus.Models.Workspace({name: "dry cleaning", description: "take to street corner"}).save(function(workspace){
 			ok(workspace);
@@ -44,7 +44,7 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/workspace.js", fun
 		})
 	})
 	test("update" , function(){
-		expect(0);
+		expect(2);
 		stop();
 		new Seccubus.Models.Workspace({name: "cook dinner", description: "chicken"}).
 	            save(function(workspace){
@@ -58,7 +58,7 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/workspace.js", fun
 	
 	});
 	test("destroy", function(){
-		expect(0);
+		expect(1);
 		stop();
 		new Seccubus.Models.Workspace({name: "mow grass", description: "use riding mower"}).
 	            destroy(function(workspace){
