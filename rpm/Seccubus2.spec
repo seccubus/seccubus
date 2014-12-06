@@ -46,6 +46,7 @@ Requires:	perl-JSON
 Requires:	perl-XML-Simple
 Requires:	perl-libwww-perl
 Requires:	perl-HTML-Tree
+Requires:	perl-Net-IP
 Requires:	perl-REST-Client
 Requires:	httpd
 Requires:	mysql
@@ -196,6 +197,8 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 %{vardir}
 
 %changelog
+* Fri Dec 5 2014 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Added dependancies for Nessus6 interface and Assets
 * Tue Sep 23 2014 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Making it a lot simpler
 * Mon Aug 18 2014 Frank Breedijk <fbreedijk@schubergphilis.com>

@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk
+# Copyright 2014 Frank Breedijk, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ use JSON;
 sub result($$$$);
 sub bye($);
 
-my $current_db_version = 5;
+my $current_db_version = 6;
 my $query = CGI::new();
 my $json = JSON->new();
 

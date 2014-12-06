@@ -31,13 +31,15 @@ Release notes
 
 ??-??-2014 - 2.11 - 
 ======================================
-Nessus 6 compatibility release. Tennable decided to change the Nessus API between 
+* Nessus 6 compatibility release. Tennable decided to change the Nessus API between 
 versions 5 and 6, therefore the Nessus plugin did not work correctly with version 6 
 anymore. Alexander Smirnoff was kind enough to provide a new Nessus6 scanner plugin that
 supports the new Nessus API.
+* Added asset management and the ability to execute custom SQL to Seccubus
 
 Bug Fixes
 ============================================
 * #140 - Nessus 6 integration
 * #141 - Multiple issues with Qualys SSLlabs scanner
 * #144 - Perl-CGI is bundled with perl 5.8 rpm's so no need to bundle it
+* #152 - Pull request for Asset management

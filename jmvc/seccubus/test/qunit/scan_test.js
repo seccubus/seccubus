@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2014 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,11 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/scan.js", function
 	test("findAll", function(){
 		expect(9);
 		stop();
-		Seccubus.Models.Scan.findAll({}, function(scans){
-			ok(scans);
+		Seccubus.Models.Scan.findAll({workspaceId:'1'}, function(scans){
+				// console.log("scans",scans);
+				ok(scans);
 	        	ok(scans.length);
-	        	ok(scans[0].workspace > 0);
+	        	ok(scans[0].workspace);
 	        	ok(scans[0].name);
 	        	ok(scans[0].scanner);
 	        	ok(scans[0].parameters);
@@ -31,11 +32,10 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/scan.js", function
 	        	ok(scans[0].lastScan);
 			start();
 		});
-		
 	})
 	
 	test("create", function(){
-		expect(0)
+		expect(3)
 		stop();
 		new Seccubus.Models.Scan({name: "dry cleaning", description: "take to street corner"}).save(function(scan){
 			ok(scan);
@@ -46,7 +46,7 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/scan.js", function
 		})
 	})
 	test("update" , function(){
-		expect(0);
+		expect(2);
 		stop();
 		new Seccubus.Models.Scan({name: "cook dinner", description: "chicken"}).
 	            save(function(scan){
@@ -60,7 +60,7 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/scan.js", function
 	
 	});
 	test("destroy", function(){
-		expect(0);
+		expect(1);
 		stop();
 		new Seccubus.Models.Scan({name: "mow grass", description: "use riding mower"}).
 	            destroy(function(scan){

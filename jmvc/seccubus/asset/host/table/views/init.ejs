@@ -1,0 +1,41 @@
+<%# Copyright 2014 Petr, Frank Breedijk                                      %>
+<%#                                                                          %>
+<%# Licensed under the Apache License, Version 2.0 (the "License");          %>
+<%# you may not use this file except in compliance with the License.         %>
+<%# You may obtain a copy of the License at                                  %>
+<%#                                                                          %>
+<%# http://www.apache.org/licenses/LICENSE-2.0                               %>
+<%#                                                                          %>
+<%# Unless required by applicable law or agreed to in writing, software      %>
+<%# distributed under the License is distributed on an "AS IS" BASIS,        %>
+<%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
+<%# See the License for the specific language governing permissions and      %>
+<%# limitations under the License.                                           %>
+<% if(typeof(noHead) == "undefined" || noHead == false) { %>
+	<thead>
+		<tr>
+			<th>IP</th>
+			<th>Host</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+	<tbody>
+<% } %>
+<% count = 0  %>
+<% if(typeof this[0] != "undefined" && typeof this[0].error != "undefined" ) { %>
+	 <%== $.View('//seccubus/asset/host/table/views/error.ejs',{ message : this[0].error }) %>
+<% } else { %>
+	<%for ( var i = 0; i < this.length ; i++ ){%>
+			<tr <%= this[i] %> >
+				<% //var txt = "";for(var a in sc) { txt = txt + a + ": " + sc[a] + "\n"; };alert(txt); %>
+				<%== $.View('//seccubus/asset/host/table/views/host.ejs', this[i] ) %>
+			</tr>
+			<% count++ %>
+	<% } %>
+	<% if ( count == 0 ) { %>
+		<%== $.View('//seccubus/asset/host/table/views/error.ejs',{ message : "No asset hosts found"}) %>
+	<% } %>
+<% } %>
+<% if(typeof(noHead) == "undefined" || noHead == false) { %>
+	</tbody>
+<% } %>

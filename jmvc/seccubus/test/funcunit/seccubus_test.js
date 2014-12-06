@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2014 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ steal("funcunit", function(){
 		}
 	});
 	
-	test("Copy Test", function(){
-		equals(S("h1").text(), "Welcome to JavaScriptMVC 3.2!","welcome text");
-	});
+	// test("Copy Test", function(){
+	// 	equals(S("h1").text(), "Welcome to JavaScriptMVC 3.2!","welcome text");
+	// });
 })

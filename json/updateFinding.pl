@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk
+# Copyright 2014 Frank Breedijk, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ use JSON;
 use lib "..";
 use SeccubusV2;
 use SeccubusFindings;
+use SeccubusNotifications;
 
 my $query = CGI::new();
 my $json = JSON->new();
@@ -65,6 +66,7 @@ eval {
 		"remark"	=> $remark,
 		"overwrite"	=> $overwrite,
 	);
+	if($status eq '3') { send_notification_from_finding($id); }
 	print $json->pretty->encode(\@data);
 } or do {
 	bye(join "\n", $@);

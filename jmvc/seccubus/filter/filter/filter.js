@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2014 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,7 +152,7 @@ $.Controller('Seccubus.Filter.Filter',
 			this.element.html(
 				this.view('error', {sStatus : this.options.status})
 			);
-		} else if ( this.options.scans == null ) {
+		} else if ( this.options.scans == null && this.options.assets == null ) {
 			this.element.html(
 				this.view('error', {sStatus : this.options.status})
 			);
@@ -163,6 +163,7 @@ $.Controller('Seccubus.Filter.Filter',
 					Seccubus.Models.Filter.findAll({
 						workspaceId	: this.options.workspace,
 						scanIds		: this.options.scans,
+						assetIds	: this.options.assets,
 						Status		: this.options.status,
 						Host		: this.options.host,
 						HostName	: this.options.hostName,

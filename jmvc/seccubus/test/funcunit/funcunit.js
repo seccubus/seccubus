@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2014 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,5 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-steal("funcunit", 'seccubus/up_to_date/list/list_test.js', 'seccubus/config_item/create/create_test.js', 'seccubus/config_item/list/list_test.js', 'seccubus/workspace/create/create_test.js', 'seccubus/workspace/list/list_test.js', 'seccubus/scan/create/create_test.js', 'seccubus/scan/list/list_test.js', 'seccubus/event/create/create_test.js', 'seccubus/event/list/list_test.js', 'seccubus/notification/create/create_test.js', 'seccubus/notification/list/list_test.js')
+steal("funcunit", 
+	'seccubus/up_to_date/list/list_test.js', 
+	// 'seccubus/config_item/create/create_test.js', 
+	'seccubus/config_item/list/list_test.js', 
+	'seccubus/workspace/create/create_test.js', 
+	'seccubus/workspace/table/table_test.js', 
+	'seccubus/scan/create/create_test.js', 
+	'seccubus/scan/table/table_test.js', 
+	// 'seccubus/event/create/create_test.js', 
+	'seccubus/event/select/select_test.js', 
+	// 'seccubus/notification/create/create_test.js', 
+	'seccubus/notification/table/table_test.js',
+	'seccubus/asset/create/create_test.js',
+	'seccubus/asset/table/table_test.js'
+	)
  .then("./seccubus_test.js");
