@@ -50,6 +50,10 @@ my (
 	$token,
    );
 
+sub login();
+sub help();
+sub make_timestamp();
+
 # Default values for command line values
 $help = 0;
 $quiet = 0;
@@ -115,8 +119,20 @@ my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}
 
 my $client = REST::Client->new(host => "https://$server:$port");
 
+#my $cred = {
+#	'username' => $user,
+#	'password' => $password,
+#};
+#
+#$client->POST("/session", encode_json($cred), { 'Content-Type' => 'application/json',
+#						'Accept' => 'application/json'});
+
+#die "Cannot authenticate to scanner" if ($client->responseCode() != 200);
+
 my $json;
 login();
+
+print "Authenticated\n" if $verbose;
 
 $client->GET("/editor/policy/templates", { 	
 				'Content-Type' => 'application/json',
@@ -245,8 +261,7 @@ do {
 		$json = decode_json($client->responseContent());
 		print "Scan export status: $json->{status}\n";
 	} else {
-		print "Scan export status request returned " . $client->responseCode() . "\n" if $verbose;
-		login() if ($client->responseCode() == 401);
+		print "Scan export status request returned $client->responseCode()" if $verbose;
 	}
 } until ($json->{status} eq 'ready');
 
@@ -361,7 +376,7 @@ sub make_timestamp() {
 	return "$year$month$day$hour$minute$second";
 }
 
-sub login($server, $port, $user, $password) {
+sub login() {
 my $cred = {
 	'username' => $user,
 	'password' => $password
