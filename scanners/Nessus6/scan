@@ -132,8 +132,6 @@ my $client = REST::Client->new(host => "https://$server:$port");
 my $json;
 login();
 
-print "Authenticated\n" if $verbose;
-
 $client->GET("/editor/policy/templates", { 	
 				'Content-Type' => 'application/json',
 			      	'Accept' => 'application/json',
@@ -208,7 +206,6 @@ my $hid;
 
 for my $history (@{$json->{history}} ) {
 	if ($history->{uuid} eq $launched) {
-		print "Found " . $history->{uuid} . $history->{history_id} . "\n";
 		$hid = $history->{history_id};
 	}
 }
