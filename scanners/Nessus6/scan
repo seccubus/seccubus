@@ -47,6 +47,7 @@ my (
 	$quiet,
 	$sleep,
 	$cmd,
+	$token,
    );
 
 # Default values for command line values
@@ -114,20 +115,8 @@ my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}
 
 my $client = REST::Client->new(host => "https://$server:$port");
 
-my $cred = {
-	'username' => $user,
-	'password' => $password,
-};
-
-$client->POST("/session", encode_json($cred), { 'Content-Type' => 'application/json',
-						'Accept' => 'application/json'});
-
-die "Cannot authenticate to scanner" if ($client->responseCode() != 200);
-
-my $json = decode_json($client->responseContent());
-my $token = $json->{token};
-
-print "Authenticated\n" if $verbose;
+my $json;
+login();
 
 $client->GET("/editor/policy/templates", { 	
 				'Content-Type' => 'application/json',
@@ -226,7 +215,8 @@ do {
 		print "Scan status: $json->{info}->{status}\n" if $verbose;
 		die "Scan aborted" if ($json->{info}->{status} eq "aborted");
 	} else {
-		print "Scan status request returned $client->responseCode()" if $verbose;
+		print "Scan status request returned " . $client->responseCode() . "\n" if $verbose;
+		login() if ($client->responseCode() == 401);
 	} 
 } until ($json->{info}->{status} eq "completed");
  
@@ -255,7 +245,8 @@ do {
 		$json = decode_json($client->responseContent());
 		print "Scan export status: $json->{status}\n";
 	} else {
-		print "Scan export status request returned $client->responseCode()" if $verbose;
+		print "Scan export status request returned " . $client->responseCode() . "\n" if $verbose;
+		login() if ($client->responseCode() == 401);
 	}
 } until ($json->{status} eq 'ready');
 
@@ -368,4 +359,21 @@ sub make_timestamp() {
 	$year += 1900;
 
 	return "$year$month$day$hour$minute$second";
+}
+
+sub login($server, $port, $user, $password) {
+my $cred = {
+	'username' => $user,
+	'password' => $password
+	};
+
+	my $client = REST::Client->new(host => "https://$server:$port");
+	$client->POST("/session", encode_json($cred), { 'Content-Type' => 'application/json',
+						'Accept' => 'application/json'});
+
+	die "Cannot authenticate to scanner" if ($client->responseCode() != 200);
+
+	print "Authenticated\n" if $verbose;
+
+	$token = decode_json($client->responseContent())->{token};
 }
