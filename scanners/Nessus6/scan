@@ -150,6 +150,13 @@ for my $pol (@{$json->{templates}} ) {
 }
 
 if (!$tuuid) {
+	for my $pol (@{$json->{templates}} ) {
+		if ($pol->{name} eq 'basic') {
+			$tuuid = $pol->{uuid};
+			last;
+		}
+	}
+
 	$client->GET("/policies", {
 				'Content-Type' => 'application/json',
 			      	'Accept' => 'application/json',
@@ -160,27 +167,30 @@ if (!$tuuid) {
 
 	foreach my $pol (@{$json->{policies}} ) {
 		if ($pol->{name} eq $policy) {
-			$tuuid = $pol->{template_uuid};
+			$tuuid = $pol->{template_uuid} if $pol->{template_uuid};
 			$pid = $pol->{id};
 			last;
+		} else {
+			print $pol->{name} . " neq " . $policy . "\n";
 		}
 	}
-	#die Dumper($json);
 }
 
-if (!$tuuid) {
+if (!$tuuid && !$pid) {
 	die "Policy $policy not found";
 } else {
-	print "Found policy $policy as tempalte $tuuid policy $pid\n" if $verbose;
+	print "Found policy $policy as template $tuuid policy $pid\n" if $verbose;
 }
 
 my $scandata = {
-	'uuid' 		=> $tuuid,
+	'uuid'		=> $tuuid;
 	'settings'	=> {
 		'name'		=> $tempscan,
 		'description'	=> 'Seccubus automated scan',
+		'launch'	=> 'ON_DEMAND',
 	}
 };
+
 if ( $pid != -1 ) {
 	$scandata->{settings}->{policy_id} = $pid;
 }
@@ -195,7 +205,7 @@ if ( -e $hosts_file ) {			# Assume its a host spect rather then a
 	$scandata->{settings}{text_targets} = $hosts_file;
 }
 
-print "Imported scan targets: $scandata->{settings}{text_targets}" if $verbose;
+print "Imported scan targets: $scandata->{settings}{text_targets} \n" if $verbose;
 
 $client->POST('/scans', encode_json($scandata), {
 				'Content-Type' => 'application/json',
@@ -249,6 +259,7 @@ do {
 		$json = decode_json($client->responseContent());
 		print "Scan status: $json->{info}->{status}\n" if $verbose;
 		die "Scan aborted" if ($json->{info}->{status} eq "aborted");
+		die "Scan cancelled" if ($json->{info}->{status} eq "cancelled");
 	} else {
 		print "Scan status request returned " . $client->responseCode() . "\n" if $verbose;
 		login() if ($client->responseCode() == 401);
