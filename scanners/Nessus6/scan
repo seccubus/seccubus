@@ -183,7 +183,7 @@ if (!$tuuid && !$pid) {
 }
 
 my $scandata = {
-	'uuid'		=> $tuuid;
+	'uuid'		=> $tuuid,
 	'settings'	=> {
 		'name'		=> $tempscan,
 		'description'	=> 'Seccubus automated scan',
