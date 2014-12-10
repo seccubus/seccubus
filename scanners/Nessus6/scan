@@ -170,9 +170,7 @@ if (!$tuuid) {
 			$tuuid = $pol->{template_uuid} if $pol->{template_uuid};
 			$pid = $pol->{id};
 			last;
-		} else {
-			print $pol->{name} . " neq " . $policy . "\n";
-		}
+		}  
 	}
 }
 
