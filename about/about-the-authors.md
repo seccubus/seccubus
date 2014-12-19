@@ -4,10 +4,14 @@ title: Who are the authors of Seccubus?
 ---
 Seccubus is maintained by the following people:
 
-  * Lead developer and original author: [Frank Breedijk](/who-is-frank-breedijk/)
-  * Co developer for Seccubus v2: Steven Launius
+  * Lead developer and original author: [Frank Breedijk](/documentation/who-is-frank-breedijk/)
+  * Co developerers for Seccubus v2: 
+    * Steven Launius
+    * Glenn ten Cate
+    * Alexander Smirnoff
+    * Artien Bel
   * RPM packaging by: Peter Slootweg
-  * The IVIL standard: [Frank Breedijk](/who-is-frank-breedijk/) and [Zate Berg](http://blog.zate.org/)
+  * The IVIL standard: [Frank Breedijk](/documentation/who-is-frank-breedijk/) and [Zate Berg](http://blog.zate.org/)
 
 With contributions from:
 
@@ -18,6 +22,6 @@ With contributions from:
   * James Dempster – JQuery Disable Text Select Plugin
   * John Resig, Yehuda Katz, Jorn Zaefferer, Paul McLanahan – JQuery Metadata plugin
   * Jacek Becela – JQuery Single Double Click Plugin
-  * ****Christian Bach – JQuery TableSorter Plugin
+  * Christian Bach – JQuery TableSorter Plugin
   * Flowplayer.org – JQuery Tools Plugin
 
