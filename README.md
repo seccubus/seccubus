@@ -36,6 +36,7 @@ versions 5 and 6, therefore the Nessus plugin did not work correctly with versio
 anymore. Alexander Smirnoff was kind enough to provide a new Nessus6 scanner plugin that
 supports the new Nessus API.
 * Added asset management and the ability to execute custom SQL to Seccubus
+* Added indexes to findings (host,port,plugin) to speed up large DB queries
 
 Bug Fixes
 ============================================

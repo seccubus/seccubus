@@ -96,6 +96,9 @@ UNLOCK TABLES;
 
 insert into events set id='3', name='On Open';
 update config set value=6 where name = 'version';
+create index `host` on findings (`host` ASC);
+create index `port` on findings (`port` ASC);
+create index `plugin` on findings (`plugin` ASC);
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
