@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2013 Frank Breedijk, Steve Launius
+# Copyright 2014 Petr, Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,7 +33,10 @@ use Exporter;
 		set_customsql
 	);
 
+use strict;
 use SeccubusDB;
+use SeccubusRights;
+use Carp;
 
 sub get_customsql($);
 sub get_savedsql();
@@ -55,13 +58,21 @@ This function executes custom sql
 
 =back
 
+=item Checks
+
+User must be admin to execute custom SQL. 
+
+=back
+
 =cut
 
 sub get_customsql($){
-	my $sql = shift or die "no sql procided";
-	return sql ( "return" => "arrayref",
-		"query" => $sql
-		);
+	my $sql = shift or confess "no sql provided";
+	confess "Permission denied" unless is_admin();
+	return sql ( 
+		"return"	=> "arrayref",
+		"query" 	=> $sql
+	);
 }
 
 
@@ -71,17 +82,23 @@ This function returns all saved sqls
 
 =back 
 
+=item Checks
+
+User must be admin to execute custom SQL. 
+
 =back
 
 =cut
 
 sub get_savedsql() {
-	return sql ( "return" => "arrayref",
-		"query" => "select * from `customsql` order by id"
+	confess "Permission denied" unless is_admin();
+	return sql ( 
+		"return"	=> "arrayref",
+		"query"		=> "SELECT * FROM `customsql` ORDER BY id"
 		);
 }
 
-=head2 get_savedsql
+=head2 set_customsql
 
 This function saves custom sql
 
@@ -99,15 +116,23 @@ This function saves custom sql
 
 =back
 
+=item Checks
+
+User must be admin to execute custom SQL. 
+
+=back
+
 =cut
 
 sub set_customsql($$;) {
-	my $name = shift or die "no name provided";
-	my $sql = shift or die "no sql provided";
-	my $id = sql ( "return" => "id",
-		"query" => "insert into `customsql` set name=?, `sql`=?",
-		"values" => [$name,$sql]
-		);
+	my $name = shift or confess "no name provided";
+	my $sql = shift or confess "no sql provided";
+	confess "Permission denied" unless is_admin();
+	my $id = sql ( 
+		"return"	=> "id",
+		"query" 	=> "insert into `customsql` set name=?, `sql`=?",
+		"values" 	=> [$name,$sql]
+	);
 	return [$id];
 }
 

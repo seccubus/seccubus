@@ -19,6 +19,9 @@
 use strict;
 use Test::More;
 
+my $travis = 0;
+$travis = 1 if ( `pwd` =~ /\/travis\// );
+
 my %exclude = (
 	"./SeccubusV2/IVIL.pm" 	=> "MIT Licensed project",
 	"./SeccubusV2/OpenVAS/OMP.pm" 	=> "Artistic License 2.0",
@@ -27,7 +30,9 @@ my %exclude = (
 	"./NOTICE.txt"		=> "Part of the license",
 	"./ChangeLog.md"	=> "No license needed",
 	"./README.md"		=> "No license needed",
-	"./Development_environment.md"
+	"./docs/Development_environment.md"
+				=> "No license needed",
+	"./docs/Development_on_MacOS.md"
 				=> "No license needed",
 	"./LICENSE.txt"		=> "It is the license itself",
 	"./MANIFEST"		=> "Auto generated",
@@ -46,6 +51,7 @@ my %exclude = (
 	"./deb/seccubus.dsc"	=> "No comments supported",
 	"./Makefile"		=> "Generated",
 	"./junit_output.xml"	=> "Build file",
+	"./etc/config.xml"	=> "Local config file",
 );
 my $tests = 0;
 
@@ -70,28 +76,25 @@ foreach my $file ( @files ) {
 		chomp($type);
 		if ( $type =~ /Perl|shell script|ASCII|XML\s+document text|HTML document|script text|exported SGML document|Unicode text/i ) {
 			if ( ! $exclude{$file} ) {
-				if ( $file =~ /\.xml\..*\.example|config\.xml$/ ) {
+				if ( $file =~ /\.xml\..*\.example|\.xml$/ ) {
 					# License starts at line 2
 					is(checklic($file,2), 0, "Is the Apache license applied to $file");
-					$tests++;
-					is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
 					$tests++;
 				} elsif ( $file =~ /jmvc\/.*\.md$/ ) {
 					# License starts at line 3
 					is(checklic($file,3), 0, "Is the Apache license applied to $file");
 					$tests++;
-					is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
-					$tests++;
 				} elsif ( $file =~ /\.ejs$/ ) {
 					# License starts at line 0
 					is(checklic($file,0), 0, "Is the Apache license applied to $file");
-					$tests++;
-					is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
 					$tests++;
 				} else {
 					# License starts at line 1
 					is(checklic($file,1), 0, "Is the Apache license applied to $file");
 					$tests++;
+				}
+				unless ( $travis ) {
+					# Travis does weird stuff with git
 					is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
 					$tests++;
 				}
@@ -145,10 +148,12 @@ sub hasauthors {
 	foreach my $auth ( <BLAME> ) {
 		chomp ($auth);
 		if ( $auth =~ /\((.*?)\s+(\d\d\d\d)\-\d\d\-\d\d/ ) {
-			if ( $1 ne "Not Committed Yet" ) {
-				unless ( $authors{$1} ) {
-					$authors{$1} = 1;
-					like($head, qr/$1/, "Blamed author $1 in header of file '$file'");
+			my $auth = $1;
+			$auth = "Petr" if $auth eq 'Петр';
+			if ( $auth ne "Not Committed Yet" ) {
+				unless ( $authors{$auth} ) {
+					$authors{$auth} = 1;
+					like($head, qr/$auth/, "Blamed author $auth in header of file '$file'");
 					$tests++;
 				}
 				if ( $ENV{PERLBREW_ROOT} !~ /^\/home\/travis/ && (! defined $years{$2}) ) {
