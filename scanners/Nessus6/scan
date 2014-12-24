@@ -1,0 +1,413 @@
+#!/usr/bin/env perl
+# Copyright 2014 Frank Breedijk, Alex Smirnoff
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+# This script will call Zate Berg's Nessis-IVIL-Wrapper (see 
+# https://github.com/Zate/Nessus-IVIL-Wrapper ) to connect to a Nessus instance,
+# initiate a scan, save the results as an IVIL file and import it
+# ------------------------------------------------------------------------------
+
+use strict;
+use warnings;
+use SeccubusV2;
+use SeccubusIVIL;
+
+use Getopt::Long;
+use Carp;
+
+use JSON;
+use REST::Client;
+use Data::Dumper;
+use LWP::Simple;
+
+sub help();
+sub make_timestamp();
+
+my (
+	$user,
+	$password,
+	$password2,
+	$server,
+	$policy,
+	$port,
+	$hosts_file,
+	$workspace,
+	$scan,
+	$nodelete,
+	$help,
+	$verbose,
+	$quiet,
+	$sleep,
+	$cmd,
+	$nosslcheck,
+	$token,
+   );
+
+sub login();
+sub help();
+sub make_timestamp();
+
+# Default values for command line values
+$help = 0;
+$quiet = 0;
+$sleep = 10;
+$verbose = 0;
+$nosslcheck = 0;
+
+GetOptions(	
+		'user|u=s'		=> \$user,
+		'password|p=s'		=> \$password,
+		'pw=s'			=> \$password2,
+		'server|s=s'		=> \$server,
+		'policy|pol=s'		=> \$policy,
+		'port=s'		=> \$port,
+		'hosts|h=s'		=> \$hosts_file,
+		'workspace|ws=s'	=> \$workspace,
+		'scan|sc=s'		=> \$scan,
+		'sleep=s'		=> \$sleep,
+		'nodelete'		=> \$nodelete,
+		'nosslcheck!'		=> \$nosslcheck,
+		'verbose|v+'		=> \$verbose,
+		'quiet|q!'		=> \$quiet,
+		'help'			=> \$help,
+	  );
+
+help() if $help;
+$verbose = 0 if $quiet;
+
+# Disable SSL checking if needed
+$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0 unless $nosslcheck;
+
+$port = 8834 unless $port;		 # Default port is 8834
+$password = $password2 unless $password; # Equalize the use of --pw
+
+my $config = get_config();
+
+if ( ! $hosts_file ) {
+	print "You must specify a valid hosts spec";
+	help();
+} elsif ( ! $user ) {
+	print "You must specify a user";
+	help();
+} elsif ( ! $password ) {
+	print "You must specify a password";
+	help();
+} elsif ( ! $server ) {
+	print "You must specify a nessus server";
+	help();
+} elsif ( ! $policy ) {
+	print "You must specify a policy";
+	help();
+} elsif ( ! $workspace ) {
+	print "You must specify a workspace name";
+	help();
+} elsif ( ! $scan ){
+	print "You must specify a scan name";
+	help();
+};
+
+my $timestamp = make_timestamp();
+print "Timestamp = $timestamp\n" if $verbose > 1;
+my $tempscan = "seccubus.$scan.$timestamp";
+my $tempfile = "/tmp/$tempscan.$$";
+my $nivil = "$config->{paths}->{scanners}\/Nessus\/nivil.rb";
+my $nessus2ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nessus2ivil";
+my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
+my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
+
+my $client = REST::Client->new(host => "https://$server:$port");
+
+my $json;
+login();
+
+$client->GET("/editor/policy/templates", { 	
+				'Content-Type' => 'application/json',
+			      	'Accept' => 'application/json',
+				'X-Cookie' => 'token=' . $token});
+
+die "Cannot get policy list" if ($client->responseCode() != 200);
+$json = decode_json($client->responseContent());
+
+my $tuuid;
+my $pid = -1;
+
+for my $pol (@{$json->{templates}} ) {
+	if ($pol->{name} eq $policy) {
+		$tuuid = $pol->{uuid};
+		last;
+	}
+}
+
+if (!$tuuid) {
+	$client->GET("/policies", {
+				'Content-Type' => 'application/json',
+			      	'Accept' => 'application/json',
+				'X-Cookie' => 'token=' . $token});
+
+	die "Cannot get policy list" if ($client->responseCode() != 200);
+	$json =	 decode_json($client->responseContent());
+
+	foreach my $pol (@{$json->{policies}} ) {
+		if ($pol->{name} eq $policy) {
+			$tuuid = $pol->{template_uuid};
+			$pid = $pol->{id};
+			last;
+		}
+	}
+	#die Dumper($json);
+}
+
+if (!$tuuid) {
+	die "Policy $policy not found";
+} else {
+	print "Found policy $policy as tempalte $tuuid policy $pid\n" if $verbose;
+}
+
+my $scandata = {
+	'uuid' 		=> $tuuid,
+	'settings'	=> {
+		'name'		=> $tempscan,
+		'description'	=> 'Seccubus automated scan',
+	}
+};
+if ( $pid != -1 ) {
+	$scandata->{settings}->{policy_id} = $pid;
+}
+
+if ( -e $hosts_file ) {			# Assume its a host spect rather then a
+					# hosts file if there is no file 
+	open(FILE,$hosts_file) or die "Cannot read hosts file";
+	local $/;
+	$scandata->{settings}{text_targets} = <FILE>;
+	close(FILE);
+} else {
+	$scandata->{settings}{text_targets} = $hosts_file;
+}
+
+print "Imported scan targets: $scandata->{settings}{text_targets}" if $verbose;
+
+$client->POST('/scans', encode_json($scandata), {
+				'Content-Type' => 'application/json',
+                                'Accept' => 'application/json',
+                                'X-Cookie' => 'token=' . $token});
+
+die "Cannot create scan" if ($client->responseCode() != 200); 
+$json = decode_json($client->responseContent());
+
+my $sid = $json->{scan}{id};
+print "Created scan $sid\n" if $verbose;
+	
+$client->addHeader('X-Cookie', 'token=' . $token);
+$client->POST("/scans/$sid/launch");
+
+die "Cannot launch scan" if ($client->responseCode() != 200); 
+
+$json = decode_json($client->responseContent());
+my $launched = $json->{scan_uuid};
+print "Launched scan $launched\n" if $verbose;
+
+$client->GET("/scans/$sid", { 	
+			'Content-Type' => 'application/json',
+		      	'Accept' => 'application/json',
+			'X-Cookie' => 'token=' . $token});
+$json = decode_json($client->responseContent());
+
+die "Cannot get scan history" if ($client->responseCode() != 200); 
+my $hid;
+
+for my $history (@{$json->{history}} ) {
+	if ($history->{uuid} eq $launched) {
+		$hid = $history->{history_id};
+	}
+}
+
+if ($hid) {
+	print "Found history id $hid for scan $launched\n" if $verbose;
+} else {
+	die "Cannot find history id for scan $launched";
+}
+
+do {
+	sleep(5);
+	$client->GET("/scans/$sid?history_id=$hid", { 	
+				'Content-Type' => 'application/json',
+			      	'Accept' => 'application/json',
+				'X-Cookie' => 'token=' . $token});
+
+	if ($client->responseCode() eq 200) {
+		$json = decode_json($client->responseContent());
+		print "Scan status: $json->{info}->{status}\n" if $verbose;
+		die "Scan aborted" if ($json->{info}->{status} eq "aborted");
+	} else {
+		print "Scan status request returned " . $client->responseCode() . "\n" if $verbose;
+		login() if ($client->responseCode() == 401);
+	} 
+} until ($json->{info}->{status} eq "completed");
+ 
+my $exportdata = {
+	'history_id'	=>	$hid,
+	'format'	=>	'nessus'
+};
+
+$client->POST("/scans/$sid/export", encode_json($exportdata), {
+				'Content-Type' => 'application/json',
+                                'Accept' => 'application/json',
+                                'X-Cookie' => 'token=' . $token});
+
+die "Cannot initiate scan export" if ($client->responseCode() != 200); 
+$json = decode_json($client->responseContent());
+my $filehandle=$json->{file};
+print "Initiated scan export to file $filehandle\n" if $verbose;
+
+do {
+	sleep(5);
+	$client->GET("/scans/$sid/export/$filehandle/status", { 	
+				'Content-Type' => 'application/json',
+			      	'Accept' => 'application/json',
+				'X-Cookie' => 'token=' . $token});
+	if ($client->responseCode() eq 200) {
+		$json = decode_json($client->responseContent());
+		print "Scan export status: $json->{status}\n";
+	} else {
+		print "Scan export status request returned $client->responseCode()" if $verbose;
+	}
+} until ($json->{status} eq 'ready');
+
+$client->GET("/scans/$sid/export/$filehandle/download", { 	
+				'Content-Type' => 'application/json',
+			      	'Accept' => 'application/json',
+				'X-Cookie' => 'token=' . $token});
+
+die "Cannot download report" if ($client->responseCode() != 200); 
+print "Report downloaded, saving $filehandle to $tempfile.nessus\n" if $verbose;
+
+open FILE, ">", "$tempfile.nessus" or die "Cannot save report";
+
+print FILE $client->responseContent();
+
+close FILE;
+
+$client->DELETE("/scans/$sid/history/$hid" , { 	'Content-Type' => 'application/json',
+			      	'Accept' => 'application/json',
+				'X-Cookie' => 'token=' . $token});
+die "Cannot delete report" if ($client->responseCode() != 200); 
+print "Report deleted from server\n" if $verbose;
+
+$client->DELETE("/scans/$sid" , { 	'Content-Type' => 'application/json',
+			      	'Accept' => 'application/json',
+				'X-Cookie' => 'token=' . $token});
+die "Cannot delete scan" if ($client->responseCode() != 200); 
+print "Scan deleted from server\n" if $verbose;
+
+$client->DELETE("/session", { 	'Content-Type' => 'application/json',
+			      	'Accept' => 'application/json',
+				'X-Cookie' => 'token=' . $token});
+die "Cannot log out" if ($client->responseCode() != 200); 
+print "Logged off server\n" if $verbose;
+
+print "Converting $tempfile.nessus to $tempfile.ivil.xml\n" unless $quiet;
+$cmd = "$nessus2ivil --infile '$tempfile.nessus'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+my $result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+print "Importing ivil\n" unless $quiet;
+$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner Nessus --timestamp $timestamp";
+$cmd .= " -v" if $verbose > 1;
+$cmd .= " '$tempfile.ivil.xml'";
+print "Execuing $cmd\n" if $verbose > 1;
+$result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.nessus' --description 'Nessus xml output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+$result = `$cmd 2>&1`;
+
+print "$result\n" if $verbose > 1;
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
+$cmd .= " -v" if $verbose > 1;
+print "Execuing $cmd\n" if $verbose > 1;
+$result = `$cmd 2>&1`;
+print "$result\n" if $verbose > 1;
+
+# Cleanup
+unless ( $nodelete ) {
+	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+	unlink "$tempfile.nessus" if -e "$tempfile.nessus";
+}
+
+print "Done\n" unless $quiet;
+
+exit(0);
+
+sub help() {
+	print "
+Usage: scan       --user=<username> --password=<password> --server=<server> \\
+                  --port=<portnumber> --policy=<policy name> \\
+		  --hosts=<hosts file|hosts spec> \\
+		  --workspace=<seccubus workspace> --scan=<seccubus scan>\\
+                  [--nodelete] [--verbose] [--quiet] [--help]
+--user (-u)	  - Nessus username
+--password (-p)	  - Nessus password
+--server (-s)	  - Nessus server (ip or name)
+--port		  - Nessus server portnumber (default=8834)
+--policy	  - Name of Nessus policy
+--hosts		  - Specification of hosts to scan. Follows the Nessus rules 
+		    for specifying hosts, or path to a file containing such 
+		    specification
+--workspace (-ws) - Seccubus workspace the scan in in
+--scan (-sc)	  - Seccubus scan the data should be saved in
+--nodelete        - Don't erase temporary files
+--sleep           - Seconds to sleep between polls of the Nessus engine 
+                    (default=10)
+--verbose (-v)    - Be verbose during execution
+--quiet (-q)      - Don't print output
+--help (-h)       - Print this message
+";
+	exit(1);
+}
+
+sub make_timestamp() {
+	my ($second, $minute, $hour, $day, $month, $year) = localtime();
+	$month++;
+	$second = "0" . $second if $second < 10;
+	$minute = "0" . $minute if $minute <10;
+	$hour = "0". $hour if $hour < 10;
+	$day = "0". $day if $day <10;
+	$month = "0" . $month if $month <10;
+	$year += 1900;
+
+	return "$year$month$day$hour$minute$second";
+}
+
+sub login() {
+	my $cred = {
+		'username' => $user,
+		'password' => $password
+	};
+
+	my $client = REST::Client->new(host => "https://$server:$port");
+	$client->POST("/session", encode_json($cred), { 'Content-Type' => 'application/json',
+						'Accept' => 'application/json'});
+
+	die "Cannot authenticate to scanner" if ($client->responseCode() != 200);
+
+	print "Authenticated\n" if $verbose;
+
+	$token = decode_json($client->responseContent())->{token};
+}
