@@ -170,7 +170,7 @@ if (!$tuuid) {
 			$tuuid = $pol->{template_uuid} if $pol->{template_uuid};
 			$pid = $pol->{id};
 			last;
-		}  
+		} 
 	}
 }
 
@@ -260,7 +260,7 @@ do {
 		die "Scan cancelled" if ($json->{info}->{status} eq "cancelled");
 	} else {
 		print "Scan status request returned " . $client->responseCode() . "\n" if $verbose;
-		login() if ($client->responseCode() == 401);
+		login() if (($client->responseCode() == 401) || ($client->responseCode() == 503));
 	} 
 } until ($json->{info}->{status} eq "completed");
  
@@ -411,10 +411,17 @@ sub login() {
 	};
 
 	my $client = REST::Client->new(host => "https://$server:$port");
-	$client->POST("/session", encode_json($cred), { 'Content-Type' => 'application/json',
-						'Accept' => 'application/json'});
 
-	die "Cannot authenticate to scanner" if ($client->responseCode() != 200);
+	do {
+		$client->POST("/session", encode_json($cred), { 'Content-Type' => 'application/json',
+								'Accept' => 'application/json'});
+		if (($client->responseCode() == 500) || ($client->responseCode() == 503)) {
+			print "Server returned " . $client->responseCode() . " on login\n" if $verbose;
+			sleep(15);
+		}
+	} while (($client->responseCode() == 500) || ($client->responseCode() == 503)); 
+
+	die "Cannot authenticate to scanner: " . $client->responseCode() if ($client->responseCode() != 200);
 
 	print "Authenticated\n" if $verbose;
 
