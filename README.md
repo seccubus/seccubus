@@ -28,7 +28,7 @@ For more information visit [www.seccubus.com]
 
 Release notes
 =============
-Thanks for this release goes to Alexander Smirnoff (@Akranoi) and his employer Parallels Inc.
+Thanks for this release goes to Alexander Smirnoff (@Arkanoi) and his employer Parallels Inc.
 
 Alexander whipped together the Nessus 6 compatibility, fixed issues with the Qualys SSLlabs scanner.
 Further more his employer Parallels Inc. sponsored the development of the asset management and custom
