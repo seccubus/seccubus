@@ -8,7 +8,7 @@ Download it [here](https://github.com/schubergphilis/Seccubus_v2/releases)
 For those of you that have been waiting to upgrade to Nessus 6 or those of you that use the 
 hosted version by Tennable you can now use them with Seccubus again.
 
-This is mostly thanks to Alexander Smirnoff of 
+This is mostly thanks to Alexey Smirnoff of 
 [Parallels Inc.](https://www.parallels.com) who created the Nessus 6 scanner 
 interface and also convinced his employer to sponsor the development of the asset management function
 and the custom SQL function which is now available to administrative users.
@@ -21,11 +21,11 @@ a happy new year or a happy solstice depending on you believes/region.
 
 Release notes
 =============
-Thanks for this release goes to Alexander Smirnoff 
+Thanks for this release goes to Alexey Smirnoff 
 ([@Arkanoi](https://github.com/arkenoi)) and his employer 
 [Parallels Inc.](https://www.parallels.com)
 
-Alexander whipped together the Nessus 6 compatibility, fixed issues with the Qualys SSLlabs scanner.
+Alexey whipped together the Nessus 6 compatibility, fixed issues with the Qualys SSLlabs scanner.
 Further more his employer Parallels Inc. sponsored the development of the asset management and custom
 SQL feature.
 
@@ -33,7 +33,7 @@ SQL feature.
 ======================================
 * Nessus 6 compatibility release. Tennable decided to change the Nessus API between
 versions 5 and 6, therefore the Nessus plugin did not work correctly with version 6
-anymore. Alexander Smirnoff was kind enough to provide a new Nessus6 scanner plugin that
+anymore. Alexey Smirnoff was kind enough to provide a new Nessus6 scanner plugin that
 supports the new Nessus API.
 * Added asset management and the ability to execute custom SQL to Seccubus
 * Added indexes to findings (host,port,plugin) to speed up large DB queries
