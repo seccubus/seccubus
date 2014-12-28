@@ -49,3 +49,4 @@ Bug Fixes
 * #141 - Multiple issues with Qualys SSLlabs scanner
 * #144 - Perl-CGI is bundled with perl 5.8 rpm's so no need to bundle it
 * #152 - Pull request for Asset management
+* #159 - It was impossible to launch scan with policy that lacks template UUID
