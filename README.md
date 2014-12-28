@@ -28,8 +28,13 @@ For more information visit [www.seccubus.com]
 
 Release notes
 =============
+Thanks for this release goes to Alexander Smirnoff (@Akranoi) and his employer Parallels Inc.
 
-??-??-2014 - 2.11 - 
+Alexander whipped together the Nessus 6 compatibility, fixed issues with the Qualys SSLlabs scanner.
+Further more his employer Parallels Inc. sponsored the development of the asset management and custom
+SQL feature.
+
+28-12-2014 - 2.11 - Nessus 6 compatibility, assets, custom SQL and more
 ======================================
 * Nessus 6 compatibility release. Tennable decided to change the Nessus API between 
 versions 5 and 6, therefore the Nessus plugin did not work correctly with version 6 
