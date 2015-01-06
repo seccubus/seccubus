@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`scans` (
   `name` CHAR(255) NOT NULL,
   `scannername` CHAR(255) NOT NULL,
   `scannerparam` CHAR(255) NULL DEFAULT NULL,
+  `password` char(255) DEFAULT NULL,
   `targets` LONGTEXT NULL,
   `workspace_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
