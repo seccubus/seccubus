@@ -35,6 +35,7 @@ Further more his employer Parallels Inc. sponsored the development of the asset 
 SQL feature.
 
 28-12-2014 - 2.11 - Nessus 6 compatibility, assets, custom SQL and more
+06-01-2015 - 2.12 - Fixes database error in 2.11
 ======================================
 * Nessus 6 compatibility release. Tennable decided to change the Nessus API between 
 versions 5 and 6, therefore the Nessus plugin did not work correctly with version 6 
@@ -50,3 +51,4 @@ Bug Fixes
 * #144 - Perl-CGI is bundled with perl 5.8 rpm's so no need to bundle it
 * #152 - Pull request for Asset management
 * #159 - It was impossible to launch scan with policy that lacks template UUID
+* #165 - Field password is missing from table scans
