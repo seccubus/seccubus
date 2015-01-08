@@ -36,10 +36,12 @@ my (
 	$help,
 	$verbose,
 	$quiet,
+        $showResults,
    );
 
 # Create default values
 $help = 0;
+$showResults = 0;
 
 
 GetOptions(	
@@ -50,6 +52,7 @@ GetOptions(
 		'verbose|v+'		=> \$verbose,
 		'quiet|q!'		=> \$quiet,
 		'help|h'		=> \$help,
+		'showresults'		=> \$showResults,
 	  );
 
 help() if $help;
@@ -110,7 +113,7 @@ while ( $todo ) {
 		if ($hosts{$url}->{status} < 1 ) {
 			# Fetch results
 			print "Fetching results for $url\n" if $verbose;
-			my $response = $ua->get("https://www.ssllabs.com/ssltest/analyze.html?d=$url&ignoreMismatch=on&hideResults=on");
+			my $response = $ua->get("https://www.ssllabs.com/ssltest/analyze.html?d=$url&ignoreMismatch=on&hideResults=" . ($showResults ? "off" : "on"));
 			$hosts{$url}->{data} = $response->content();
 		
 			my $p = HTML::TreeBuilder->new();
@@ -198,7 +201,7 @@ foreach my $url ( sort keys %hosts ) {
 
 		# URL
 		$finding->{id} = "url";
-		$finding->{finding} = "https://www.ssllabs.com/ssltest/analyze.html?d=$url&ignoreMismatch=on&hideResults=on";
+		$finding->{finding} = "https://www.ssllabs.com/ssltest/analyze.html?d=$url&ignoreMismatch=on&hideResults=" . ($showResults ? "off" : "on");
 		$finding->{severity} = 4;
 		print IOUT ivil_finding($finding);
 
