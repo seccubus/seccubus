@@ -28,27 +28,10 @@ For more information visit [www.seccubus.com]
 
 Release notes
 =============
-Thanks for this release goes to Alexey Smirnoff (@Arkanoi) and his employer Parallels Inc.
 
-Alexey whipped together the Nessus 6 compatibility, fixed issues with the Qualys SSLlabs scanner.
-Further more his employer Parallels Inc. sponsored the development of the asset management and custom
-SQL feature.
-
-28-12-2014 - 2.11 - Nessus 6 compatibility, assets, custom SQL and more
-06-01-2015 - 2.12 - Fixes database error in 2.11
+xx-xx-2015 - 2.13 - 
 ======================================
-* Nessus 6 compatibility release. Tennable decided to change the Nessus API between 
-versions 5 and 6, therefore the Nessus plugin did not work correctly with version 6 
-anymore. Alexey Smirnoff was kind enough to provide a new Nessus6 scanner plugin that
-supports the new Nessus API.
-* Added asset management and the ability to execute custom SQL to Seccubus
-* Added indexes to findings (host,port,plugin) to speed up large DB queries
 
 Bug Fixes
 ============================================
-* #140 - Nessus 6 integration
-* #141 - Multiple issues with Qualys SSLlabs scanner
-* #144 - Perl-CGI is bundled with perl 5.8 rpm's so no need to bundle it
-* #152 - Pull request for Asset management
-* #159 - It was impossible to launch scan with policy that lacks template UUID
-* #165 - Field password is missing from table scans
+* #164 - SSLLabs scanner cannot hide results from SSLlabs site
