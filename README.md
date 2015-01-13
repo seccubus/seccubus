@@ -35,3 +35,4 @@ xx-xx-2015 - 2.13 -
 Bug Fixes
 ============================================
 * #164 - SSLLabs scanner cannot hide results from SSLlabs site
+* #169 - Install script was dapted to better fit with Debian standard way of working
