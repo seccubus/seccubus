@@ -22,27 +22,34 @@ if [ "$1" = "configure" ]; then
 	addgroup www-data seccubus
     fi
 
-    if [ ! -e "/etc/apache2/conf.d/seccubus.conf" ] ; then
+    if [ ! -e "/etc/apache2/sites-available/seccubus.conf" ] ; then
 
-        cat >> /etc/apache2/conf.d/seccubus.conf <<EOF
-#
-# This configuration file maps the Seccubus directory
-# into the URL space. By default these results are
-# only accessible from the local host.
-#
-Alias /seccubus /opt/seccubus/www/
+        cat >> /etc/apache2/sites-available/seccubus.conf <<EOF
+<VirtualHost *:80>
 
-<Location /seccubus>
-    Order deny,allow
-    Deny from all
-    Allow from 127.0.0.1
-    Allow from ::1
-    # Allow from .example.com
+  ServerAdmin webmaster@localhost
+  DocumentRoot /opt/seccubus/www/
+
+  LogLevel info
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+
+  <Location />
+    Require host 127.0.0.1
+    Require host ::1
+    
     AddHandler cgi-script .pl
     Options ExecCGI
-</Location>
+  </Location>
+
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 EOF
 
+        a2ensite seccubus
         service apache2 reload
 
     fi
