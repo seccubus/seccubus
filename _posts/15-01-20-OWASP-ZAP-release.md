@@ -20,16 +20,6 @@ http://code.google.com/p/zaproxy/wiki/Introduction
 Download the OWASP ZAP Proxy and extract the tar.gz
 http://sourceforge.net/projects/zaproxy/files/2.3.1/ZAP_2.3.1_Linux.tar.gz/download
 
-The OWASP ZAP tool needs Java so install it:
-
-Cent-OS
-sudo yum install java-1.7.0-openjdk.x86_64
-
-Ubuntu
-sudo apt-get install openjdk-7-jre-headless
-
-Now you are ready to go and can select the ZAP scanning tool in the Seccubus GUI. 
-
 20-01-2015 - 2.13 - OWASP ZAP Proxy
 ======================================
 Seccubus OWASP ZAP Proxy release
