@@ -44,18 +44,18 @@ More information about ZAP Proxy can be found here:
 http://code.google.com/p/zaproxy/wiki/Introduction?tm=6
 
 Don't forget you need a Java, Ubuntu example:
-sudo apt-get install openjdk-7-jre-headless
+ sudo apt-get install openjdk-7-jre-headless
 
 Below are some authentication options examples for ZAP usage:
 
 ZAP option for authentication with session cookie:
--o "-C JSESSIONID=P-6OQkOzDdnzou-B08RhHpOm"
+ -o "-C JSESSIONID=KJHSAFKJH34SAFL572LKJ"
 
 ZAP option for Basic Header authentication:
--o "-A user:pass"
+ -o "-A user:pass"
 
 ZAP option for performing Login and authenticate and exclude logout URL:
--o "--auth-form http://example.org/login --auth-user myuser --auth-pass mypass --auth-verify-url http://example.org/profile -X /logout"
+ -o "--auth-form http://example.org/login --auth-user myuser --auth-pass mypass --auth-verify-url http://example.org/profile -X /logout"
 
 Bug Fixes
 ============================================
