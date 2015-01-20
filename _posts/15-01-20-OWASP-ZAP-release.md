@@ -21,9 +21,10 @@ Download the OWASP ZAP Proxy and extract the tar.gz
 http://sourceforge.net/projects/zaproxy/files/2.3.1/ZAP_2.3.1_Linux.tar.gz/download
 
 The OWASP ZAP tool needs Java so install it:
+
 Cent-OS
 sudo yum install java-1.7.0-openjdk.x86_64
-OR
+
 Ubuntu
 sudo apt-get install openjdk-7-jre-headless
 
