@@ -3,7 +3,7 @@ layout: post
 title: Seccubus v2.13 - Seccubus OWASP ZAP release!
 ---
 
-Download it [here](https://github.com/schubergphilis/Seccubus_v2/releases)
+Today I released Seccubus version 2.13 which supports the OWASP ZAP security tool. Download it [here](https://github.com/schubergphilis/Seccubus_v2/releases)
 
 The OWASP Zed Attack Proxy (ZAP) is an easy to use integrated penetration testing tool 
 for finding vulnerabilities in web applications. It's designed to be used by people with 
