@@ -29,10 +29,38 @@ For more information visit [www.seccubus.com]
 Release notes
 =============
 
-xx-xx-2015 - 2.13 - 
+20-01-2015 - 2.13 - OWASP ZAP Proxy
 ======================================
+
+Seccubus OWASP ZAP Proxy release
+
+The OWASP Zed Attack Proxy (ZAP) is an easy to use integrated penetration testing tool for finding vulnerabilities in web applications.
+
+It is designed to be used by people with a wide range of security experience and as such is ideal for developers and functional testers who are new to penetration testing as well as being a useful addition to an experienced pen testers toolbox. 
+
+The intergration with Seccubus will make you able to launch the ZAP proxy scanner from the commandline and proccess the results into Seccubus. The default policy will be applicable when the scanner is launched. This can be altered by running the program "normally" with ./zap.sh and adjust the policy in the ZAP Gui
+
+Download the OWASP ZAP Proxy and extract the tar.gz
+
+http://sourceforge.net/projects/zaproxy/files/2.3.1/ZAP_2.3.1_Linux.tar.gz/download
+
+More information about ZAP Proxy can be found here:
+http://code.google.com/p/zaproxy/wiki/Introduction?tm=6
+
+Don't forget you need a Java, Ubuntu example:
+sudo apt-get install openjdk-7-jre-headless
+
+Below are some authentication options examples for ZAP usage:
+
+ZAP option for authentication with session cookie:
+-o "-C JSESSIONID=KJHSAFKJH34SAFL572LKJ"
+
+ZAP option for Basic Header authentication:
+-o "-A user:pass"
+
+ZAP option for performing Login and authenticate and exclude logout URL:
+-o "--auth-form http://example.org/login --auth-user myuser --auth-pass mypass --auth-verify-url http://example.org/profile -X /logout"
 
 Bug Fixes
 ============================================
-* #164 - SSLLabs scanner cannot hide results from SSLlabs site
-* #169 - Install script was dapted to better fit with Debian standard way of working
+* No bug fixes in this version, only release with OWASP ZAP support
