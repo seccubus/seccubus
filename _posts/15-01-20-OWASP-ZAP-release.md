@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Seccubus OWASP ZAP release!
+title: Seccubus v2.13 - Seccubus OWASP ZAP release!
 ---
 
 Download it [here](https://github.com/schubergphilis/Seccubus_v2/releases)
