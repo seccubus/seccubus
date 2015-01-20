@@ -1,0 +1,186 @@
+#!/usr/bin/env perl
+# Copyright 2015 Glenn ten Cate
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+# This script will call the ZAP scanner and import the results as IVIL
+# ------------------------------------------------------------------------------
+
+use strict;
+use SeccubusV2;
+use SeccubusIVIL;
+use SeccubusHelpers;
+
+use Getopt::Long;
+use Carp;
+
+my (
+	$zap_path,
+	$zap_options,
+	$hosts_file,
+	$workspace,
+	$scan,
+	$sudo,
+	$help,
+	$verbose,
+	$quiet,
+	$username,
+	$nodelete,
+	$remote,
+   );
+
+$help = 0;
+
+# Create default values
+
+GetOptions(	
+		'zap_path|p=s'		=> \$zap_path,
+		'zap_options|o=s'	=> \$zap_options,
+		'hosts=s'		=> \$hosts_file,
+		'workspace=s'		=> \$workspace,
+		'scan=s'		=> \$scan,
+		'sudo'			=> \$sudo,
+		'verbose|v+'		=> \$verbose,
+		'quiet|q!'		=> \$quiet,
+		'help|h'		=> \$help,
+		'nodelete'		=> \$nodelete,
+		'remote|r=s'		=> \$remote,
+	  );
+
+help() if $help;
+$verbose = 0 if $quiet;
+$nodelete = 0 unless $nodelete;
+
+my $config = get_config();
+my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
+my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
+
+print "Hosts file specified $hosts_file\n" if $verbose;
+if ( ! $workspace ) {
+	print "You must specify a workspace name";
+	help();
+} elsif ( ! $scan ){
+	print "You must specify a scan name";
+	help();
+};
+
+$zap_path = get_zap_path() unless $zap_path;
+if ( ! $zap_path && -e $zap_path ) {
+	print "Unable to find ZAP on your system. I suggest you use the --zap_path option\nto provide a path to the jar executable\n";
+	help();
+}
+
+print "ZAP found in $zap_path\n" if $verbose;
+my $tempfile = "/tmp/seccubus.$$";
+
+my $zap_options = "-quickurl '$hosts_file' -quickout '$tempfile' $zap_options -cmd ";
+print "ZAP options: $zap_options\n" if $verbose;
+
+
+my $timestamp = make_timestamp();
+print "Timestamp = $timestamp\n" if $verbose;
+my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
+$zap_path =~ s/zap.jar//;
+
+my $cmd = "cd $zap_path; java -Xmx512m -XX:PermSize=512M -jar zap.jar $zap_options";
+
+print "Execuing $cmd\n" unless $quiet;
+run_cmd($cmd,$verbose,$remote,[ "$tempfile.*" ],[ $hosts_file ]);
+
+if ( $sudo ) {
+	# Fixes issue #52
+	run_cmd("sudo chown $username \"$tempfile.*\"",$verbose,$remote);
+}
+
+
+print "Scanning done, converting .xml to ivil\n" unless $quiet;
+$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/zap2ivil --scannerversion=2.3.1 --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile '$tempfile' ";
+$cmd .= "-v" if $verbose > 1;
+run_cmd($cmd,$verbose);
+
+print "Importing ivil\n" unless $quiet;
+$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner ZAP --scannerversion 2.3.1 --timestamp $timestamp";
+$cmd .= " -v" if $verbose > 1;
+$cmd .= " '$tempfile.ivil.xml'";
+run_cmd($cmd,$verbose);
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile' --description 'XML output'";
+$cmd .= " -v" if $verbose > 1;
+run_cmd($cmd,$verbose);
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
+$cmd .= " -v" if $verbose > 1;
+run_cmd($cmd,$verbose);
+
+# Cleanup
+unless( $nodelete ) {
+	unlink "$tempfile.xml" if -e "$tempfile.xml";
+	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+}
+if ( $remote ) {
+	run_cmd("rm -f $tempfile.*",$verbose,$remote);;
+}
+
+exit(0);
+
+sub help() {
+	print "
+Usage: scan 	[--zap_path|p <path to ZAP jar>] \\
+		[--zap_options <additional ZAP CMD options>]] \\
+		--hosts <hosts file> [--remote|r <host,user,keyfile>] 
+		[--verbose|v] [--quiet|q] [--help|h]
+
+Arguments:
+--zap_path	- You can use this optional parameter to provide the script with
+(-p)		  the path to the ZAP jar file. If you do not provide this the 
+		  script tries to find the files itself and fail if it cannot 
+		  find them.
+--zap_options	- Additional command line options to provide to ZAP see 
+(-o)		  'ZAP WIKI' for more information.
+--hosts		- The file containing the 'hosts' to scan
+--workspace	- Name of the workspace to load the findings into
+--scan		- Name of the scan to load the findings into
+--remote (-r)	- Comma separated list of host,username,keyfile representing the
+		  host and credetials which should be used to execute the scan
+--verbose (-v)	- Be verbose during execution
+--quiet (-q)	- Don't print output
+--nodelete      - Don't delete temporary files (use -v to find out which)
+--help (-h)	- Print this message
+";
+	exit(1);
+}
+
+sub get_zap_path() {
+	my $path = run_cmd("find / -name 'zap.jar' 2>/dev/null",0,$remote);
+	if ( $path =~ /(^\/.*zap.jar)/ ) {
+		return $1;
+	}
+	if ( run_cmd("ls /opt/zap/zap.jar",0,$remote) ) {
+		return '/opt/zap/zap.jar';
+	}
+	return undef;
+}
+
+sub make_timestamp() {
+	my ($second, $minute, $hour, $day, $month, $year) = localtime();
+	$month++;
+	$second = "0" . $second if $second < 10;
+	$minute = "0" . $minute if $minute <10;
+	$hour = "0". $hour if $hour < 10;
+	$day = "0". $day if $day <10;
+	$month = "0" . $month if $month <10;
+	$year += 1900;
+
+	return "$year$month$day$hour$minute$second";
+}
+
