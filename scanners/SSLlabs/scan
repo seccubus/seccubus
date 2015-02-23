@@ -538,25 +538,36 @@ exit(0);
 
 sub help() {
 	print "
-Usage: scan       --user=<username> --password=<password> --server=<server> \\
-                  --port=<portnumber> --policy=<policy name> \\
-		  --hosts=<hosts file|hosts spec> \\
-		  --workspace=<seccubus workspace> --scan=<seccubus scan>\\
-                  [--nodelete] [--verbose] [--quiet] [--help]
---user (-u)	  - Nessus username
---password (-p)	  - Nessus password
---server (-s)	  - Nessus server (ip or name)
---port		  - Nessus server portnumber (default=8834)
---policy	  - Name of Nessus policy
---hosts		  - Specification of hosts to scan. Follows the Nessus rules 
-		    for specifying hosts, or path to a file containing such 
-		    specification
+Usage: scan     --hosts=<hosts file|hosts spec> 
+                --workspace=<seccubus workspace> --scan=<seccubus scan>
+		        [--api=<api_url>] [--sleep=<sleeptime>] [--nosslcheck]
+		        [--useragent=<string>] [--no-clear-cache] [--from-cache]
+		        [--publish] [--nodelete] [--verbose] [--quiet] [--help]
+
+--hosts		      - Specification of hosts to scan. (A file containing) a 
+                    list of hostnames separated by newlines. Empty lines 
+                    are ignored. Comments start with #
 --workspace (-ws) - Seccubus workspace the scan in in
 --scan (-sc)	  - Seccubus scan the data should be saved in
+--api (-a)		  - URL of the ssllabs API, defaults to 
+                    https://api.dev.ssllabs.com/api/fa78d5a4/
+--sleep           - Seconds to sleep between polls of the API 
+                    (default=15) Lower then 15 seconds is considered rude
+                    and a violation of the terms of usage of the API
+--nosslcheck      - Do not check the validity of the API SSL certificate
+                    this can be used when the PI is e.g. intercepted by
+                    a proxy that does not have a recognised SSL certificate
+                    or when a outdated operating system is used (NOT RECOMMENDED)
+--useragent       - Use a custom user agent string. Default: seccubus-ssllabs v0.1
+                    The default user agent string of REST::Client is appended
+                    to this user agent string
+--no-clear-cache  - Do not clear the cache of the SSL labs scan engine 
+                    Gives results faster but may be less accurate
+--from-cache      - Prefer cached results over fresh results (for very 
+	                quick results)
+--publish         - Publish the results of this scan on the SSL labs website
 --nodelete        - Don't erase temporary files
---sleep           - Seconds to sleep between polls of the Nessus engine 
-                    (default=10)
---verbose (-v)    - Be verbose during execution
+--verbose (-v)    - Be verbose during execution (repeat to increase verbosity)
 --quiet (-q)      - Don't print output
 --help (-h)       - Print this message
 ";

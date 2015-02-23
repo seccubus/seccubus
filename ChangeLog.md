@@ -25,6 +25,14 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+23-02-2015 - 2.14 - SSL labs API
+================================
+The SSL labs scanner now uses the SSL labs API (see https://github.com/ssllabs/ssllabs-scan/blob/master/ssllabs-api-docs.md) to check the SSL configuration of your website in stead of scraping the site.
+
+Bug Fixes
+=========
+* No additional bugfixes
+
 20-01-2015 - 2.13 - OWASP ZAP Proxy
 ======================================
 
