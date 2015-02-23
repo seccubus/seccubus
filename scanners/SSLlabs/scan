@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk, Alex Smirnoff, Frank Spijkerman
+# Copyright 2014 Frank Breedijk, Alex Smirnoff
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# This script will call the SSLyze scanner and import the results as IVIL
+# This script will call Zate Berg's Nessis-IVIL-Wrapper (see 
+# https://github.com/Zate/Nessus-IVIL-Wrapper ) to connect to a Nessus instance,
+# initiate a scan, save the results as an IVIL file and import it
 # ------------------------------------------------------------------------------
 
 use strict;
@@ -23,352 +25,551 @@ use IVIL;
 
 use Getopt::Long;
 use Carp;
-use Socket;
-use LWP::UserAgent;
-use HTML::TreeBuilder;
+
+use JSON;
+use REST::Client;
 use Data::Dumper;
 
+sub help();
+sub make_timestamp();
+
 my (
-	$hosts_file,
 	$workspace,
 	$scan,
+	$api,
+	$hosts,
+	$sleep,
+	$nosslcheck,
+	@hosts,
+	$userAgent,
+	$clearCache,
+	$noClearCache,
+	$fromCache,
+	$publish,
+	$all,
 	$nodelete,
 	$help,
 	$verbose,
 	$quiet,
-        $showResults,
    );
 
-# Create default values
-$help = 0;
-$showResults = 0;
+sub help();
+sub make_timestamp();
 
+# Default values for command line values
+$help = 0;
+$quiet = 0;
+$sleep = 15;
+$verbose = 0;
+$nosslcheck = 0;
+$api = "https://api.dev.ssllabs.com/api/fa78d5a4/";
+$userAgent = "seccubus-ssllabs v0.1";
+$noClearCache = 0;
 
 GetOptions(	
-		'hosts=s'		=> \$hosts_file,
-		'workspace|ws=s'	=> \$workspace,
-		'scan|sc=s'		=> \$scan,
-		'nodelete'		=> \$nodelete,
+	    'hosts|h=s'			=> \$hosts,
+	    'workspace|ws=s'	=> \$workspace,
+	    'scan|sc=s'			=> \$scan,
+		'api|a=s'			=> \$api,
+		'sleep|s=s'			=> \$sleep,
+		'nosslcheck!'		=> \$nosslcheck,
+		'useragent=s'		=> \$userAgent,
+		'no-clear-cache!'	=> \$noClearCache,
+		'from-cache!'		=> \$fromCache,
+		'nodelete!'			=> \$nodelete,
+		'publish'			=> \$publish,
 		'verbose|v+'		=> \$verbose,
-		'quiet|q!'		=> \$quiet,
-		'help|h'		=> \$help,
-		'showresults'		=> \$showResults,
+		'quiet|q!'			=> \$quiet,
+		'help'				=> \$help,
 	  );
 
 help() if $help;
 $verbose = 0 if $quiet;
 
-my $config = get_config();
-my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
-my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
+# Disable SSL checking if needed
+$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0 unless $nosslcheck;
 
-print "Hosts file specified $hosts_file\n" if $verbose;
-if ( ! $hosts_file || ! -e $hosts_file ) {
-	print "You must specify a valid hosts file";
+# Check params
+if ( ! $hosts ) {
+	print "You must specify a valid hosts spec";
 	help();
-} elsif ( ! $workspace ) {
-	print "You must specify a workspace name";
+}
+if ( ! $workspace ) {
+	print "You must specify a workspace";
 	help();
-} elsif ( ! $scan ){
-	print "You must specify a scan name";
+}
+if ( ! $scan ) {
+	print "You must specify a scan";
 	help();
-};
+}
 
+# Output files
 my $timestamp = make_timestamp();
-print "Timestamp = $timestamp\n" if $verbose;
-my $tempfile = "/tmp/seccubus.ssllabs.$$";
+my $tempfile = "/tmp/seccubus.$scan.$timestamp";
 
-my %hosts;
-
-open HOSTS, $hosts_file or die "Unable to read hosts from $hosts_file";
-while (<HOSTS>) {
-	chomp;
-	my $line = $_;
-	$_ =~ s/\#.*//;
-	if ( $_ =~ /^\w.*\.\w+$/ ) {
-		$hosts{$_}->{status} = 0;
-	} else {
-		print "Skipping line $line\n" if $verbose;
+# Expand hosts
+if ( -e $hosts ) {
+	open HOSTS, $hosts or die "Unable to open file '$hosts'";
+	while (<HOSTS>) {
+		chomp;
+		s/\#.*$//; # Remove comments
+		s/\s+$//; # Remove trailing spaces
+		if ( $_ ) { # Ignore blank lines
+			push @hosts, $_;
+			print "Scanning hosts $_\n" if $verbose > 1;
+		}
 	}
+	close HOSTS;
+} else {
+	@hosts = split /\s+/, $hosts #split it
 }
-close HOSTS;
 
-#
-### Phase 1 fetching results
-#
+# Fix param values
+if ( $noClearCache || $fromCache ) {
+	$clearCache = 0;
+} else {
+	$clearCache = 1;
+}
 
-# Initialize LWP and parser
-my $ua = LWP::UserAgent->new();
-$ua->agent("Seccubus SSLLabs scraper");
-$ua->default_header("Referrer", "https://www.ssllabs.com/");
 
-my $todo = 2;
-while ( $todo ) {
-	if ( $todo != 2 ) {
-		print "Sleeping for 15 seconds\n" unless $quiet;
-		sleep 15;
+# Setup REST client
+my $client = REST::Client->new(host => $api);
+my $ua = $client->getUseragent();
+$ua->agent("$userAgent ");
+# Disable max return size set by REST::Client
+$ua->max_size(undef);
+
+
+# Test if SSL labs is active
+my $json;
+print "calling info\n" if $verbose > 1;
+$client->GET(
+	"info", 
+	{ 	
+		'Content-Type' => 'application/json',
+		'Accept' => 'application/json',
 	}
-	$todo = 0;
-	foreach my $url ( sort keys %hosts ) {
-		if ($hosts{$url}->{status} < 1 ) {
-			# Fetch results
-			print "Fetching results for $url\n" if $verbose;
-			my $response = $ua->get("https://www.ssllabs.com/ssltest/analyze.html?d=$url&ignoreMismatch=on&hideResults=" . ($showResults ? "off" : "on"));
-			$hosts{$url}->{data} = $response->content();
-		
-			my $p = HTML::TreeBuilder->new();
-			$p -> parse($hosts{$url}->{data});
-			my $rating = $p->look_down('id','rating');
-			if ( $rating ) { # Scan is complete
-				$hosts{$url}->{status} = 1;
-				print "$url scored " . $rating->as_text . "\n" if $verbose;
+);
+
+die "Unable to contact SSL labs at $api" if ($client->responseCode() != 200);
+$json = decode_json($client->responseContent());
+my $scanner_ver = "v$json->{engineVersion} (criteria version $json->{criteriaVersion})";
+print "Scans will be performed by SSL Labs v$json->{engineVersion} (criteria version $json->{criteriaVersion}) - www.ssllabs.com\n" unless $quiet;
+my $maxScans = $json->{clientMaxAssessments};
+print "Maximum number of concurrent assessments: $maxScans\n" if $verbose;
+
+my $active = 9999;
+my $results = {};
+my $extraSleep = 0;
+while ( $active ) {
+	# Don't sleep on the first iteration
+	unless ( $active == 9999 ) {
+		print "$active scans in progress, sleeping for $sleep seconds\n" unless $quiet;
+		sleep($sleep);		
+	}
+	# Iterate over all hosts
+	$active = 0;
+	foreach my $host ( @hosts ) {
+		chomp $host;
+		# Determine if we need to query result for this host. Only if a scan is in progress and we have not exceeded our scan limit
+		if ( $active < $maxScans && 
+			(! defined $results->{$host} || $results->{$host}->{status} eq "IN_PROGRESS" || $results->{$host}->{status} eq "DNS" ) ) {
+			$active++;
+
+			# Delay if we were previously notified of a problem on the API side
+			if ( $extraSleep ) {
+				print "Sleeping for $extraSleep seconds\n" if $verbose && $extraSleep;
+				sleep($extraSleep);
+			}
+
+			# Let's build a query
+			my @params = (
+				"host=$host",
+				"all=done"
+			);
+			push @params, "publish=on" if $publish;
+			push @params, "fromCache=on" if $fromCache;
+
+			# If this is the first time we call the API for a host and we want the cache cleared, now it s good time to do it.
+			if ( ! defined $results->{$host} ) {
+				push @params, "clearCache=on" if $clearCache;
+				print "Starting scan of $host\n" unless $quiet;
 			} else {
-				# Let see if multiple elements were returned
-				my $multi = $p->look_down('id','multiTable');
-				if ( $multi ) { # Lets add them all to the hash
-					print "$url has multiple IPs, adding them to the hostlist\n" if $verbose;
-					foreach my $ip ( $multi->look_down('class','ip') ) {
-						if (index ($url, "&s=" . $ip->as_text()) == -1) { # ugly hack
-							# Disable main site
-							$hosts{$url}->{status} = 3;
-							$url =~ s/\&s=.*//g;
-							my $newurl = "$url&s=" . $ip->as_text();
-							print "Adding host $newurl to targets\n" if $verbose;
-							$hosts{$newurl}->{status}=0;
-							$todo = 1;
-						} else {
-							print "IP is already in target $url\n" if $verbose;
-						}
-					}
-				} else {
-					my $warning = $p->look_down('id','warningBox');
-					if ($warning) {
-						if ( $warning->as_text =~ /^ Please wait/ ) {
-							# Simply not finished yet
-							$todo = 1;
-							print "$url not finished yet\n" if $verbose;
-						} elsif ( $warning->as_text =~ /^ Certificate name mismatch/ ) {
-							print "$url has certificate name mismatch, dropping from scan\n" unless $quiet;
-							# Disable site
-							$hosts{$url}->{status} = 2;
-						} else {
-							print "$url has unknown error: '" . $warning->as_text() . "', dropping from scan\n" unless $quiet;
-							# Disable site
-							$hosts{$url}->{status} = 2;
-						}	
-					} else {
-						my $warning = $p->look_down('class',"submitError");
-						if ( $warning ) {
-							print "$url has submit error: '" . $warning->as_text() . "', dropping from scan\n" unless $quiet;
-							# Disable site
-							$hosts{$url}->{status} = 2;
-						} else {
-							$p->dump();
-							die "Page not recognized";
-						}
-					}
+				print "Getting status of $host scan\n" if $verbose;
+			}
+
+			# Do the actual API call
+			my $url = "analyze?" . join "&", @params;
+			print "Calling $url\n" if $verbose > 1;
+			$client->GET(
+				$url, 
+				{ 	
+					'Content-Type' => 'application/json',
+					'Accept' => 'application/json',
 				}
+			);
+
+			# Verbose 3 or higher is true debug mode
+			if ( $verbose > 2 ) {  
+				print "*** QUERY ***\n";
+				print "$api$url\n";
+				print "*** RESPONSE HEADERS *** \n";
+				foreach my $header ( $client->responseHeaders()) {
+					print "$header : " . $client->responseHeader($header) . "\n";
+				}
+				print "*** RESPONSE DATA ***\n";
+				print $client->responseContent();
 			}
-			$p->delete;
-			$rating = undef;
+
+			# If the API tells us the number of parallel assessments has changed
+			if ( $client->responseHeader('X-ClientMaxAssessments') && $client->responseHeader('X-ClientMaxAssessments') != $maxScans ) {
+				$maxScans = $client->responseHeader('X-ClientMaxAssessments');
+				print "API has sent new max scan limit of $maxScans, adjusting...\n" unless $quiet;
+			}
+
+			# Handle responses: 200 - All OK
+			$json = decode_json($client->responseContent());
+			if ($client->responseCode == 200) {
+				# Store result an continue normal timing
+				$extraSleep = 0;
+				print "$host -> $json->{status}\n" if $verbose;
+				$results->{$host} = $json;
+				if ( $json->{status} ne "IN_PROGRESS" && $json->{status} ne "DNS" ) {
+					print "Host: $host, status: $json->{status} - done\n" unless $quiet;
+					$active--;
+				} else {
+					print "Host: $host, status: $json->{status} - in progress\n" unless $quiet;
+
+				}
+			# Other statuses are a problem
+			} elsif ($client->responseCode == 429 ) {
+				print "Request rate too high, sleeping 5 minutes before next request\n" unless $quiet;
+				$extraSleep = 300;
+			} elsif ( $client->responseCode == 503 ) {
+				print "Service not available, sleeping 15 minutes before next request\n" unless $quiet;
+				$extraSleep = 900;
+			} elsif ( $client->responseCode == 529 ) {
+				print "Service overloaded, sleeping 30 minutes before next request\n" unless $quiet;
+				$extraSleep = 1800;
+			} else {
+				# Enumerate error messages
+				my $msg = "";
+				foreach my $error ( @{$json->{errors}} ) {
+					$msg .= "$error->{message}\n";
+				}
+				print "Received error. Error code ". $client->responseCode() . " messages:\n$msg" unless $quiet;
+				print "Host: $host, status: ERROR - done\n" unless $quiet;
+
+				# Atrifically construct an ERROR API reply
+				$results->{$host}->{status} = "ERROR";
+				$results->{$host}->{statusMessage} = "$msg";
+				# Mark the host as being inactive
+				$active--;
+			}
 		}
 	}
+	print "$active active scans\n" if $verbose;
 }
 
-# Create files and IVIL output
-open IOUT, ">$tempfile.ivil.xml" or die "Unable to write to $tempfile.ivil.xml";
-print IOUT xml_header();
-print IOUT ivil_open();
-print IOUT ivil_addressee("Seccubus", { workspace => $workspace, scan => $scan } );
-print IOUT "<findings>\n";
+# Create output files
+open JSFILE, ">$tempfile.json" or die "Unable to open $tempfile.json for write";
+print JSFILE to_json($results, {pretty => 1});
+close JSFILE;
 
-foreach my $url ( sort keys %hosts ) {
-	print "Processing results for $url\n" if $verbose;
+# Create IVIL file header
+open OUT, ">$tempfile.ivil.xml" or die "Unable to open $tempfile.ivil.xml for write";
+print OUT xml_header();
+print OUT ivil_open();
+
+# Addressee block
+print OUT ivil_addressee("Seccubus", {
+		"workspace" => $workspace,
+		"scan"		=> $scan,
+	}
+);
+# Findings
+print OUT "<findings>\n";
+
+# Iterate over each host
+foreach my $host ( @hosts ) {
+	my $scan = $results->{$host};
+
 	my $finding = {};
-	$finding->{hostname} = $url;
-	$finding->{hostname} =~ s/\&.*//g;
-	$finding->{port} = "443/tcp";
-
-
-	if ( $hosts{$url}->{status} == 1 ) { # Valid data
-		my $p = HTML::TreeBuilder->new();
-		$p -> parse($hosts{$url}->{data});
-
-		my ($hostip) = $p->look_down('class','ip');
-		$hostip = $hostip -> as_trimmed_text;
-		$hostip =~ s/[\(\)]//g;
-		$finding->{ip} = $hostip;
-
-		# URL
-		$finding->{id} = "url";
-		$finding->{finding} = "https://www.ssllabs.com/ssltest/analyze.html?d=$url&ignoreMismatch=on&hideResults=" . ($showResults ? "off" : "on");
-		$finding->{severity} = 4;
-		print IOUT ivil_finding($finding);
-
-		# Ratings
-		$finding->{id} = "ratings";
-		my $txt = "";
-
-		my $rating = $p->look_down('id','rating');
-		if (!$rating) {
-			print "SOMETHING WENT REALLY WRONG";
-			$finding->{id} = "skipped";
-			$finding->{finding} = "$url was skipped due to internal error, please investigate";
-			print IOUT ivil_finding($finding);
-			next;
-		}
-		$rating = $rating->as_text;
-		$rating =~ s/Rating/Rating /;
-		if ($rating =~ /A-/) {
-			$finding->{severity} = 3;
-		} elsif ($rating =~ /A/) {
-			$finding->{severity} = 4;
-		} else {
-			$finding->{severity} = 2;
-		}
-			
-			
-		$txt = $rating;
-		$txt .= "\n\n";
-
-		my $chart = $p->look_down('id', 'chart');
-		my @rows = $chart->look_down('class', 'chartRow');
-		foreach my $row ( @rows ) {
-			$txt .= $row->as_text();
-			$txt .= "\n";
-		}
-		$txt =~ s/\xA0/ /g;
-		$finding->{finding} = $txt;
-
-		print IOUT ivil_finding($finding);
-
-
-		# Warnings
-		my @warnings = $p->look_down('class','reportSection')->look_down('class','warningBox');
-		if (@warnings) {
-			$finding->{id} = "warnings";
-			my $txt = "";
-			foreach my $warning ( @warnings ) {
-				$txt .= $warning->as_text() . "\n";
-			}
-			$txt =~ s/[\xA0-\xFF]/ /g;
-			$txt =~ s/MORE INFO/ /g;
-			$finding->{finding} = $txt;
-			$finding->{severity} = 2;
-
-			print IOUT ivil_finding($finding);
-		}
-
-		# Errors
-		@warnings = $p->look_down('class','reportSection')->look_down('class','errorBox');
-		if (@warnings) {
-			$finding->{id} = "errors";
-			my $txt = "";
-			foreach my $warning ( @warnings ) {
-				$txt .= $warning->as_text() . "\n" unless $warning->as_text() =~ /^ Due to a rectently discovered bug in Apple/;
-			}
-			$txt =~ s/[\xA0-\xFF]/ /g;
-			$txt =~ s/MORE INFO/ /g;
-			$finding->{finding} = $txt;
-			$finding->{severity} = 1;
-
-			print IOUT ivil_finding($finding);
-		}
-		#info
-		@warnings = $p->look_down('class','highlightBox');
-		if (@warnings) {
-			$finding->{id} = "info";
-			my $txt = "";
-			foreach my $warning ( @warnings ) {
-				$txt .= $warning->as_text() . "\n";
-			}
-			$txt =~ s/[\xA0-\xFF]/ /g;
-			$txt =~ s/MORE INFO/ /g;
-			$finding->{finding} = $txt;
-			$finding->{severity} = 4;
-
-			print IOUT ivil_finding($finding);
-		}
-
-
-		my $file = "$tempfile.$url.html";
-		$tempfile =~ s/\&/\-/g;
-
-		# HTML file
-		$txt = $hosts{$url}->{data};
-		$txt =~ s/src\=\'\//src='https:\/\/www.ssllabs.com\//g;
-		$txt =~ s/src\=\"\//src="https:\/\/www.ssllabs.com\//g;
-		$txt =~ s/href\=\'\//href='https:\/\/www.ssllabs.com\//g;
-		$txt =~ s/href\=\"\//href="https:\/\/www.ssllabs.com\//g;
-		open HTML, ">$file" or die "Unable to open '$file' for write";
-		print HTML $txt;
-		close HTML;
-		
-		# Cleanup
-		$p->delete;
+	if ( $scan->{port} ) {
+		$finding->{port} = "$scan->{port}/tcp";
 	} else {
-		print "Skipping not processed url: $url\n" if $verbose;
-		$finding->{id} = "skipped";
-		if ( $hosts{$url}->{status} == 3 ) { 
-			$finding->{finding} = "$url was expanded to multiple IPs";
-		} else {
-			$finding->{finding} = "$url was skipped due to an error";
+		$finding->{port} = "unknow";
+	}
+
+	# Handle errors first
+	if ( $scan->{status} eq "ERROR" ) {
+		$finding->{ip} = $host;
+		$finding->{hostname} = $host;
+		$finding->{id} = "ERROR";
+		$finding->{finding} = $scan->{statusMessage};
+		$finding->{severity} = 0;
+		print OUT ivil_finding($finding);
+	} else {
+		$finding->{hostname} = $host;
+		$finding->{ip} = $host;
+		$finding->{severity} = 0;
+		foreach my $key ( keys %$scan ) {
+			if ( $key eq "criteriaVersion" || $key eq "engineVersion" || $key eq "host"  || 
+				$key eq "port" || $key eq "status" || $key eq "startTime" || $key eq "endTime" ||
+				$key eq "testTime" ) {
+				# Ignore these keywords
+			} elsif ( $key eq "protocol" ) {
+				# Simple dump keys
+				$finding->{id} = $key;
+				$finding->{finding} = "$key - $scan->{$key}";
+				print OUT ivil_finding($finding);
+			} elsif ( $key eq "isPublic" ) {
+				$finding->{id} = $key;
+				if ( $scan->{isPublic} ) {
+					$finding->{finding} = "Scan results are visible to the general public";
+				} else {
+					$finding->{finding} = "Scan results are hidden"
+				}
+				print OUT ivil_finding($finding);
+			} elsif ( $key eq "endpoints" ) {
+				# Iterate through each endpoint
+				foreach my $ep ( @{$scan->{$key}} ) {
+					# Now the endpoint is the target
+					$finding->{ip} = "$host/$ep->{ipAddress}";
+					foreach my $epkey ( sort keys %$ep ) {
+						$finding->{id} = $epkey;
+						if ( $epkey eq "delegation" || $epkey eq "duration" || $epkey eq "port" || 
+							$epkey eq "eta" || $epkey eq "ipAddress" || $epkey eq "progress" ||
+							$epkey eq "statusMessage" || $epkey eq "statusDetailsMessage" || $epkey eq "statusDetails" ) {
+							# Ignore
+						} elsif ( $epkey eq "grade" || $epkey eq "serverName" || $epkey eq "npnProtocols" ) {
+							# Simpel dump values
+							$finding->{finding} = "$epkey - $ep->{$epkey}";
+							print OUT ivil_finding($finding);
+						} elsif ( $epkey eq "hasWarnings" ) {
+							if ( $ep->{$epkey} ) {
+								$finding->{finding} = "This host has findings that negatively effect the score";
+								print OUT ivil_finding($finding);
+							}
+						} elsif ( $epkey eq "isExceptional" ) {
+							if ( $ep->{$epkey} ) {
+								$finding->{finding} = "This host is exceptionally well configured";
+								print OUT ivil_finding($finding);
+							}
+						} elsif ( $epkey eq "details" ) {
+							# Iterate over keys
+							foreach my $dkey ( sort keys %{$ep->{$epkey}} ) {
+								my $det = $ep->{$epkey}->{$dkey};
+								if ( $dkey eq "chain" || $dkey eq "compressionMethods" || $dkey =~ /Time$/ || $dkey =~ /refixDelegation$/ || $dkey eq "sims" 
+									|| $dkey eq "suites"  || $dkey eq "statusDetails" ) {
+									# Ignore
+								} elsif ( $dkey eq "compression" || $dkey eq "heartbeat" || $dkey eq "ocspStapling" || $dkey eq "sniRequired" || $dkey eq "supportsNpn") {
+									# Is supported type findings
+									$finding->{id} = $dkey;
+									if ( $det ) {
+										$finding->{finding} = "$dkey is supported";
+									} else {
+										$finding->{finding} = "$dkey is supported";
+									}
+									print OUT ivil_finding($finding);
+								} elsif ( $dkey eq "heartbleed"  || $dkey eq "rc4WithModern" || $dkey eq "supportsRc4" || $dkey eq "vulnBeast" ) {
+									# Is vulnerable type findings
+									if ( $det ) {
+										$finding->{id} = $dkey;
+										$finding->{finding} = "Server is vulnerable for $dkey";
+										print OUT ivil_finding($finding);
+									}
+								} elsif ( $dkey eq "httpStatusCode" || $dkey eq "serverSignature"  || $dkey eq "npnProtocols") {
+									# Dump type
+									$finding->{id} = $dkey;
+									$finding->{finding} = "$dkey - $det";
+									print OUT ivil_finding($finding);
+								} elsif ( $dkey eq "sessionTickets" ) {
+									$finding->{id} = $dkey;
+									$finding->{finding} = "";
+									$finding->{finding} .= "Session tickets are supported" if $det and 1;
+									$finding->{finding} .= "Session tickets not implemented correctly" if $det and 2;
+									$finding->{finding} .= "Server is intollerant to session tickets extension" if $det and 4;
+								} elsif ( $dkey eq "poodleTls" ) {
+									$finding->{id} = $dkey;
+									$finding->{finding} = "Poodle over TLS - test failed\n" if $det == -1;
+									$finding->{finding} = "Poodle over TLS - status unknown\n" if $det == 0;
+									$finding->{finding} = "Poodle over TLS - vulnerable\n" if $det == 1;
+									$finding->{finding} = "Poodle over TLS - not vulnerable\n" if $det == 2;
+									print OUT ivil_finding($finding);
+								} elsif ( $dkey eq "openSslCcs" ) {
+									$finding->{id} = $dkey;
+									$finding->{finding} = "CVE-2014-0224 test failed\n" if $det == -1;
+									$finding->{finding} = "CVE-2014-0224 status unknown\n" if $det == 0;
+									$finding->{finding} = "CVE-2014-0224 not vulnerable\n" if $det == 1;
+									$finding->{finding} = "CVE-2014-0224 possibly vulnerable, but not exploitable\n" if $det == 2;
+									$finding->{finding} = "CVE-2014-0224 vulnerable and exploitable\n" if $det == 3;
+									print OUT ivil_finding($finding);
+								} elsif ( $dkey eq "sessionResumption" ) {
+									$finding->{id} = $dkey;
+									$finding->{finding} = "Session resumption is not enabled and we're seeing empty session IDs\n" if $det == 0;
+									$finding->{finding} = "Endpoint returns session IDs, but sessions are not resumed\n" if $det == 1;
+									$finding->{finding} = "Session resumption is enabled\n" if $det == 2;
+									print OUT ivil_finding($finding);
+								} elsif ( $dkey eq "protocols" ) {
+									$finding->{id} = $dkey;
+									$finding->{finding} = "Supported protocols:\n";
+									foreach my $prot ( @$det ) {
+										$finding->{finding} .= "$prot->{name} $prot->{version}\n"
+									}
+									print OUT ivil_finding($finding);
+								} elsif ($dkey eq "key") {
+									$finding->{id} = "key";
+									$finding->{finding} = "Key\n$det->{alg}\nSize: $det->{size}\nStrength: $det->{strength}\n";
+									if ( $det->{debianFlaw} ) {
+											$finding->{finding} .= "Key was genereated on a Debian system with a flawed PRNG and is weak";
+									}
+									print OUT ivil_finding($finding);
+								} elsif ($dkey eq "forwardSecrecy") {
+									$finding->{id} = "pfs";
+									$finding->{finding} = "";
+									$finding->{finding} .= "PFS is supported with at least one browser\n" if ($det and 1);
+									$finding->{finding} .= "PFS is supported for modern browsers\n" if ($det and 2);
+									$finding->{finding} .= "PFS is supported for all browsers with PFS support\n" if ($det and 4);
+									$finding->{finding} = "PFS not supported :(" unless $finding->{finding}; 
+									print OUT ivil_finding($finding);
+								} elsif ($dkey eq "renegSupport") {
+									$finding->{id} = "reneg";
+									$finding->{finding} = "";
+									$finding->{finding} .= "Insecure client-initiated renegotiation is supported\n" if ($det and 1);
+									$finding->{finding} .= "Secure renegotiation is supported\n" if ($det and 2);
+									$finding->{finding} .= "Secure client-initiated renegotiation is supported\n" if ($det and 4);
+									$finding->{finding} .= "The server requires secure renegotiation support\n" if ($det and 8);
+									print OUT ivil_finding($finding);
+								} elsif ( $dkey eq "cert" ) {
+									$finding->{id} = "cert";
+									my $txt = "Subject: $det->{subject}\nIssuer: $det->{issuerLabel}\n\nCommon names:\n";
+									$txt .= join "\n", @{$det->{commonNames}};
+									if ( $det->{altNames} ) {
+										$txt .= "\n\nAlternative names:\n";
+										$txt .= join "\n", @{ $det->{altNames} };
+									}
+									$txt .= "\n\n";
+									$txt .= "CRL info is available\n" if ( $det->{revocationInfo} and 1 );
+									$txt .= "CRL info NOT available\n" unless ( $det->{revocationInfo} and 1 );
+									$txt .= "OCSP info is available\n" if ( $det->{revocationInfo} and 2 );
+									$txt .= "OCSP info NOT available\n" unless ( $det->{revocationInfo} and 2 );
+
+									if ( $det->{sgc} ) {
+										$txt .= "Certificate has CSG support\n";
+									} else {
+										$txt .= "Certificate has NO CSG support\n";
+									}
+
+									if ( $det->{valdiationType} eq "E" ) {
+										$txt .= "Extended validation\n";
+									}
+									$finding->{finding} = $txt;
+									print OUT ivil_finding($finding);
+
+									$finding->{id} = "revocation";
+									$txt = "Revocation status not checked\n" if $det->{revocationStatus} = 0;
+									$txt = "Certificate revoked\n" if $det->{revocationStatus} = 1;
+									$txt = "Certificate not revoked\n" if $det->{revocationStatus} = 2;
+									$txt = "Revocation check error\n" if $det->{revocationStatus} = 3;
+									$finding->{finding} = $txt;
+									print OUT ivil_finding($finding);
+
+									$finding->{id} = "cert_issues";
+									$txt = "Certificate issues:\n";
+									$txt .= "Certifcate has not valid chain of trust\n" if ( $det->{issues} and 1 );
+									$txt .= "Certifcate validity date not yet reached\n" if ( $det->{issues} and 2 );
+									$txt .= "Certifcate validity date expired\n" if ( $det->{issues} and 4 );
+									$txt .= "Certificate name does not match hostname\n" if ( $det->{issues} and 8 );
+									$txt .= "Certifcate is revoked\n" if ( $det->{issues} and 16 );
+									$txt .= "Certifcate has a bad common name\n" if ( $det->{issues} and 32 );
+									$txt .= "Certifcate is self signed\n" if ( $det->{issues} and 64 );
+									$txt .= "Certifcate is blacklisted\n" if ( $det->{issues} and 128 );
+									$txt .= "Certifcate has insecure signature\n" if ( $det->{issues} and 256 );
+									$finding->{finding} = $txt;
+									print OUT ivil_finding($finding);
+
+								} else {
+									# Treat anything we don't know as dump type
+									$finding->{id} = $dkey;
+									$finding->{finding} = "Unknown detail $dkey\n\n" . to_json($det,{ pretty => 1, allow_nonref => 1});
+									print OUT ivil_finding($finding);
+								}
+							}
+
+							# TODO: Parse details
+						} else {
+							$finding->{id} = $epkey;
+							$finding->{finding} = "Unknown key $epkey\n\n" . to_json($ep->{$epkey},{ pretty => 1, allow_nonref => 1});
+							print OUT ivil_finding($finding);
+						}					
+					}
+
+					#die Dumper($ep);
+				}
+				$finding->{ip} = $host;
+			} else {
+				$finding->{id} = $key;
+				$finding->{finding} = to_json($scan->{$key},{ pretty => 1, allow_nonref => 1});
+				print OUT ivil_finding($finding);
+			}
 		}
-		print IOUT ivil_finding($finding);
+		#die Dumper($scan);
 	}
 }
-print IOUT "</findings>\n";
-print IOUT ivil_close();
-close IOUT;
 
-my $cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner SSLlabs --timestamp $timestamp";
-$cmd .= " -v" if $verbose > 1;
-$cmd .= " '$tempfile.ivil.xml'";
-print "Execuing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
+# Close IVIL
+print OUT "</findings>\n";
+print OUT ivil_close();
+close OUT;
+#die `cat $tempfile.ivil.xml`;
+#die Dumper($results);
 
-# attach HTML
-print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
-foreach my $file ( <$tempfile*.html> ) {
-	$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$file' --description 'HTML output'";
-	$cmd .= " -v" if $verbose > 1;
-	print "Execuing $cmd\n" if $verbose > 1;
-	$result = `$cmd 2>&1`;
-	print "$result\n" if $verbose > 1;
-}
+# Load the results
+my ( $workspace_id, $scan_id, $run) = load_ivil("$tempfile.ivil.xml", "Qualys SSL labs", $scanner_ver, $timestamp );
 
-print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
-$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
-$cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
-$result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
-
-# Cleanup
 unless ( $nodelete ) {
-	foreach my $file ( <$tempfile*.html> ) {
-		unlink "$file";
-	}
-	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+	unlink "$tempfile.json";
+	unlink "$tempfile.ivil.xml";
 }
+print "Done\n" unless $quiet;
 
 exit(0);
 
 sub help() {
 	print "
+Usage: scan     --hosts=<hosts file|hosts spec> 
+                --workspace=<seccubus workspace> --scan=<seccubus scan>
+		        [--api=<api_url>] [--sleep=<sleeptime>] [--nosslcheck]
+		        [--useragent=<string>] [--no-clear-cache] [--from-cache]
+		        [--publish] [--nodelete] [--verbose] [--quiet] [--help]
 
-Usage: scan 	--hosts <hosts file> --workspace <workspace> --scan <scan> [--verbose|v] 
-		[--quiet|q] [--help|h]
-
-Arguments:
---hosts		- The file containing the 'hosts' to scan
---workspace	- Name of the workspace to load the findings into
---scan		- Name of the scan to load the findings into
---verbose (-v)	- Be verbose during execution
---nodelete	- Don't delete temporary files
---quiet (-q)	- Don't print output
---help (-h)	- Print this message
+--hosts		      - Specification of hosts to scan. (A file containing) a 
+                    list of hostnames separated by newlines. Empty lines 
+                    are ignored. Comments start with #
+--workspace (-ws) - Seccubus workspace the scan in in
+--scan (-sc)	  - Seccubus scan the data should be saved in
+--api (-a)		  - URL of the ssllabs API, defaults to 
+                    https://api.dev.ssllabs.com/api/fa78d5a4/
+--sleep           - Seconds to sleep between polls of the API 
+                    (default=15) Lower then 15 seconds is considered rude
+                    and a violation of the terms of usage of the API
+--nosslcheck      - Do not check the validity of the API SSL certificate
+                    this can be used when the PI is e.g. intercepted by
+                    a proxy that does not have a recognised SSL certificate
+                    or when a outdated operating system is used (NOT RECOMMENDED)
+--useragent       - Use a custom user agent string. Default: seccubus-ssllabs v0.1
+                    The default user agent string of REST::Client is appended
+                    to this user agent string
+--no-clear-cache  - Do not clear the cache of the SSL labs scan engine 
+                    Gives results faster but may be less accurate
+--from-cache      - Prefer cached results over fresh results (for very 
+	                quick results)
+--publish         - Publish the results of this scan on the SSL labs website
+--nodelete        - Don't erase temporary files
+--verbose (-v)    - Be verbose during execution (repeat to increase verbosity)
+--quiet (-q)      - Don't print output
+--help (-h)       - Print this message
 ";
 	exit(1);
 }
@@ -385,4 +586,5 @@ sub make_timestamp() {
 
 	return "$year$month$day$hour$minute$second";
 }
+
 
