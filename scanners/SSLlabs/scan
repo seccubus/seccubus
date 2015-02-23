@@ -313,7 +313,7 @@ foreach my $host ( @hosts ) {
 		$finding->{hostname} = $host;
 		$finding->{ip} = $host;
 		$finding->{severity} = 0;
-		foreach my $key ( keys $scan ) {
+		foreach my $key ( keys %$scan ) {
 			if ( $key eq "criteriaVersion" || $key eq "engineVersion" || $key eq "host"  || 
 				$key eq "port" || $key eq "status" || $key eq "startTime" || $key eq "endTime" ||
 				$key eq "testTime" ) {
@@ -336,7 +336,7 @@ foreach my $host ( @hosts ) {
 				foreach my $ep ( @{$scan->{$key}} ) {
 					# Now the endpoint is the target
 					$finding->{ip} = "$host/$ep->{ipAddress}";
-					foreach my $epkey ( sort keys $ep ) {
+					foreach my $epkey ( sort keys %$ep ) {
 						$finding->{id} = $epkey;
 						if ( $epkey eq "delegation" || $epkey eq "duration" || $epkey eq "port" || 
 							$epkey eq "eta" || $epkey eq "ipAddress" || $epkey eq "progress" ||
