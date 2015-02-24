@@ -8,7 +8,7 @@ timezone: Europe/Amsterdam
 
 permalink: pretty
 paginate_path: "news/:num/"
-highlighter: true
+highlighter: pygments
 markdown: redcarpet
 redcarpet:
     extensions:
