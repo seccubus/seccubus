@@ -25,7 +25,7 @@ Thanks for this release goes to Alexey Smirnoff
 ([@Arkanoi](https://github.com/arkenoi)) and his employer 
 [Parallels Inc.](https://www.parallels.com)
 
-Alexey whipped together the Nessus 6 compatibility, fixed issues with the Qualys SSLlabs scanner.
+Alexey whipped together the Nessus 6 compatibility, fixed issues with the Qualys SSL Labs scanner.
 Further more his employer Parallels Inc. sponsored the development of the asset management and custom
 SQL feature.
 
@@ -41,7 +41,7 @@ supports the new Nessus API.
 Bug Fixes
 ============================================
 * [#140](https://github.com/schubergphilis/Seccubus_v2/issues/140) - Nessus 6 integration
-* [#141](https://github.com/schubergphilis/Seccubus_v2/issues/141) - Multiple issues with Qualys SSLlabs scanner
+* [#141](https://github.com/schubergphilis/Seccubus_v2/issues/141) - Multiple issues with Qualys SSL Labs scanner
 * [#144](https://github.com/schubergphilis/Seccubus_v2/issues/144) - Perl-CGI is bundled with perl 5.8 rpm's so no need to bundle it
 * [#152](https://github.com/schubergphilis/Seccubus_v2/issues/152) - Pull request for Asset management
 * [#159](https://github.com/schubergphilis/Seccubus_v2/issues/159) - It was impossible to launch scan with policy that lacks template UUID

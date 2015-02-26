@@ -1,10 +1,10 @@
 ---
 layout: post
-title: Ooops, our SSLlabs scanner is broken
+title: Ooops, our SSL Labs scanner is broken
 ---
 
-Be careful if you are using the SSLlabs scanner in Seccubus. Last week we were contacted by Ivan 
-Ristic himself that we were overutilizing the SSLlabs scanner by requesting scans for multiple 
+Be careful if you are using the SSL Labs scanner in Seccubus. Last week we were contacted by Ivan 
+Ristic himself that we were overutilizing the SSL Labs scanner by requesting scans for multiple 
 resources in a loop.
 
 It turns out that our scanner is broken. Since the release of this scanner Qualys has release an 

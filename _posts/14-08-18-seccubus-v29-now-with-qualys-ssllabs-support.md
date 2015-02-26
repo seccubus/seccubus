@@ -1,18 +1,18 @@
 ---
 layout: post
-title: Seccubus v2.9 – Now with Qualys SSLlabs support
+title: Seccubus v2.9 – Now with Qualys SSL Labs support
 ---
-We’ve added support for [Qualys SSLlabs](https://www.ssllabs.com) to Seccubus
+We’ve added support for [Qualys SSL Labs](https://www.ssllabs.com) to Seccubus
 and fixed a few bugs:
 
-18-08-2014 – 2.9 – Qualys SSLlabs integration  
+18-08-2014 – 2.9 – Qualys SSL Labs integration  
 ---  
 Seccubus can now fetch the results of www.ssllabs.com automatic scanner and
 monitor for deltas
 
 Bug Fixes  
 ---  
-* [#122](https://github.com/schubergphilis/Seccubus_v2/issues/122) – SSLlabs integration  
+* [#122](https://github.com/schubergphilis/Seccubus_v2/issues/122) – SSL Labs integration  
 * [#120](https://github.com/schubergphilis/Seccubus_v2/issues/120) – SELinux problem on RHEL6  
 * [#99](https://github.com/schubergphilis/Seccubus_v2/issues/99) – The ability to remote is not reflected in the scanner help text  
 * [#67](https://github.com/schubergphilis/Seccubus_v2/issues/67) – -o usage needs to be more specific for e.g. nikto and nmap scanner  

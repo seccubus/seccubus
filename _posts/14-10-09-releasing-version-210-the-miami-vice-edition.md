@@ -23,8 +23,8 @@ Bug Fixes
 * [#124](https://github.com/schubergphilis/Seccubus_v2/issues/124) – Multi file attachments  
 * [#125](https://github.com/schubergphilis/Seccubus_v2/issues/125) – rpm dependancy name is wrong  
 * [#127](https://github.com/schubergphilis/Seccubus_v2/issues/127) – Passwords can be hidden in the GUI  
-* [#134](https://github.com/schubergphilis/Seccubus_v2/issues/134) – SSLlabs scanner did not handle submit errors  
-* [#135](https://github.com/schubergphilis/Seccubus_v2/issues/135) – Host name creation not handled correctly with SSLlabs  
+* [#134](https://github.com/schubergphilis/Seccubus_v2/issues/134) – SSL Labs scanner did not handle submit errors  
+* [#135](https://github.com/schubergphilis/Seccubus_v2/issues/135) – Host name creation not handled correctly with SSL Labs  
 * [#136](https://github.com/schubergphilis/Seccubus_v2/issues/136) – Workspaces are now sorted by name  
 * Extra cache control headers because of Chrome
 
