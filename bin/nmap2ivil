@@ -68,7 +68,14 @@ print "Reading in nmap xml file\n" if $verbose;
 # Ticket #74 - Minor bugs in nmap2ivil when using nmap 5.21
 # https://sourceforge.net/apps/trac/seccubus/ticket/74
 my $nmap = XMLin($infile,
-		   forceArray	=> [ 'host', 'osclass', 'osmatch', 'port', 'extrareasons','hostname' ],
+		   forceArray	=> [ 'host', 
+		   					 'osclass', 
+		   					 'osmatch', 
+		   					 'port', 
+		   					 'extrareasons',
+		   					 'hostname',
+		   					 'script',
+		   				   ],
 		   KeyAttr	=> undef,
 	          );
 
@@ -189,13 +196,20 @@ foreach my $host ( @{$nmap->{host}} ) {
 				$finding->{finding} .= "Fingerprint  : $port->{service}->{servicefp}\nPlease submit fingerprint to http://insecure.org/cgi-bin/submit.cgi" if $port->{service}->{servicefp};
 				$finding->{finding} .= "Confidence   : $port->{service}->{conf}"; 
 				print OUT ivil_finding($finding) if $finding;
+				if (exists $port->{script} ) {
+					foreach my $script ( @{$port->{script}} ) {
+						$finding->{id} = $script->{id};
+						$finding->{finding} = $script->{output};
+						print OUT ivil_finding($finding);
+					}
+				} #script
 			} #port
+			$finding->{id} = "ports";
 			$finding->{port} = "other";
 			$finding->{finding} = "All $host->{$item}->{extraports}->{count} other ports are $host->{$item}->{extraports}->{state}\n\n";
 			foreach my $extra ( @{$host->{$item}->{extraports}->{extrareasons}} ) {
 				$finding->{finding} .= "$extra->{reason} : $extra->{count}\n";
 			} #extrareasons
-
 		} elsif ( $item eq 'starttime') {
 			$finding = undef;
 		} elsif ( $item eq 'uptime') {

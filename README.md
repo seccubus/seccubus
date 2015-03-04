@@ -29,10 +29,10 @@ For more information visit [www.seccubus.com]
 Release notes
 =============
 
-24-02-2015 - 2.14 - SSL labs API
+04-03-2015 - 2.15 - NMap scripts
 ================================
-The SSL labs scanner now uses the SSL labs API (see https://github.com/ssllabs/ssllabs-scan/blob/master/ssllabs-api-docs.md) to check the SSL configuration of your website in stead of scraping the site.
+This version fixes an issue where the output of NMap scripts (NSE) was completly ignored
 
 Bug Fixes
 =========
-* No additional bugfixes
+* #180 - NMAP script output ignored
