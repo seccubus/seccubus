@@ -1,0 +1,3856 @@
+@import '/vendor/connect-material/sprites/sprite-action-black.css';
+@import '/vendor/connect-material/sprites/sprite-action-white.css';
+@import '/vendor/connect-material/sprites/sprite-navigation-black.css';
+@import '/vendor/connect-material/sprites/sprite-navigation-white.css';
+@import '/vendor/connect-material/sprites/sprite-content-black.css';
+@import '/vendor/connect-material/sprites/sprite-content-white.css';
+[layout] {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+[layout=column] {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+[layout=row] {
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+[layout-wrap] {
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+}
+[flex-order="0"] {
+  -webkit-box-ordinal-group: 1;
+  -webkit-order: 0;
+      -ms-flex-order: 0;
+          order: 0;
+}
+[flex-order="1"] {
+  -webkit-box-ordinal-group: 2;
+  -webkit-order: 1;
+      -ms-flex-order: 1;
+          order: 1;
+}
+[flex-order="2"] {
+  -webkit-box-ordinal-group: 3;
+  -webkit-order: 2;
+      -ms-flex-order: 2;
+          order: 2;
+}
+[flex-order="3"] {
+  -webkit-box-ordinal-group: 4;
+  -webkit-order: 3;
+      -ms-flex-order: 3;
+          order: 3;
+}
+[flex-order="4"] {
+  -webkit-box-ordinal-group: 5;
+  -webkit-order: 4;
+      -ms-flex-order: 4;
+          order: 4;
+}
+[flex-order="5"] {
+  -webkit-box-ordinal-group: 6;
+  -webkit-order: 5;
+      -ms-flex-order: 5;
+          order: 5;
+}
+[flex-order="6"] {
+  -webkit-box-ordinal-group: 7;
+  -webkit-order: 6;
+      -ms-flex-order: 6;
+          order: 6;
+}
+[flex-order="7"] {
+  -webkit-box-ordinal-group: 8;
+  -webkit-order: 7;
+      -ms-flex-order: 7;
+          order: 7;
+}
+[flex-order="8"] {
+  -webkit-box-ordinal-group: 9;
+  -webkit-order: 8;
+      -ms-flex-order: 8;
+          order: 8;
+}
+[flex-order="9"] {
+  -webkit-box-ordinal-group: 10;
+  -webkit-order: 9;
+      -ms-flex-order: 9;
+          order: 9;
+}
+[layout-align="center"],
+[layout-align="center center"],
+[layout-align="center start"],
+[layout-align="center end"] {
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+[layout-align="end"],
+[layout-align="end center"],
+[layout-align="end start"],
+[layout-align="end end"] {
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+[layout-align="space-around"],
+[layout-align="space-around center"],
+[layout-align="space-around start"],
+[layout-align="space-around end"] {
+  -webkit-justify-content: space-around;
+      -ms-flex-pack: distribute;
+          justify-content: space-around;
+}
+[layout-align="space-between"],
+[layout-align="space-between center"],
+[layout-align="space-between start"],
+[layout-align="space-between end"] {
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+[layout-align="center center"],
+[layout-align="start center"],
+[layout-align="end center"],
+[layout-align="space-between center"],
+[layout-align="space-around center"] {
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+[layout-align="center start"],
+[layout-align="start start"],
+[layout-align="end start"],
+[layout-align="space-between start"],
+[layout-align="space-around start"] {
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+}
+[layout-align="center end"],
+[layout-align="start end"],
+[layout-align="end end"],
+[layout-align="space-between end"],
+[layout-align="space-around end"] {
+  -webkit-box-align: end;
+  -webkit-align-items: flex-end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+}
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+:focus {
+  outline: none;
+}
+html,
+body {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-touch-callout: none;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body {
+  margin: 0;
+  padding: 0;
+  outline: none;
+}
+a {
+  background: transparent;
+  outline: none;
+}
+select,
+button,
+textarea,
+input {
+  margin: 0;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline;
+}
+input[type="reset"],
+input[type="submit"],
+html input[type="button"],
+button {
+  cursor: pointer;
+  -webkit-appearance: button;
+}
+input[type="reset"][disabled],
+input[type="submit"][disabled],
+html input[type="button"][disabled],
+button[disabled] {
+  cursor: default;
+}
+textarea {
+  vertical-align: top;
+  overflow: auto;
+}
+input[type="radio"],
+input[type="checkbox"] {
+  padding: 0;
+  box-sizing: border-box;
+}
+input[type="search"] {
+  -webkit-appearance: textfield;
+  box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+}
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+material-content,
+.material-content {
+  display: block;
+  margin: 20px;
+  overflow: visible;
+}
+.material-backdrop {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  left: -100000px;
+  background-color: rgba(0, 0, 0, 0);
+}
+.material-backdrop.material-opened,
+.material-backdrop.material-opened-remove {
+  -webkit-transition: background-color 450ms cubic-bezier(0.25, 0.8, 0.25, 1) 0ms;
+          transition: background-color 450ms cubic-bezier(0.25, 0.8, 0.25, 1) 0ms;
+  left: 0;
+}
+.material-backdrop.material-opened {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+material-button,
+.material-button {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  position: relative;
+  border: 1px solid transparent;
+  padding: 6px;
+  background: transparent;
+  white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  line-height: 24px;
+  font-size: 1.1em;
+  -webkit-transition: box-shadow 450ms cubic-bezier(0.25, 0.8, 0.25, 1), background-color 450ms cubic-bezier(0.25, 0.8, 0.25, 1), -webkit-transform 450ms cubic-bezier(0.25, 0.8, 0.25, 1);
+          transition: box-shadow 450ms cubic-bezier(0.25, 0.8, 0.25, 1), background-color 450ms cubic-bezier(0.25, 0.8, 0.25, 1), transform 450ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 3px;
+}
+material-button .material-icon,
+.material-button .material-icon {
+  display: block;
+}
+material-button .material-text,
+.material-button .material-text {
+  display: block;
+  font-weight: 500;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: center;
+}
+material-button:not([disabled]):hover,
+.material-button:not([disabled]):hover,
+material-button:not([disabled]):focus,
+.material-button:not([disabled]):focus {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+material-button.material-cornered,
+.material-button.material-cornered {
+  border-radius: 0;
+}
+material-button.material-primary .material-text,
+.material-button.material-primary .material-text {
+  color: #0288d1;
+}
+material-button.material-warn .material-text,
+.material-button.material-warn .material-text {
+  color: #ef5350;
+}
+material-button.material-raised,
+.material-button.material-raised {
+  -webkit-transform: translateY(0);
+      -ms-transform: translateY(0);
+          transform: translateY(0);
+}
+material-button.material-raised:not([disabled]),
+.material-button.material-raised:not([disabled]) {
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+}
+material-button.material-raised,
+.material-button.material-raised,
+material-button.material-fab,
+.material-button.material-fab {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+material-button.material-raised:not([disabled]):hover,
+.material-button.material-raised:not([disabled]):hover,
+material-button.material-fab:not([disabled]):hover,
+.material-button.material-fab:not([disabled]):hover,
+material-button.material-raised:not([disabled]):focus,
+.material-button.material-raised:not([disabled]):focus,
+material-button.material-fab:not([disabled]):focus,
+.material-button.material-fab:not([disabled]):focus {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+material-button.material-raised.material-primary,
+.material-button.material-raised.material-primary,
+material-button.material-fab.material-primary,
+.material-button.material-fab.material-primary {
+  background-color: #03a9f4;
+}
+material-button.material-raised.material-primary .material-text,
+.material-button.material-raised.material-primary .material-text,
+material-button.material-fab.material-primary .material-text,
+.material-button.material-fab.material-primary .material-text {
+  color: #fff;
+}
+material-button.material-raised.material-primary:not([disabled]):hover,
+.material-button.material-raised.material-primary:not([disabled]):hover,
+material-button.material-fab.material-primary:not([disabled]):hover,
+.material-button.material-fab.material-primary:not([disabled]):hover,
+material-button.material-raised.material-primary:not([disabled]):focus,
+.material-button.material-raised.material-primary:not([disabled]):focus,
+material-button.material-fab.material-primary:not([disabled]):focus,
+.material-button.material-fab.material-primary:not([disabled]):focus {
+  background-color: #0288d1;
+}
+material-button.material-raised.material-warn,
+.material-button.material-raised.material-warn,
+material-button.material-fab.material-warn,
+.material-button.material-fab.material-warn {
+  background-color: #ef5350;
+}
+material-button.material-raised.material-warn .material-text,
+.material-button.material-raised.material-warn .material-text,
+material-button.material-fab.material-warn .material-text,
+.material-button.material-fab.material-warn .material-text {
+  color: #fff;
+}
+material-button.material-raised.material-warn:not([disabled]):hover,
+.material-button.material-raised.material-warn:not([disabled]):hover,
+material-button.material-fab.material-warn:not([disabled]):hover,
+.material-button.material-fab.material-warn:not([disabled]):hover,
+material-button.material-raised.material-warn:not([disabled]):focus,
+.material-button.material-raised.material-warn:not([disabled]):focus,
+material-button.material-fab.material-warn:not([disabled]):focus,
+.material-button.material-fab.material-warn:not([disabled]):focus {
+  background-color: #eb2521;
+}
+material-button:not([disabled]).material-raised:focus,
+.material-button:not([disabled]).material-raised:focus,
+material-button:not([disabled]).material-fab:focus,
+.material-button:not([disabled]).material-fab:focus,
+material-button:not([disabled]).material-raised:hover,
+.material-button:not([disabled]).material-raised:hover,
+material-button:not([disabled]).material-fab:hover,
+.material-button:not([disabled]).material-fab:hover {
+  -webkit-transform: translateY(-1px);
+      -ms-transform: translateY(-1px);
+          transform: translateY(-1px);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+}
+material-button.material-fab,
+.material-button.material-fab {
+  overflow: hidden;
+  z-index: 1;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  -webkit-transform: translateY(0);
+      -ms-transform: translateY(0);
+          transform: translateY(0);
+  -webkit-transition: 0.2s linear;
+          transition: 0.2s linear;
+  -webkit-transition-property: -webkit-transform, box-shadow;
+          transition-property: transform, box-shadow;
+}
+material-button.material-fab.material-fab-bottom-right,
+.material-button.material-fab.material-fab-bottom-right {
+  top: auto;
+  right: 28px;
+  bottom: 28px;
+  left: auto;
+  position: absolute;
+}
+material-button.material-fab.material-fab-bottom-left,
+.material-button.material-fab.material-fab-bottom-left {
+  top: auto;
+  right: auto;
+  bottom: 28px;
+  left: 28px;
+  position: absolute;
+}
+material-button.material-fab.material-fab-top-right,
+.material-button.material-fab.material-fab-top-right {
+  top: 28px;
+  right: 28px;
+  bottom: auto;
+  left: auto;
+  position: absolute;
+}
+material-button.material-fab.material-fab-top-left,
+.material-button.material-fab.material-fab-top-left {
+  top: 28px;
+  right: auto;
+  bottom: auto;
+  left: 28px;
+  position: absolute;
+}
+material-button[disabled],
+.material-button[disabled],
+material-button.material-raised[disabled],
+.material-button.material-raised[disabled],
+material-button.material-fab[disabled],
+.material-button.material-fab[disabled] {
+  background-color: transparent;
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.3;
+}
+material-buttonbar,
+.material-buttonbar {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  margin: 20px;
+}
+material-buttonbar material-button,
+.material-buttonbar material-button,
+material-buttonbar .material-button,
+.material-buttonbar .material-button {
+  margin-left: 10px;
+}
+material-divider,
+.material-divider {
+  display: block;
+  height: 1px;
+  background-color: #dedede;
+  margin: 6px 0;
+}
+material-icon,
+.material-icon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  font-size: 0;
+}
+material-item,
+.material-item {
+  display: block;
+  text-decoration: none;
+  font-weight: normal;
+  padding: 8px 20px;
+  font-size: 13px;
+  color: #333;
+  white-space: nowrap;
+  cursor: pointer;
+  position: relative;
+  vertical-align: bottom;
+  -webkit-user-select: none;
+}
+material-item:hover,
+.material-item:hover {
+  background: #f7f7f7;
+}
+material-item.material-has-icon,
+.material-item.material-has-icon {
+  padding-left: 64px;
+}
+material-item > .material-icon,
+.material-item > .material-icon {
+  position: absolute;
+  top: 6px;
+  left: 20px;
+}
+material-item > .material-text,
+.material-item > .material-text {
+  line-height: 20px;
+}
+material-title,
+.material-title {
+  display: block;
+  text-align: left;
+  font-weight: 300;
+  font-size: 24px;
+  line-height: 24px;
+  color: #000;
+  margin: 20px;
+  -webkit-user-select: none;
+}
+material-title h2,
+.material-title h2 {
+  display: inline;
+  font-size: 0.7em;
+  margin-left: 20px;
+  color: #ababab;
+  font-weight: normal;
+}
+material-title.material-has-icon,
+.material-title.material-has-icon {
+  padding-left: 64px;
+}
+material-title.material-has-icon > .material-icon,
+.material-title.material-has-icon > .material-icon {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+material-title.material-title-has-sub,
+.material-title.material-title-has-sub {
+  font-size: 20px;
+  line-height: 20px;
+  margin: 18px;
+}
+material-title material-subtitle,
+.material-title material-subtitle,
+material-title .material-subtitle,
+.material-title .material-subtitle {
+  display: block;
+  text-align: left;
+  font-weight: 300;
+  font-size: 0.7em;
+  line-height: 0.7em;
+  opacity: 0.6;
+  margin-top: 6px;
+}
+material-toolbar,
+.material-toolbar {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 64px;
+  background-color: #03a9f4;
+}
+material-toolbar > material-title,
+.material-toolbar > material-title,
+material-toolbar > .material-title,
+.material-toolbar > .material-title {
+  color: #fff;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+material-toolbar > *,
+.material-toolbar > * {
+  margin-left: 10px;
+}
+material-toolbar > :last-child,
+.material-toolbar > :last-child {
+  margin-right: 10px;
+}
+.material-toolbar-blank {
+  background-color: #fff;
+  border-bottom: 1px solid #dedede;
+}
+.material-toolbar-blank material-title,
+.material-toolbar-blank .material-title {
+  color: #1a1a1a;
+}
+material-appbar,
+.material-appbar {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 64px;
+  background-color: #03a9f4;
+  background-color: #01579b;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
+}
+material-appbar > material-title,
+.material-appbar > material-title,
+material-appbar > .material-title,
+.material-appbar > .material-title {
+  color: #fff;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+material-appbar > *,
+.material-appbar > * {
+  margin-left: 10px;
+}
+material-appbar > :last-child,
+.material-appbar > :last-child {
+  margin-right: 10px;
+}
+material-appbar material-title,
+.material-appbar material-title,
+material-appbar .material-title,
+.material-appbar .material-title {
+  margin: 20px 0;
+}
+material-appbar material-button,
+.material-appbar material-button,
+material-appbar .material-button,
+.material-appbar .material-button {
+  color: #fff;
+}
+material-card,
+.material-card {
+  display: block;
+  background-color: white;
+  margin: 20px;
+  padding-bottom: 20px;
+  box-shadow: rgba(255, 255, 255, 0.3) 0px 1px 0px inset, rgba(0, 0, 0, 0.03) 0px -1px 0px inset, 0 1px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 2px;
+}
+material-card material-toolbar,
+.material-card material-toolbar,
+material-card .material-toolbar,
+.material-card .material-toolbar {
+  background-color: #fff;
+  border-bottom: 1px solid #dedede;
+}
+material-card material-toolbar material-title,
+.material-card material-toolbar material-title,
+material-card .material-toolbar material-title,
+.material-card .material-toolbar material-title,
+material-card material-toolbar .material-title,
+.material-card material-toolbar .material-title,
+material-card .material-toolbar .material-title,
+.material-card .material-toolbar .material-title {
+  color: #1a1a1a;
+}
+material-card material-title,
+.material-card material-title,
+material-card .material-title,
+.material-card .material-title {
+  display: block;
+  color: #01579b;
+  font-weight: 300;
+  height: 36px;
+  line-height: 36px;
+}
+material-card li,
+.material-card li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+material-card p,
+.material-card p {
+  margin: 0;
+  padding: 20px;
+}
+material-card material-content:last-child,
+.material-card material-content:last-child,
+material-card .material-content:last-child,
+.material-card .material-content:last-child {
+  padding-bottom: 20px;
+}
+material-tabs,
+.material-tabs {
+  display: block;
+}
+material-tabs .material-tabs-bar,
+.material-tabs .material-tabs-bar {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: stretch;
+  -webkit-align-items: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+  height: 48px;
+  background-color: #03a9f4;
+  font-weight: 500;
+}
+material-tabs[center] .material-tabs-bar,
+.material-tabs[center] .material-tabs-bar {
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+material-tabs material-tab,
+.material-tabs material-tab,
+material-tabs .material-tab,
+.material-tabs .material-tab {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  cursor: pointer;
+  min-width: 120px;
+  margin: 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+material-tabs material-tab.material-tab-active,
+.material-tabs material-tab.material-tab-active,
+material-tabs .material-tab.material-tab-active,
+.material-tabs .material-tab.material-tab-active {
+  color: #fff;
+  border-bottom-color: #ffeb3b;
+}
+material-tabs material-tab[disabled],
+.material-tabs material-tab[disabled],
+material-tabs .material-tab[disabled],
+.material-tabs .material-tab[disabled] {
+  pointer-events: none;
+  cursor: default;
+}
+material-tabs material-tab material-tab-label,
+.material-tabs material-tab material-tab-label,
+material-tabs .material-tab material-tab-label,
+.material-tabs .material-tab material-tab-label,
+material-tabs material-tab .material-tab-label,
+.material-tabs material-tab .material-tab-label,
+material-tabs .material-tab .material-tab-label,
+.material-tabs .material-tab .material-tab-label {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-user-select: none;
+}
+material-tabs .material-tabs-content,
+.material-tabs .material-tabs-content {
+  overflow: hidden;
+  position: relative;
+}
+material-tabs .material-tabs-content .material-tabcontent,
+.material-tabs .material-tabs-content .material-tabcontent {
+  opacity: 0;
+  position: absolute;
+  left: -10000px;
+}
+material-tabs .material-tabs-content .material-tabcontent.material-opened,
+.material-tabs .material-tabs-content .material-tabcontent.material-opened {
+  -webkit-transition: opacity 0.4s;
+          transition: opacity 0.4s;
+  position: relative;
+  opacity: 1;
+  left: 0;
+}
+material-tabs.material-tabs-blank .material-tabs-bar,
+.material-tabs.material-tabs-blank .material-tabs-bar {
+  background-color: #fff;
+  border-bottom: 1px solid #dedede;
+}
+material-tabs.material-tabs-blank .material-tabs-bar material-tab,
+.material-tabs.material-tabs-blank .material-tabs-bar material-tab,
+material-tabs.material-tabs-blank .material-tabs-bar .material-tab,
+.material-tabs.material-tabs-blank .material-tabs-bar .material-tab {
+  color: rgba(0, 0, 0, 0.5);
+}
+material-tabs.material-tabs-blank .material-tabs-bar material-tab.material-tab-active,
+.material-tabs.material-tabs-blank .material-tabs-bar material-tab.material-tab-active,
+material-tabs.material-tabs-blank .material-tabs-bar .material-tab.material-tab-active,
+.material-tabs.material-tabs-blank .material-tabs-bar .material-tab.material-tab-active {
+  color: #000;
+  border-bottom-color: #03a9f4;
+}
+.material-dialog-wrap {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: none;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+.material-dialog-wrap.material-opened {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+.material-dialog-wrap .material-backdrop {
+  z-index: 4;
+}
+.material-dialog {
+  z-index: 4;
+  display: block;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 0;
+  background-color: #fff;
+  min-width: 260px;
+  max-width: 80%;
+  max-height: 80%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  -webkit-transform: scale(0, 0);
+      -ms-transform: scale(0, 0);
+          transform: scale(0, 0);
+  opacity: 0;
+  -webkit-transition: all 300ms cubic-bezier(0.25, 0.8, 0.25, 1) 0ms;
+          transition: all 300ms cubic-bezier(0.25, 0.8, 0.25, 1) 0ms;
+}
+.material-dialog.material-opened,
+.material-dialog.material-opened-remove {
+  -webkit-transform: scale(1, 1);
+      -ms-transform: scale(1, 1);
+          transform: scale(1, 1);
+}
+.material-dialog.material-opened {
+  opacity: 1;
+}
+.material-dialog material-title,
+.material-dialog .material-title {
+  color: #01579b;
+}
+material-menu,
+.material-menu {
+  display: block;
+  position: absolute;
+  z-index: 3;
+  top: -10000px;
+  min-width: 200px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0 0 6px;
+  border-color: #dedede;
+  border-style: solid;
+  border-width: 1px 0;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+material-menu.material-opened,
+.material-menu.material-opened,
+material-menu.material-opened-remove,
+.material-menu.material-opened-remove {
+  top: 0;
+}
+material-menu material-title,
+.material-menu material-title,
+material-menu .material-title,
+.material-menu .material-title {
+  color: #01579b;
+  border-bottom: 1px solid #f7f7f7;
+  margin: 0;
+  padding: 20px;
+}
+material-menu material-item:first-of-type,
+.material-menu material-item:first-of-type,
+material-menu .material-item:first-of-type,
+.material-menu .material-item:first-of-type {
+  margin-top: 5px;
+}
+material-menu material-item .material-icon,
+.material-menu material-item .material-icon,
+material-menu .material-item .material-icon,
+.material-menu .material-item .material-icon {
+  display: none;
+}
+material-menu.material-menu-has-icons material-item,
+.material-menu.material-menu-has-icons material-item,
+material-menu.material-menu-has-icons .material-item,
+.material-menu.material-menu-has-icons .material-item {
+  padding-left: 64px;
+}
+material-menu.material-menu-has-icons material-item .material-icon,
+.material-menu.material-menu-has-icons material-item .material-icon,
+material-menu.material-menu-has-icons .material-item .material-icon,
+.material-menu.material-menu-has-icons .material-item .material-icon {
+  display: block;
+}
+material-menu material-checkbox,
+.material-menu material-checkbox,
+material-menu .material-checkbox,
+.material-menu .material-checkbox {
+  padding: 8px 20px;
+}
+material-menu material-checkbox .material-text,
+.material-menu material-checkbox .material-text,
+material-menu .material-checkbox .material-text,
+.material-menu .material-checkbox .material-text {
+  width: auto;
+  min-width: 0;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0;
+      -ms-flex: 0;
+          flex: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+material-menu-button,
+.material-menu-button {
+  display: block;
+  position: relative;
+}
+material-menu-button > material-menu,
+.material-menu-button > material-menu,
+material-menu-button > .material-menu,
+.material-menu-button > .material-menu {
+  right: 0;
+  -webkit-transition: opacity 450ms cubic-bezier(0.25, 0.8, 0.25, 1) 0ms;
+          transition: opacity 450ms cubic-bezier(0.25, 0.8, 0.25, 1) 0ms;
+  opacity: 0;
+}
+material-menu-button > material-menu.material-opened,
+.material-menu-button > material-menu.material-opened,
+material-menu-button > .material-menu.material-opened,
+.material-menu-button > .material-menu.material-opened {
+  opacity: 1;
+}
+material-menu-button > material-button,
+.material-menu-button > material-button {
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: reverse;
+  -webkit-flex-direction: row-reverse;
+      -ms-flex-direction: row-reverse;
+          flex-direction: row-reverse;
+}
+material-sidenav-button,
+.material-sidenav-button {
+  display: block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+  margin: 0;
+}
+material-sidenav-button > material-button,
+.material-sidenav-button > material-button,
+material-sidenav-button > .material-button,
+.material-sidenav-button > .material-button {
+  margin: 12px;
+}
+material-sidenav-button material-menu,
+.material-sidenav-button material-menu,
+material-sidenav-button .material-menu,
+.material-sidenav-button .material-menu {
+  border-top-width: 0px;
+  left: 0;
+  min-width: 260px;
+  -webkit-transition: -webkit-transform 450ms cubic-bezier(0.25, 0.8, 0.25, 1) 0ms;
+          transition: transform 450ms cubic-bezier(0.25, 0.8, 0.25, 1) 0ms;
+  -webkit-transform: translateX(-260px);
+      -ms-transform: translateX(-260px);
+          transform: translateX(-260px);
+}
+material-sidenav-button material-menu.material-opened,
+.material-sidenav-button material-menu.material-opened,
+material-sidenav-button .material-menu.material-opened,
+.material-sidenav-button .material-menu.material-opened {
+  -webkit-transform: translateX(0);
+      -ms-transform: translateX(0);
+          transform: translateX(0);
+}
+material-sidenav-button material-menu material-item,
+.material-sidenav-button material-menu material-item,
+material-sidenav-button .material-menu material-item,
+.material-sidenav-button .material-menu material-item,
+material-sidenav-button material-menu .material-item,
+.material-sidenav-button material-menu .material-item,
+material-sidenav-button .material-menu .material-item,
+.material-sidenav-button .material-menu .material-item {
+  padding: 18px 32px;
+  font-weight: 500;
+  color: #222;
+  font-size: 16px;
+}
+material-sidenav-button material-menu material-item:hover,
+.material-sidenav-button material-menu material-item:hover,
+material-sidenav-button .material-menu material-item:hover,
+.material-sidenav-button .material-menu material-item:hover,
+material-sidenav-button material-menu .material-item:hover,
+.material-sidenav-button material-menu .material-item:hover,
+material-sidenav-button .material-menu .material-item:hover,
+.material-sidenav-button .material-menu .material-item:hover {
+  color: #444;
+}
+material-datepicker,
+.material-datepicker {
+  display: block;
+  width: 272px;
+  background-color: #fff;
+}
+.material-datepicker-date h4 {
+  background-color: #01579b;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  vertical-align: middle;
+  line-height: 30px;
+  height: 30px;
+  text-align: center;
+  margin: 0;
+}
+.material-datepicker-date h1,
+.material-datepicker-date h2,
+.material-datepicker-date h3 {
+  cursor: pointer;
+  background-color: #03a9f4;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  text-align: center;
+  font-weight: 500;
+}
+.material-datepicker-date h1.view-active,
+.material-datepicker-date h2.view-active,
+.material-datepicker-date h3.view-active {
+  color: #fff;
+}
+.material-datepicker-date h2 {
+  padding-top: 12px;
+  font-size: 24px;
+  text-transform: uppercase;
+}
+.material-datepicker-date h1 {
+  font-size: 52px;
+  padding-top: 2px;
+}
+.material-datepicker-date h3 {
+  font-size: 22px;
+  padding: 4px 0 12px;
+}
+.material-datepicker-view {
+  height: 252px;
+  overflow: auto;
+  margin: 10px;
+}
+.material-datepicker-view table {
+  display: block;
+  width: 252px;
+  border-spacing: 0;
+  overflow: hidden;
+}
+.material-datepicker-view tr {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+.material-datepicker-view tr th,
+.material-datepicker-view tr td {
+  display: block;
+  width: 36px;
+  height: 36px;
+}
+.material-datepicker-view th {
+  color: #787878;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 36px;
+}
+.material-datepicker-view td .material-button {
+  color: #000;
+  height: 36px;
+  width: 36px;
+  border-radius: 18px;
+}
+.material-datepicker-view td .material-button .material-text {
+  pointer-events: none;
+}
+.material-datepicker-view td .material-button.date-active {
+  background-color: #03a9f4;
+  color: #fff;
+  -webkit-transition: none;
+          transition: none;
+}
+.material-datepicker-view td .material-button[disabled] {
+  color: #c4c4c4;
+}
+.material-datepicker-view ul,
+.material-datepicker-view li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.material-datepicker-view li {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.material-datepicker-view li .material-button {
+  min-width: 160px;
+}
+.material-datepicker-bar {
+  height: 46px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: stretch;
+  -webkit-align-items: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+.material-datepicker-bar button {
+  margin-right: 26px;
+}
+material-datefield,
+.material-datefield {
+  display: block;
+  position: relative;
+}
+material-datefield .material-datefield-mask,
+.material-datefield .material-datefield-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+material-datefield .material-icon,
+.material-datefield .material-icon {
+  position: absolute;
+  right: 0;
+  top: 18px;
+}
+material-input-group,
+.material-input-group {
+  padding-bottom: 2px;
+  margin-bottom: 8px;
+  position: relative;
+  display: block;
+}
+material-input-group label,
+.material-input-group label {
+  -webkit-transform: translateY(22px);
+      -ms-transform: translateY(22px);
+          transform: translateY(22px);
+  -webkit-transform-origin: left center;
+      -ms-transform-origin: left center;
+          transform-origin: left center;
+}
+material-input-group label,
+.material-input-group label {
+  -webkit-transition: all 0.15s cubic-bezier(0.35, 0, 0.25, 1);
+          transition: all 0.15s cubic-bezier(0.35, 0, 0.25, 1);
+}
+material-input-group input,
+.material-input-group input,
+material-input-group textarea,
+.material-input-group textarea {
+  border-bottom-width: 1px;
+  -webkit-transition: all 0.15s cubic-bezier(0.35, 0, 0.25, 1);
+          transition: all 0.15s cubic-bezier(0.35, 0, 0.25, 1);
+}
+material-input-group textarea,
+.material-input-group textarea,
+material-input-group input[type="text"],
+.material-input-group input[type="text"],
+material-input-group input[type="password"],
+.material-input-group input[type="password"],
+material-input-group input[type="datetime"],
+.material-input-group input[type="datetime"],
+material-input-group input[type="datetime-local"],
+.material-input-group input[type="datetime-local"],
+material-input-group input[type="date"],
+.material-input-group input[type="date"],
+material-input-group input[type="month"],
+.material-input-group input[type="month"],
+material-input-group input[type="time"],
+.material-input-group input[type="time"],
+material-input-group input[type="week"],
+.material-input-group input[type="week"],
+material-input-group input[type="number"],
+.material-input-group input[type="number"],
+material-input-group input[type="email"],
+.material-input-group input[type="email"],
+material-input-group input[type="url"],
+.material-input-group input[type="url"],
+material-input-group input[type="search"],
+.material-input-group input[type="search"],
+material-input-group input[type="tel"],
+.material-input-group input[type="tel"],
+material-input-group input[type="color"],
+.material-input-group input[type="color"] {
+  display: block;
+  border-width: 0 0 1px 0;
+  padding-top: 2px;
+  line-height: 26px;
+  padding-bottom: 1px;
+  width: 100%;
+}
+material-input-group textarea:focus,
+.material-input-group textarea:focus,
+material-input-group input[type="text"]:focus,
+.material-input-group input[type="text"]:focus,
+material-input-group input[type="password"]:focus,
+.material-input-group input[type="password"]:focus,
+material-input-group input[type="datetime"]:focus,
+.material-input-group input[type="datetime"]:focus,
+material-input-group input[type="datetime-local"]:focus,
+.material-input-group input[type="datetime-local"]:focus,
+material-input-group input[type="date"]:focus,
+.material-input-group input[type="date"]:focus,
+material-input-group input[type="month"]:focus,
+.material-input-group input[type="month"]:focus,
+material-input-group input[type="time"]:focus,
+.material-input-group input[type="time"]:focus,
+material-input-group input[type="week"]:focus,
+.material-input-group input[type="week"]:focus,
+material-input-group input[type="number"]:focus,
+.material-input-group input[type="number"]:focus,
+material-input-group input[type="email"]:focus,
+.material-input-group input[type="email"]:focus,
+material-input-group input[type="url"]:focus,
+.material-input-group input[type="url"]:focus,
+material-input-group input[type="search"]:focus,
+.material-input-group input[type="search"]:focus,
+material-input-group input[type="tel"]:focus,
+.material-input-group input[type="tel"]:focus,
+material-input-group input[type="color"]:focus,
+.material-input-group input[type="color"]:focus {
+  outline: 0;
+}
+material-input-group input,
+.material-input-group input,
+material-input-group textarea,
+.material-input-group textarea {
+  color: #333333;
+  border-color: #c4c4c4;
+  font-size: 14px;
+  font-weight: 500;
+  background: none;
+}
+material-input-group input:-ms-input-placeholder,
+.material-input-group input:-ms-input-placeholder,
+material-input-group textarea:-ms-input-placeholder,
+.material-input-group textarea:-ms-input-placeholder {
+  color: #c4c4c4;
+}
+material-input-group input::-webkit-input-placeholder,
+.material-input-group input::-webkit-input-placeholder,
+material-input-group textarea::-webkit-input-placeholder,
+.material-input-group textarea::-webkit-input-placeholder {
+  color: #c4c4c4;
+}
+material-input-group label,
+.material-input-group label {
+  display: block;
+  font-size: 14px;
+  z-index: 1;
+  pointer-events: none;
+  color: #c4c4c4;
+}
+material-input-group label:hover,
+.material-input-group label:hover {
+  cursor: text;
+}
+material-input-group.material-input-focused label,
+.material-input-group.material-input-focused label {
+  -webkit-transform: translateY(4px) scale(0.85);
+      -ms-transform: translateY(4px) scale(0.85);
+          transform: translateY(4px) scale(0.85);
+}
+material-input-group.material-input-focused input,
+.material-input-group.material-input-focused input,
+material-input-group.material-input-focused textarea,
+.material-input-group.material-input-focused textarea {
+  border-bottom-width: 2px;
+}
+material-input-group.material-input-focused input,
+.material-input-group.material-input-focused input,
+material-input-group.material-input-focused textarea,
+.material-input-group.material-input-focused textarea {
+  color: #000;
+  border-color: #0288d1;
+}
+material-input-group.material-input-focused label,
+.material-input-group.material-input-focused label {
+  color: #0288d1;
+}
+material-input-group.material-input-focused input,
+.material-input-group.material-input-focused input {
+  padding-bottom: 0px;
+}
+material-input-group:not(.material-input-focused) input.ng-touched.ng-invalid,
+.material-input-group:not(.material-input-focused) input.ng-touched.ng-invalid,
+material-input-group:not(.material-input-focused) textarea.ng-touched.ng-invalid,
+.material-input-group:not(.material-input-focused) textarea.ng-touched.ng-invalid {
+  border-color: #d32f2f;
+}
+material-input-group.material-input-has-value label,
+.material-input-group.material-input-has-value label {
+  -webkit-transform: translateY(4px) scale(0.85);
+      -ms-transform: translateY(4px) scale(0.85);
+          transform: translateY(4px) scale(0.85);
+}
+material-input-group.material-input-has-value:not(.material-input-focused) label,
+.material-input-group.material-input-has-value:not(.material-input-focused) label {
+  -webkit-transform: translateY(4px) scale(0.85);
+      -ms-transform: translateY(4px) scale(0.85);
+          transform: translateY(4px) scale(0.85);
+}
+material-input-group.material-input-has-value:not(.material-input-focused) label,
+.material-input-group.material-input-has-value:not(.material-input-focused) label {
+  color: #c4c4c4;
+}
+material-input-group[disabled] input,
+.material-input-group[disabled] input,
+material-input-group[disabled] textarea,
+.material-input-group[disabled] textarea {
+  border-bottom-width: 0;
+}
+material-input-group[disabled] input,
+.material-input-group[disabled] input,
+material-input-group[disabled] textarea,
+.material-input-group[disabled] textarea {
+  background-size: 5px 1px;
+  background-position: 0 bottom;
+  background-repeat: repeat-x;
+  pointer-events: none;
+  border-bottom-color: #c4c4c4;
+  color: #c4c4c4;
+  background-image: -webkit-linear-gradient(left, #c4c4c4 0%, #c4c4c4 50%, rgba(0, 0, 0, 0) 0%);
+  background-image: linear-gradient(to right, #c4c4c4 0%, #c4c4c4 50%, rgba(0, 0, 0, 0) 0%);
+}
+material-searchfield,
+.material-searchfield {
+  display: block;
+  position: relative;
+}
+material-searchfield .material-searchfield-search,
+.material-searchfield .material-searchfield-search {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+material-searchfield .material-searchfield-clear,
+.material-searchfield .material-searchfield-clear {
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+  display: none;
+}
+material-searchfield.material-input-has-value .material-searchfield-clear,
+.material-searchfield.material-input-has-value .material-searchfield-clear {
+  display: block;
+}
+material-searchfield input,
+.material-searchfield input {
+  color: rgba(0, 0, 0, 0.7);
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  line-height: 24px;
+  height: 24px;
+  display: inline-block;
+  margin: 0;
+  padding: 0 34px;
+  font-weight: 300;
+}
+material-searchfield input:-ms-input-placeholder,
+.material-searchfield input:-ms-input-placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+material-searchfield input::-webkit-input-placeholder,
+.material-searchfield input::-webkit-input-placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+material-searchfield.material-input-focused input,
+.material-searchfield.material-input-focused input {
+  color: #000;
+}
+material-searchfield.material-searchfield-blank input,
+.material-searchfield.material-searchfield-blank input {
+  color: rgba(255, 255, 255, 0.7);
+}
+material-searchfield.material-searchfield-blank input:-ms-input-placeholder,
+.material-searchfield.material-searchfield-blank input:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+material-searchfield.material-searchfield-blank input::-webkit-input-placeholder,
+.material-searchfield.material-searchfield-blank input::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+material-searchfield.material-searchfield-blank.material-input-focused input,
+.material-searchfield.material-searchfield-blank.material-input-focused input {
+  color: #fff;
+}
+material-checkbox,
+.material-checkbox {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  padding-bottom: 8px;
+  cursor: pointer;
+  outline: none;
+  -webkit-user-select: none;
+}
+material-checkbox .material-checkbox-container,
+.material-checkbox .material-checkbox-container {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 3px;
+}
+material-checkbox .material-checkbox-icon,
+.material-checkbox .material-checkbox-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #000;
+  border-radius: 2px;
+  -webkit-transition: all 250ms;
+          transition: all 250ms;
+}
+material-checkbox.material-checkbox-checked .material-checkbox-icon,
+.material-checkbox.material-checkbox-checked .material-checkbox-icon {
+  border: none;
+  background-color: #03a9f4;
+}
+material-checkbox.material-checkbox-checked .material-checkbox-icon:after,
+.material-checkbox.material-checkbox-checked .material-checkbox-icon:after {
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  display: table;
+  width: 6px;
+  height: 12px;
+  border: 2px solid #fff;
+  border-top: 0;
+  border-left: 0;
+  content: ' ';
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-checkbox .material-text,
+.material-checkbox .material-text {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: block;
+  border: none;
+  pointer-events: none;
+  white-space: normal;
+  vertical-align: middle;
+  margin-left: 20px;
+  line-height: 20px;
+  text-align: justify;
+}
+material-checkbox:focus .material-text,
+.material-checkbox:focus .material-text {
+  border-color: #000;
+}
+material-checkbox[disabled],
+.material-checkbox[disabled] {
+  cursor: no-drop;
+}
+material-checkbox[disabled] .material-checkbox-icon,
+.material-checkbox[disabled] .material-checkbox-icon {
+  border-color: #dedede;
+}
+material-checkbox[disabled].material-checkbox-checked .material-checkbox-icon,
+.material-checkbox[disabled].material-checkbox-checked .material-checkbox-icon {
+  background-color: #dedede;
+}
+material-selectfield,
+.material-selectfield {
+  display: block;
+  position: relative;
+}
+material-selectfield material-select,
+.material-selectfield material-select,
+material-selectfield .material-select,
+.material-selectfield .material-select {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+material-selectfield .material-icon,
+.material-selectfield .material-icon {
+  position: absolute;
+  right: 0;
+  top: 18px;
+}
+material-selectsearch,
+.material-selectsearch {
+  display: block;
+  position: relative;
+}
+material-selectsearch material-select,
+.material-selectsearch material-select,
+material-selectsearch .material-select,
+.material-selectsearch .material-select {
+  top: 100%;
+  left: 0;
+  right: 0;
+  position: absolute;
+  display: block;
+}
+material-selectsearch .material-icon,
+.material-selectsearch .material-icon {
+  position: absolute;
+  right: 0;
+  top: 18px;
+}
+material-menu.material-selectsearch-menu {
+  max-height: 306px;
+}
+material-menu.material-select-menu,
+.material-menu.material-select-menu {
+  min-width: 0;
+  -webkit-transition: -webkit-transform 200ms cubic-bezier(0.25, 0.8, 0.25, 1) 0ms;
+          transition: transform 200ms cubic-bezier(0.25, 0.8, 0.25, 1) 0ms;
+  -webkit-transform: scale(1, 0);
+      -ms-transform: scale(1, 0);
+          transform: scale(1, 0);
+  -webkit-transform-origin: center 24px;
+      -ms-transform-origin: center 24px;
+          transform-origin: center 24px;
+}
+material-menu.material-select-menu.material-opened,
+.material-menu.material-select-menu.material-opened {
+  -webkit-transform: scale(1, 1);
+      -ms-transform: scale(1, 1);
+          transform: scale(1, 1);
+}
+material-menu.material-select-menu material-item .material-text,
+.material-menu.material-select-menu material-item .material-text {
+  line-height: 26px;
+}
+.material-drawer-wrap {
+  width: 100%;
+}
+.material-drawer-wrap .material-backdrop {
+  z-index: 2;
+}
+material-drawer,
+.material-drawer {
+  position: absolute;
+  width: 50%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: #fff;
+  overflow: hidden;
+  z-index: 2;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  -webkit-transform: translateX(-100%);
+      -ms-transform: translateX(-100%);
+          transform: translateX(-100%);
+}
+material-drawer.material-opened,
+.material-drawer.material-opened,
+material-drawer.material-opened-remove,
+.material-drawer.material-opened-remove {
+  -webkit-transition: -webkit-transform 450ms cubic-bezier(0.25, 0.8, 0.25, 1) 0ms;
+          transition: transform 450ms cubic-bezier(0.25, 0.8, 0.25, 1) 0ms;
+}
+material-drawer.material-drawer-left.material-opened,
+.material-drawer.material-drawer-left.material-opened {
+  -webkit-transform: translateX(0);
+      -ms-transform: translateX(0);
+          transform: translateX(0);
+}
+material-drawer.material-drawer-right,
+.material-drawer.material-drawer-right {
+  left: 100%;
+  -webkit-transform: translateX(0);
+      -ms-transform: translateX(0);
+          transform: translateX(0);
+}
+material-drawer.material-drawer-right.material-opened,
+.material-drawer.material-drawer-right.material-opened {
+  -webkit-transform: translateX(-100%);
+      -ms-transform: translateX(-100%);
+          transform: translateX(-100%);
+}
+material-drawer material-title,
+.material-drawer material-title,
+material-drawer .material-title,
+.material-drawer .material-title {
+  color: #03a9f4;
+}
+material-gridlist,
+.material-gridlist {
+  display: block;
+  margin: 20px;
+}
+material-gridlist.material-view-list material-cell,
+.material-gridlist.material-view-list material-cell,
+material-gridlist.material-view-list .material-cell,
+.material-gridlist.material-view-list .material-cell {
+  display: block;
+  padding: 14px 6px 14px 16px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+}
+material-gridlist.material-view-list material-gridlist-headers,
+.material-gridlist.material-view-list material-gridlist-headers,
+material-gridlist.material-view-list .material-gridlist-headers,
+.material-gridlist.material-view-list .material-gridlist-headers,
+material-gridlist.material-view-list material-row,
+.material-gridlist.material-view-list material-row,
+material-gridlist.material-view-list .material-row,
+.material-gridlist.material-view-list .material-row {
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+material-gridlist.material-view-list material-gridlist-headers material-cell,
+.material-gridlist.material-view-list material-gridlist-headers material-cell,
+material-gridlist.material-view-list .material-gridlist-headers material-cell,
+.material-gridlist.material-view-list .material-gridlist-headers material-cell,
+material-gridlist.material-view-list material-gridlist-headers .material-cell,
+.material-gridlist.material-view-list material-gridlist-headers .material-cell,
+material-gridlist.material-view-list .material-gridlist-headers .material-cell,
+.material-gridlist.material-view-list .material-gridlist-headers .material-cell {
+  color: #787878;
+  font-weight: 500;
+  text-decoration: none;
+}
+material-gridlist.material-view-list material-gridlist-content,
+.material-gridlist.material-view-list material-gridlist-content,
+material-gridlist.material-view-list .material-gridlist-content,
+.material-gridlist.material-view-list .material-gridlist-content {
+  display: block;
+  box-shadow: rgba(255, 255, 255, 0.3) 0px 1px 0px inset, rgba(0, 0, 0, 0.03) 0px -1px 0px inset, 0 1px 4px rgba(0, 0, 0, 0.25);
+  background: #fff;
+}
+material-gridlist.material-view-list material-row,
+.material-gridlist.material-view-list material-row,
+material-gridlist.material-view-list .material-row,
+.material-gridlist.material-view-list .material-row {
+  border-bottom: 1px solid #dedede;
+}
+material-gridlist.material-view-list material-row:hover,
+.material-gridlist.material-view-list material-row:hover,
+material-gridlist.material-view-list .material-row:hover,
+.material-gridlist.material-view-list .material-row:hover {
+  background: #f7f7f7;
+  cursor: pointer;
+}
+material-gridlist.material-view-list material-row material-checkbox,
+.material-gridlist.material-view-list material-row material-checkbox,
+material-gridlist.material-view-list .material-row material-checkbox,
+.material-gridlist.material-view-list .material-row material-checkbox,
+material-gridlist.material-view-list material-gridlist-headers material-checkbox,
+.material-gridlist.material-view-list material-gridlist-headers material-checkbox,
+material-gridlist.material-view-list .material-gridlist-headers material-checkbox,
+.material-gridlist.material-view-list .material-gridlist-headers material-checkbox {
+  margin: 0 8px 0 14px;
+  padding: 0;
+  display: block;
+}
+material-gridlist.material-view-list material-row material-checkbox .material-text,
+.material-gridlist.material-view-list material-row material-checkbox .material-text,
+material-gridlist.material-view-list .material-row material-checkbox .material-text,
+.material-gridlist.material-view-list .material-row material-checkbox .material-text,
+material-gridlist.material-view-list material-gridlist-headers material-checkbox .material-text,
+.material-gridlist.material-view-list material-gridlist-headers material-checkbox .material-text,
+material-gridlist.material-view-list .material-gridlist-headers material-checkbox .material-text,
+.material-gridlist.material-view-list .material-gridlist-headers material-checkbox .material-text {
+  display: none;
+}
+material-gridlist.material-view-list material-row material-menu-button,
+.material-gridlist.material-view-list material-row material-menu-button,
+material-gridlist.material-view-list .material-row material-menu-button,
+.material-gridlist.material-view-list .material-row material-menu-button,
+material-gridlist.material-view-list material-gridlist-headers material-menu-button,
+.material-gridlist.material-view-list material-gridlist-headers material-menu-button,
+material-gridlist.material-view-list .material-gridlist-headers material-menu-button,
+.material-gridlist.material-view-list .material-gridlist-headers material-menu-button {
+  margin: 0 4px;
+}
+material-gridlist-pagination {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin: 20px 0;
+  padding: 4px 0;
+  background-color: #fff;
+  box-shadow: rgba(255, 255, 255, 0.3) 0px 1px 0px inset, rgba(0, 0, 0, 0.03) 0px -1px 0px inset, 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+material-gridlist-pagination material-title {
+  text-align: center;
+  margin: 0 20px;
+  font-size: 14px;
+}
+@-webkit-keyframes outer-rotate {
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes outer-rotate {
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes left-wobble {
+  0%,
+  100% {
+    -webkit-transform: rotate(130deg);
+            transform: rotate(130deg);
+  }
+  50% {
+    -webkit-transform: rotate(-5deg);
+            transform: rotate(-5deg);
+  }
+}
+@keyframes left-wobble {
+  0%,
+  100% {
+    -webkit-transform: rotate(130deg);
+            transform: rotate(130deg);
+  }
+  50% {
+    -webkit-transform: rotate(-5deg);
+            transform: rotate(-5deg);
+  }
+}
+@-webkit-keyframes right-wobble {
+  0%,
+  100% {
+    -webkit-transform: rotate(-130deg);
+            transform: rotate(-130deg);
+  }
+  50% {
+    -webkit-transform: rotate(5deg);
+            transform: rotate(5deg);
+  }
+}
+@keyframes right-wobble {
+  0%,
+  100% {
+    -webkit-transform: rotate(-130deg);
+            transform: rotate(-130deg);
+  }
+  50% {
+    -webkit-transform: rotate(5deg);
+            transform: rotate(5deg);
+  }
+}
+@-webkit-keyframes sporadic-rotate {
+  12.5% {
+    -webkit-transform: rotate(135deg);
+            transform: rotate(135deg);
+  }
+  25% {
+    -webkit-transform: rotate(270deg);
+            transform: rotate(270deg);
+  }
+  37.5% {
+    -webkit-transform: rotate(405deg);
+            transform: rotate(405deg);
+  }
+  50% {
+    -webkit-transform: rotate(540deg);
+            transform: rotate(540deg);
+  }
+  62.5% {
+    -webkit-transform: rotate(675deg);
+            transform: rotate(675deg);
+  }
+  75% {
+    -webkit-transform: rotate(810deg);
+            transform: rotate(810deg);
+  }
+  87.5% {
+    -webkit-transform: rotate(945deg);
+            transform: rotate(945deg);
+  }
+  100% {
+    -webkit-transform: rotate(1080deg);
+            transform: rotate(1080deg);
+  }
+}
+@keyframes sporadic-rotate {
+  12.5% {
+    -webkit-transform: rotate(135deg);
+            transform: rotate(135deg);
+  }
+  25% {
+    -webkit-transform: rotate(270deg);
+            transform: rotate(270deg);
+  }
+  37.5% {
+    -webkit-transform: rotate(405deg);
+            transform: rotate(405deg);
+  }
+  50% {
+    -webkit-transform: rotate(540deg);
+            transform: rotate(540deg);
+  }
+  62.5% {
+    -webkit-transform: rotate(675deg);
+            transform: rotate(675deg);
+  }
+  75% {
+    -webkit-transform: rotate(810deg);
+            transform: rotate(810deg);
+  }
+  87.5% {
+    -webkit-transform: rotate(945deg);
+            transform: rotate(945deg);
+  }
+  100% {
+    -webkit-transform: rotate(1080deg);
+            transform: rotate(1080deg);
+  }
+}
+material-progress-circular {
+  display: block;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  padding-top: 0 !important;
+  margin-bottom: 0 !important;
+  overflow: hidden;
+  background-color: transparent;
+}
+material-progress-circular .material-progress-inner {
+  width: 50px;
+  height: 50px;
+  position: relative;
+}
+material-progress-circular .material-progress-inner .material-progress-gap {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 0;
+  bottom: 0;
+  border-top: 5px solid #03a9f4;
+  box-sizing: border-box;
+}
+material-progress-circular .material-progress-inner .material-progress-left,
+material-progress-circular .material-progress-inner .material-progress-right {
+  position: absolute;
+  top: 0;
+  height: 50px;
+  width: 25px;
+  overflow: hidden;
+}
+material-progress-circular .material-progress-inner .material-progress-left .material-progress-half-circle,
+material-progress-circular .material-progress-inner .material-progress-right .material-progress-half-circle {
+  position: absolute;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  box-sizing: border-box;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #03a9f4 #03a9f4 transparent;
+  border-radius: 50%;
+}
+material-progress-circular .material-progress-inner .material-progress-left {
+  left: 0;
+}
+material-progress-circular .material-progress-inner .material-progress-left .material-progress-half-circle {
+  left: 0;
+  border-right-color: transparent;
+  border-top-color: #03a9f4;
+}
+material-progress-circular .material-progress-inner .material-progress-right {
+  right: 0;
+}
+material-progress-circular .material-progress-inner .material-progress-right .material-progress-half-circle {
+  right: 0;
+  border-left-color: transparent;
+  border-top-color: #03a9f4;
+}
+material-progress-circular[value="1"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="1"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-131.4deg);
+      -ms-transform: rotate(-131.4deg);
+          transform: rotate(-131.4deg);
+}
+material-progress-circular[value="1"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="2"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="2"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-127.8deg);
+      -ms-transform: rotate(-127.8deg);
+          transform: rotate(-127.8deg);
+}
+material-progress-circular[value="2"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="3"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="3"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-124.2deg);
+      -ms-transform: rotate(-124.2deg);
+          transform: rotate(-124.2deg);
+}
+material-progress-circular[value="3"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="4"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="4"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-120.6deg);
+      -ms-transform: rotate(-120.6deg);
+          transform: rotate(-120.6deg);
+}
+material-progress-circular[value="4"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="5"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="5"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-117deg);
+      -ms-transform: rotate(-117deg);
+          transform: rotate(-117deg);
+}
+material-progress-circular[value="5"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="6"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="6"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-113.4deg);
+      -ms-transform: rotate(-113.4deg);
+          transform: rotate(-113.4deg);
+}
+material-progress-circular[value="6"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="7"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="7"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-109.8deg);
+      -ms-transform: rotate(-109.8deg);
+          transform: rotate(-109.8deg);
+}
+material-progress-circular[value="7"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="8"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="8"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-106.2deg);
+      -ms-transform: rotate(-106.2deg);
+          transform: rotate(-106.2deg);
+}
+material-progress-circular[value="8"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="9"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="9"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-102.6deg);
+      -ms-transform: rotate(-102.6deg);
+          transform: rotate(-102.6deg);
+}
+material-progress-circular[value="9"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="10"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="10"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-99deg);
+      -ms-transform: rotate(-99deg);
+          transform: rotate(-99deg);
+}
+material-progress-circular[value="10"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="11"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="11"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-95.4deg);
+      -ms-transform: rotate(-95.4deg);
+          transform: rotate(-95.4deg);
+}
+material-progress-circular[value="11"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="12"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="12"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-91.8deg);
+      -ms-transform: rotate(-91.8deg);
+          transform: rotate(-91.8deg);
+}
+material-progress-circular[value="12"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="13"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="13"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-88.2deg);
+      -ms-transform: rotate(-88.2deg);
+          transform: rotate(-88.2deg);
+}
+material-progress-circular[value="13"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="14"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="14"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-84.6deg);
+      -ms-transform: rotate(-84.6deg);
+          transform: rotate(-84.6deg);
+}
+material-progress-circular[value="14"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="15"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="15"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-81deg);
+      -ms-transform: rotate(-81deg);
+          transform: rotate(-81deg);
+}
+material-progress-circular[value="15"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="16"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="16"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-77.4deg);
+      -ms-transform: rotate(-77.4deg);
+          transform: rotate(-77.4deg);
+}
+material-progress-circular[value="16"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="17"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="17"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-73.8deg);
+      -ms-transform: rotate(-73.8deg);
+          transform: rotate(-73.8deg);
+}
+material-progress-circular[value="17"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="18"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="18"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-70.2deg);
+      -ms-transform: rotate(-70.2deg);
+          transform: rotate(-70.2deg);
+}
+material-progress-circular[value="18"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="19"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="19"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-66.6deg);
+      -ms-transform: rotate(-66.6deg);
+          transform: rotate(-66.6deg);
+}
+material-progress-circular[value="19"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="20"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="20"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-63deg);
+      -ms-transform: rotate(-63deg);
+          transform: rotate(-63deg);
+}
+material-progress-circular[value="20"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="21"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="21"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-59.4deg);
+      -ms-transform: rotate(-59.4deg);
+          transform: rotate(-59.4deg);
+}
+material-progress-circular[value="21"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="22"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="22"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-55.8deg);
+      -ms-transform: rotate(-55.8deg);
+          transform: rotate(-55.8deg);
+}
+material-progress-circular[value="22"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="23"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="23"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-52.2deg);
+      -ms-transform: rotate(-52.2deg);
+          transform: rotate(-52.2deg);
+}
+material-progress-circular[value="23"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="24"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="24"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-48.6deg);
+      -ms-transform: rotate(-48.6deg);
+          transform: rotate(-48.6deg);
+}
+material-progress-circular[value="24"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="25"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="25"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-45deg);
+      -ms-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+}
+material-progress-circular[value="25"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="26"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="26"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-41.4deg);
+      -ms-transform: rotate(-41.4deg);
+          transform: rotate(-41.4deg);
+}
+material-progress-circular[value="26"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="27"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="27"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-37.8deg);
+      -ms-transform: rotate(-37.8deg);
+          transform: rotate(-37.8deg);
+}
+material-progress-circular[value="27"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="28"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="28"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-34.2deg);
+      -ms-transform: rotate(-34.2deg);
+          transform: rotate(-34.2deg);
+}
+material-progress-circular[value="28"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="29"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="29"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-30.6deg);
+      -ms-transform: rotate(-30.6deg);
+          transform: rotate(-30.6deg);
+}
+material-progress-circular[value="29"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="30"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="30"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-27deg);
+      -ms-transform: rotate(-27deg);
+          transform: rotate(-27deg);
+}
+material-progress-circular[value="30"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="31"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="31"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-23.4deg);
+      -ms-transform: rotate(-23.4deg);
+          transform: rotate(-23.4deg);
+}
+material-progress-circular[value="31"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="32"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="32"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-19.8deg);
+      -ms-transform: rotate(-19.8deg);
+          transform: rotate(-19.8deg);
+}
+material-progress-circular[value="32"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="33"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="33"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-16.2deg);
+      -ms-transform: rotate(-16.2deg);
+          transform: rotate(-16.2deg);
+}
+material-progress-circular[value="33"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="34"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="34"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-12.6deg);
+      -ms-transform: rotate(-12.6deg);
+          transform: rotate(-12.6deg);
+}
+material-progress-circular[value="34"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="35"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="35"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-9deg);
+      -ms-transform: rotate(-9deg);
+          transform: rotate(-9deg);
+}
+material-progress-circular[value="35"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="36"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="36"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-5.4deg);
+      -ms-transform: rotate(-5.4deg);
+          transform: rotate(-5.4deg);
+}
+material-progress-circular[value="36"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="37"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="37"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(-1.8deg);
+      -ms-transform: rotate(-1.8deg);
+          transform: rotate(-1.8deg);
+}
+material-progress-circular[value="37"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="38"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="38"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(1.8deg);
+      -ms-transform: rotate(1.8deg);
+          transform: rotate(1.8deg);
+}
+material-progress-circular[value="38"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="39"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="39"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(5.4deg);
+      -ms-transform: rotate(5.4deg);
+          transform: rotate(5.4deg);
+}
+material-progress-circular[value="39"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="40"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="40"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(9deg);
+      -ms-transform: rotate(9deg);
+          transform: rotate(9deg);
+}
+material-progress-circular[value="40"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="41"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="41"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(12.6deg);
+      -ms-transform: rotate(12.6deg);
+          transform: rotate(12.6deg);
+}
+material-progress-circular[value="41"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="42"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="42"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(16.2deg);
+      -ms-transform: rotate(16.2deg);
+          transform: rotate(16.2deg);
+}
+material-progress-circular[value="42"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="43"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="43"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(19.8deg);
+      -ms-transform: rotate(19.8deg);
+          transform: rotate(19.8deg);
+}
+material-progress-circular[value="43"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="44"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="44"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(23.4deg);
+      -ms-transform: rotate(23.4deg);
+          transform: rotate(23.4deg);
+}
+material-progress-circular[value="44"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="45"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="45"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(27deg);
+      -ms-transform: rotate(27deg);
+          transform: rotate(27deg);
+}
+material-progress-circular[value="45"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="46"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="46"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(30.6deg);
+      -ms-transform: rotate(30.6deg);
+          transform: rotate(30.6deg);
+}
+material-progress-circular[value="46"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="47"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="47"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(34.2deg);
+      -ms-transform: rotate(34.2deg);
+          transform: rotate(34.2deg);
+}
+material-progress-circular[value="47"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="48"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="48"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(37.8deg);
+      -ms-transform: rotate(37.8deg);
+          transform: rotate(37.8deg);
+}
+material-progress-circular[value="48"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="49"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="49"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(41.4deg);
+      -ms-transform: rotate(41.4deg);
+          transform: rotate(41.4deg);
+}
+material-progress-circular[value="49"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="50"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+material-progress-circular[value="50"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="50"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent !important;
+}
+material-progress-circular[value="51"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(138.6deg);
+      -ms-transform: rotate(138.6deg);
+          transform: rotate(138.6deg);
+}
+material-progress-circular[value="51"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="51"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="52"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(142.2deg);
+      -ms-transform: rotate(142.2deg);
+          transform: rotate(142.2deg);
+}
+material-progress-circular[value="52"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="52"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="53"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(145.8deg);
+      -ms-transform: rotate(145.8deg);
+          transform: rotate(145.8deg);
+}
+material-progress-circular[value="53"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="53"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="54"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(149.4deg);
+      -ms-transform: rotate(149.4deg);
+          transform: rotate(149.4deg);
+}
+material-progress-circular[value="54"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="54"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="55"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(153deg);
+      -ms-transform: rotate(153deg);
+          transform: rotate(153deg);
+}
+material-progress-circular[value="55"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="55"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="56"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(156.6deg);
+      -ms-transform: rotate(156.6deg);
+          transform: rotate(156.6deg);
+}
+material-progress-circular[value="56"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="56"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="57"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(160.2deg);
+      -ms-transform: rotate(160.2deg);
+          transform: rotate(160.2deg);
+}
+material-progress-circular[value="57"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="57"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="58"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(163.8deg);
+      -ms-transform: rotate(163.8deg);
+          transform: rotate(163.8deg);
+}
+material-progress-circular[value="58"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="58"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="59"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(167.4deg);
+      -ms-transform: rotate(167.4deg);
+          transform: rotate(167.4deg);
+}
+material-progress-circular[value="59"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="59"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="60"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(171deg);
+      -ms-transform: rotate(171deg);
+          transform: rotate(171deg);
+}
+material-progress-circular[value="60"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="60"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="61"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(174.6deg);
+      -ms-transform: rotate(174.6deg);
+          transform: rotate(174.6deg);
+}
+material-progress-circular[value="61"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="61"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="62"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(178.2deg);
+      -ms-transform: rotate(178.2deg);
+          transform: rotate(178.2deg);
+}
+material-progress-circular[value="62"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="62"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="63"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(181.8deg);
+      -ms-transform: rotate(181.8deg);
+          transform: rotate(181.8deg);
+}
+material-progress-circular[value="63"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="63"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="64"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(185.4deg);
+      -ms-transform: rotate(185.4deg);
+          transform: rotate(185.4deg);
+}
+material-progress-circular[value="64"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="64"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="65"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(189deg);
+      -ms-transform: rotate(189deg);
+          transform: rotate(189deg);
+}
+material-progress-circular[value="65"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="65"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="66"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(192.6deg);
+      -ms-transform: rotate(192.6deg);
+          transform: rotate(192.6deg);
+}
+material-progress-circular[value="66"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="66"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="67"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(196.2deg);
+      -ms-transform: rotate(196.2deg);
+          transform: rotate(196.2deg);
+}
+material-progress-circular[value="67"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="67"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="68"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(199.8deg);
+      -ms-transform: rotate(199.8deg);
+          transform: rotate(199.8deg);
+}
+material-progress-circular[value="68"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="68"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="69"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(203.4deg);
+      -ms-transform: rotate(203.4deg);
+          transform: rotate(203.4deg);
+}
+material-progress-circular[value="69"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="69"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="70"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(207deg);
+      -ms-transform: rotate(207deg);
+          transform: rotate(207deg);
+}
+material-progress-circular[value="70"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="70"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="71"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(210.6deg);
+      -ms-transform: rotate(210.6deg);
+          transform: rotate(210.6deg);
+}
+material-progress-circular[value="71"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="71"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="72"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(214.2deg);
+      -ms-transform: rotate(214.2deg);
+          transform: rotate(214.2deg);
+}
+material-progress-circular[value="72"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="72"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="73"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(217.8deg);
+      -ms-transform: rotate(217.8deg);
+          transform: rotate(217.8deg);
+}
+material-progress-circular[value="73"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="73"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="74"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(221.4deg);
+      -ms-transform: rotate(221.4deg);
+          transform: rotate(221.4deg);
+}
+material-progress-circular[value="74"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="74"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="75"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(225deg);
+      -ms-transform: rotate(225deg);
+          transform: rotate(225deg);
+}
+material-progress-circular[value="75"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="75"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="76"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(228.6deg);
+      -ms-transform: rotate(228.6deg);
+          transform: rotate(228.6deg);
+}
+material-progress-circular[value="76"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="76"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="77"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(232.2deg);
+      -ms-transform: rotate(232.2deg);
+          transform: rotate(232.2deg);
+}
+material-progress-circular[value="77"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="77"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="78"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(235.8deg);
+      -ms-transform: rotate(235.8deg);
+          transform: rotate(235.8deg);
+}
+material-progress-circular[value="78"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="78"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="79"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(239.4deg);
+      -ms-transform: rotate(239.4deg);
+          transform: rotate(239.4deg);
+}
+material-progress-circular[value="79"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="79"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="80"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(243deg);
+      -ms-transform: rotate(243deg);
+          transform: rotate(243deg);
+}
+material-progress-circular[value="80"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="80"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="81"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(246.6deg);
+      -ms-transform: rotate(246.6deg);
+          transform: rotate(246.6deg);
+}
+material-progress-circular[value="81"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="81"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="82"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(250.2deg);
+      -ms-transform: rotate(250.2deg);
+          transform: rotate(250.2deg);
+}
+material-progress-circular[value="82"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="82"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="83"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(253.8deg);
+      -ms-transform: rotate(253.8deg);
+          transform: rotate(253.8deg);
+}
+material-progress-circular[value="83"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="83"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="84"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(257.4deg);
+      -ms-transform: rotate(257.4deg);
+          transform: rotate(257.4deg);
+}
+material-progress-circular[value="84"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="84"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="85"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(261deg);
+      -ms-transform: rotate(261deg);
+          transform: rotate(261deg);
+}
+material-progress-circular[value="85"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="85"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="86"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(264.6deg);
+      -ms-transform: rotate(264.6deg);
+          transform: rotate(264.6deg);
+}
+material-progress-circular[value="86"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="86"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="87"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(268.2deg);
+      -ms-transform: rotate(268.2deg);
+          transform: rotate(268.2deg);
+}
+material-progress-circular[value="87"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="87"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="88"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(271.8deg);
+      -ms-transform: rotate(271.8deg);
+          transform: rotate(271.8deg);
+}
+material-progress-circular[value="88"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="88"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="89"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(275.4deg);
+      -ms-transform: rotate(275.4deg);
+          transform: rotate(275.4deg);
+}
+material-progress-circular[value="89"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="89"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="90"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(279deg);
+      -ms-transform: rotate(279deg);
+          transform: rotate(279deg);
+}
+material-progress-circular[value="90"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="90"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="91"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(282.6deg);
+      -ms-transform: rotate(282.6deg);
+          transform: rotate(282.6deg);
+}
+material-progress-circular[value="91"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="91"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="92"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(286.2deg);
+      -ms-transform: rotate(286.2deg);
+          transform: rotate(286.2deg);
+}
+material-progress-circular[value="92"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="92"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="93"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(289.8deg);
+      -ms-transform: rotate(289.8deg);
+          transform: rotate(289.8deg);
+}
+material-progress-circular[value="93"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="93"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="94"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(293.4deg);
+      -ms-transform: rotate(293.4deg);
+          transform: rotate(293.4deg);
+}
+material-progress-circular[value="94"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="94"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="95"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(297deg);
+      -ms-transform: rotate(297deg);
+          transform: rotate(297deg);
+}
+material-progress-circular[value="95"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="95"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="96"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(300.6deg);
+      -ms-transform: rotate(300.6deg);
+          transform: rotate(300.6deg);
+}
+material-progress-circular[value="96"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="96"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="97"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(304.2deg);
+      -ms-transform: rotate(304.2deg);
+          transform: rotate(304.2deg);
+}
+material-progress-circular[value="97"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="97"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="98"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(307.8deg);
+      -ms-transform: rotate(307.8deg);
+          transform: rotate(307.8deg);
+}
+material-progress-circular[value="98"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="98"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="99"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(311.4deg);
+      -ms-transform: rotate(311.4deg);
+          transform: rotate(311.4deg);
+}
+material-progress-circular[value="99"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="99"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[value="100"] .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-transition: -webkit-transform 0.1s linear;
+          transition: transform 0.1s linear;
+  -webkit-transform: rotate(315deg);
+      -ms-transform: rotate(315deg);
+          transform: rotate(315deg);
+}
+material-progress-circular[value="100"] .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+material-progress-circular[value="100"] .material-progress-inner .material-progress-gap {
+  border-bottom-width: 5px;
+  border-bottom-style: solid;
+  -webkit-transition: border-bottom-color 0.1s linear;
+          transition: border-bottom-color 0.1s linear;
+}
+material-progress-circular[material-mode=indeterminate] .material-progress-wrapper {
+  -webkit-animation: outer-rotate 2.91666667s linear infinite;
+          animation: outer-rotate 2.91666667s linear infinite;
+}
+material-progress-circular[material-mode=indeterminate] .material-progress-wrapper .material-progress-inner {
+  -webkit-animation: sporadic-rotate 5.25s cubic-bezier(0.35, 0, 0.25, 1) infinite;
+          animation: sporadic-rotate 5.25s cubic-bezier(0.35, 0, 0.25, 1) infinite;
+}
+material-progress-circular[material-mode=indeterminate] .material-progress-wrapper .material-progress-inner .material-progress-left .material-progress-half-circle,
+material-progress-circular[material-mode=indeterminate] .material-progress-wrapper .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  -webkit-animation-duration: 1.3125s;
+          animation-duration: 1.3125s;
+  -webkit-animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1);
+          animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1);
+}
+material-progress-circular[material-mode=indeterminate] .material-progress-wrapper .material-progress-inner .material-progress-left .material-progress-half-circle {
+  -webkit-animation-name: left-wobble;
+          animation-name: left-wobble;
+}
+material-progress-circular[material-mode=indeterminate] .material-progress-wrapper .material-progress-inner .material-progress-right .material-progress-half-circle {
+  -webkit-animation-name: right-wobble;
+          animation-name: right-wobble;
+}
+@font-face {
+  font-family: Roboto;
+  src: url('/font/Roboto-Regular.ttf');
+  font-weight: normal;
+}
+body {
+  background: #fafafa;
+  font-family: Roboto, sans-serif;
+  color: #333;
+  font-size: 12px;
+}
+.page-title {
+  padding-left: 64px;
+  background: url('/images/logo.png') 15px center no-repeat;
+  background-size: 36px 36px;
+}
+.viewport {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: stretch;
+  -webkit-align-items: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+}
+.page-host {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  position: relative;
+}
+.page-host > router-component {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+/*# sourceMappingURL=app.css.map */
