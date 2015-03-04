@@ -1,0 +1,88 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+@import '../icon/icon';
+
+@material-checkbox-width: 18px;
+@material-checkbox-height: @material-checkbox-width;
+
+@material-checkbox-spacing: @material-content-spacing;
+
+material-checkbox,
+.material-checkbox {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding-bottom: 8px;
+    cursor: pointer;
+    outline: none;
+
+    .unselectable();
+
+    .material-checkbox-container {
+        position: relative;
+        display: block;
+        width: @material-checkbox-width;
+        height: @material-checkbox-height;
+        margin: 3px;
+    }
+
+    .material-checkbox-icon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: @material-checkbox-width;
+        height: @material-checkbox-height;
+        border: 2px solid #000;
+        border-radius: 2px;
+        transition: all 250ms;
+    }
+
+    &.material-checkbox-checked {
+        .material-checkbox-icon {
+            border: none;
+            background-color: @material-primary-color;
+
+            &:after {
+                position: absolute;
+                left: 6px;
+                top: 2px;
+                display: table;
+                width: 6px;
+                height: 12px;
+                border: 2px solid #fff;
+                border-top: 0;
+                border-left: 0;
+                content: ' ';
+                transform: rotate(45deg);
+            }
+        }
+    }
+
+    .material-text {
+        flex: 1;
+        display: block;
+        border: none;
+        pointer-events: none;
+        white-space: normal;
+        vertical-align: middle;
+        margin-left: @material-checkbox-spacing;
+        line-height: 20px;
+        text-align: justify;
+    }
+
+    &:focus .material-text {
+        border-color: #000;
+    }
+
+    // disabled
+    &[disabled] {
+        cursor: no-drop;
+        .material-checkbox-icon {
+            border-color: @material-gray-lighter;
+        }
+        &.material-checkbox-checked .material-checkbox-icon {
+            background-color: @material-gray-lighter;
+        }
+    }
+}

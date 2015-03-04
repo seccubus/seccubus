@@ -1,0 +1,214 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+@progress-circular-size: 50px;
+@progress-include-determinate: true;
+
+@progress-circle-background: transparent;
+@progress-circle-color: @material-primary-color;
+
+@progress-circular-ease-in-out: cubic-bezier(0.35, 0, 0.25, 1);
+@progress-circular-duration: 5.25s;
+@progress-circular-circle-duration: @progress-circular-duration * 0.25;
+@progress-circular-outer-duration: @progress-circular-duration * (5 / 9);
+@progress-circular-sporadic-duration: @progress-circular-duration;
+
+@keyframes outer-rotate {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+@keyframes left-wobble {
+	0%,
+	100% {
+		transform: rotate(130deg);
+	}
+	50% {
+		transform: rotate( -5deg);
+	}
+}
+@keyframes right-wobble {
+	0%,
+	100% {
+		transform: rotate(-130deg);
+	}
+	50% {
+		transform: rotate(   5deg);
+	}
+}
+@keyframes sporadic-rotate {
+	12.5% {
+		transform: rotate( 135deg);
+	}
+	25% {
+		transform: rotate( 270deg);
+	}
+	37.5% {
+		transform: rotate( 405deg);
+	}
+	50% {
+		transform: rotate( 540deg);
+	}
+	62.5% {
+		transform: rotate( 675deg);
+	}
+	75% {
+		transform: rotate( 810deg);
+	}
+	87.5% {
+		transform: rotate( 945deg);
+	}
+	100% {
+		transform: rotate(1080deg);
+	}
+}
+
+material-progress-circular {
+	display: block;
+	position: relative;
+	width: @progress-circular-size;
+	height: @progress-circular-size;
+	padding-top: 0 !important;
+	margin-bottom: 0 !important;
+	overflow: hidden;
+
+	background-color: @progress-circle-background;
+
+	.material-progress-inner {
+		width: @progress-circular-size;
+		height: @progress-circular-size;
+		position: relative;
+
+		.material-progress-gap {
+			position: absolute;
+			left: @progress-circular-size * 0.5 - 1;
+			right: @progress-circular-size * 0.5 - 1;
+			top: 0;
+			bottom: 0;
+			border-top: 5px solid @progress-circle-color;;
+			box-sizing: border-box;
+		}
+
+		.material-progress-left,
+		.material-progress-right {
+			position: absolute;
+			top: 0;
+			height: @progress-circular-size;
+			width: @progress-circular-size * 0.5;
+			overflow: hidden;
+
+			.material-progress-half-circle {
+				position: absolute;
+				top: 0;
+				width: @progress-circular-size;
+				height: @progress-circular-size;
+				box-sizing: border-box;
+				border-width: 5px;
+				border-style: solid;
+				border-color: @progress-circle-color @progress-circle-color transparent;
+				border-radius: 50%;
+			}
+		}
+
+		.material-progress-left {
+			left: 0;
+			.material-progress-half-circle {
+				left: 0;
+				border-right-color: transparent;
+				border-top-color: @progress-circle-color;
+			}
+		}
+
+		.material-progress-right {
+			right: 0;
+			.material-progress-half-circle {
+				right: 0;
+				border-left-color: transparent;
+				border-top-color: @progress-circle-color;
+			}
+		}
+	}
+
+	& when(@progress-include-determinate = true) {
+		.generateValues();
+	}
+
+	&:not([material-mode=indeterminate]) {
+		.material-progress-inner {
+			.material-progress-left,
+			.material-progress-right {
+				.material-progress-half-circle {
+				}
+			}
+		}
+	}
+
+	&[material-mode=indeterminate] {
+		.material-progress-wrapper {
+			animation: outer-rotate @progress-circular-outer-duration linear infinite;
+
+			.material-progress-inner {
+				animation: sporadic-rotate @progress-circular-sporadic-duration @progress-circular-ease-in-out infinite;
+
+				.material-progress-left,
+				.material-progress-right {
+					.material-progress-half-circle {
+						animation-iteration-count: infinite;
+						animation-duration: (@progress-circular-duration * 0.25);
+						animation-timing-function: @progress-circular-ease-in-out;
+					}
+				}
+				.material-progress-left {
+					.material-progress-half-circle {
+						animation-name: left-wobble;
+					}
+				}
+				.material-progress-right {
+					.material-progress-half-circle {
+						animation-name: right-wobble;
+					}
+				}
+			}
+		}
+	}
+}
+
+// This is the mixin that generates the proper transition and transforms
+// for each value of a circular progress indicator
+.generateValues(@i: 1) when(@i =< 100) {
+	&[value="@{i}"] {
+		.material-progress-inner {
+			.material-progress-left {
+				.material-progress-half-circle when(@i <= 50) {
+					transform: rotate(135deg);
+				}
+				.material-progress-half-circle when(@i > 50) {
+					transition: transform 0.1s linear;
+					@deg: (@i - 50) / 50 * 180 + 135;
+					transform: rotate(@deg * 1deg);
+				}
+			}
+			.material-progress-right {
+				.material-progress-half-circle when(@i <= 50) {
+					transition: transform 0.1s linear;
+					@deg: @i / 50 * 180 - 135;
+					transform: rotate(@deg * 1deg);
+				}
+				.material-progress-half-circle when(@i > 50) {
+					transform: rotate(45deg);
+				}
+			}
+			.material-progress-gap {
+				border-bottom-width: 5px;
+				border-bottom-style: solid;
+				& when(@i <= 50) {
+					border-bottom-color: transparent !important;
+				}
+				& when(@i > 50) {
+					transition: border-bottom-color 0.1s linear;
+				}
+			}
+		}
+	}
+	.generateValues(@i + 1);
+}

@@ -1,0 +1,186 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+@import '../icon/icon';
+
+@material-button-border-radius: 3px;
+@material-button-hover-background-color: rgba(0, 0, 0, 0.08);
+
+@material-button-fab-width: 56px;
+@material-button-fab-height: 56px;
+@material-button-fab-padding: 16px;
+
+@material-button-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+@material-button-shadow-hover: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+
+@material-button-warn-color: #ef5350;
+
+.fab-position(@spot, @top: auto, @right: auto, @bottom: auto, @left: auto) {
+	&.material-fab-@{spot} {
+		top: @top;
+		right: @right;
+		bottom: @bottom;
+		left: @left;
+		position: absolute;
+	}
+}
+
+material-button,
+.material-button {
+	display: inline-flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	border: 1px solid transparent;
+	padding: 6px;
+
+	background: transparent;
+	white-space: nowrap;
+
+	cursor: pointer;
+	overflow: hidden;
+	outline: none;
+  	user-select: none;
+	line-height: 24px;
+
+	font-size: 1.1em;
+
+	.material-icon {
+		display: block;
+	}
+
+	.material-text {
+		display: block;
+		font-weight: 500;
+		text-transform: uppercase;
+		text-decoration: none;
+		text-align: center;
+	}
+
+	transition: box-shadow 450ms @material-ease-out-timing-function,
+                background-color 450ms @material-ease-out-timing-function,
+                transform 450ms @material-ease-out-timing-function;
+
+	border-radius: @material-button-border-radius;
+
+	&:not([disabled]) {
+		&:hover,
+		&:focus {
+			background-color: @material-button-hover-background-color;
+		}
+	}
+
+    &.material-cornered {
+    	border-radius: 0;
+    }
+
+    &.material-primary .material-text {
+    	color: @material-primary-color-darker;
+    }
+
+    &.material-warn .material-text {
+    	color: @material-button-warn-color;
+    }
+
+    &.material-raised {
+	    transform: translateY(0);
+
+	    &:not([disabled]) {
+	    	box-shadow: @material-button-shadow;
+	    }
+    }
+
+	&.material-raised,
+	&.material-fab {
+		background-color: rgba(0, 0, 0, 0.1);
+
+		&:not([disabled]) {
+			&:hover,
+			&:focus {
+				background-color: rgba(0, 0, 0, 0.2);
+			}
+		}
+
+		&.material-primary {
+			background-color: @material-primary-color;
+			.material-text {
+				color: #fff;
+			}
+			&:not([disabled]) {
+				&:hover,
+				&:focus {
+					background-color: @material-primary-color-darker;
+				}
+			}
+		}
+
+		&.material-warn {
+			background-color: @material-button-warn-color;
+			.material-text {
+				color: #fff;
+			}
+			&:not([disabled]) {
+				&:hover,
+				&:focus {
+					background-color: darken(@material-button-warn-color, 10%);
+				}
+			}
+		}
+	}
+
+	&:not([disabled]) {
+		&.material-raised,
+		&.material-fab {
+			&:focus,
+			&:hover {
+				transform: translateY(-1px);
+				box-shadow: @material-button-shadow-hover;
+			}
+		}
+	}
+
+	&.material-fab {
+		.fab-position(bottom-right, auto, @material-button-fab-width/2, @material-button-fab-height/2, auto);
+		.fab-position(bottom-left, auto, auto, @material-button-fab-height/2, @material-button-fab-width/2);
+		.fab-position(top-right, @material-button-fab-height/2, @material-button-fab-width/2, auto, auto);
+		.fab-position(top-left, @material-button-fab-height/2, auto, auto, @material-button-fab-width/2);
+
+		overflow: hidden;
+		z-index: 1;
+
+		width: @material-button-fab-width;
+		height: @material-button-fab-height;
+
+		border-radius: 50%;
+
+		box-shadow: @material-button-shadow;
+		transform: translateY(0);
+
+		transition: 0.2s linear;
+		transition-property: transform, box-shadow;
+	}
+
+	&[disabled],
+	&.material-raised[disabled],
+	&.material-fab[disabled] {
+		background-color: transparent;
+		cursor: not-allowed;
+		pointer-events: none;
+		opacity: 0.3;
+	}
+}
+
+material-buttonbar,
+.material-buttonbar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-end;
+	margin: @material-content-spacing;
+
+	material-button,
+	.material-button {
+		margin-left: @material-content-spacing / 2;
+	}
+}

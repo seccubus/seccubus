@@ -1,0 +1,43 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+material-card,
+.material-card {
+	display: block;
+	background-color: white;
+	margin: @material-content-spacing;
+	padding-bottom: @material-content-spacing;
+
+	box-shadow: @material-shadow-card;
+	border-radius: 2px;
+
+	material-toolbar,
+	.material-toolbar {
+		.material-toolbar-blank;
+	}
+
+	material-title,
+	.material-title {
+		display: block;
+		color: @material-primary-color-dark;
+		font-weight: 300;
+		height: 36px;
+		line-height: 36px;
+	}
+
+	li {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	p {
+		margin: 0;
+		padding: @material-content-spacing;
+	}
+
+	material-content:last-child,
+	.material-content:last-child {
+		padding-bottom: @material-content-spacing;
+	}
+}

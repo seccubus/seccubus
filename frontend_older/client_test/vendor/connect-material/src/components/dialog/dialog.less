@@ -1,0 +1,59 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+.material-dialog-wrap {
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+
+    &.material-opened {
+        display: flex;
+    }
+
+    .material-backdrop {
+        z-index: 4;
+    }
+}
+
+.material-dialog {
+    z-index: 4;
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    background-color: #fff;
+
+    border: 0;
+    background-color: #fff;
+
+    min-width: 260px;
+    max-width: 80%;
+    max-height: 80%;
+
+    box-shadow: @material-shadow-drawer;
+    transform: scale(0, 0);
+    opacity: 0;
+
+    .ease-out(@property: all, @duration: 300ms);
+
+    &.material-opened,
+    &.material-opened-remove {
+        transform: scale(1, 1);
+    }
+
+    &.material-opened {
+        opacity: 1;
+    }
+
+    material-title,
+    .material-title {
+        color: @material-primary-color-dark;
+    }
+}

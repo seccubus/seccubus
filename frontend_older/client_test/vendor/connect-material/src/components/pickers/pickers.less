@@ -1,0 +1,158 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+@day-cell-size: 36px;
+
+material-datepicker,
+.material-datepicker {
+	display: block;
+	width: (@day-cell-size * 7) + @material-content-spacing;
+	background-color: #fff;
+}
+
+.material-datepicker-date {
+	h4 {
+		background-color: @material-primary-color-dark;
+		color: white;
+		font-size: 14px;
+		font-weight: 500;
+		vertical-align: middle;
+		line-height: 30px;
+		height: 30px;
+		text-align: center;
+		margin: 0;
+	}
+
+	h1, h2, h3 {
+		cursor: pointer;
+		background-color: @material-primary-color;
+		color: rgba(255, 255, 255, 0.8);
+		margin: 0;
+		text-align: center;
+		font-weight: 500;
+
+		&.view-active {
+			color: #fff;
+		}
+	}
+
+	h2 {
+		padding-top: 12px;
+		font-size: 24px;
+		text-transform: uppercase;
+	}
+
+	h1 {
+		font-size: 52px;
+		padding-top: 2px;
+	}
+
+	h3 {
+		font-size: 22px;
+		padding: 4px 0 12px;
+	}
+}
+
+.material-datepicker-view {
+	height: @day-cell-size * 7;
+	overflow: auto;
+	margin: @material-content-spacing / 2;
+
+	table {
+		display: block;
+		width: @day-cell-size * 7;
+		border-spacing: 0;
+		overflow: hidden;
+	}
+
+	tr {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+
+		th, td {
+			display: block;
+			width: @day-cell-size;
+			height: @day-cell-size;
+		}
+	}
+
+	th {
+		color: @material-gray-dark;
+		font-weight: normal;
+		text-align: center;
+		vertical-align: middle;
+		line-height: @day-cell-size;
+	}
+
+	td {
+		.material-button {
+			color: #000;
+			height: @day-cell-size;
+			width: @day-cell-size;
+			border-radius: @day-cell-size / 2;
+
+			.material-text {
+				pointer-events: none;
+			}
+
+			&.date-active {
+				background-color: @material-primary-color;
+				color: #fff;
+        		transition: none;
+			}
+
+			&[disabled] {
+				color: @material-gray;
+			}
+		}
+	}
+
+	ul, li {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	li {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+
+		.material-button {
+			min-width: 160px;
+		}
+	}
+}
+
+.material-datepicker-bar {
+	height: 46px;
+	display: flex;
+	align-items: stretch;
+	flex-direction: row;
+	justify-content: flex-end;
+
+	button {
+        margin-right: 26px;
+	}
+}
+
+material-datefield,
+.material-datefield {
+	display: block;
+	position: relative;
+
+	.material-datefield-mask {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+
+	.material-icon {
+		position: absolute;
+		right: 0;
+		top: 18px;
+	}
+}

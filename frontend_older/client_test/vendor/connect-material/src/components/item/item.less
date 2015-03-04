@@ -1,0 +1,36 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+material-item,
+.material-item {
+	display: block;
+	text-decoration: none;
+	font-weight: normal;
+	padding: 8px @material-content-spacing;
+	font-size: 13px;
+	color: #333;
+	white-space: nowrap;
+	cursor: pointer;
+	position: relative;
+	vertical-align: bottom;
+
+    .unselectable();
+
+    &:hover {
+        background: @material-gray-light;
+    }
+
+    &.material-has-icon {
+    	padding-left: @material-content-spacing + 24px + @material-content-spacing;
+    }
+
+    > .material-icon {
+    	position: absolute;
+    	top: 6px;
+    	left: @material-content-spacing;
+    }
+
+    > .material-text {
+		line-height: 20px;
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "assert",
+  "homepage": "https://github.com/angular/assert",
+  "_release": "6caafd2561",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "6caafd2561ece8cbfdabbe7357b50ce9192db18c"
+  },
+  "_source": "git@github.com:angular/assert.git",
+  "_target": "*",
+  "_originalSource": "git@github.com:angular/assert.git"
+}
