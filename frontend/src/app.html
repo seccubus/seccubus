@@ -1,0 +1,15 @@
+<div layout="column" layout-fill>
+	<nav-bar></nav-bar>
+
+	<div layout="row" layout-fill flex>
+	  	<nav-menu layout="column"></nav-menu>
+
+	  	<md-content ui-view flex></md-content>
+
+		<md-sidenav
+			md-component-id="drawer"
+			class="md-sidenav-right"
+			ui-view="drawer">
+		</md-sidenav>
+	</div>
+</div>

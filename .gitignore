@@ -29,9 +29,9 @@ www/seccubus/*
 www/steal
 junit_output.xml
 etc/config.xml
-<<<<<<< HEAD
-=======
-frontend/.editorconfig
->>>>>>> adsf
 logs
 jmvc/testresults.xml
+
+# Frontend stuff
+jspm_packages
+node_modules
