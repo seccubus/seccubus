@@ -16,7 +16,6 @@ System.config({
         "angular-aria": "github:angular/bower-angular-aria@1.3.14",
         "angular-material": "github:angular/bower-material@0.8.3",
         "angular-ui-router": "github:angular-ui/ui-router@0.2.13",
-        "less": "github:aaike/jspm-less-plugin@0.0.5",
         "luxyflux": "github:schubergphilis/luxyflux@master",
         "nkoterba/material-design-iconsets": "github:nkoterba/material-design-iconsets@master",
         "github:angular-ui/ui-router@0.2.13": {
