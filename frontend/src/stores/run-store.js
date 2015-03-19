@@ -1,8 +1,8 @@
 import Annotations from 'anglue/annotations';
 
-import FilterableStoreDecorator from 'connect-decorators/store/filterable-store';
-import SortableStoreDecorator from 'connect-decorators/store/sortable-store';
-import CrudStoreDecorator from 'connect-decorators/store/crud-store';
+import FilterableStoreDecorator from 'anglue-decorators/store/filterable-store';
+import SortableStoreDecorator from 'anglue-decorators/store/sortable-store';
+import CrudStoreDecorator from 'anglue-decorators/store/crud-store';
 
 import '../actions/app-actions';
 
