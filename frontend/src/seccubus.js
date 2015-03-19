@@ -4,28 +4,33 @@ import angular from 'angular';
 import 'angular-ui-router';
 import 'angular-aria';
 import 'angular-animate';
+import 'angular-resource';
 import 'angular-material';
 
-import 'luxyflux/src/ng-luxyflux';
+import 'luxyflux/ng-luxyflux';
 
 // Helper methods that configure the App module's ui-router with our app routes
-import routes from './routes';
+import routes from './config/routes';
 
 // Application root components
 import NavBar from './components/nav-bar/nav-bar';
 import NavMenu from './components/nav-menu/nav-menu';
-import StatusPage from './components/status-page/status-page';
+import StatusPageComponent from './components/status-page/status-page';
+/* MARKER: insert components import here */
 
 // Application Flux stores
-//import ProviderStore from './stores/provider-store';
+import StatusStore from './stores/status-store'
+    /* MARKER: insert stores import here */
 
 // Application Flux ActionCreators
-//import AppActions from './actions/app-actions';
+import AppActions from './actions/app-actions';
+import StatusActions from './actions/status-actions';
+/* MARKER: insert actions import here */
 
 // This is the angular module that contains all the defined services
-//import resourcesModule from './resources/_module';
-//
-import Annotations from 'anglue/src/annotations';
+import resourcesModule from './resources/_module';
+
+import Annotations from 'anglue/annotations';
 
 class Application {
     static get annotation() {
@@ -46,16 +51,24 @@ class Application {
         return [
             NavBar,
             NavMenu,
-            StatusPage
+            StatusPageComponent
+            /* MARKER: insert components here */
         ];
     }
 
     static get stores() {
-        return [];
+        return [
+            StatusStore
+            /* MARKER: insert stores here */
+        ];
     }
 
     static get actions() {
-        return [];
+        return [
+            AppActions,
+            StatusActions
+            /* MARKER: insert actions here */
+        ];
     }
 }
 

@@ -1,4 +1,4 @@
-import Annotations from 'anglue/src/annotations';
+import Annotations from 'anglue/annotations';
 
 export class NavMenu {
     static get annotation() {

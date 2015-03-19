@@ -1,0 +1,15 @@
+{
+    "generator-connect-staticapp": {
+        "appName": "seccubus",
+        "staticApp": true,
+        "templateRepo": "git@github.schubergphilis.com:frontend/static-app-template.git",
+        "lessMarker": "/* MARKER: insert component less files here */",
+        "componentImportMarker": "/* MARKER: insert components import here */",
+        "componentMarker": "/* MARKER: insert components here */",
+        "storeImportMarker": "/* MARKER: insert stores import here */",
+        "storeMarker": "/* MARKER: insert stores here */",
+        "routesMarker": "/* MARKER: insert routes here */",
+        "actionsImportMarker": "/* MARKER: insert actions import here */",
+        "actionsMarker": "/* MARKER: insert actions here */"
+    }
+}

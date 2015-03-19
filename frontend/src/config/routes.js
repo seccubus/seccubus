@@ -9,16 +9,12 @@ export default {
      */
     'seccubus': {
         url: '',
-        templateUrl: srcPath + 'app.html',
+        templateUrl: srcPath + 'seccubus.html',
         abstract: true
     },
-
-    /**
-     * Providers routes
-     */
-    'seccubus.status': {
+    'seccubus.statusPage': {
         url: '/status',
-        title: 'Status',
         templateUrl: componentsPath + 'status-page/status-page.html'
     }
+    /* MARKER: insert routes here */
 };

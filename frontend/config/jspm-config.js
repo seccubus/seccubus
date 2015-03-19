@@ -10,13 +10,14 @@ System.config({
 
 System.config({
   "map": {
-    "anglue": "github:schubergphilis/anglue@master",
+    "anglue": "github:schubergphilis/anglue@master/src",
     "angular": "github:angular/bower-angular@1.3.15",
     "angular-animate": "github:angular/bower-angular-animate@1.3.15",
     "angular-aria": "github:angular/bower-angular-aria@1.3.15",
     "angular-material": "github:angular/bower-material@0.8.3",
+    "angular-resource": "github:angular/bower-angular-resource@1.3.15",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.13",
-    "luxyflux": "github:schubergphilis/luxyflux@master",
+    "luxyflux": "github:schubergphilis/luxyflux@master/src",
     "nkoterba/material-design-iconsets": "github:nkoterba/material-design-iconsets@master",
     "github:angular-ui/ui-router@0.2.13": {
       "angular": "github:angular/bower-angular@1.3.15"

@@ -60,19 +60,19 @@ module.exports = function(grunt) {
 
         'exec': {
             bundle: {
-                cmd: 'jspm bundle-sfx src/app build/app.js --minify --skip-source-maps'
+                cmd: 'jspm bundle-sfx src/seccubus build/app.js --minify --skip-source-maps'
             }
         },
 
         'less': {
             watch: {
                 files: {
-                    'build/app.css': 'src/app.less'
+                    'build/app.css': 'src/seccubus.less'
                 }
             },
             build: {
                 files: {
-                    'build/app.css': 'src/app.less'
+                    'build/app.css': 'src/seccubus.less'
                 }
             }
         }

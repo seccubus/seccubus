@@ -1,17 +1,25 @@
-import Annotations from 'anglue/src/annotations';
+import Annotations from 'anglue/annotations';
 
-export class StatusPage {
+export class StatusPageComponent {
     static get annotation() {
-        return Annotations.getComponent('statusPage', StatusPage);
+        return Annotations.getComponent('statusPageComponent', StatusPageComponent);
     }
 
     static get injections() {
         return {};
     }
 
-    activate() {
+    static get decorators() {
+        return [
 
+        ];
     }
+
+    /**
+     * When this component activates we refresh the data
+     */
+    activate() {}
+
 }
 
-export default StatusPage;
+export default StatusPageComponent;
