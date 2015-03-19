@@ -15,9 +15,9 @@ This file details what you have to do to set up a development environment on Mac
 
 Check out the code
 ------------------
-I checked out my code in ~/Respositories with the following commend:
+I checked out my code in ~/Repositories with the following commend:
 
-	cd ~/Respositories
+	cd ~/Repositories
 	git clone https://github.com/schubergphilis/Seccubus_v2.git
 
 I suggest that you actually first fork the repository to your own github account and clone from there. In my case the clone command was:
