@@ -16,15 +16,18 @@ import routes from './config/routes';
 import NavBar from './components/nav-bar/nav-bar';
 import NavMenu from './components/nav-menu/nav-menu';
 import StatusPageComponent from './components/status-page/status-page';
+import RunsPageComponent from './components/runs-page/runs-page';
 /* MARKER: insert components import here */
 
 // Application Flux stores
 import StatusStore from './stores/status-store'
-    /* MARKER: insert stores import here */
+import RunStore from './stores/run-store'
+/* MARKER: insert stores import here */
 
 // Application Flux ActionCreators
 import AppActions from './actions/app-actions';
 import StatusActions from './actions/status-actions';
+import RunActions from './actions/run-actions';
 /* MARKER: insert actions import here */
 
 // This is the angular module that contains all the defined services
@@ -51,23 +54,26 @@ class Application {
         return [
             NavBar,
             NavMenu,
-            StatusPageComponent
-            /* MARKER: insert components here */
+            StatusPageComponent,
+			RunsPageComponent
+			/* MARKER: insert components here */
         ];
     }
 
     static get stores() {
         return [
-            StatusStore
-            /* MARKER: insert stores here */
+            StatusStore,
+			RunStore
+			/* MARKER: insert stores here */
         ];
     }
 
     static get actions() {
         return [
             AppActions,
-            StatusActions
-            /* MARKER: insert actions here */
+            StatusActions,
+			RunActions
+			/* MARKER: insert actions here */
         ];
     }
 }

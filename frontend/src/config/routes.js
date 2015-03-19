@@ -7,15 +7,20 @@ export default {
     /**
      * Root Route for the Team App
      */
-    'seccubus': {
-        url: '',
+    'seccubus'           : {
+        url        : '',
         templateUrl: srcPath + 'seccubus.html',
-        abstract: true
+        abstract   : true
     },
     'seccubus.statusPage': {
-        url: '/status',
+        url        : '/status',
         templateUrl: componentsPath + 'status-page/status-page.html',
-        title: 'Status'
+        title      : 'Status'
+    },
+    'seccubus.runsPage'  : {
+        url        : '/runs',
+        templateUrl: componentsPath + '/runs-page/runs-page.html',
+        title      : 'Runs'
     }
     /* MARKER: insert routes here */
 };
