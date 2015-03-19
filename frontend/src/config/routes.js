@@ -14,7 +14,8 @@ export default {
     },
     'seccubus.statusPage': {
         url: '/status',
-        templateUrl: componentsPath + 'status-page/status-page.html'
+        templateUrl: componentsPath + 'status-page/status-page.html',
+        title: 'Status'
     }
     /* MARKER: insert routes here */
 };
