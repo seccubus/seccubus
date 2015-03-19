@@ -62,12 +62,8 @@ class Application {
 var appModule = Application.annotation.module;
 
 appModule.config(['$mdIconProvider', function($mdIconProvider) {
-    // Configure URLs for icons specified by [set:]id.
-    var iconsetsPath =
-        'jspm_packages/github/nkoterba/material-design-iconsets@master/iconsets';
-
     $mdIconProvider
-        .iconSet('navigation', `${iconsetsPath}/navigation-icons.svg`);
+        .iconSet('navigation', `icons/navigation-icons.svg`);
 }]);
 
 angular.element(document).ready(() => {

@@ -18,10 +18,6 @@ export class NavMenu {
     }
 
     activate() {}
-
-    get currentPage() {
-        return this.state.current.title;
-    }
 }
 
 export default NavMenu;

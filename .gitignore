@@ -35,3 +35,4 @@ jmvc/testresults.xml
 # Frontend stuff
 jspm_packages
 node_modules
+frontend/build
