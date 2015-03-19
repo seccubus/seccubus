@@ -18,8 +18,8 @@ export class NavBar {
         };
     }
 
-    openNavMenu() {
-        this.sideNav('nav-menu').open();
+    toggleNavMenu() {
+        this.sideNav('nav-menu').toggle();
     }
 
     get currentPage() {
