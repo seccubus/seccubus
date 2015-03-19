@@ -5,12 +5,6 @@ export class AppActions {
         return Annotations.getActions('app', AppActions);
     }
 
-    static get injections() {
-        return {
-            'pubSubService': 'ConnectPubSub'
-        };
-    }
-
     publishSuccessMessage(title, message) {
         //publish success
         console.log('Success Message: ' + title, message);

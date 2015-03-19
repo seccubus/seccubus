@@ -1,38 +1,39 @@
 {
-  "name": "seccubus_frontend",
-  "description": "Frontend Application for Seccubus",
-  "version": "1.0.0",
-  "homepage": "https://github.com/schubergphilis",
-  "author": {
-    "name": "Tommy Maintz",
-    "email": "tmaintz@schubergphilis.com"
-  },
-  "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-browser-sync": "^2.0.0",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-copy": "^0.8.0",
-    "grunt-contrib-less": "^1.0.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-exec": "^0.4.6",
-    "jspm": "^0.14.0"
-  },
-  "jspm": {
-    "directories": {
-      "lib": "src",
-      "packages": "jspm_packages"
+    "name": "seccubus_frontend",
+    "description": "Frontend Application for Seccubus",
+    "version": "1.0.0",
+    "homepage": "https://github.com/schubergphilis",
+    "author": {
+        "name": "Tommy Maintz",
+        "email": "tmaintz@schubergphilis.com"
     },
-    "configFile": "config/jspm-config.js",
-    "dependencies": {
-      "anglue": "github:schubergphilis/anglue@master",
-      "angular": "github:angular/bower-angular@^1.3.14",
-      "angular-animate": "github:angular/bower-angular-animate@^1.3.14",
-      "angular-aria": "github:angular/bower-angular-aria@^1.3.14",
-      "angular-material": "github:angular/bower-material@^0.8.3",
-      "angular-resource": "github:angular/bower-angular-resource@^1.3.15",
-      "angular-ui-router": "github:angular-ui/ui-router@^0.2.13",
-      "luxyflux": "github:schubergphilis/luxyflux@master",
-      "nkoterba/material-design-iconsets": "github:nkoterba/material-design-iconsets@master"
+    "devDependencies": {
+        "grunt": "^0.4.5",
+        "grunt-browser-sync": "^2.0.0",
+        "grunt-contrib-clean": "^0.6.0",
+        "grunt-contrib-copy": "^0.8.0",
+        "grunt-contrib-less": "^1.0.0",
+        "grunt-contrib-watch": "^0.6.1",
+        "grunt-exec": "^0.4.6",
+        "jspm": "^0.14.0"
+    },
+    "jspm": {
+        "directories": {
+            "lib": "src",
+            "packages": "jspm_packages"
+        },
+        "configFile": "config/jspm-config.js",
+        "dependencies": {
+            "anglue": "github:schubergphilis/anglue@master",
+            "angular": "github:angular/bower-angular@^1.3.14",
+            "angular-animate": "github:angular/bower-angular-animate@^1.3.14",
+            "angular-aria": "github:angular/bower-angular-aria@^1.3.14",
+            "angular-material": "github:angular/bower-material@^0.8.3",
+            "angular-resource": "github:angular/bower-angular-resource@^1.3.15",
+            "angular-ui-router": "github:angular-ui/ui-router@^0.2.13",
+            "luxyflux": "github:schubergphilis/luxyflux@master",
+            "nkoterba/material-design-iconsets": "github:nkoterba/material-design-iconsets@master",
+            "anglue-decorators": "github:schubergphilis/anglue-decorators@master"
+        }
     }
-  }
 }

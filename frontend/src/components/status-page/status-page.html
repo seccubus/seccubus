@@ -1,3 +1,20 @@
 <status-page>
-	Status page
+	{{statusPage.statusStore.upToDate}}
+
+	<md-card>
+		<md-toolbar class="md-hue-1">
+			<h2 class="md-toolbar-tools">
+				<span>Config Test</span>
+			</h2>
+		</md-toolbar>
+		<md-card-content>
+			<md-list>
+				<md-item ng-repeat="item in statusPage.statusStore.items">
+					<md-item-content>
+						<div class="md-tile-content">{{item.message}}</div>
+					<md-item-content>
+				</md-item>
+			</md-list>
+		</md-card-content>
+	</md-card>
 </status-page>

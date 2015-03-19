@@ -1,22 +1,33 @@
 import Annotations from 'anglue/annotations';
 
-/* MARKER: insert resource imports here */
+import '../resources/uptodate-resource';
+import '../resources/configtest-resource';
 
 export class StatusActions {
     static get annotation() {
-        return Annotations.getActions('statusActions', StatusActions );
+        return Annotations.getActions('status', StatusActions);
     }
 
     static get injections() {
         return {
-            /* MARKER: insert resource here */
+            'upToDateResource': 'UpToDateResource',
+            'configTestResource': 'ConfigTestResource'
         };
     }
 
     static get serviceActions() {
         return {
-            /* MARKER: insert service actions here */
+            'UPTODATE_LOAD': 'loadUpToDate',
+            'CONFIGTEST_LOAD': 'loadConfigTest'
         };
+    }
+
+    loadUpToDate() {
+        return this.upToDateResource.query().$promise;
+    }
+
+    loadConfigTest() {
+        return this.configTestResource.query().$promise;
     }
 }
 

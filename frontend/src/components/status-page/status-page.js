@@ -2,24 +2,23 @@ import Annotations from 'anglue/annotations';
 
 export class StatusPageComponent {
     static get annotation() {
-        return Annotations.getComponent('statusPageComponent', StatusPageComponent);
+        return Annotations.getComponent('statusPage', StatusPageComponent);
     }
 
     static get injections() {
-        return {};
-    }
-
-    static get decorators() {
-        return [
-
-        ];
+        return {
+            'statusActions': 'StatusActions',
+            'statusStore': 'StatusStore'
+        };
     }
 
     /**
      * When this component activates we refresh the data
      */
-    activate() {}
-
+    activate() {
+        this.statusActions.loadUpToDate();
+        this.statusActions.loadConfigTest();
+    }
 }
 
 export default StatusPageComponent;

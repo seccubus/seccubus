@@ -13,14 +13,15 @@ import 'luxyflux/ng-luxyflux';
 import routes from './config/routes';
 
 // Application root components
-import NavBar from './components/nav-bar/nav-bar';
-import NavMenu from './components/nav-menu/nav-menu';
+import NavBarComponent from './components/nav-bar/nav-bar';
+import NavMenuComponent from './components/nav-menu/nav-menu';
 import StatusPageComponent from './components/status-page/status-page';
 import RunsPageComponent from './components/runs-page/runs-page';
 /* MARKER: insert components import here */
 
 // Application Flux stores
 import StatusStore from './stores/status-store'
+import WorkspaceStore from './stores/workspace-store'
 import RunStore from './stores/run-store'
 /* MARKER: insert stores import here */
 
@@ -42,7 +43,8 @@ class Application {
 
     static get dependencies() {
         return [
-            'ngMaterial'
+            'ngMaterial',
+            resourcesModule.name
         ];
     }
 
@@ -55,16 +57,20 @@ class Application {
             NavBar,
             NavMenu,
             StatusPageComponent,
-			RunsPageComponent
-			/* MARKER: insert components here */
+            RunsPageComponent
+            NavBarComponent,
+            NavMenuComponent,
+            StatusPageComponent
+            /* MARKER: insert components here */
         ];
     }
 
     static get stores() {
         return [
             StatusStore,
-			RunStore
-			/* MARKER: insert stores here */
+            RunStore
+            WorkspaceStore
+            /* MARKER: insert stores here */
         ];
     }
 
@@ -72,8 +78,8 @@ class Application {
         return [
             AppActions,
             StatusActions,
-			RunActions
-			/* MARKER: insert actions here */
+            RunActions
+            /* MARKER: insert actions here */
         ];
     }
 }
