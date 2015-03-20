@@ -7,6 +7,15 @@
 			class="nav-menu-button">
 			<md-icon md-svg-icon="navigation:menu"></md-icon>
 		</md-button>
-		<h3><span>{{navBar.currentPage}}</span></h3>
+
+		<h3 flex><span>{{navBar.currentPage}}</span></h3>
+
+		<md-select ng-model="navBar.selectedWorkspace">
+			<md-select-label>{{navBar.selectedWorkspace.name || 'Select a workspace...'}}</md-select-label>
+			<md-option
+				ng-repeat="workspace in navBar.workspaceStore.items track by workspace.id"
+				ng-value="workspace"
+			>{{workspace.name}}</md-option>
+		</md-select>
 	</div>
 </md-toolbar>

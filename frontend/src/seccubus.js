@@ -29,6 +29,7 @@ import RunStore from './stores/run-store'
 import AppActions from './actions/app-actions';
 import StatusActions from './actions/status-actions';
 import RunActions from './actions/run-actions';
+import WorkspaceActions from './actions/workspace-actions';
 /* MARKER: insert actions import here */
 
 // This is the angular module that contains all the defined services
@@ -80,8 +81,9 @@ class Application {
         return [
             AppActions,
             StatusActions,
-            RunActions
-            /* MARKER: insert actions here */
+            RunActions,
+			WorkspaceActions
+			/* MARKER: insert actions here */
         ];
     }
 }

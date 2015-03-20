@@ -6,7 +6,7 @@ import '../actions/app-actions';
 
 export class WorkspaceStore {
     static get annotation() {
-        return Annotations.getStore('workspaceStore', WorkspaceStore);
+        return Annotations.getStore('workspace', WorkspaceStore);
     }
 
     static get decorators() {
@@ -23,7 +23,9 @@ export class WorkspaceStore {
 
     static get handlers() {
         return {
-
+            'WORKSPACE_LOAD_STARTED': 'onLoadStarted',
+            'WORKSPACE_LOAD_COMPLETED': 'onLoadCompleted',
+            'WORKSPACE_LOAD_FAILED': 'onLoadFailed'
         };
     }
 }

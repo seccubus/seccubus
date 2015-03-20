@@ -2,25 +2,29 @@ export var srcPath = '/seccubus/v2/src/';
 export var componentsPath = srcPath + 'components/';
 
 export default {
-    defaultRoute: '/status',
+    defaultRoute: '/~/status',
 
     /**
      * Root Route for the Team App
      */
-    'seccubus'           : {
-        url        : '',
-        templateUrl: srcPath + 'seccubus.html',
-        abstract   : true
+    'seccubus': {
+        url: '/:workspace_id',
+        params: {
+            workspace_id: {
+                value: '~'
+            }
+        },
+        templateUrl: srcPath + 'seccubus.html'
     },
     'seccubus.statusPage': {
-        url        : '/status',
+        url: '/status',
         templateUrl: componentsPath + 'status-page/status-page.html',
-        title      : 'Status'
+        title: 'Status'
     },
-    'seccubus.runsPage'  : {
-        url        : '/runs',
+    'seccubus.runsPage': {
+        url: '/runs',
         templateUrl: componentsPath + '/runs-page/runs-page.html',
-        title      : 'Runs'
+        title: 'Runs'
     }
     /* MARKER: insert routes here */
 };

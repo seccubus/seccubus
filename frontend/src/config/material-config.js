@@ -1,7 +1,8 @@
 export default function(appModule) {
     appModule.config(['$mdIconProvider', function($mdIconProvider) {
         $mdIconProvider
-            .iconSet('navigation', `icons/navigation-icons.svg`);
+            .iconSet('navigation', `icons/navigation-icons.svg`)
+            .iconSet('alert', `icons/alert-icons.svg`);
     }]);
 
     appModule.config(['$mdThemingProvider', function($mdThemingProvider) {

@@ -1,5 +1,24 @@
 <status-page>
-	{{statusPage.statusStore.upToDate}}
+	<md-card>
+		<md-toolbar class="md-accent">
+			<h2 class="md-toolbar-tools">
+				<span>Version Check</span>
+			</h2>
+		</md-toolbar>
+		<md-card-content>
+			<md-list>
+				<md-item>
+					<md-item-content>
+						<div class="md-tile-left">
+							<md-icon ng-if="statusPage.statusStore.upToDate.status === 'OK'" class="success" md-svg-icon="navigation:check"></md-icon>
+							<md-icon ng-if="statusPage.statusStore.upToDate.status !== 'OK'" class="error" md-svg-icon="alert:error"></md-icon>
+						</div>
+						<div class="md-tile-content">{{statusPage.statusStore.upToDate.message}}</div>
+					<md-item-content>
+				</md-item>
+			</md-list>
+		</md-card-content>
+	</md-card>
 
 	<md-card>
 		<md-toolbar class="md-accent">
@@ -11,6 +30,10 @@
 			<md-list>
 				<md-item ng-repeat="item in statusPage.statusStore.items">
 					<md-item-content>
+						<div class="md-tile-left">
+							<md-icon ng-if="item.result === 'OK'" class="success" md-svg-icon="navigation:check"></md-icon>
+							<md-icon ng-if="item.result === 'Error'" class="error" md-svg-icon="alert:error"></md-icon>
+						</div>
 						<div class="md-tile-content">{{item.message}}</div>
 					<md-item-content>
 				</md-item>
