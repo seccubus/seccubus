@@ -30,21 +30,12 @@ export class WorkspaceActions {
         return this.workspaceResource.query().$promise;
     }
 
-    getWorkspace(workspaceId) {
-        return this.workspaceResource.get({
-            id: workspaceId
-        }).$promise;
-    }
     createWorkspace(workspace) {
-        return workspace.$save();
+        return workspace.$create();
     }
 
     updateWorkspace(workspace) {
         return workspace.$update();
-    }
-
-    deleteWorkspace(workspace) {
-        return workspace.$delete();
     }
 }
 

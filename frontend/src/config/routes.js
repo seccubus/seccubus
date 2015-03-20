@@ -25,6 +25,11 @@ export default {
         url: '/runs',
         templateUrl: componentsPath + '/runs-page/runs-page.html',
         title: 'Runs'
+    },
+    'seccubus.workspacesPage': {
+        url: '/workspaces',
+        templateUrl: componentsPath + '/workspaces-page/workspaces-page.html',
+        title: 'Manage Workspaces'
     }
     /* MARKER: insert routes here */
 };
