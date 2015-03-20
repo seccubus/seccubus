@@ -34,6 +34,8 @@ import RunActions from './actions/run-actions';
 // This is the angular module that contains all the defined services
 import resourcesModule from './resources/_module';
 
+import configureMaterial from './config/material-config';
+
 import Annotations from 'anglue/annotations';
 
 class Application {
@@ -86,10 +88,8 @@ class Application {
 
 var appModule = Application.annotation.module;
 
-appModule.config(['$mdIconProvider', function($mdIconProvider) {
-    $mdIconProvider
-        .iconSet('navigation', `icons/navigation-icons.svg`);
-}]);
+// This will apply theming configuration and icon sets
+configureMaterial(appModule);
 
 angular.element(document).ready(() => {
     angular.bootstrap(document.body, [
