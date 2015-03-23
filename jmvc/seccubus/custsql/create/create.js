@@ -58,7 +58,7 @@ steal(	'jquery/controller',
 		 * Funciton that is called save done
 		 * disable a modal display
 		 */
-		afterSave : function() { }
+		afterSave : function() { $.warn('afterSave not defined'); }
 	}
 },
 /** @Prototype */
