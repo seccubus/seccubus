@@ -62,7 +62,8 @@ $.Controller('Seccubus.Custsql.Table',
 	},
 	"#custsql_save click":function(el){
 		this.options.sql = $('#custsql_input').val();
-		this.options.saveSQL(this.options.sql,this.options.updateView);
+		var to = this;
+		this.options.saveSQL(this.options.sql,function(){ to.updateView(); });
 	},
 	updateView : function() {
 		this.options.sql = $('#custsql_input').val();
