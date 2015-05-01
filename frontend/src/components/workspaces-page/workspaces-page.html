@@ -1,7 +1,11 @@
 <workspaces-page>
     <md-whiteframe class="md-table table-responsive-vertical md-whiteframe-z1" layout>
         <!-- Table starts here -->
-        <table class="table table-hover table-bordered table-condensed">
+        <div ng-if="workspacesPage.workspaceStore.isLoading" layout="row" layout-sm="column" layout-align="space-around">
+            <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+        </div>
+
+        <table class="table table-hover table-bordered table-condensed" ng-if="!workspacesPage.workspaceStore.isLoading">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -16,7 +20,18 @@
                     <td data-title="# of Scans">{{workspace.scanCount}}</td>
                     <td data-title="Last Scan">{{workspace.lastScan | date:'dd-MM-yyyy HH:mm'}}</td>
                 </tr>
+
+                <tr ng-if="workspacesPage.workspaceStore.isEmpty">
+                    <td colspan="3">No workspaces have been created yet...</td>
+                </tr>
             </tbody>
         </table>
     </md-whiteframe>
+
+    <md-button ui-sref="seccubus.workspacesPage.create" class="md-fab md-primary md-fab-bottom-right" aria-label="Create Workspace">
+        <md-tooltip md-direction="left">
+            Create Workspace
+        </md-tooltip>
+        <md-icon md-svg-icon="content:add"></md-icon>
+    </md-button>
 </workspaces-page>

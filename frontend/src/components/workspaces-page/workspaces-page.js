@@ -2,6 +2,9 @@ import Annotations from 'anglue/annotations';
 
 import SortableComponent from 'anglue-decorators/component/sortable-component';
 
+import WorkspaceCreateComponent from './workspace-create/workspace-create';
+import WorkspaceEditComponent from './workspace-edit/workspace-edit';
+
 export class WorkspacesPageComponent {
     static get annotation() {
         return Annotations.getComponent('workspacesPage', WorkspacesPageComponent);
@@ -14,6 +17,13 @@ export class WorkspacesPageComponent {
         };
     }
 
+    static get components() {
+        return [
+            WorkspaceCreateComponent,
+            WorkspaceEditComponent
+        ];
+    }
+
     static get decorators() {
         return [
             SortableComponent
@@ -23,7 +33,9 @@ export class WorkspacesPageComponent {
     /**
      * When this component activates we refresh the data
      */
-    activate() {}
+    activate() {
+        this.workspaceActions.loadWorkspaces();
+    }
 
     /**
      * This is a template method that you can implement in your Component

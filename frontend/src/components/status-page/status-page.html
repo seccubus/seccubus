@@ -5,17 +5,19 @@
 				<span>Version Check</span>
 			</h2>
 		</md-toolbar>
-		<md-card-content>
+
+		<md-card-content ng-if="statusPage.statusStore.isLoading" layout="row" layout-sm="column" layout-align="space-around">
+			<md-progress-circular md-mode="indeterminate"></md-progress-circular>
+		</md-card-content>
+
+		<md-card-content ng-if="!statusPage.statusStore.isLoading">
 			<md-list>
-				<md-item>
-					<md-item-content>
-						<div class="md-tile-left">
-							<md-icon ng-if="statusPage.statusStore.upToDate.status === 'OK'" class="success" md-svg-icon="navigation:check"></md-icon>
-							<md-icon ng-if="statusPage.statusStore.upToDate.status !== 'OK'" class="error" md-svg-icon="alert:error"></md-icon>
-						</div>
-						<div class="md-tile-content">{{statusPage.statusStore.upToDate.message}}</div>
-					<md-item-content>
-				</md-item>
+				<md-list-item class="md-offset">
+					<md-icon ng-if="statusPage.statusStore.upToDate.status === 'OK'" class="success" md-svg-icon="navigation:check"></md-icon>
+					<md-icon ng-if="statusPage.statusStore.upToDate.status !== 'OK'" class="error" md-svg-icon="alert:error"></md-icon>
+
+					<p>{{statusPage.statusStore.upToDate.message}}</p>
+				</md-list-item>
 			</md-list>
 		</md-card-content>
 	</md-card>
@@ -26,17 +28,18 @@
 				<span>Config Test</span>
 			</h2>
 		</md-toolbar>
-		<md-card-content>
+
+		<md-card-content ng-if="statusPage.statusStore.isLoading" layout="row" layout-sm="column" layout-align="space-around">
+			<md-progress-circular md-mode="indeterminate"></md-progress-circular>
+		</md-card-content>
+
+		<md-card-content ng-if="!statusPage.statusStore.isLoading">
 			<md-list>
-				<md-item ng-repeat="item in statusPage.statusStore.items">
-					<md-item-content>
-						<div class="md-tile-left">
-							<md-icon ng-if="item.result === 'OK'" class="success" md-svg-icon="navigation:check"></md-icon>
-							<md-icon ng-if="item.result === 'Error'" class="error" md-svg-icon="alert:error"></md-icon>
-						</div>
-						<div class="md-tile-content">{{item.message}}</div>
-					<md-item-content>
-				</md-item>
+				<md-list-item ng-repeat="item in statusPage.statusStore.items">
+					<md-icon ng-if="item.result === 'OK'" class="success" md-svg-icon="navigation:check"></md-icon>
+					<md-icon ng-if="item.result === 'Error'" class="error" md-svg-icon="alert:error"></md-icon>
+					<p>{{item.message}}</p>
+				</md-list-item>
 			</md-list>
 		</md-card-content>
 	</md-card>

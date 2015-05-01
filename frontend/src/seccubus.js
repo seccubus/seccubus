@@ -60,7 +60,7 @@ class Application {
         return [
             NavBarComponent,
             NavMenuComponent,
-            StatusPageComponent
+            StatusPageComponent,
             WorkspacesPageComponent,
             StatusPageComponent,
             RunsPageComponent
@@ -71,7 +71,7 @@ class Application {
     static get stores() {
         return [
             StatusStore,
-            RunStore
+            RunStore,
             WorkspaceStore
             /* MARKER: insert stores here */
         ];

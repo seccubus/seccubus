@@ -24,15 +24,15 @@
     },
     "configFile": "config/jspm-config.js",
     "dependencies": {
-      "anglue": "github:schubergphilis/anglue@master",
-      "anglue-decorators": "github:schubergphilis/anglue-decorators@master",
-      "angular": "github:angular/bower-angular@^1.3.14",
-      "angular-animate": "github:angular/bower-angular-animate@^1.3.14",
-      "angular-aria": "github:angular/bower-angular-aria@^1.3.14",
-      "angular-material": "github:angular/bower-material@^0.8.3",
-      "angular-resource": "github:angular/bower-angular-resource@^1.3.15",
-      "angular-ui-router": "github:angular-ui/ui-router@^0.2.13",
-      "luxyflux": "github:schubergphilis/luxyflux@master",
+      "anglue": "github:schubergphilis/anglue@0.2.5",
+      "anglue-decorators": "github:schubergphilis/anglue-decorators@0.2.4",
+      "angular": "github:angular/bower-angular@1.3.15",
+      "angular-animate": "github:angular/bower-angular-animate@1.3.15",
+      "angular-aria": "github:angular/bower-angular-aria@1.3.15",
+      "angular-material": "github:angular/bower-material@0.9.0-rc2",
+      "angular-resource": "github:angular/bower-angular-resource@1.3.15",
+      "angular-ui-router": "github:angular-ui/ui-router@0.2.13",
+      "luxyflux": "github:schubergphilis/luxyflux@0.3.5",
       "nkoterba/material-design-iconsets": "github:nkoterba/material-design-iconsets@master"
     }
   }
