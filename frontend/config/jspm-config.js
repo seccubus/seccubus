@@ -1,6 +1,11 @@
 System.config({
   "baseURL": "/seccubus/v2/",
   "transpiler": "babel",
+  "babelOptions": {
+    "optional": [
+      "runtime"
+    ]
+  },
   "paths": {
     "*": "*.js",
     "github:*": "jspm_packages/github/*.js",
@@ -11,13 +16,16 @@ System.config({
 System.config({
   "map": {
     "anglue": "github:schubergphilis/anglue@0.2.5",
-    "anglue-decorators": "github:schubergphilis/anglue-decorators@0.2.4",
+    "anglue-decorators": "github:schubergphilis/anglue-decorators@0.2.8",
     "angular": "github:angular/bower-angular@1.3.15",
     "angular-animate": "github:angular/bower-angular-animate@1.3.15",
     "angular-aria": "github:angular/bower-angular-aria@1.3.15",
-    "angular-material": "github:angular/bower-material@0.9.0-rc2",
+    "angular-material": "github:angular/bower-material@0.9.3",
     "angular-resource": "github:angular/bower-angular-resource@1.3.15",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.13",
+    "babel": "npm:babel-core@5.4.2",
+    "babel-runtime": "npm:babel-runtime@5.4.2",
+    "core-js": "npm:core-js@0.9.9",
     "luxyflux": "github:schubergphilis/luxyflux@0.3.5",
     "nkoterba/material-design-iconsets": "github:nkoterba/material-design-iconsets@master",
     "github:angular-ui/ui-router@0.2.13": {
@@ -29,13 +37,7 @@ System.config({
     "github:angular/bower-angular-aria@1.3.15": {
       "angular": "github:angular/bower-angular@1.3.15"
     },
-    "github:angular/bower-material@0.9.0-rc2": {
-      "angular": "github:angular/bower-angular@1.3.15",
-      "angular-animate": "github:angular/bower-angular-animate@1.3.15",
-      "angular-aria": "github:angular/bower-angular-aria@1.3.15",
-      "css": "github:systemjs/plugin-css@0.1.10"
-    },
-    "github:angular/bower-material@0.9.0-rc2-master-e620228": {
+    "github:angular/bower-material@0.9.3": {
       "angular": "github:angular/bower-angular@1.3.15",
       "angular-animate": "github:angular/bower-angular-animate@1.3.15",
       "angular-aria": "github:angular/bower-angular-aria@1.3.15",
@@ -45,7 +47,7 @@ System.config({
       "assert": "npm:assert@1.3.0"
     },
     "github:jspm/nodelibs-buffer@0.1.0": {
-      "buffer": "npm:buffer@3.2.1"
+      "buffer": "npm:buffer@3.2.2"
     },
     "github:jspm/nodelibs-events@0.1.0": {
       "events-browserify": "npm:events-browserify@0.0.1"
@@ -93,9 +95,9 @@ System.config({
     "npm:assert@1.3.0": {
       "util": "npm:util@0.10.3"
     },
-    "npm:buffer@3.2.1": {
+    "npm:buffer@3.2.2": {
       "base64-js": "npm:base64-js@0.0.8",
-      "ieee754": "npm:ieee754@1.1.4",
+      "ieee754": "npm:ieee754@1.1.5",
       "is-array": "npm:is-array@1.0.1"
     },
     "npm:clean-css@3.1.9": {
@@ -115,6 +117,9 @@ System.config({
       "child_process": "github:jspm/nodelibs-child_process@0.1.0",
       "events": "github:jspm/nodelibs-events@0.1.0",
       "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.1"
+    },
+    "npm:core-js@0.9.9": {
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
     "npm:core-util-is@1.0.1": {

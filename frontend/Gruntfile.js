@@ -20,12 +20,6 @@ module.exports = function(grunt) {
                 expand: true,
                 src: 'images/**',
                 dest: 'build'
-            },
-            deps: {
-                files: [{
-                    src: 'jspm_packages/babel-polyfill.js',
-                    dest: 'build/polyfill.js'
-                }]
             }
         },
 
