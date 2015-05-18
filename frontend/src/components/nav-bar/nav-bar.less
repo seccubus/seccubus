@@ -1,20 +1,26 @@
 nav-bar {
-	.nav-menu-button {
-		margin-right: 16px;
-		md-icon {
-			color: white;
-		}
-	}
+  .nav-menu-button {
+    margin-right: 16px;
+    md-icon {
+      color: white;
+    }
+  }
 
-	// md-select.md-default-theme {
-	// 	margin-top: 0;
-	//
-	// 	.md-select-label,
-	// 	&:not([disabled]):focus .md-select-label {
-	// 		color: rgba(255,255,255,0.87);
-	// 		&.md-placeholder {
-	// 			color: rgba(255,255,255,0.87);
-	// 		}
-	// 	}
-	// }
+  md-toolbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 70;
+  }
+
+  h1 {
+    font-size: 28px;
+    margin: 0;
+    padding-left: 56px;
+    background: url("images/logo.png") left center no-repeat;
+    background-size: 40px 40px;
+    line-height: 40px;
+    font-weight: 300;
+  }
 }

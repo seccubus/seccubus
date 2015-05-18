@@ -21,9 +21,10 @@ import WorkspacesPageComponent from './components/workspaces-page/workspaces-pag
 /* MARKER: insert components import here */
 
 // Application Flux stores
-import StatusStore from './stores/status-store'
-import WorkspaceStore from './stores/workspace-store'
-import RunStore from './stores/run-store'
+import StatusStore from './stores/status-store';
+import WorkspaceStore from './stores/workspace-store';
+import RunStore from './stores/run-store';
+import ScanStore from './stores/scan-store';
 /* MARKER: insert stores import here */
 
 // Application Flux ActionCreators
@@ -72,8 +73,9 @@ class Application {
         return [
             StatusStore,
             RunStore,
-            WorkspaceStore
-            /* MARKER: insert stores here */
+            WorkspaceStore,
+			ScanStore
+			/* MARKER: insert stores here */
         ];
     }
 

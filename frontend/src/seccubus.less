@@ -7,21 +7,20 @@
 @import './components/workspaces-page/workspaces-page';
 /* MARKER: insert component less files here */
 
-.page-title {
-    font-size: 36px;
-    margin: 0;
-    padding: 12px 64px;
-    background: url("images/logo.png") 15px center no-repeat;
-    background-size: 36px 36px;
-    span {
-        display: block;
-        font-size: 16px;
-        font-weight: normal;
-        margin: 0;
-    }
+body {
+  overflow: hidden;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .page-host {
-    position: relative;
-    overflow: hidden;
+  position: absolute;
+  top: 64px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.page-view {
+  padding: 16px;
 }

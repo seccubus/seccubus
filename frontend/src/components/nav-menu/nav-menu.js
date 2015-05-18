@@ -1,5 +1,19 @@
 import Annotations from 'anglue/annotations';
 
+var menuItems = [{
+  icon: 'navigation:check',
+  page: 'status',
+  title: 'Status'
+}, {
+  icon: 'action:assignment',
+  page: 'runs',
+  title: 'Runs'
+}, {
+  icon: 'action:visibility',
+  page: 'findings',
+  title: 'Findings'
+}];
+
 export class NavMenu {
     static get annotation() {
         return Annotations.getComponent('navMenu', NavMenu);
@@ -17,7 +31,13 @@ export class NavMenu {
         };
     }
 
-    activate() {}
+    get menuItems() {
+      return menuItems;
+    }
+
+    isSelected(page) {
+      return this.state.current.name === `seccubus.${page}Page`;
+    }
 }
 
 export default NavMenu;

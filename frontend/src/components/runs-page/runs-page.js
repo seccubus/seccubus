@@ -1,24 +1,15 @@
 import Annotations from 'anglue/annotations';
 
-
-
-
-
 export class RunsPageComponent {
     static get annotation() {
         return Annotations.getComponent('runsPageComponent', RunsPageComponent );
     }
 
     static get injections() {
-        return {};
-    }
-
-    static get decorators() {
-        return [
-            
-            
-            
-        ];
+        return {
+          'runStore': 'RunStore',
+          'scanStore': 'ScanStore'
+        };
     }
 
     /**
@@ -26,9 +17,9 @@ export class RunsPageComponent {
      */
     activate() {}
 
-    
-
-    
+    get scans() {
+      return this.scanStore.items;
+    }
 }
 
 export default RunsPageComponent;

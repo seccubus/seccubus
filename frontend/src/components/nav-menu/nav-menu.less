@@ -1,17 +1,60 @@
 nav-menu {
-    .md-button {
-        border-radius: 0;
-        color: inherit;
-        cursor: pointer;
-        font-weight: 400;
-        line-height: 40px;
-        margin: 0;
-        max-height: 40px;
-        overflow: hidden;
-        padding: 0 16px;
-        text-align: left;
-        text-decoration: none;
-        white-space: normal;
-        width: 100%;
+  md-sidenav {
+
+    background: #eceff1;
+  }
+
+  a.md-button {
+    margin: 0;
+    white-space: nowrap;
+    border-radius: 0;
+    border-bottom: 1px solid #cfd8dc;
+    text-align: left;
+    padding: 0 16px 0;
+    line-height: 47px;
+
+    &.selected {
+      background: #cfd8dc;
     }
+
+    span {
+      color: #536e7a;
+      white-space: nowrap;
+      padding-left: 10px;
+    }
+  }
 }
+
+// nav-menu li {
+//   display: flex;
+//   flex-direction: row;
+//   align-items: center;
+//
+//   margin: 0;
+//   padding: 0;
+// }
+//
+// nav-menu li.selected {
+//   color: #0273d4;
+// }
+//
+// nav-menu li a {
+//   display: block;
+//   flex: 1;
+//   padding: 0 16px 0;
+//   font-size: 14px;
+//   text-align: left;
+//   font-weight: 400;
+//   position: relative;
+//   text-decoration: none;
+//   text-transform: uppercase;
+//   border-radius: 3px;
+// }
+//
+// .mdi.menu-icon {
+//   width: 24px;
+//   height: 24px;
+//   font-size: 24px;
+//   display: block;
+//   margin-left: 16px;
+// }

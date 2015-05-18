@@ -1,11 +1,10 @@
-<md-sidenav md-component-id="nav-menu" flex md-is-locked-open="$mdMedia('gt-md')" class="md-sidenav-left md-whiteframe-z1" layout="column">
-    <md-button ui-sref="seccubus.statusPage">Status</md-button>
-    <md-button ui-sref="seccubus.runsPage">Runs</md-button>
-    </md-button>
-    <md-button ui-sref="seccubus.findingsPage">Findings</md-button>
-    <md-button ui-sref="seccubus.sqlPage">Custom SQL</md-button>
-    <md-divider></md-divider>
-    <md-button ui-sref="seccubus.workspacesPage">Manage Workspaces</md-button>
-    <md-button ui-sref="seccubus.scansPage">Manage Scans</md-button>
-    <md-button ui-sref="seccubus.assetsPage">Manage Assets</md-button>
+<md-sidenav md-component-id="nav-menu"
+            md-is-locked-open="$mdMedia('gt-md')"
+            class="md-sidenav-left md-whiteframe-z4"
+            layout="column" flex>
+  <md-button ng-repeat="item in navMenu.menuItems track by item.page"
+             ui-sref="seccubus.{{item.page}}Page"
+             ng-class="{selected: navMenu.isSelected(item.page)}">
+    <md-icon md-svg-icon="{{item.icon}}"></md-icon> {{item.title}}
+  </md-button>
 </md-sidenav>
