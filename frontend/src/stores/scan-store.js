@@ -21,7 +21,21 @@ export class ScanStore {
 
   static get handlers() {
     return {
-      ''
+      'SCAN_LOAD_STARTED': 'onLoadStarted',
+      'SCAN_LOAD_COMPLETED': 'onLoadCompleted',
+      'SCAN_LOAD_FAILED': 'onLoadFailed',
+
+      'SCAN_CREATE_STARTED': 'onCreateStarted',
+      'SCAN_CREATE_COMPLETED': 'onCreateCompleted',
+      'SCAN_CREATE_FAILED': 'onCreateFailed',
+
+      'SCAN_UPDATE_STARTED': 'onUpdateStarted',
+      'SCAN_UPDATE_COMPLETED': 'onUpdateCompleted',
+      'SCAN_UPDATE_FAILED': 'onUpdateFailed',
+      
+      'SCAN_DELETE_STARTED': 'onDeleteStarted',
+      'SCAN_DELETE_COMPLETED': 'onDeleteCompleted',
+      'SCAN_DELETE_FAILED': 'onDeleteFailed',
     };
   }
 }

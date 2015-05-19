@@ -2,43 +2,55 @@ export var srcPath = '/seccubus/v2/src/';
 export var componentsPath = srcPath + 'components/';
 
 export default {
-    defaultRoute: '/~/status',
+  defaultRoute: '/~/status',
 
-    /**
-     * Root Route for the Team App
-     */
-    'seccubus': {
-        url: '/:workspace_id',
-        params: {
-            workspace_id: {
-                value: '~'
-            }
-        },
-        templateUrl: `${srcPath}seccubus.html`
+  /**
+   * Root Route for the Team App
+   */
+  'seccubus': {
+    url: '/:workspace_id',
+    params: {
+      workspace_id: {
+        value: '~'
+      }
     },
-    'seccubus.statusPage': {
-        url: '/status',
-        templateUrl: `${componentsPath}/status-page/status-page.html`
-    },
-    'seccubus.runsPage': {
-        url: '/runs',
-        templateUrl: `${componentsPath}/runs-page/runs-page.html`
-    },
-    'seccubus.findingsPage': {
-        url: '/findings',
-        templateUrl: `${componentsPath}/findings-page/findings-page.html`
-    },
-    'seccubus.workspacesPage': {
-        url: '/workspaces',
-        templateUrl: `${componentsPath}/workspaces-page/workspaces-page.html`
-    },
-    'seccubus.workspacesPage.create': {
-        url: '/create',
-        views: {
-            'drawer@seccubus': {
-                templateUrl: `${componentsPath}/workspaces-page/workspace-create/workspace-create.html`
-            }
-        }
+    templateUrl: `${srcPath}seccubus.html`
+  },
+  'seccubus.statusPage': {
+    url: '/status',
+    templateUrl: `${componentsPath}/status-page/status-page.html`
+  },
+  'seccubus.runsPage': {
+    url: '/runs',
+    templateUrl: `${componentsPath}/runs-page/runs-page.html`
+  },
+  'seccubus.findingsPage': {
+    url: '/findings',
+    templateUrl: `${componentsPath}/findings-page/findings-page.html`
+  },
+  'seccubus.workspacesPage': {
+    url: '/workspaces',
+    templateUrl: `${componentsPath}/workspaces-page/workspaces-page.html`
+  },
+  'seccubus.workspacesPage.create': {
+    url: '/create',
+    views: {
+      'drawer@seccubus': {
+        templateUrl: `${componentsPath}/workspaces-page/workspace-create/workspace-create.html`
+      }
     }
-    /* MARKER: insert routes here */
+  },
+  'seccubus.scansPage': {
+    url: '/scans',
+    templateUrl: componentsPath + '/scans-page/scans-page.html'
+  },
+  'seccubus.scansPage.create': {
+    url: '/create',
+    views: {
+      'drawer@seccubus': {
+        templateUrl: `${componentsPath}/scans-page/scan-create/scan-create.html`
+      }
+    }
+  }
+  /* MARKER: insert routes here */
 };

@@ -15,13 +15,15 @@ System.config({
 
 System.config({
   "map": {
-    "anglue": "github:schubergphilis/anglue@0.2.5",
+    "anglue": "github:schubergphilis/anglue@0.2.7",
     "anglue-decorators": "github:schubergphilis/anglue-decorators@0.2.8",
     "angular": "github:angular/bower-angular@1.3.15",
     "angular-animate": "github:angular/bower-angular-animate@1.3.15",
     "angular-aria": "github:angular/bower-angular-aria@1.3.15",
-    "angular-material": "github:angular/bower-material@0.9.3",
+    "angular-material": "github:angular/bower-material@0.9.4",
+    "angular-messages": "github:angular/bower-angular-messages@1.3.15",
     "angular-resource": "github:angular/bower-angular-resource@1.3.15",
+    "angular-sanitize": "github:angular/bower-angular-sanitize@1.3.15",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.13",
     "babel": "npm:babel-core@5.4.2",
     "babel-runtime": "npm:babel-runtime@5.4.2",
@@ -37,7 +39,16 @@ System.config({
     "github:angular/bower-angular-aria@1.3.15": {
       "angular": "github:angular/bower-angular@1.3.15"
     },
+    "github:angular/bower-angular-sanitize@1.3.15": {
+      "angular": "github:angular/bower-angular@1.3.15"
+    },
     "github:angular/bower-material@0.9.3": {
+      "angular": "github:angular/bower-angular@1.3.15",
+      "angular-animate": "github:angular/bower-angular-animate@1.3.15",
+      "angular-aria": "github:angular/bower-angular-aria@1.3.15",
+      "css": "github:systemjs/plugin-css@0.1.10"
+    },
+    "github:angular/bower-material@0.9.4": {
       "angular": "github:angular/bower-angular@1.3.15",
       "angular-animate": "github:angular/bower-angular-animate@1.3.15",
       "angular-aria": "github:angular/bower-angular-aria@1.3.15",

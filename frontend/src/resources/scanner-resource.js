@@ -1,10 +1,8 @@
 import _module from './_module';
 
 _module.factory('ScannerResource', [
-    '$resource',
-    function(resource) {
-        return resource(
-            '/seccubus/dev/seccubus/json/getScanners.pl'
-        );
-    }
+  '$resource',
+  function($resource) {
+    return $resource('/seccubus/dev/seccubus/json/getScanners.pl');
+  }
 ]);

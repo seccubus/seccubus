@@ -2,7 +2,7 @@ import Annotations from 'anglue/annotations';
 
 export class FindingsPageComponent {
     static get annotation() {
-        return Annotations.getComponent('findingsPageComponent', FindingsPageComponent );
+        return Annotations.getComponent('findingsPage', FindingsPageComponent);
     }
 
     static get injections() {

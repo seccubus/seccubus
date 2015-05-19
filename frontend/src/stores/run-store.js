@@ -8,7 +8,7 @@ import '../actions/app-actions';
 
 export class RunStore {
     static get annotation() {
-        return Annotations.getStore('runStore', RunStore);
+        return Annotations.getStore('run', RunStore);
     }
 
     static get decorators() {

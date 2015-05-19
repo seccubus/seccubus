@@ -1,15 +1,23 @@
 import Annotations from 'anglue/annotations';
 
-export class RunsPageComponent {
+import ScanCreateComponent from './scan-create/scan-create';
+import ScanEditComponent from './scan-edit/scan-edit';
+
+export class ScansPageComponent {
   static get annotation() {
-    return Annotations.getComponent('runsPage', RunsPageComponent);
+    return Annotations.getComponent('scansPage', ScansPageComponent);
+  }
+
+  static get components() {
+      return [
+          ScanCreateComponent,
+          ScanEditComponent
+      ];
   }
 
   static get injections() {
     return {
       'scanActions': 'ScanActions',
-      'runActions': 'RunActions',
-      'runStore': 'RunStore',
       'scanStore': 'ScanStore',
       'stateParams': '$stateParams'
     };
@@ -31,4 +39,4 @@ export class RunsPageComponent {
   }
 }
 
-export default RunsPageComponent;
+export default ScansPageComponent;

@@ -4,6 +4,7 @@ export default function(appModule) {
       .iconSet('action', `icons/action-icons.svg`)
       .iconSet('alert', `icons/alert-icons.svg`)
       .iconSet('content', `icons/content-icons.svg`)
+      .iconSet('device', `icons/device-icons.svg`)
       .iconSet('navigation', `icons/navigation-icons.svg`);
   }]);
 

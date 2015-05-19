@@ -4,7 +4,7 @@ import Annotations from 'anglue/annotations';
 
 export class RunActions {
     static get annotation() {
-        return Annotations.getActions('runActions', RunActions );
+        return Annotations.getActions('run', RunActions);
     }
 
     static get injections() {

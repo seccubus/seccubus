@@ -1,0 +1,53 @@
+<scans-page>
+  <md-whiteframe class="md-table table-responsive-vertical md-whiteframe-z1" layout>
+      <!-- Table starts here -->
+      <div ng-if="scansPage.scanStore.isLoading" layout="row" layout-sm="column" layout-align="space-around">
+          <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+      </div>
+
+      <table class="table table-hover table-bordered table-condensed" ng-if="!scansPage.scanStore.isLoading">
+          <col>
+          <col width="130">
+          <col>
+          <col>
+          <col width="160">
+          <col>
+
+          <thead>
+              <tr>
+                  <th>Name</th>
+                  <th>Scanner</th>
+                  <th>Parameters</th>
+                  <th>Hosts</th>
+                  <th>Last Scan</th>
+                  <th>Notifications</th>
+              </tr>
+          </thead>
+
+          <tbody>
+              <tr ng-repeat="scan in scansPage.scanStore.items track by scan.id">
+                  <td data-title="Name">{{scan.name}}</td>
+                  <td data-title="Scanner">{{scan.scanner}}</td>
+                  <td data-title="Parameters">{{scan.parameters}}</td>
+                  <td data-title="Hosts">{{scan.targets}}</td>
+                  <td data-title="Last Scan">
+                    <span ng-if="scan.lastScan">{{scan.lastScan | date:'dd-MM-yyyy HH:mm'}}</span>
+                    <span ng-if="!scan.lastScan">-</span>
+                  </td>
+                  <td data-title="Notifications">{{scan.notifications}}</td>
+              </tr>
+
+              <tr ng-if="scansPage.scanStore.isEmpty">
+                  <td colspan="6">No scans have been configured yet...</td>
+              </tr>
+          </tbody>
+      </table>
+  </md-whiteframe>
+
+  <md-button ui-sref="seccubus.scansPage.create" class="md-fab md-primary md-fab-bottom-right" aria-label="Create Workspace">
+      <md-tooltip md-direction="left">
+          Create Scan
+      </md-tooltip>
+      <md-icon md-svg-icon="content:add"></md-icon>
+  </md-button>
+</scans-page>

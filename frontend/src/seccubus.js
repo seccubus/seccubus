@@ -6,6 +6,8 @@ import 'angular-aria';
 import 'angular-animate';
 import 'angular-resource';
 import 'angular-material';
+import 'angular-messages';
+import 'angular-sanitize';
 
 import 'luxyflux/ng-luxyflux';
 
@@ -18,6 +20,7 @@ import NavMenuComponent from './components/nav-menu/nav-menu';
 import StatusPageComponent from './components/status-page/status-page';
 import RunsPageComponent from './components/runs-page/runs-page';
 import WorkspacesPageComponent from './components/workspaces-page/workspaces-page';
+import ScansPageComponent from './components/scans-page/scans-page';
 /* MARKER: insert components import here */
 
 // Application Flux stores
@@ -25,6 +28,7 @@ import StatusStore from './stores/status-store';
 import WorkspaceStore from './stores/workspace-store';
 import RunStore from './stores/run-store';
 import ScanStore from './stores/scan-store';
+import ScannerStore from './stores/scanner-store'
 /* MARKER: insert stores import here */
 
 // Application Flux ActionCreators
@@ -32,6 +36,7 @@ import AppActions from './actions/app-actions';
 import StatusActions from './actions/status-actions';
 import RunActions from './actions/run-actions';
 import WorkspaceActions from './actions/workspace-actions';
+import ScanActions from './actions/scan-actions';
 /* MARKER: insert actions import here */
 
 // This is the angular module that contains all the defined services
@@ -42,52 +47,59 @@ import configureMaterial from './config/material-config';
 import Annotations from 'anglue/annotations';
 
 class Application {
-    static get annotation() {
-        return Annotations.getApplication('seccubus', Application);
-    }
+  static get annotation() {
+    return Annotations.getApplication('seccubus', Application);
+  }
 
-    static get dependencies() {
-        return [
-            'ngMaterial',
-            resourcesModule.name
-        ];
-    }
+  static get dependencies() {
+    return [
+      'ngMaterial',
+      'ngMessages',
+      'ngAnimate',
+      'ngAria',
+      'ngSanitize',
+      resourcesModule.name
+    ];
+  }
 
-    static get routes() {
-        return routes;
-    }
+  static get routes() {
+    return routes;
+  }
 
-    static get components() {
-        return [
-            NavBarComponent,
-            NavMenuComponent,
-            StatusPageComponent,
-            WorkspacesPageComponent,
-            StatusPageComponent,
-            RunsPageComponent
-            /* MARKER: insert components here */
-        ];
-    }
+  static get components() {
+    return [
+      NavBarComponent,
+      NavMenuComponent,
+      StatusPageComponent,
+      WorkspacesPageComponent,
+      StatusPageComponent,
+      RunsPageComponent,
+      ScansPageComponent
+      /* MARKER: insert components here */
+    ];
+  }
 
-    static get stores() {
-        return [
-            StatusStore,
-            RunStore,
-            WorkspaceStore,
-			ScanStore
-			/* MARKER: insert stores here */
-        ];
-    }
+  static get stores() {
+    return [
+      StatusStore,
+      RunStore,
+      WorkspaceStore,
+      ScanStore,
+      ScannerStore
+      /* MARKER: insert stores here */
+    ];
+  }
 
-    static get actions() {
-        return [
-            AppActions,
-            StatusActions,
-            RunActions,
-            WorkspaceActions
-            /* MARKER: insert actions here */
-        ];
-    }
+  static get actions() {
+    return [
+      AppActions,
+      StatusActions,
+      RunActions,
+      WorkspaceActions,
+      ScanActions
+      /* MARKER: insert actions here */
+    ];
+  }
 }
 
 var appModule = Application.annotation.module;
@@ -96,9 +108,9 @@ var appModule = Application.annotation.module;
 configureMaterial(appModule);
 
 angular.element(document).ready(() => {
-    angular.bootstrap(document.body, [
-        appModule.name
-    ], {
-        strictDi: true
-    });
+  angular.bootstrap(document.body, [
+    appModule.name
+  ], {
+    strictDi: true
+  });
 });

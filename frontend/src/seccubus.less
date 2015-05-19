@@ -5,12 +5,20 @@
 @import './components/status-page/status-page';
 @import './components/runs-page/runs-page';
 @import './components/workspaces-page/workspaces-page';
+@import "./components/scans-page/scans-page";
 /* MARKER: insert component less files here */
+
+html {
+  font-size: 62.5%;
+  line-height: 1.4;
+}
+
 
 body {
   overflow: hidden;
   max-width: 100%;
   max-height: 100%;
+  font-size: 1.6rem;
 }
 
 .page-host {
@@ -23,4 +31,23 @@ body {
 
 .page-view {
   padding: 16px;
+
+  .md-button.md-fab.md-fab-bottom-right {
+    position: fixed;
+  }
+}
+
+.page-drawer md-sidenav {
+  width: 50%;
+  min-width: 300px;
+  max-width: 60%;
+
+  md-input-container {
+    padding-bottom: 20px;
+  }
+
+  .submit-error {
+    color: red;
+    font-size: 0.8em;
+  }
 }

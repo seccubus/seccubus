@@ -12,6 +12,14 @@ var menuItems = [{
   icon: 'action:visibility',
   page: 'findings',
   title: 'Findings'
+}, {
+  icon: 'device:network_wifi',
+  page: 'scans',
+  title: 'Scans'
+}, {
+  icon: 'action:dashboard',
+  page: 'workspaces',
+  title: 'Workspaces'
 }];
 
 export class NavMenu {
@@ -36,7 +44,7 @@ export class NavMenu {
     }
 
     isSelected(page) {
-      return this.state.current.name === `seccubus.${page}Page`;
+      return this.state.current.name.indexOf(`seccubus.${page}Page`) === 0;
     }
 }
 
