@@ -1,7 +1,5 @@
 import Annotations from 'anglue/annotations';
 
-import FilterableStoreDecorator from 'anglue-decorators/store/filterable-store';
-import SortableStoreDecorator from 'anglue-decorators/store/sortable-store';
 import CrudStoreDecorator from 'anglue-decorators/store/crud-store';
 
 import '../actions/app-actions';
@@ -13,9 +11,7 @@ export class RunStore {
 
     static get decorators() {
         return [
-            CrudStoreDecorator,
-            SortableStoreDecorator,
-            FilterableStoreDecorator
+            CrudStoreDecorator
         ];
     }
 
@@ -26,9 +22,11 @@ export class RunStore {
     }
 
     static get handlers() {
-        return {
-
-        };
+      return {
+        'RUN_LOAD_STARTED': 'onLoadStarted',
+        'RUN_LOAD_COMPLETED': 'onLoadCompleted',
+        'RUN_LOAD_FAILED': 'onLoadFailed'
+      };
     }
 }
 export default RunStore;

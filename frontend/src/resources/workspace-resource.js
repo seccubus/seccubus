@@ -11,17 +11,17 @@ _module.factory('WorkspaceResource', [
 
     var Resource = $resource(null, {}, {
       query: {
-        url: '/seccubus/dev/seccubus/json/getWorkspaces.pl',
+        url: 'json/getWorkspaces.pl',
         isArray: true,
         transformItem: transformItem
       },
       create: {
-        url: '/seccubus/dev/seccubus/json/createWorkspace.pl',
+        url: 'json/createWorkspace.pl',
         method: 'POST',
         transformItem: transformItem
       },
       update: {
-        url: '/seccubus/dev/seccubus/json/updateWorkspace.pl',
+        url: 'json/updateWorkspace.pl',
         method: 'POST',
         transformItem: transformItem
       }

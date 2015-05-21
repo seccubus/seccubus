@@ -1,4 +1,9 @@
 <scans-page>
+  <md-toolbar class="md-whiteframe-z2">
+    <h1>Scans</h1>
+    <div class="md-toolbar-tools"></div>
+  </md-toolbar>
+
   <md-whiteframe class="md-table table-responsive-vertical md-whiteframe-z1" layout>
       <!-- Table starts here -->
       <div ng-if="scansPage.scanStore.isLoading" layout="row" layout-sm="column" layout-align="space-around">
@@ -25,7 +30,8 @@
           </thead>
 
           <tbody>
-              <tr ng-repeat="scan in scansPage.scanStore.items track by scan.id">
+              <tr ng-repeat="scan in scansPage.scanStore.items track by scan.id"
+                  ui-sref="seccubus.scansPage.edit({scan_id: scan.id})">
                   <td data-title="Name">{{scan.name}}</td>
                   <td data-title="Scanner">{{scan.scanner}}</td>
                   <td data-title="Parameters">{{scan.parameters}}</td>

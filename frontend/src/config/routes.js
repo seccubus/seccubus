@@ -21,7 +21,12 @@ export default {
     templateUrl: `${componentsPath}/status-page/status-page.html`
   },
   'seccubus.runsPage': {
-    url: '/runs',
+    url: '/runs/:scan_id',
+    params: {
+      scan_id: {
+        value: '~'
+      }
+    },
     templateUrl: `${componentsPath}/runs-page/runs-page.html`
   },
   'seccubus.findingsPage': {
@@ -49,6 +54,14 @@ export default {
     views: {
       'drawer@seccubus': {
         templateUrl: `${componentsPath}/scans-page/scan-create/scan-create.html`
+      }
+    }
+  },
+  'seccubus.scansPage.edit': {
+    url: '/edit/:scan_id',
+    views: {
+      'drawer@seccubus': {
+        templateUrl: `${componentsPath}/scans-page/scan-edit/scan-edit.html`
       }
     }
   }

@@ -33,7 +33,7 @@
 
   <md-input-container>
     <label>Password</label>
-    <input type="password" name="password" ng-model="scanForm.scan.password" required>
+    <input type="password" name="password" ng-model="scanForm.scan.password">
 
     <div ng-messages="scan.password.$error" ng-if="scan.password.$dirty">
       <div ng-message="required">A password is required</div>
@@ -42,7 +42,7 @@
 
   <md-input-container>
     <label>Target Hosts</label>
-    <textarea name="targets" ng-model="scanForm.scan.targets" required></textarea>
+    <textarea name="targets" ng-model="scanForm.scan.targets"></textarea>
 
     <div ng-messages="scan.targets.$error" ng-if="scan.targets.$dirty">
       <div ng-message="required">At least one target host is required</div>
@@ -57,7 +57,7 @@
     <md-button ng-disabled="scan.$invalid"
                ng-click="scanForm.submit()"
                class="md-primary">
-      Create
+      Save
     </md-button>
   </div>
 

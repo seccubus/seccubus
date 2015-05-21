@@ -1,5 +1,6 @@
 import Annotations from 'anglue/annotations';
 
+import '../resources/run-resource';
 /* MARKER: insert resource imports here */
 
 export class RunActions {
@@ -8,15 +9,22 @@ export class RunActions {
     }
 
     static get injections() {
-        return {
-            /* MARKER: insert resource here */
-        };
+      return {
+        'runResource': 'RunResource',
+      };
     }
 
     static get serviceActions() {
-        return {
-            /* MARKER: insert service actions here */
-        };
+      return {
+        'RUN_LOAD': 'loadRuns',
+      };
+    }
+
+    loadRuns(workspaceId, scanId) {
+      return this.runResource.query({
+        workspaceId: workspaceId,
+        scanId: scanId,
+      }).$promise;
     }
 }
 

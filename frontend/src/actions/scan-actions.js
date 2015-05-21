@@ -12,8 +12,7 @@ export class ScanActions {
   static get injections() {
     return {
       'scanResource': 'ScanResource',
-      'scannerResource': 'ScannerResource',
-      'promise': '$q'
+      'scannerResource': 'ScannerResource'
     };
   }
 
@@ -21,6 +20,7 @@ export class ScanActions {
     return {
       'SCAN_LOAD': 'loadScans',
       'SCAN_CREATE': 'createScan',
+      'SCAN_UPDATE': 'updateScan',
       'SCANNER_LOAD': 'loadScanners'
     };
   }
@@ -37,6 +37,10 @@ export class ScanActions {
 
   createScan(scan) {
     return scan.$create();
+  }
+
+  updateScan(scan) {
+    return scan.$update();
   }
 }
 

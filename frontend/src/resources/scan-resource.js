@@ -11,13 +11,18 @@ _module.factory('ScanResource', [
 
     var Resource = $resource(null, {}, {
       query: {
-        url: '/seccubus/dev/seccubus/json/getScans.pl',
+        url: 'json/getScans.pl',
         method: 'GET',
         isArray: true,
         transformItem: transformItem
       },
       create: {
-        url: '/seccubus/dev/seccubus/json/createScan.pl',
+        url: 'json/createScan.pl',
+        method: 'POST',
+        transformItem: transformItem
+      },
+      update: {
+        url: 'json/updateScan.pl',
         method: 'POST',
         transformItem: transformItem
       }

@@ -4,7 +4,7 @@ _module.factory('ConfigTestResource', [
   '$resource',
   function($resource) {
     return $resource(
-      '/seccubus/dev/seccubus/json/ConfigTest.pl'
+      'json/ConfigTest.pl'
     );
   }
 ]);

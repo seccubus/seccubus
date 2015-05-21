@@ -1,4 +1,49 @@
 <runs-page>
-  {{runsPage.scans}}
-  Runs content
+  <md-toolbar class="md-whiteframe-z2">
+    <h1>Runs</h1>
+    
+    <div class="md-toolbar-tools">
+      <md-select ng-model="runsPage.selectedScan">
+        <md-select-label>{{runsPage.selectedScan.name || 'Select a scan...'}}</md-select-label>
+        <md-option
+          ng-repeat="scan in runsPage.scanStore.items track by scan.id"
+          ng-value="scan"
+        >{{scan.name}}</md-option>
+      </md-select>
+    </div>
+  </md-toolbar>
+
+  <md-whiteframe class="md-table table-responsive-vertical md-whiteframe-z1" layout layout-padding>
+      <!-- Table starts here -->
+      <div ng-if="runsPage.runStore.isLoading" layout="row" layout-sm="column" layout-align="space-around">
+          <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+      </div>
+
+      <table class="table table-hover table-bordered table-condensed" ng-if="!runsPage.runStore.isLoading">
+          <col>
+          <col>
+
+          <thead>
+              <tr>
+                  <th>Time</th>
+                  <th>Attachments</th>
+              </tr>
+          </thead>
+
+          <tbody>
+              <tr ng-repeat="run in runsPage.runStore.items track by run.id">
+                  <td data-title="Time">{{run.time | date:'dd-MM-yyyy HH:mm'}}</td>
+                  <td data-title="Attachments">{{scan.attachments}}</td>
+              </tr>
+
+              <tr ng-if="!runsPage.selectedScan">
+                  <td colspan="2">Please select a scan...</td>
+              </tr>
+
+              <tr ng-if="runsPage.selectedScan && runsPage.runStore.isEmpty">
+                  <td colspan="2">No runs for the selected scan yet...</td>
+              </tr>
+          </tbody>
+      </table>
+  </md-whiteframe>
 </runs-page>

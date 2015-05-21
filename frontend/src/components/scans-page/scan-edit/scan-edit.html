@@ -1,0 +1,18 @@
+<scan-edit>
+  <md-sidenav md-component-id="drawer-scan-edit"
+              md-is-open="scanEdit.drawerOpened"
+              class="md-sidenav-right"
+              layout="column"
+              layout-fill>
+    <md-content>
+      <section>
+        <md-subheader class="md-primary">Edit scan {{scanEdit.scan.name}}</md-subheader>
+        <scan-form scan="scanEdit.scan"
+                   submit-error="scanEdit.lastSubmitError"
+                   on-submit="scanEdit.save()"
+                   on-cancel="scanEdit.cancel()">
+        </scan-form>
+      </section>
+    </md-content>
+  </md-sidenav>
+</scan-edit>

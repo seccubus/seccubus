@@ -40,7 +40,9 @@ export class ScanFormComponent {
   }
 
   onScannerChange() {
-    this.scan.parameters = this.getScannerByName(this.scan.scanner).params;
+    if (this.scan) {
+      this.scan.parameters = this.getScannerByName(this.scan.scanner).params;
+    }
   }
 
   getScannerByName(scannerName) {
@@ -55,7 +57,7 @@ export class ScanFormComponent {
   }
 
   get scannerHelp() {
-    if (this.scan.scanner) {
+    if (this.scan && this.scan.scanner && this.scannerStore.isLoaded) {
       return this.getScannerByName(this.scan.scanner).help;
     }
   }

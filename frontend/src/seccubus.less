@@ -30,10 +30,24 @@ body {
 }
 
 .page-view {
-  padding: 16px;
-
   .md-button.md-fab.md-fab-bottom-right {
     position: fixed;
+  }
+
+  > * > md-toolbar {
+    > h1 {
+      margin: 16px 0 0 8px;
+      padding: 0 0 0 10px;
+      font-weight: 200;
+      color: rgb(25, 118, 210) !important;
+    }
+
+    justify-content: flex-end;
+    background: linear-gradient(rgb(236, 239, 241),rgb(207, 216, 220));
+    padding: 16px 20px;
+    height: 142px;
+    // color: rgb(25, 118, 210) !important;
+    color: rgba(0, 0, 0, 0.6) !important;
   }
 }
 

@@ -31,11 +31,7 @@ export class ScanStore {
 
       'SCAN_UPDATE_STARTED': 'onUpdateStarted',
       'SCAN_UPDATE_COMPLETED': 'onUpdateCompleted',
-      'SCAN_UPDATE_FAILED': 'onUpdateFailed',
-      
-      'SCAN_DELETE_STARTED': 'onDeleteStarted',
-      'SCAN_DELETE_COMPLETED': 'onDeleteCompleted',
-      'SCAN_DELETE_FAILED': 'onDeleteFailed',
+      'SCAN_UPDATE_FAILED': 'onUpdateFailed'
     };
   }
 }
