@@ -1,37 +1,39 @@
-<workspaces-page>
-  <md-toolbar class="md-whiteframe-z2">
-    <h1>Workspaces</h1>
-    <div class="md-toolbar-tools"></div>
-  </md-toolbar>
+<workspaces-page layout="column" layout-fill>
+  <md-content>
+    <section>
+      <md-subheader class="md-primary">Workspaces</md-subheader>
 
-  <md-whiteframe class="md-table table-responsive-vertical md-whiteframe-z1" layout layout-padding>
-    <!-- Table starts here -->
-    <div ng-if="workspacesPage.workspaceStore.isLoading" layout="row" layout-sm="column" layout-align="space-around">
-      <md-progress-circular md-mode="indeterminate"></md-progress-circular>
-    </div>
+      <div ng-if="workspacesPage.workspaceStore.isLoading" layout="row" layout-align="center center">
+          <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+      </div>
 
-    <table class="table table-hover table-bordered table-condensed" ng-if="!workspacesPage.workspaceStore.isLoading">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th># of Scans</th>
-          <th>Last Scan</th>
-        </tr>
-      </thead>
+      <md-whiteframe ng-if="!workspacesPage.workspaceStore.isLoading"
+                     class="md-table table-responsive-vertical md-whiteframe-z3"
+                     layout layout-padding>
+        <table class="table table-hover table-bordered table-condensed">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th># of Scans</th>
+              <th>Last Scan</th>
+            </tr>
+          </thead>
 
-      <tbody>
-        <tr ng-repeat="workspace in workspacesPage.workspaceStore.items track by workspace.id">
-          <td data-title="Name">{{workspace.name}}</td>
-          <td data-title="# of Scans">{{workspace.scanCount}}</td>
-          <td data-title="Last Scan">{{workspace.lastScan | date:'dd-MM-yyyy HH:mm'}}</td>
-        </tr>
+          <tbody>
+            <tr ng-repeat="workspace in workspacesPage.workspaceStore.items track by workspace.id">
+              <td data-title="Name">{{workspace.name}}</td>
+              <td data-title="# of Scans">{{workspace.scanCount}}</td>
+              <td data-title="Last Scan">{{workspace.lastScan | date:'dd-MM-yyyy HH:mm'}}</td>
+            </tr>
 
-        <tr ng-if="workspacesPage.workspaceStore.isEmpty">
-          <td colspan="3">No workspaces have been created yet...</td>
-        </tr>
-      </tbody>
-    </table>
-  </md-whiteframe>
+            <tr ng-if="workspacesPage.workspaceStore.isEmpty">
+              <td colspan="3">No workspaces have been created yet...</td>
+            </tr>
+          </tbody>
+        </table>
+      </md-whiteframe>
+    </section>
+  </md-content>
 
   <md-button ui-sref="seccubus.workspacesPage.create" class="md-fab md-primary md-fab-bottom-right" aria-label="Create Workspace">
     <md-tooltip md-direction="left">

@@ -28,6 +28,7 @@ export class RunsPageComponent {
    * When this component activates we refresh the data
    */
   activate() {
+    this.runStore.initialize();
     this.scanActions.loadScans(this.selectedWorkspaceId);
   }
 

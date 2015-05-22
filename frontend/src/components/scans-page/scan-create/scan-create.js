@@ -53,6 +53,10 @@ export class ScanCreateComponent {
         this.lastSubmitError = error;
       });
   }
+
+  cancel() {
+    this.closeDrawer();
+  }
 }
 
 export default ScanCreateComponent;

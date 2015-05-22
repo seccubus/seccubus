@@ -30,22 +30,36 @@ body {
 }
 
 .page-view {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
   .md-button.md-fab.md-fab-bottom-right {
     position: fixed;
   }
 
+  .md-subheader .md-subheader-inner {
+    padding: 18px 0px 17px 16px;
+  }
+
+  > * {
+    display: block;
+    flex: 1;
+    overflow: auto;
+  }
+
   > * > md-toolbar {
-    > h1 {
-      margin: 16px 0 0 8px;
-      padding: 0 0 0 10px;
+    h1 {
+      margin: 0;
+      padding: 0;
       font-weight: 200;
+      font-size: 1.6em;
       color: rgb(25, 118, 210) !important;
     }
-
     justify-content: flex-end;
-    background: linear-gradient(rgb(236, 239, 241),rgb(207, 216, 220));
+    background: linear-gradient(rgb(255, 255, 255), rgb(238, 241, 243));
     padding: 16px 20px;
-    height: 142px;
+    height: 64px;
     // color: rgb(25, 118, 210) !important;
     color: rgba(0, 0, 0, 0.6) !important;
   }

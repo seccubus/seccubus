@@ -61,6 +61,10 @@ export class ScanEditComponent {
         this.lastSubmitError = error;
       });
   }
+
+  cancel() {
+    this.closeDrawer();
+  }
 }
 
 export default ScanEditComponent;
