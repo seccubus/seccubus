@@ -30,6 +30,7 @@ all functions within the module
 @EXPORT = qw ( 
 		get_user_id
 		add_user 
+		get_login
 	     );
 
 use strict;
@@ -37,6 +38,7 @@ use Carp;
 
 sub get_user_id($);
 sub add_user($$$);
+sub get_login();
 
 =head1 User manipulation
 
@@ -135,6 +137,60 @@ sub add_user($$$) {
 		}
 	}
 }
+=head2 get_login
+ 
+This function returns how a user is logged in
+
+=over 2
+
+=item Parameters
+
+None
+
+=item Checks
+
+None
+
+=item Returns
+
+=over 4
+
+=item Username
+
+=item Valid (0 or 1)
+
+=item Admin (0 or 1)
+
+=item Message 
+
+=back 
+
+=back 
+
+=cut 
+
+sub get_login() {
+	if ( ! exists $ENV{REMOTE_ADDR} ) {
+		# Running from command line means logged in as admin
+		return("admin",1,1,"Running from command line as admin");
+	} elsif ( ! exists $ENV{REMOTE_USER} ) {
+		# No auth setup
+		return("admin",1,1,"Unauthenticated user acting as admin");
+	} else {
+		my $name = sql ( "return"	=> "array",
+		       "query"	=> "select name from users where username = ?",
+		       "values" => [ $ENV{REMOTE_USER} ],
+		);
+		if ( $name ) {
+			# Valid user
+			return($ENV{REMOTE_USER},1,is_admin(),"Valid user '$name' ($ENV{REMOTE_USER})");
+		} else {
+			# Invalid user
+			return("<undef>",0,0,"Undefined user '$ENV{REMOTE_USER}'");
+		}
+	}
+}
+
 
 # Close the PM file.
 return 1;
