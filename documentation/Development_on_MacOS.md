@@ -33,8 +33,19 @@ Edit the following file
 
 Obviously replace USERNAME with you username
 
+For Yosemite
+
 	<Directory "/Users/USERNAME/Sites/">
-		Options Indexes Multiviews ExecCGI
+		Options Indexes Multiviews ExecCGI FollowSymLinks
+		AllowOverride AuthConfig Limit
+		require local
+		AddHandler cgi-script .pl
+	</Directory>
+
+For earlier versions
+
+	<Directory "/Users/USERNAME/Sites/">
+		Options Indexes Multiviews ExecCGI FollowSymLinks
 		AllowOverride AuthConfig Limit
 		Order allow,deny
 		Allow from 127.0.0.1
@@ -62,6 +73,35 @@ Seccubus expects certain files to be in /opt/seccubus so we want to create this 
 	cd /opt
 	sudo ln -s ~USERNAME/Repositories/Seccubus_v2/ seccubus
 
+In Yosemite you need to tweak the apache config
+    
+    vi /etc/apache/httpd.conf
+
+Uncomment the following lines:
+
+    #LoadModule userdir_module libexec/apache2/mod_userdir.so
+
+    #Include /private/etc/apache2/extra/httpd-userdir.conf
+
+    #LoadModule cgi_module libexec/apache2/mod_cgi.so
+
+Edit httpd-userdir.conf
+
+    vi /private/etc/apache2/extra/httpd-userdir.conf
+
+Uncomment the flowwing line:
+
+     #Include /private/etc/apache2/users/*.conf
+
+Enabled the cgi modue
+
+	sudo a2enmod cgi
+
+Restart apache
+
+    sudo apachectl restart
+
+
 Setting up the database
 -----------------------
 I installed mysql via Homebrew
@@ -74,7 +114,7 @@ I installed mysql via Homebrew
 Setting up perl and mysql
 -------------------------
 
-If yoo go to http://127.0.0.1/~USERNAME/seccubus/dev/seccubus/json/ConfigTest.pl you will 
+If you go to http://127.0.0.1/~USERNAME/seccubus/dev/seccubus/json/ConfigTest.pl you will 
 see an error about JSON.pm being missing
 
 	Software error:
@@ -102,7 +142,7 @@ Go to you repository. And create a config file
 
 Change the database to the correct database
 
-Surf to seccubus and follow setup instructions to create the database
+Surf to http://127.0.0.1/~USERNAME/seccubus/dev/seccubus/seccubus.html and follow setup instructions to create the database
 
 	mysql -u root << EOF
 	create database seccubus;
