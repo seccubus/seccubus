@@ -95,11 +95,11 @@ $zap_path =~ s/zap.jar//;
 my $cmd = "cd $zap_path; java -Xmx512m -XX:PermSize=512M -jar zap.jar $zap_options";
 
 print "Execuing $cmd\n" unless $quiet;
-run_cmd($cmd,$verbose,$remote,[ "$tempfile.*" ]);
+run_cmd($cmd,$verbose,$remote,[ "$tempfile" ]);
 
 if ( $sudo ) {
 	# Fixes issue #52
-	run_cmd("sudo chown $username \"$tempfile.*\"",$verbose,$remote);
+	run_cmd("sudo chown $username \"$tempfile\"",$verbose,$remote);
 }
 
 
@@ -124,11 +124,11 @@ run_cmd($cmd,$verbose);
 
 # Cleanup
 unless( $nodelete ) {
-	unlink "$tempfile.xml" if -e "$tempfile.xml";
+	unlink "$tempfile" if -e "$tempfilel";
 	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
 }
 if ( $remote ) {
-	run_cmd("rm -f $tempfile.*",$verbose,$remote);;
+	run_cmd("rm -f $tempfile",$verbose,$remote);;
 }
 
 exit(0);
@@ -147,7 +147,7 @@ Arguments:
 		  find them.
 --zap_options	- Additional command line options to provide to ZAP see 
 (-o)		  'ZAP WIKI' for more information.
---hosts		- The url of the 'hosts' to scan
+--hosts		- The url to scan
 --workspace	- Name of the workspace to load the findings into
 --scan		- Name of the scan to load the findings into
 --remote (-r)	- Comma separated list of host,username,keyfile representing the
