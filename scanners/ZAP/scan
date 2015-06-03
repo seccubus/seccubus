@@ -27,7 +27,7 @@ use Carp;
 my (
 	$zap_path,
 	$zap_options,
-	$hosts_file,
+	$host_url,
 	$workspace,
 	$scan,
 	$sudo,
@@ -46,7 +46,7 @@ $help = 0;
 GetOptions(	
 		'zap_path|p=s'		=> \$zap_path,
 		'zap_options|o=s'	=> \$zap_options,
-		'hosts=s'		=> \$hosts_file,
+		'hosts=s'		=> \$host_url,
 		'workspace=s'		=> \$workspace,
 		'scan=s'		=> \$scan,
 		'sudo'			=> \$sudo,
@@ -65,7 +65,7 @@ my $config = get_config();
 my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
 my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
 
-print "Hosts file specified $hosts_file\n" if $verbose;
+print "Hosts file specified $host_url\n" if $verbose;
 if ( ! $workspace ) {
 	print "You must specify a workspace name";
 	help();
@@ -83,7 +83,7 @@ if ( ! $zap_path && -e $zap_path ) {
 print "ZAP found in $zap_path\n" if $verbose;
 my $tempfile = "/tmp/seccubus.$$";
 
-my $zap_options = "-quickurl '$hosts_file' -quickout '$tempfile' $zap_options -cmd ";
+my $zap_options = "-quickurl '$host_url' -quickout '$tempfile' $zap_options -cmd ";
 print "ZAP options: $zap_options\n" if $verbose;
 
 
@@ -95,7 +95,7 @@ $zap_path =~ s/zap.jar//;
 my $cmd = "cd $zap_path; java -Xmx512m -XX:PermSize=512M -jar zap.jar $zap_options";
 
 print "Execuing $cmd\n" unless $quiet;
-run_cmd($cmd,$verbose,$remote,[ "$tempfile.*" ],[ $hosts_file ]);
+run_cmd($cmd,$verbose,$remote,[ "$tempfile.*" ]);
 
 if ( $sudo ) {
 	# Fixes issue #52
@@ -137,7 +137,7 @@ sub help() {
 	print "
 Usage: scan 	[--zap_path|p <path to ZAP jar>] \\
 		[--zap_options <additional ZAP CMD options>]] \\
-		--hosts <hosts file> [--remote|r <host,user,keyfile>] 
+		--hosts <host url> [--remote|r <host,user,keyfile>] 
 		[--verbose|v] [--quiet|q] [--help|h]
 
 Arguments:
@@ -147,7 +147,7 @@ Arguments:
 		  find them.
 --zap_options	- Additional command line options to provide to ZAP see 
 (-o)		  'ZAP WIKI' for more information.
---hosts		- The file containing the 'hosts' to scan
+--hosts		- The url of the 'hosts' to scan
 --workspace	- Name of the workspace to load the findings into
 --scan		- Name of the scan to load the findings into
 --remote (-r)	- Comma separated list of host,username,keyfile representing the

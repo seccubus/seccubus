@@ -17,6 +17,7 @@ Seccubus V2 works with the following scanners:
 * Medusa (local and remote)
 * Nikto (local and remote)
 * NMap (local and remote)
+* OWASP-ZAP (local and remote)
 * SSLyze
 * Medusa
 * Burp Suite
@@ -35,4 +36,4 @@ The SSL labs scanner now uses the SSL labs API (see https://github.com/ssllabs/s
 
 Bug Fixes
 =========
-* No additional bugfixes
+* Fixed the bug #200: Error using ZAP remote
