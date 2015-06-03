@@ -37,3 +37,5 @@ The SSL labs scanner now uses the SSL labs API (see https://github.com/ssllabs/s
 Bug Fixes
 =========
 * Fixed the bug #200: Error using ZAP remote
+* Fixed ZAP file handling issue
+* Fixed SSLlabs error exception
