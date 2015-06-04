@@ -38,4 +38,5 @@ Bug Fixes
 =========
 * Fixed the bug #200: Error using ZAP remote
 * Fixed ZAP file handling issue
+* Fixed a new found bug in ivil2zap, more output now in findings
 * Fixed SSLlabs error exception
