@@ -113,10 +113,10 @@ foreach my $item ( @{$zap->{site}->{alerts}->{alertitem}} ) {
 	$finding->{hostname} = $zap->{site}->{name};
 	$finding->{id} = $item->{pluginid};
         $finding->{ip} = $zap->{site}->{host};
-        $finding->{finding} = "Vulnerability: \r\n".$finding->{alert}."\r\n";
-        $finding->{finding} .= "PoC: \r\n".$finding->{uri}."\r\n";
-        $finding->{finding} .= "Vulnerable parameter: \r\n".$finding->{param}."\r\n";
-        $finding->{finding} .= "Used attack vector: \r\n".$finding->{attack}."\r\n";
+        $finding->{finding} = "Vulnerability: \r\n".$item->{alert}."\r\n";
+        $finding->{finding} .= "PoC: \r\n".$item->{uri}."\r\n";
+        $finding->{finding} .= "Vulnerable parameter: \r\n".$item->{param}."\r\n";
+        $finding->{finding} .= "Used attack vector: \r\n".$item->{attack}."\r\n";
 
 	if($item->{riskcode} == 0){
 	   $finding->{severity} = 2;
