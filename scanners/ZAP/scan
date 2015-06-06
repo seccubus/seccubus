@@ -124,7 +124,7 @@ run_cmd($cmd,$verbose);
 
 # Cleanup
 unless( $nodelete ) {
-	unlink "$tempfile" if -e "$tempfilel";
+	unlink "$tempfile" if -e "$tempfile";
 	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
 }
 if ( $remote ) {
