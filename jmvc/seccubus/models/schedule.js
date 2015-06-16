@@ -48,7 +48,7 @@ $.Model('Seccubus.Models.Schedule',
 	//findOne	: "/scans/{id}.json", 
   	create	: "POST json/createSchedule.pl",
 	update	: "POST json/updateSchedule.pl",
-	destroy	: "POST json/deleteSchedule.pl",
+	destroy	: "POST json/deleteSchedule.pl"
   	// Not implemented yet
 	//destroy	: "/scans/{id}.json"
 },
