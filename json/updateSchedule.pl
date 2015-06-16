@@ -13,36 +13,51 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# List the scans
+# Updates the findings passed by ID with the data passed
 # ------------------------------------------------------------------------------
-
-# Fixes Ticket [ 2981907 ] - Online up2date check
 use strict;
-use lib "..";
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
-use SeccubusV2;
-use LWP::Simple;
 use JSON;
-
-#my (
-   #);
+use lib "..";
+use SeccubusV2;
+use SeccubusScanSchedule;
 
 my $query = CGI::new();
 my $json = JSON->new();
-my $data = [];
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
 
-my $verdict = get("http://v2.seccubus.com/up2date.json.pl?version=".$SeccubusV2::VERSION);
-if ( ! $verdict ) {
-	print $json->pretty->encode( [ {
-		'currentVersion' => $SeccubusV2::VERSION,
-		'status'	=> "Error",
-		'message'	=> "Cannot check version online! Online version checks are disabled",
-		'link'		=> "",
-	} ]);
-} else { 
-	print $verdict;
+my $schedule_id = $query->param('scheduleId');
+my $month = $query->param('month');
+my $week = $query->param('week');
+my $day = $query->param('day');
+my $hour = $query->param('hour');
+my $min = $query->param('min');
+
+my $error;
+bye($error) if ($error = check_param("scheduleId", $schedule_id, 1));
+bye($error) if ($error = check_param("month", $month, 0));
+bye($error) if ($error = check_param("week", $week, 0));
+bye($error) if ($error = check_param("day", $day, 0));
+
+
+eval {
+	my @data = ();
+	my ($newid) = update_schedule($schedule_id,$month,$week,$day,$hour,$min);
+	push @data, {
+		id => $schedule_id,
+		month => $month,
+		week => $week,
+		day => $day,
+		hour => $hour,
+		min => $min
+	};
+	print $json->pretty->encode(\@data);
+} or do { bye(join "\n", $@); };
+
+sub bye($) {
+	my $error=shift;
+	print $json->pretty->encode([{ error => $error }]);
+	exit;
 }
-exit;

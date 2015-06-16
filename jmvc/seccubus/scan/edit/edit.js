@@ -19,7 +19,8 @@ steal(	'jquery/controller',
 	'jquery/controller/view',
 	'seccubus/models',
 	'seccubus/scanner/select',
-	'seccubus/notification/table'
+	'seccubus/notification/table',
+	'seccubus/schedule/table'
 	// ,'seccubus/asset/select'
 ).then(	'./views/init.ejs',
 	function($){
@@ -69,6 +70,19 @@ $.Controller('Seccubus.Scan.Edit',
 		/* attribute options.workspace
 		 * workspace id we are currently in
 		 */
+
+		onScheduleEdit : function(not){
+			alert("Seccubus.Scan.Edit: no edit function specified for schedule id: " + not.id );
+		},
+		/* attribute options.onScheduleCreate
+		 * Function that is called when the edit link is click in the 
+		 * Schedule screen
+		 */
+
+		onScheduleCreate : function(ws,sc) {
+			alert("Seccubus.Scan.Create: no create function specified for schedule " + ws + "," + sc);
+		},
+
 		workspace : -1
 	}
 },
@@ -94,6 +108,11 @@ $.Controller('Seccubus.Scan.Edit',
 			scan	: to.options.scan.id,
 			onEdit	: to.options.onNotificationEdit,
 			onCreate : to.options.onNotificationCreate
+		});
+		$('#editScanSchedule').seccubus_schedule_table({
+			scan	: to.options.scan.id,
+			onEdit	: to.options.onScheduleEdit,
+			onCreate : to.options.onScheduleCreate
 		});
 		// Seccubus.Models.Asset2Scan.findAll({
 		// 	scanid:to.options.scan.id,
@@ -206,6 +225,10 @@ $.Controller('Seccubus.Scan.Edit',
 	".createNotification click" : function(el, ev) {
 		ev.preventDefault();
 		this.options.onNotificationCreate(this.options.workspace, this.options.scan.id);
+	},
+	".createSchedule click" : function(el, ev) {
+		ev.preventDefault();
+		this.options.onScheduleCreate(this.options.workspace, this.options.scan.id);
 	},
 	update : function(options) {
 		this._super(options);

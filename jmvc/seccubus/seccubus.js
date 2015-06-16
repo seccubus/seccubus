@@ -41,6 +41,9 @@ steal(
 	'seccubus/notification/table',
 	'seccubus/notification/create',
 	'seccubus/notification/edit',
+	'seccubus/schedule/table',
+	'seccubus/schedule/edit',
+	'seccubus/schedule/create',
 	'seccubus/status/status',
 	'seccubus/asset/table',
 	'seccubus/asset/edit',
@@ -346,7 +349,43 @@ steal(
 									query : '#createNotificationDialog',
 									close : true
 								});
+							},
+							onScheduleEdit : function(not){
+								$("#widgetsModalMask").click();
+								$('#editSchedule').seccubus_schedule_edit({
+									schedule : not,
+									onClear : function(){
+										$("#widgetsModalMask").click();
+										$('#modalDialog').widgets_modal({
+											query : "#editScanDialog",
+											close : true
+										});
+									}
+								});
+								$('#modalDialog').widgets_modal( {
+									query : '#editScheduleDialog',
+									close : true
+								});
+							},
+							onScheduleCreate : function(ws,sc){
+								$("#widgetsModalMask").click();
+								$('#createSchedule').seccubus_schedule_create({
+									workspace : ws,
+									scan	: sc,
+									onClear : function() {
+										$("#widgetsModalMask").click();
+										$('#modalDialog').widgets_modal({
+											query : "#editScanDialog",
+											close : true
+										});
+									}
+								});
+								$('#modalDialog').widgets_modal( {
+									query : '#createScheduleDialog',
+									close : true
+								});
 							}
+
 						});
 						$('#modalDialog').widgets_modal({
 							query : "#editScanDialog",
