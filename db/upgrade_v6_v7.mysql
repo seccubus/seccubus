@@ -17,6 +17,7 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
+
 -- -----------------------------------------------------
 -- Table `scan_schedule`
 -- -----------------------------------------------------
@@ -32,9 +33,13 @@ CREATE TABLE `scan_schedule` (
   `last_run` DATETIME NULL COMMENT 'Last date run',
   PRIMARY KEY (`id`),
   INDEX `scan_id` (`scan_id` ASC),
-  INDEX `daterun` (`week` ASC, `week` ASC, `day` ASC, `hour` ASC, `min` ASC),
+  INDEX `daterun` (`month` ASC, `week` ASC, `day` ASC, `hour` ASC, `min` ASC),
   INDEX `status` (`status` ASC)
 );
+
+
+update config set value=7 where name = 'version';
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

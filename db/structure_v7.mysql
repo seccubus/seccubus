@@ -402,7 +402,7 @@ CREATE TABLE `Seccubus`.`scan_schedule` (
   `last_run` DATETIME NULL COMMENT 'Last date run',
   PRIMARY KEY (`id`),
   INDEX `scan_id` (`scan_id` ASC),
-  INDEX `daterun` (`week` ASC, `week` ASC, `day` ASC, `hour` ASC, `min` ASC),
+  INDEX `daterun` (`month` ASC, `week` ASC, `day` ASC, `hour` ASC, `min` ASC),
   INDEX `status` (`status` ASC)
 );
 
