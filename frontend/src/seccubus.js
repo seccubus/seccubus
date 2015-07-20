@@ -11,6 +11,7 @@ import 'angular-sanitize';
 
 import 'luxyflux/ng-luxyflux';
 
+
 // Helper methods that configure the App module's ui-router with our app routes
 import routes from './config/routes';
 
@@ -21,6 +22,7 @@ import StatusPageComponent from './components/status-page/status-page';
 import RunsPageComponent from './components/runs-page/runs-page';
 import WorkspacesPageComponent from './components/workspaces-page/workspaces-page';
 import ScansPageComponent from './components/scans-page/scans-page';
+import FindingsPageComponent from './components/findings-page/findings-page';
 /* MARKER: insert components import here */
 
 // Application Flux stores
@@ -28,7 +30,8 @@ import StatusStore from './stores/status-store';
 import WorkspaceStore from './stores/workspace-store';
 import RunStore from './stores/run-store';
 import ScanStore from './stores/scan-store';
-import ScannerStore from './stores/scanner-store'
+import ScannerStore from './stores/scanner-store';
+import FindingStore from './stores/finding-store';
 /* MARKER: insert stores import here */
 
 // Application Flux ActionCreators
@@ -37,6 +40,7 @@ import StatusActions from './actions/status-actions';
 import RunActions from './actions/run-actions';
 import WorkspaceActions from './actions/workspace-actions';
 import ScanActions from './actions/scan-actions';
+import FindingActions from './actions/finding-actions';
 /* MARKER: insert actions import here */
 
 // This is the angular module that contains all the defined services
@@ -55,7 +59,6 @@ class Application {
     return [
       'ngMaterial',
       'ngMessages',
-      'ngAnimate',
       'ngAria',
       'ngSanitize',
       resourcesModule.name
@@ -74,7 +77,8 @@ class Application {
       WorkspacesPageComponent,
       StatusPageComponent,
       RunsPageComponent,
-      ScansPageComponent
+      ScansPageComponent,
+      FindingsPageComponent
       /* MARKER: insert components here */
     ];
   }
@@ -85,7 +89,8 @@ class Application {
       RunStore,
       WorkspaceStore,
       ScanStore,
-      ScannerStore
+      ScannerStore,
+      FindingStore
       /* MARKER: insert stores here */
     ];
   }
@@ -96,7 +101,8 @@ class Application {
       StatusActions,
       RunActions,
       WorkspaceActions,
-      ScanActions
+      ScanActions,
+      FindingActions
       /* MARKER: insert actions here */
     ];
   }

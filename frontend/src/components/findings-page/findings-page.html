@@ -1,7 +1,68 @@
 <findings-page layout="column" layout-fill>
-  <md-content>
+  <md-content when-scroll-ends="findingsPage.renderMoreFindings()">
     <section>
       <md-subheader class="md-primary">Findings</md-subheader>
+
+      <div class="filter-selects">
+        <md-select ng-model="findingsPage.selectedScan">
+          <md-select-label>{{findingsPage.selectedScan.name || 'Select a scan...'}}</md-select-label>
+          <md-option
+            ng-repeat="scan in findingsPage.scanStore.items track by scan.id"
+            ng-value="scan"
+          >{{scan.name}}</md-option>
+        </md-select>
+      </div>
+
+      <div ng-if="findingsPage.findingStore.isLoading" layout="row" layout-align="center center">
+        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+      </div>
+
+      <md-whiteframe ng-if="!findingsPage.findingStore.isLoading"
+                     class="md-table table-responsive-vertical md-whiteframe-z3"
+                     layout layout-padding>
+        <table class="table table-hover table-bordered table-condensed">
+            <col><col><col><col><col><col>
+            <thead>
+              <tr>
+                <th>Severity</th>
+                <th>Scan</th>
+                <th>IP</th>
+                <th>Port</th>
+                <th>Host</th>
+                <th>Plugin</th>
+                <th>Finding</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr ng-repeat="finding in findingsPage.renderedFindings track by finding.id"
+                  class="severity-{{finding.severityName.toLowerCase()}}"
+                  ng-class="{collapsed: !expanded[finding.id]}"
+                  ng-click="expanded[finding.id] = !expanded[finding.id]">
+
+                <td data-title="Severity">{{finding.severity}}</td>
+                <td data-title="Scan">{{finding.scanName}}</td>
+                <td data-title="IP">{{finding.host}}</td>
+                <td data-title="Port">{{finding.port}}</td>
+                <td data-title="Host">{{finding.hostName}}</td>
+                <td data-title="Plugin">
+                  <div>{{finding.plugin}}</div>
+                </td>
+                <td data-title="Finding">
+                  <div>{{finding.find}}</div>
+                </td>
+              </tr>
+
+              <tr ng-if="!findingsPage.selectedScan">
+                <td colspan="7">Please select a scan...</td>
+              </tr>
+
+              <tr ng-if="findingsPage.selectedScan && findingsPage.findingStore.isEmpty">
+                <td colspan="7">No findings for the selected scan yet...</td>
+              </tr>
+            </tbody>
+        </table>
+      </md-whiteframe>
     </section>
   </md-content>
 </findings-page>

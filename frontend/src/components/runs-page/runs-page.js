@@ -57,10 +57,6 @@ export class RunsPageComponent {
       scan_id: scan.id
     }));
   }
-
-  get runs() {
-    return this.runStoreStore.items;
-  }
 }
 
 export default RunsPageComponent;

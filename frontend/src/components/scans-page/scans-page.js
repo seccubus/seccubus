@@ -33,10 +33,6 @@ export class ScansPageComponent {
   activate() {
     this.scanActions.loadScans(this.selectedWorkspaceId);
   }
-
-  get scans() {
-    return this.scanStore.items;
-  }
 }
 
 export default ScansPageComponent;

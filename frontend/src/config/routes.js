@@ -16,10 +16,12 @@ export default {
     },
     templateUrl: `${srcPath}seccubus.html`
   },
+
   'seccubus.statusPage': {
     url: '/status',
     templateUrl: `${componentsPath}/status-page/status-page.html`
   },
+
   'seccubus.runsPage': {
     url: '/runs/:scan_id',
     params: {
@@ -29,10 +31,17 @@ export default {
     },
     templateUrl: `${componentsPath}/runs-page/runs-page.html`
   },
+
   'seccubus.findingsPage': {
-    url: '/findings',
+    url: '/findings/:scan_id',
+    params: {
+      scan_id: {
+        value: '~'
+      }
+    },
     templateUrl: `${componentsPath}/findings-page/findings-page.html`
   },
+
   'seccubus.workspacesPage': {
     url: '/workspaces',
     templateUrl: `${componentsPath}/workspaces-page/workspaces-page.html`
@@ -45,6 +54,7 @@ export default {
       }
     }
   },
+
   'seccubus.scansPage': {
     url: '/scans',
     templateUrl: componentsPath + '/scans-page/scans-page.html'

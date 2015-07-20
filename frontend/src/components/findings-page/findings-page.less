@@ -1,3 +1,29 @@
-runs-page {
+findings-page {
+  tr td > div {
+      word-break: break-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
 
+  tr.collapsed td > div {
+    max-height: 40px;
+  }
+
+  tr:focus {
+    outline: 1px dashed #ccc;
+  }
+
+  tr {
+    &.severity-low {
+      background-color: lighten(green, 70%);
+    }
+
+    &.severity-high {
+      background-color: lighten(red, 40%);
+    }
+
+    &.severity-medium {
+      background-color: lighten(yellow, 40%);
+    }
+  }
 }

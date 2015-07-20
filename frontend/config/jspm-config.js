@@ -30,6 +30,7 @@ System.config({
     "core-js": "npm:core-js@0.9.9",
     "luxyflux": "github:schubergphilis/luxyflux@0.3.5",
     "nkoterba/material-design-iconsets": "github:nkoterba/material-design-iconsets@master",
+    "ngInfiniteScroll": "github:sroze/ngInfiniteScroll@1.2.1",
     "github:angular-ui/ui-router@0.2.13": {
       "angular": "github:angular/bower-angular@1.3.15"
     },
@@ -91,6 +92,9 @@ System.config({
     },
     "github:jspm/nodelibs-util@0.1.0": {
       "util": "npm:util@0.10.3"
+    },
+    "github:sroze/ngInfiniteScroll@1.2.1": {
+      "angular": "github:angular/bower-angular@1.3.15"
     },
     "github:systemjs/plugin-css@0.1.10": {
       "clean-css": "npm:clean-css@3.1.9",
@@ -192,4 +196,3 @@ System.config({
     }
   }
 });
-

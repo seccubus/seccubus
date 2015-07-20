@@ -27,9 +27,9 @@ function requestInterceptor(config) {
 function responseInterceptor(response) {
   var config = response.config;
   if (config.method === 'POST') {
-    let data = angular.isString(response.data)
-      ? JSON.parse(response.data)
-      : response.data;
+    let data = angular.isString(response.data) ?
+      JSON.parse(response.data) :
+      response.data;
 
     if (angular.isArray(data)) {
       if (data[0].error) {
@@ -41,9 +41,9 @@ function responseInterceptor(response) {
   }
 
   if (config.transformItem) {
-    let data = angular.isString(response.data)
-      ? JSON.parse(response.data)
-      : response.data;
+    let data = angular.isString(response.data) ?
+      JSON.parse(response.data) :
+      response.data;
 
     if (angular.isArray(data)) {
       data.forEach((item, index) => {
@@ -51,7 +51,7 @@ function responseInterceptor(response) {
       });
       response.data = data;
     } else if (angular.isObject(data)) {
-      response.data = config.transformItem(data)
+      response.data = config.transformItem(data);
     }
   }
 
@@ -68,7 +68,7 @@ function responseInterceptor(response) {
 function serializeData(data) {
   // If this is not an object, defer to native stringification.
   if (!angular.isObject(data)) {
-    return (data == null) ? "" : data.toString();
+    return (data === null) ? '' : data.toString();
   }
 
   var buffer = [];
@@ -81,11 +81,11 @@ function serializeData(data) {
       var value = data[name];
       buffer.push(
         encodeURIComponent(name) +
-        "=" +
-        encodeURIComponent((value == null) ? "" : value)
+        '=' +
+        encodeURIComponent((value === null) ? '' : value)
       );
   }
 
   // Serialize the buffer and clean it up for transportation.
-  return buffer.join("&").replace(/%20/g, "+");
+  return buffer.join('&').replace(/%20/g, '+');
 }
