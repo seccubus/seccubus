@@ -14,12 +14,13 @@
 <% if(typeof(noHead) == "undefined" || noHead == false) { %>
 	<thead>
 		<tr>
-			<th>Month</th>
-			<th>Week</th>
-			<th>Day</th>
-			<th>Hour</th>
-			<th>Minute</th>
-			<th>Status</th>
+			<th width=100>Month</th>
+			<th width=50>Week</th>
+			<th width=100>Week day</th>
+			<th width=50>Day</th>
+			<th width=50>Hour</th>
+			<th width=50>Minute</th>
+			<th width=50>Status</th>
 			<th>Last run</th>
 			<%  //if(typeof(noEdit) == "undefined" || noEdit == false) { %>
 				<th>Action</th>
@@ -30,7 +31,7 @@
 <% } %>
 <% count = 0  %>
 <% if(typeof this[0] != "undefined" && typeof this[0].error != "undefined" ) { %>
-	 <%== $.View('//seccubus/schedule/table/views/error.ejs',{ message : this[0].error, noHead : true }) %>
+	 <%== $.View('//seccubus/schedule/table/views/error.ejs',{ message : this[0].error, noHead : true}) %>
 <% } else { %>
 	<%for ( var i = 0; i < this.length ; i++ ){%>
 		<tr <%= this[i] %> >

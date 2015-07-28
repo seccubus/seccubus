@@ -55,10 +55,24 @@ $.Controller('Seccubus.Schedule.Table',
 	init : function(){
 		this.updateView();
 	},
+
+	// "{Seccubus.Models.Schedule} created" : function(list, el,evt){
+	// 	// var data = el.html();
+	// 	console.log('OK',list, el,evt);
+	// 	return
+	// 	if(data === '*') return;
+	// 	var monthNames = ['January','February','Marth','April','May','June','July','August','September','October','November','December'];
+	// 	data = data.month.split(',').map(function(monId){
+	// 			return monthNames[monId-1];
+	// 		}).join('<BR>');
+	// 	el.html(data);
+	// },
 	/*
 	 * This function renders the control
 	 */
 	updateView : function() {
+		var monthNames = ['','January','February','Marth','April','May','June','July','August','September','October','November','December'];
+		var weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thirsday', 'Friday', 'Saturday', 'Sunday'];
 		if ( this.options.scan  == -1 ) {
 			console.warn("Seccubus.Schedule.Table: scan is not set");
 			this.element.html(
@@ -70,15 +84,50 @@ $.Controller('Seccubus.Schedule.Table',
 				)
 			);
 		} else {
+			var to = this;
 			this.element.html(
 				this.view(
 					'init',
 					Seccubus.Models.Schedule.findAll({
 						scanId		: this.options.scan
+					},function(data){
+						return data.map(function(val){ 
+							val.monthR = {};
+							val.monthT = to.splitJoinData(val.month,'month',val.monthR,monthNames);
+
+							val.weekR = {};
+							val.weekT = to.splitJoinData(val.week,'week',val.weekR);
+							
+							val.wdayR = {};
+							val.wdayT = to.splitJoinData(val.wday,'week day',val.wdayR,weekDays);
+
+							val.dayR = {};
+							val.dayT = to.splitJoinData(val.day,'day',val.dayR);
+
+							val.hourR = {};
+							val.hourT = to.splitJoinData(val.hour,'hour',val.hourR);
+
+							val.minR = {};
+							val.minT = to.splitJoinData(val.min,'minute',val.minR);
+
+							return val;	
+						});
 					})
 				)
 			);
 		}
+	},
+
+	splitJoinData:function(data,paramName,setArr,toChangeArr){
+		if(data === '*'){
+			setArr[data] = true;
+			return 'every '+paramName;
+		}
+		return data.split(',').map(function(val){
+			setArr[val] = true;
+			if(! toChangeArr) return val;
+			return toChangeArr[val];
+		}).join(', ');
 	},
 	".edit click" : function(el,ev) {
 		ev.preventDefault();
@@ -92,13 +141,17 @@ $.Controller('Seccubus.Schedule.Table',
 		}
 	},
 	"{Seccubus.Models.Schedule} destroyed" : function(Schedule, ev, schedule) {
+		// console.log('destroyed:',Schedule, ev, schedule);
 		this.updateView();
 	},
 	"{Seccubus.Models.Schedule} created" : function(Schedule, ev, schedule){
+		// console.log('created:',Schedule, ev, schedule);
 		this.updateView();
 	},
 	"{Seccubus.Models.Schedule} updated" : function(Schedule, ev, schedule){
-		schedule.elements(this.element).html(this.view('schedule', schedule) );
+		// console.log('updated:',Schedule, ev, schedule);
+		// schedule.elements(this.element).html(this.view('schedule', schedule) );
+		this.updateView();
 	},
 	/* 
 	 * Update is overloaded to render the control on each update to the 

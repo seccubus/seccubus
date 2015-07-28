@@ -78,9 +78,23 @@ $.Controller('Seccubus.Schedule.Create',
 			this.element.find('[type=submit]').val('Creating...')
 			params.workspaceId = this.options.workspace;
 			params.scanId = this.options.scan;
+			params.month  = this.setParam(params.month);
+			params.week   = this.setParam(params.week);
+			params.wday   = this.setParam(params.wday);
+			params.day    = this.setParam(params.day);
+			params.hour   = this.setParam(params.hour);
+			params.min    = this.setParam(params.min);
 			new Seccubus.Models.Schedule(params).save(this.callback('saved'));
 		} else {
 			this.nok(elements);
+		}
+	},
+	setParam : function(val){
+		if($.isArray(val)){
+			return val.join(',');
+		} else{
+			if(val == 'on') val = '*';
+			return val;
 		}
 	},
 	nok : function(elements) {
@@ -111,6 +125,20 @@ $.Controller('Seccubus.Schedule.Create',
 	},
 	".nok change" : function(el) {
 		el.removeClass("nok");
+	},
+
+	"select click" :function(el){
+		// console.log(el.attr('name'));
+		if(el.find('option:checked').length > 0){
+			$('input[name='+el.attr('name')+']').removeAttr('checked');
+		} else{
+			$('input[name='+el.attr('name')+']').attr('checked',true);
+		}
+	},
+
+	"input[type=checkbox] click" : function(el){
+		$('select[name='+el.attr('name')+'] option').removeAttr('selected');
+		el.attr('checked',true);
 	},
 	update : function(options) {
 		this._super(options);

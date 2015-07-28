@@ -36,7 +36,7 @@ USE `Seccubus` ;
 -- -----------------------------------------------------
 -- Table `Seccubus`.`workspaces`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`workspaces` (
+CREATE TABLE IF NOT EXISTS `workspaces` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` CHAR(255) NOT NULL,
   UNIQUE INDEX `id` (`id` ASC),
@@ -47,9 +47,9 @@ AUTO_INCREMENT = 4;
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`scans`
+-- Table `scans`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`scans` (
+CREATE TABLE IF NOT EXISTS `scans` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` CHAR(255) NOT NULL,
   `scannername` CHAR(255) NOT NULL,
@@ -63,9 +63,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`scans` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`finding_status`
+-- Table `finding_status`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`finding_status` (
+CREATE TABLE IF NOT EXISTS `finding_status` (
   `id` INT(11) NOT NULL,
   `name` CHAR(20) NOT NULL,
   `description` CHAR(255) NOT NULL,
@@ -74,9 +74,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`finding_status` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`severity`
+-- Table `severity`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`severity` (
+CREATE TABLE IF NOT EXISTS `severity` (
   `id` INT(11) NOT NULL,
   `name` CHAR(20) NOT NULL,
   `description` CHAR(255) NOT NULL,
@@ -85,9 +85,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`severity` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`runs`
+-- Table `runs`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`runs` (
+CREATE TABLE IF NOT EXISTS `runs` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `scan_id` INT(11) NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -97,9 +97,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`runs` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`findings`
+-- Table `findings`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`findings` (
+CREATE TABLE IF NOT EXISTS `findings` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `workspace_id` INT(11) NOT NULL,
   `scan_id` CHAR(20) NOT NULL,
@@ -124,9 +124,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`findings` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`users`
+-- Table `users`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `username` CHAR(255) NULL DEFAULT NULL,
   `name` CHAR(255) NULL DEFAULT NULL,
@@ -137,9 +137,9 @@ AUTO_INCREMENT = 5;
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`finding_changes`
+-- Table `finding_changes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`finding_changes` (
+CREATE TABLE IF NOT EXISTS `finding_changes` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `finding_id` INT(11) NOT NULL,
   `finding` LONGTEXT NULL DEFAULT NULL,
@@ -159,9 +159,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`finding_changes` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`groups`
+-- Table `groups`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`groups` (
+CREATE TABLE IF NOT EXISTS `groups` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` CHAR(255) NOT NULL,
   UNIQUE INDEX `id` (`id` ASC)
@@ -170,9 +170,9 @@ AUTO_INCREMENT = 3;
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`host_names`
+-- Table `host_names`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`host_names` (
+CREATE TABLE IF NOT EXISTS `host_names` (
   `workspace_id` INT(11) NOT NULL,
   `ip` CHAR(16) NOT NULL,
   `name` CHAR(255) NOT NULL,
@@ -182,9 +182,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`host_names` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`issue_status`
+-- Table `issue_status`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`issue_status` (
+CREATE TABLE IF NOT EXISTS `issue_status` (
   `id` INT(11) NOT NULL,
   `name` CHAR(20) NOT NULL,
   `description` CHAR(255) NOT NULL,
@@ -193,9 +193,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`issue_status` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`issues`
+-- Table `issues`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`issues` (
+CREATE TABLE IF NOT EXISTS `issues` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `session_id` INT(11) NOT NULL,
   `name` CHAR(255) NOT NULL,
@@ -210,9 +210,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`issues` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`issues2findings`
+-- Table `issues2findings`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`issues2findings` (
+CREATE TABLE IF NOT EXISTS `issues2findings` (
   `issue_id` INT(11) NOT NULL,
   `finding_id` INT(11) NOT NULL,
   `status` INT(11) NOT NULL,
@@ -223,9 +223,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`issues2findings` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`issue2finding_changes`
+-- Table `issue2finding_changes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`issue2finding_changes` (
+CREATE TABLE IF NOT EXISTS `issue2finding_changes` (
   `issue_id` INT(11) NOT NULL,
   `finding_id` INT(11) NOT NULL,
   `status` INT(11) NOT NULL,
@@ -239,9 +239,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`issue2finding_changes` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`issue_changes`
+-- Table `issue_changes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`issue_changes` (
+CREATE TABLE IF NOT EXISTS `issue_changes` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `issue_id` INT(11) NOT NULL,
   `name` CHAR(255) NOT NULL,
@@ -260,9 +260,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`issue_changes` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`rights`
+-- Table `rights`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`rights` (
+CREATE TABLE IF NOT EXISTS `rights` (
   `workspace_id` INT(11) NOT NULL,
   `group_id` INT(11) NOT NULL,
   `allow_read` INT(1) NOT NULL,
@@ -273,9 +273,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`rights` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`user2group`
+-- Table `user2group`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`user2group` (
+CREATE TABLE IF NOT EXISTS `user2group` (
   `user_id` INT(11) NOT NULL,
   `group_id` INT(11) NOT NULL,
   INDEX `fk_user2group_users` (`user_id` ASC),
@@ -284,9 +284,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`user2group` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`checkpoints`
+-- Table `checkpoints`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`checkpoints` (
+CREATE TABLE IF NOT EXISTS `checkpoints` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `workspace_id` INT(11) NOT NULL,
   `label` VARCHAR(45) NOT NULL,
@@ -298,9 +298,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`checkpoints` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`config`
+-- Table `config`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`config` (
+CREATE TABLE IF NOT EXISTS `config` (
   `name` VARCHAR(45) NOT NULL,
   `value` VARCHAR(255) NULL,
   PRIMARY KEY (`name`)
@@ -308,9 +308,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`config` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`attachments`
+-- Table `attachments`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`attachments` (
+CREATE TABLE IF NOT EXISTS `attachments` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `run_id` INT(11) NOT NULL,
   `name` LONGTEXT NOT NULL,
@@ -322,9 +322,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`attachments` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`events`
+-- Table `events`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`events` (
+CREATE TABLE IF NOT EXISTS `events` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   PRIMARY KEY (`id`)
@@ -332,9 +332,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`events` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`notifications`
+-- Table `notifications`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`notifications` (
+CREATE TABLE IF NOT EXISTS `notifications` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `scan_id` INT(11) NOT NULL,
   `event_id` INT NOT NULL,
@@ -348,9 +348,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`notifications` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`assets`
+-- Table `assets`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`assets` (
+CREATE TABLE IF NOT EXISTS `assets` (
   `id` INT(11) NOT NULL,
   `workspace_id` INT(11) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
@@ -362,9 +362,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`assets` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`asset_hosts`
+-- Table `asset_hosts`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`asset_hosts` (
+CREATE TABLE IF NOT EXISTS `asset_hosts` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `assets_id` INT(11) NOT NULL,
   `ip` VARCHAR(16) NOT NULL,
@@ -375,9 +375,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`asset_hosts` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`asset2scan`
+-- Table `asset2scan`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`asset2scan` (
+CREATE TABLE IF NOT EXISTS `asset2scan` (
   `id` INT(11) NOT NULL,
   `asset_id` INT(11) NOT NULL,
   `scan_id` INT(11) NOT NULL,
@@ -388,23 +388,37 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`asset2scan` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`scan_schedule`
+-- Table `scan_schedule`
 -- -----------------------------------------------------
-CREATE TABLE `Seccubus`.`scan_schedule` (
+CREATE TABLE `scan_schedule` (
   `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Row Id',
   `scan_id` INT(11) NOT NULL DEFAULT 0 COMMENT 'Scan ID',
-  `month` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Month number (1-12). If every month, then * (default)',
-  `week` VARCHAR(1) NOT NULL DEFAULT '*' COMMENT 'Month week number (1-5). If every week, then * (default)',
-  `day` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Month day number (1-31), if every day, then * (default)',
-  `hour` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Hour number (0-23), if every hour, then * (default)',
-  `min` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Minute number (0-59), if every minute, then * (default)',
   `status` INT(1) NOT NULL DEFAULT 0 COMMENT 'Status of schedule: 0 - not runing yet, 1 - running, 2 - complete',
   `last_run` DATETIME NULL COMMENT 'Last date run',
   PRIMARY KEY (`id`),
   INDEX `scan_id` (`scan_id` ASC),
-  INDEX `daterun` (`month` ASC, `week` ASC, `day` ASC, `hour` ASC, `min` ASC),
+  INDEX `last_run` (`last_run` ASC),
   INDEX `status` (`status` ASC)
 );
+
+
+-- -----------------------------------------------------
+-- Table `schedules`
+-- -----------------------------------------------------
+CREATE TABLE `schedules` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Row ID',
+  `schedule_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'Schedule ID',
+  `month` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Month number (1-12). If every month, then * (default)',
+  `week` VARCHAR(1) NOT NULL DEFAULT '*' COMMENT 'Month week number (1-5). If every week, then * (default)',
+  `wday` VARCHAR(1) NOT NULL DEFAULT '*' COMMENT 'Week day number (0-6), if every day, then * (default)',
+  `day` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Month day number (1-31), if every day, then * (default)',
+  `hour` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Hour number (0-23), if every hour, then * (default)',
+  `min` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Minute number (0-59), if every minute, then * (default)',
+  PRIMARY KEY (`id`),
+  INDEX `schedule_id` (`schedule_id` ASC),
+  INDEX `date_run` (`month` ASC, `week` ASC, `wday` ASC, `day` ASC, `hour` ASC, `min` ASC)
+);
+
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

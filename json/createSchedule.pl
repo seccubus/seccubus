@@ -32,25 +32,20 @@ my $workspace_id = $query->param("workspaceId");
 my $scan_id = $query->param("scanId");
 my $month = $query->param("month");
 my $week = $query->param('week');
+my $wday = $query->param('wday');
 my $day = $query->param('day');
 my $hour = $query->param('hour');
 my $min = $query->param('min');
 
-# Return an error if the required parameters were not passed 
-my $error;
-bye($error) if ($error = check_param("workspaceId", $workspace_id, 1));
-bye($error) if ($error = check_param("scanId", $scan_id, 1));
-bye($error) if ($error = check_param("month", $month, 0));
-bye($error) if ($error = check_param("week", $week, 0));
-bye($error) if ($error = check_param("day", $day, 0));
 
 eval {
 	my @data = ();
-	my ($newid) = create_schedule($workspace_id,$scan_id,$month,$week,$day,$hour,$min);
+	my ($newid) = create_schedule($workspace_id,$scan_id,$month,$week,$wday,$day,$hour,$min);
 	push @data, {
 		id => $newid,
 		month => $month,
 		week => $week,
+		wday => $wday,
 		day => $day,
 		hour => $hour,
 		min => $min

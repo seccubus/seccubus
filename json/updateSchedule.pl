@@ -28,27 +28,25 @@ my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
 
-my $schedule_id = $query->param('scheduleId');
+my $schedule_id = $query->param('id');
+bye('no ScheduleId') if(!$schedule_id);
 my $month = $query->param('month');
 my $week = $query->param('week');
+my $wday = $query->param('wday');
 my $day = $query->param('day');
 my $hour = $query->param('hour');
 my $min = $query->param('min');
 
-my $error;
-bye($error) if ($error = check_param("scheduleId", $schedule_id, 1));
-bye($error) if ($error = check_param("month", $month, 0));
-bye($error) if ($error = check_param("week", $week, 0));
-bye($error) if ($error = check_param("day", $day, 0));
 
 
 eval {
 	my @data = ();
-	my ($newid) = update_schedule($schedule_id,$month,$week,$day,$hour,$min);
+	my ($newid) = update_schedule($schedule_id,$month,$week,$wday,$day,$hour,$min);
 	push @data, {
 		id => $schedule_id,
 		month => $month,
 		week => $week,
+		wday => $wday,
 		day => $day,
 		hour => $hour,
 		min => $min

@@ -13,57 +13,73 @@
 <%# limitations under the License.                                           %>
 <h2>Add news Schedule</h2>
 <table class='noborder'>
- 	<tr><td class='noborder'>
-		<label for='subject'>Month</label> 
-	</td><td class='noborder'>
-		<select name='month'>
-			<option value='*'>*</option>
+ 	<tr><td class='noborder' valign='top'>
+		<label for='subject'>Month:</label> 
+	</td><td class='noborder' valign='top'>
+		<select name='month' multiple size=7>
+			<!-- <option value='*' selected>Every month</option> -->
+			<% var monthes = ['January','February','Marth','April','May','June','July','August','September','October','November','December']; %>
 			<% for( var i=1; i<=12; i++){ %>
-				<option value='<%= i %>'><%= i %></option>
+				<option value='<%= i %>'><%= monthes[i-1] %></option>
 			<% } %>
-		</select> (* - every month)
-	</td></tr>
-	<tr><td class='noborder'>
-		<label for='trigger'>Week</label> 
-	</td><td class='noborder'>
-		<select name='week'>
-			<option value='*'>*</option>
-			<% for(var i=1; i<=5; i++){ %>
-				<option value='<%= i %>'><%= i %></option>
-			<% } %>
-		</select> (* - every week)
-	</td></tr>
-	<tr><td class='noborder'>
-		<label for='trigger'>Day</label> 
-	</td><td class='noborder'>
-		<select name='day'>
-			<option value='*'>*</option>
+		</select>
+		<BR><BR><input type=checkbox name='month'  checked> Every month
+	</td>
+	<td class='noborder' valign='top'>
+		<label for='trigger'>Day: </label> 
+	</td><td class='noborder' valign='top'>
+		<select name='day' multiple size=7>
+			<!-- <option value='*' selected>Every day</option> -->
 			<% for(var i=1; i<=31; i++){ %>
 				<option value='<%= i %>'><%= i %></option>
 			<% } %>
-		</select> (* - every day)
-	</td></tr>
-	<tr><td class='noborder'>
-		<label for='trigger'>Hour</label> 
+		</select>
+		<BR><BR><input type=checkbox name='day' checked> Every day
+	</td>
+	<td class='noborder' valign='top'>
+		<label for='trigger'>Week: </label> 
 	</td><td class='noborder'>
-		<select name='hour'>
-			<option value='*'>*</option>
+		<select name='week' multiple size=7>
+			<!-- <option value='*' selected>Every week</option> -->
+			<% for(var i=1; i<=5; i++){ %>
+				<option value='<%= i %>'><%= i %></option>
+			<% } %>
+		</select>
+		<BR><BR><input type=checkbox name='week' checked> Every week
+	</td>
+	<td class='noborder' valign='top'>
+		<label for='trigger'>Week day: </label> 
+	</td><td class='noborder' valign='top'>
+		<select name='wday' multiple size=7>
+			<% var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thirsday', 'Friday', 'Saturday', 'Sunday']; %>
+			<!-- <option value='*' selected>Every week day</option> -->
+			<% for(var i=0; i<=6; i++){ %>
+				<option value='<%= i %>'><%= weekdays[i] %></option>
+			<% } %>
+		</select>
+		<BR><BR><input type=checkbox name='wday' checked> Every week day
+	</td><td class='noborder' valign='top'>
+		<label for='trigger'>Hour</label> 
+	</td><td class='noborder' >
+		<select name='hour' multiple size=7>
+			<!-- <option value='*'  selected>Every hour</option> -->
 			<% for(var i=0; i<=23; i++){ %>
 				<option value='<%= i %>'><%= i %></option>
 			<% } %>
-		</select> (* - every hour)
-	</td></tr>
-	<tr><td class='noborder'>
-		<label for='trigger'>Minute</label> 
+		</select>
+		<BR><BR><input type=checkbox name='hour' checked> Every hour
+	</td>
+	<td class='noborder' valign='top'>
+		<label for='trigger'>Minute: </label> 
 	</td><td class='noborder'>
-		<select name='min'>
-			<option value='*'>*</option>
+		<select name='min' multiple size=7>
+			<!-- <option value='*' selected>*</option> -->
 			<% for(var i=0; i<=59; i++){ %>
 				<option value='<%= i %>'><%= i %></option>
 			<% } %>
-		</select> (* - every minute)
-	</td></tr>
-	<tr><td class='noborder' colspan=2 align='right'>
+		</select>
+		<BR><BR><input type=checkbox name='min' checked> Every minute
+	</td><td class='noborder' colspan=12 align='right' valign='bottom'>
 		<input type='submit' value='Create Schedule'/>
 		<button type='button' class='cancel'>Cancel</button>
 	</td></tr>

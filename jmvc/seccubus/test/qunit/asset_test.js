@@ -82,5 +82,6 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/asset.js", functio
 	            	ok( true ,"Destroy called" )
 					start();
 	            })
-	})
+	});
+	
 })

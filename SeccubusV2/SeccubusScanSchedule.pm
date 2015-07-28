@@ -37,8 +37,8 @@ use strict;
 use Carp;
 
 sub get_schedules($;);
-sub create_schedule($$$$$;$$);
-sub update_schedule($$$$;$$);
+sub create_schedule($$$$$$$$);
+sub update_schedule($$$$$$$);
 sub del_schedule($;);
 
 =head1 Data manipulation - schedules
@@ -73,17 +73,11 @@ sub get_schedules($;){
 			values	=> [ $scan_id ]
 	);
 	return undef if(!$workspace_id || ! may_write($workspace_id) );
-
-	return sql( "return"	=> "ref",
+	my $sch_scans =  sql( "return"	=> "ref",
 		    "query"	=> "
 		    	SELECT 
 					sch.`id`,
 					sch.`scan_id`,
-					sch.`month`,
-					sch.`week`,
-					sch.`day`,
-					sch.`hour`,
-					sch.`min`,
 					sch.`status`,
 					sch.`last_run`
 				FROM 
@@ -95,8 +89,33 @@ sub get_schedules($;){
 					s.id = ?;",
 		    'values' => [$workspace_id, $scan_id]
 	);
+	return [ map {
+			my $data = {};
+			$data->{id} = $_->[0];
+			$data->{scanId} = $_->[1];
+			$data->{status} = $_->[2];
+			$data->{lastRun} = $_->[3];
+			$data->{month} = _getScheduleType('month',$data->{id});
+			$data->{week} = _getScheduleType('week',$data->{id});
+			$data->{wday} = _getScheduleType('wday',$data->{id});
+			$data->{day} = _getScheduleType('day',$data->{id});
+			$data->{hour} = _getScheduleType('hour',$data->{id});
+			$data->{min} = _getScheduleType('min',$data->{id});
+			$data;
+		} @{$sch_scans} ];
 }
 
+
+sub _getScheduleType($$){
+	my ($typeName,$schedule_id) = @_;
+	return  join ',', map { $_->[0]; } @{ sql(
+		"return" => "ref",
+		"query" => "select distinct `$typeName` from `schedules` where schedule_id = ?",
+		'values' => [$schedule_id]
+	) };
+
+
+}
 =head2 create_schedule
 
 Creates a schedule
@@ -147,19 +166,15 @@ Newly inserted id
 
 =cut
 
-sub create_schedule($$$$$;$$){
+sub create_schedule($$$$$$$$){
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_id = shift or die "No scan_id provided";
-	my $month = shift or die "No month provided";
-	die "Month is out of range, must 1-12" if($month ne '*' && ($month < 1 || $month > 12 || $month != int($month)));
-	my $week = shift or die "No week provided";
-	die "Week is out of range, must 1-5" if($week ne '*' && ($week < 1 || $week > 5 || $week != int($week)));
-	my $day = shift or die "No day provided";;
-	die "Day is out of range, must 1-31" if($day ne '*' && ($day < 1 || $day > 31 || $day != int($day)));
-	my $hour = shift;
-	die "Hour is out of range, must 0-23" if($hour ne '*' && ($hour < 0 || $hour > 23 || $hour != int($hour)));
-	my $min = shift;
-	die "Minute is out of range, must 0-59" if($min ne '*' && ($min < 0 || $min > 59 || $min != int($min)));
+	my @months = _checkData('month', 1, 12, shift);
+	my @weeks = _checkData('week', 1, 5, shift);
+	my @wdays = _checkData('wday', 0, 6, shift);
+	my @days = _checkData('day', 1, 31, shift);
+	my @hours = _checkData('hour', 0, 23, shift);
+	my @mins = _checkData('min', 0, 23, shift);
 
 	return undef if(! may_write($workspace_id) );
 	my ($scan_test_id) = sql( 'return' => "array",
@@ -174,13 +189,52 @@ sub create_schedule($$$$$;$$){
 
 	my $id = sql( 'return' => 'id',
 		'query' => 'INSERT INTO `scan_schedule` 
-				(`scan_id`,`month`,`week`,`day`,`hour`,`min`)
-			VALUES (?,?,?,?,?,?)',
-		'values' => [$scan_id,$month,$week,$day,$hour,$min]
+				(`scan_id`)
+			VALUES (?)',
+		'values' => [$scan_id]
 	);
+
+	map {
+		my $month = $_;
+		map {
+			my $week = $_;
+			map {
+				my $wday = $_;
+				map {
+					my $day = $_;
+					map {
+						my $hour = $_;
+						map {
+							my $min = $_;
+							sql('return' => 'id',
+								'query' => "INSERT INTO `schedules` 
+								(`schedule_id`,`month`,`week`,`wday`,`day`,`hour`,`min`)
+								VALUES (?,?,?,?,?,?,?)",
+								'values' => [$id,$month,$week,$wday,$day,$hour, $min]
+								);
+							} @mins;
+						} @hours;
+					} @days;
+				} @wdays;
+			} @weeks;
+		} @months;
 	return $id;
 }
 
+
+
+
+sub _checkData($$$$){
+	my ($parName, $min, $max, $par) = @_;
+	my $defStr = "need to be * or ".$min."-".$max." and/or splitted by ',', eg: 1,5,10";
+	die "No ".$parName." provided [".$par."], ".$defStr if($par eq '');
+	return ($par) if($par eq '*');
+	return map {
+		die $parName." is not int [".$_."], ".$defStr if($_ ne int($_));
+		die $parName." is out of range [".$_."], ".$defStr if($_ < $min || $_ > $max);
+		$_;
+		} split /,/, $par;
+}
 =head2 update_schedule
 
 Updates a Schedule
@@ -229,19 +283,14 @@ updated ID
 
 =cut
 
-sub update_schedule($$$$;$$){
+sub update_schedule($$$$$$$){
 	my $schedule_id = shift or die "No schedule_id provided";
-	my $month = shift or die "No month provided";
-	die "Month is out of range, must 1-12" if($month ne '*' && ($month < 1 || $month > 12 || $month != int($month)));
-	my $week = shift or die "No week provided";
-	die "Week is out of range, must 1-5" if($week ne '*' && ($week < 1 || $week > 5 || $week != int($week)));
-	my $day = shift or die "No day provided";;
-	die "Day is out of range, must 1-31" if($day ne '*' && ($day < 1 || $day > 31 || $day != int($day)));
-	my $hour = shift;
-	die "Hour is out of range, must 0-23" if($hour ne '*' && ($hour < 0 || $hour > 23 || $hour != int($hour)));
-	my $min = shift;
-	die "Minute is out of range, must 0-59" if($min ne '*' && ($min < 0 || $min > 59 || $min != int($min)));
-
+	my @months = _checkData('month',1,12,shift);
+	my @weeks = _checkData('week',1,5,shift);
+	my @wdays = _checkData('weekday',0,6,shift);
+	my @days = _checkData('day',1,31,shift);
+	my @hours = _checkData('hour',0,23,shift);
+	my @mins = _checkData('min',0,59,shift);
 	my ($workspace_id) = sql( 'return' => 'array',
 		'query' => 'SELECT s.workspace_id
 			FROM `scan_schedule` sch, `scans` s
@@ -250,20 +299,36 @@ sub update_schedule($$$$;$$){
 	);
 	return undef if(!$workspace_id || ! may_write($workspace_id) );
 
-	my $id = sql( 'return' => 'id',
-		'query' => "UPDATE `scan_schedule`
-			SET 
-				`month` = ?,
-				`week` = ?,
-				`day` = ?, 
-				`hour` = ?,
-				`min` = ?
-			WHERE id = ?
+	sql('return' => 'id', 
+		'query' => "delete from `schedules` where `schedule_id` = ?", 
+		'values'=>[$schedule_id]
+		);
 
-		",
-		'values' => [$month,$week,$day,$hour,$min,$schedule_id]
-	);
-	return $id;
+	map {
+		my $month = $_;
+		map {
+			my $week = $_;
+			map {
+				my $wday = $_;
+				map {
+					my $day = $_;
+					map {
+						my $hour = $_;
+						map {
+							my $min = $_;
+							sql('return' => 'id',
+								'query' => "INSERT INTO `schedules` 
+								(`schedule_id`,`month`,`week`,`wday`,`day`,`hour`,`min`)
+								VALUES (?,?,?,?,?,?,?)",
+								'values' => [$schedule_id,$month,$week,$wday,$day,$hour, $min]
+								);
+							} @mins;
+						} @hours;
+					} @days;
+				} @wdays;
+			} @weeks;
+		} @months;
+	return $schedule_id;
 }
 
 
@@ -299,6 +364,11 @@ sub del_schedule($;) {
 		'values' => [$schedule_id]
 	);
 	return undef if(!$workspace_id || ! may_write($workspace_id) );
+
+	sql("return" => 'id',
+		"query" => "DELETE FROM `schedules` WHERE schedule_id = ? ",
+		"values" => [$schedule_id]
+	);
 	return sql( "return"	=> "handle",
 			    "query"	=> "DELETE FROM `scan_schedule` WHERE id = ?",
 			    "values"	=> [ $schedule_id ]

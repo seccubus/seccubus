@@ -58,6 +58,9 @@ $.Controller('Seccubus.Schedule.Edit',
 		this.updateView();
 	},
 	updateView : function() {
+		// var monthNames = ['January','February','Marth','April','May','June','July','August','September','October','November','December'];
+		// var weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thirsday', 'Friday', 'Saturday', 'Sunday'];
+		// console.log(this.options.schedule);
 		this.element.html(
 			this.view(
 				'init',
@@ -77,14 +80,29 @@ $.Controller('Seccubus.Schedule.Edit',
 		if ( ok ) {
 			this.element.find('[type=submit]').val('Updating...')
 			schedule = this.options.schedule;
-			schedule.month = params.month;
-			schedule.week = params.week;
-			schedule.day = params.day;
-			schedule.hour = params.hour;
-			schedule.min = params.min;
+			schedule.month  = this.setParam(params.month);
+			schedule.week   = this.setParam(params.week);
+			schedule.wday   = this.setParam(params.wday);
+			schedule.day    = this.setParam(params.day);
+			schedule.hour   = this.setParam(params.hour);
+			schedule.min    = this.setParam(params.min);
+			// schedule.month = params.month;
+			// schedule.week = params.week;
+			// schedule.day = params.day;
+			// schedule.hour = params.hour;
+			// schedule.min = params.min;
 			schedule.save(this.callback('saved'));
 		} else {
 			this.nok(elements);
+		}
+	},
+	setParam : function(val){
+		if($.isArray(val)){
+			return val.join(',');
+		} else{
+			// console.log(val);
+			if(val == 'on') val = '*';
+			return val;
 		}
 	},
 	nok : function(elements) {
@@ -104,6 +122,22 @@ $.Controller('Seccubus.Schedule.Edit',
 	".cancel click" : function() {
 		this.clearAll();
 	},
+
+	"select click" :function(el){
+		// console.log(el.attr('name'));
+		if(el.find('option:checked').length > 0){
+			$('input[name='+el.attr('name')+']').removeAttr('checked');
+		} else{
+			$('input[name='+el.attr('name')+']').attr('checked',true);
+		}
+	},
+
+	"input[type=checkbox] click" : function(el){
+		$('select[name='+el.attr('name')+'] option').removeAttr('selected');
+		el.attr('checked',true);
+	},
+
+
 	saved : function(){
 		this.clearAll();
 	},

@@ -37,20 +37,20 @@ bye($error) if $error = check_param("ScanId", $scan_id, 1);
 
 eval {
 	my $rows = get_schedules($scan_id);
-	my @data = map {
-		{
-			id => $_->[0],
-			scanId	=> $_->[1],
-			month => $_->[2],
-			week => $_->[3],
-			day => $_->[4],
-			hour => $_->[5],
-			min => $_->[6],
-			status => $_->[7],
-			lastRun => $_->[8]
-		};	
-	} @{ $rows } if( $rows->[0] );
-	print $json->pretty->encode(\@data);
+	# my @data = map {
+	# 	{
+	# 		id => $_->[0],
+	# 		scanId	=> $_->[1],
+	# 		month => $_->[2],
+	# 		week => $_->[3],
+	# 		day => $_->[4],
+	# 		hour => $_->[5],
+	# 		min => $_->[6],
+	# 		status => $_->[7],
+	# 		lastRun => $_->[8]
+	# 	};	
+	# } @{ $rows } if( $rows->[0] );
+	print $json->pretty->encode($rows);
 	} or do { bye(join "\n", $@); };
 
 sub bye($){

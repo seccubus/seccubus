@@ -35,12 +35,23 @@ $.Model('Seccubus.Models.Schedule',
 	 * @return {Deferred} A deferred Scans (Scan.List)
 	 */
 	findAll : function(params,success,error){
+		
 		return $.ajax({
 			url	: "json/getSchedules.pl",
 			type	: "POST",
 			dataType: "json schedule.models",
 			data	: params,
-			success	: success,
+			success : success,
+			// success	: function(data){
+			// 	data = data.map(function(val){
+			// 		val.month = val.month.split(',').map(function(monId){
+			// 			return monthNames[monId-1];
+			// 		}).join('<BR>');
+			// 		return val;
+			// 	});
+			// 	if(success) success(data);
+				
+			// },
 			error	: error
 		});
 	},
