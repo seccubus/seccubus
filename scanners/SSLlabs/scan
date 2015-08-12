@@ -62,7 +62,8 @@ $quiet = 0;
 $sleep = 15;
 $verbose = 0;
 $nosslcheck = 0;
-$api = "https://api.dev.ssllabs.com/api/fa78d5a4/";
+#$api = "https://api.dev.ssllabs.com/api/fa78d5a4/";
+$api = "https://api.ssllabs.com/api/v2/";
 $userAgent = "seccubus-ssllabs v0.1";
 $noClearCache = 0;
 
@@ -153,10 +154,25 @@ $client->GET(
 
 die "Unable to contact SSL labs at $api" if ($client->responseCode() != 200);
 $json = decode_json($client->responseContent());
+
+# Verbose 3 or higher is true debug mode
+if ( $verbose > 2 ) {  
+	print "*** QUERY ***\n";
+	print "$api/info\n";
+	print "*** RESPONSE HEADERS *** \n";
+	foreach my $header ( $client->responseHeaders()) {
+		print "$header : " . $client->responseHeader($header) . "\n";
+	}
+	print "*** RESPONSE DATA ***\n";
+	print $client->responseContent();
+}
+
 my $scanner_ver = "v$json->{engineVersion} (criteria version $json->{criteriaVersion})";
 print "Scans will be performed by SSL Labs v$json->{engineVersion} (criteria version $json->{criteriaVersion}) - www.ssllabs.com\n" unless $quiet;
 my $maxScans = $json->{clientMaxAssessments};
 print "Maximum number of concurrent assessments: $maxScans\n" if $verbose;
+my $coolOff = $json->{newAssessmentCoolOff};
+print "Cool off period before starting a new assessment: $coolOff ms\n" if $verbose;
 
 my $active = 9999;
 my $results = {};
@@ -194,6 +210,8 @@ while ( $active ) {
 			if ( ! defined $results->{$host} ) {
 				push @params, "clearCache=on" if $clearCache;
 				print "Starting scan of $host\n" unless $quiet;
+				print "Sleeping for $coolOff ms before scan\n" if $verbose;
+				select(undef, undef, undef, $coolOff/1000);
 			} else {
 				print "Getting status of $host scan\n" if $verbose;
 			}
@@ -444,7 +462,11 @@ foreach my $host ( @hosts ) {
 								} elsif ( $dkey eq "cert" ) {
 									$finding->{id} = "cert";
 									my $txt = "Subject: $det->{subject}\nIssuer: $det->{issuerLabel}\n\nCommon names:\n";
-									$txt .= join "\n", @{$det->{commonNames}};
+									if ( defined $det->{commonNames}) {
+										$txt .= join "\n", @{$det->{commonNames}};
+									} else {
+										$txt .= "undefined";
+									}
 									if ( $det->{altNames} ) {
 										$txt .= "\n\nAlternative names:\n";
 										$txt .= join "\n", @{ $det->{altNames} };
@@ -550,7 +572,7 @@ Usage: scan     --hosts=<hosts file|hosts spec>
 --workspace (-ws) - Seccubus workspace the scan in in
 --scan (-sc)	  - Seccubus scan the data should be saved in
 --api (-a)		  - URL of the ssllabs API, defaults to 
-                    https://api.dev.ssllabs.com/api/fa78d5a4/
+                    https://api.ssllabs.com/api/v2/
 --sleep           - Seconds to sleep between polls of the API 
                     (default=15) Lower then 15 seconds is considered rude
                     and a violation of the terms of usage of the API
