@@ -412,8 +412,8 @@ foreach my $host ( @hosts ) {
 									$finding->{id} = $dkey;
 									$finding->{finding} = "Poodle over TLS - test failed\n" if $det == -1;
 									$finding->{finding} = "Poodle over TLS - status unknown\n" if $det == 0;
-									$finding->{finding} = "Poodle over TLS - vulnerable\n" if $det == 1;
-									$finding->{finding} = "Poodle over TLS - not vulnerable\n" if $det == 2;
+									$finding->{finding} = "Poodle over TLS - not vulnerable\n" if $det == 1;
+									$finding->{finding} = "Poodle over TLS - vulnerable\n" if $det == 2;
 									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "openSslCcs" ) {
 									$finding->{id} = $dkey;
