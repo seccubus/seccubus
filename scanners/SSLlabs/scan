@@ -405,9 +405,9 @@ foreach my $host ( @hosts ) {
 								} elsif ( $dkey eq "sessionTickets" ) {
 									$finding->{id} = $dkey;
 									$finding->{finding} = "";
-									$finding->{finding} .= "Session tickets are supported" if $det and 1;
-									$finding->{finding} .= "Session tickets not implemented correctly" if $det and 2;
-									$finding->{finding} .= "Server is intollerant to session tickets extension" if $det and 4;
+									$finding->{finding} .= "Session tickets are supported" if $det & 1;
+									$finding->{finding} .= "Session tickets not implemented correctly" if $det & 2;
+									$finding->{finding} .= "Server is intollerant to session tickets extension" if $det & 4;
 								} elsif ( $dkey eq "poodleTls" ) {
 									$finding->{id} = $dkey;
 									$finding->{finding} = "Poodle over TLS - test failed\n" if $det == -1;
@@ -446,18 +446,18 @@ foreach my $host ( @hosts ) {
 								} elsif ($dkey eq "forwardSecrecy") {
 									$finding->{id} = "pfs";
 									$finding->{finding} = "";
-									$finding->{finding} .= "PFS is supported with at least one browser\n" if ($det and 1);
-									$finding->{finding} .= "PFS is supported for modern browsers\n" if ($det and 2);
-									$finding->{finding} .= "PFS is supported for all browsers with PFS support\n" if ($det and 4);
+									$finding->{finding} .= "PFS is supported with at least one browser\n" if ($det & 1);
+									$finding->{finding} .= "PFS is supported for modern browsers\n" if ($det & 2);
+									$finding->{finding} .= "PFS is supported for all browsers with PFS support\n" if ($det & 4);
 									$finding->{finding} = "PFS not supported :(" unless $finding->{finding}; 
 									print OUT ivil_finding($finding);
 								} elsif ($dkey eq "renegSupport") {
 									$finding->{id} = "reneg";
 									$finding->{finding} = "";
-									$finding->{finding} .= "Insecure client-initiated renegotiation is supported\n" if ($det and 1);
-									$finding->{finding} .= "Secure renegotiation is supported\n" if ($det and 2);
-									$finding->{finding} .= "Secure client-initiated renegotiation is supported\n" if ($det and 4);
-									$finding->{finding} .= "The server requires secure renegotiation support\n" if ($det and 8);
+									$finding->{finding} .= "Insecure client-initiated renegotiation is supported\n" if ($det & 1);
+									$finding->{finding} .= "Secure renegotiation is supported\n" if ($det & 2);
+									$finding->{finding} .= "Secure client-initiated renegotiation is supported\n" if ($det & 4);
+									$finding->{finding} .= "The server requires secure renegotiation support\n" if ($det & 8);
 									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "cert" ) {
 									$finding->{id} = "cert";
@@ -472,10 +472,10 @@ foreach my $host ( @hosts ) {
 										$txt .= join "\n", @{ $det->{altNames} };
 									}
 									$txt .= "\n\n";
-									$txt .= "CRL info is available\n" if ( $det->{revocationInfo} and 1 );
-									$txt .= "CRL info NOT available\n" unless ( $det->{revocationInfo} and 1 );
-									$txt .= "OCSP info is available\n" if ( $det->{revocationInfo} and 2 );
-									$txt .= "OCSP info NOT available\n" unless ( $det->{revocationInfo} and 2 );
+									$txt .= "CRL info is available\n" if ( $det->{revocationInfo} & 1 );
+									$txt .= "CRL info NOT available\n" unless ( $det->{revocationInfo} & 1 );
+									$txt .= "OCSP info is available\n" if ( $det->{revocationInfo} & 2 );
+									$txt .= "OCSP info NOT available\n" unless ( $det->{revocationInfo} & 2 );
 
 									if ( $det->{sgc} ) {
 										$txt .= "Certificate has CSG support\n";
@@ -499,15 +499,15 @@ foreach my $host ( @hosts ) {
 
 									$finding->{id} = "cert_issues";
 									$txt = "Certificate issues:\n";
-									$txt .= "Certifcate has not valid chain of trust\n" if ( $det->{issues} and 1 );
-									$txt .= "Certifcate validity date not yet reached\n" if ( $det->{issues} and 2 );
-									$txt .= "Certifcate validity date expired\n" if ( $det->{issues} and 4 );
-									$txt .= "Certificate name does not match hostname\n" if ( $det->{issues} and 8 );
-									$txt .= "Certifcate is revoked\n" if ( $det->{issues} and 16 );
-									$txt .= "Certifcate has a bad common name\n" if ( $det->{issues} and 32 );
-									$txt .= "Certifcate is self signed\n" if ( $det->{issues} and 64 );
-									$txt .= "Certifcate is blacklisted\n" if ( $det->{issues} and 128 );
-									$txt .= "Certifcate has insecure signature\n" if ( $det->{issues} and 256 );
+									$txt .= "Certifcate has not valid chain of trust\n" if ( $det->{issues} & 1 );
+									$txt .= "Certifcate validity date not yet reached\n" if ( $det->{issues} & 2 );
+									$txt .= "Certifcate validity date expired\n" if ( $det->{issues} & 4 );
+									$txt .= "Certificate name does not match hostname\n" if ( $det->{issues} & 8 );
+									$txt .= "Certifcate is revoked\n" if ( $det->{issues} & 16 );
+									$txt .= "Certifcate has a bad common name\n" if ( $det->{issues} & 32 );
+									$txt .= "Certifcate is self signed\n" if ( $det->{issues} & 64 );
+									$txt .= "Certifcate is blacklisted\n" if ( $det->{issues} & 128 );
+									$txt .= "Certifcate has insecure signature\n" if ( $det->{issues} & 256 );
 									$finding->{finding} = $txt;
 									print OUT ivil_finding($finding);
 
