@@ -37,3 +37,4 @@ Bug Fixes
 =========
 * #205 - SSLlabs test uses the dev version of the API by default in stead of the prod version
 * #206 - SSLlabs scanner does not honor coolOff period
+* #207 - ssllabs - poodleTLS is incorrecly stating vuln status
