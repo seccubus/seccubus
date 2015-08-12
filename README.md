@@ -35,4 +35,5 @@ The SSL labs scanner now uses the SSL labs API (see https://github.com/ssllabs/s
 
 Bug Fixes
 =========
-* No additional bugfixes
+* #205 - SSLlabs test uses the dev version of the API by default in stead of the prod version
+* #206 - SSLlabs scanner does not honor coolOff period

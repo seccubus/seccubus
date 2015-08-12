@@ -17,8 +17,36 @@ This scanner takes the following parameters:
 <ul>
 	<li>--hosts
 		<br>- The file containing the 'hosts' to scan
-	<li>--showresults
-		<br>- Show's results of the scan in the recent scans on the mainpage of SSLlabs
+	<li>--api (-a)
+		<br>- URL of the ssllabs API, defaults to
+                    https://api.ssllabs.com/api/v2/
+	<li>--sleep
+		<br>- Seconds to sleep between polls of the API (default=15) 
+		Lower then 15 seconds is considered rude and a violation of 
+		the terms of usage of the API
+	<li>--nosslcheck
+		<br>- Do not check the validity of the API SSL certificate
+         this can be used when the PI is e.g. intercepted by
+         a proxy that does not have a recognised SSL certificate
+         or when a outdated operating system is used (NOT RECOMMENDED)
+	<li>--useragent
+		<br>- Use a custom user agent string. Default: seccubus-ssllabs v0.1
+            The default user agent string of REST::Client is appended
+            to this user agent string
+	<li>--no-clear-cache
+		<br>- Do not clear the cache of the SSL labs scan engine
+        Gives results faster but may be less accurate
+	<li>--from-cache
+		<br>- Prefer cached results over fresh results (for very
+	    quick results)
+	<li>--publish
+		<br>- Publish the results of this scan on the SSL labs website
+	<li>--nodelete
+		<br>- Don't erase temporary files
+	<li>--verbose (-v)
+		<br>- Be verbose during execution (repeat to increase verbosity)
+	<li>--quiet (-q)
+		<br>- Don't print output
 </ul>
 You must use --hosts @HOSTS
 <p>
