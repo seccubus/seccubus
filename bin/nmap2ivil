@@ -68,9 +68,9 @@ print "Reading in nmap xml file\n" if $verbose;
 # Ticket #74 - Minor bugs in nmap2ivil when using nmap 5.21
 # https://sourceforge.net/apps/trac/seccubus/ticket/74
 my $nmap = XMLin($infile,
-		   forceArray	=> [ 'host', 'osclass', 'osmatch', 'port', 'extrareasons','hostname' ],
+		   forceArray	=> [ 'host', 'osclass', 'osmatch', 'port', 'extrareasons','hostname','extraports' ],
 		   KeyAttr	=> undef,
-	          );
+);
 
 # Lets clear some memory space
 #$nmap->{Policy} = undef;
@@ -191,10 +191,13 @@ foreach my $host ( @{$nmap->{host}} ) {
 				print OUT ivil_finding($finding) if $finding;
 			} #port
 			$finding->{port} = "other";
-			$finding->{finding} = "All $host->{$item}->{extraports}->{count} other ports are $host->{$item}->{extraports}->{state}\n\n";
-			foreach my $extra ( @{$host->{$item}->{extraports}->{extrareasons}} ) {
-				$finding->{finding} .= "$extra->{reason} : $extra->{count}\n";
-			} #extrareasons
+			$finding->{finding} = "";
+			foreach my $ep ( @{$host->{$item}->{extraports}}) {
+				$finding->{finding} .= "$ep->{count} other ports are $ep->{state}\n\n";
+				foreach my $extra ( @{$ep->{extrareasons}} ) {
+					$finding->{finding} .= "$extra->{reason} : $extra->{count}\n";
+				} #extrareasons
+			} #extraports
 
 		} elsif ( $item eq 'starttime') {
 			$finding = undef;
@@ -249,10 +252,10 @@ Arguments:
 --scan		- Optional: Which Seccubus scan do you want to load this in, 
 		  this informaiton is used to create the addressee block. If 
 		  scan is not specified then the value for workspace is used.
---infile	- This defines the .nbe file that will be converted to IVIL
+--infile	- This defines the .xml file that will be converted to IVIL
 --outfile	- Optional: This defines the name of the file used to output 
 		  IVIL. If no filename is given, the infile value is used, 
-		  a trailing .nbe is removed (if it exists) and .ivil.xml is 
+		  a trailing .xml is removed (if it exists) and .ivil.xml is 
 		  appended
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message
