@@ -20,6 +20,7 @@
 
 use strict;
 use SeccubusV2;
+use SeccubusRuns;
 use SeccubusIVIL;
 use IVIL;
 
@@ -549,6 +550,10 @@ close OUT;
 
 # Load the results
 my ( $workspace_id, $scan_id, $run) = load_ivil("$tempfile.ivil.xml", "Qualys SSL labs", $scanner_ver, $timestamp );
+print "Attaching file '$tempfile.json' to scan '$scan'\n" if $verbose;
+update_run($workspace_id, $scan_id, $timestamp, "$tempfile.json", "Raw JSON results");
+print "Attaching file '$tempfile.ivil.xml' to scan '$scan'\n" if $verbose;
+update_run($workspace_id, $scan_id, $timestamp, "$tempfile.ivil.xml", "IVIL file");
 
 unless ( $nodelete ) {
 	unlink "$tempfile.json";

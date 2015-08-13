@@ -31,7 +31,7 @@ Release notes
 
 24-02-2015 - 2.14 - SSL labs API
 ================================
-The SSL labs scanner now uses the SSL labs API (see https://github.com/ssllabs/ssllabs-scan/blob/master/ssllabs-api-docs.md) to check the SSL configuration of your website in stead of scraping the site.
+* #211 - Host filter now splits on / as well as . 
 
 Bug Fixes
 =========
@@ -39,3 +39,5 @@ Bug Fixes
 * #206 - SSLlabs scanner does not honor coolOff period
 * #207 - ssllabs - poodleTLS is incorrecly stating vuln status
 * #208 - SSLlabs script uses wrong bitwise and operator :(
+* #209 - SSLlabs scanner does not attach results bug
+* #210 - SSLlabs scanner did not call process results bug
