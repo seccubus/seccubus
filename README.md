@@ -29,12 +29,16 @@ For more information visit [www.seccubus.com]
 Release notes
 =============
 
-24-02-2015 - 2.14 - SSL labs API
-================================
+13-08-2015 - 2.15 - Summer time bug fixes
+=========================================
+Using the quiet(er) time after summer to get some bug fixes in.
+
+Enhancements
+------------
 * #211 - Host filter now splits on / as well as . 
 
 Bug Fixes
-=========
+---------
 * #197 - Error loading nmap results
 * #212 - Extraports not handled correctly when parsing nmap.xml
 * #202 - SSLLabs scan results filtering per Asset broken
