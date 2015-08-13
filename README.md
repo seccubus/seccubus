@@ -39,4 +39,4 @@ Enhancements
 
 Bug Fixes
 ---------
-* #
+* #213 - .spec file still references v4 data structures instead of v6
