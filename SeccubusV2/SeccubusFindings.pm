@@ -130,7 +130,7 @@ sub get_findings($;$$$) {
 			WHERE
 				findings.workspace_id = ? AND
 				assets.workspace_id = findings.workspace_id AND
-				asset_hosts.asset_id = assets.id and (asset_hosts.ip = findings.`host` or asset_hosts.`host` = findings.`host`)
+				asset_hosts.asset_id = assets.id and (asset_hosts.ip = findings.`host` or asset_hosts.`host` = findings.`host` or findings.`host` LIKE CONCAT('%/',asset_hosts.ip))
 				";
 			$query .= "AND assets.id = ?";
 			push @$params, $asset_id;
