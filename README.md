@@ -29,23 +29,14 @@ For more information visit [www.seccubus.com]
 Release notes
 =============
 
-13-08-2015 - 2.15 - Summer time bug fixes
+13-08-2015 - 2.16 - 
 =========================================
-Using the quiet(er) time after summer to get some bug fixes in.
+...
 
 Enhancements
 ------------
-* #211 - Host filter now splits on / as well as . 
+* #
 
 Bug Fixes
 ---------
-* #197 - Error loading nmap results
-* #212 - Extraports not handled correctly when parsing nmap.xml
-* #202 - SSLLabs scan results filtering per Asset broken
-* #205 - SSLlabs test uses the dev version of the API by default in stead of the prod version
-* #206 - SSLlabs scanner does not honor coolOff period
-* #207 - ssllabs - poodleTLS is incorrecly stating vuln status
-* #208 - SSLlabs script uses wrong bitwise and operator :(
-* #209 - SSLlabs scanner does not attach results bug
-* #210 - SSLlabs scanner did not call process results bug
-* #212 - Extraports not handled correctly when parsing nmap.xml
+* #
