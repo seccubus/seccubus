@@ -73,6 +73,9 @@ Seccubus expects certain files to be in /opt/seccubus so we want to create this 
 	cd /opt
 	sudo ln -s ~USERNAME/Repositories/Seccubus_v2/ seccubus
 
+Yosemite specific
+-----------------
+
 In Yosemite you need to tweak the apache config
     
     vi /etc/apache/httpd.conf
@@ -92,10 +95,6 @@ Edit httpd-userdir.conf
 Uncomment the flowwing line:
 
      #Include /private/etc/apache2/users/*.conf
-
-Enabled the cgi modue
-
-	sudo a2enmod cgi
 
 Restart apache
 
