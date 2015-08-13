@@ -365,6 +365,15 @@ sub get_filters($$$;$) {
 		# Generate wildcard values
 		foreach my $host ( keys %{$filters{"host"}} ) {
 			$filters{"host"}{"*"} += $filters{"host"}{$host};
+			# Split on slashes first
+			my @subs = split(/\//, $host);
+			my $addr = "";
+			while ( 1 < @subs ) {
+				$addr .= shift @subs;
+				$addr .= "/";
+				$filters{"host"}{"$addr*"} += $filters{"host"}{$host};
+			}
+			# Then on dots
 			my @subs = split(/\./, $host);
 			my $addr = "";
 			while ( 1 < @subs ) {
