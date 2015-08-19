@@ -59,6 +59,7 @@ steal(
 			workspace	: -1
 		});
 		gui_state.bind("workspace", function(ev, ws){
+			console.log("workspace changed");
 			render_scan_selectors();
 			render_asset_selectors();
 			render_scan_table();
@@ -71,36 +72,51 @@ steal(
 			render_bulkedit();
 		});
 		gui_state.bind("scans", function(ev, scan){
+			console.log("scan changed");
 			render_findings();
 			render_runs();
 		});
 		gui_state.bind("assets", function(ev, asset){
+			console.log("Assets changed");
 			render_findings();
 		});
 		gui_state.bind("findStatus", function(ev, scan){
+			console.log("Status changed");
 			render_findings();
 			render_bulkedit();
 		});
 		gui_state.bind("host", function(ev, scan){
+			console.log("host changed");
 			render_findings();
 		});
 		gui_state.bind("hostName", function(ev, scan){
+			console.log("hostname changed");
 			render_findings();
 		});
 		gui_state.bind("port", function(ev, scan){
+			console.log("port changed");
 			render_findings();
 		});
 		gui_state.bind("plugin", function(ev, scan){
+			console.log("port changed")
 			render_findings();
 		});
 		gui_state.bind("severity", function(ev, scan){
+			console.log("severity changed")
 			render_findings();
 		});
 		gui_state.bind("finding", function(ev, scan){
+			console.log("finding changed")
 			render_findings();
 		});
 		gui_state.bind("remark", function(ev, scan){
+			console.log("remark changed")
 			render_findings();
+		});
+		gui_state.bind("bulkedit", function(ev, scan) {
+			console.log("bulkedit changed to " + gui_state.bulkedit);
+			render_findings();
+			render_bulkedit();
 		});
 
 		/***********************************************************
@@ -110,8 +126,10 @@ steal(
 		Seccubus.Models.Finding.bind(
 			"updated",
 			function(ev,model) {
-				render_status();
-				render_filters();
+				if ( ! model.bulk ) {
+					render_status();
+					render_filters();			
+				}
 			}
 		);
 
@@ -378,6 +396,7 @@ steal(
 				severity	: gui_state.severity,
 				finding		: gui_state.finding,
 				remark		: gui_state.remark,
+				bulkedit    : gui_state.bulkedit,
 				onEdit		: function(find) {
 					var findings = $(".finding").models();
 					var n = 0;
@@ -489,6 +508,7 @@ steal(
 				severity	: gui_state.severity,
 				finding		: gui_state.finding,
 				remark		: gui_state.remark,
+				bulkedit 	: gui_state.bulkedit,
 				onChange	: function(f) {
 					for(var a in f) {
 						gui_state.attr(a,f[a]);
@@ -516,7 +536,11 @@ steal(
 		function render_bulkedit() {
 			$('#finding_bulkedit').seccubus_finding_bulkedit({
 				workspace	: gui_state.workspace,
-				status		: gui_state.findStatus
+				status		: gui_state.findStatus,
+				onBulkEdit  : function() {
+					gui_state.bulkedit = true;
+					console.log("Bulkedit set to true");
+				}
 			});
 		};
 

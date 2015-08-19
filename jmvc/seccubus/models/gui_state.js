@@ -95,7 +95,12 @@ $.Model('Seccubus.GuiState',
 	 * - default value: *
 	 * - special value: * - Don't filter on remark
 	 */
-		remark		: "*"
+		remark		: "*",
+	/* @attribute bulkedit
+	 * Is a bulk edit operation currently in progress?
+	 * default value: false
+	 */
+	    bulkedit    : false
 	}
 },
 /* @Prototype */
@@ -137,6 +142,7 @@ $.Model('Seccubus.GuiState',
 			this.attr("finding","*");
 			this.attr("remark","*");
 			this.attr("assets","*");
+			this.attr("bulkedit",false);
 		}
 		return(ws);
 	}
