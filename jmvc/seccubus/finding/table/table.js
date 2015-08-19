@@ -91,11 +91,6 @@ $.Controller('Seccubus.Finding.Table',
 		 * The current remark filter
 		 */
 		remark		: "*",
-		/*
-		 * @attribute options.bulkedit
-		 * Is a builk edit in progress
-		 */
-		bulkedit	: false,
 		/**
 		 * @attribute options.orderBy
 		 * By what attribute the table is sorted by
@@ -182,16 +177,6 @@ $.Controller('Seccubus.Finding.Table',
 					orderBy		: this.options.orderBy,
 					descending	: this.options.descending,
 					message 	: "Please select one or more scans or assets",
-					checked		: this.options.checked
-				})
-			);
-		} else if ( this.options.bulkedit ) {
-			this.element.html(
-				this.view('error',{
-					columns		: this.options.columns,
-					orderBy		: this.options.orderBy,
-					descending	: this.options.descending,
-					message 	: "A bulk edit is in progress",
 					checked		: this.options.checked
 				})
 			);
@@ -324,12 +309,14 @@ $.Controller('Seccubus.Finding.Table',
 	},
 	// Handle update events by redrawing the view
 	"{Seccubus.Models.Finding} updated" : function(Finding, ev, finding) {
-		if(find.status == this.options.status) {
+		if(finding.status == this.options.status) {
 			finding.elements(this.element).html(
 				this.view('finding',finding)
 			);
 		} else {
-			this.updateView();
+			if ( ! finding.bulk ) {
+				this.updateView();
+			}
 		}
 	},
 	// Handle destroy events
@@ -401,7 +388,6 @@ $.Controller('Seccubus.Finding.Table',
 	 */
 	update : function(options){
 		this._super(options);
-		console.log(options);
 		this.updateView();
 	}
 }) // Controller

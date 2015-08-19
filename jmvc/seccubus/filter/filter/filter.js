@@ -92,11 +92,6 @@ $.Controller('Seccubus.Filter.Filter',
 		 */
 		remark		: "",		
 		/*
-		 * @attribute options.bulkedit
-		 * Is a bulk edit in progress
-		 */
-		bulkedit	: false,
-		/*
 		 * @attribute options.onChange
 		 * Function to be executed when the filter changes
 		 */
@@ -124,7 +119,6 @@ $.Controller('Seccubus.Filter.Filter',
 		this.options.severity = "*";
 		this.options.finding = "";
 		this.options.remark = "";
-		this.options.bulkedit = false;
 		this.options.onChange({
 			host		: this.options.host,
 			hostName	: this.options.hostName,
@@ -132,8 +126,7 @@ $.Controller('Seccubus.Filter.Filter',
 			plugin		: this.options.plugin,
 			severity	: this.options.severity,
 			finding		: this.options.finding,
-			remark		: this.options.remark,
-			bulkedit	: this.options.bulkedit
+			remark		: this.options.remark
 		});
 		if ( this.options.updateOnChange ) {
 			this.updateView();
@@ -148,8 +141,7 @@ $.Controller('Seccubus.Filter.Filter',
 			plugin		: this.options.plugin,
 			severity	: this.options.severity,
 			finding		: this.options.finding,
-			remark		: this.options.remark,
-			bulkedit	: this.options.bulkedit
+			remark		: this.options.remark
 		});
 		if ( this.options.updateOnChange ) {
 			this.updateView();
@@ -161,10 +153,6 @@ $.Controller('Seccubus.Filter.Filter',
 				this.view('error', {sStatus : this.options.status})
 			);
 		} else if ( this.options.scans == null && this.options.assets == null ) {
-			this.element.html(
-				this.view('error', {sStatus : this.options.status})
-			);
-		} else if ( this.options.bulkedit ) {
 			this.element.html(
 				this.view('error', {sStatus : this.options.status})
 			);
@@ -204,7 +192,9 @@ $.Controller('Seccubus.Filter.Filter',
 		this.updateView();
 	},
 	"{Seccubus.Models.Finding} updated" : function(Finding, ev, finding) {
-		this.updateView();
+		if ( ! finding.bulk ) {
+			this.updateView();
+		}
 	},
 	"{Seccubus.Models.Finding} destroyed" : function(Finding, ev, finding) {
 		this.updateView();

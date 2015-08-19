@@ -113,11 +113,6 @@ steal(
 			console.log("remark changed")
 			render_findings();
 		});
-		gui_state.bind("bulkedit", function(ev, scan) {
-			console.log("bulkedit changed to " + gui_state.bulkedit);
-			render_findings();
-			render_bulkedit();
-		});
 
 		/***********************************************************
 		 * Hook into findings model to update findings view that
@@ -396,7 +391,6 @@ steal(
 				severity	: gui_state.severity,
 				finding		: gui_state.finding,
 				remark		: gui_state.remark,
-				bulkedit    : gui_state.bulkedit,
 				onEdit		: function(find) {
 					var findings = $(".finding").models();
 					var n = 0;
@@ -508,7 +502,6 @@ steal(
 				severity	: gui_state.severity,
 				finding		: gui_state.finding,
 				remark		: gui_state.remark,
-				bulkedit 	: gui_state.bulkedit,
 				onChange	: function(f) {
 					for(var a in f) {
 						gui_state.attr(a,f[a]);
@@ -537,10 +530,7 @@ steal(
 			$('#finding_bulkedit').seccubus_finding_bulkedit({
 				workspace	: gui_state.workspace,
 				status		: gui_state.findStatus,
-				onBulkEdit  : function() {
-					gui_state.bulkedit = true;
-					console.log("Bulkedit set to true");
-				}
+				onDone		: render_findings
 			});
 		};
 

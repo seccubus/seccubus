@@ -51,9 +51,10 @@ $.Controller('Seccubus.Finding.Bulkedit',
 		 */
 		workspace : -1,
 		/* 
-		 * @attribute: options.onBulkEdit
+		 * @attribute: options.onDone
+		 * function to ber called when bulk editing is done
 		 */
-		onBulkEdit : function () { }
+		onDone : function () { }
 	}
 },
 /** @Prototype */
@@ -87,11 +88,10 @@ $.Controller('Seccubus.Finding.Bulkedit',
 	 * object of class selectFinding and updates them via the model
 	 */
 	bulkUpdate : function() {
-		this.options.onBulkEdit();
 		var findings = $(".selectFinding[checked=checked]").closest(".finding").models();
 		var params = this.element.formParams();
+		// Set bulk to true to signal other components that this is a bul update
 		for(i = 0;i < findings.length;i++) {
-			console.log("set bulk");
 			findings[i].bulk = true
 		}
 		params.workspaceId = this.options.workspace;
@@ -103,7 +103,10 @@ $.Controller('Seccubus.Finding.Bulkedit',
 	saved : function() {
 		this.element.find('[type=submit]').val('Update');
 		this.element[0].reset();
+		// Update our view
 		this.updateView();
+		// Do our callback
+		this.options.onDone();
 	},
 	/*
 	 * This function updates the view
