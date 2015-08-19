@@ -309,12 +309,14 @@ $.Controller('Seccubus.Finding.Table',
 	},
 	// Handle update events by redrawing the view
 	"{Seccubus.Models.Finding} updated" : function(Finding, ev, finding) {
-		if(find.status == this.options.status) {
+		if(finding.status == this.options.status) {
 			finding.elements(this.element).html(
 				this.view('finding',finding)
 			);
 		} else {
-			this.updateView();
+			if ( ! finding.bulk ) {
+				this.updateView();
+			}
 		}
 	},
 	// Handle destroy events

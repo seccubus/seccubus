@@ -90,7 +90,7 @@ $.Controller('Seccubus.Filter.Filter',
 		 * @attribute options.remark
 		 * Value of the remark filter
 		 */
-		remark		: "",
+		remark		: "",		
 		/*
 		 * @attribute options.onChange
 		 * Function to be executed when the filter changes
@@ -172,7 +172,6 @@ $.Controller('Seccubus.Filter.Filter',
 						Severity	: this.options.severity,
 						Finding		: this.options.finding,
 						Remark		: this.options.remark
-						
 					}), 
 					{
 						fScans : this.options.scans,
@@ -193,7 +192,9 @@ $.Controller('Seccubus.Filter.Filter',
 		this.updateView();
 	},
 	"{Seccubus.Models.Finding} updated" : function(Finding, ev, finding) {
-		this.updateView();
+		if ( ! finding.bulk ) {
+			this.updateView();
+		}
 	},
 	"{Seccubus.Models.Finding} destroyed" : function(Finding, ev, finding) {
 		this.updateView();
