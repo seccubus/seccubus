@@ -21,6 +21,7 @@
 use strict;
 use SeccubusV2;
 use SeccubusRuns;
+use SeccubusFindings;
 use SeccubusIVIL;
 use IVIL;
 
@@ -361,7 +362,7 @@ foreach my $host ( @hosts ) {
 							$epkey eq "eta" || $epkey eq "ipAddress" || $epkey eq "progress" ||
 							$epkey eq "statusMessage" || $epkey eq "statusDetailsMessage" || $epkey eq "statusDetails" ) {
 							# Ignore
-						} elsif ( $epkey eq "grade" || $epkey eq "serverName" || $epkey eq "npnProtocols" ) {
+						} elsif ( $epkey eq "grade" || $epkey eq "serverName" || $epkey eq "npnProtocols" || $epkey eq "gradeTrustIgnored" ) {
 							# Simpel dump values
 							$finding->{finding} = "$epkey - $ep->{$epkey}";
 							print OUT ivil_finding($finding);
@@ -379,10 +380,13 @@ foreach my $host ( @hosts ) {
 							# Iterate over keys
 							foreach my $dkey ( sort keys %{$ep->{$epkey}} ) {
 								my $det = $ep->{$epkey}->{$dkey};
-								if ( $dkey eq "chain" || $dkey eq "compressionMethods" || $dkey =~ /Time$/ || $dkey =~ /refixDelegation$/ || $dkey eq "sims" 
-									|| $dkey eq "suites"  || $dkey eq "statusDetails" ) {
+								if ( $dkey eq "chain" || $dkey eq "compressionMethods" || $dkey =~ /Time$/ 
+									|| $dkey =~ /refixDelegation$/ || $dkey eq "sims" || $dkey eq "suites"  || $dkey eq "statusDetails" 
+								) {
 									# Ignore
-								} elsif ( $dkey eq "compression" || $dkey eq "heartbeat" || $dkey eq "ocspStapling" || $dkey eq "sniRequired" || $dkey eq "supportsNpn") {
+								} elsif ( $dkey eq "compression" || $dkey eq "heartbeat" || $dkey eq "ocspStapling" 
+									|| $dkey eq "sniRequired" || $dkey eq "supportsNpn" || $dkey eq "fallbackScsv" 
+									|| $dkey eq "stsSubdomains") {
 									# Is supported type findings
 									$finding->{id} = $dkey;
 									if ( $det ) {
@@ -391,18 +395,27 @@ foreach my $host ( @hosts ) {
 										$finding->{finding} = "$dkey is supported";
 									}
 									print OUT ivil_finding($finding);
-								} elsif ( $dkey eq "heartbleed"  || $dkey eq "rc4WithModern" || $dkey eq "supportsRc4" || $dkey eq "vulnBeast" ) {
+								} elsif ( $dkey eq "heartbleed"  || $dkey eq "rc4WithModern" || $dkey eq "supportsRc4" 
+									|| $dkey eq "vulnBeast"  || $dkey eq "freak" || $dkey eq "logjam" || $dkey eq "poodle" ) {
 									# Is vulnerable type findings
 									if ( $det ) {
 										$finding->{id} = $dkey;
 										$finding->{finding} = "Server is vulnerable for $dkey";
 										print OUT ivil_finding($finding);
 									}
-								} elsif ( $dkey eq "httpStatusCode" || $dkey eq "serverSignature"  || $dkey eq "npnProtocols") {
+								} elsif ( $dkey eq "httpStatusCode" || $dkey eq "serverSignature"  || $dkey eq "npnProtocols" 
+									|| $dkey eq "httpForwarding" || $dkey eq "stsResponseHeader" || $dkey eq "stsMaxAge" ) {
 									# Dump type
 									$finding->{id} = $dkey;
 									$finding->{finding} = "$dkey - $det";
 									print OUT ivil_finding($finding);
+								} elsif ( $dkey eq "hasSct" ) {
+									$finding->{id} = $dkey;
+									$finding->{finding} = "";
+									$finding->{finding} .= "SCT is provided in the certificate" if $det & 1;
+									$finding->{finding} .= "SCT is provided in stapled OCSP response" if $det & 2;
+									$finding->{finding} .= "SCT is provided in TLS extension (ServerHello)" if $det & 4;
+									$finding->{finding} .= "\n\nSee http://www.certificate-transparency.org/ for more info";
 								} elsif ( $dkey eq "sessionTickets" ) {
 									$finding->{id} = $dkey;
 									$finding->{finding} = "";
@@ -473,10 +486,6 @@ foreach my $host ( @hosts ) {
 										$txt .= join "\n", @{ $det->{altNames} };
 									}
 									$txt .= "\n\n";
-									$txt .= "CRL info is available\n" if ( $det->{revocationInfo} & 1 );
-									$txt .= "CRL info NOT available\n" unless ( $det->{revocationInfo} & 1 );
-									$txt .= "OCSP info is available\n" if ( $det->{revocationInfo} & 2 );
-									$txt .= "OCSP info NOT available\n" unless ( $det->{revocationInfo} & 2 );
 
 									if ( $det->{sgc} ) {
 										$txt .= "Certificate has CSG support\n";
@@ -484,33 +493,52 @@ foreach my $host ( @hosts ) {
 										$txt .= "Certificate has NO CSG support\n";
 									}
 
+									$finding->{finding} = $txt;
+									print OUT ivil_finding($finding);
+
+									$finding->{id} = "EV";
 									if ( $det->{valdiationType} eq "E" ) {
-										$txt .= "Extended validation\n";
+										$txt = "Yes";
+									} else {
+										$txt = "No";
 									}
+
 									$finding->{finding} = $txt;
 									print OUT ivil_finding($finding);
 
 									$finding->{id} = "revocation";
-									$txt = "Revocation status not checked\n" if $det->{revocationStatus} = 0;
-									$txt = "Certificate revoked\n" if $det->{revocationStatus} = 1;
-									$txt = "Certificate not revoked\n" if $det->{revocationStatus} = 2;
-									$txt = "Revocation check error\n" if $det->{revocationStatus} = 3;
+									$txt = "RevocationInfo: $det->{revocationInfo}\n";
+									$txt .= "CRL info is available\n" if ( $det->{revocationInfo} & 1 );
+									$txt .= "CRL info NOT available\n" unless ( $det->{revocationInfo} & 1 );
+									$txt .= "OCSP info is available\n" if ( $det->{revocationInfo} & 2 );
+									$txt .= "OCSP info NOT available\n" unless ( $det->{revocationInfo} & 2 );
+									$txt .= "\nRevocationStatus: $det->{revocationStatus}\n";
+									$txt .= "Revocation status not checked\n" if $det->{revocationStatus} == 0;
+									$txt .= "Certificate revoked\n" if $det->{revocationStatus} == 1;
+									$txt .= "Certificate not revoked\n" if $det->{revocationStatus} == 2;
+									$txt .= "Revocation check error\n" if $det->{revocationStatus} == 3;
+									$txt .= "No revocation info available\n" if $det->{revocationStatus} == 4;
+									$txt .= "Internal SSL labs error\n" if $det->{revocationStatus} == 5;
 									$finding->{finding} = $txt;
+
 									print OUT ivil_finding($finding);
 
-									$finding->{id} = "cert_issues";
-									$txt = "Certificate issues:\n";
-									$txt .= "Certifcate has not valid chain of trust\n" if ( $det->{issues} & 1 );
-									$txt .= "Certifcate validity date not yet reached\n" if ( $det->{issues} & 2 );
-									$txt .= "Certifcate validity date expired\n" if ( $det->{issues} & 4 );
-									$txt .= "Certificate name does not match hostname\n" if ( $det->{issues} & 8 );
-									$txt .= "Certifcate is revoked\n" if ( $det->{issues} & 16 );
-									$txt .= "Certifcate has a bad common name\n" if ( $det->{issues} & 32 );
-									$txt .= "Certifcate is self signed\n" if ( $det->{issues} & 64 );
-									$txt .= "Certifcate is blacklisted\n" if ( $det->{issues} & 128 );
-									$txt .= "Certifcate has insecure signature\n" if ( $det->{issues} & 256 );
-									$finding->{finding} = $txt;
-									print OUT ivil_finding($finding);
+									# If we have issues
+									if ( $det->{issues} ) {
+										$finding->{id} = "cert_issues";
+										$txt = "Certificate issues:\n";
+										$txt .= "Certifcate has not valid chain of trust\n" if ( $det->{issues} & 1 );
+										$txt .= "Certifcate validity date not yet reached\n" if ( $det->{issues} & 2 );
+										$txt .= "Certifcate validity date expired\n" if ( $det->{issues} & 4 );
+										$txt .= "Certificate name does not match hostname\n" if ( $det->{issues} & 8 );
+										$txt .= "Certifcate is revoked\n" if ( $det->{issues} & 16 );
+										$txt .= "Certifcate has a bad common name\n" if ( $det->{issues} & 32 );
+										$txt .= "Certifcate is self signed\n" if ( $det->{issues} & 64 );
+										$txt .= "Certifcate is blacklisted\n" if ( $det->{issues} & 128 );
+										$txt .= "Certifcate has insecure signature\n" if ( $det->{issues} & 256 );
+										$finding->{finding} = $txt;
+										print OUT ivil_finding($finding);
+									}
 
 								} else {
 									# Treat anything we don't know as dump type
@@ -549,7 +577,11 @@ close OUT;
 #die Dumper($results);
 
 # Load the results
-my ( $workspace_id, $scan_id, $run) = load_ivil("$tempfile.ivil.xml", "Qualys SSL labs", $scanner_ver, $timestamp );
+my ( $workspace_id, $scan_id, $run_id) = load_ivil("$tempfile.ivil.xml", "Qualys SSL labs", $scanner_ver, $timestamp );
+# Process the results
+process_status($workspace_id, $scan_id, $run_id, $verbose);
+
+# Attach files
 print "Attaching file '$tempfile.json' to scan '$scan'\n" if $verbose;
 update_run($workspace_id, $scan_id, $timestamp, "$tempfile.json", "Raw JSON results");
 print "Attaching file '$tempfile.ivil.xml' to scan '$scan'\n" if $verbose;
