@@ -26,6 +26,7 @@ use SeccubusRights;
 use SeccubusUsers;
 use Algorithm::Diff qw( diff );
 use JSON;
+use Data::Dumper;
 
 @ISA = ('Exporter');
 
@@ -959,8 +960,8 @@ sub process_status($$$;$) {
 		      "values"	=> [ $workspace_id, $scan_id, $run_id ],
 		    );
 
-	foreach my $id ( @{$ref} ) {
-		$id = $$id[0]; # Get the id from the arrayref;
+	foreach my $row ( @{$ref} ) {
+		my $id = $$row[0]; # Get the id from the arrayref;
 		print "Set finding $id to status GONE\n" if $verbose;
 		update_finding(
 			"workspace_id"	=> $workspace_id,
@@ -972,6 +973,7 @@ sub process_status($$$;$) {
 	# Find the ids that need to be set to NEW, basically these are the 
 	# findings that currently have the status GONE (5) or CLOSED (6) but 
 	# are associated with the current run (as provided by the user)
+	# If a finding is created for the first time, it gets the status NEW by default
 	$ref = sql( "return"	=> "ref",    
 		    "query"	=> "SELECT	id
 		      		    FROM	findings
@@ -992,49 +994,55 @@ sub process_status($$$;$) {
 	}
 
 	# Find out if there has been a previous run
-	my $previous_run = sql( return	=> "array",
-				query	=> "SELECT	MAX(id) 
-					    FROM	runs
-					    WHERE	scan_id = ? AND
-					    		id <> ?",
-				values	=> [ $scan_id, $run_id ] 
-			      );
+	my $previous_run = sql( 
+		return	=> "array",
+		query	=> "SELECT	MAX(id) 
+				    FROM	runs
+				    WHERE	scan_id = ? AND
+				    		id <> ?",
+		values	=> [ $scan_id, $run_id ] 
+    );
 	print "Previous run is: $previous_run\n" if $verbose;
 	if ( $previous_run ) {		# No need to check for changes if this
-					# is the first run
+								# is the first run
 
 		# Find the ids that need to be tested for changes. basically 
 		# these are the findings with status OPEN(3), or NO ISSUE (4) 
 		# associated with the current run
-		$ref = sql( "return"	=> "ref",    
-			    "query"	=> "SELECT	id
-			      		    FROM	findings
+		$ref = sql( 
+			"return"	=> "ref",    
+			"query"	=> "SELECT	id
+			   		    FROM	findings
 					    WHERE 	workspace_id = ? AND
 					    		scan_id = ? AND
-							( status = 3 OR status = 4 ) AND
-							run_id = ?",
-			      "values"	=> [ $workspace_id, $scan_id, $run_id ],
-			    );
-		foreach my $id ( @{$ref} ) {
-			$id = $$id[0]; # Get the id from the arrayref;
+								( status = 3 OR status = 4 ) AND
+								run_id = ?",
+			"values"	=> [ $workspace_id, $scan_id, $run_id ],
+		);
+		foreach my $row ( @{$ref} ) {
+			my $id = $$row[0]; # Get the id from the arrayref;
 			print "Checking finding $id for changes\n" if $verbose;
 			# Get differences in diff format
 			my @diff = diff_finding("diff", $workspace_id, $id, $run_id, $previous_run); 
-			# update the finding to changed if there is a diff
-			if ( @diff[0] eq "NEW" ) {
-				# Handle a erronious situation
-				print "Finding wasn't present in previous run, while it should have been, resetting to NEW\n" if $verbose;
-				update_finding (
-					"workspace_id"  => $workspace_id,
-					"finding_id"    => $id,
-					"status"        => 1,
-				);
-			} elsif ( @diff ) {
-				update_finding (
-					"workspace_id"  => $workspace_id,
-					"finding_id"    => $id,
-					"status"        => 2,
-				);
+			if ( @diff ) {
+				print "Changes found\n" if $verbose;
+				print join "\n", @diff if $verbose > 1;
+				# update the finding to changed if there is a diff
+				if ( @diff[0] eq "NEW" ) {
+					# Handle a erronious situation
+					print "Finding wasn't present in previous run, while it should have been, resetting to NEW\n" if $verbose;
+					update_finding (
+						"workspace_id"  => $workspace_id,
+						"finding_id"    => $id,
+						"status"        => 1,
+					);
+				} elsif ( @diff ) {
+					update_finding (
+						"workspace_id"  => $workspace_id,
+						"finding_id"    => $id,
+						"status"        => 2,
+					);
+				}
 			}
 		}
 	}
@@ -1094,38 +1102,51 @@ sub diff_finding($$$$$;) {
 				    values	=> [ $finding_id, $workspace_id ],
 				  );
 		die "There is no finding '$finding_id' in workspace '$workspace_id'" unless @findings;
-		my @current = sql( return	=> "array",
-				   query	=> "SELECT finding
-				   		    FROM finding_changes
-						    WHERE finding_id = ?
-						    AND run_id = ?
-						    ORDER BY time 
-						    LIMIT 1",
-				   values	=> [ $finding_id, $this_run ],
-				 );
+		my @current = sql( 
+			return	=> "array",
+			query	=> "SELECT finding
+			   		    FROM finding_changes
+					    WHERE finding_id = ?
+					    AND run_id = ?
+					    ORDER BY time DESC
+					    LIMIT 1",
+			values	=> [ $finding_id, $this_run ],
+		);
 		my @prev = sql( return	=> "array",
 				query	=> "SELECT finding
 				   	    FROM finding_changes
 					    WHERE finding_id = ?
 					    AND run_id = ?
-					    ORDER BY time 
+					    ORDER BY time DESC
 					    LIMIT 1",
 				   values	=> [ $finding_id, $prev_run ],
 				 );
 		die "Unable to load current finding, ws: $workspace_id, id: $finding_id, run: $this_run" unless ( @current );
 		if ( @prev ) {
-			@current = split(/\n/, $current[0]);
-			@prev = split(/\n/, $prev[0]);
-			my @diff = diff(\@prev, \@current);
-	
-			if ( $type eq "diff" ) {
-				return @diff;
-			} elsif ( $type eq "txt" ) {
-				return join "\n", @diff;
-			} elsif ( $type eq "html" ) {
-				return join "<br>\n", @diff;
-			} else {
-				die "Unknown return type '$type'";
+			if ( $current[0] ne $prev[0] ) {
+				# There is a difference
+
+				@current = split(/\n/, $current[0]);
+				@prev = split(/\n/, $prev[0]);
+				my $diff = diff(\@prev, \@current);
+				my @diff;
+				foreach my $line ( @{$$diff[0]} ) {
+					push @diff, join " ", @$line;
+				}
+
+				if ( $type eq "diff" ) {
+					return @diff;
+				} elsif ( $type eq "txt" ) {
+					return join "\n", @diff;
+				} elsif ( $type eq "html" ) {
+					return join "<br>\n", @diff;
+				} else {
+					die "Unknown return type '$type'";
+				}
+			} else{
+				# No difference return empty array
+
+				return;
 			}
 		} else {
 			# There is no previous run, this should technically not
