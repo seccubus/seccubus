@@ -161,7 +161,7 @@ if ( exists $ENV{REMOTE_ADDR} ) {
 			bye($data);
 		}
 	} else {
-		result($data, "HTTP authentication", "Authetication is not set up on your HTTP server, emulating user 'admin'", 'OK');
+		result($data, "HTTP authentication", "Authentication is not set up on your HTTP server, emulating user 'admin'", 'OK');
 	}
 }
 
