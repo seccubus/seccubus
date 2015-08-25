@@ -46,7 +46,7 @@ CREATE TABLE `schedules` (
   `min` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Minute number (0-59), if every minute, then * (default)',
   PRIMARY KEY (`id`),
   INDEX `schedule_id` (`schedule_id` ASC),
-  INDEX `date_run` (`hour` ASC, `week` ASC, `day` ASC, `hour` ASC, `min` ASC)
+  INDEX `date_run` (`month` ASC, `week` ASC, `wday` ASC, `day` ASC, `hour` ASC, `min` ASC)
 );
 
 
