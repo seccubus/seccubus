@@ -31,8 +31,6 @@ steal(
 	'seccubus/run/table',
 	'seccubus/filter/filter',
 	'seccubus/finding/table',
-	//'seccubus/finding/status',
-	//'seccubus/finding/filter',
 	'seccubus/finding/bulkedit',
 	'seccubus/finding/edit',
 	'seccubus/history/table',
