@@ -416,12 +416,14 @@ foreach my $host ( @hosts ) {
 									$finding->{finding} .= "SCT is provided in stapled OCSP response" if $det & 2;
 									$finding->{finding} .= "SCT is provided in TLS extension (ServerHello)" if $det & 4;
 									$finding->{finding} .= "\n\nSee http://www.certificate-transparency.org/ for more info";
+									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "sessionTickets" ) {
 									$finding->{id} = $dkey;
 									$finding->{finding} = "";
 									$finding->{finding} .= "Session tickets are supported" if $det & 1;
 									$finding->{finding} .= "Session tickets not implemented correctly" if $det & 2;
 									$finding->{finding} .= "Server is intollerant to session tickets extension" if $det & 4;
+									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "poodleTls" ) {
 									$finding->{id} = $dkey;
 									$finding->{finding} = "Poodle over TLS - test failed\n" if $det == -1;
