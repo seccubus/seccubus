@@ -155,9 +155,9 @@ if ( exists $ENV{REMOTE_ADDR} ) {
 					    values	=> [ $ENV{REMOTE_USER} ],
 			   );
 		if ( $user[0] eq $ENV{REMOTE_USER} ) {
-			result($data, "HTTP authentication", "Authetication is set up on your HTTP server, and user '$ENV{REMOTE_USER}' exists in the database", 'OK');
+			result($data, "HTTP authentication", "Authentication is set up on your HTTP server, and user '$ENV{REMOTE_USER}' exists in the database", 'OK');
 		} else {
-			result($data, "HTTP authentication", "Authetication is set up on your HTTP server, but '$ENV{REMOTE_USER}' does not exist in the database, run the bin/add_user util", 'Error');
+			result($data, "HTTP authentication", "Authentication is set up on your HTTP server, but '$ENV{REMOTE_USER}' does not exist in the database, run the bin/add_user util", 'Error');
 			bye($data);
 		}
 	} else {
