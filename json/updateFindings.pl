@@ -27,7 +27,7 @@ use SeccubusFindings;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
 my $workspace_id = $query->param("attrs[workspaceId]");
 my @ids = $query->param("ids[]");

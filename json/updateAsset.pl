@@ -26,7 +26,7 @@ use SeccubusAssets;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
 my $asset_id = $query->param('id');
 my $workspace_id = $query->param("workspace");

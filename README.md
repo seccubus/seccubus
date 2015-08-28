@@ -38,6 +38,7 @@ Enhancements
 * #223 - Make the Bulk Update feature much faster in the GUI
 * #228 - SSL Labs: Warn if MaxAge is below the recommended 180 days
 * #214 - NMap, include port status in port number
+* #185 - GNU Terry Pratchett
 
 Bug Fixes
 ---------
