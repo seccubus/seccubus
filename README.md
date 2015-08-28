@@ -36,6 +36,7 @@ Release notes
 Enhancements
 ------------
 * #223 - Make the Bulk Update feature much faster in the GUI
+* #228 - SSL Labs: Warn if MaxAge is below the recommended 180 days
 
 Bug Fixes
 ---------

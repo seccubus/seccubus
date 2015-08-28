@@ -404,10 +404,16 @@ foreach my $host ( @hosts ) {
 										print OUT ivil_finding($finding);
 									}
 								} elsif ( $dkey eq "httpStatusCode" || $dkey eq "serverSignature"  || $dkey eq "npnProtocols" 
-									|| $dkey eq "httpForwarding" || $dkey eq "stsResponseHeader" || $dkey eq "stsMaxAge" ) {
+									|| $dkey eq "httpForwarding" || $dkey eq "stsResponseHeader" ) {
 									# Dump type
 									$finding->{id} = $dkey;
 									$finding->{finding} = "$dkey - $det";
+									print OUT ivil_finding($finding);
+								} elsif ( $dkey eq "stsMaxAge" ) {
+									# Dump type
+									$finding->{id} = $dkey;
+									$finding->{finding} = "HSTS Maximum age: $det seconds\n";
+									$finding->{finding} .= "WARNING: This is below the recommended length of 180 days\n" if $det < 1555200;
 									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "hasSct" ) {
 									$finding->{id} = $dkey;
