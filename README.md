@@ -35,8 +35,9 @@ Release notes
 
 Enhancements
 ------------
-* #
+* #223 - Make the Bulk Update feature much faster in the GUI
 
 Bug Fixes
 ---------
 * #213 - .spec file still references v4 data structures instead of v6
+* #222 - SSL Labs: hasSct and sessionTickets findings not saved in IVIL file
