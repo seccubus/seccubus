@@ -76,7 +76,6 @@ $.Controller('Seccubus.Finding.Bulkedit',
 	},
 	// Handles clicks on the save button
 	".bulkSetStatus click" : function(el, ev) {
-		console.log('Click' + el);
 		ev.preventDefault();
 		$(el).val("Saving...");
 		var newStatus = $(el).attr("newStatus");
