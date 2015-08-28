@@ -310,7 +310,6 @@ $.Controller('Seccubus.Finding.Table',
 	// Handle update events by redrawing the view
 	"{Seccubus.Models.Finding} updated" : function(Finding, ev, finding) {
 		if(Number(finding.status) == Number(this.options.status)) {
-			console.log(finding.status + " == " + this.options.status);
 			finding.elements(this.element).html(
 				this.view('finding',
 					finding,
