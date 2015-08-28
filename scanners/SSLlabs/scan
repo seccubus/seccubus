@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk, Alex Smirnoff
+# Copyright 2015 Frank Breedijk, Alex Smirnoff, gtencate, blabla1337
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -70,18 +70,18 @@ $userAgent = "seccubus-ssllabs v0.1";
 $noClearCache = 0;
 
 GetOptions(	
-	    'hosts|h=s'			=> \$hosts,
-	    'workspace|ws=s'	=> \$workspace,
-	    'scan|sc=s'			=> \$scan,
+	    'hosts|h=s'				=> \$hosts,
+	    'workspace|ws=s'			=> \$workspace,
+	    'scan|sc=s'				=> \$scan,
 		'api|a=s'			=> \$api,
 		'sleep|s=s'			=> \$sleep,
-		'nosslcheck!'		=> \$nosslcheck,
-		'useragent=s'		=> \$userAgent,
-		'no-clear-cache!'	=> \$noClearCache,
-		'from-cache!'		=> \$fromCache,
+		'nosslcheck!'			=> \$nosslcheck,
+		'useragent=s'			=> \$userAgent,
+		'no-clear-cache!'		=> \$noClearCache,
+		'from-cache!'			=> \$fromCache,
 		'nodelete!'			=> \$nodelete,
 		'publish'			=> \$publish,
-		'verbose|v+'		=> \$verbose,
+		'verbose|v+'			=> \$verbose,
 		'quiet|q!'			=> \$quiet,
 		'help'				=> \$help,
 	  );
@@ -322,10 +322,10 @@ foreach my $host ( @hosts ) {
 	}
 
 	# Handle errors first
-	if ( $scan->{status} eq "ERROR" ) {
+    if ( $scan->{status} eq "ERROR" || $scan->{status} eq "Assessment failed" ) {
 		$finding->{ip} = $host;
 		$finding->{hostname} = $host;
-		$finding->{id} = "ERROR";
+		$finding->{id} = "ERROR/Assessment failed";
 		$finding->{finding} = $scan->{statusMessage};
 		$finding->{severity} = 0;
 		print OUT ivil_finding($finding);
