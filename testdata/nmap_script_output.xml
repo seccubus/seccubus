@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+     Copyright 2015 Frank Breedijk
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<?xml-stylesheet href="file:///usr/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 6.00 scan initiated Mon Mar  2 10:44:47 2015 as: /usr/bin/nmap -iL /tmp/seccubus.hosts.13130 -oA /tmp/seccubus.13132 -&#45;script ssl-enum-ciphers -p 443 -->
+<nmaprun scanner="nmap" args="/usr/bin/nmap -iL /tmp/seccubus.hosts.13130 -oA /tmp/seccubus.13132 -&#45;script ssl-enum-ciphers -p 443" start="1425311087" startstr="Mon Mar  2 10:44:47 2015" version="6.00" xmloutputversion="1.04">
+<scaninfo type="syn" protocol="tcp" numservices="1" services="443"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<host starttime="1425311087" endtime="1425311183"><status state="up" reason="reset"/>
+<address addr="x.x.x.x" addrtype="ipv4"/>
+<hostnames>
+<hostname name="x.x.x" type="user"/>
+<hostname name="x.x.x" type="PTR"/>
+</hostnames>
+<ports><port protocol="tcp" portid="443"><state state="open" reason="syn-ack" reason_ttl="115"/><service name="https" method="table" conf="3"/><script id="ssl-enum-ciphers" output="&#xa;  TLSv1.0&#xa;    Ciphers (5)&#xa;      TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA - strong&#xa;      TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA - unknown strength&#xa;      TLS_RSA_WITH_3DES_EDE_CBC_SHA - strong&#xa;      TLS_RSA_WITH_AES_128_CBC_SHA - strong&#xa;      TLS_RSA_WITH_AES_256_CBC_SHA - unknown strength&#xa;    Compressors (1)&#xa;      NULL&#xa;  TLSv1.1&#xa;    Ciphers (5)&#xa;      TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA - strong&#xa;      TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA - unknown strength&#xa;      TLS_RSA_WITH_3DES_EDE_CBC_SHA - strong&#xa;      TLS_RSA_WITH_AES_128_CBC_SHA - strong&#xa;      TLS_RSA_WITH_AES_256_CBC_SHA - unknown strength&#xa;    Compressors (1)&#xa;      NULL&#xa;  Least strength = unknown strength&#xa;"/></port>
+</ports>
+<times srtt="7746" rttvar="15938" to="100000"/>
+</host>
+<runstats><finished time="1425311183" timestr="Mon Mar  2 10:46:23 2015" elapsed="95.91" summary="Nmap done at Mon Mar  2 10:46:23 2015; 1 IP address (1 host up) scanned in 95.91 seconds" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>

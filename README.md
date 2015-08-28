@@ -31,7 +31,7 @@ Release notes
 
 13-08-2015 - 2.16 - 
 =========================================
-...
+This version fixes an issue where the output of NMap scripts (NSE) was completly ignored
 
 Enhancements
 ------------
@@ -40,5 +40,6 @@ Enhancements
 
 Bug Fixes
 ---------
+* #180 - NMAP script output ignored
 * #213 - .spec file still references v4 data structures instead of v6
 * #222 - SSL Labs: hasSct and sessionTickets findings not saved in IVIL file
