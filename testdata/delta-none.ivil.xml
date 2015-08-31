@@ -1,0 +1,7 @@
+<?xml version="1.0" standalone='yes'?>
+<IVIL version="0.2">
+	<sender>
+		<scanner_type>Nikto</scanner_type>
+		<timestamp>200001010000</timestamp>
+	</sender>
+</IVIL>
