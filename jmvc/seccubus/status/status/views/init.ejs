@@ -12,7 +12,7 @@
 <%# See the License for the specific language governing permissions and      %>
 <%# limitations under the License.                                           %>
 <% if(typeof this[0] != "undefined" && typeof this[0].error != "undefined") { %>
-	<%== $.View('//seccubus/finding/status/views/error.ejs',{ message : this[0].error, sStatus : sStatus }) %>
+	<%== $.View('//seccubus/status/status/views/error.ejs',{ message : this[0].error, sStatus : sStatus }) %>
 <% } else { %>
 	<% for ( var i = 0; i < this.length ; i++ ) { %>
 		<button value='<%= this[i].id %>' 

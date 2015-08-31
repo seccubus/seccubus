@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk
+# Copyright 2014 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,34 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# List the scans
+# This little script checks all files te see if they are perl files and if so 
 # ------------------------------------------------------------------------------
 
 use strict;
-use CGI;
-use CGI::Carp qw(fatalsToBrowser);
-use JSON;
-use Data::Dumper;
-use lib "..";
-use SeccubusV2;
-use SeccubusUsers;
+use Test::More tests => 1;
 
-my $query = CGI::new();
-my $json = JSON->new();
-
-print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
-
-eval {
-	my %data;
-	($data{username}, $data{valid}, $data{isadmin}, $data{message}) = get_login(); 
-
-	print $json->pretty->encode(\%data);
-} or do {
-	bye(join "\n", $@);
-};
-
-sub bye($) {
-	my $error=shift;
-	print $json->pretty->encode([{ error => $error }]);
-	exit;
-}
+print `perl -MSeccubusV2 bin/nmap2ivil --scanner nmap --timestamp 200001010000 --infile testdata/nmap_script_output.xml --outfile ./tmp.ivil.xml`;
+my $ivil = `cat ./tmp.ivil.xml`;
+like($ivil,qr/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA/,"Nmap script output is in ivil output");
+unlink "./tmp.ivil.xml";

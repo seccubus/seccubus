@@ -25,6 +25,8 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+![Travis build status](https://travis-ci.org/schubergphilis/Seccubus_v2.svg?branch=master)
+
 ---
 
 Release notes
@@ -32,18 +34,23 @@ Release notes
 
 13-08-2015 - 2.16 - 
 =========================================
-...
+This version fixes an issue where the output of NMap scripts (NSE) was completly ignored
 
 Enhancements
 ------------
 * #223 - Make the Bulk Update feature much faster in the GUI
 * #228 - SSL Labs: Warn if MaxAge is below the recommended 180 days
+* #214 - NMap, include port status in port number
+* #185 - GNU Terry Pratchett
 
 Bug Fixes
 ---------
+* #180 - NMAP script output ignored
 * #213 - .spec file still references v4 data structures instead of v6
 * #222 - SSL Labs: hasSct and sessionTickets findings not saved in IVIL file
 * #200: Error using ZAP remote
 * Fixed ZAP file handling issue
 * Fixed a new found bug in ivil2zap, more output now in findings
 * Fixed SSLlabs error exception
+* #224 - Bulk Update controller not updated after update of remark only
+* #236 - Database upgrades inconsistent

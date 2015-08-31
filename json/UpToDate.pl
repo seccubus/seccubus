@@ -32,7 +32,7 @@ my $query = CGI::new();
 my $json = JSON->new();
 my $data = [];
 
-print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
 my $verdict = get("http://v2.seccubus.com/up2date.json.pl?version=$SeccubusV2::VERSION");
 if ( ! $verdict ) {
