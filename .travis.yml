@@ -2,3 +2,8 @@ language: perl
 perl:
   - "5.20"
   - "5.10"
+services:
+  - mysql
+before_script:
+  - mysql -e "create database seccubus_create"
+  - mysql -e "create database seccubus_upgrade"
