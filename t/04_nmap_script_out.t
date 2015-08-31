@@ -19,7 +19,7 @@
 use strict;
 use Test::More tests => 1;
 
-print `perl -MSeccubusV2 bin/nmap2ivil --scanner nmap --timestamp 200001010000 --infile testdata/nmap_script_output.xml --outfile ./tmp.ivil.xml`;
+print `perl -MSeccubusV2 -I SeccubusV2 bin/nmap2ivil --scanner nmap --timestamp 200001010000 --infile testdata/nmap_script_output.xml --outfile ./tmp.ivil.xml`;
 my $ivil = `cat ./tmp.ivil.xml`;
 like($ivil,qr/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA/,"Nmap script output is in ivil output");
 unlink "./tmp.ivil.xml";
