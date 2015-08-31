@@ -10,6 +10,8 @@ tmp/
 
 # Config
 etc/config.xml
+etc/config.dev.xml
+etc/config.issues.xml
 
 # Temporary files used for building
 errors.txt
