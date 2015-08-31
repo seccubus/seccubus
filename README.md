@@ -47,3 +47,4 @@ Bug Fixes
 * #213 - .spec file still references v4 data structures instead of v6
 * #222 - SSL Labs: hasSct and sessionTickets findings not saved in IVIL file
 * #224 - Bulk Update controller not updated after update of remark only
+* #236 - Database upgrades inconsistent
