@@ -17,6 +17,7 @@ Seccubus V2 works with the following scanners:
 * Medusa (local and remote)
 * Nikto (local and remote)
 * NMap (local and remote)
+* OWASP-ZAP (local and remote)
 * SSLyze
 * Medusa
 * Burp Suite
@@ -47,5 +48,9 @@ Bug Fixes
 * #180 - NMAP script output ignored
 * #213 - .spec file still references v4 data structures instead of v6
 * #222 - SSL Labs: hasSct and sessionTickets findings not saved in IVIL file
+* #200: Error using ZAP remote
+* Fixed ZAP file handling issue
+* Fixed a new found bug in ivil2zap, more output now in findings
+* Fixed SSLlabs error exception
 * #224 - Bulk Update controller not updated after update of remark only
 * #236 - Database upgrades inconsistent
