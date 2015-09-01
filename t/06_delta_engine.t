@@ -40,11 +40,11 @@ if (`hostname` =~ /^sbpd/) {
 	`mysql -uroot seccubus < db/structure_v$db_version.mysql`;
 	`mysql -uroot seccubus < db/data_v$db_version.mysql`;
 
-	`cp etc/config.xml.mysql/example etc/config.xml`
+	`cp etc/config.xml.mysql/example etc/config.xml`;
 
 	my $json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/ConfigTest.pl`);
 	foreach my $t ( @$json ) {
-		ok($t->{result} eq "OK", $t->{name});
+		ok($t->{result} eq "OK", "$t->{name} ($t->{result}) eq OK?");
 		$tests++;
 	}
 	
