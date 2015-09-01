@@ -7,5 +7,4 @@ services:
 before_script:
   - mysql -e "create database seccubus_create"
   - mysql -e "create database seccubus_upgrade"
-  - mysql -e "create database seccubus_issues"
-  - cpanm install DBI DBD::mysql
+  - mysql -e "create database seccubus"
