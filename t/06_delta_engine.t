@@ -38,7 +38,12 @@ if (`hostname` =~ /^sbpd/) {
 	`mysql -uroot seccubus_issues < db/structure_v$db_version.mysql`;
 	`mysql -uroot seccubus_issues < db/data_v$db_version.mysql`;
 
-	`cp testdata/config_issues.xml etc/config.xml`;
+	if ( -e "/opt/seccubus.config.xml" ) {
+		`cp testdata/config_issues.xml /opt/seccubus/config.xml`;
+	} else {
+		`cp testdata/config_issues.xml etc/config.xml`;
+
+	}
 
 	my $json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/ConfigTest.pl`);
 	foreach my $t ( @$json ) {
