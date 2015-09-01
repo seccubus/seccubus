@@ -41,6 +41,7 @@ Enhancements
 * #223 - Make the Bulk Update feature much faster in the GUI
 * #228 - SSL Labs: Warn if MaxAge is below the recommended 180 days
 * #226 - Create Travis Unit tests for DB upgrade
+* #241 - Unit tests for delta engine
 * #214 - NMap, include port status in port number
 * #185 - GNU Terry Pratchett
 

@@ -17,15 +17,16 @@
 # ------------------------------------------------------------------------------
 
 use strict;
-use Test::More tests => 60;
 use Algorithm::Diff qw( diff );
 use JSON;
 use Data::Dumper;
 my $tests = 0;
 
 if (`hostname` =~ /^sbpd/) {
+	use Test::More tests => 1;
 	ok("Skipping these tests on the final build system");
 } else {
+	use Test::More tests => 60;
 	my $db_version = 0;
 	foreach my $data_file (<db/data_v*.mysql>) {
 		$data_file =~ /^db\/data_v(\d+)\.mysql$/;
