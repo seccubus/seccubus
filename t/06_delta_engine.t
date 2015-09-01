@@ -40,15 +40,15 @@ if (`hostname` =~ /^sbpd/) {
 
 	`cp testdata/config_issues.xml etc/config.xml`;
 
-	my $json = decodeit(`perl -I SeccubusV2 json/ConfigTest.pl`);
+	my $json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/ConfigTest.pl`);
 	foreach my $t ( @$json ) {
 		ok($t->{result} eq "OK", $t->{name});
 		$tests++;
 	}
 	
 	# Loading AAAAAAA - 12-18
-	`perl -I Seccubusv2 bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAA.ivil.xml`;
-	$json = decodeit(`perl -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
+	`perl -MSeccubusV2 -I SeccubusV2 Seccubusv2 bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAA.ivil.xml`;
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
 	ok($$json[0]->{statusName} eq 'New', "Status[1] is New, after load AAAAAAA");
 	ok($$json[1]->{statusName} eq 'New', "Status[2] is New, after load AAAAAAA");
 	ok($$json[2]->{statusName} eq 'New', "Status[3] is New, after load AAAAAAA");
@@ -58,13 +58,13 @@ if (`hostname` =~ /^sbpd/) {
 	ok($$json[6]->{statusName} eq 'New', "Status[7] is New, after load AAAAAAA");
 
 	# Set to all possible statusses 19-26
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=2 attrs[remark]= attrs[status]=2 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=3 attrs[remark]= attrs[status]=3 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=4 attrs[remark]= attrs[status]=4 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=5 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=6 attrs[remark]= attrs[status]=6 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=7 attrs[remark]= attrs[status]=99 attrs[workspaceId]=100`;
-	$json = decodeit(`perl -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=2 attrs[remark]= attrs[status]=2 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=3 attrs[remark]= attrs[status]=3 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=4 attrs[remark]= attrs[status]=4 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=5 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=6 attrs[remark]= attrs[status]=6 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=7 attrs[remark]= attrs[status]=99 attrs[workspaceId]=100`;
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
 	ok($$json[0]->{statusName} eq 'New', "Status[1] is New, after reset");
 	ok($$json[1]->{statusName} eq 'Changed', "Status[2] is Changed, after reset");
 	ok($$json[2]->{statusName} eq 'Open', "Status[3] is Open, after reset");
@@ -74,8 +74,8 @@ if (`hostname` =~ /^sbpd/) {
 	ok($$json[6]->{statusName} eq 'MASKED', "Status[7] is MASKED, after reset");
 
 	# Loading AAAAAAA - 27-32
-	`perl -I Seccubusv2 bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAA.ivil.xml`;
-	$json = decodeit(`perl -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
+	`perl -MSeccubusV2 -I SeccubusV2 Seccubusv2 bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAA.ivil.xml`;
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
 	ok($$json[0]->{statusName} eq 'New', "Status[1] is New, after load AAAAAAA");
 	ok($$json[1]->{statusName} eq 'Changed', "Status[2] is Changed, after load AAAAAAA");
 	ok($$json[2]->{statusName} eq 'Open', "Status[3] is Open, after load AAAAAAA");
@@ -85,13 +85,13 @@ if (`hostname` =~ /^sbpd/) {
 	ok($$json[6]->{statusName} eq 'MASKED', "Status[7] is MASKED, after load AAAAAAA");
 
 	# Set to all possible statusses 33-39
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=2 attrs[remark]= attrs[status]=2 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=3 attrs[remark]= attrs[status]=3 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=4 attrs[remark]= attrs[status]=4 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=5 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=6 attrs[remark]= attrs[status]=6 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=7 attrs[remark]= attrs[status]=99 attrs[workspaceId]=100`;
-	$json = decodeit(`perl -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=2 attrs[remark]= attrs[status]=2 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=3 attrs[remark]= attrs[status]=3 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=4 attrs[remark]= attrs[status]=4 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=5 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=6 attrs[remark]= attrs[status]=6 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=7 attrs[remark]= attrs[status]=99 attrs[workspaceId]=100`;
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
 	ok($$json[0]->{statusName} eq 'New', "Status[1] is New, after reset");
 	ok($$json[1]->{statusName} eq 'Changed', "Status[2] is Changed, after reset");
 	ok($$json[2]->{statusName} eq 'Open', "Status[3] is Open, after reset");
@@ -101,8 +101,8 @@ if (`hostname` =~ /^sbpd/) {
 	ok($$json[6]->{statusName} eq 'MASKED', "Status[7] is MASKED, after reset");
 
 	# Loading BBBBBBB - 40-46
-	`perl -I Seccubusv2 bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-BBBBBBB.ivil.xml`;
-	$json = decodeit(`perl -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
+	`perl -MSeccubusV2 -I SeccubusV2 Seccubusv2 bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-BBBBBBB.ivil.xml`;
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
 	ok($$json[0]->{statusName} eq 'New', "Status[1] is New, after load BBBBBBB");
 	ok($$json[1]->{statusName} eq 'Changed', "Status[2] is Changed, after load BBBBBBB");
 	ok($$json[2]->{statusName} eq 'Changed', "Status[3] is Changed, after load BBBBBBB");
@@ -112,13 +112,13 @@ if (`hostname` =~ /^sbpd/) {
 	ok($$json[6]->{statusName} eq 'MASKED', "Status[7] is MASKED, after load BBBBBBB");
 
 	# Set to all possible statusses 47-53
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=2 attrs[remark]= attrs[status]=2 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=3 attrs[remark]= attrs[status]=3 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=4 attrs[remark]= attrs[status]=4 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=5 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=6 attrs[remark]= attrs[status]=6 attrs[workspaceId]=100`;
-	`perl -I SeccubusV2 json/updateFindings.pl ids[]=7 attrs[remark]= attrs[status]=99 attrs[workspaceId]=100`;
-	$json = decodeit(`perl -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=2 attrs[remark]= attrs[status]=2 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=3 attrs[remark]= attrs[status]=3 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=4 attrs[remark]= attrs[status]=4 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=5 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=6 attrs[remark]= attrs[status]=6 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/updateFindings.pl ids[]=7 attrs[remark]= attrs[status]=99 attrs[workspaceId]=100`;
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
 	ok($$json[0]->{statusName} eq 'New', "Status[1] is New, after reset");
 	ok($$json[1]->{statusName} eq 'Changed', "Status[2] is Changed, after reset");
 	ok($$json[2]->{statusName} eq 'Open', "Status[3] is Open, after reset");
@@ -128,8 +128,8 @@ if (`hostname` =~ /^sbpd/) {
 	ok($$json[6]->{statusName} eq 'MASKED', "Status[7] is MASKED, after reset");
 
 	# Loading none - 54-60
-	`perl -I Seccubusv2 bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml`;
-	$json = decodeit(`perl -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
+	`perl -MSeccubusV2 -I SeccubusV2 Seccubusv2 bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml`;
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
 	ok($$json[0]->{statusName} eq 'Gone', "Status[1] is Gone, after load none");
 	ok($$json[1]->{statusName} eq 'Gone', "Status[2] is Gone, after load none");
 	ok($$json[2]->{statusName} eq 'Gone', "Status[3] is Gone, after load none");
