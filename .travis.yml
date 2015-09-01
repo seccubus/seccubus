@@ -8,4 +8,4 @@ before_script:
   - mysql -e "create database seccubus_create"
   - mysql -e "create database seccubus_upgrade"
   - mysql -e "create database seccubus"
-  - cpanm install DBI DBD::mysql
+  - cpanm DBI DBD::mysql
