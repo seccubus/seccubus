@@ -75,7 +75,7 @@ eval {
 			);
 		}
 	};
-	print $json->pretty->encode(\@data);
+	print $json->pretty->encode(\@ids);
 } or do {
 	bye(join "\n", $@);
 };
