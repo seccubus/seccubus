@@ -44,6 +44,9 @@ if (`hostname` =~ /^sbpd/) {
 	if ( ! -e "/opt/seccubus" ) {
 		`sudo ln -s \`pwd\` /opt/seccubus`;
 	}
+	if ( ! -e "/opt/seccubus/etc/config.xml" ) {
+		`cp etc/config.xml.mysql.example etc/config.xml`;
+	}
 
 	my $json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/ConfigTest.pl`);
 	foreach my $t ( @$json ) {
