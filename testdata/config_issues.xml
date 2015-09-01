@@ -17,7 +17,7 @@
 -->
 <seccubus>
 	<database>
-		<engine>mysql</engine>
+		<engine>Mysql</engine>
 		<database>seccubus_issues</database>
 		<host>localhost</host>
 		<port>3306</port>
