@@ -1,0 +1,319 @@
+/*
+Copyright 2015 Frank Breedijk
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+-- MySQL Workbench Synchronization
+-- Generated: 2015-09-03 16:32
+-- Model: New Model
+-- Version: 1.0
+-- Project: Name of the project
+-- Author: Frank Breedijk
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+ALTER TABLE `seccubus_upgrade`.`asset2scan` 
+DROP INDEX `fk_asset2scan_assets1_idx` ;
+
+ALTER TABLE `seccubus_upgrade`.`checkpoints` 
+CHANGE COLUMN `timestamp` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '' ,
+DROP INDEX `fk_checkpoints_workspaces1_idx` ;
+
+ALTER TABLE `seccubus_upgrade`.`config` 
+CHANGE COLUMN `value` `value` VARCHAR(255) NOT NULL COMMENT '' ;
+
+ALTER TABLE `seccubus_upgrade`.`customsql` 
+CHANGE COLUMN `name` `name` CHAR(255) NOT NULL COMMENT '' ,
+CHANGE COLUMN `sql` `sql` TEXT NOT NULL COMMENT '' ;
+
+ALTER TABLE `seccubus_upgrade`.`findings` 
+ADD INDEX `host_idx` (`host` ASC)  COMMENT '',
+ADD INDEX `port_idx` (`port` ASC)  COMMENT '',
+ADD INDEX `plugin_idx` (`plugin` ASC)  COMMENT '',
+DROP INDEX `plugin` ,
+DROP INDEX `port` ,
+DROP INDEX `host` ,
+DROP INDEX `fk_findings_scans1_idx` ,
+DROP INDEX `fk_findings_sessions1_idx` ;
+
+ALTER TABLE `seccubus_upgrade`.`groups` 
+ADD PRIMARY KEY (`id`)  COMMENT '',
+DROP INDEX `id` ;
+
+ALTER TABLE `seccubus_upgrade`.`host_names` 
+DROP INDEX `fk_hosts_sessions1_idx` ;
+
+ALTER TABLE `seccubus_upgrade`.`issue2finding_changes` 
+DROP COLUMN `status`,
+CHANGE COLUMN `time` `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '' ,
+ADD COLUMN `id` INT(11) NOT NULL COMMENT '' FIRST,
+ADD COLUMN `deleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '' AFTER `time`,
+ADD INDEX `fk_issue2finding_changes_issues2findings1_idx` (`issue_id` ASC)  COMMENT '',
+ADD INDEX `fk_issue2finding_changes_issues2findings2_idx` (`finding_id` ASC)  COMMENT '',
+ADD PRIMARY KEY (`id`)  COMMENT '',
+DROP INDEX `fk_issue2finding_changes_users1_idx` ,
+DROP INDEX `fk_issue2finding_changes_issue_status1_idx` ,
+DROP INDEX `fk_issue2finding_changes_findings1_idx` ,
+DROP INDEX `fk_issue2finding_changes_issues1_idx` ;
+
+ALTER TABLE `seccubus_upgrade`.`issue_changes` 
+DROP INDEX `fk_issue_changes_users1_idx` ,
+DROP INDEX `fk_issue_changes_severity1_idx` ,
+DROP INDEX `fk_issue_changes_issue_status1_idx` ,
+DROP INDEX `fk_issue_changes_issues1_idx` ;
+
+ALTER TABLE `seccubus_upgrade`.`issues` 
+DROP COLUMN `session_id`,
+ADD COLUMN `workspace_id` INT(11) NOT NULL COMMENT '' AFTER `id`,
+ADD INDEX `fk_issues_workspaces1_idx` (`workspace_id` ASC)  COMMENT '';
+
+ALTER TABLE `seccubus_upgrade`.`issues2findings` 
+DROP COLUMN `status`,
+ADD PRIMARY KEY (`issue_id`, `finding_id`)  COMMENT '',
+ADD INDEX `fk_issues2findings_findings1_idx` (`finding_id` ASC)  COMMENT '',
+DROP INDEX `fk_issue2finding_issue_status1_idx` ,
+DROP INDEX `fk_issue2finding_issues1_idx` ,
+DROP INDEX `fk_issue2finding_findings1_idx` ;
+
+ALTER TABLE `seccubus_upgrade`.`notifications` 
+DROP INDEX `fk_notifications_scans1_idx` ;
+
+ALTER TABLE `seccubus_upgrade`.`rights` 
+ADD PRIMARY KEY (`workspace_id`, `group_id`)  COMMENT '',
+DROP INDEX `fk_rights_sessions1_idx` ,
+DROP INDEX `fk_rights_groups1_idx` ;
+
+ALTER TABLE `seccubus_upgrade`.`runs` 
+DROP INDEX `fk_runs_scans1_idx` ;
+
+ALTER TABLE `seccubus_upgrade`.`user2group` 
+ADD PRIMARY KEY (`user_id`, `group_id`)  COMMENT '',
+DROP INDEX `fk_user2group_groups1_idx` ,
+DROP INDEX `fk_user2group_users_idx` ;
+
+ALTER TABLE `seccubus_upgrade`.`users` 
+CHANGE COLUMN `username` `username` CHAR(255) NOT NULL COMMENT '' ,
+DROP INDEX `username` ;
+
+ALTER TABLE `seccubus_upgrade`.`workspaces` 
+DROP INDEX `id` ;
+
+ALTER TABLE `seccubus_upgrade`.`asset2scan` 
+ADD CONSTRAINT `fk_asset2scan_scans1`
+  FOREIGN KEY (`scan_id`)
+  REFERENCES `seccubus_upgrade`.`scans` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_asset2scan_assets1`
+  FOREIGN KEY (`scan_id`)
+  REFERENCES `seccubus_upgrade`.`assets` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`asset_hosts` 
+ADD CONSTRAINT `fk_asset_hosts_assets1`
+  FOREIGN KEY (`asset_id`)
+  REFERENCES `seccubus_upgrade`.`assets` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`attachments` 
+ADD CONSTRAINT `fk_attachments_runs1`
+  FOREIGN KEY (`run_id`)
+  REFERENCES `seccubus_upgrade`.`runs` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`checkpoints` 
+ADD CONSTRAINT `fk_checkpoints_workspaces1`
+  FOREIGN KEY (`workspace_id`)
+  REFERENCES `seccubus_upgrade`.`workspaces` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`finding_changes` 
+ADD CONSTRAINT `fk_finding_changes_findings1`
+  FOREIGN KEY (`finding_id`)
+  REFERENCES `seccubus_upgrade`.`findings` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_finding_changes_runs1`
+  FOREIGN KEY (`run_id`)
+  REFERENCES `seccubus_upgrade`.`runs` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_finding_changes_finding_status1`
+  FOREIGN KEY (`status`)
+  REFERENCES `seccubus_upgrade`.`finding_status` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_finding_changes_severity1`
+  FOREIGN KEY (`severity`)
+  REFERENCES `seccubus_upgrade`.`severity` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_finding_changes_users1`
+  FOREIGN KEY (`user_id`)
+  REFERENCES `seccubus_upgrade`.`users` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`findings` 
+ADD CONSTRAINT `fk_findings_workspaces1`
+  FOREIGN KEY (`workspace_id`)
+  REFERENCES `seccubus_upgrade`.`workspaces` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_findings_runs1`
+  FOREIGN KEY (`run_id`)
+  REFERENCES `seccubus_upgrade`.`runs` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_findings_finding_status1`
+  FOREIGN KEY (`status`)
+  REFERENCES `seccubus_upgrade`.`finding_status` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_findings_severity1`
+  FOREIGN KEY (`severity`)
+  REFERENCES `seccubus_upgrade`.`severity` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`host_names` 
+ADD CONSTRAINT `fk_host_names_workspaces1`
+  FOREIGN KEY (`workspace_id`)
+  REFERENCES `seccubus_upgrade`.`workspaces` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`issue2finding_changes` 
+ADD CONSTRAINT `fk_issue2finding_changes_issues2findings1`
+  FOREIGN KEY (`issue_id`)
+  REFERENCES `seccubus_upgrade`.`issues2findings` (`issue_id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_issue2finding_changes_issues2findings2`
+  FOREIGN KEY (`finding_id`)
+  REFERENCES `seccubus_upgrade`.`issues2findings` (`finding_id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`issue_changes` 
+ADD CONSTRAINT `fk_issue_changes_issues1`
+  FOREIGN KEY (`issue_id`)
+  REFERENCES `seccubus_upgrade`.`issues` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_issue_changes_issue_status1`
+  FOREIGN KEY (`status`)
+  REFERENCES `seccubus_upgrade`.`issue_status` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_issue_changes_severity1`
+  FOREIGN KEY (`severity`)
+  REFERENCES `seccubus_upgrade`.`severity` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_issue_changes_users1`
+  FOREIGN KEY (`user_id`)
+  REFERENCES `seccubus_upgrade`.`users` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`issues` 
+ADD CONSTRAINT `fk_issues_workspaces1`
+  FOREIGN KEY (`workspace_id`)
+  REFERENCES `seccubus_upgrade`.`workspaces` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_issues_issue_status1`
+  FOREIGN KEY (`status`)
+  REFERENCES `seccubus_upgrade`.`issue_status` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_issues_severity1`
+  FOREIGN KEY (`severity`)
+  REFERENCES `seccubus_upgrade`.`severity` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`issues2findings` 
+ADD CONSTRAINT `fk_issues2findings_findings1`
+  FOREIGN KEY (`finding_id`)
+  REFERENCES `seccubus_upgrade`.`findings` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_issues2findings_issues1`
+  FOREIGN KEY (`issue_id`)
+  REFERENCES `seccubus_upgrade`.`issues` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`notifications` 
+ADD CONSTRAINT `fk_notifications_scans1`
+  FOREIGN KEY (`scan_id`)
+  REFERENCES `seccubus_upgrade`.`scans` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_notifications_events1`
+  FOREIGN KEY (`event_id`)
+  REFERENCES `seccubus_upgrade`.`events` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`rights` 
+ADD CONSTRAINT `fk_rights_workspaces1`
+  FOREIGN KEY (`workspace_id`)
+  REFERENCES `seccubus_upgrade`.`workspaces` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_rights_groups1`
+  FOREIGN KEY (`group_id`)
+  REFERENCES `seccubus_upgrade`.`groups` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`runs` 
+ADD CONSTRAINT `fk_runs_scans1`
+  FOREIGN KEY (`scan_id`)
+  REFERENCES `seccubus_upgrade`.`scans` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`scans` 
+ADD CONSTRAINT `fk_scans_workspaces1`
+  FOREIGN KEY (`workspace_id`)
+  REFERENCES `seccubus_upgrade`.`workspaces` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `seccubus_upgrade`.`user2group` 
+ADD CONSTRAINT `fk_user2group_groups1`
+  FOREIGN KEY (`group_id`)
+  REFERENCES `seccubus_upgrade`.`groups` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_user2group_users1`
+  FOREIGN KEY (`user_id`)
+  REFERENCES `seccubus_upgrade`.`users` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+update config set value=7 where name = 'version';
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
