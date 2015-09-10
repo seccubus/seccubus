@@ -29,9 +29,11 @@ my (
 	$verbose,
 	$quiet,
 	$nodelete,
+	$print,
    );
 
 $help = 0;
+$print = 1;
 $nodelete = undef;
 
 GetOptions(	'workspace|w=s'	=> \$workspace,
@@ -43,6 +45,7 @@ GetOptions(	'workspace|w=s'	=> \$workspace,
 	  );
 
 $verbose = -1 if $quiet;
+$print = 0 if $quiet;
 help() if $help;
 
 if ( ! $workspace ) {
@@ -58,8 +61,8 @@ my $scan_id = get_scan_id($workspace_id, $scan);
 die "Scan '$scan' does not exist in workspace '$workspace'" unless $scan_id;
 
 print "Starting scan '$scan' from workspace '$workspace'\n" unless $quiet;
-my $result = run_scan($workspace_id, $scan_id, $verbose, "print", $nodelete);
-print $result if $verbose;
+my $result = run_scan($workspace_id, $scan_id, $verbose, $print, $nodelete);
+print $result if $verbose > 0;
 print "\nDone\n" unless $quiet;
 
 
