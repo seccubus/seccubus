@@ -38,23 +38,24 @@ This version fixes an issue where the output of NMap scripts (NSE) was completly
 
 Enhancements
 ------------
+* #185 - GNU Terry Pratchett
+* #214 - NMap, include port status in port number
 * #223 - Make the Bulk Update feature much faster in the GUI
 * #228 - SSL Labs: Warn if MaxAge is below the recommended 180 days
 * #226 - Create Travis Unit tests for DB upgrade
 * #241 - Unit tests for delta engine
-* #214 - NMap, include port status in port number
-* #185 - GNU Terry Pratchett
 
 Bug Fixes
 ---------
 * #180 - NMAP script output ignored
 * #198 - Unable to add more then 1 asset
 * #199 - asset_host broken in v6 and upgrade problems
-* #213 - .spec file still references v4 data structures instead of v6
-* #222 - SSL Labs: hasSct and sessionTickets findings not saved in IVIL file
 * #200: Error using ZAP remote
 * Fixed ZAP file handling issue
 * Fixed a new found bug in ivil2zap, more output now in findings
 * Fixed SSLlabs error exception
+* #213 - .spec file still references v4 data structures instead of v6
+* #222 - SSL Labs: hasSct and sessionTickets findings not saved in IVIL file
 * #224 - Bulk Update controller not updated after update of remark only
 * #236 - Database upgrades inconsistent
+* #247 - SSLLabs: certain values for PoodleTLS not handled
