@@ -58,5 +58,6 @@ Bug Fixes
 * #222 - SSL Labs: hasSct and sessionTickets findings not saved in IVIL file
 * #224 - Bulk Update controller not updated after update of remark only
 * #236 - Database upgrades inconsistent
+* #243 - do-scan -q is not very quiet
 * #247 - SSLLabs: certain values for PoodleTLS not handled
 * #248 - SSLLabs Reneg finding empty is reneg is not supported 
