@@ -59,3 +59,4 @@ Bug Fixes
 * #224 - Bulk Update controller not updated after update of remark only
 * #236 - Database upgrades inconsistent
 * #247 - SSLLabs: certain values for PoodleTLS not handled
+* #248 - SSLLabs Reneg finding empty is reneg is not supported 
