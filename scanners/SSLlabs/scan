@@ -432,18 +432,24 @@ foreach my $host ( @hosts ) {
 									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "poodleTls" ) {
 									$finding->{id} = $dkey;
-									$finding->{finding} = "Poodle over TLS - test failed\n" if $det == -1;
-									$finding->{finding} = "Poodle over TLS - status unknown\n" if $det == 0;
-									$finding->{finding} = "Poodle over TLS - not vulnerable\n" if $det == 1;
-									$finding->{finding} = "Poodle over TLS - vulnerable\n" if $det == 2;
+									$finding->{finding} = "";
+									$finding->{finding} .= "Poodle over TLS - timeout\n" if $det == -3;
+									$finding->{finding} .= "Poodle over TLS - TLS not supported\n" if $det == -2;
+									$finding->{finding} .= "Poodle over TLS - test failed\n" if $det == -1;
+									$finding->{finding} .= "Poodle over TLS - status unknown\n" if $det == 0;
+									$finding->{finding} .= "Poodle over TLS - not vulnerable\n" if $det == 1;
+									$finding->{finding} .= "Poodle over TLS - vulnerable\n" if $det == 2;
+									$finding->{finding} .= "Test value: $det\n";
 									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "openSslCcs" ) {
 									$finding->{id} = $dkey;
-									$finding->{finding} = "CVE-2014-0224 test failed\n" if $det == -1;
-									$finding->{finding} = "CVE-2014-0224 status unknown\n" if $det == 0;
-									$finding->{finding} = "CVE-2014-0224 not vulnerable\n" if $det == 1;
-									$finding->{finding} = "CVE-2014-0224 possibly vulnerable, but not exploitable\n" if $det == 2;
-									$finding->{finding} = "CVE-2014-0224 vulnerable and exploitable\n" if $det == 3;
+									$finding->{finding} = "";
+									$finding->{finding} .= "CVE-2014-0224 test failed\n" if $det == -1;
+									$finding->{finding} .= "CVE-2014-0224 status unknown\n" if $det == 0;
+									$finding->{finding} .= "CVE-2014-0224 not vulnerable\n" if $det == 1;
+									$finding->{finding} .= "CVE-2014-0224 possibly vulnerable, but not exploitable\n" if $det == 2;
+									$finding->{finding} .= "CVE-2014-0224 vulnerable and exploitable\n" if $det == 3;
+									$finding->{finding} .= "Test value: $det\n";
 									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "sessionResumption" ) {
 									$finding->{id} = $dkey;
