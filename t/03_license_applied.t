@@ -147,14 +147,14 @@ sub hasauthors {
 	open BLAME, "git blame '$file'|";
 	foreach my $auth ( <BLAME> ) {
 		chomp ($auth);
-		ok(1,$auth); $tests++;
+		my $line = $auth;
 		if ( $auth =~ /\((.*?)\s+(\d\d\d\d)\-\d\d\-\d\d/ ) {
 			my $auth = $1;
 			$auth = "Petr" if $auth eq 'Петр';
 			if ( $auth ne "Not Committed Yet" ) {
 				unless ( $authors{$auth} ) {
 					$authors{$auth} = 1;
-					like($head, qr/$auth/, "Blamed author $auth in header of file '$file'");
+					like($head, qr/$auth/, "Blamed author $line in header of file '$file'");
 					$tests++;
 				}
 				if ( $ENV{PERLBREW_ROOT} !~ /^\/home\/travis/ && (! defined $years{$2}) ) {
