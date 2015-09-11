@@ -142,29 +142,57 @@ sub hasauthors {
 	my $year = $1;
 
 	$ENV{PERLBREW_ROOT} = "" unless $ENV{PERLBREW_ROOT};
+	my $blame = `git blame '$file' 2>&1`;
 	my %authors = ();
-	my %years = ();
-	open BLAME, "git blame --root '$file'|";
-	foreach my $auth ( <BLAME> ) {
-		chomp ($auth);
-		my $line = $auth;
-		if ( $auth =~ /\((.*?)\s+(\d\d\d\d)\-\d\d\-\d\d/ ) {
-			my $auth = $1;
-			$auth = "Petr" if $auth eq 'Петр';
-			if ( $auth ne "Not Committed Yet" ) {
-				unless ( $authors{$auth} ) {
-					$authors{$auth} = 1;
-					like($head, qr/$auth/, "Blamed author $line in header of file '$file'");
-					$tests++;
-				}
-				if ( $ENV{PERLBREW_ROOT} !~ /^\/home\/travis/ && (! defined $years{$2}) ) {
-					$years{$2} = 1;
-					cmp_ok($2, "<=", $year, "Change from $2 match copyright of $year for file '$file'");
-					$tests++;
-				}
+	my $cyear = 0;
+
+	unless ( $blame =~ /no such path.*in HEAD/ ) {
+		foreach my $line ( split /\n/, $blame ) {
+			$line =~ /\((.*?)\s+(\d\d\d\d)\-\d\d\-\d\d/;
+			my $name = $1;
+			$name = "Petr" if $name eq 'Петр';
+			$name = "Petr" if $name eq 'ĐĐľŃŃ';
+			$authors{$1} = 1;
+			$cyear = $2 if $2 > $cyear;
+		}
+
+		foreach my $auth ( sort keys %authors ) {
+			unless ( $auth eq "Not Committed Yet" ) {
+				like($head, qr/$auth/, "Author $auth is duely credited\nFile: $file\nBlame: $blame");
+				$tests++;
 			}
 		}
+
+		ok($year = $cyear, "Copyright of $year matches last change from $cyear");
+		$tests++;
 	}
-	close BLAME;
+
+	#foreach my $year ( sort keys $authors ) {
+	#	like($head, qr/$auth/, "Author $auth is duely credited\nFile: $file\nBlame: $blame");
+	#	$tests++;
+	#}
+#
+	#open BLAME, "git blame --root '$file'|";
+	#foreach my $auth ( <BLAME> ) {
+	#	chomp ($auth);
+	#	my $line = $auth;
+	#	if ( $auth =~ /\((.*?)\s+(\d\d\d\d)\-\d\d\-\d\d/ ) {
+	#		my $auth = $1;
+	#		$auth = "Petr" if $auth eq 'Петр';
+	#		if ( $auth ne "Not Committed Yet" ) {
+	#			unless ( $authors{$auth} ) {
+	#				$authors{$auth} = 1;
+	#				like($head, qr/$auth/, "Blamed author $line in header of file '$file'");
+	#				$tests++;
+	#			}
+	#			if ( $ENV{PERLBREW_ROOT} !~ /^\/home\/travis/ && (! defined $years{$2}) ) {
+	#				$years{$2} = 1;
+	#				cmp_ok($2, "<=", $year, "Change from $2 match copyright of $year for file '$file'");
+	#				$tests++;
+	#			}
+	#		}
+	#	}
+	#}
+	#close BLAME;
 	return 1;
 }
