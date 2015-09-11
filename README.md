@@ -61,3 +61,4 @@ Bug Fixes
 * #243 - do-scan -q is not very quiet
 * #247 - SSLLabs: certain values for PoodleTLS not handled
 * #248 - SSLLabs Reneg finding empty is reneg is not supported 
+* Copyright related unit tests now work on Travis CI too
