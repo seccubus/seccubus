@@ -20,7 +20,7 @@ use strict;
 use Test::More;
 
 my $travis = 0;
-$travis = 1 if ( `pwd` =~ /\/travis\// );
+#$travis = 1 if ( `pwd` =~ /\/travis\// );
 
 my %exclude = (
 	"./SeccubusV2/IVIL.pm" 	=> "MIT Licensed project",
