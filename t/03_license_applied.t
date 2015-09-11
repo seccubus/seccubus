@@ -144,7 +144,7 @@ sub hasauthors {
 	$ENV{PERLBREW_ROOT} = "" unless $ENV{PERLBREW_ROOT};
 	my %authors = ();
 	my %years = ();
-	open BLAME, "git blame '$file'|";
+	open BLAME, "git blame --root '$file'|";
 	foreach my $auth ( <BLAME> ) {
 		chomp ($auth);
 		my $line = $auth;
