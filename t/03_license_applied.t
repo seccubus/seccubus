@@ -147,6 +147,7 @@ sub hasauthors {
 	open BLAME, "git blame '$file'|";
 	foreach my $auth ( <BLAME> ) {
 		chomp ($auth);
+		ok(1,$auth); $tests++;
 		if ( $auth =~ /\((.*?)\s+(\d\d\d\d)\-\d\d\-\d\d/ ) {
 			my $auth = $1;
 			$auth = "Petr" if $auth eq 'Петр';
