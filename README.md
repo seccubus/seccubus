@@ -44,6 +44,7 @@ Enhancements
 * #228 - SSL Labs: Warn if MaxAge is below the recommended 180 days
 * #226 - Create Travis Unit tests for DB upgrade
 * #241 - Unit tests for delta engine
+* Moved to new Travis build infra. See: http://docs.travis-ci.com/user/migrating-from-legacy/
 
 Bug Fixes
 ---------
