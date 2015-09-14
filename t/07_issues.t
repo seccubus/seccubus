@@ -73,14 +73,6 @@ if (`hostname` =~ /^sbpd/) {
 	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/createIssue.pl workspaceId=100 severity=1 status=1`);
 	ok($$json[0]->{error}, "Should error when name is missing");
 
-	# Need a severity
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/createIssue.pl workspaceId=100 name=test1 status=1`);
-	ok($$json[0]->{error}, "Should error when severity is missing");
-
-	# Need a status
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/createIssue.pl workspaceId=100 name=test1 severity=1 `);
-	ok($$json[0]->{error}, "Should error when status is missing");
-
 	# Can we create an issue that is not linked to any findings?
 	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/createIssue.pl workspaceId=100 name=test1 severity=1 status=1`);
 	ok($$json[0] == 1, "ID:1 returned");

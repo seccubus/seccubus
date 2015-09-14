@@ -30,6 +30,9 @@ my $json = JSON->new();
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
 my $workspace_id = $query->param("workspaceId");
+my $name = $query->param("name");
+my $severity = $query->param("severity");
+my $status = $query->param("status");
 
 # Return an error if the required parameters were not passed 
 if (not (defined ($workspace_id))) {
@@ -37,6 +40,9 @@ if (not (defined ($workspace_id))) {
 } elsif ( $workspace_id + 0 ne $workspace_id ) {
 	bye("WorkspaceId is not numeric");
 };
+bye("Need to specify a name") unless $name;
+$severity = 0 unless $severity;
+$status = 1 unless $status;
 
 eval {
 	my @data;
