@@ -21,7 +21,7 @@ WriteMakefile (
 	PREREQ_PM	=> {
 				'Algorithm::Diff'		=> 1.15,
 				'Carp'					=> 1.04,
-                'CGI'					=> 3.15,
+                'CGI'					=> 4.21,
                 'CGI::Carp'				=> 0.01,
                 'Exporter'				=> 5.58,
 				'ExtUtils::MakeMaker'	=> 6.30,
