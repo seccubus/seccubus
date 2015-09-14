@@ -30,7 +30,7 @@ my $json = JSON->new();
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
 my $workspace_id = $query->param("attrs[workspaceId]");
-my @ids = $query->param("ids[]");
+my @ids = $query->multi_param("ids[]");
 my $remark = $query->param("attrs[remark]");
 my $status = $query->param("attrs[status]");
 my $overwrite = $query->param("attrs[overwrite]");

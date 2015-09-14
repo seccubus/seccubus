@@ -30,8 +30,8 @@ my $json = JSON->new();
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
 my $workspace_id = $query->param("workspaceId");
-my @scan_ids = $query->param("scanIds[]");
-my @asset_ids = $query->param("assetIds[]");
+my @scan_ids = $query->multi_param("scanIds[]");
+my @asset_ids = $query->multi_param("assetIds[]");
 
 # Return an error if the required parameters were not passed 
 if (not (defined ($workspace_id))) {

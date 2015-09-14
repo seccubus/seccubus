@@ -33,7 +33,7 @@ my $scan_id = $query->param("id[id]");
 # Return an error if the required parameters were not passed 
 bye("Parameter id (scanid) is missing") if (not (defined ($scan_id)));
 bye("scanid is not numeric") if ( $scan_id + 0 ne $scan_id );
-my @assets = $query->param('id[assets][]');
+my @assets = $query->multi_param('id[assets][]');
 	
 eval {
 	my @data = update_asset2scan($scan_id,@assets);

@@ -36,7 +36,12 @@ foreach my $file ( @files ) {
 			if ( $file !~ qr|^./www/| ) { # Exclude www directory
 				isnt(`grep 'use strict;' '$file'`, '', "$file contains 'use strict'");
 				$tests++;
-			
+
+				if ( $file ne "./t/01_perl_ok.t" ) {
+					is(`grep '\$query->param' '$file'|grep '\@'`, '', "\$query->param not used in list context in $file");
+					$tests++;
+				}
+
 				like(`perl -ISeccubusV2 -It -c '$file' 2>&1`, qr/OK/, "Perl compile test: $file");
 				$tests++;
 			}
