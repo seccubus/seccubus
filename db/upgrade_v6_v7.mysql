@@ -18,7 +18,7 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
 ALTER TABLE `scans`
-CHANGE COLUMN `scannerparam` `scannerparam` ARCHAR(1024) NULL DEFAULT NULL;
+CHANGE COLUMN `scannerparam` `scannerparam` VARCHAR(1024) NULL DEFAULT NULL;
 
 update config set value=7 where name = 'version';
 
