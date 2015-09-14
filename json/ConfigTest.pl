@@ -26,7 +26,7 @@ use JSON;
 sub result($$$$);
 sub bye($);
 
-my $current_db_version = 6;
+my $current_db_version = 7;
 my $query = CGI::new();
 my $json = JSON->new();
 
@@ -128,7 +128,7 @@ eval {
 		} elsif ( $version[0] < $current_db_version ) {
 			$file .= "upgrade_v$version[0]_v" . ($version[0]+1) . "." . $config->{database}->{engine};
 		} else {
-			result($data,"Database error", "Your database returned version number '$version[0]', the developers for Seccubus do not know what to do with this", "Error");
+			result($data,"Database version error", "Your database returned version number '$version[0]', the developers for Seccubus do not know what to do with this", "Error");
 			bye($data);
 		}
 		result($data,"Database version", "Your database is not current, please execute the sql statements in '$file' to update the database to the next version and rerun this test", 'Error');

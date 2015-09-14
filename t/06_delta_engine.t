@@ -53,7 +53,7 @@ if (`hostname` =~ /^sbpd/) {
 	my $json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/ConfigTest.pl`);
 	foreach my $t ( @$json ) {
 		ok($t->{result} eq "OK", "$t->{name} ($t->{result}) eq OK?");
-		$tests++;
+		$tests++;			
 	}
 	
 	# Loading AAAAAAA - 12-18
