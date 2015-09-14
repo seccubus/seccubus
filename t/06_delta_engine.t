@@ -44,7 +44,7 @@ if (`hostname` =~ /^sbpd/) {
 
 	#`cp etc/config.xml.mysql.example etc/config.xml`;
 	if ( ! -e "/opt/seccubus" ) {
-		`sudo ln -s \`pwd\` /opt/seccubus`;
+		`ln -s \`pwd\` /opt/seccubus`;
 	}
 	if ( ! -e "/opt/seccubus/etc/config.xml" ) {
 		`cp etc/config.xml.mysql.example etc/config.xml`;
