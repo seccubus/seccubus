@@ -28,9 +28,10 @@ my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $host_id = $query->param("id");
-my $ip = $query->param('ip');
-my $host = $query->param('host');
+my $params = $query->Vars;
+my $host_id = $params->{id};
+my $ip = $params->{ip};
+my $host = $params->{host};
 
 # Return an error if the required parameters were not passed 
 bye("Parameter id is missing") if(not (defined ($host_id)));

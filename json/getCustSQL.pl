@@ -29,7 +29,8 @@ my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $sql = $query->param("sql");
+my $params = $query->Vars;
+my $sql = $params->{sql};
 
 # Return an error if the required parameters were not passed 
 if (not (defined ($sql))) {

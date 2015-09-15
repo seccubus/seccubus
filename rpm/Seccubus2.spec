@@ -48,6 +48,7 @@ Requires:	perl-libwww-perl
 Requires:	perl-HTML-Tree
 Requires:	perl-Net-IP
 Requires:	perl-REST-Client
+Requires:   perl-CGI
 Requires:	httpd
 Requires:	mysql
 Requires:	ruby

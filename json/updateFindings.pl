@@ -29,11 +29,12 @@ my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $workspace_id = $query->param("attrs[workspaceId]");
-my @ids = $query->param("ids[]");
-my $remark = $query->param("attrs[remark]");
-my $status = $query->param("attrs[status]");
-my $overwrite = $query->param("attrs[overwrite]");
+my $params = $query->Vars;
+my $workspace_id = $params->{'attrs[workspaceId]'};
+my @ids = split(/\0/,$params->{"ids[]"});
+my $remark = $params->{'attrs[remark]'};
+my $status = $params->{'attrs[status]'};
+my $overwrite = $params->{'attrs[overwrite]'};
 
 if ( $overwrite eq "true" || $overwrite eq "on" ) {
 	$overwrite = 1;

@@ -29,8 +29,9 @@ my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $sql = $query->param("sql");
-my $name = $query->param('name');
+my $params = $query->Vars;
+my $sql = $params->{sql};
+my $name = $params->{name};
 
 bye("Parameter sql is missing") if (not (defined ($sql)));
 bye("Parameter name is missing") if (not (defined ($name)));
