@@ -47,7 +47,18 @@ $.Controller('Seccubus.Schedule.Table',
 		 */
 		onEdit : function(not) {
 			alert("Seccubus.Schedule.Table: no edit function specified for notification id: " + not.id );
+		},
+
+		getSaveSchedules : function(){
+			alert("Seccubus.Schedule.Table: no getSaveSchedules added");
+		},
+
+		delSavedSchedule : function(sch){
+			alert("Seccubus.Schedule.Table: no delSavedSchedule added");
 		}
+
+
+
 	}
 },
 /** @Prototype */
@@ -83,15 +94,15 @@ $.Controller('Seccubus.Schedule.Table',
 					}
 				)
 			);
-		} else {
+		} else if( this.options.scan == -2){
 			var to = this;
 			this.element.html(
 				this.view(
 					'init',
-					Seccubus.Models.Schedule.findAll({
-						scanId		: this.options.scan
-					},function(data){
-						return data.map(function(val){ 
+					function(){
+						var data = to.options.getSaveSchedules();	
+						return data.map(function(val){
+							val.lastRun = '';
 							val.monthR = {};
 							val.monthT = to.splitJoinData(val.month,'month',val.monthR,monthNames);
 
@@ -109,6 +120,42 @@ $.Controller('Seccubus.Schedule.Table',
 
 							val.minR = {};
 							val.minT = to.splitJoinData(val.min,'minute',val.minR);
+							val.noEdit = true;
+							return val;	
+						});
+					}()
+					
+				)
+			);
+		}
+		else {
+			var to = this;
+			this.element.html(
+				this.view(
+					'init',
+					Seccubus.Models.Schedule.findAll({
+						scanId		: this.options.scan
+					},
+					function(data){
+						return data.map(function(val){
+							val.monthR = {};
+							val.monthT = to.splitJoinData(val.month,'month',val.monthR,monthNames);
+
+							val.weekR = {};
+							val.weekT = to.splitJoinData(val.week,'week',val.weekR);
+							
+							val.wdayR = {};
+							val.wdayT = to.splitJoinData(val.wday,'week day',val.wdayR,weekDays);
+
+							val.dayR = {};
+							val.dayT = to.splitJoinData(val.day,'day',val.dayR);
+
+							val.hourR = {};
+							val.hourT = to.splitJoinData(val.hour,'hour',val.hourR);
+
+							val.minR = {};
+							val.minT = to.splitJoinData(val.min,'minute',val.minR);
+							val.noEdit = false;
 
 							return val;	
 						});
@@ -137,7 +184,13 @@ $.Controller('Seccubus.Schedule.Table',
 	".destroy click" : function(el, ev) {
 		ev.preventDefault();
 		if(confirm("Are you sure you want to delete this schedule?")){
-			el.closest(".schedule").model().destroy();
+			var schedule = el.closest(".schedule").model();
+			if(this.options.scan < 0){
+				this.options.delSavedSchedule(schedule);
+			} else{
+				schedule.destroy();	
+			}
+			
 		}
 	},
 	"{Seccubus.Models.Schedule} destroyed" : function(Schedule, ev, schedule) {

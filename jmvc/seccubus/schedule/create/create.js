@@ -49,7 +49,11 @@ $.Controller('Seccubus.Schedule.Create',
 		/* attribute options.schedule
 		 * Schedule object that needs to be edited
 		 */
-		schedule : null
+		schedule : null,
+		
+		onSave : function(shedule){
+			alert('No onSave param given');
+		}
 	}
 },
 /** @Prototype */
@@ -57,6 +61,7 @@ $.Controller('Seccubus.Schedule.Create',
 	init : function(){
 		this.updateView();
 	},
+
 	updateView : function() {
 		this.element.html(
 			this.view(
@@ -84,7 +89,10 @@ $.Controller('Seccubus.Schedule.Create',
 			params.day    = this.setParam(params.day);
 			params.hour   = this.setParam(params.hour);
 			params.min    = this.setParam(params.min);
-			new Seccubus.Models.Schedule(params).save(this.callback('saved'));
+			var schedule = new Seccubus.Models.Schedule(params);
+			if( params.scanId ){schedule.save(this.callback('saved')); }
+			else { this.options.onSave(schedule); this.saved(); return schedule; }
+			
 		} else {
 			this.nok(elements);
 		}
@@ -118,7 +126,7 @@ $.Controller('Seccubus.Schedule.Create',
 		this.clearAll();
 	},
 	clearAll : function() {
-		this.element.find('[type=submit]').val('Update Schedule');
+		this.element.find('[type=submit]').val('Create Schedule');
 		this.element[0].reset();
 		$(".nok").removeClass("nok");
 		this.options.onClear();
