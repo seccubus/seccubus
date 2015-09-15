@@ -13,12 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
--- MySQL Workbench Synchronization
--- Generated: 2015-09-03 16:32
--- Model: New Model
--- Version: 1.0
--- Project: Name of the project
--- Author: Frank Breedijk
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -312,7 +306,7 @@ ADD CONSTRAINT `fk_user2group_users1`
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-update config set value=7 where name = 'version';
+update config set value=8 where name = 'version';
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

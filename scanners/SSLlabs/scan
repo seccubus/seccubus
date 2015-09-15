@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk, Alex Smirnoff, gtencate, blabla1337
+# Copyright 2015 Frank Breedijk, Alex Smirnoff, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -432,18 +432,24 @@ foreach my $host ( @hosts ) {
 									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "poodleTls" ) {
 									$finding->{id} = $dkey;
-									$finding->{finding} = "Poodle over TLS - test failed\n" if $det == -1;
-									$finding->{finding} = "Poodle over TLS - status unknown\n" if $det == 0;
-									$finding->{finding} = "Poodle over TLS - not vulnerable\n" if $det == 1;
-									$finding->{finding} = "Poodle over TLS - vulnerable\n" if $det == 2;
+									$finding->{finding} = "";
+									$finding->{finding} .= "Poodle over TLS - timeout\n" if $det == -3;
+									$finding->{finding} .= "Poodle over TLS - TLS not supported\n" if $det == -2;
+									$finding->{finding} .= "Poodle over TLS - test failed\n" if $det == -1;
+									$finding->{finding} .= "Poodle over TLS - status unknown\n" if $det == 0;
+									$finding->{finding} .= "Poodle over TLS - not vulnerable\n" if $det == 1;
+									$finding->{finding} .= "Poodle over TLS - vulnerable\n" if $det == 2;
+									$finding->{finding} .= "Test value: $det\n";
 									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "openSslCcs" ) {
 									$finding->{id} = $dkey;
-									$finding->{finding} = "CVE-2014-0224 test failed\n" if $det == -1;
-									$finding->{finding} = "CVE-2014-0224 status unknown\n" if $det == 0;
-									$finding->{finding} = "CVE-2014-0224 not vulnerable\n" if $det == 1;
-									$finding->{finding} = "CVE-2014-0224 possibly vulnerable, but not exploitable\n" if $det == 2;
-									$finding->{finding} = "CVE-2014-0224 vulnerable and exploitable\n" if $det == 3;
+									$finding->{finding} = "";
+									$finding->{finding} .= "CVE-2014-0224 test failed\n" if $det == -1;
+									$finding->{finding} .= "CVE-2014-0224 status unknown\n" if $det == 0;
+									$finding->{finding} .= "CVE-2014-0224 not vulnerable\n" if $det == 1;
+									$finding->{finding} .= "CVE-2014-0224 possibly vulnerable, but not exploitable\n" if $det == 2;
+									$finding->{finding} .= "CVE-2014-0224 vulnerable and exploitable\n" if $det == 3;
+									$finding->{finding} .= "Test value: $det\n";
 									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "sessionResumption" ) {
 									$finding->{id} = $dkey;
@@ -476,10 +482,12 @@ foreach my $host ( @hosts ) {
 								} elsif ($dkey eq "renegSupport") {
 									$finding->{id} = "reneg";
 									$finding->{finding} = "";
+									$finding->{finding} = "The server does not support any renegotiation" if ( $det == 0 );
 									$finding->{finding} .= "Insecure client-initiated renegotiation is supported\n" if ($det & 1);
 									$finding->{finding} .= "Secure renegotiation is supported\n" if ($det & 2);
 									$finding->{finding} .= "Secure client-initiated renegotiation is supported\n" if ($det & 4);
 									$finding->{finding} .= "The server requires secure renegotiation support\n" if ($det & 8);
+									$finding->{finding} .= "Value: $det\n";
 									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "cert" ) {
 									$finding->{id} = "cert";

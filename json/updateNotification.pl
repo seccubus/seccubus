@@ -28,11 +28,12 @@ my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $notification_id = $query->param("id");
-my $subject = $query->param("subject");
-my $recipients = $query->param("recipients");
-my $message = $query->param("message");
-my $event_id = $query->param("event_id");
+my $params = $query->Vars;
+my $notification_id = $params->{id};
+my $subject = $params->{subject};
+my $recipients = $params->{recipients};
+my $message = $params->{message};
+my $event_id = $params->{event_id};
 
 # Return an error if the required parameters were not passed 
 my $error;

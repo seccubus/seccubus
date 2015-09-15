@@ -636,7 +636,7 @@ CREATE TABLE `scans` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` char(255) NOT NULL,
   `scannername` char(255) NOT NULL,
-  `scannerparam` char(255) DEFAULT NULL,
+  `scannerparam` varchar(1024) DEFAULT NULL,
   `password` char(255) DEFAULT NULL,
   `targets` longtext,
   `workspace_id` int(11) NOT NULL,

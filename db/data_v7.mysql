@@ -1,5 +1,5 @@
 /*
-Copyright 2015 Frank Breedijk
+Copyright 2014 Frank Breedijk, Petr
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ limitations under the License.
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES ('version','8');
+INSERT INTO `config` VALUES ('version','7');
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 

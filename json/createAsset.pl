@@ -28,10 +28,11 @@ my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $workspace_id = $query->param("workspace");
-my $name = $query->param('name');
-my $hosts = $query->param('hosts');
-my $recipients = $query->param('recipients');
+my $params = $query->Vars;
+my $workspace_id = $params->{workspace};
+my $name = $params->{name};
+my $hosts = $params->{hosts};
+my $recipients = $params->{recipients};
 
 
 # Return an error if the required parameters were not passed 

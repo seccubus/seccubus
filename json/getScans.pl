@@ -29,7 +29,8 @@ my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $workspace_id = $query->param("workspaceId");
+my $params = $query->Vars;
+my $workspace_id = $params->{workspaceId};
 
 # Return an error if the required parameters were not passed 
 if (not (defined ($workspace_id))) {
