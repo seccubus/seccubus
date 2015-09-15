@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Seccubus 2.0 to go out of beta at alt-s conference
+title: Seccubus v2.0 to go out of beta at alt-s conference
 ---
 ![Alt-S logo](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARwAAABkCAYAAABU8o
 /4AAAACXBIWXMAAA3XAAAN1wFCKJt4AAAENmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1w

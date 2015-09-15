@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Seccubus 2.2 – Nessus 5.2.1, unicode and performance
+title: Seccubus v2.2 – Nessus 5.2.1, unicode and performance
 ---
 I’m proud to announce the release of Seccubus 2.2 which fixes issue with
 Nessus 5.2.1 and later, unicode in .nessus files and brings a major

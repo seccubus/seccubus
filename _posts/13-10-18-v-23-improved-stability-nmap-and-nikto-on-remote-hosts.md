@@ -1,6 +1,6 @@
 ---
 layout: post
-title: v 2.3 – Improved stability, Nmap and Nikto on remote hosts
+title: Seccubus v2.3 – Improved stability, Nmap and Nikto on remote hosts
 ---
 Just after the performance release of version 2.2 we bring you Seccubus
 version 2.3 which improves on v2.2 in three important ways.

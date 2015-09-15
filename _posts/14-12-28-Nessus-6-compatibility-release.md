@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Nessus 6 compatibility release, asset management, Custom SQL and more...
+title: Seccubus v2.11 - Nessus 6 compatibility release, asset management, Custom SQL and more...
 ---
 
 Download it [here](https://github.com/schubergphilis/Seccubus_v2/releases)

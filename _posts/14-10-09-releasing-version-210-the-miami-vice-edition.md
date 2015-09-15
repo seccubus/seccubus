@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Releasing version 2.10, The Miami Vice edition
+title: Seccubus v2.10, The Miami Vice edition
 ---
 Today I release Seccubus version 2.10 which I have dubbed ‘The Miami Vice’
 edition because I’m currently visiting the Akamai Edge conference in Miami,

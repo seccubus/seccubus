@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Seccubus 2.1 – Bugfix release
+title: Seccubus v2.1 – Bugfix release
 ---
 Today we release Seccubus 2.1 a bugfix release for the 2.0 version of
 Seccubus.

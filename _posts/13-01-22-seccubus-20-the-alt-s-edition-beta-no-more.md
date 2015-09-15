@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Seccubus 2.0 – The Alt-S edition (Beta no more)
+title: Seccubus v2.0 – The Alt-S edition (Beta no more)
 ---
 Seccubus V2 works with the following scanners:
 * Nessus 4.x and 5.x (professional and home feed)
