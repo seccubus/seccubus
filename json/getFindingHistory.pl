@@ -29,8 +29,9 @@ my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
+my $params = $query->Vars;
 my $workspace_id = $query->param("workspaceId");
-my $finding_id = $query->param("findingId");
+my $finding_id = $query->param("workspaceId");
 $finding_id = 0 unless $finding_id;
 
 # Return an error if the required parameters were not passed 

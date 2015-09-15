@@ -28,12 +28,13 @@ my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $workspace_id = $query->param("workspaceId");
-my $scan_id = $query->param("scanId");
-my $subject = $query->param("subject");
-my $recipients = $query->param("recipients");
-my $message = $query->param("message");
-my $event_id = $query->param("trigger");
+my $params = $query->Vars;
+my $workspace_id = $params->{workspaceId};
+my $scan_id = $params->{scanId};
+my $subject = $params->{subject};
+my $recipients = $params->{recipients};
+my $message = $params->{message};
+my $event_id = $params->{trigger};
 
 # Return an error if the required parameters were not passed 
 my $error;

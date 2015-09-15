@@ -30,11 +30,12 @@ my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $workspace_id = $query->param("workspaceId");
-my $id = $query->param("id");
-my $remark = $query->param("remark");
-my $status = $query->param("status");
-my $overwrite = $query->param("overwrite");
+my $params = $query->Vars;
+my $workspace_id = $params->{workspaceId};
+my $id = $params->{id};
+my $remark = $params->{remark};
+my $status = $params->{status};
+my $overwrite = $params->{overwrite};
 
 if ( $overwrite eq "true" || $overwrite == 1 ) {
 	$overwrite = 1;

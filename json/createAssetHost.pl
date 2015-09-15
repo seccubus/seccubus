@@ -28,10 +28,11 @@ my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $workspace_id = $query->param("workspace");
-my $asset_id = $query->param("asset");
-my $ip = $query->param('ip');
-my $host = $query->param('host');
+my $params = $query->Vars;
+my $workspace_id = $params->{workspace};
+my $asset_id = $params->{asset};
+my $ip = $params->{ip};
+my $host = $params->{host};
 
 # Return an error if the required parameters were not passed 
 bye("Parameter workspace is missing") if(not (defined ($workspace_id)));
