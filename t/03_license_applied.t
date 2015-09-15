@@ -158,7 +158,7 @@ sub hasauthors {
 
 		foreach my $auth ( sort keys %authors ) {
 			unless ( $auth eq "Not Committed Yet" ) {
-				like($head, qr/$auth/, "Author $auth is duely credited\nFile: $file\nBlame: $blame");
+				like($head, qr/$auth/, "Author $auth is duely credited in file: $file");
 				$tests++;
 			}
 		}
