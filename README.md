@@ -32,9 +32,9 @@ For more information visit [www.seccubus.com]
 Release notes
 =============
 
-13-08-2015 - 2.16 - 
-=========================================
-This version fixes an issue where the output of NMap scripts (NSE) was completly ignored
+15-09-2015 - 2.16 - GNU Terry Pratchett
+=======================================
+The bonanza of after summer fixes and small enhancements continues
 
 Enhancements
 ------------
@@ -49,6 +49,7 @@ Enhancements
 Bug Fixes
 ---------
 * #180 - NMAP script output ignored
+* #186 - Custom SQL table is missing from DB init scripts
 * #198 - Unable to add more then 1 asset
 * #199 - asset_host broken in v6 and upgrade problems
 * #200: Error using ZAP remote
@@ -64,3 +65,4 @@ Bug Fixes
 * #248 - SSLLabs Reneg finding empty is reneg is not supported 
 * Copyright related unit tests now work on Travis CI too
 * #252 - scannerparam column in scans table too small
+* #255 - Incorrect use of CGI.pm may cause parameter injection vulnerability

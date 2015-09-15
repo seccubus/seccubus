@@ -25,6 +25,41 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+15-09-2015 - 2.16 - GNU Terry Pratchett
+=======================================
+The bonanza of after summer fixes and small enhancements continues
+
+Enhancements
+------------
+* #185 - GNU Terry Pratchett
+* #214 - NMap, include port status in port number
+* #223 - Make the Bulk Update feature much faster in the GUI
+* #228 - SSL Labs: Warn if MaxAge is below the recommended 180 days
+* #226 - Create Travis Unit tests for DB upgrade
+* #241 - Unit tests for delta engine
+* Moved to new Travis build infra. See: http://docs.travis-ci.com/user/migrating-from-legacy/
+
+Bug Fixes
+---------
+* #180 - NMAP script output ignored
+* #186 - Custom SQL table is missing from DB init scripts
+* #198 - Unable to add more then 1 asset
+* #199 - asset_host broken in v6 and upgrade problems
+* #200: Error using ZAP remote
+* Fixed ZAP file handling issue
+* Fixed a new found bug in ivil2zap, more output now in findings
+* Fixed SSLlabs error exception
+* #213 - .spec file still references v4 data structures instead of v6
+* #222 - SSL Labs: hasSct and sessionTickets findings not saved in IVIL file
+* #224 - Bulk Update controller not updated after update of remark only
+* #236 - Database upgrades inconsistent
+* #243 - do-scan -q is not very quiet
+* #247 - SSLLabs: certain values for PoodleTLS not handled
+* #248 - SSLLabs Reneg finding empty is reneg is not supported 
+* Copyright related unit tests now work on Travis CI too
+* #252 - scannerparam column in scans table too small
+* #255 - Incorrect use of CGI.pm may cause parameter injection vulnerability
+
 13-08-2015 - 2.15 - Summer time bug fixes
 =========================================
 Using the quiet(er) time after summer to get some bug fixes in.
