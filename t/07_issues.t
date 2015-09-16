@@ -49,7 +49,7 @@ if (`hostname` =~ /^sbpd/) {
 		`cp etc/config.xml.mysql.example etc/config.xml`;
 	}
 
-	my $json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/ConfigTest.pl`);
+	my $json = webcall("ConfigTest.pl");
 	foreach my $t ( @$json ) {
 		if ( $t->{name} ne "Configuration file" ) { # Skip in container
 			is($t->{result}, "OK", "$t->{name} ($t->{result}) eq OK?");
@@ -59,31 +59,31 @@ if (`hostname` =~ /^sbpd/) {
 	
 	# Loading AAAAAAA - 12-18
 	`perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAA.ivil.xml`;
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
+	$json = webcall("getFindings.pl", "workspaceId=100", "scanIds[]=1");
 	is(@$json, 7, "Seven findings loaded?"); $tests++;
 
 	# Need to provide a workspaceId
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/updateIssue.pl`);
+	$json = webcall("updateIssue.pl");
 	ok($$json[0]->{error}, "Should error when workspaceId is missing"); $tests++;
 
 	# Need to provide a numeric workspaceId
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/updateIssue.pl`);
+	$json = webcall("updateIssue.pl", "workspaceId=a");
 	ok($$json[0]->{error}, "Should error when workspaceId is not numeric"); $tests++;
 
 	# Need a name
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/updateIssue.pl workspaceId=100 severity=1 status=1`);
+	$json = webcall("updateIssue.pl", "workspaceId=100", "severity=1", "status=1");
 	ok($$json[0]->{error}, "Should error when name is missing"); $tests++;
 
 	# Can we create an issue that is not linked to any findings?
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/updateIssue.pl workspaceId=100 name=test1 ext_ref=test1 description=test1 severity=0 status=1`);
+	$json = webcall("updateIssue.pl", "workspaceId=100", "name=test1", "ext_ref=test1", "description=test1", "severity=0", "status=1");
 	is($$json[0], 1, "First insert: ID:1 returned"); $tests++;
 
 	# Are default values set when we omit them?
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/updateIssue.pl workspaceId=100 name=test1 ext_ref=test1 description=test1`);
+	$json = webcall("updateIssue.pl", "workspaceId=100", "name=test1", "ext_ref=test1", "description=test1");
 	is($$json[0], 2, "Second insert: ID:2 returned ($$json[0])"); $tests++;
 
 	# OK, time to read them back...
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssues.pl workspaceId=100`);
+	$json = webcall("getIssues.pl", "workspaceId=100");
 	is(@$json, 2, "Two rows returned"); $tests++;
 
 	is($$json[0]->{id}, 1, "First record is record 1"); $tests++;
@@ -104,7 +104,7 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[0]->{statusName}, 'Open', "statusName eq 'Open'"); $tests++;
 
 	# Can we update the text fields?
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/updateIssue.pl issueId=1 workspaceId=100 name=test2 ext_ref=test2 description=test2`);
+	$json = webcall("updateIssue.pl", "issueId=1", "workspaceId=100", "name=test2", "ext_ref=test2", "description=test2");
 	is($$json[0]->{name}, 'test2', "name = test2"); $tests++;
 	is($$json[0]->{ext_ref}, 'test2', "ext_ref eq 'test2'"); $tests++;
 	is($$json[0]->{description}, 'test2', "description eq 'test2'"); $tests++;
@@ -114,7 +114,7 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[0]->{statusName}, 'Open', "statusName eq 'Open'"); $tests++;
 
 	# OK, time to read them back...
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssues.pl workspaceId=100`);
+	$json = webcall("getIssues.pl", "workspaceId=100");
 	is(@$json, 2, "Two, returned"); $tests++;
 	is($$json[0]->{name}, 'test2', "name = test2"); $tests++;
 	is($$json[0]->{ext_ref}, 'test2', "ext_ref eq 'test2'"); $tests++;
@@ -126,7 +126,7 @@ if (`hostname` =~ /^sbpd/) {
 
 	# Can we update the numeric fields?
 	$ENV{REMOTE_USER} = 'importer';
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/updateIssue.pl issueId=2 workspaceId=100 status=2 severity=1`);
+	$json = webcall("updateIssue.pl", "issueId=2", "workspaceId=100", "status=2", "severity=1");
 	$ENV{REMOTE_USER} = undef;
 	is($$json[0]->{name}, 'test1', "name = test1"); $tests++;
 	is($$json[0]->{ext_ref}, 'test1', "ext_ref eq 'test1'"); $tests++;
@@ -137,7 +137,7 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[0]->{statusName}, 'Closed', "statusName eq 'Closed'"); $tests++;
 
 	# OK, time to read them back...
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssues.pl workspaceId=100`);
+	$json = webcall("getIssues.pl", "workspaceId=100");
 	is(@$json, 2, "Two, returned"); $tests++;
 	is($$json[1]->{name}, 'test1', "name = test1"); $tests++;
 	is($$json[1]->{ext_ref}, 'test1', "ext_ref eq 'test1'"); $tests++;
@@ -148,11 +148,13 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[1]->{statusName}, 'Closed', "statusName eq 'Closed'"); $tests++;
 
 	# Lets check update records. Create a new record
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/updateIssue.pl workspaceId=100 name=test3 ext_ref=test3 description=test3 severity=1 status=2`);
+	$json = webcall("updateIssue.pl", "workspaceId=100", "name=test3", "ext_ref=test3", "description=test3",
+		"severity=1", "status=2");
 	is($$json[0], 3, "Inserted ID correct"); $tests++;
 
 	# Let's do an update that isn't an update
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/updateIssue.pl issueId=3 workspaceId=100 name=test3 ext_ref=test3 description=test3 severity=1 status=2`);
+	$json = webcall("updateIssue.pl", "issueId=3", "workspaceId=100", "name=test3", "ext_ref=test3", 
+		"description=test3", "severity=1", "status=2");
 	is($$json[0]->{name}, 'test3', "name ok"); $tests++;
 	is($$json[0]->{ext_ref}, 'test3', "ext_ref ok"); $tests++;
 	is($$json[0]->{description}, 'test3', "description ok"); $tests++;
@@ -162,7 +164,7 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[0]->{statusName}, 'Closed', "statusName ok"); $tests++;
 
 	# OK, time to read them back...
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssues.pl workspaceId=100`);
+	$json = webcall("getIssues.pl", "workspaceId=100");
 	is(@$json, 3, "Correct number of records"); $tests++;
 	is($$json[2]->{name}, 'test3', "name ok"); $tests++;
 	is($$json[2]->{ext_ref}, 'test3', "ext_ref ok"); $tests++;
@@ -173,20 +175,19 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[2]->{statusName}, 'Closed', "statusName ok"); $tests++;
 
 	# Error protection getIssueHistory
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssueHistory.pl issueId=1`);
+	$json = webcall("getIssueHistory.pl", "issueId=1");
 	ok($$json[0]->{error}, "Should error when workspaceId is missing"); $tests++;
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssueHistory.pl issueId=1 workspaceId=a`);
+	$json = webcall("getIssueHistory.pl", "issueId=1", "workspaceId=a");
 	ok($$json[0]->{error}, "Should error when workspaceId is not numeric"); $tests++;
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssueHistory.pl workspaceId=100`);
+	$json = webcall("getIssueHistory.pl", "workspaceId=100");
 	ok($$json[0]->{error}, "Should error when issueId is missing"); $tests++;
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssueHistory.pl issueId=a workspaceId=100`);
+	$json = webcall("getIssueHistory.pl", "issueId=a", "workspaceId=100");
 	ok($$json[0]->{error}, "Should error when issueId is not numeric"); $tests++;
 
 	# Lets get the history of record 1
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssueHistory.pl issueId=1 workspaceId=100`);
+	$json = webcall("getIssueHistory.pl", "issueId=1", "workspaceId=100");
 	is(@$json, 2, "Correct number of records"); $tests++;
 	# Current values
-	#die Dumper $json;
 	is($$json[0]->{name}, 'test2', "name ok"); $tests++;
 	is($$json[0]->{ext_ref}, 'test2', "ext_ref ok"); $tests++;
 	is($$json[0]->{description}, 'test2', "description ok"); $tests++;
@@ -208,7 +209,7 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[1]->{userName}, 'admin', "userName ok"); $tests++;
 
 	# Lets get the history of record 2
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssueHistory.pl issueId=2 workspaceId=100`);
+	$json = webcall("getIssueHistory.pl", "issueId=2", "workspaceId=100");
 	is(@$json, 2, "Correct number of records"); $tests++;
 	# Current values
 	is($$json[0]->{name}, 'test1', "name ok"); $tests++;
@@ -232,7 +233,7 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[1]->{userName}, 'admin', "userName ok"); $tests++;
 
 	# Lets get the history of record 3
-	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssueHistory.pl issueId=3 workspaceId=100`);
+	$json = webcall("getIssueHistory.pl", "issueId=3", "workspaceId=100");
 	is(@$json, 1, "Correct number of records"); $tests++;
 	# Current values
 	is($$json[0]->{name}, 'test3', "name ok"); $tests++;
@@ -245,17 +246,99 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[0]->{userId}, 1, "userId ok"); $tests++;
 	is($$json[0]->{userName}, 'admin', "userName ok"); $tests++;
 
+	# Lets create an issue with linked findings
+	$json = webcall("updateIssue.pl", "workspaceId=100", "name=test4", "ext_ref=test4", 
+		"description=test4", "severity=1", "status=1", "findingIds[]=1", "findingIds[]=2", 
+		"findingIds[]=3", "findingIds[]=3");
+	is($$json[0], 4, "Inserted ID correct"); $tests++;
+	# OK, time to read them back...
+	$json = webcall("getIssues.pl", "workspaceId=100");
+	is(@$json, 4, "Correct number of records"); $tests++;
+	is($$json[3]->{name}, 'test4', "name ok"); $tests++;
+	is($$json[3]->{ext_ref}, 'test4', "ext_ref ok"); $tests++;
+	is($$json[3]->{description}, 'test4', "description ok"); $tests++;
+	is($$json[3]->{severity}, 1, "severity ok"); $tests++;
+	is($$json[3]->{severityName}, 'High', "severityName ok"); $tests++;
+	is($$json[3]->{status}, 1, "status ok"); $tests++;
+	is($$json[3]->{statusName}, 'Open', "statusName ok"); $tests++;
+	is(@{$$json[3]->{findings}}, 3, "number of linked findings ok"); $tests++;
+	is($$json[3]->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
+	is($$json[3]->{findings}[1]->{id}, 2, "linked finding ok"); $tests++;
+	is($$json[3]->{findings}[2]->{id}, 3, "linked finding ok"); $tests++;
 
-	#die Dumper $json;
+	# Can we link across workspaces?
+	$json = webcall("createWorkspace.pl", "name=test2");
+	is($$json[0]->{id},101,"Workspace created"); $tests++;
+	is($$json[0]->{name},"test2","Workspace created"); $tests++;
+	$json = webcall("updateIssue.pl", "workspaceId=101", "name=test5", "ext_ref=test5", 
+		"description=test5", "severity=1", "status=1", "findingIds[]=1", "findingIds[]=2", 
+		"findingIds[]=3", "findingIds[]=3");
+	is($$json[0], 5, "Inserted ID correct"); $tests++;
+	$json = webcall("getIssues.pl", "workspaceId=101");
+	is(@$json, 1, "Correct number of records"); $tests++;
+	is($$json[0]->{name}, 'test5', "name ok"); $tests++;
+	is($$json[0]->{ext_ref}, 'test5', "ext_ref ok"); $tests++;
+	is($$json[0]->{description}, 'test5', "description ok"); $tests++;
+	is($$json[0]->{severity}, 1, "severity ok"); $tests++;
+	is($$json[0]->{severityName}, 'High', "severityName ok"); $tests++;
+	is($$json[0]->{status}, 1, "status ok"); $tests++;
+	is($$json[0]->{statusName}, 'Open', "statusName ok"); $tests++;
+	is(@{$$json[0]->{findings}}, 0, "number of linked findings ok"); $tests++;
+
+	# Can we link to existing issue?
+	$json = webcall("updateIssue.pl", "issueId=4", "workspaceId=100", "findingIds[]=4");
+	# OK, time to read them back...
+	$json = webcall("getIssues.pl", "workspaceId=100");
+	is(@$json, 4, "Correct number of records"); $tests++;
+	is(@{$$json[3]->{findings}}, 4, "number of linked findings ok"); $tests++;
+	is($$json[3]->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
+	is($$json[3]->{findings}[1]->{id}, 2, "linked finding ok"); $tests++;
+	is($$json[3]->{findings}[2]->{id}, 3, "linked finding ok"); $tests++;
+	is($$json[3]->{findings}[3]->{id}, 4, "linked finding ok"); $tests++;
+
+	# Shouldn't be able to crosslink in this way
+	$json = webcall("updateIssue.pl", "issueId=5", "workspaceId=101", "findingIds[]=4");
+	# OK, time to read them back...
+	$json = webcall("getIssues.pl", "workspaceId=101");
+	is(@$json, 1, "Correct number of records"); $tests++;
+	is(@{$$json[0]->{findings}}, 0, "number of linked findings ok"); $tests++;
+
+	# Can we unlink an issue
+	$json = webcall("unlinkFindingIssue.pl", "issueId=4", "workspaceId=100", "findingIds[]=4");
+	# OK, time to read them back...
+	$json = webcall("getIssues.pl", "workspaceId=100");
+	is(@$json, 4, "Correct number of records"); $tests++;
+	is(@{$$json[3]->{findings}}, 3, "number of linked findings ok"); $tests++;
+	is($$json[3]->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
+	is($$json[3]->{findings}[1]->{id}, 2, "linked finding ok"); $tests++;
+	is($$json[3]->{findings}[2]->{id}, 3, "linked finding ok"); $tests++;
+
+	# Can we unlink multiple issues
+	$json = webcall("unlinkFindingIssue.pl", "issueId=4", "workspaceId=100", "findingIds[]=2", "findingIds[]=3");
+	# OK, time to read them back...
+	$json = webcall("getIssues.pl", "workspaceId=100");
+	is(@$json, 4, "Correct number of records"); $tests++;
+	is(@{$$json[3]->{findings}}, 1, "number of linked findings ok"); $tests++;
+	is($$json[3]->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
+
+	# Shouldn't be able to unlink an issue that isn't linked
+	$json = webcall("unlinkFindingIssue.pl", "issueId=4", "workspaceId=100", "findingIds[]=4");
+	# OK, time to read them back...
+	$json = webcall("getIssues.pl", "workspaceId=100");
+	is(@$json, 4, "Correct number of records"); $tests++;
+	is(@{$$json[3]->{findings}}, 1, "number of linked findings ok"); $tests++;
+	is($$json[3]->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
+
 }
 
 done_testing($tests);
 
-sub decodeit(@) {
-	my $line = 1;
-	while( $line ) {
-		$line = shift;
-		$line =~ s/\r?\n//;
-	}
-	return decode_json(join "\n", @_);
+sub webcall(@) {
+	my $call = shift;
+
+	my $cmd = "perl -MSeccubusV2 -I SeccubusV2 json/$call ";
+	$cmd .= join " ", @_;
+	my @result = split /\r?\n/, `$cmd`;
+	while ( shift @result ) {};
+	return decode_json(join "\n", @result);
 }

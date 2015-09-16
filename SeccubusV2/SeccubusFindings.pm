@@ -103,6 +103,7 @@ sub get_findings($;$$$) {
 			LEFT JOIN severity on findings.severity = severity.id
 			LEFT JOIN finding_status on findings.status = finding_status.id
 			LEFT JOIN scans on scans.id = findings.scan_id
+			LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id
 			WHERE
 				findings.workspace_id = ?";
 		if ( $scan_id != 0 ) {
@@ -125,6 +126,7 @@ sub get_findings($;$$$) {
 				LEFT JOIN severity on findings.severity = severity.id
 				LEFT JOIN finding_status on findings.status = finding_status.id
 				LEFT JOIN scans on scans.id = findings.scan_id,
+				LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id
 				assets,
 				asset_hosts
 			
@@ -173,6 +175,10 @@ sub get_findings($;$$$) {
 			if ( $filter->{remark} ) {
 				$query .= " AND remark LIKE ?";
 				push @$params, "%" . $filter->{remark} . "%";
+			}
+			if ( $filter->{issue} ) {
+				$query .= " AND issues2findings.issue_id = ?";
+				push @$params, $filter->{issue};
 			}
 		}
 		

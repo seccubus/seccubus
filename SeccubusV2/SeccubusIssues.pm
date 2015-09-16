@@ -32,6 +32,7 @@ use Data::Dumper;
 	update_issue
 	get_issues	
 	get_issue
+	issue_finding_link
 );
 
 use strict;
@@ -41,6 +42,7 @@ sub update_issue(@);
 sub create_issue_change($);
 sub get_issues($;$);
 sub get_issue($$);
+sub issue_finding_link($$$;$);
 
 =head1 Data manipulation - issues
 
@@ -116,14 +118,17 @@ sub update_issue(@) {
 	}
 	if ( $arg{issue_id} ) {
 		# We need to update the record
-		my $query = "update issues set ";
-		$query .= join " = ? , ", @fields;
-		$query .= " = ?";
-		$query .= "where id = ? and workspace_id = ?";
-		sql( "return"	=> "handle",
-		     "query" 	=> $query,
-		     "values"	=> [ @values, $arg{issue_id}, $arg{workspace_id} ]
-		);
+		if ( @fields ) {
+			my $query = "update issues set ";
+			$query .= join " = ? , ", @fields;
+			$query .= " = ?";
+			$query .= "where id = ? and workspace_id = ?";
+			sql( "return"	=> "handle",
+			     "query" 	=> $query,
+			     "values"	=> [ @values, $arg{issue_id}, $arg{workspace_id} ]
+			);
+		}
+
 		$return = get_issues($arg{workspace_id}, $arg{issue_id});
 	} else {
 		# We need to create the record
@@ -144,6 +149,14 @@ sub update_issue(@) {
 	}
 	# Create an audit record
 	create_issue_change($arg{issue_id});
+
+	# Link findings
+	if ( $arg{findings} ) {
+		foreach my $finding_id ( split( /\0/, $arg{findings}) ) {
+			issue_finding_link($arg{workspace_id}, $arg{issue_id}, $finding_id);
+		}
+	}
+
 	return $return;
 }
 
@@ -251,7 +264,7 @@ sub get_issues($;$) {
 		}
 		$query .= " ORDER BY i.id ";
 
-		return sql(
+		my $issues = sql(
 			"return"	=> "ref",
 			"query"		=> $query,
 			"values"	=> $params,
@@ -310,6 +323,116 @@ sub get_issue($$) {
 			"query"	=> $query,
 			"values"	=> [ $workspace_id, $issue_id ]
 		);
+	} else {
+		die "Permission denied!";
+	}
+}
+
+=head2 issue_finding_link
+
+This function creates or deletes a link between a finding and an issue
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item workspace_id - id of the workspace
+
+=item issue_id - id of the issue
+
+=item finding_id - id of the finding
+
+=item delete (optional) - If true the issue should be deleted
+
+=back 
+
+=item Checks
+
+Must have write rights
+
+=back
+
+=cut
+sub issue_finding_link($$$;$) {
+	my $workspace_id = shift or die "No workspace_id provided";
+	my $issue_id = shift or die "No issue_id provided";
+	my $finding_id = shift or die "No finding_id provided";
+	my $delete = shift;
+
+	my $query;
+
+	if ( may_write($workspace_id) ) {
+		$query = "
+			SELECT  count(*) 
+			FROM	issues2findings
+			WHERE 	issue_id = ? AND finding_id = ?
+		";
+		my @row = sql( 
+			"return"	=> "array",
+			"query"		=> $query,
+			"values"	=> [ $issue_id, $finding_id ]
+		);
+		my $count = $row[0];
+		if ( $delete ) {
+			if ( $count ) { # A previous record exists
+				$query = "DELETE FROM issues2findings WHERE issue_id = ? AND finding_id = ?";
+				sql(
+					"return"	=> "handle",
+					"query"		=> $query,
+					"values"	=> [ $issue_id, $finding_id ]
+				);
+				my $user_id = get_user_id($ENV{REMOTE_USER});
+				$query = "INSERT INTO issue2finding_changes ( issue_id, finding_id, user_id, deleted ) VALUES ( ?, ?, ?, true )";
+				sql(
+					"return"	=> "handle",
+					"query"		=> $query,
+					"values"	=> [ $issue_id, $finding_id, $user_id ]
+				);
+			}
+		} else {
+			unless ( $count ) { # A previous record does not exist
+				# Check if issues and finding exist in this workspace
+				$query = "
+					SELECT  count(*) 
+					FROM	issues
+					WHERE 	id = ? AND workspace_id = ?
+				";
+				@row = sql( 
+					"return"	=> "array",
+					"query"		=> $query,
+					"values"	=> [ $issue_id, $workspace_id ]
+				);
+				my $icount = $row[0];
+				$query = "
+					SELECT 	count(*)
+					FROM 	findings
+					WHERE   id = ? AND workspace_id = ?
+				";
+				@row = sql( 
+					"return"	=> "array",
+					"query"		=> $query,
+					"values"	=> [ $finding_id, $workspace_id ]
+				);
+				my $fcount = $row[0];
+				if ( $icount && $fcount ) { # Only if they exist in this workspace
+					$query = "INSERT INTO issues2findings ( issue_id, finding_id ) VALUES ( ?, ? )";
+					sql(
+						"return"	=> "handle",
+						"query"		=> $query,
+						"values"	=> [ $issue_id, $finding_id ]
+					);
+					my $user_id = get_user_id($ENV{REMOTE_USER});
+					$query = "INSERT INTO issue2finding_changes ( issue_id, finding_id, user_id, deleted ) VALUES ( ?, ?, ?, false )";
+					sql(
+						"return"	=> "handle",
+						"query"		=> $query,
+						"values"	=> [ $issue_id, $finding_id, $user_id ]
+					);
+				}
+			}
+		}
 	} else {
 		die "Permission denied!";
 	}

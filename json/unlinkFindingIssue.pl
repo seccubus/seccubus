@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# Get a full list of findings associated with the filter parameters given
+# Unlinks a finding from an issue
 # ------------------------------------------------------------------------------
 
 use strict;
@@ -23,7 +23,6 @@ use JSON;
 use lib "..";
 use SeccubusV2;
 use SeccubusIssues;
-use SeccubusFindings;
 use Data::Dumper;
 
 my $query = CGI::new();
@@ -32,51 +31,33 @@ my $json = JSON->new();
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
 my $params = $query->Vars;
-my $workspace_id = $query->param("workspaceId");
 
 # Return an error if the required parameters were not passed 
-if (not (defined ($workspace_id))) {
+if (not (defined ($params->{workspaceId}))) {
 	bye("Parameter workspaceId is missing");
-} elsif ( $workspace_id + 0 ne $workspace_id ) {
+} elsif ( $params->{workspaceId} + 0 ne $params->{workspaceId} ) {
 	bye("WorkspaceId is not numeric");
 };
+# Return an error if the required parameters were not passed 
+if (not (defined ($params->{issueId}))) {
+	bye("Parameter issueId is missing");
+} elsif ( $params->{issueId} + 0 ne $params->{issueId} ) {
+	bye("issueId is not numeric");
+};
+# Return an error if the required parameters were not passed 
+if (not (defined ($params->{'findingIds[]'}))) {
+	bye("Parameter findingIds[] are missing");
+};
+
+# A little translation
+my $workspace_id = $params->{workspaceId};
+my $issue_id = $params->{issueId};
+my @finding_ids = split(/\0/, $params->{'findingIds[]'});
 
 eval {
 	my @data;
-	my $issues = get_issues($workspace_id);
-	foreach my $row ( @$issues ) {
-		push (@data, {
-			'id'			=> $$row[0],
-			'name'			=> $$row[1],
-			'ext_ref'		=> $$row[2],
-			'description'	=> $$row[3],
-	 		'severity'		=> $$row[4],
-			'severityName'	=> $$row[5],
-			'status'		=> $$row[6],
-			'statusName'	=> $$row[7],
-		});
-	}
-	foreach my $issue ( @data ) {
-		my $findings_in = get_findings($workspace_id, undef, undef, { 'issue' => $issue->{id} } );
-		my $findings_out = [];
-		foreach my $row ( @$findings_in ) {
-			push ( @$findings_out, {
-				'id'			=> $$row[0],
-				'host'			=> $$row[1],
-				'hostName'		=> $$row[2],
-				'port'			=> $$row[3],
-				'plugin'		=> $$row[4],
-				'find'			=> $$row[5],
-				'remark'		=> $$row[6],
-		 		'severity'		=> $$row[7],
-				'severityName'	=> $$row[8],
-				'status'		=> $$row[9],
-				'statusName'	=> $$row[10],
-				'scanId'		=> $$row[11],
-				'scanName'		=> $$row[12],
-			});
-		}
-		$issue->{findings} = $findings_out;
+	foreach my $finding_id ( @finding_ids ) {
+		issue_finding_link($workspace_id, $issue_id, $finding_id, 1);
 	}
 	print $json->pretty->encode(\@data);
 } or do {

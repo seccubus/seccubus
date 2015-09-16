@@ -51,9 +51,9 @@ if (`hostname` =~ /^sbpd/) {
 		ok(1,"Database structure v$version created"); $tests++;
 		`mysql -uroot seccubus_upgrade < db/structure_v$p_version.mysql`;
 		`mysql -uroot seccubus_upgrade < db/data_v$p_version.mysql`;
-		ok(1,"Database v$p_version created"); $tests++;
+		ok(1,"Database data v$p_version created"); $tests++;
 		`mysql -uroot seccubus_upgrade < db/upgrade_$u_version.mysql`;
-		ok(1,"Execute $u_version upgrade procedure"); $tests++;
+		ok(1,"$u_version upgrade procedure done"); $tests++;
 		my $create = `mysqldump -uroot seccubus_create`;
 		my $upgrade = `mysqldump -uroot seccubus_upgrade`;
 

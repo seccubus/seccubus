@@ -401,17 +401,13 @@ DROP TABLE IF EXISTS `issue2finding_changes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `issue2finding_changes` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `issue_id` int(11) NOT NULL,
   `finding_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `fk_issue2finding_changes_issues2findings1_idx` (`issue_id`),
-  KEY `fk_issue2finding_changes_issues2findings2_idx` (`finding_id`),
-  CONSTRAINT `fk_issue2finding_changes_issues2findings1` FOREIGN KEY (`issue_id`) REFERENCES `issues2findings` (`issue_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_issue2finding_changes_issues2findings2` FOREIGN KEY (`finding_id`) REFERENCES `issues2findings` (`finding_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

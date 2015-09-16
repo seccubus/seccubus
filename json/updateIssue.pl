@@ -23,6 +23,7 @@ use JSON;
 use lib "..";
 use SeccubusV2;
 use SeccubusIssues;
+use Data::Dumper;
 
 my $query = CGI::new();
 my $json = JSON->new();
@@ -44,6 +45,7 @@ $params->{status} = 1 unless ( $params->{status} || $params->{issueId} );
 # A little translation
 $params->{workspace_id} = $params->{workspaceId};
 $params->{issue_id} = $params->{issueId};
+$params->{findings} = $params->{'findingIds[]'};
 
 eval {
 	my @data;
