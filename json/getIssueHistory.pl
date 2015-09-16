@@ -47,28 +47,24 @@ if (not (defined ($workspace_id))) {
 
 eval {
 	my @data;
-# TODO #	my $history = get_issue($workspace_id, $issue_id);
-# TODO #
-# TODO #	foreach my $row ( @$history ) {
-# TODO #		push (@data, {
-# TODO #			'id'		=> $$row[0],
-# TODO #			'issueId'	=> $$row[1],
-# TODO #			'host'		=> $$row[2],
-# TODO #			'hostName'	=> $$row[3],
-# TODO #			'port'		=> $$row[4],
-# TODO #			'plugin'	=> $$row[5],
-# TODO #			'issue'	=> $$row[6],
-# TODO #			'remark'	=> $$row[7],
-# TODO #		 	'severity'	=> $$row[8],
-# TODO #			'severityName'	=> $$row[9],
-# TODO #			'status'	=> $$row[10],
-# TODO #			'statusName'	=> $$row[11],
-# TODO #			'userId'	=> $$row[12],
-# TODO #			'user'		=> $$row[13],
-# TODO #			'time'		=> $$row[14],
-# TODO #			'scanId'	=> $$row[15],
-# TODO #		});
-# TODO #	}
+	my $history = get_issue($workspace_id, $issue_id);
+
+	foreach my $row ( @$history ) {
+		push (@data, {
+			'id'			=> $$row[0],
+			'issueId'		=> $$row[1],
+			'name'			=> $$row[2],
+			'ext_ref'		=> $$row[3],
+			'description'	=> $$row[4],
+			'severity'		=> $$row[5],
+			'severityName'	=> $$row[6],
+			'status'		=> $$row[7],
+			'statusName'	=> $$row[8],
+			'userId'		=> $$row[9],
+			'userName'		=> $$row[10],
+			'timestamp'		=> $$row[11],
+		});
+	}
 	print $json->pretty->encode(\@data);
 } or do {
 	bye(join "\n", $@);

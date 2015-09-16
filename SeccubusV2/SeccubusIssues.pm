@@ -31,6 +31,7 @@ use Data::Dumper;
 @EXPORT = qw ( 
 	update_issue
 	get_issues	
+	get_issue
 );
 
 use strict;
@@ -39,6 +40,7 @@ use Carp;
 sub update_issue(@);
 sub create_issue_change($);
 sub get_issues($;$);
+sub get_issue($$);
 
 =head1 Data manipulation - issues
 
@@ -184,19 +186,20 @@ sub create_issue_change($) {
 		"query"		=> "select name, ext_ref, description,severity, status from issue_changes where issue_id = ? order by time desc limit 1",
 		"values"	=> [ $issue_id ],
 	);
+	#die Dumper @old_data;
 
 	my $x = 0;
 	my $diff = 0;
-	while ( $x < @new_data && $diff ) {
+	while ( $x < @new_data && ! $diff ) {
 		$diff = 1 if ( $old_data[$x] ne $new_data[$x]);
 		$x++
 	}
 
 	my $id = 0;
-	if ( $diff ) {
+	if ( $diff || 0 == @old_data) {
 		$id = sql( 
 			"return"	=> "id",
-			"query"		=> "insert into issue_changes(issue_id, name, ext_ref, description, serverity, status, user_id) values (?, ?, ?, ?, ?, ?, ?)",
+			"query"		=> "insert into issue_changes(issue_id, name, ext_ref, description, severity, status, user_id) values (?, ?, ?, ?, ?, ?, ?)",
 		    "values"	=> [ $issue_id, @new_data, $user_id ],
 		);
 	}
@@ -257,5 +260,60 @@ sub get_issues($;$) {
 		die "Permission denied!";
 	}
 }
+
+=head2 get_issue
+
+This function returns a reference to an array of changes of issue
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item workspace_id - id of the workspace
+
+=item issue_id - id of the issue
+
+=back 
+
+=item Checks
+
+Must have at least read rights
+
+=back
+
+=cut
+
+sub get_issue($$) {
+	my $workspace_id = shift or die "No workspace_id provided";
+	my $issue_id = shift or die "No finding_id provided";
+
+	if ( may_read($workspace_id) ) {
+		my $params = [ $workspace_id, $workspace_id ];
+
+		my $query = "
+			SELECT 	ic.id, ic.issue_id, ic.name, ic.ext_ref, ic.description, ic.severity, s.name as serverity_name,
+				ic.status, st.name as status_name, ic.user_id, u.username, ic.time as changetime 
+			FROM issues i
+			LEFT JOIN issue_changes ic ON (i.id = ic.issue_id)
+			LEFT JOIN users u ON (ic.user_id = u.id )
+			LEFT JOIN issue_status st ON (ic.status = st.id)
+			LEFT JOIN severity s ON (ic.severity = s.id)
+			WHERE
+				i.workspace_id = ? AND
+				i.id = ?
+			ORDER BY ic.time, ic.id DESC
+			";
+
+		return sql( "return"	=> "ref",
+			"query"	=> $query,
+			"values"	=> [ $workspace_id, $issue_id ]
+		);
+	} else {
+		die "Permission denied!";
+	}
+}
+
 # Close the PM file.
 return 1;

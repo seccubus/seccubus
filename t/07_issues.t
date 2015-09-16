@@ -176,7 +176,6 @@ if (`hostname` =~ /^sbpd/) {
 	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssueHistory.pl issueId=1 workspaceId=a`);
 	ok($$json[0]->{error}, "Should error when workspaceId is not numeric"); $tests++;
 	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssueHistory.pl workspaceId=100`);
-	die Dumper $json;
 	ok($$json[0]->{error}, "Should error when issueId is missing"); $tests++;
 	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssueHistory.pl issueId=a workspaceId=100`);
 	ok($$json[0]->{error}, "Should error when issueId is not numeric"); $tests++;
@@ -201,7 +200,7 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[0]->{status}, 1, "status ok"); $tests++;
 	is($$json[0]->{statusName}, 'Open', "statusName ok"); $tests++;
 
-	
+	#die Dumper $json;
 }
 
 done_testing($tests);
