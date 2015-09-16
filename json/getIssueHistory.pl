@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# List the scans
+# Get a full list of issues changes associated with issueId given
 # ------------------------------------------------------------------------------
 
 use strict;
@@ -22,37 +22,53 @@ use CGI::Carp qw(fatalsToBrowser);
 use JSON;
 use lib "..";
 use SeccubusV2;
-use SeccubusScans;
+use SeccubusIssues;
 
 my $query = CGI::new();
 my $json = JSON->new();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
+my $params = $query->Vars;
 my $workspace_id = $query->param("workspaceId");
-my $name = $query->param("name");
-my $severity = $query->param("severity");
-my $status = $query->param("status");
+my $issue_id = $query->param("issueId");
+$issue_id = 0 unless $issue_id;
 
 # Return an error if the required parameters were not passed 
 if (not (defined ($workspace_id))) {
 	bye("Parameter workspaceId is missing");
 } elsif ( $workspace_id + 0 ne $workspace_id ) {
 	bye("WorkspaceId is not numeric");
+} elsif ( $issue_id + 0 ne $issue_id ) {
+	bye("issueId is not numeric");
+} elsif ( $issue_id eq 0 ) {
+	bye("Parameter issueId is missing");
 };
-bye("Need to specify a name") unless $name;
-$severity = 0 unless $severity;
-$status = 1 unless $status;
 
 eval {
 	my @data;
-	my $scans = (); # Get somethin here
-
-	foreach my $row ( @$scans ) {
-		push (@data, {
-			'id'		=> $$row[0],
-		});
-	}
+# TODO #	my $history = get_issue($workspace_id, $issue_id);
+# TODO #
+# TODO #	foreach my $row ( @$history ) {
+# TODO #		push (@data, {
+# TODO #			'id'		=> $$row[0],
+# TODO #			'issueId'	=> $$row[1],
+# TODO #			'host'		=> $$row[2],
+# TODO #			'hostName'	=> $$row[3],
+# TODO #			'port'		=> $$row[4],
+# TODO #			'plugin'	=> $$row[5],
+# TODO #			'issue'	=> $$row[6],
+# TODO #			'remark'	=> $$row[7],
+# TODO #		 	'severity'	=> $$row[8],
+# TODO #			'severityName'	=> $$row[9],
+# TODO #			'status'	=> $$row[10],
+# TODO #			'statusName'	=> $$row[11],
+# TODO #			'userId'	=> $$row[12],
+# TODO #			'user'		=> $$row[13],
+# TODO #			'time'		=> $$row[14],
+# TODO #			'scanId'	=> $$row[15],
+# TODO #		});
+# TODO #	}
 	print $json->pretty->encode(\@data);
 } or do {
 	bye(join "\n", $@);
