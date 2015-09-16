@@ -303,7 +303,7 @@ sub get_issue($$) {
 			WHERE
 				i.workspace_id = ? AND
 				i.id = ?
-			ORDER BY ic.time, ic.id DESC
+			ORDER BY ic.time DESC, ic.id DESC
 			";
 
 		return sql( "return"	=> "ref",

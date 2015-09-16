@@ -105,14 +105,14 @@ ALTER TABLE `seccubus_upgrade`.`workspaces`
 DROP INDEX `id` ;
 
 ALTER TABLE `seccubus_upgrade`.`asset2scan` 
-ADD CONSTRAINT `fk_asset2scan_scans1`
-  FOREIGN KEY (`scan_id`)
-  REFERENCES `seccubus_upgrade`.`scans` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
 ADD CONSTRAINT `fk_asset2scan_assets1`
   FOREIGN KEY (`scan_id`)
   REFERENCES `seccubus_upgrade`.`assets` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_asset2scan_scans1`
+  FOREIGN KEY (`scan_id`)
+  REFERENCES `seccubus_upgrade`.`scans` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
@@ -138,6 +138,11 @@ ADD CONSTRAINT `fk_checkpoints_workspaces1`
   ON UPDATE NO ACTION;
 
 ALTER TABLE `seccubus_upgrade`.`finding_changes` 
+ADD CONSTRAINT `fk_finding_changes_finding_status1`
+  FOREIGN KEY (`status`)
+  REFERENCES `seccubus_upgrade`.`finding_status` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
 ADD CONSTRAINT `fk_finding_changes_findings1`
   FOREIGN KEY (`finding_id`)
   REFERENCES `seccubus_upgrade`.`findings` (`id`)
@@ -146,11 +151,6 @@ ADD CONSTRAINT `fk_finding_changes_findings1`
 ADD CONSTRAINT `fk_finding_changes_runs1`
   FOREIGN KEY (`run_id`)
   REFERENCES `seccubus_upgrade`.`runs` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_finding_changes_finding_status1`
-  FOREIGN KEY (`status`)
-  REFERENCES `seccubus_upgrade`.`finding_status` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
 ADD CONSTRAINT `fk_finding_changes_severity1`
@@ -165,9 +165,9 @@ ADD CONSTRAINT `fk_finding_changes_users1`
   ON UPDATE NO ACTION;
 
 ALTER TABLE `seccubus_upgrade`.`findings` 
-ADD CONSTRAINT `fk_findings_workspaces1`
-  FOREIGN KEY (`workspace_id`)
-  REFERENCES `seccubus_upgrade`.`workspaces` (`id`)
+ADD CONSTRAINT `fk_findings_finding_status1`
+  FOREIGN KEY (`status`)
+  REFERENCES `seccubus_upgrade`.`finding_status` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
 ADD CONSTRAINT `fk_findings_runs1`
@@ -175,16 +175,17 @@ ADD CONSTRAINT `fk_findings_runs1`
   REFERENCES `seccubus_upgrade`.`runs` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_findings_finding_status1`
-  FOREIGN KEY (`status`)
-  REFERENCES `seccubus_upgrade`.`finding_status` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
 ADD CONSTRAINT `fk_findings_severity1`
   FOREIGN KEY (`severity`)
   REFERENCES `seccubus_upgrade`.`severity` (`id`)
   ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_findings_workspaces1`
+  FOREIGN KEY (`workspace_id`)
+  REFERENCES `seccubus_upgrade`.`workspaces` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+;
 
 ALTER TABLE `seccubus_upgrade`.`host_names` 
 ADD CONSTRAINT `fk_host_names_workspaces1`

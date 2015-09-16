@@ -125,7 +125,9 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[0]->{statusName}, 'Open', "statusName eq 'Open'"); $tests++;
 
 	# Can we update the numeric fields?
+	$ENV{REMOTE_USER} = 'importer';
 	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/updateIssue.pl issueId=2 workspaceId=100 status=2 severity=1`);
+	$ENV{REMOTE_USER} = undef;
 	is($$json[0]->{name}, 'test1', "name = test1"); $tests++;
 	is($$json[0]->{ext_ref}, 'test1', "ext_ref eq 'test1'"); $tests++;
 	is($$json[0]->{description}, 'test1', "description eq 'test1'"); $tests++;
@@ -184,6 +186,7 @@ if (`hostname` =~ /^sbpd/) {
 	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssueHistory.pl issueId=1 workspaceId=100`);
 	is(@$json, 2, "Correct number of records"); $tests++;
 	# Current values
+	#die Dumper $json;
 	is($$json[0]->{name}, 'test2', "name ok"); $tests++;
 	is($$json[0]->{ext_ref}, 'test2', "ext_ref ok"); $tests++;
 	is($$json[0]->{description}, 'test2', "description ok"); $tests++;
@@ -191,14 +194,57 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[0]->{severityName}, 'Not set', "severityName ok"); $tests++;
 	is($$json[0]->{status}, 1, "status ok"); $tests++;
 	is($$json[0]->{statusName}, 'Open', "statusName ok"); $tests++;
+	is($$json[0]->{userId}, 1, "userId ok"); $tests++;
+	is($$json[0]->{userName}, 'admin', "userName ok"); $tests++;
 	# Original findings
-	is($$json[0]->{name}, 'test2', "name ok"); $tests++;
-	is($$json[0]->{ext_ref}, 'test2', "ext_ref ok"); $tests++;
-	is($$json[0]->{description}, 'test2', "description ok"); $tests++;
-	is($$json[0]->{severity}, 0, "severity ok"); $tests++;
-	is($$json[0]->{severityName}, 'Not set', "severityName ok"); $tests++;
-	is($$json[0]->{status}, 1, "status ok"); $tests++;
-	is($$json[0]->{statusName}, 'Open', "statusName ok"); $tests++;
+	is($$json[1]->{name}, 'test1', "name ok"); $tests++;
+	is($$json[1]->{ext_ref}, 'test1', "ext_ref ok"); $tests++;
+	is($$json[1]->{description}, 'test1', "description ok"); $tests++;
+	is($$json[1]->{severity}, 0, "severity ok"); $tests++;
+	is($$json[1]->{severityName}, 'Not set', "severityName ok"); $tests++;
+	is($$json[1]->{status}, 1, "status ok"); $tests++;
+	is($$json[1]->{statusName}, 'Open', "statusName ok"); $tests++;
+	is($$json[1]->{userId}, 1, "userId ok"); $tests++;
+	is($$json[1]->{userName}, 'admin', "userName ok"); $tests++;
+
+	# Lets get the history of record 2
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssueHistory.pl issueId=2 workspaceId=100`);
+	is(@$json, 2, "Correct number of records"); $tests++;
+	# Current values
+	is($$json[0]->{name}, 'test1', "name ok"); $tests++;
+	is($$json[0]->{ext_ref}, 'test1', "ext_ref ok"); $tests++;
+	is($$json[0]->{description}, 'test1', "description ok"); $tests++;
+	is($$json[0]->{severity}, 1, "severity ok"); $tests++;
+	is($$json[0]->{severityName}, 'High', "severityName ok"); $tests++;
+	is($$json[0]->{status}, 2, "status ok"); $tests++;
+	is($$json[0]->{statusName}, 'Closed', "statusName ok"); $tests++;
+	is($$json[0]->{userId}, 3, "userId ok"); $tests++;
+	is($$json[0]->{userName}, 'importer', "userName ok"); $tests++;
+	# Original values
+	is($$json[1]->{name}, 'test1', "name ok"); $tests++;
+	is($$json[1]->{ext_ref}, 'test1', "ext_ref ok"); $tests++;
+	is($$json[1]->{description}, 'test1', "description ok"); $tests++;
+	is($$json[1]->{severity}, 0, "severity ok"); $tests++;
+	is($$json[1]->{severityName}, 'Not set', "severityName ok"); $tests++;
+	is($$json[1]->{status}, 1, "status ok"); $tests++;
+	is($$json[1]->{statusName}, 'Open', "statusName ok"); $tests++;
+	is($$json[1]->{userId}, 1, "userId ok"); $tests++;
+	is($$json[1]->{userName}, 'admin', "userName ok"); $tests++;
+
+	# Lets get the history of record 3
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getIssueHistory.pl issueId=3 workspaceId=100`);
+	is(@$json, 1, "Correct number of records"); $tests++;
+	# Current values
+	is($$json[0]->{name}, 'test3', "name ok"); $tests++;
+	is($$json[0]->{ext_ref}, 'test3', "ext_ref ok"); $tests++;
+	is($$json[0]->{description}, 'test3', "description ok"); $tests++;
+	is($$json[0]->{severity}, 1, "severity ok"); $tests++;
+	is($$json[0]->{severityName}, 'High', "severityName ok"); $tests++;
+	is($$json[0]->{status}, 2, "status ok"); $tests++;
+	is($$json[0]->{statusName}, 'Closed', "statusName ok"); $tests++;
+	is($$json[0]->{userId}, 1, "userId ok"); $tests++;
+	is($$json[0]->{userName}, 'admin', "userName ok"); $tests++;
+
 
 	#die Dumper $json;
 }
