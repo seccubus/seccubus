@@ -41,14 +41,6 @@ if (`hostname` =~ /^sbpd/) {
 	`mysql -uroot seccubus < db/structure_v$db_version.mysql`;
 	`mysql -uroot seccubus < db/data_v$db_version.mysql`;
 
-	#`cp etc/config.xml.mysql.example etc/config.xml`;
-	if ( ! -e "/opt/seccubus" ) {
-		`sudo ln -s \`pwd\` /opt/seccubus`;
-	}
-	if ( ! -e "/opt/seccubus/etc/config.xml" ) {
-		`cp etc/config.xml.mysql.example etc/config.xml`;
-	}
-
 	my $json = webcall("ConfigTest.pl");
 	foreach my $t ( @$json ) {
 		if ( $t->{name} ne "Configuration file" ) { # Skip in container
