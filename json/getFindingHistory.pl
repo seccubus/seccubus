@@ -31,7 +31,7 @@ print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Con
 
 my $params = $query->Vars;
 my $workspace_id = $query->param("workspaceId");
-my $finding_id = $query->param("workspaceId");
+my $finding_id = $query->param("findingId");
 $finding_id = 0 unless $finding_id;
 
 # Return an error if the required parameters were not passed 
