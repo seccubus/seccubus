@@ -27,7 +27,7 @@ my $pwd = `pwd`;
 chomp($pwd);
 if ( $pwd =~ /^\/home\/travis/ ) {
 	`sed 's/\/opt\/seccubus\//$pwd\//' SeccubusV2.pm > SeccubusV2.pm`;
-	is(chomp(`grep '/opt/seccubus/' SeccubusV2.pm|wc -l`), "0", "SeccubusV2.pm patched for travis"); $tests++;
+	is(`grep '/opt/seccubus/' SeccubusV2.pm|wc -l`, 0, "SeccubusV2.pm patched for travis"); $tests++;
 } else {
 	ok(1, "No need to patch SeccubusV2.pm for Travis"); $tests++;
 }
