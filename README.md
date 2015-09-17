@@ -29,12 +29,9 @@ For more information visit [www.seccubus.com]
 
 ---
 
-Release notes
-=============
-
-xx-xx-2015 - 2.17 - 
-=======================================
-Catchy line goes here...
+xx-09-2015 - 2.18 - 
+================================================
+Hope I have inspiration for a good message here...
 
 Enhancements
 ------------

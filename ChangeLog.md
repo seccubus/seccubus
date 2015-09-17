@@ -25,6 +25,16 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+17-09-2015 - 2.17 - GNU Terry Pratchett (Fixed!)
+================================================
+The bonanza of after summer fixes and small enhancements continues
+Our dear contributor @Ar0xa notified us of a bug in v2.16 which has been fixed in this release
+See bug #260
+
+Bug Fixes
+---------
+* #260 - Runs not showing in Seccubus v2.16
+
 15-09-2015 - 2.16 - GNU Terry Pratchett
 =======================================
 The bonanza of after summer fixes and small enhancements continues
