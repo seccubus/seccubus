@@ -19,7 +19,7 @@
 use strict;
 use Test::More;
 use Data::Dumper;
-use SeccubusV2;
+#use SeccubusV2;
 
 my $tests = 0;
 
