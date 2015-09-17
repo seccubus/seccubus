@@ -23,14 +23,14 @@ use SeccubusV2;
 
 my $tests = 0;
 
-my $pwd = `pwd`;
-chomp($pwd);
-if ( $pwd =~ /^\/home\/travis/ ) {
-	`sed 's/\/opt\/seccubus\//$pwd\//' SeccubusV2.pm > SeccubusV2.pm`;
-	is(`grep '/opt/seccubus/' SeccubusV2.pm|wc -l`, "0\n", "SeccubusV2.pm patched for travis"); $tests++;
-} else {
-	ok(1, "No need to patch SeccubusV2.pm for Travis"); $tests++;
-}
+#my $pwd = `pwd`;
+#chomp($pwd);
+#if ( $pwd =~ /^\/home\/travis/ ) {
+#	`sed -e 's/\/opt\/seccubus\//$pwd\//' SeccubusV2.pm > SeccubusV2.pm`;
+#	is(`grep '/opt/seccubus/' SeccubusV2.pm|wc -l`, "0\n", "SeccubusV2.pm patched for travis"); $tests++;
+#} else {
+#	ok(1, "No need to patch SeccubusV2.pm for Travis"); $tests++;
+#}
 
 #my $config = get_config();
 #is($config->{paths}->{bindir}, "", "Bindir"); $tests++;
