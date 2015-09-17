@@ -18,10 +18,16 @@
 
 use strict;
 use Test::More;
+use Data::Dumper;
+use SeccubusV2;
 
 my $tests = 0;
 
-is(`pwd`, "", "pwd"); $tests++;
-is(`ls`, "", "ls"); $tests++;
+#is(`pwd`, "", "pwd"); $tests++;
+#is(`ls`, "", "ls"); $tests++;
+
+my $config = get_config();
+is($config->{paths}->{bindir}, "", "Bindir"); $tests++;
+
 
 done_testing($tests);
