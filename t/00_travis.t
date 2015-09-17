@@ -35,4 +35,6 @@ my $tests = 0;
 #my $config = get_config();
 #is($config->{paths}->{bindir}, "", "Bindir"); $tests++;
 
+ok(1, "No need to do anything special for Travis CI right now"); $tests++;
+
 done_testing($tests);
