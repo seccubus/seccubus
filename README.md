@@ -41,4 +41,4 @@ Enhancements
 
 Bug Fixes
 ---------
-* #260 - Runs not slowing in Seccubus v2.16
+* #260 - Runs not showing in Seccubus v2.16
