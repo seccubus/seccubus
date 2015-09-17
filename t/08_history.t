@@ -83,7 +83,7 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[0]->{password}, undef, "Correct password returned"); $tests++;
 
 	# Lets run a scan
-	`bin/do-scan -w test1 -s ssl`;
+	`perl -MSeccubusV2 -I Seccubusv2 bin/do-scan -w test1 -s ssl`;
 
 	# We should have a lot of findings
 	$json = webcall("getFindings.pl", "workspaceId=100", "scanIds[]=1");
