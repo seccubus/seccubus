@@ -29,6 +29,7 @@ WriteMakefile (
 				'IPC::Open2'			=> 1.02,
 				'LWP::UserAgent'		=> 2.0,
 				'DBI'					=> 1.58,
+				'DBD::mysql'			=> 0.1,
 				'Data::Dumper'			=> 2.12,
 				'XML::Simple'			=> 2.17,
 				'HTML::Entities'		=> 1.35,
