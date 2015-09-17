@@ -712,7 +712,7 @@ sub get_finding($$;) {
 				finding_changes.severity = severity.id AND
 				finding_changes.status = finding_status.id AND
 				runs.id = finding_changes.run_id 
-			ORDER BY finding_changes.time DESC
+			ORDER BY finding_changes.time DESC, finding_changes.id DESC
 			";
 
 
