@@ -46,7 +46,7 @@ WriteMakefile (
 	PM		=> { 
 				'SeccubusV2.pm'				=> '$(INST_LIBDIR)/SeccubusV2.pm',
 				'SeccubusV2/IVIL.pm'			=> '$(INST_LIBDIR)/IVIL.pm',
-				'SeccubusV2/SeccubusRights.pm'		=> '$(INST_LIBDIR)/SeccubusV2/SeccubusRights.pm',
+				'SeccubusV2/SeccubusRights.pm'		=> '$(INST_LIBDIR)/SeccubusRights.pm',
 				'SeccubusV2/SeccubusDB.pm'		=> '$(INST_LIBDIR)/SeccubusDB.pm',
 				'SeccubusV2/SeccubusRuns.pm'		=> '$(INST_LIBDIR)/SeccubusRuns.pm',
 				'SeccubusV2/SeccubusFindings.pm'	=> '$(INST_LIBDIR)/SeccubusFindings.pm',
