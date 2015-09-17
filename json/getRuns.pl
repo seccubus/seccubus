@@ -31,7 +31,7 @@ print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Con
 
 my $params = $query->Vars;
 my $workspace_id = $query->param("workspaceId");
-my $scan_id = $query->param("workspaceId");
+my $scan_id = $query->param("scanId");
 
 # Return an error if the required parameters were not passed 
 if (not (defined ($workspace_id))) {
