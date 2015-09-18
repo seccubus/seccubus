@@ -218,9 +218,9 @@ ADD CONSTRAINT `fk_issue_changes_users1`
   ON UPDATE NO ACTION;
 
 ALTER TABLE `issues` 
-ADD CONSTRAINT `fk_issues_workspaces1`
-  FOREIGN KEY (`workspace_id`)
-  REFERENCES `workspaces` (`id`)
+ADD CONSTRAINT `fk_issues_severity1`
+  FOREIGN KEY (`severity`)
+  REFERENCES `severity` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
 ADD CONSTRAINT `fk_issues_issue_status1`
@@ -228,9 +228,9 @@ ADD CONSTRAINT `fk_issues_issue_status1`
   REFERENCES `issue_status` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_issues_severity1`
-  FOREIGN KEY (`severity`)
-  REFERENCES `severity` (`id`)
+ADD CONSTRAINT `fk_issues_workspaces1`
+  FOREIGN KEY (`workspace_id`)
+  REFERENCES `workspaces` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
