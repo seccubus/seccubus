@@ -41,14 +41,6 @@ if (`hostname` =~ /^sbpd/) {
 	`mysql -uroot seccubus < db/structure_v$db_version.mysql`;
 	`mysql -uroot seccubus < db/data_v$db_version.mysql`;
 
-	#`cp etc/config.xml.mysql.example etc/config.xml`;
-	if ( ! -e "/opt/seccubus" ) {
-		`sudo ln -s \`pwd\` /opt/seccubus`;
-	}
-	if ( ! -e "/opt/seccubus/etc/config.xml" ) {
-		`cp etc/config.xml.mysql.example etc/config.xml`;
-	}
-
 	my $json = webcall("ConfigTest.pl");
 	foreach my $t ( @$json ) {
 		if ( $t->{name} ne "Configuration file" ) { # Skip in container
@@ -329,6 +321,9 @@ if (`hostname` =~ /^sbpd/) {
 	is(@{$$json[3]->{findings}}, 1, "number of linked findings ok"); $tests++;
 	is($$json[3]->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
 
+	# Prep a more full GUI
+	$json = webcall("updateIssue.pl", "issueId=4", "workspaceId=100", "findingIds[]=4", "findingIds[]=3", "findingIds[]=2");
+	$json = webcall("updateFindings.pl", "ids[]=2", "ids[3]", "attrs[remark]=No+issue", "attrs[status]=4", "attrs[workspaceId]=100")
 }
 
 done_testing($tests);

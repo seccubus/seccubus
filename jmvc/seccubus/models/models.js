@@ -15,7 +15,8 @@
  */
 // steal model files
 
-steal(	"jquery/model", 
+steal(
+	'jquery/model', 
 	'./up_to_date.js', 
 	'./config_item.js',
 	'./workspace.js',
@@ -33,4 +34,6 @@ steal(	"jquery/model",
 	'./asset_host.js',
 	'./asset2scan.js',
 	'./custsql.js',
-	'./savedsql.js')
+	'./savedsql.js', 
+	'./issue.js'
+)

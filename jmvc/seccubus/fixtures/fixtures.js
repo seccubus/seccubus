@@ -287,4 +287,11 @@ steal("jquery/dom/fixture", function(){
 	$.fixture("json/getAssets.pl",function(orig,settings,headers){
 		return [assets];
 	});
+	$.fixture.make("issue", 5, function(i, issue){
+		var descriptions = ["grill fish", "make ice", "cut onions"]
+		return {
+			name: "issue "+i,
+			description: $.fixture.rand( descriptions , 1)[0]
+		}
+	})
 });

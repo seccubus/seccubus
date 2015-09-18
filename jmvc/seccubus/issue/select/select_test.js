@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Frank Breedijk, Petr
+ * Copyright 2013 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-steal("funcunit/qunit",
-	"./seccubus_test.js",
-	'./up_to_date_test.js',
-	'./config_item_test.js',
-	'./workspace_test.js',
-	'./scan_test.js',
-	'./finding_test.js',
-	'./gui_state_test.js',
-	'./scanner_test.js',
-	'./history_test.js',
-	'./run_test.js', 
-	'./event_test.js', 
-	'./notification_test.js',
-	'./asset_test.js'
-	, './issue_test.js');
+steal('funcunit',function(){
+
+module("Seccubus.Workspace.Table", { 
+	setup: function(){
+		S.open("//seccubus/workspace/select/select.html");
+	}
+});
+
+test("delete workspaces", function(){
+	S('#create').click()
+	
+	// wait until grilled cheese has been added
+	S('h3:contains(Grilled Cheese X)').exists();
+	
+	S.confirm(true);
+	S('h3:last a').click();
+	
+	
+	S('h3:contains(Grilled Cheese)').missing(function(){
+		ok(true,"Grilled Cheese Removed")
+	});
+	
+});
+
+
+});

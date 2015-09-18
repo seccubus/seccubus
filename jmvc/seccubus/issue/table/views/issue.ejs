@@ -1,0 +1,50 @@
+<%# Copyright 2013 Frank Breedijk                                            %>
+<%#                                                                          %>
+<%# Licensed under the Apache License, Version 2.0 (the "License");          %>
+<%# you may not use this file except in compliance with the License.         %>
+<%# You may obtain a copy of the License at                                  %>
+<%#                                                                          %>
+<%# http://www.apache.org/licenses/LICENSE-2.0                               %>
+<%#                                                                          %>
+<%# Unless required by applicable law or agreed to in writing, software      %>
+<%# distributed under the License is distributed on an "AS IS" BASIS,        %>
+<%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
+<%# See the License for the specific language governing permissions and      %>
+<%# limitations under the License.                                           %>
+<tr>
+	<td><%= name %></td>
+	<td><%= description %></td>
+	<td><%= ext_ref %></td>
+	<td><%= severity %>. <%= severityName %></td>
+	<td><%= findings.length %></td>
+	<td><%= statusName %></td>
+</tr>	
+<% if ( findings.length > 0 ) { %>
+	<tr><td colspan=6>
+		Findings:
+		<table>
+				<tr>
+					<td>Host</TD>
+					<td>Hostname</TD>
+					<td>Port</td>
+					<td>Scan</td>
+					<td>Plugin</td>
+					<td>Finding</td>
+					<td>Remark</td>
+					<td>Status</td>
+				</tr>
+			<% for(var i = 0; i < findings.length ; i++) { %>
+				<tr>
+					<td><%= findings[i].host %></td>
+					<td><%= findings[i].hostName %></td>
+					<td><%= findings[i].port %></td>
+					<td><%= findings[i].scanName %></td>
+					<td><%= findings[i].plugin %></td>
+					<td><%= findings[i].find %></td>
+					<td><%= findings[i].remark %></td>
+					<td><%= findings[i].statusName %></td>
+				</tr>
+			<% } %>
+		</table>
+	</td></tr>
+<% } %>
