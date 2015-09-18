@@ -247,26 +247,26 @@ ADD CONSTRAINT `fk_issues2findings_issues1`
   ON UPDATE NO ACTION;
 
 ALTER TABLE `notifications` 
-ADD CONSTRAINT `fk_notifications_scans1`
-  FOREIGN KEY (`scan_id`)
-  REFERENCES `scans` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
 ADD CONSTRAINT `fk_notifications_events1`
   FOREIGN KEY (`event_id`)
   REFERENCES `events` (`id`)
   ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_notifications_scans1`
+  FOREIGN KEY (`scan_id`)
+  REFERENCES `scans` (`id`)
+  ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 ALTER TABLE `rights` 
-ADD CONSTRAINT `fk_rights_workspaces1`
-  FOREIGN KEY (`workspace_id`)
-  REFERENCES `workspaces` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
 ADD CONSTRAINT `fk_rights_groups1`
   FOREIGN KEY (`group_id`)
   REFERENCES `groups` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,ß
+ADD CONSTRAINT `fk_rights_workspaces1`
+  FOREIGN KEY (`workspace_id`)
+  REFERENCES `workspaces` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
