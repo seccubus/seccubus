@@ -37,7 +37,14 @@ $.Controller('Seccubus.Issue.Table',
 		 * @attribute options.workspace
 		 * The currently selected workspace, -1 = no workspace
 		 */
-		workspace	: -1
+		workspace	: -1,
+		/*
+		 * @attribute options.onEdit
+		 * The function that is called when the Edit finding button is called
+		 */
+		onEdit      : function(finding_id) {
+			console.log("No onEdit function set, called edit for finding id:" + finding_id);
+		}
 	}
 },
 /** @Prototype */
@@ -74,13 +81,40 @@ $.Controller('Seccubus.Issue.Table',
 		);		
 	},
 
+	// Handle expand clicks
+	".findings-expander click" : function(el,ev) {
+		el.toggleClass('expanded');
+		el.toggleClass('collapsed');
+		fid = el.attr('issue_id');
+		$( '#findings_issue_'+fid ).toggle();
+	},
+
+	// Handle select clicks
+	".openclose click" : function(el,ev) {
+		if ( el.attr('checked') ) {
+			$( '.' + el.attr('value') ).show();
+		} else {
+			$( '.' + el.attr('value') ).hide();			
+		}
+
+	},
+	// Handle  edit clicks
+	".edit click" :  function(el,ev) {
+		this.options.onEdit(el.attr("finding_id"));
+	},
+
+	// Handle unlink event
+	".unlink click": function(el,ev) {
+		var issue = el.closest('.issue').model();
+		console.log(issue);
+	},
+
 	/*
 	 * Update, overloaded to rerender the control after an update event
 	 */
 	update : function(options){
 		this._super(options);
 		this.updateView();
-		console.log("update");
 	}
 }); // Controller
 

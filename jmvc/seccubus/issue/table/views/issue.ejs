@@ -11,16 +11,19 @@
 <%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
 <%# See the License for the specific language governing permissions and      %>
 <%# limitations under the License.                                           %>
-<tr>
+<tr <%= this %> <%= status == 1 ? "" : "hidden"%> class='<%= statusName %>'>
 	<td><%= name %></td>
 	<td><%= description %></td>
 	<td><%= ext_ref %></td>
 	<td><%= severity %>. <%= severityName %></td>
-	<td><%= findings.length %></td>
+	<td
+		issue_id=<%= id %>
+		class='findings-expander<%= findings.length > 0 ? " collapsed" : "" %>'
+	><%= findings.length %></td>
 	<td><%= statusName %></td>
 </tr>	
 <% if ( findings.length > 0 ) { %>
-	<tr><td colspan=6>
+	<tr id='findings_issue_<%= id %>' hidden=true><td colspan=6 class=findings_issue>
 		Findings:
 		<table>
 				<tr>
@@ -32,9 +35,10 @@
 					<td>Finding</td>
 					<td>Remark</td>
 					<td>Status</td>
+					<td>Action</td>
 				</tr>
 			<% for(var i = 0; i < findings.length ; i++) { %>
-				<tr>
+				<tr class='finding_status_<%= findings[i].status %>'>
 					<td><%= findings[i].host %></td>
 					<td><%= findings[i].hostName %></td>
 					<td><%= findings[i].port %></td>
@@ -43,6 +47,10 @@
 					<td><%= findings[i].find %></td>
 					<td><%= findings[i].remark %></td>
 					<td><%= findings[i].statusName %></td>
+					<td>
+						<img finding_id='<%= findings[i].id %>' src='img/edit.png' class='edit'><br>
+						<img finding_id='<%= findings[i].id %>' src='img/unlink.png' class='unlink'>
+					</td>
 				</tr>
 			<% } %>
 		</table>
