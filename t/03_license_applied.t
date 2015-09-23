@@ -19,8 +19,7 @@
 use strict;
 use Test::More;
 
-my $travis = 0;
-#$travis = 1 if ( `pwd` =~ /\/travis\// );
+my $travis = 1 if ( `pwd` =~ /\/travis\// );
 
 my %exclude = (
 	"./SeccubusV2/IVIL.pm" 	=> "MIT Licensed project",
@@ -93,11 +92,8 @@ foreach my $file ( @files ) {
 					is(checklic($file,1), 0, "Is the Apache license applied to $file");
 					$tests++;
 				}
-				unless ( $travis ) {
-					# Travis does weird stuff with git
-					is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
-					$tests++;
-				}
+				is(hasauthors($file), 1, "Has file '$file' got all 'git blame' authors in it?");
+				$tests++;
 			}
 		} elsif ( $type =~ /empty/ ) {
 			# Skip
@@ -162,9 +158,11 @@ sub hasauthors {
 				$tests++;
 			}
 		}
-
-		is($year, $cyear, "Copyright year of file: $file");
-		$tests++;
+		unless( $travis ) {
+			# Travis CI uses a truncated history (-depth=50), so this gives skewed results
+			is($year, $cyear, "Copyright year of file: $file");
+			$tests++;
+		}
 	}
 
 	return 1;
