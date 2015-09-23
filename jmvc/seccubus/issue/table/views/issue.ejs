@@ -27,38 +27,16 @@
 		issue_id=<%= id %>
 		class='findings-expander<%= findings.length > 0 ? " collapsed" : "" %>'
 		>
-	<%= findings.length %>
-	<br>
+		<div id='issue_finding_count_<%= id %>'><%= findings.length %></div>
+		<table issue_id=<%= id %> id='findings_issue_<%= id %>' hidden=true class=findings_issue></table>
 	</div>
-	<% if ( findings.length > 0 ) { %>
-		<table id='findings_issue_<%= id %>' hidden=true class=findings_issue>
-				<tr>
-					<td>Host</TD>
-					<td>Hostname</TD>
-					<td>Port</td>
-					<td>Scan</td>
-					<td>Plugin</td>
-					<td>Finding</td>
-					<td>Remark</td>
-					<td>Status</td>
-					<td>Action</td>
-				</tr>
-			<% for(var i = 0; i < findings.length ; i++) { %>
-				<tr class='finding_status_<%= findings[i].status %>'>
-					<td><%= findings[i].host %></td>
-					<td><%= findings[i].hostName %></td>
-					<td><%= findings[i].port %></td>
-					<td><%= findings[i].scanName %></td>
-					<td><%= findings[i].plugin %></td>
-					<td><%= findings[i].find %></td>
-					<td><%= findings[i].remark %></td>
-					<td><%= findings[i].statusName %></td>
-					<td>
-						<img finding_id='<%= findings[i].id %>' src='img/edit.png' class='edit'><br>
-						<img finding_id='<%= findings[i].id %>' src='img/unlink.png' class='unlink'>
-					</td>
-				</tr>
-			<% } %>
-		</table>
-	<% } %>
 </td>
+<td>
+	<img class='edit_issue' src='img/edit.png'><br>
+	<% if ( status == 2 ) { %>
+		<img class='set_status' src='img/open.png' newStatus=1 newStatusName='Open'><br>
+	<% } %>
+	<% if ( status == 1 ) {	%>
+		<img class='set_status' src='img/closed.png' newStatus=2 newStatusName='Closed'><br>
+	<% } %>
+</td>	

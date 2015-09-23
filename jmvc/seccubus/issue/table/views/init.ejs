@@ -11,8 +11,9 @@
 <%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
 <%# See the License for the specific language governing permissions and      %>
 <%# limitations under the License.                                           %>
-<input type="checkbox" class="openclose" name="status" value="Open" checked>Open
-<input type="checkbox" class="openclose" name="status" value="Closed">Closed
+<input type="button" class="create_issue" value='Create issue...' <%= workspace == -1 ? "disabled" : "" %>>
+Show: <input type="checkbox" class="openclose" name="status" value="Open" checked <%= workspace == -1 ? "disabled" : "" %>>Open
+<input type="checkbox" class="openclose" name="status" value="Closed" <%= workspace == -1 ? "disabled" : "" %>>Closed
 <table>
 	<tr>
 		<td>Name</td>
@@ -21,9 +22,10 @@
 		<td>Severity</td>
 		<td>Status</td>
 		<td>Findings</td>
+		<td>Actions</td>
 	</tr>
 	<% if ( this.length == 0 ) { %>
-		<%== $.View('//seccubus/issue/table/views/error.ejs') %>
+		<tr><td colspan=7>No issues found</td></tr>
 	<% } else { %>
 		<% for(var i = 0; i < this.length ; i++) { %>
 			<tr <%= this[i] %> <%= this[i].status == 1 ? "" : "hidden"%> class='<%= this[i].statusName %>'>

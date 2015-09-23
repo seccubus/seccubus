@@ -39,9 +39,8 @@ $.Model('Seccubus.Models.Issue',
 	 * json/updateIssue.pl
 	 * @return {Object} the updated object or an error
 	 */
- 	update : "POST json/updateIssue.pl",
- 	unlink : "POST json/unlinkFindingIssue.pl"
-  	//destroy : "/issues/{id}.json"
+ 	update : "POST json/updateIssue.pl"
+ 	//destroy : "/issues/{id}.json"
 },
 /* @Prototype */
 {

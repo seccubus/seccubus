@@ -17,10 +17,11 @@ steal(
 	'jquery/controller',
 	'jquery/view/ejs',
 	'jquery/controller/view',
-	'seccubus/models'
+	'seccubus/models',
+	'seccubus/issuelink/table'
      )
 .then( './views/init.ejs', 
-       './views/issue.ejs', 
+       './views/issue.ejs',
        function($){
 
 /**
@@ -42,8 +43,14 @@ $.Controller('Seccubus.Issue.Table',
 		 * @attribute options.onEdit
 		 * The function that is called when the Edit finding button is called
 		 */
-		onEdit      : function(finding_id) {
-			console.log("No onEdit function set, called edit for finding id:" + finding_id);
+		onIssueEdit		: function(issue) {
+			console.log("No onIssueEdit function set, called for issue id:" + issue.id);
+		},
+		onFindingEdit 	: function(finding) {
+			console.log("No onFunctionEdit function set, called edit for finding id:" + finding.id);
+		},
+		onCreate : function(workspaceId) {
+			console.log("No onCreate function set to create issue in workspace: " + workspaceId);
 		}
 	}
 },
@@ -75,8 +82,11 @@ $.Controller('Seccubus.Issue.Table',
 			this.view(
 				'init',
 				Seccubus.Models.Issue.findAll({
-						workspaceId	: this.options.workspace	
-				})
+					workspaceId	: this.options.workspace	
+				}),
+				{ 
+					workspace	: this.options.workspace	
+				}
 			) 
 		);		
 	},
@@ -86,7 +96,15 @@ $.Controller('Seccubus.Issue.Table',
 		el.toggleClass('expanded');
 		el.toggleClass('collapsed');
 		fid = el.attr('issue_id');
-		$( '#findings_issue_'+fid ).toggle();
+		$( '#issue_finding_count_'+fid).toggle();
+		var target = $( '#findings_issue_'+fid );
+		console.log(target);
+		target.toggle();
+		target.seccubus_issuelink_table({
+			workspace 	: this.options.workspace,
+			issue 		: target.attr("issue_id"),
+			onEdit 		: this.options.onFindingEdit
+		});
 	},
 
 	// Handle select clicks
@@ -96,17 +114,25 @@ $.Controller('Seccubus.Issue.Table',
 		} else {
 			$( '.' + el.attr('value') ).hide();			
 		}
-
-	},
-	// Handle  edit clicks
-	".edit click" :  function(el,ev) {
-		this.options.onEdit(el.attr("finding_id"));
 	},
 
-	// Handle unlink event
-	".unlink click": function(el,ev) {
+	// Handle edit clicks
+	".edit_issue click" : function(el,ev) {
 		var issue = el.closest('.issue').model();
-		console.log(issue);
+		this.options.onIssueEdit(issue);
+	},
+
+	".set_status click" : function(el,ev) {
+		var issue = el.closest('.issue').model();
+		issue.attr("workspaceId", this.options.workspace);
+		issue.attr("issueId", issue.id);
+		issue.attr("status", el.attr("newStatus"));
+		issue.attr("statusName", el.attr("newStatusName"));
+		issue.save();
+	},
+
+	".create_issue click" : function(el,ev) {
+		this.options.onCreate(this.options.workspace);
 	},
 
 	/*
