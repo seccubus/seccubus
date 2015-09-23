@@ -19,14 +19,16 @@
 		<td>Description</td>
 		<td>External reference</td>
 		<td>Severity</td>
-		<td># of findings</td>
 		<td>Status</td>
+		<td>Findings</td>
 	</tr>
 	<% if ( this.length == 0 ) { %>
 		<%== $.View('//seccubus/issue/table/views/error.ejs') %>
 	<% } else { %>
 		<% for(var i = 0; i < this.length ; i++) { %>
-			<%== $.View('//seccubus/issue/table/views/issue.ejs', this[i] )%>
+			<tr <%= this[i] %> <%= this[i].status == 1 ? "" : "hidden"%> class='<%= this[i].statusName %>'>
+				<%== $.View('//seccubus/issue/table/views/issue.ejs', this[i] )%>
+			</tr>
 		<% } %>
 	<% } %>
 </table>

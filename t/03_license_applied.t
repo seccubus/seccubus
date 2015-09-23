@@ -163,7 +163,7 @@ sub hasauthors {
 			}
 		}
 
-		ok($year = $cyear, "Copyright of $year matches last change from $cyear");
+		is($year, $cyear, "Copyright year of file: $file");
 		$tests++;
 	}
 

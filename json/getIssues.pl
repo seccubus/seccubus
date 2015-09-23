@@ -28,6 +28,7 @@ use Data::Dumper;
 
 my $query = CGI::new();
 my $json = JSON->new();
+my $config = get_config();
 
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
@@ -45,6 +46,10 @@ eval {
 	my @data;
 	my $issues = get_issues($workspace_id);
 	foreach my $row ( @$issues ) {
+		my $url = "";
+		if ( $config->{tickets}->{url_head} ) {
+			$url = $config->{tickets}->{url_head} . $$row[2] . $config->{tickets}->{url_tail};
+		}
 		push (@data, {
 			'id'			=> $$row[0],
 			'name'			=> $$row[1],
@@ -54,6 +59,7 @@ eval {
 			'severityName'	=> $$row[5],
 			'status'		=> $$row[6],
 			'statusName'	=> $$row[7],
+			'url'			=> $url, 
 		});
 	}
 	foreach my $issue ( @data ) {

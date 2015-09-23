@@ -1,4 +1,4 @@
-<%# Copyright 2013 Frank Breedijk                                            %>
+<%# Copyright 2015 Frank Breedijk                                            %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -11,21 +11,27 @@
 <%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
 <%# See the License for the specific language governing permissions and      %>
 <%# limitations under the License.                                           %>
-<tr <%= this %> <%= status == 1 ? "" : "hidden"%> class='<%= statusName %>'>
-	<td><%= name %></td>
-	<td><%= description %></td>
-	<td><%= ext_ref %></td>
-	<td><%= severity %>. <%= severityName %></td>
-	<td
+<td><%= name %></td>
+<td><%= description %></td>
+<td>
+	<% if ( url != "" ) { %> 
+		<a target=_blank href='<%= url %>'><%= ext_ref %></a></td>
+	<% } else { %>
+		<%= ext_ref %>
+	<% } %>
+</td>
+<td><%= severity %>. <%= severityName %></td>
+<td><%= statusName %></td>
+<td>
+	<div 
 		issue_id=<%= id %>
 		class='findings-expander<%= findings.length > 0 ? " collapsed" : "" %>'
-	><%= findings.length %></td>
-	<td><%= statusName %></td>
-</tr>	
-<% if ( findings.length > 0 ) { %>
-	<tr id='findings_issue_<%= id %>' hidden=true><td colspan=6 class=findings_issue>
-		Findings:
-		<table>
+		>
+	<%= findings.length %>
+	<br>
+	</div>
+	<% if ( findings.length > 0 ) { %>
+		<table id='findings_issue_<%= id %>' hidden=true class=findings_issue>
 				<tr>
 					<td>Host</TD>
 					<td>Hostname</TD>
@@ -54,5 +60,5 @@
 				</tr>
 			<% } %>
 		</table>
-	</td></tr>
-<% } %>
+	<% } %>
+</td>
