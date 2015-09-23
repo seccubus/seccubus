@@ -46,6 +46,7 @@ $params->{status} = 1 unless ( $params->{status} || $params->{issueId} );
 $params->{workspace_id} = $params->{workspaceId};
 $params->{issue_id} = $params->{issueId};
 $params->{findings} = $params->{'findingIds[]'};
+$params->{findings_remove} = $params->{'findingIdsRemove[]'};
 
 eval {
 	my @data;

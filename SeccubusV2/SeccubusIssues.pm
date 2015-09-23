@@ -53,7 +53,7 @@ parameter list with the following parameters:
 
 =over 2
 
-=item Parameters
+=item Parameters (name parameter list)
 
 =over 4
 
@@ -70,6 +70,11 @@ parameter list with the following parameters:
 =item severity    	- 0 if not given and finding gets created
 
 =item status      	- Open if not given and finding gets created
+
+=item findings 		- List of findings to add to the issue
+
+=item findings_remove
+                    - List of findings to remove from the issue
 
 =back
 
@@ -153,8 +158,14 @@ sub update_issue(@) {
 	# Link findings
 	if ( $arg{findings} ) {
 		foreach my $finding_id ( split( /\0/, $arg{findings}) ) {
-			issue_finding_link($arg{workspace_id}, $arg{issue_id}, $finding_id);
+			issue_finding_link($arg{workspace_id}, $arg{issue_id}, $finding_id, 0);
 		}
+	}
+
+	if ( $arg{findings_remove} ) {
+		foreach my $finding_id ( split( /\0/, $arg{findings_remove}) ) {
+			issue_finding_link($arg{workspace_id}, $arg{issue_id}, $finding_id, 1);
+		}		
 	}
 
 	return $return;
