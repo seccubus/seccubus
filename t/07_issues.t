@@ -343,6 +343,47 @@ if (`hostname` =~ /^sbpd/) {
 	is(@{$$json[3]->{findings}}, 1, "number of linked findings ok"); $tests++;
 	is($$json[3]->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
 
+	# Unlink via updateIssue
+	# Relink first
+	$json = webcall("updateIssue.pl", "issueId=4", "workspaceId=100", "findingIds[]=4", "findingIds[]=3", "findingIds[]=2");
+
+	# Can we unlink an issue
+	$json = webcall("updateIssue.pl", "issueId=4", "workspaceId=100", "findingIdsRemove[]=4");
+	# OK, time to read them back...
+	$json = webcall("getIssues.pl", "workspaceId=100");
+	is(@$json, 4, "Correct number of records"); $tests++;
+	is(@{$$json[3]->{findings}}, 3, "number of linked findings ok"); $tests++;
+	is($$json[3]->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
+	is($$json[3]->{findings}[1]->{id}, 2, "linked finding ok"); $tests++;
+	is($$json[3]->{findings}[2]->{id}, 3, "linked finding ok"); $tests++;
+
+	# Can we unlink multiple issues
+	$json = webcall("updateIssue.pl", "issueId=4", "workspaceId=100", "findingIdsRemove[]=2", "findingIdsRemove[]=3");
+	# OK, time to read them back...
+	$json = webcall("getIssues.pl", "workspaceId=100");
+	is(@$json, 4, "Correct number of records"); $tests++;
+	is(@{$$json[3]->{findings}}, 1, "number of linked findings ok"); $tests++;
+	is($$json[3]->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
+
+	# Shouldn't be able to unlink an issue that isn't linked
+	$json = webcall("updateIssue.pl", "issueId=4", "workspaceId=100", "findingIdsRemove[]=4");
+	# OK, time to read them back...
+	$json = webcall("getIssues.pl", "workspaceId=100");
+	is(@$json, 4, "Correct number of records"); $tests++;
+	is(@{$$json[3]->{findings}}, 1, "number of linked findings ok"); $tests++;
+	is($$json[3]->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
+	
+	# Lets get a single issue
+	$json = webcall("getIssues.pl", "workspaceId=100", "issueId=4");
+	is(@$json, 1, "Correct number of records"); $tests++;
+	is($$json[0]->{id}, 4, "Correct ID fetched"); $tests++;
+	is(@{$$json[0]->{findings}}, 1, "number of linked findings ok"); $tests++;
+	is($$json[0]->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
+
+	# Lets get a non-existant issue
+	$json = webcall("getIssues.pl", "workspaceId=101", "issueId=4");
+	is(@$json, 0, "Correct number of records"); $tests++;
+
 	# Prep a more full GUI
 	$json = webcall("updateIssue.pl", "issueId=4", "workspaceId=100", "findingIds[]=4", "findingIds[]=3", "findingIds[]=2");
 	$json = webcall("updateFindings.pl", "ids[]=2", "ids[3]", "attrs[remark]=No+issue", "attrs[status]=4", "attrs[workspaceId]=100")

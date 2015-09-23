@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2014 Frank Breedijk, Glenn ten Cate (blabla1337)
+# Copyright 2015 Frank Breedijk, Glenn ten Cate (blabla1337)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,11 +31,14 @@ of all functions within the module.
 		api_error
 		api_result
 		run_cmd
+		get_severity
 	);
 
 use strict;
 use Carp;
 use HTML::Entities;
+use SeccubusDB;
+use Data::Dumper;
 
 sub check_config();
 sub dirlist($;$);
@@ -327,6 +330,38 @@ sub run_cmd($;$$$$) {
 	}
 
 	return join "", @out;
+}
+
+=head2 get_severity
+
+This function returns a reference to an array of severities (id, name, 
+description)
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item None
+
+=back 
+
+=item Checks
+
+None
+
+=back
+
+=cut
+
+sub get_severity(;) {
+	return sql(
+		"return"	=> "ref",
+		"query"		=> "SELECT id, name, description
+						FROM severity
+						ORDER BY id"
+	);
 }
 
 # Close the PM file.

@@ -297,6 +297,7 @@ ADD CONSTRAINT `fk_user2group_users1`
   ON UPDATE NO ACTION;
 
 update config set value=8 where name = 'version';
+update severity set description='No severity has been set' where id = 0;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

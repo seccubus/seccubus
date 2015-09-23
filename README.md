@@ -38,3 +38,4 @@ Enhancements
 
 Bug Fixes
 ---------
+* Fixed a spelling mistake in the severity description
