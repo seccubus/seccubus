@@ -183,7 +183,7 @@ sub get_findings($;$$$) {
 		}
 		
 		$query .= " ORDER BY host, port, plugin ";
-
+		#die $query;
 
 		return sql( "return"	=> "ref",
 			    "query"	=> $query,

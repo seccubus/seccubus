@@ -288,6 +288,15 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[3]->{findings}[2]->{id}, 3, "linked finding ok"); $tests++;
 	is($$json[3]->{findings}[3]->{id}, 4, "linked finding ok"); $tests++;
 
+	# Should be able to read them back via getFindings...
+	$json = webcall("getFindings.pl", "workspaceId=100", "Issue=4"); $tests++;
+	is(@$json, 4, "Correct number of records");
+	is($$json[0]->{id}, 1, "linked finding ok"); $tests++;
+	is($$json[1]->{id}, 2, "linked finding ok"); $tests++;
+	is($$json[2]->{id}, 3, "linked finding ok"); $tests++;
+	is($$json[3]->{id}, 4, "linked finding ok"); $tests++;
+	
+
 	# Shouldn't be able to crosslink in this way
 	$json = webcall("updateIssue.pl", "issueId=5", "workspaceId=101", "findingIds[]=4");
 	# OK, time to read them back...
