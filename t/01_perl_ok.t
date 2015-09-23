@@ -47,11 +47,11 @@ foreach my $file ( @files ) {
 
 				if ( $file =~ /\.pm$/ ) {
 					# Modules
-					like(`ls -l '$file'`, qr/^\-rw\-r\-\-r\-\-/, "File '$file' has the correct permissions");
+					like(`ls -l '$file'`, qr/^\-rw\-r.\-r\-\-/, "File '$file' has the correct permissions");
 					$tests++;
 				} else {
 					# Executables
-					like(`ls -l '$file'`, qr/^\-rwxr\-xr\-x/, "File '$file' has the correct permissions");
+					like(`ls -l '$file'`, qr/^\-rwxr.xr\-x/, "File '$file' has the correct permissions");
 					$tests++;
 				}
 			}
