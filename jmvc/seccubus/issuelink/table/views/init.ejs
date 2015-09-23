@@ -11,34 +11,34 @@
 <%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
 <%# See the License for the specific language governing permissions and      %>
 <%# limitations under the License.                                           %>
-<thead>
-	<tr>
-		<td>Host</td>
-		<td>Hostname</td>
-		<td>Port</td>
-		<td>Scan</td>
-		<td>Plugin</td>
-		<td>Finding</td>
-		<td>Remark</td>
-		<td>Status</td>
-		<td>Action</td>
-	</tr>
-</thead>
-<tbody>
-	<% if ( this.length == 0 ) { %>
-		<%== $.View(
-				'//seccubus/issuelink/table/views/error.ejs',
-				{
-					error 	: "No findings found",
-					head	: false
-				}
-			) 
-		%>
-	<% } else { %>
+<% if ( this.length == 0 ) { %>
+	<%== $.View(
+			'//seccubus/issuelink/table/views/error.ejs',
+			{
+				error 	: "No findings found",
+				head	: true
+			}
+		) 
+	%>
+<% } else { %>
+	<thead>
+		<tr>
+			<td>Host</td>
+			<td>Hostname</td>
+			<td>Port</td>
+			<td>Scan</td>
+			<td>Plugin</td>
+			<td>Finding</td>
+			<td>Remark</td>
+			<td>Status</td>
+			<td>Action</td>
+		</tr>
+	</thead>
+	<tbody>
 		<% for(var i = 0; i < this.length ; i++) { %>
 			<tr <%= this[i] %>>
 				<%== $.View('//seccubus/issuelink/table/views/link.ejs', this[i] ) %>
 			</tr>
 		<% } %>
-	<% } %>
-</tbody>
+	</tbody>
+<% } %>
