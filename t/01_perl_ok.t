@@ -44,6 +44,16 @@ foreach my $file ( @files ) {
 
 				like(`perl -ISeccubusV2 -It -c '$file' 2>&1`, qr/OK/, "Perl compile test: $file");
 				$tests++;
+
+				if ( $file =~ /\.pm$/ ) {
+					# Modules
+					like(`ls -l '$file'`, qr/^\-rw\-r\-\-r\-\-/, "File '$file' has the correct permissions");
+					$tests++;
+				} else {
+					# Executables
+					like(`ls -l '$file'`, qr/^\-rwxr\-xr\-x/, "File '$file' has the correct permissions");
+					$tests++;
+				}
 			}
 		}
 	}

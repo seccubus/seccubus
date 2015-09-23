@@ -304,6 +304,19 @@ if (`hostname` =~ /^sbpd/) {
 	is(@$json, 1, "Correct number of records"); $tests++;
 	is(@{$$json[0]->{findings}}, 0, "number of linked findings ok"); $tests++;
 
+	# Unlink error conditions
+	$json = webcall("unlinkFindingIssue.pl");
+	is(@$json, 1, "Correct number of records"); $tests++;
+	like($$json[0]->{error}, qr/workspaceid/i, "Returns correct error"); $tests++;
+
+	$json = webcall("unlinkFindingIssue.pl", "workspaceId=100");
+	is(@$json, 1, "Correct number of records"); $tests++;
+	like($$json[0]->{error}, qr/issueid/i, "Returns correct error"); $tests++;
+
+	$json = webcall("unlinkFindingIssue.pl", "issueId=4", "workspaceId=100");
+	is(@$json, 1, "Correct number of records"); $tests++;
+	like($$json[0]->{error}, qr/findingId/i, "Returns correct error"); $tests++;
+
 	# Can we unlink an issue
 	$json = webcall("unlinkFindingIssue.pl", "issueId=4", "workspaceId=100", "findingIds[]=4");
 	# OK, time to read them back...
