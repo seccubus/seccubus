@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-steal(	'jquery/controller',
+steal(	
+	'jquery/controller',
 	'jquery/view/ejs',
 	'jquery/controller/view',
 	'jquery/dom/form_params',
 	'seccubus/models',
+	'seccubus/finding/table',
 	'seccubus/severity/select'
 ).then( './views/init.ejs', 
 function($){
@@ -80,14 +82,27 @@ $.Controller('Seccubus.Issue.Edit',
 			});
 		}
 
+		console.log(this.options.findings);
 		if ( this.options.findings != null ) {
-			/* Display the issue history */
-			/*
-			$(this.options.history).seccubus_history_table({
+			/* Display the findings for this issue */
+			$(this.options.findings).seccubus_finding_table({
 				workspace	: this.options.workspace,
-				issueId	: this.options.issues[this.options.index].id
+				issue		: this.options.issue.id,
+				noEdit 		: true,
+				status 		: "*",
+				columns		: [
+					"host", "IP", 
+					"hostName", "HostName", 
+					"port", "Port", 
+					"plugin", "Plugin", 
+					"scanName","ScanName",
+					"severity", "Severity", 
+					"find", "Finding",
+					"remark", "Remark",
+					"status", "Status",
+					"", "Action"
+				  ]
 			});
-			*/
 		}
 	},
 	".editSetStatus click" : function(el,ev) {

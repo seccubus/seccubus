@@ -384,6 +384,9 @@ if (`hostname` =~ /^sbpd/) {
 	$json = webcall("getIssues.pl", "workspaceId=101", "issueId=4");
 	is(@$json, 0, "Correct number of records"); $tests++;
 
+	# Link two findings to more then one issue
+	$json = webcall("updateIssue.pl", "issueId=3", "workspaceId=100", "findingIds[]=4", "findingIds[]=3");
+
 	# Prep a more full GUI
 	$json = webcall("updateIssue.pl", "issueId=4", "workspaceId=100", "findingIds[]=4", "findingIds[]=3", "findingIds[]=2");
 	$json = webcall("updateFindings.pl", "ids[]=2", "ids[3]", "attrs[remark]=No+issue", "attrs[status]=4", "attrs[workspaceId]=100")

@@ -37,6 +37,7 @@ limitations under the License.
 	    <h1>Seccubus.Issue.Edit Demo</h1>
 		Workspace: <select id='workspace'></select><br>
 		<form id='edit_issue'>Form will go here</form>
+		<table id='findings_table'>Findigns will go here<table>
 		<table id='issues' border=1></table>
 		<script type='text/javascript' 
                 src='../../../steal/steal.js'>
@@ -75,7 +76,8 @@ limitations under the License.
 						onIssueEdit	: function(issue){
 							$('#edit_issue').seccubus_issue_edit({
 								issue		: issue,
-								workspace	: gui_state.attr("workspace")
+								workspace	: gui_state.attr("workspace"),
+								findings 	: '#findings_table'
 							});
 						}
 					});

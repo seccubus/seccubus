@@ -1,4 +1,4 @@
-<%# Copyright 2013 Frank Breedijk                                            %>
+<%# Copyright 2015 Frank Breedijk                                            %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -37,11 +37,11 @@
 					{
 						columns : columns,
 						state	: fStatus,
-						checked : checked
-					} 
+						checked : checked,
+						noEdit	: noEdit
+					}
 				) %>
 			</tr>
-			<% count++ %>
 		<% } %>
 		<% if ( this.length == 0 ) { %>
 			<tr><td colspan=<%= columns.length/2 %>>No findings match you selection</td></tr>

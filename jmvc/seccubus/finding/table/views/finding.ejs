@@ -1,4 +1,4 @@
-<%# Copyright 2013 Frank Breedijk                                            %>
+<%# Copyright 2015 Frank Breedijk                                            %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -16,25 +16,27 @@
 	<% if (columns[i] == "") { %>
 		<% if(columns[i+1] == "Action") { %>
 			<td>
-				<a href='javascript://' class='editFinding'>
-					<img src='img/edit.png'>
-				</a><br>
-				<% if (state == 99 ) { %>
+			    <% if ( ! noEdit ) { %> 
+					<a href='javascript://' class='editFinding'>
+						<img src='img/edit.png'>
+					</a><br>
+				<% } %>
+				<% if (status == 99 ) { %>
 					<a href='javascript://' value='1' class='small changeState'><img src='img/new.png'></a><br>
 				<% } %>
-				<% if (state <= 2 || state == 4 ) { %>
+				<% if (status <= 2 || status == 4 ) { %>
 					<a href='javascript://' value='3' class='small changeState'><img src='img/open.png'></a><br>
 				<% } %>
-				<% if (state < 4 ) { %>
+				<% if (status < 4 ) { %>
 					<a href='javascript://' value='4' class='small changeState'><img src='img/noissue.png'></a><br>
 				<% } %>
-				<% if (state == 6 ) { %>
+				<% if (status == 6 ) { %>
 					<a href='javascript://' value='5' class='small changeState'><img src='img/gone.png'></a><br>
 				<% } %>
-				<% if (state == 5 ) { %>
+				<% if (status == 5 ) { %>
 					<a href='javascript://' value='6' class='small changeState'><img src='img/closed.png'></a><br>
 				<% } %>
-				<% if (state != 99 ) { %>
+				<% if (status != 99 ) { %>
 					<a href='javascript://' value='99' class='small changeState'><img src='img/masked.png'></a><br>
 				<% } %>
 			</td>
@@ -67,6 +69,8 @@
 		</td>
 	<% } else if (columns[i] == "remark") { %>
 		<td><%== this.asHTML("remark") %></td>
+	<% } else if (columns[i] == "status") { %>
+		<td><%= status %>. <%= statusName %></td>
 	<% } else { %>
 		<td><%= this[columns[i]] %></td>
 	<% } %>

@@ -82,6 +82,11 @@ $.Controller('Seccubus.Finding.Table',
 		 */
 		severity	: "*",
 		/*
+		 * @attribute options.issue
+		 * The current issue filter
+		 */
+		issue		: "*",
+		/*
 		 * @attribute options.finding
 		 * The current finding filter
 		 */
@@ -110,10 +115,10 @@ $.Controller('Seccubus.Finding.Table',
 		 */
 		columns		: [ 	"", "select",
 					"host", "IP", 
-					"scanName","ScanName",
 					"hostName", "HostName", 
 					"port", "Port", 
 					"plugin", "Plugin", 
+					"scanName","ScanName",
 					"severity", "Severity", 
 					"find", "Finding",
 					"remark", "Remark",
@@ -144,7 +149,12 @@ $.Controller('Seccubus.Finding.Table',
 		 */
 		onEdit		:  function(find) {
 			alert("Options.onEdit function is not set");
-		}
+		},
+		/*
+		 * @attribute options.noEdit
+		 * Boolean that turns the edit button off
+		 */
+		noEdit		: false
 	}
 },
 /** @Prototype */
@@ -170,13 +180,13 @@ $.Controller('Seccubus.Finding.Table',
 					checked		: this.options.checked
 				})
 			);
-		} else if ( this.options.scans == null && this.options.assets == null ) {
+		} else if ( this.options.scans == null && this.options.assets == null && this.options.issue == "*") {
 			this.element.html(
 				this.view('error',{
 					columns		: this.options.columns,
 					orderBy		: this.options.orderBy,
 					descending	: this.options.descending,
-					message 	: "Please select one or more scans or assets",
+					message 	: "Please select one or more scans, assets or an issue",
 					checked		: this.options.checked
 				})
 			);
@@ -195,6 +205,7 @@ $.Controller('Seccubus.Finding.Table',
 						Port		: this.options.port,
 						Plugin		: this.options.plugin,
 						Severity	: this.options.severity,
+						Issue 		: this.options.issue,
 						Finding		: this.options.finding,
 						Remark		: this.options.remark
 					}), 
@@ -203,8 +214,9 @@ $.Controller('Seccubus.Finding.Table',
 						columns		: this.options.columns,
 						orderBy		: this.options.orderBy,
 						descending	: this.options.descending,
-						fn		: this.sortFunc(this.options.orderBy,this.options.descending),
-						checked		: this.options.checked
+						fn			: this.sortFunc(this.options.orderBy,this.options.descending),
+						checked		: this.options.checked,
+						noEdit		: this.options.noEdit
 					}
 				)
 			);
