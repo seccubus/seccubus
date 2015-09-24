@@ -384,12 +384,29 @@ if (`hostname` =~ /^sbpd/) {
 	$json = webcall("getIssues.pl", "workspaceId=101", "issueId=4");
 	is(@$json, 0, "Correct number of records"); $tests++;
 
-	# Link two findings to more then one issue
-	$json = webcall("updateIssue.pl", "issueId=3", "workspaceId=100", "findingIds[]=4", "findingIds[]=3");
-
 	# Prep a more full GUI
 	$json = webcall("updateIssue.pl", "issueId=4", "workspaceId=100", "findingIds[]=4", "findingIds[]=3", "findingIds[]=2");
-	$json = webcall("updateFindings.pl", "ids[]=2", "ids[3]", "attrs[remark]=No+issue", "attrs[status]=4", "attrs[workspaceId]=100")
+	$json = webcall("updateIssue.pl", "issueId=3", "workspaceId=100", "findingIds[]=4", "findingIds[]=3");
+	$json = webcall("updateFindings.pl", "ids[]=2", "ids[3]", "attrs[remark]=No+issue", "attrs[status]=4", "attrs[workspaceId]=100");
+
+	# Link two findings to more then one issue
+	$json = webcall("getFindings.pl", "workspaceId=100");
+	is(@$json, 7, "Correct number of records"); $tests++;
+	is($$json[0]->{id}, 1, "Correct ID fetched"); $tests++;
+	is(@{$$json[0]->{issues}}, 1, "Correct number of issues"); $tests++;
+	is($$json[0]->{issues}[0]->{id}, 4, "Correct issue"); $tests++;
+	is($$json[1]->{id}, 2, "Correct ID fetched"); $tests++;
+	is(@{$$json[1]->{issues}}, 1, "Correct number of issues"); $tests++;
+	is($$json[1]->{issues}[0]->{id}, 4, "Correct issue"); $tests++;
+	is($$json[2]->{id}, 3, "Correct ID fetched"); $tests++;
+	is(@{$$json[2]->{issues}}, 2, "Correct number of issues"); $tests++;
+	is($$json[2]->{issues}[0]->{id}, 3, "Correct issue"); $tests++;
+	is($$json[2]->{issues}[1]->{id}, 4, "Correct issue"); $tests++;
+	is($$json[3]->{id}, 4, "Correct ID fetched"); $tests++;
+	is(@{$$json[3]->{issues}}, 2, "Correct number of issues"); $tests++;
+	is($$json[3]->{issues}[0]->{id}, 3, "Correct issue"); $tests++;
+	is($$json[3]->{issues}[1]->{id}, 4, "Correct issue"); $tests++;
+
 }
 
 done_testing($tests);

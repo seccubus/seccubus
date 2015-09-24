@@ -40,7 +40,7 @@ use Carp;
 
 sub update_issue(@);
 sub create_issue_change($);
-sub get_issues($;$);
+sub get_issues($;$$);
 sub get_issue($$);
 sub issue_finding_link($$$;$);
 
@@ -242,6 +242,10 @@ This function returns a reference to an array of issues
 
 =item workspace_id - id of the workspace
 
+=item issue_id - id of a single issue to fetch
+
+=item with_finding_ids - true is we want to have finding ID's as well
+
 =back 
 
 =item Checks
@@ -252,20 +256,27 @@ Must have at least read rights
 
 =cut
 
-sub get_issues($;$) {
+sub get_issues($;$$) {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $issue_id = shift;
+	my $with_finding_ids = shift;
 
 	if ( may_read($workspace_id) ) {
 		my $params = [ $workspace_id ];
 
 		my $query = "
 			SELECT DISTINCT i.id, i.name, i.ext_ref, i.description, i.severity, severity.name, 
-				i.status, issue_status.name
+				i.status, issue_status.name";
+		$query .= ", i2f.finding_id" if $with_finding_ids;
+		$query .= "
 			FROM
 				issues i
 			LEFT JOIN severity on i.severity = severity.id
-			LEFT JOIN issue_status on i.status = issue_status.id
+			LEFT JOIN issue_status on i.status = issue_status.id";
+		$query .= "
+			LEFT JOIN issues2findings i2f on i.id = i2f.issue_id
+		" if $with_finding_ids;
+		$query .= "
 			WHERE
 				i.workspace_id = ?
 		";

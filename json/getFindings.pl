@@ -23,6 +23,7 @@ use JSON;
 use lib "..";
 use SeccubusV2;
 use SeccubusFindings;
+use SeccubusIssues;
 use Data::Dumper;
 
 my $query = CGI::new();
@@ -51,6 +52,25 @@ eval {
 		}
 	}
 
+	my $issues = get_issues($workspace_id,undef,1); # Get list of issues with finding_id;
+	my %i2f;
+	foreach my $issue ( @$issues ) {
+		my $id = $$issue[8];
+		if ( $id ) { # finding_id
+			$i2f{$id} = [] unless $i2f{$id};
+			my $i = {};
+			$i->{id} = $$issue[0];
+			$i->{name} = $$issue[1];
+			$i->{ext_ref} = $$issue[2];
+			$i->{description} = $$issue[3];
+			$i->{severity} = $$issue[4];
+			$i->{severityName} = $$issue[5];
+			$i->{status} = $$issue[6];
+			$i->{statusName} = $$issue[7];
+			push @{$i2f{$id}}, $i;
+		}
+	}
+
 	if( ! @asset_ids ){
 		@scan_ids = ( 0 ) unless @scan_ids;
 		foreach my $scan_id ( @scan_ids ) {
@@ -71,6 +91,7 @@ eval {
 					'statusName'	=> $$row[10],
 					'scanId'	=> $$row[11],
 					'scanName'	=> $$row[12],
+					'issues'	=> $i2f{$$row[0]}
 				});
 			}
 		}
@@ -92,6 +113,7 @@ eval {
 					'statusName'	=> $$row[10],
 					'scanId'	=> $$row[11],
 					'scanName'	=> $$row[12],
+					'issues'	=> $i2f{$$row[0]}
 				});
 			}
 		}
