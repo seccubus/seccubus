@@ -26,6 +26,8 @@ use SeccubusFindings;
 use SeccubusIssues;
 use Data::Dumper;
 
+my $config = get_config();
+
 my $query = CGI::new();
 my $json = JSON->new();
 
@@ -57,6 +59,7 @@ eval {
 	foreach my $issue ( @$issues ) {
 		my $id = $$issue[8];
 		if ( $id ) { # finding_id
+
 			$i2f{$id} = [] unless $i2f{$id};
 			my $i = {};
 			$i->{id} = $$issue[0];
@@ -67,6 +70,8 @@ eval {
 			$i->{severityName} = $$issue[5];
 			$i->{status} = $$issue[6];
 			$i->{statusName} = $$issue[7];
+			my $url = $config->{tickets}->{url_head} . $$issue[2] . $config->{tickets}->{url_tail} if $config->{tickets}->{url_head};
+			$i->{url} = $url;
 			push @{$i2f{$id}}, $i;
 		}
 	}

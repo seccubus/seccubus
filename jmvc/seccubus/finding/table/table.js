@@ -122,6 +122,7 @@ $.Controller('Seccubus.Finding.Table',
 					"severity", "Severity", 
 					"find", "Finding",
 					"remark", "Remark",
+					"issues", "Issues",
 					"", "Action"
 				  ],
 		/*

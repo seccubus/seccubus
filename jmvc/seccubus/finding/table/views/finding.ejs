@@ -71,6 +71,32 @@
 		<td><%== this.asHTML("remark") %></td>
 	<% } else if (columns[i] == "status") { %>
 		<td><%= status %>. <%= statusName %></td>
+	<% } else if (columns[i] == "issues") { %>
+		<td>
+			<% if ( this["issues"] == null )  { %>
+				0 issues
+			<% } else { %>
+				<%= issues.length %> issue<%= issues.length > 1 ? "s" : "" %>:<br>
+				<ul>
+					<% for ( x = 0; x < issues.length ; x++ ) { %>
+						<li>
+							<div title='<%= issues[x].description %>'>
+							    <% if ( ! noEdit ) { %> 
+									<img class='editIssue' src='img/edit.png'>
+								<% } %>
+								<%= issues[x].name %>
+								<% if ( issues[x].url ) { %>
+									(<a href='<%= issues[x].url%>' target=_blank><%= issues[x].ext_ref %><a/>)
+								<% } else { %>
+									(<%= issues[x].ext_ref %>)
+								<% } %>
+								- <%= issues[x].severityName %> - <%= issues[x].statusName %>
+							</div>
+						</li>
+					<% } %>
+				</ul>
+			<% } %>
+		</td>
 	<% } else { %>
 		<td><%= this[columns[i]] %></td>
 	<% } %>
