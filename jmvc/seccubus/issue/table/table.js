@@ -44,7 +44,7 @@ $.Controller('Seccubus.Issue.Table',
 		 * The function that is called when the Edit finding button is called
 		 */
 		onIssueEdit		: function(issue) {
-			console.log("No onIssueEdit function set, called for issue id:" + issue.id);
+			console.log("No onIssueEdit function set, called for issue: " + +issue.id + issue);
 		},
 		onFindingEdit 	: function(finding) {
 			console.log("No onFunctionEdit function set, called edit for finding id:" + finding.id);
@@ -71,8 +71,7 @@ $.Controller('Seccubus.Issue.Table',
 	},
 	// Apend on update
 	"{Seccubus.Models.Issue} updated" : function(Issue, ev, issue){
-		issue.elements(this.element)
-		      .html(this.view('issue', issue) );
+		this.updateView();
 	},
 	/*
 	 * This fuction rerenders the entire control with data from findAll

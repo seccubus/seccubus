@@ -33,7 +33,8 @@ my $config = get_config();
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
 my $params = $query->Vars;
-my $workspace_id = $query->param("workspaceId");
+my $workspace_id = $params->{workspaceId};
+my $issue_id = $params->{issueId};
 
 # Return an error if the required parameters were not passed 
 if (not (defined ($workspace_id))) {
@@ -44,7 +45,7 @@ if (not (defined ($workspace_id))) {
 
 eval {
 	my @data;
-	my $issues = get_issues($workspace_id);
+	my $issues = get_issues($workspace_id, $params->{issueId});
 	foreach my $row ( @$issues ) {
 		my $url = "";
 		if ( $config->{tickets}->{url_head} ) {
