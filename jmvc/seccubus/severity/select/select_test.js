@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Frank Breedijk, Petr
+ * Copyright 2015 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// steal model files
+steal('funcunit').then(function(){
 
-steal(
-	'jquery/model', 
-	'./up_to_date.js', 
-	'./config_item.js',
-	'./workspace.js',
-	'./scan.js', 
-	'./finding.js', 
-	'./filter.js',
-	'./status.js', 
-	'./gui_state.js', 
-	'./scanner.js', 
-	'./history.js', 
-	'./run.js',
-	'./event.js',
-	'./notification.js',
-	'./asset.js',
-	'./asset_host.js',
-	'./asset2scan.js',
-	'./custsql.js',
-	'./savedsql.js', 
-	'./issue.js',
-	'./issuelink.js',
-	'./severity.js'
-)
+module("Seccubus.Severity.Select", { 
+	setup: function(){
+		S.open("//seccubus/severity/select/select.html");
+	}
+});
+
+test("Text Test", function(){
+	equals(S("h1").text(), "Seccubus.Severity.Select Demo","demo text");
+});
+
+
+});

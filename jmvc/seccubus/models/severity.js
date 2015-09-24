@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Frank Breedijk, Petr
+ * Copyright 2015 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// steal model files
+steal('jquery/model', function(){
 
-steal(
-	'jquery/model', 
-	'./up_to_date.js', 
-	'./config_item.js',
-	'./workspace.js',
-	'./scan.js', 
-	'./finding.js', 
-	'./filter.js',
-	'./status.js', 
-	'./gui_state.js', 
-	'./scanner.js', 
-	'./history.js', 
-	'./run.js',
-	'./event.js',
-	'./notification.js',
-	'./asset.js',
-	'./asset_host.js',
-	'./asset2scan.js',
-	'./custsql.js',
-	'./savedsql.js', 
-	'./issue.js',
-	'./issuelink.js',
-	'./severity.js'
-)
+/**
+ * @class Seccubus.Severity
+ * @parent Severity
+ * @inherits jQuery.Model
+ * Wraps backend severity services.  
+ * Only has a findAll api
+ */
+$.Model('Seccubus.Models.Severity',
+/* @Static */
+{
+	findAll: "json/getSeverity.pl"
+  	//findOne : "/severity/{id}.json", 
+  	//create : "/severity.json",
+ 	//update : "/severity/{id}.json",
+  	//destroy : "/severity/{id}.json"
+},
+/* @Prototype */
+{});
+
+})
