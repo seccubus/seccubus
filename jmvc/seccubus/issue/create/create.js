@@ -23,17 +23,17 @@ steal(	'jquery/controller',
 function($){
 
 /**
- * @class Seccubus.Issue.Edit
+ * @class Seccubus.Issue.Create
  * @parent Issue
  * @inherits jQuery.Controller
- * Generates an dialog to show/edit one or more issues
+ * Generates an dialog to show/create one or more issues
  *
  * Story
  * -----
- *  As a user I would like to be able to have a detailed view and edit 
+ *  As a user I would like to be able to have a detailed view and create 
  *  posibility for issues
  */
-$.Controller('Seccubus.Issue.Edit',
+$.Controller('Seccubus.Issue.Create',
 /** @Static */
 {
 	/*
@@ -41,22 +41,27 @@ $.Controller('Seccubus.Issue.Edit',
 	 * Object that contains the options
 	 */
 	defaults : {
-		/* @attribute options.issues
-		 * Issue object to edit
-		 */
-		issue : null,
-		/* @attribute options.findings
-		 * jQuery query that defines where the findings table will be displayed
-		 * Default : null
-		 * If this attribute is null there will be no history displayed
-		 */
-		findings : null,
 		/* @attribute options.workspace
 		 * Id of the current workspace
 		 */
-		workspace : -1
-
-	}
+		workspace : -1,
+		/*
+		 * @attribute findings
+		 * Array of findings to link to new issue
+		 */
+		findings : [],
+		/*
+		 * @attribute findingsTable
+		 * jQuery element to put the findings table in
+		 */
+		findingsTable : null,
+		/*
+		 * @attribute options.onClear
+		 * Funciton that is called when the form is cleared, e.g. to 
+		 * disable a modal display
+		 */
+		onClear : function () { },
+		}
 },
 /** @Prototype */
 {
@@ -65,9 +70,7 @@ $.Controller('Seccubus.Issue.Edit',
 	},
 	updateView : function() {
 		if ( this.options.workspace == -1 ) {
-			alert("Seccubus.Issues.Edit : Workspace not set");
-		} else if ( this.options.issue == null ) {
-			alert("Seccubus.Issues.Edit : Issue not set");
+			console.warn("Seccubus.Issues.Create : Workspace not set");
 		} else {
 			this.element.html(
 				this.view(
@@ -75,12 +78,10 @@ $.Controller('Seccubus.Issue.Edit',
 					this.options.issue
 				)
 			);
-			$('#editIssueSeverity').seccubus_severity_select({
-				selected : this.options.issue.severity
-			});
+			$('#createIssueSeverity').seccubus_severity_select();
 		}
 
-		if ( this.options.findings != null ) {
+		if ( this.options.findingsTable != null ) {
 			/* Display the issue history */
 			/*
 			$(this.options.history).seccubus_history_table({
@@ -90,29 +91,34 @@ $.Controller('Seccubus.Issue.Edit',
 			*/
 		}
 	},
-	".editSetStatus click" : function(el,ev) {
+	".createSetStatus click" : function(el,ev) {
 		ev.preventDefault();
 
 		var newState = $(el).attr("newstatus");
 		var param = this.element.formParams();
-		var issue = this.options.issue;
 		
 		// Check form
 		var ok = true;
 		var elements = [];
 		if ( param.name == '' ) {
-			elements.push("#editIssueName");
+			elements.push("#createIssueName");
+			ok = false;
+		}
+		if ( param.severity == -1 ) {
+			elements.push("#createIssueSeverity");
 			ok = false;
 		}
 
 		if ( ok ) {
-			issue.attr("name",param.name);
-			issue.attr("description",param.description);
-			issue.attr("ext_ref",param.ext_ref);
-			issue.attr("status",newState)
-			issue.attr("workspaceId",this.options.workspace);
-			issue.attr("issueId",issue.id);
-			issue.save();
+			console.log(this.options);
+			issue = new Seccubus.Models.Issue(param);
+			issue.attr("status", newState);
+			issue.attr("workspaceId", this.options.workspace);
+			issue.attr("findingIds[]", []);
+			for ( i=0;i < this.options.findings.length;i++) {
+				issue.attr("findingIds[]").push(this.options.findings[i].id);
+			}
+			issue.save(this.callback('saved'));
 		} else {
 			this.nok(elements);
 		}
@@ -131,23 +137,28 @@ $.Controller('Seccubus.Issue.Edit',
 		this.element.animate({left : '-=10'},100);
 		this.element.css({position : "relative"});
 	},	
-	/*
-	".move click" : function(el,ev) {
-		ev.preventDefault();
-		this.options.index = $(el).attr("index");
-		this.updateView();
+	".cancel click" : function() {
+		this.clearAll();
 	},
-	*/
+	saved : function(){
+		this.clearAll();
+	},
+	clearAll : function() {
+		this.element.find('[type=submit]').val('Create scan');
+		this.element[0].reset()
+		$(".nok").removeClass("nok");
+		this.options.onClear();
+	},
 	"{Seccubus.Models.Issue} updated" : function(Issue, ev, issue) {
 		this.updateView();
 	},
-	/* 
-	 * Update, overloaded to reder the control after and update even
-	 */
 	// Autoclear nok status
 	".nok change" : function(el) {
 		el.removeClass("nok");
 	},
+	/* 
+	 * Update, overloaded to reder the control after and update even
+	 */
 	update : function(options) {
 		this._super(options);
 		this.updateView();

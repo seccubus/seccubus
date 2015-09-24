@@ -32,7 +32,7 @@ $.Model('Seccubus.Models.Issue',
 	 */
 	findAll: "POST json/getIssues.pl",
   	findOne: "POST json/getIssues.pl", 
-  	//create : "/issues.json",
+  	create : "POST json/updateIssue.pl",
 	/*
 	 * @function update
 	 * This function updates a single issue, it is the interface to
