@@ -149,7 +149,17 @@ $.Controller('Seccubus.Finding.Table',
 		 * clicked
 		 */
 		onEdit		:  function(find) {
-			alert("Options.onEdit function is not set");
+			console.warn("Seccubus.Finding.Table: onEdit function is not set.");
+			console.log(find);
+		},
+		/*
+		 * @attribute options.onLink
+		 * Function that is called when an attribute's link button is 
+		 * clicked
+		 */
+		onLink		:  function(find) {
+			console.warn("Seccubus.Finding.Table: onLink function is not set.");
+			console.log(find);
 		},
 		/*
 		 * @attribute options.noEdit
@@ -292,6 +302,12 @@ $.Controller('Seccubus.Finding.Table',
 		ev.preventDefault();
 		var find = el.closest('.finding').model();
 		this.options.onEdit(find);
+	},
+	// Handle link clicks
+	".linkFinding click" : function(el,ev) {
+		ev.preventDefault();
+		var find = el.closest('.finding').model();
+		this.options.onLink(find);
 	},
 	// Handle state change click by updating the finding in question via the
 	// model
