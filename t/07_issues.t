@@ -526,6 +526,82 @@ if (`hostname` =~ /^sbpd/) {
 	is($json->{severity}[0]->{number}, 2, "Correct number of findings in severity filter"); $tests++;
 	#die Dumper $json;
 
+	# Test if the correct status is returned
+	$json = webcall("getStatus.pl", "workspaceId=100", "scanIds[]=1");
+	is(@$json, 7, "Correct number of items"); $tests++;
+	is($$json[0]->{id}, 1, "Correct id"); $tests++;
+	is($$json[0]->{name}, 'New', "Correct name"); $tests++;
+	is($$json[0]->{count}, 6, "Correct count"); $tests++;
+	is($$json[1]->{id}, 2, "Correct id"); $tests++;
+	is($$json[1]->{name}, 'Changed', "Correct name"); $tests++;
+	is($$json[1]->{count}, 0, "Correct count"); $tests++;
+	is($$json[2]->{id}, 3, "Correct id"); $tests++;
+	is($$json[2]->{name}, 'Open', "Correct name"); $tests++;
+	is($$json[2]->{count}, 0, "Correct count"); $tests++;
+	is($$json[3]->{id}, 4, "Correct id"); $tests++;
+	is($$json[3]->{name}, 'No issue', "Correct name"); $tests++;
+	is($$json[3]->{count}, 1, "Correct count"); $tests++;
+	is($$json[4]->{id}, 5, "Correct id"); $tests++;
+	is($$json[4]->{name}, 'Gone', "Correct name"); $tests++;
+	is($$json[4]->{count}, 0, "Correct count"); $tests++;
+	is($$json[5]->{id}, 6, "Correct id"); $tests++;
+	is($$json[5]->{name}, 'Closed', "Correct name"); $tests++;
+	is($$json[5]->{count}, 0, "Correct count"); $tests++;
+	is($$json[6]->{id}, 99, "Correct id"); $tests++;
+	is($$json[6]->{name}, 'MASKED', "Correct name"); $tests++;
+	is($$json[6]->{count}, 0, "Correct count"); $tests++;
+
+	# Test if the correct status is returned filter on issue 4
+	$json = webcall("getStatus.pl", "workspaceId=100", "scanIds[]=1", "Issue=3");
+	is(@$json, 7, "Correct number of items"); $tests++;
+	is($$json[0]->{id}, 1, "Correct id"); $tests++;
+	is($$json[0]->{name}, 'New', "Correct name"); $tests++;
+	is($$json[0]->{count}, 2, "Correct count"); $tests++;
+	is($$json[1]->{id}, 2, "Correct id"); $tests++;
+	is($$json[1]->{name}, 'Changed', "Correct name"); $tests++;
+	is($$json[1]->{count}, 0, "Correct count"); $tests++;
+	is($$json[2]->{id}, 3, "Correct id"); $tests++;
+	is($$json[2]->{name}, 'Open', "Correct name"); $tests++;
+	is($$json[2]->{count}, 0, "Correct count"); $tests++;
+	is($$json[3]->{id}, 4, "Correct id"); $tests++;
+	is($$json[3]->{name}, 'No issue', "Correct name"); $tests++;
+	is($$json[3]->{count}, 0, "Correct count"); $tests++;
+	is($$json[4]->{id}, 5, "Correct id"); $tests++;
+	is($$json[4]->{name}, 'Gone', "Correct name"); $tests++;
+	is($$json[4]->{count}, 0, "Correct count"); $tests++;
+	is($$json[5]->{id}, 6, "Correct id"); $tests++;
+	is($$json[5]->{name}, 'Closed', "Correct name"); $tests++;
+	is($$json[5]->{count}, 0, "Correct count"); $tests++;
+	is($$json[6]->{id}, 99, "Correct id"); $tests++;
+	is($$json[6]->{name}, 'MASKED', "Correct name"); $tests++;
+	is($$json[6]->{count}, 0, "Correct count"); $tests++;
+
+	# Test if the correct status is returned filter on issue 4
+	$json = webcall("getStatus.pl", "workspaceId=100", "scanIds[]=1", "Issue=4");
+	is(@$json, 7, "Correct number of items"); $tests++;
+	is($$json[0]->{id}, 1, "Correct id"); $tests++;
+	is($$json[0]->{name}, 'New', "Correct name"); $tests++;
+	is($$json[0]->{count}, 3, "Correct count"); $tests++;
+	is($$json[1]->{id}, 2, "Correct id"); $tests++;
+	is($$json[1]->{name}, 'Changed', "Correct name"); $tests++;
+	is($$json[1]->{count}, 0, "Correct count"); $tests++;
+	is($$json[2]->{id}, 3, "Correct id"); $tests++;
+	is($$json[2]->{name}, 'Open', "Correct name"); $tests++;
+	is($$json[2]->{count}, 0, "Correct count"); $tests++;
+	is($$json[3]->{id}, 4, "Correct id"); $tests++;
+	is($$json[3]->{name}, 'No issue', "Correct name"); $tests++;
+	is($$json[3]->{count}, 1, "Correct count"); $tests++;
+	is($$json[4]->{id}, 5, "Correct id"); $tests++;
+	is($$json[4]->{name}, 'Gone', "Correct name"); $tests++;
+	is($$json[4]->{count}, 0, "Correct count"); $tests++;
+	is($$json[5]->{id}, 6, "Correct id"); $tests++;
+	is($$json[5]->{name}, 'Closed', "Correct name"); $tests++;
+	is($$json[5]->{count}, 0, "Correct count"); $tests++;
+	is($$json[6]->{id}, 99, "Correct id"); $tests++;
+	is($$json[6]->{name}, 'MASKED', "Correct name"); $tests++;
+	is($$json[6]->{count}, 0, "Correct count"); $tests++;
+
+	#die Dumper $json;
 }
 
 done_testing($tests);
