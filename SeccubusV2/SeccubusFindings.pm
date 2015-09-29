@@ -282,6 +282,10 @@ sub get_status($$$;$) {
 				$query .= " AND remark LIKE ?";
 				push @$params, "%" . $filter->{remark} . "%";
 			}
+			if ( $filter->{issue} ) {
+				$query .= " AND findings.id IN ( SELECT finding_id from issues2findings WHERE issue_id = ? ) ";
+				push @$params, $filter->{issue};
+			}
 
 		$query .= " ) ";
 
@@ -300,11 +304,11 @@ sub get_status($$$;$) {
 				push @$params, $filter->{hostname};
 			}
 		}
-
 		$query .= " ) ";
-		
-		$query .= " GROUP BY finding_status.id";
 
+				
+		$query .= " GROUP BY finding_status.id";
+		#die $query;
 		return sql( "return"	=> "ref",
 			    "query"	=> $query,
 			    "values"	=> $params,
