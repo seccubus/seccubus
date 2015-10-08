@@ -104,6 +104,23 @@
 			</option>
 		<% } %>
 	</select>
+
+	<br>
+
+	Issue:
+	<select filter='issue' class='filter issueFilter'>
+		<% for(var i=0;i<this.issue.length;i++) { %>
+			<option 
+				<%= this.issue[i].number == -1 ? "disabled" : "" %>
+				value='<%= this.issue[i].value %>'
+				<%= this.issue[i].selected ? "selected" : "" %>
+			>
+				<%= this.issue[i].name %>
+				<% if (this.issue[i].number > 0 )  { %>
+					(<%= this.issue[i].number %>)
+				<% } %>
+		<% } %>
+	</select>
 	
 	Finding: <input type='text' filter='finding' class='filter findingFilter' value='<%= this.finding %>'>
 
