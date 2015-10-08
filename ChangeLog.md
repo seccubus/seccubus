@@ -25,6 +25,18 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+08-10-2015 - 2.18 - Fixed a notifications error
+================================================
+Some people noticed that notifications were not visible anymore, Jordan and I fixed them
+
+Enhancements
+------------
+* Unit tests for notifications API
+
+Bug Fixes
+---------
+* #267 - Email notification config is not showing
+
 17-09-2015 - 2.17 - GNU Terry Pratchett (Fixed!)
 ================================================
 The bonanza of after summer fixes and small enhancements continues

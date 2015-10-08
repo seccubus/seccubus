@@ -53,7 +53,7 @@ eval {
 		event_id	=> $event_id,
 		event_name	=> $event_name,
 		subject		=> $subject,
-		recipient	=> $recipients,
+		recipients	=> $recipients,
 		message		=> $message,
 	};
 	print $json->pretty->encode(\@data);

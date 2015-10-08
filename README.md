@@ -29,13 +29,12 @@ For more information visit [www.seccubus.com]
 
 ---
 
-xx-09-2015 - 2.18 - 
-================================================
-Hope I have inspiration for a good message here...
+xx-xx-2015 - 2.18 - What is the issue?
+======================================
+What is the issue
 
 Enhancements
 ------------
 
 Bug Fixes
 ---------
-* Fixed a spelling mistake in the severity description

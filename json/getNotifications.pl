@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk
+# Copyright 2015 Frank Breedijk, Jordan Bradley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ my $json = JSON->new();
 print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
 my $params = $query->Vars;
-my $scan_id = $query->param("workspaceId");
+my $scan_id = $query->param("scanId");
 
 # Return an error if the required parameters were not passed 
 my $error;
