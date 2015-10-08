@@ -77,12 +77,19 @@ $.Model('Seccubus.GuiState',
 	 */
 		plugin		: "*",
 	/*
-         * @attribute severity
-         * Determines which severity is filtered on
-         * - Default value: *
-         * - Special value: * - No Severity specified
-         */
+     * @attribute severity
+     * Determines which severity is filtered on
+     * - Default value: *
+     * - Special value: * - No Severity specified
+     */
 		severity	: "*",
+	/*
+     * @attribute issue
+     * Determines which issue is filtered on
+     * - Default value: *
+     * - Special value: * - No issue specified
+     */
+		issue	: "*",
 	/*
 	 * @attribute finding
 	 * Determines which string should occur in the the findings
@@ -134,6 +141,7 @@ $.Model('Seccubus.GuiState',
 			this.attr("port","*");
 			this.attr("plugin","*");
 			this.attr("severity","*");
+			this.attr("issue","*");
 			this.attr("finding","*");
 			this.attr("remark","*");
 			this.attr("assets","*");

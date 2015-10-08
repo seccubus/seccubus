@@ -103,6 +103,10 @@ steal(
 			console.log("severity changed")
 			render_findings();
 		});
+		gui_state.bind("issue", function(ev,issue) {
+			console.log("issue changed to "+issue);
+			render_findings();
+		})
 		gui_state.bind("finding", function(ev, scan){
 			console.log("finding changed")
 			render_findings();
@@ -387,6 +391,7 @@ steal(
 				port		: gui_state.port,
 				plugin		: gui_state.plugin,
 				severity	: gui_state.severity,
+				issue 		: gui_state.issue,
 				finding		: gui_state.finding,
 				remark		: gui_state.remark,
 				onEdit		: function(find) {
@@ -479,6 +484,7 @@ steal(
 				port		: gui_state.port,
 				plugin		: gui_state.plugin,
 				severity	: gui_state.severity,
+				issue 		: gui_state.issue,
 				finding		: gui_state.finding,
 				remark		: gui_state.remark,
 				onClick		: function(s){
@@ -498,6 +504,7 @@ steal(
 				port		: gui_state.port,
 				plugin		: gui_state.plugin,
 				severity	: gui_state.severity,
+				issue 		: gui_state.issue,
 				finding		: gui_state.finding,
 				remark		: gui_state.remark,
 				onChange	: function(f) {
