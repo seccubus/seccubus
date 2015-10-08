@@ -29,14 +29,12 @@ For more information visit [www.seccubus.com]
 
 ---
 
-08-10-2015 - 2.18 - Fixed a notifications error
+xx-xx-2015 - 2.19 - 
 ================================================
-Some people noticed that notifications were not visible anymore, Jordan and I fixed them
+Something inspirational goes here...
 
 Enhancements
 ------------
-* Unit tests for notifications API
 
 Bug Fixes
 ---------
-* #267 - Email notification config is not showing
