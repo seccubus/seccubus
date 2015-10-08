@@ -40,7 +40,7 @@ use Carp;
 
 sub update_issue(@);
 sub create_issue_change($);
-sub get_issues($;$$);
+sub get_issues($;$$$);
 sub get_issue($$);
 sub issue_finding_link($$$;$);
 
@@ -256,10 +256,11 @@ Must have at least read rights
 
 =cut
 
-sub get_issues($;$$) {
+sub get_issues($;$$$) {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $issue_id = shift;
 	my $with_finding_ids = shift;
+	my $finding_id = shift;
 
 	if ( may_read($workspace_id) ) {
 		my $params = [ $workspace_id ];
@@ -275,11 +276,16 @@ sub get_issues($;$$) {
 			LEFT JOIN issue_status on i.status = issue_status.id";
 		$query .= "
 			LEFT JOIN issues2findings i2f on i.id = i2f.issue_id
-		" if $with_finding_ids;
+		" if $with_finding_ids || $finding_id;
+
 		$query .= "
 			WHERE
 				i.workspace_id = ?
 		";
+		if ( $finding_id ) {
+			$query .= "AND i2f.finding_id = ?";
+			push @$params, $finding_id;
+		}
 		if ( $issue_id ) {
 			$query .= "AND i.id = ?";
 			push @$params, $issue_id;

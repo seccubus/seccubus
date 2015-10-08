@@ -601,6 +601,28 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[6]->{name}, 'MASKED', "Correct name"); $tests++;
 	is($$json[6]->{count}, 0, "Correct count"); $tests++;
 
+	# Can we read back based on findingId?
+	$json = webcall("getIssues.pl", "workspaceId=100", "findingId=1");
+	is(@$json, 1, "Correct number of records"); $tests++;
+	is($$json[0]->{name}, 'test4', "name ok"); $tests++;
+	is($$json[0]->{ext_ref}, 'SEC-4', "ext_ref ok"); $tests++;
+	is($$json[0]->{description}, 'description4', "description ok"); $tests++;
+	is($$json[0]->{severity}, 1, "severity ok"); $tests++;
+	is($$json[0]->{severityName}, 'High', "severityName ok"); $tests++;
+	is($$json[0]->{status}, 1, "status ok"); $tests++;
+	is($$json[0]->{statusName}, 'Open', "statusName ok"); $tests++;
+	is(@{$$json[0]->{findings}}, 4, "number of linked findings ok"); $tests++;
+	is($$json[0]->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
+	is($$json[0]->{findings}[1]->{id}, 2, "linked finding ok"); $tests++;
+	is($$json[0]->{findings}[2]->{id}, 3, "linked finding ok"); $tests++;
+	is($$json[0]->{findings}[3]->{id}, 4, "linked finding ok"); $tests++;
+
+	# Can we read back based on findingId?
+	$json = webcall("getIssues.pl", "workspaceId=100", "findingId=3");
+	is(@$json, 2, "Correct number of records"); $tests++;
+	is($$json[0]->{name}, 'test3', "name ok"); $tests++;
+	is($$json[1]->{name}, 'test4', "name ok"); $tests++;
+
 	#die Dumper $json;
 }
 

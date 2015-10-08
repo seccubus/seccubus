@@ -45,7 +45,12 @@ if (not (defined ($workspace_id))) {
 
 eval {
 	my @data;
-	my $issues = get_issues($workspace_id, $params->{issueId});
+	my $issues;
+#	if ( $params->{findingId} ) {
+		$issues = get_issues($workspace_id, $params->{issueId}, undef, $params->{findingId});
+#	} else {
+#		$issues = get_issues($workspace_id, $params->{issueId});		
+#	}
 	foreach my $row ( @$issues ) {
 		my $url = "";
 		if ( $config->{tickets}->{url_head} ) {
