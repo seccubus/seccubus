@@ -553,20 +553,24 @@ Content-Type: text/plain\n\n" . $$notification[2];
 		my $smtp = Net::SMTP->new($config->{smtp}->{server});
 		my $count = 0;
 		foreach my $notification ( @{$notifications} ) {
-			$smtp->mail($config->{smtp}->{from});
-			foreach my $to ( split /\,/,  $$notification[1] ) {
-				$smtp->to($to);
+			if ( $smtp ) {
+				$smtp->mail($config->{smtp}->{from});
+				foreach my $to ( split /\,/,  $$notification[1] ) {
+					$smtp->to($to);
+				}
+				$smtp->data();
+				$smtp->datasend("To:".($email || $$notification[1])." \n");
+				$smtp->datasend("From: $config->{smtp}->{from}\n");
+				$smtp->datasend("Subject: $$notification[0]\n");
+				#$smtp->datasend("\n");
+				$smtp->datasend($$notification[2]);
+				$smtp->dataend();
+				$count++;				
+			} else {
+				$count--;
 			}
-			$smtp->data();
-			$smtp->datasend("To:".($email || $$notification[1])." \n");
-			$smtp->datasend("From: $config->{smtp}->{from}\n");
-			$smtp->datasend("Subject: $$notification[0]\n");
-			#$smtp->datasend("\n");
-			$smtp->datasend($$notification[2]);
-			$smtp->dataend();
-			$count++;
 		}
-		$smtp->quit;
+		$smtp->quit if $smtp;
 		return $count;
 	} else {
 		return -1;
