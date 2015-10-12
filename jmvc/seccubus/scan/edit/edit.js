@@ -109,6 +109,7 @@ $.Controller('Seccubus.Scan.Edit',
 			onEdit	: to.options.onNotificationEdit,
 			onCreate : to.options.onNotificationCreate
 		});
+		
 		$('#editScanSchedule').seccubus_schedule_table({
 			scan	: to.options.scan.id,
 			onEdit	: to.options.onScheduleEdit,

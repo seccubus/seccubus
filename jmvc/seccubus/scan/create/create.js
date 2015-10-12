@@ -100,7 +100,7 @@ $.Controller('Seccubus.Scan.Create',
 	},
 	updateView: function(){
 		var to = this;
-		$('#editScanSchedule').seccubus_schedule_table({
+		$('#editCreateScanSchedule').seccubus_schedule_table({
 			// scan	: to.options.scan.id,
 			// onEdit	: to.options.onScheduleEdit,
 			getSaveSchedules : to.options.getSaveSchedules,

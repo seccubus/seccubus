@@ -130,11 +130,11 @@ $.Controller('Seccubus.Schedule.Table',
 		}
 		else {
 			var to = this;
-			this.element.html(
-				this.view(
+			to.element.html(
+				to.view(
 					'init',
 					Seccubus.Models.Schedule.findAll({
-						scanId		: this.options.scan
+						scanId		: to.options.scan
 					},
 					function(data){
 						return data.map(function(val){
