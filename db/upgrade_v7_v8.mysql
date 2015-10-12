@@ -1,0 +1,57 @@
+/*
+
+Copyright 2014 Frank Breedijk, Petr
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
+
+-- -----------------------------------------------------
+-- Table `scan_schedule`
+-- -----------------------------------------------------
+CREATE TABLE `scan_schedule` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Row Id',
+  `scan_id` INT(11) NOT NULL DEFAULT 0 COMMENT 'Scan ID',
+  `status` INT(1) NOT NULL DEFAULT 0 COMMENT 'Status of schedule: 0 - not runing yet, 1 - running, 2 - complete',
+  `last_run` DATETIME NULL COMMENT 'Last date run',
+  PRIMARY KEY (`id`),
+  INDEX `scan_id` (`scan_id` ASC),
+  INDEX `last_run` (`last_run` ASC),
+  INDEX `status` (`status` ASC)
+);
+
+-- -----------------------------------------------------
+-- Table `Seccubus`.`schedules`
+-- -----------------------------------------------------
+CREATE TABLE `schedules` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Row ID',
+  `schedule_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'Schedule ID',
+  `month` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Month number (1-12). If every month, then * (default)',
+  `week` VARCHAR(1) NOT NULL DEFAULT '*' COMMENT 'Month week number (1-5). If every week, then * (default)',
+  `wday` VARCHAR(1) NOT NULL DEFAULT '*' COMMENT 'Week day number (0-6), if every day, then * (default)',
+  `day` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Month day number (1-31), if every day, then * (default)',
+  `hour` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Hour number (0-23), if every hour, then * (default)',
+  `min` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Minute number (0-59), if every minute, then * (default)',
+  PRIMARY KEY (`id`),
+  INDEX `schedule_id` (`schedule_id` ASC),
+  INDEX `date_run` (`month` ASC, `week` ASC, `wday` ASC, `day` ASC, `hour` ASC, `min` ASC)
+);
+
+
+update config set value=8 where name = 'version';
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

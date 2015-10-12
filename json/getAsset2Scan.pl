@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Petr, Frank Breedijk
+# Copyright 2015 Petr, Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,9 +27,10 @@ use SeccubusAssets;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $scan_id = $query->param("scanid");
+my $params = $query->Vars;
+my $scan_id = $params->{scanid};
 
 # Return an error if the required parameters were not passed 
 bye("Parameter scanid is missing") if (not (defined ($scan_id)));

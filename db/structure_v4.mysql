@@ -1,5 +1,5 @@
 /*
-Copyright 2013 Frank Breedijk
+Copyright 2015 Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -146,7 +146,12 @@ CREATE TABLE `finding_changes` (
   `user_id` int(11) NOT NULL,
   `run_id` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `fk_finding_changes_findings1` (`finding_id`),
+  KEY `fk_finding_changes_finding_status1` (`status`),
+  KEY `fk_finding_changes_severity1` (`severity`),
+  KEY `fk_finding_changes_users1` (`user_id`),
+  KEY `fk_finding_changes_runs1` (`run_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -574,8 +579,8 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` char(255) CHARACTER SET utf8 DEFAULT NULL,
-  `name` char(255) CHARACTER SET utf8 DEFAULT NULL,
+  `username` char(255) DEFAULT NULL,
+  `name` char(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=latin1;

@@ -25,6 +25,85 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+08-10-2015 - 2.18 - Fixed a notifications error
+================================================
+Some people noticed that notifications were not visible anymore, Jordan and I fixed them
+
+Enhancements
+------------
+* Unit tests for notifications API
+
+Bug Fixes
+---------
+* #267 - Email notification config is not showing
+
+17-09-2015 - 2.17 - GNU Terry Pratchett (Fixed!)
+================================================
+The bonanza of after summer fixes and small enhancements continues
+Our dear contributor @Ar0xa notified us of a bug in v2.16 which has been fixed in this release
+See bug #260
+
+Bug Fixes
+---------
+* #260 - Runs not showing in Seccubus v2.16
+
+15-09-2015 - 2.16 - GNU Terry Pratchett
+=======================================
+The bonanza of after summer fixes and small enhancements continues
+
+Enhancements
+------------
+* #185 - GNU Terry Pratchett
+* #214 - NMap, include port status in port number
+* #223 - Make the Bulk Update feature much faster in the GUI
+* #228 - SSL Labs: Warn if MaxAge is below the recommended 180 days
+* #226 - Create Travis Unit tests for DB upgrade
+* #241 - Unit tests for delta engine
+* Moved to new Travis build infra. See: http://docs.travis-ci.com/user/migrating-from-legacy/
+
+Bug Fixes
+---------
+* #180 - NMAP script output ignored
+* #186 - Custom SQL table is missing from DB init scripts
+* #198 - Unable to add more then 1 asset
+* #199 - asset_host broken in v6 and upgrade problems
+* #200: Error using ZAP remote
+* Fixed ZAP file handling issue
+* Fixed a new found bug in ivil2zap, more output now in findings
+* Fixed SSLlabs error exception
+* #213 - .spec file still references v4 data structures instead of v6
+* #222 - SSL Labs: hasSct and sessionTickets findings not saved in IVIL file
+* #224 - Bulk Update controller not updated after update of remark only
+* #236 - Database upgrades inconsistent
+* #243 - do-scan -q is not very quiet
+* #247 - SSLLabs: certain values for PoodleTLS not handled
+* #248 - SSLLabs Reneg finding empty is reneg is not supported 
+* Copyright related unit tests now work on Travis CI too
+* #252 - scannerparam column in scans table too small
+* #255 - Incorrect use of CGI.pm may cause parameter injection vulnerability
+
+13-08-2015 - 2.15 - Summer time bug fixes
+=========================================
+Using the quiet(er) time after summer to get some bug fixes in.
+
+Enhancements
+------------
+* #211 - Host filter now splits on / as well as . 
+
+Bug Fixes
+---------
+* #197 - Error loading nmap results
+* #212 - Extraports not handled correctly when parsing nmap.xml
+* #202 - SSLLabs scan results filtering per Asset broken
+* #205 - SSLlabs test uses the dev version of the API by default in stead of the prod version
+* #206 - SSLlabs scanner does not honor coolOff period
+* #207 - ssllabs - poodleTLS is incorrecly stating vuln status
+* #208 - SSLlabs script uses wrong bitwise and operator :(
+* #209 - SSLlabs scanner does not attach results bug
+* #210 - SSLlabs scanner did not call process results bug
+* #212 - Extraports not handled correctly when parsing nmap.xml
+
+
 23-02-2015 - 2.14 - SSL labs API
 ================================
 The SSL labs scanner now uses the SSL labs API (see https://github.com/ssllabs/ssllabs-scan/blob/master/ssllabs-api-docs.md) to check the SSL configuration of your website in stead of scraping the site.

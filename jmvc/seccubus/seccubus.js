@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Frank Breedijk, Petr
+ * Copyright 2015 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,6 @@ steal(
 	'seccubus/run/table',
 	'seccubus/filter/filter',
 	'seccubus/finding/table',
-	//'seccubus/finding/status',
-	//'seccubus/finding/filter',
 	'seccubus/finding/bulkedit',
 	'seccubus/finding/edit',
 	'seccubus/history/table',
@@ -63,6 +61,7 @@ steal(
 			unsavedSchedules : []
 		});
 		gui_state.bind("workspace", function(ev, ws){
+			console.log("workspace changed");
 			render_scan_selectors();
 			render_asset_selectors();
 			render_scan_table();
@@ -75,35 +74,45 @@ steal(
 			render_bulkedit();
 		});
 		gui_state.bind("scans", function(ev, scan){
+			console.log("scan changed");
 			render_findings();
 			render_runs();
 		});
 		gui_state.bind("assets", function(ev, asset){
+			console.log("Assets changed");
 			render_findings();
 		});
 		gui_state.bind("findStatus", function(ev, scan){
+			console.log("Status changed");
 			render_findings();
 			render_bulkedit();
 		});
 		gui_state.bind("host", function(ev, scan){
+			console.log("host changed");
 			render_findings();
 		});
 		gui_state.bind("hostName", function(ev, scan){
+			console.log("hostname changed");
 			render_findings();
 		});
 		gui_state.bind("port", function(ev, scan){
+			console.log("port changed");
 			render_findings();
 		});
 		gui_state.bind("plugin", function(ev, scan){
+			console.log("port changed")
 			render_findings();
 		});
 		gui_state.bind("severity", function(ev, scan){
+			console.log("severity changed")
 			render_findings();
 		});
 		gui_state.bind("finding", function(ev, scan){
+			console.log("finding changed")
 			render_findings();
 		});
 		gui_state.bind("remark", function(ev, scan){
+			console.log("remark changed")
 			render_findings();
 		});
 
@@ -114,8 +123,10 @@ steal(
 		Seccubus.Models.Finding.bind(
 			"updated",
 			function(ev,model) {
-				render_status();
-				render_filters();
+				if ( ! model.bulk ) {
+					render_status();
+					render_filters();			
+				}
 			}
 		);
 
@@ -556,7 +567,8 @@ steal(
 		function render_bulkedit() {
 			$('#finding_bulkedit').seccubus_finding_bulkedit({
 				workspace	: gui_state.workspace,
-				status		: gui_state.findStatus
+				status		: gui_state.findStatus,
+				onDone		: render_findings
 			});
 		};
 

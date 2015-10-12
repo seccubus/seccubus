@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk
+# Copyright 2015 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ my $query = CGI::new();
 my $json = JSON->new();
 my $data = [];
 
-print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
 my $verdict = get("http://v2.seccubus.com/up2date.json.pl?version=".$SeccubusV2::VERSION);
 if ( ! $verdict ) {

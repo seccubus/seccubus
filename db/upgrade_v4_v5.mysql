@@ -1,5 +1,5 @@
 /*
-Copyright 2014 Frank Breedijk
+Copyright 2015 Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,21 +21,26 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-ALTER SCHEMA `seccubus`  DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci ;
+ALTER SCHEMA  DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci ;
 
-ALTER TABLE `seccubus`.`finding_changes` 
+ALTER TABLE `finding_changes` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 CHANGE COLUMN `time` `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
-ADD INDEX `fk_finding_changes_findings1_idx` (`finding_id` ASC),
+DROP INDEX `fk_finding_changes_findings1`,
+ADD INDEX `fk_finding_changes_findings1_idx` (`finding_id` ASC) ,
+DROP INDEX `fk_finding_changes_finding_status1`,
 ADD INDEX `fk_finding_changes_finding_status1_idx` (`status` ASC),
+DROP INDEX `fk_finding_changes_severity1`,
 ADD INDEX `fk_finding_changes_severity1_idx` (`severity` ASC),
+DROP INDEX `fk_finding_changes_users1`,
 ADD INDEX `fk_finding_changes_users1_idx` (`user_id` ASC),
+DROP INDEX `fk_finding_changes_runs1`,
 ADD INDEX `fk_finding_changes_runs1_idx` (`run_id` ASC);
 
-ALTER TABLE `seccubus`.`finding_status` 
+ALTER TABLE `finding_status` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `seccubus`.`findings` 
+ALTER TABLE `findings` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 DROP INDEX `fk_findings_sessions1` ,
 ADD INDEX `fk_findings_sessions1_idx` (`workspace_id` ASC),
@@ -48,15 +53,15 @@ ADD INDEX `fk_findings_severity1_idx` (`severity` ASC),
 DROP INDEX `fk_findings_runs1` ,
 ADD INDEX `fk_findings_runs1_idx` (`run_id` ASC);
 
-ALTER TABLE `seccubus`.`groups` 
+ALTER TABLE `groups` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `seccubus`.`host_names` 
+ALTER TABLE `host_names` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 DROP INDEX `fk_hosts_sessions1` ,
 ADD INDEX `fk_hosts_sessions1_idx` (`workspace_id` ASC);
 
-ALTER TABLE `seccubus`.`issues2findings` 
+ALTER TABLE `issues2findings` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 DROP INDEX `fk_issue2finding_findings1` ,
 ADD INDEX `fk_issue2finding_findings1_idx` (`finding_id` ASC),
@@ -65,7 +70,7 @@ ADD INDEX `fk_issue2finding_issues1_idx` (`issue_id` ASC),
 DROP INDEX `fk_issue2finding_issue_status1` ,
 ADD INDEX `fk_issue2finding_issue_status1_idx` (`status` ASC);
 
-ALTER TABLE `seccubus`.`issue2finding_changes` 
+ALTER TABLE `issue2finding_changes` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 CHANGE COLUMN `time` `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
 DROP INDEX `fk_issue2finding_changes_issues1` ,
@@ -77,7 +82,7 @@ ADD INDEX `fk_issue2finding_changes_issue_status1_idx` (`status` ASC),
 DROP INDEX `fk_issue2finding_changes_users1` ,
 ADD INDEX `fk_issue2finding_changes_users1_idx` (`user_id` ASC);
 
-ALTER TABLE `seccubus`.`issue_changes` 
+ALTER TABLE `issue_changes` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 CHANGE COLUMN `time` `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
 DROP INDEX `fk_issue_changes_issues1` ,
@@ -89,65 +94,67 @@ ADD INDEX `fk_issue_changes_severity1_idx` (`severity` ASC),
 DROP INDEX `fk_issue_changes_users1` ,
 ADD INDEX `fk_issue_changes_users1_idx` (`user_id` ASC);
 
-ALTER TABLE `seccubus`.`severity` 
+ALTER TABLE `severity` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `seccubus`.`issue_status` 
+ALTER TABLE `issue_status` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `seccubus`.`issues` 
+ALTER TABLE `issues` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 DROP INDEX `fk_issues_issue_status1` ,
 ADD INDEX `fk_issues_issue_status1_idx` (`status` ASC),
 DROP INDEX `fk_issues_severity1` ,
 ADD INDEX `fk_issues_severity1_idx` (`severity` ASC);
 
-ALTER TABLE `seccubus`.`rights` 
+ALTER TABLE `rights` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 DROP INDEX `fk_rights_groups1` ,
 ADD INDEX `fk_rights_groups1_idx` (`group_id` ASC),
 DROP INDEX `fk_rights_sessions1` ,
 ADD INDEX `fk_rights_sessions1_idx` (`workspace_id` ASC);
 
-ALTER TABLE `seccubus`.`runs` 
+ALTER TABLE `runs` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 CHANGE COLUMN `time` `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
 DROP INDEX `fk_runs_scans1` ,
 ADD INDEX `fk_runs_scans1_idx` (`scan_id` ASC);
 
-ALTER TABLE `seccubus`.`scans` 
+ALTER TABLE `scans` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 ADD COLUMN `password` CHAR(255) NULL DEFAULT NULL AFTER `scannerparam`,
 DROP INDEX `fk_scans_workspaces1` ,
 ADD INDEX `fk_scans_workspaces1_idx` (`workspace_id` ASC);
 
-ALTER TABLE `seccubus`.`workspaces` 
+ALTER TABLE `workspaces` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `seccubus`.`user2group` 
+ALTER TABLE `user2group` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 DROP INDEX `fk_user2group_users` ,
 ADD INDEX `fk_user2group_users_idx` (`user_id` ASC),
 DROP INDEX `fk_user2group_groups1` ,
 ADD INDEX `fk_user2group_groups1_idx` (`group_id` ASC);
 
-ALTER TABLE `seccubus`.`users` 
+ALTER TABLE `users` 
+CHANGE COLUMN `username` `username` char(255) DEFAULT NULL ,
+CHANGE COLUMN `name` `name` char(255) DEFAULT NULL ,
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `seccubus`.`checkpoints` 
+ALTER TABLE `checkpoints` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 CHANGE COLUMN `timestamp` `timestamp` TIMESTAMP NOT NULL ,
 DROP INDEX `fk_checkpoints_workspaces1` ,
 ADD INDEX `fk_checkpoints_workspaces1_idx` (`workspace_id` ASC);
 
-ALTER TABLE `seccubus`.`config` 
+ALTER TABLE `config` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `seccubus`.`attachments` 
+ALTER TABLE `attachments` 
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 ADD INDEX `fk_attachments_runs1_idx` (`run_id` ASC);
 
-ALTER TABLE `seccubus`.`notifications` 
+ALTER TABLE `notifications` 
 ADD INDEX `fk_notifications_scans1_idx` (`scan_id` ASC),
 ADD INDEX `fk_notifications_events1_idx` (`event_id` ASC);
 

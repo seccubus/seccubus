@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk
+# Copyright 2015 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,14 +26,15 @@ use SeccubusNotifications;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $workspace_id = $query->param("workspaceId");
-my $scan_id = $query->param("scanId");
-my $subject = $query->param("subject");
-my $recipients = $query->param("recipients");
-my $message = $query->param("message");
-my $event_id = $query->param("trigger");
+my $params = $query->Vars;
+my $workspace_id = $params->{workspaceId};
+my $scan_id = $params->{scanId};
+my $subject = $params->{subject};
+my $recipients = $params->{recipients};
+my $message = $params->{message};
+my $event_id = $params->{trigger};
 
 # Return an error if the required parameters were not passed 
 my $error;
@@ -52,7 +53,7 @@ eval {
 		event_id	=> $event_id,
 		event_name	=> $event_name,
 		subject		=> $subject,
-		recipient	=> $recipients,
+		recipients	=> $recipients,
 		message		=> $message,
 	};
 	print $json->pretty->encode(\@data);

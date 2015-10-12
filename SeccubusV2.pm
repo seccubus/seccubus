@@ -48,7 +48,7 @@ $config = "etc/dummy.config.xml" unless -e $config;
 use lib "/opt/seccubus/SeccubusV2";
 push (@main::INC, @INC);
 
-$VERSION = '2.14';
+$VERSION = '2.19';
 
 use strict;
 use Carp;
@@ -75,7 +75,7 @@ Reference to a hash containing the config in XML
 
 sub get_config() {
 	if ( ! ref($config) ) {
-		$config = XMLin($config, ForceArray => [qw(monkey)], KeyAttr => [ qw(id) ]);
+		$config = XMLin($config, ForceArray => [qw(monkey)], KeyAttr => [ qw(id) ], SuppressEmpty => '');
 	}
 	return $config;
 }

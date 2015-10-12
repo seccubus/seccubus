@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk
+# Copyright 2015 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,13 +27,14 @@ use SeccubusWorkspaces;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $workspace_id = $query->param("workspaceId");
-my $id = $query->param("id");
-my $remark = $query->param("remark");
-my $status = $query->param("status");
-my $overwrite = $query->param("overwrite");
+my $params = $query->Vars;
+my $workspace_id = $params->{workspaceId};
+my $id = $params->{id};
+my $remark = $params->{remark};
+my $status = $params->{status};
+my $overwrite = $params->{overwrite};
 
 if ( $overwrite eq "true" || $overwrite == 1 ) {
 	$overwrite = 1;
@@ -42,11 +43,11 @@ if ( $overwrite eq "true" || $overwrite == 1 ) {
 }
 
 # Return an error if the required parameters were not passed 
-my $workspace_id = $query->param("id");
+my $workspace_id = $params->{id};
 if (not (defined ($workspace_id))) {
 	bye("Parameter name is missing");
 };
-my $workspace_name = $query->param("name");
+my $workspace_name = $params->{name};
 if (not (defined ($workspace_name))) {
 	bye("Parameter name is missing");
 };

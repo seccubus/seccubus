@@ -1,5 +1,5 @@
 /*
-Copyright 2014 Frank Breedijk, Petr
+Copyright 2015 Frank Breedijk, Petr
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
+ALTER SCHEMA  DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci ;
 
 --
 -- Table structure for table `assets`
@@ -29,7 +30,7 @@ CREATE TABLE IF NOT EXISTS  `assets` (
   `hosts` longtext,
   `recipients` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_assets_workspace` (`workspace_id`)
+  KEY `fk_assets_workspaces1_idx` (`workspace_id`)
 ) ENGINE=InnoDB;
 
 LOCK TABLES `assets` WRITE;
@@ -44,11 +45,11 @@ UNLOCK TABLES;
 
 CREATE TABLE IF NOT EXISTS  `asset2scan` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `asset_id` int(11) NOT NULL DEFAULT '0',
-  `scan_id` int(11) NOT NULL DEFAULT '0',
+  `asset_id` int(11) NOT NULL,
+  `scan_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_asset2scan_asset_id` (`asset_id`),
-  KEY `fk_asset2scan_scan_id` (`scan_id`)
+  KEY `fk_asset2scan_assets1_idx` (`asset_id`),
+  KEY `fk_asset2scan_scans1_idx` (`scan_id`)
 ) ENGINE=InnoDB;
 
 LOCK TABLES `asset2scan` WRITE;
@@ -63,15 +64,13 @@ UNLOCK TABLES;
 
 CREATE TABLE IF NOT EXISTS `asset_hosts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `asset_id` int(11) NOT NULL DEFAULT '0',
+  `asset_id` int(11) NOT NULL,
   `ip` varchar(16) NOT NULL,
   `host` varchar(255) DEFAULT NULL,
-  `auto_gen` INT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  KEY `fk_asset_hosts_asset_id` (`asset_id`),
-  KEY `fk_asset_hosts_ip` (`ip`),
-  KEY `fk_asset_hosts_host` (`host`),
-  KEY `fk_asset_hosts_auto_gen` (`auto_gen`)
+  KEY `fk_asset_hosts_assets1_idx` (`asset_id`),
+  KEY `fk_asset_hosts_ip1_idx` (`ip`),
+  KEY `fk_asset_hosts_host1_idx` (`host`)
 ) ENGINE=InnoDB;
 
 LOCK TABLES `asset_hosts` WRITE;
@@ -94,8 +93,21 @@ LOCK TABLES `customsql` WRITE;
 /*!40000 ALTER TABLE `customsql` ENABLE KEYS */;
 UNLOCK TABLES;
 
+ALTER TABLE `attachments`
+CHANGE COLUMN `name` `name` longtext NOT NULL ,
+CHANGE COLUMN `description` `description` longtext;
+
+ALTER TABLE `checkpoints`
+CHANGE COLUMN `label` `label` varchar(45) NOT NULL,
+CHANGE COLUMN `tags` `tags` varchar(45) DEFAULT NULL;
+
+ALTER TABLE `config`
+CHANGE COLUMN `name` `name` varchar(45) NOT NULL,
+CHANGE COLUMN `value` `value` varchar(255) DEFAULT NULL;
+
 insert into events set id='3', name='On Open';
 update config set value=6 where name = 'version';
+
 create index `host` on findings (`host` ASC);
 create index `port` on findings (`port` ASC);
 create index `plugin` on findings (`plugin` ASC);

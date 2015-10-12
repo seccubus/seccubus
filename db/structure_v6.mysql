@@ -23,33 +23,25 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
--- -----------------------------------------------------
--- Schema Seccubus
--- -----------------------------------------------------
+ALTER SCHEMA  DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci ;
 
 -- -----------------------------------------------------
--- Schema Seccubus
+-- Table `workspaces`
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `Seccubus` ;
-USE `Seccubus` ;
-
--- -----------------------------------------------------
--- Table `Seccubus`.`workspaces`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`workspaces` (
+CREATE TABLE IF NOT EXISTS `workspaces` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` CHAR(255) NOT NULL,
-  UNIQUE INDEX `id` (`id` ASC),
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `name` (`name` ASC)
+  PRIMARY KEY (`id` ASC),
+  UNIQUE INDEX `name` (`name` ASC),
+  UNIQUE INDEX `id` (`id` ASC)
 )
-AUTO_INCREMENT = 4;
+AUTO_INCREMENT = 100;
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`scans`
+-- Table `scans`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`scans` (
+CREATE TABLE IF NOT EXISTS `scans` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` CHAR(255) NOT NULL,
   `scannername` CHAR(255) NOT NULL,
@@ -58,14 +50,14 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`scans` (
   `targets` LONGTEXT NULL,
   `workspace_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_scans_workspaces1` (`workspace_id` ASC)
+  INDEX `fk_scans_workspaces1_idx` (`workspace_id` ASC)
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`finding_status`
+-- Table `finding_status`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`finding_status` (
+CREATE TABLE IF NOT EXISTS `finding_status` (
   `id` INT(11) NOT NULL,
   `name` CHAR(20) NOT NULL,
   `description` CHAR(255) NOT NULL,
@@ -74,9 +66,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`finding_status` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`severity`
+-- Table `severity`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`severity` (
+CREATE TABLE IF NOT EXISTS `severity` (
   `id` INT(11) NOT NULL,
   `name` CHAR(20) NOT NULL,
   `description` CHAR(255) NOT NULL,
@@ -85,21 +77,21 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`severity` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`runs`
+-- Table `runs`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`runs` (
+CREATE TABLE IF NOT EXISTS `runs` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `scan_id` INT(11) NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `fk_runs_scans1` (`scan_id` ASC)
+  INDEX `fk_runs_scans1_idx` (`scan_id` ASC)
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`findings`
+-- Table `findings`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`findings` (
+CREATE TABLE IF NOT EXISTS `findings` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `workspace_id` INT(11) NOT NULL,
   `scan_id` CHAR(20) NOT NULL,
@@ -111,12 +103,12 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`findings` (
   `severity` INT(11) NOT NULL,
   `status` INT(11) NOT NULL,
   `run_id` INT(11) NOT NULL,
-  INDEX `fk_findings_sessions1` (`workspace_id` ASC),
-  INDEX `fk_findings_scans1` (`scan_id` ASC),
-  INDEX `fk_findings_finding_status1` (`status` ASC),
-  INDEX `fk_findings_severity1` (`severity` ASC),
   PRIMARY KEY (`id`),
-  INDEX `fk_findings_runs1` (`run_id` ASC),
+  INDEX `fk_findings_sessions1_idx` (`workspace_id` ASC),
+  INDEX `fk_findings_scans1_idx` (`scan_id` ASC),
+  INDEX `fk_findings_finding_status1_idx` (`status` ASC),
+  INDEX `fk_findings_severity1_idx` (`severity` ASC),
+  INDEX `fk_findings_runs1_idx` (`run_id` ASC),
   INDEX `host` (`host` ASC),
   INDEX `port` (`port` ASC),
   INDEX `plugin` (`plugin` ASC)
@@ -124,22 +116,22 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`findings` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`users`
+-- Table `users`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `username` CHAR(255) NULL DEFAULT NULL,
   `name` CHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `username` (`username` ASC)
 )
-AUTO_INCREMENT = 5;
+AUTO_INCREMENT = 100;
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`finding_changes`
+-- Table `finding_changes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`finding_changes` (
+CREATE TABLE IF NOT EXISTS `finding_changes` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `finding_id` INT(11) NOT NULL,
   `finding` LONGTEXT NULL DEFAULT NULL,
@@ -150,41 +142,41 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`finding_changes` (
   `run_id` INT(11) NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `fk_finding_changes_findings1` (`finding_id` ASC),
-  INDEX `fk_finding_changes_finding_status1` (`status` ASC),
-  INDEX `fk_finding_changes_severity1` (`severity` ASC),
-  INDEX `fk_finding_changes_users1` (`user_id` ASC),
-  INDEX `fk_finding_changes_runs1` (`run_id` ASC)
+  INDEX `fk_finding_changes_findings1_idx` (`finding_id` ASC),
+  INDEX `fk_finding_changes_finding_status1_idx` (`status` ASC),
+  INDEX `fk_finding_changes_severity1_idx` (`severity` ASC),
+  INDEX `fk_finding_changes_users1_idx` (`user_id` ASC),
+  INDEX `fk_finding_changes_runs1_idx` (`run_id` ASC)
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`groups`
+-- Table `groups`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`groups` (
+CREATE TABLE IF NOT EXISTS `groups` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` CHAR(255) NOT NULL,
   UNIQUE INDEX `id` (`id` ASC)
 )
-AUTO_INCREMENT = 3;
+AUTO_INCREMENT = 100;
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`host_names`
+-- Table `host_names`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`host_names` (
+CREATE TABLE IF NOT EXISTS `host_names` (
   `workspace_id` INT(11) NOT NULL,
   `ip` CHAR(16) NOT NULL,
   `name` CHAR(255) NOT NULL,
-  INDEX `fk_hosts_sessions1` (`workspace_id` ASC),
+  INDEX `fk_hosts_sessions1_idx` (`workspace_id` ASC),
   PRIMARY KEY (`workspace_id`, `ip`)
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`issue_status`
+-- Table `issue_status`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`issue_status` (
+CREATE TABLE IF NOT EXISTS `issue_status` (
   `id` INT(11) NOT NULL,
   `name` CHAR(20) NOT NULL,
   `description` CHAR(255) NOT NULL,
@@ -193,9 +185,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`issue_status` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`issues`
+-- Table `issues`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`issues` (
+CREATE TABLE IF NOT EXISTS `issues` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `session_id` INT(11) NOT NULL,
   `name` CHAR(255) NOT NULL,
@@ -204,44 +196,44 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`issues` (
   `severity` INT(11) NOT NULL,
   `status` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_issues_issue_status1` (`status` ASC),
-  INDEX `fk_issues_severity1` (`severity` ASC)
+  INDEX `fk_issues_issue_status1_idx` (`status` ASC),
+  INDEX `fk_issues_severity1_idx` (`severity` ASC)
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`issues2findings`
+-- Table `issues2findings`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`issues2findings` (
+CREATE TABLE IF NOT EXISTS `issues2findings` (
   `issue_id` INT(11) NOT NULL,
   `finding_id` INT(11) NOT NULL,
   `status` INT(11) NOT NULL,
-  INDEX `fk_issue2finding_findings1` (`finding_id` ASC),
-  INDEX `fk_issue2finding_issues1` (`issue_id` ASC),
-  INDEX `fk_issue2finding_issue_status1` (`status` ASC)
+  INDEX `fk_issue2finding_findings1_idx` (`finding_id` ASC),
+  INDEX `fk_issue2finding_issues1_idx` (`issue_id` ASC),
+  INDEX `fk_issue2finding_issue_status1_idx` (`status` ASC)
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`issue2finding_changes`
+-- Table `issue2finding_changes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`issue2finding_changes` (
+CREATE TABLE IF NOT EXISTS `issue2finding_changes` (
   `issue_id` INT(11) NOT NULL,
   `finding_id` INT(11) NOT NULL,
   `status` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  INDEX `fk_issue2finding_changes_issues1` (`issue_id` ASC),
-  INDEX `fk_issue2finding_changes_findings1` (`finding_id` ASC),
-  INDEX `fk_issue2finding_changes_issue_status1` (`status` ASC),
-  INDEX `fk_issue2finding_changes_users1` (`user_id` ASC)
+  INDEX `fk_issue2finding_changes_issues1_idx` (`issue_id` ASC),
+  INDEX `fk_issue2finding_changes_findings1_idx` (`finding_id` ASC),
+  INDEX `fk_issue2finding_changes_issue_status1_idx` (`status` ASC),
+  INDEX `fk_issue2finding_changes_users1_idx` (`user_id` ASC)
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`issue_changes`
+-- Table `issue_changes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`issue_changes` (
+CREATE TABLE IF NOT EXISTS `issue_changes` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `issue_id` INT(11) NOT NULL,
   `name` CHAR(255) NOT NULL,
@@ -252,55 +244,55 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`issue_changes` (
   `user_id` INT(11) NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `fk_issue_changes_issues1` (`issue_id` ASC),
-  INDEX `fk_issue_changes_issue_status1` (`status` ASC),
-  INDEX `fk_issue_changes_severity1` (`severity` ASC),
-  INDEX `fk_issue_changes_users1` (`user_id` ASC)
+  INDEX `fk_issue_changes_issues1_idx` (`issue_id` ASC),
+  INDEX `fk_issue_changes_issue_status1_idx` (`status` ASC),
+  INDEX `fk_issue_changes_severity1_idx` (`severity` ASC),
+  INDEX `fk_issue_changes_users1_idx` (`user_id` ASC)
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`rights`
+-- Table `rights`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`rights` (
+CREATE TABLE IF NOT EXISTS `rights` (
   `workspace_id` INT(11) NOT NULL,
   `group_id` INT(11) NOT NULL,
   `allow_read` INT(1) NOT NULL,
   `allow_write` INT(1) NOT NULL,
-  INDEX `fk_rights_groups1` (`group_id` ASC),
-  INDEX `fk_rights_sessions1` (`workspace_id` ASC)
+  INDEX `fk_rights_groups1_idx` (`group_id` ASC),
+  INDEX `fk_rights_sessions1_idx` (`workspace_id` ASC)
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`user2group`
+-- Table `user2group`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`user2group` (
+CREATE TABLE IF NOT EXISTS `user2group` (
   `user_id` INT(11) NOT NULL,
   `group_id` INT(11) NOT NULL,
-  INDEX `fk_user2group_users` (`user_id` ASC),
-  INDEX `fk_user2group_groups1` (`group_id` ASC)
+  INDEX `fk_user2group_users_idx` (`user_id` ASC),
+  INDEX `fk_user2group_groups1_idx` (`group_id` ASC)
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`checkpoints`
+-- Table `checkpoints`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`checkpoints` (
+CREATE TABLE IF NOT EXISTS `checkpoints` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `workspace_id` INT(11) NOT NULL,
   `label` VARCHAR(45) NOT NULL,
   `tags` VARCHAR(45) NULL,
   `timestamp` TIMESTAMP NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_checkpoints_workspaces1` (`workspace_id` ASC)
+  INDEX `fk_checkpoints_workspaces1_idx` (`workspace_id` ASC)
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`config`
+-- Table `config`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`config` (
+CREATE TABLE IF NOT EXISTS `config` (
   `name` VARCHAR(45) NOT NULL,
   `value` VARCHAR(255) NULL,
   PRIMARY KEY (`name`)
@@ -308,23 +300,23 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`config` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`attachments`
+-- Table `attachments`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`attachments` (
+CREATE TABLE IF NOT EXISTS `attachments` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `run_id` INT(11) NOT NULL,
   `name` LONGTEXT NOT NULL,
   `description` LONGTEXT NULL,
   `data` LONGBLOB NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_attachments_runs1` (`run_id` ASC)
+  KEY `fk_attachments_runs1_idx` (`run_id` ASC)
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`events`
+-- Table `events`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`events` (
+CREATE TABLE IF NOT EXISTS `events` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   PRIMARY KEY (`id`)
@@ -332,9 +324,9 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`events` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`notifications`
+-- Table `notifications`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`notifications` (
+CREATE TABLE IF NOT EXISTS `notifications` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `scan_id` INT(11) NOT NULL,
   `event_id` INT NOT NULL,
@@ -342,16 +334,16 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`notifications` (
   `recipients` VARCHAR(1024) NOT NULL,
   `message` TEXT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_notifications_scans1` (`scan_id` ASC),
-  INDEX `fk_notifications_events1` (`event_id` ASC)
+  INDEX `fk_notifications_scans1_idx` (`scan_id` ASC),
+  INDEX `fk_notifications_events1_idx` (`event_id` ASC)
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`assets`
+-- Table `assets`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`assets` (
-  `id` INT(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `assets` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `workspace_id` INT(11) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `hosts` LONGTEXT NULL,
@@ -362,29 +354,44 @@ CREATE TABLE IF NOT EXISTS `Seccubus`.`assets` (
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`asset_hosts`
+-- Table `asset_hosts`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`asset_hosts` (
+CREATE TABLE IF NOT EXISTS `asset_hosts` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `assets_id` INT(11) NOT NULL,
+  `asset_id` INT(11) NOT NULL,
   `ip` VARCHAR(16) NOT NULL,
   `host` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_asset_hosts_assets1_idx` (`assets_id` ASC)
+  INDEX `fk_asset_hosts_assets1_idx` (`asset_id` ASC),
+  INDEX `fk_asset_hosts_ip1_idx` (`ip`),
+  INDEX `fk_asset_hosts_host1_idx` (`host`)
+
 );
 
 
 -- -----------------------------------------------------
--- Table `Seccubus`.`asset2scan`
+-- Table `asset2scan`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Seccubus`.`asset2scan` (
-  `id` INT(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `asset2scan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `asset_id` INT(11) NOT NULL,
   `scan_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_asset2scan_assets1_idx` (`asset_id` ASC),
   INDEX `fk_asset2scan_scans1_idx` (`scan_id` ASC)
 );
+
+--
+-- Table structure for table `customsql`
+--
+
+CREATE TABLE `customsql` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` char(255) DEFAULT NULL,
+  `sql` text,
+  PRIMARY KEY (`id`)
+);
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

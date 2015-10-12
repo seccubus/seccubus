@@ -1,4 +1,4 @@
-<%# Copyright 2013 Frank Breedijk                                            %>
+<%# Copyright 2015 Frank Breedijk                                            %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -13,6 +13,7 @@
 <%# limitations under the License.                                           %>
 <% if(workspace > 0) { %>
 	<label for='remark'>Remark:</label><textarea name='remark' cols=80 rows=1 />
+	<br>
 	<label for='overwrite'>Overwrite:</label><input type='checkbox' name='overwrite'></input>
 	<input type=hidden name='status' id='bulkEditStatus' value='<%= status %>'/>
 	<input type=hidden name='workspaceId' value='<%= workspace %>'/>

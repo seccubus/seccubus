@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2014 Frank Breedijk, Steve Launius, Artien Bel (Ar0xA), Petr
+# Copyright 2015 Frank Breedijk, Steve Launius, Artien Bel (Ar0xA), Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -297,7 +297,7 @@ sub run_scan($$;$$$) {
 	# Bug #37 - @HOSTS gets expanded to /tmp/seccus.hosts.PID in stead of 
 	# /tmp/seccubus.hosts.PID
 	my $tempfile = "/tmp/seccubus.hosts.$$";
-	if ( may_write($scan_id) ) {
+	if ( may_write($workspace_id) ) {
 		my @scan = sql( "return"	=> "array",
 				"query"	=> "
 					SELECT scans.name, scannername, 
@@ -359,8 +359,10 @@ sub run_scan($$;$$$) {
 			if ( $param =~ /\$SCAN/ ) {
 				$param =~ s/\$SCAN/$scanname/g;
 			}
+			my $printparam = $param;
 			if ( $param =~ /\$PASSWORD/ ) {
 				$param =~ s/\$PASSWORD/$password/g;
+				$printparam =~ s/\$PASSWORD/********/g;
 			}
 			# Bug #42 - Scan parameters --workspace and --scan 
 			# should be added automatically
@@ -368,21 +370,27 @@ sub run_scan($$;$$$) {
 				# Bug #57 - Scan names with two words not 
 				# handled correctly
 				$param = "--scan '$scanname' $param";
+				$printparam = "--scan '$scanname' $printparam";
 			}
 			if ( $param !~ /(\-ws|\-\-workspace)[\s=]/ ) {
 				# Bug #57 - Scan names with two words not 
 				# handled correctly
 				$param = "--workspace '$workspace' $param";
+				$printparam = "--workspace '$workspace' $printparam";
 			}
 			my $cmd = $config->{paths}->{scanners} . "/$scanner/scan $param";
+			my $printcmd = $config->{paths}->{scanners} . "/$scanner/scan $printparam";
 			if ( $verbose == -1 ) {
 				$cmd .= " -q";
+				$printcmd .= " -q";
 			} else {
 				$cmd .= " -v" x $verbose;
+				$printcmd .= " -v" x $verbose;
 			}
 			# Nodelete (issue #14)
 			if ( $nodelete ) {
 				$cmd .= " --nodelete";
+				$printcmd .= " --nodelete";
 			}
 
 			# Sending pre scan notifications
@@ -391,9 +399,9 @@ sub run_scan($$;$$$) {
 			print "$sent notification(s) sent\n" if $print;
 
 			# Starting the actual scan
-			print "cmd: $cmd\n" if $print;
-			my $result = "cmd: $cmd\n";
-			open CMD, "$cmd |" or die "Unable to open pipe to '$cmd'";
+			print "cmd: $printcmd\n" if $print;
+			my $result = "cmd: $printcmd\n";
+			open CMD, "$cmd |" or die "Unable to open pipe to '$printcmd'";
 			while (<CMD>) {
 				$result .= $_;
 				print $_ if $print;

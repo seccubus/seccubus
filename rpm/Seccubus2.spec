@@ -1,5 +1,5 @@
 #
-# Copyright 2014 Frank Breedijk, Peter Slootweg, Glenn ten Cate, blabla1337
+# Copyright 2015 Frank Breedijk, Peter Slootweg, Glenn ten Cate, blabla1337
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ Requires:	perl-libwww-perl
 Requires:	perl-HTML-Tree
 Requires:	perl-Net-IP
 Requires:	perl-REST-Client
+Requires:   perl-CGI
 Requires:	httpd
 Requires:	mysql
 Requires:	ruby
@@ -156,8 +157,8 @@ scripts:
   flush privileges;
   EOF
 
-  # mysql -u seccubus -pseccubus seccubus < %{vardir}/structure_v4.mysql
-  # mysql -u seccubus -pseccubus seccubus < %{vardir}/data_v4.mysql
+  # mysql -u seccubus -pseccubus seccubus < %{vardir}/structure_v6.mysql
+  # mysql -u seccubus -pseccubus seccubus < %{vardir}/data_v6.mysql
 
 You can change the db name and username/password, make sure you update
 %{confdir}/config.xml accordingly

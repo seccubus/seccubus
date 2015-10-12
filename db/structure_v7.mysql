@@ -26,24 +26,25 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema Seccubus
 -- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema Seccubus
--- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `Seccubus` ;
 USE `Seccubus` ;
 
 -- -----------------------------------------------------
 -- Table `Seccubus`.`workspaces`
+ALTER SCHEMA  DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci ;
+
+-- -----------------------------------------------------
+-- Table `workspaces`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `workspaces` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` CHAR(255) NOT NULL,
-  UNIQUE INDEX `id` (`id` ASC),
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `name` (`name` ASC)
+  PRIMARY KEY (`id` ASC),
+  UNIQUE INDEX `name` (`name` ASC),
+  UNIQUE INDEX `id` (`id` ASC)
 )
-AUTO_INCREMENT = 4;
+AUTO_INCREMENT = 100;
+
 
 
 -- -----------------------------------------------------
@@ -53,12 +54,12 @@ CREATE TABLE IF NOT EXISTS `scans` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` CHAR(255) NOT NULL,
   `scannername` CHAR(255) NOT NULL,
-  `scannerparam` CHAR(255) NULL DEFAULT NULL,
+  `scannerparam` VARCHAR(1024) NULL DEFAULT NULL,
   `password` char(255) DEFAULT NULL,
   `targets` LONGTEXT NULL,
   `workspace_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_scans_workspaces1` (`workspace_id` ASC)
+  INDEX `fk_scans_workspaces1_idx` (`workspace_id` ASC)
 );
 
 
@@ -92,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `runs` (
   `scan_id` INT(11) NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `fk_runs_scans1` (`scan_id` ASC)
+  INDEX `fk_runs_scans1_idx` (`scan_id` ASC)
 );
 
 
@@ -111,12 +112,12 @@ CREATE TABLE IF NOT EXISTS `findings` (
   `severity` INT(11) NOT NULL,
   `status` INT(11) NOT NULL,
   `run_id` INT(11) NOT NULL,
-  INDEX `fk_findings_sessions1` (`workspace_id` ASC),
-  INDEX `fk_findings_scans1` (`scan_id` ASC),
-  INDEX `fk_findings_finding_status1` (`status` ASC),
-  INDEX `fk_findings_severity1` (`severity` ASC),
   PRIMARY KEY (`id`),
-  INDEX `fk_findings_runs1` (`run_id` ASC),
+  INDEX `fk_findings_sessions1_idx` (`workspace_id` ASC),
+  INDEX `fk_findings_scans1_idx` (`scan_id` ASC),
+  INDEX `fk_findings_finding_status1_idx` (`status` ASC),
+  INDEX `fk_findings_severity1_idx` (`severity` ASC),
+  INDEX `fk_findings_runs1_idx` (`run_id` ASC),
   INDEX `host` (`host` ASC),
   INDEX `port` (`port` ASC),
   INDEX `plugin` (`plugin` ASC)
@@ -133,7 +134,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `username` (`username` ASC)
 )
-AUTO_INCREMENT = 5;
+AUTO_INCREMENT = 100;
 
 
 -- -----------------------------------------------------
@@ -150,11 +151,11 @@ CREATE TABLE IF NOT EXISTS `finding_changes` (
   `run_id` INT(11) NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `fk_finding_changes_findings1` (`finding_id` ASC),
-  INDEX `fk_finding_changes_finding_status1` (`status` ASC),
-  INDEX `fk_finding_changes_severity1` (`severity` ASC),
-  INDEX `fk_finding_changes_users1` (`user_id` ASC),
-  INDEX `fk_finding_changes_runs1` (`run_id` ASC)
+  INDEX `fk_finding_changes_findings1_idx` (`finding_id` ASC),
+  INDEX `fk_finding_changes_finding_status1_idx` (`status` ASC),
+  INDEX `fk_finding_changes_severity1_idx` (`severity` ASC),
+  INDEX `fk_finding_changes_users1_idx` (`user_id` ASC),
+  INDEX `fk_finding_changes_runs1_idx` (`run_id` ASC)
 );
 
 
@@ -166,8 +167,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `name` CHAR(255) NOT NULL,
   UNIQUE INDEX `id` (`id` ASC)
 )
-AUTO_INCREMENT = 3;
-
+AUTO_INCREMENT = 100;
 
 -- -----------------------------------------------------
 -- Table `host_names`
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS `host_names` (
   `workspace_id` INT(11) NOT NULL,
   `ip` CHAR(16) NOT NULL,
   `name` CHAR(255) NOT NULL,
-  INDEX `fk_hosts_sessions1` (`workspace_id` ASC),
+  INDEX `fk_hosts_sessions1_idx` (`workspace_id` ASC),
   PRIMARY KEY (`workspace_id`, `ip`)
 );
 
@@ -204,8 +204,8 @@ CREATE TABLE IF NOT EXISTS `issues` (
   `severity` INT(11) NOT NULL,
   `status` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_issues_issue_status1` (`status` ASC),
-  INDEX `fk_issues_severity1` (`severity` ASC)
+  INDEX `fk_issues_issue_status1_idx` (`status` ASC),
+  INDEX `fk_issues_severity1_idx` (`severity` ASC)
 );
 
 
@@ -216,9 +216,9 @@ CREATE TABLE IF NOT EXISTS `issues2findings` (
   `issue_id` INT(11) NOT NULL,
   `finding_id` INT(11) NOT NULL,
   `status` INT(11) NOT NULL,
-  INDEX `fk_issue2finding_findings1` (`finding_id` ASC),
-  INDEX `fk_issue2finding_issues1` (`issue_id` ASC),
-  INDEX `fk_issue2finding_issue_status1` (`status` ASC)
+  INDEX `fk_issue2finding_findings1_idx` (`finding_id` ASC),
+  INDEX `fk_issue2finding_issues1_idx` (`issue_id` ASC),
+  INDEX `fk_issue2finding_issue_status1_idx` (`status` ASC)
 );
 
 
@@ -231,10 +231,10 @@ CREATE TABLE IF NOT EXISTS `issue2finding_changes` (
   `status` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  INDEX `fk_issue2finding_changes_issues1` (`issue_id` ASC),
-  INDEX `fk_issue2finding_changes_findings1` (`finding_id` ASC),
-  INDEX `fk_issue2finding_changes_issue_status1` (`status` ASC),
-  INDEX `fk_issue2finding_changes_users1` (`user_id` ASC)
+  INDEX `fk_issue2finding_changes_issues1_idx` (`issue_id` ASC),
+  INDEX `fk_issue2finding_changes_findings1_idx` (`finding_id` ASC),
+  INDEX `fk_issue2finding_changes_issue_status1_idx` (`status` ASC),
+  INDEX `fk_issue2finding_changes_users1_idx` (`user_id` ASC)
 );
 
 
@@ -252,10 +252,10 @@ CREATE TABLE IF NOT EXISTS `issue_changes` (
   `user_id` INT(11) NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `fk_issue_changes_issues1` (`issue_id` ASC),
-  INDEX `fk_issue_changes_issue_status1` (`status` ASC),
-  INDEX `fk_issue_changes_severity1` (`severity` ASC),
-  INDEX `fk_issue_changes_users1` (`user_id` ASC)
+  INDEX `fk_issue_changes_issues1_idx` (`issue_id` ASC),
+  INDEX `fk_issue_changes_issue_status1_idx` (`status` ASC),
+  INDEX `fk_issue_changes_severity1_idx` (`severity` ASC),
+  INDEX `fk_issue_changes_users1_idx` (`user_id` ASC)
 );
 
 
@@ -267,8 +267,8 @@ CREATE TABLE IF NOT EXISTS `rights` (
   `group_id` INT(11) NOT NULL,
   `allow_read` INT(1) NOT NULL,
   `allow_write` INT(1) NOT NULL,
-  INDEX `fk_rights_groups1` (`group_id` ASC),
-  INDEX `fk_rights_sessions1` (`workspace_id` ASC)
+  INDEX `fk_rights_groups1_idx` (`group_id` ASC),
+  INDEX `fk_rights_sessions1_idx` (`workspace_id` ASC)
 );
 
 
@@ -278,8 +278,8 @@ CREATE TABLE IF NOT EXISTS `rights` (
 CREATE TABLE IF NOT EXISTS `user2group` (
   `user_id` INT(11) NOT NULL,
   `group_id` INT(11) NOT NULL,
-  INDEX `fk_user2group_users` (`user_id` ASC),
-  INDEX `fk_user2group_groups1` (`group_id` ASC)
+  INDEX `fk_user2group_users_idx` (`user_id` ASC),
+  INDEX `fk_user2group_groups1_idx` (`group_id` ASC)
 );
 
 
@@ -293,7 +293,7 @@ CREATE TABLE IF NOT EXISTS `checkpoints` (
   `tags` VARCHAR(45) NULL,
   `timestamp` TIMESTAMP NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_checkpoints_workspaces1` (`workspace_id` ASC)
+  INDEX `fk_checkpoints_workspaces1_idx` (`workspace_id` ASC)
 );
 
 
@@ -317,7 +317,7 @@ CREATE TABLE IF NOT EXISTS `attachments` (
   `description` LONGTEXT NULL,
   `data` LONGBLOB NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_attachments_runs1` (`run_id` ASC)
+  KEY `fk_attachments_runs1_idx` (`run_id` ASC)
 );
 
 
@@ -342,8 +342,8 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   `recipients` VARCHAR(1024) NOT NULL,
   `message` TEXT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_notifications_scans1` (`scan_id` ASC),
-  INDEX `fk_notifications_events1` (`event_id` ASC)
+  INDEX `fk_notifications_scans1_idx` (`scan_id` ASC),
+  INDEX `fk_notifications_events1_idx` (`event_id` ASC)
 );
 
 
@@ -351,7 +351,7 @@ CREATE TABLE IF NOT EXISTS `notifications` (
 -- Table `assets`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `assets` (
-  `id` INT(11) NOT NULL,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `workspace_id` INT(11) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `hosts` LONGTEXT NULL,
@@ -366,11 +366,13 @@ CREATE TABLE IF NOT EXISTS `assets` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `asset_hosts` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `assets_id` INT(11) NOT NULL,
+  `asset_id` INT(11) NOT NULL,
   `ip` VARCHAR(16) NOT NULL,
   `host` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_asset_hosts_assets1_idx` (`assets_id` ASC)
+  INDEX `fk_asset_hosts_assets1_idx` (`asset_id` ASC),
+  INDEX `fk_asset_hosts_ip1_idx` (`ip`),
+  INDEX `fk_asset_hosts_host1_idx` (`host`)
 );
 
 
@@ -378,7 +380,7 @@ CREATE TABLE IF NOT EXISTS `asset_hosts` (
 -- Table `asset2scan`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `asset2scan` (
-  `id` INT(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `asset_id` INT(11) NOT NULL,
   `scan_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -386,39 +388,16 @@ CREATE TABLE IF NOT EXISTS `asset2scan` (
   INDEX `fk_asset2scan_scans1_idx` (`scan_id` ASC)
 );
 
+--
+-- Table structure for table `customsql`
+--
 
--- -----------------------------------------------------
--- Table `scan_schedule`
--- -----------------------------------------------------
-CREATE TABLE `scan_schedule` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Row Id',
-  `scan_id` INT(11) NOT NULL DEFAULT 0 COMMENT 'Scan ID',
-  `status` INT(1) NOT NULL DEFAULT 0 COMMENT 'Status of schedule: 0 - not runing yet, 1 - running, 2 - complete',
-  `last_run` DATETIME NULL COMMENT 'Last date run',
-  PRIMARY KEY (`id`),
-  INDEX `scan_id` (`scan_id` ASC),
-  INDEX `last_run` (`last_run` ASC),
-  INDEX `status` (`status` ASC)
+CREATE TABLE `customsql` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` char(255) DEFAULT NULL,
+  `sql` text,
+  PRIMARY KEY (`id`)
 );
-
-
--- -----------------------------------------------------
--- Table `schedules`
--- -----------------------------------------------------
-CREATE TABLE `schedules` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Row ID',
-  `schedule_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'Schedule ID',
-  `month` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Month number (1-12). If every month, then * (default)',
-  `week` VARCHAR(1) NOT NULL DEFAULT '*' COMMENT 'Month week number (1-5). If every week, then * (default)',
-  `wday` VARCHAR(1) NOT NULL DEFAULT '*' COMMENT 'Week day number (0-6), if every day, then * (default)',
-  `day` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Month day number (1-31), if every day, then * (default)',
-  `hour` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Hour number (0-23), if every hour, then * (default)',
-  `min` VARCHAR(2) NOT NULL DEFAULT '*' COMMENT 'Minute number (0-59), if every minute, then * (default)',
-  PRIMARY KEY (`id`),
-  INDEX `schedule_id` (`schedule_id` ASC),
-  INDEX `date_run` (`month` ASC, `week` ASC, `wday` ASC, `day` ASC, `hour` ASC, `min` ASC)
-);
-
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

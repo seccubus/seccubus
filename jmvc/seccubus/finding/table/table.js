@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Frank Breedijk, Petr
+ * Copyright 2015 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -309,12 +309,23 @@ $.Controller('Seccubus.Finding.Table',
 	},
 	// Handle update events by redrawing the view
 	"{Seccubus.Models.Finding} updated" : function(Finding, ev, finding) {
-		if(find.status == this.options.status) {
+		if(Number(finding.status) == Number(this.options.status)) {
 			finding.elements(this.element).html(
-				this.view('finding',finding)
+				this.view('finding',
+					finding,
+					{
+						columns : this.options.columns,
+						state	: this.options.status,
+						checked : this.options.checked.all
+
+					} 
+				)
 			);
 		} else {
-			this.updateView();
+			console.log("Not the same");
+			if ( ! finding.bulk ) {
+				this.updateView();
+			}
 		}
 	},
 	// Handle destroy events

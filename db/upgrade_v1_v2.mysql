@@ -1,5 +1,5 @@
 /*
-Copyright 2013 Frank Breedijk
+Copyright 2015 Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
-CREATE  TABLE IF NOT EXISTS `Seccubus`.`attachments` (
+CREATE  TABLE IF NOT EXISTS `attachments` (
   `id` INT(11) NOT NULL AUTO_INCREMENT ,
   `run_id` INT(11) NOT NULL ,
   `name` LONGTEXT NOT NULL ,
