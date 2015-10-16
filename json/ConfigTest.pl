@@ -26,7 +26,7 @@ use JSON;
 sub result($$$$);
 sub bye($);
 
-my $current_db_version = 7;
+my $current_db_version = 8;
 my $query = CGI::new();
 my $json = JSON->new();
 
