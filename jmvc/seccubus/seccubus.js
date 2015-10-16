@@ -34,6 +34,9 @@ steal(
 	'seccubus/finding/bulkedit',
 	'seccubus/finding/edit',
 	'seccubus/history/table',
+	'seccubus/issue/table',
+	'seccubus/issue/create',
+	'seccubus/issue/edit',
 	'widgets/modal',
 	'seccubus/event/select',
 	'seccubus/notification/table',
@@ -251,6 +254,9 @@ steal(
 
 		// Setup scan list
 		render_scan_lists();
+
+		// Setup issues
+		render_issues();
 
 		// Setup create workspace
 		$('#createWorkspace').seccubus_workspace_create({
@@ -559,7 +565,32 @@ steal(
 
 		function render_issues(){
 			$('#issue_table').seccubus_issue_table({
-				workspace 	: gui_state.workspace
+				workspace 	: gui_state.workspace,
+				onCreate 	: function(ws) {
+					$('#createIssue').seccubus_issue_create({
+						workspace : ws,
+						onClear	: function() {
+							$("#widgetsModalMask").click();
+						}
+					});
+					$('#modalDialog').widgets_modal({
+						query : "#createIssueDialog",
+						close : true
+					});					
+				},
+				onIssueEdit	: function(issue) {
+					$('#editIssue').seccubus_issue_edit({
+						workspace 	: gui_state.workspace,
+						issue 		: issue,
+						onClear	: function() {
+							$("#widgetsModalMask").click();
+						}
+					});
+					$('#modalDialog').widgets_modal({
+						query : "#editIssueDialog",
+						close : true
+					});					
+				}
 			})
 		}
 }
