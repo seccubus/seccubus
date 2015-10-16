@@ -51,11 +51,6 @@ $.Controller('Seccubus.Issue.Create',
 		 */
 		findings : [],
 		/*
-		 * @attribute findingsTable
-		 * jQuery element to put the findings table in
-		 */
-		findingsTable : null,
-		/*
 		 * @attribute options.onClear
 		 * Funciton that is called when the form is cleared, e.g. to 
 		 * disable a modal display
@@ -75,20 +70,13 @@ $.Controller('Seccubus.Issue.Create',
 			this.element.html(
 				this.view(
 					'init',
-					this.options.issue
+					[],
+					{
+						findings : this.options.findings
+					}
 				)
 			);
 			$('#createIssueSeverity').seccubus_severity_select();
-		}
-
-		if ( this.options.findingsTable != null ) {
-			/* Display the issue history */
-			/*
-			$(this.options.history).seccubus_history_table({
-				workspace	: this.options.workspace,
-				issueId	: this.options.issues[this.options.index].id
-			});
-			*/
 		}
 	},
 	".createSetStatus click" : function(el,ev) {

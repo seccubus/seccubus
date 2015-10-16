@@ -36,7 +36,9 @@ limitations under the License.
 	<body>
 	    <h1>Seccubus.Issue.Create Demo</h1>
 		Workspace: <select id='workspace'></select><br>
-		<form id='create_issue'>Form will go here</form>
+		<a href=javascript:// id='with_findings'>With findings...</a><br>
+		<form id='create_issue'>Form will go here</form><br>
+		<table id='findings_tab' border=1></table><br>
 		<table id='issues' border=1></table>
 		<script type='text/javascript' 
                 src='../../../steal/steal.js'>
@@ -46,6 +48,7 @@ limitations under the License.
 				'seccubus/issue/create',
 				'seccubus/issue/table',
 				'seccubus/workspace/select',
+				'seccubus/models',
 				//'seccubus/fixtures',
 			function(){
 				var gui_state=new Seccubus.GuiState({
@@ -69,6 +72,24 @@ limitations under the License.
 				$('#create_issue').seccubus_issue_create({
 					workspace	: gui_state.attr("workspace")
 				});
+
+				$('#with_findings').click(function(el, ev) {
+					var findings = Seccubus.Models.Finding;
+					findings.findAll(
+						{
+							workspaceId : gui_state.attr("workspace")
+						},
+						function(findings) {
+							console.log(findings);
+							$('#create_issue').seccubus_issue_create({
+								workspace 	: gui_state.attr("workspace"),
+								findings 	: findings,
+								findingsTable : '#findings_tab'
+							});
+						}
+					);
+				});
+
 			})
 		</script>
 	</body>

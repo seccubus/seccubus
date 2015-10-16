@@ -36,8 +36,57 @@
 		<select name='severity' id='createIssueSeverity'/></select>
 	</td></tr>
 
+	<tr><td class='noborder'>
+		Findings :
+	</td><td class='noborder'>
+		<table>
+			<thead>
+				<tr><th>
+					Host 
+				</th><th>
+					Hostname 	
+				</th><th>
+					Port 	
+				</th><th>
+					Scan 	
+				</th><th>
+					Plugin 	
+				</th><th>
+					Finding 	
+				</th><th>
+					Remark 	
+				</th><th>
+					Status
+				</th></tr>
+			</thead>
+			<tbody>
+				<% for(i=0;i<findings.length;i++) { %>
+					<tr class='sev_<%= findings[i].severity %>'><td>
+						<%= findings[i].host %>
+					</td><td>
+						<%= findings[i].hostname %>
+					</td><td>
+						<%= findings[i].port %>
+					</td><td>
+						<%= findings[i].scan %>
+					</td><td>
+						<%= findings[i].plugin %>
+					</td><td>
+						<%= findings[i].finding %>
+					</td><td>
+						<%= findings[i].remark %>
+					</td><td>
+						<%= findings[i].statusName %>
+					</td></tr>
+				<% } %>
+			</tbody>
+		</table>
+	</td></tr>
+
 	<tr><td class='noborder' colspan=2>
 		<input type=button value='Create' class='createSetStatus' newStatus=1 />
 		<input type=button value='Cancel' class='cancel' />
 	</td></tr>
+
+
 </table>
