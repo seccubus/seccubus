@@ -90,7 +90,11 @@ eval {
 		}
 		$issue->{findings} = $findings_out;
 	}
-	print $json->pretty->encode(\@data);
+	if ( $issue_id ) {
+		print $json->pretty->encode(\%{$data[0]});
+	} else {
+		print $json->pretty->encode(\@data);		
+	}
 } or do {
 	bye(join "\n", $@);
 };

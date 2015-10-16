@@ -162,6 +162,15 @@ $.Controller('Seccubus.Finding.Table',
 			console.log(find);
 		},
 		/*
+		 * @attribute options.onIssueEdit
+		 * Function that is called when an attribute's link button is 
+		 * clicked
+		 */
+		onIssueEdit		:  function(issue) {
+			console.warn("Seccubus.Finding.Table: onIssueEdit function is not set.");
+			console.log(issue);
+		},
+		/*
 		 * @attribute options.noEdit
 		 * Boolean that turns the edit button off
 		 */
@@ -309,6 +318,17 @@ $.Controller('Seccubus.Finding.Table',
 		var find = el.closest('.finding').model();
 		this.options.onLink(find);
 	},
+	// Handle issue edits
+	".editIssue click" : function(el, ev) {
+		ev.preventDefault();
+		var issue = Seccubus.Models.Issue.findOne(
+			{
+				workspaceId	: this.options.workspace,
+				issueId		: el.attr('issueId')
+			},
+			this.options.onIssueEdit
+		);
+	},
 	// Handle state change click by updating the finding in question via the
 	// model
 	".changeState click" : function(el,ev) {
@@ -360,6 +380,10 @@ $.Controller('Seccubus.Finding.Table',
 	// Handle destroy events
 	"{Seccubus.Models.Finding} destroyed" : function(Finding, ev, finding) {
 		alert("table destroyed:" + finding.id);
+	},
+	// Handle issue events
+	"{Seccubus.Models.Issue} updated" : function(Issue, ev, issue) {
+		this.updateView();
 	},
 	/*
 	 * Returns the specific sort function for an attribute

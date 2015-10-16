@@ -418,7 +418,22 @@ steal(
 							close : true
 						});
 					}
-				}
+				},
+				onIssueEdit : function(issue) {
+					console.log(issue);
+					$('#editIssue').seccubus_issue_edit({
+						workspace 	: gui_state.workspace,
+						issue 		: issue,
+						onClear		: function() {
+							$("#widgetsModalMask").click();
+						},
+						findings 	: '#issueFindingTable'
+					});
+					$('#modalDialog').widgets_modal({
+						query : "#editIssueDialog",
+						close : true
+					});					
+				} 
 			});
 		};
 
@@ -582,9 +597,10 @@ steal(
 					$('#editIssue').seccubus_issue_edit({
 						workspace 	: gui_state.workspace,
 						issue 		: issue,
-						onClear	: function() {
+						onClear		: function() {
 							$("#widgetsModalMask").click();
-						}
+						},
+						findings 	: '#issueFindingTable'
 					});
 					$('#modalDialog').widgets_modal({
 						query : "#editIssueDialog",

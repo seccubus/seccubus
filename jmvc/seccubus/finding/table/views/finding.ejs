@@ -81,7 +81,7 @@
 						<li>
 							<div title='<%= issues[x].description %>'>
 							    <% if ( ! noEdit ) { %> 
-									<img class='editIssue' src='img/edit.png'>
+									<img class='editIssue' issueId='<%= issues[x].id %>' src='img/edit.png'>
 								<% } %>
 								<%= issues[x].name %>
 								<% if ( issues[x].url ) { %>
