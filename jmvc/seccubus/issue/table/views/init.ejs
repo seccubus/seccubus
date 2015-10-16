@@ -29,7 +29,7 @@ Show: <input type="checkbox" class="openclose" name="status" value="Open" checke
 	<% } else { %>
 		<% for(var i = 0; i < this.length ; i++) { %>
 			<tr <%= this[i] %> <%= this[i].status == 1 ? "" : "hidden"%> class='<%= this[i].statusName %>'>
-				<%== $.View('//seccubus/issue/table/views/issue.ejs', this[i] )%>
+				<%== $.View('//seccubus/issue/table/views/issue.ejs', this[i], { finding : finding } )%>
 			</tr>
 		<% } %>
 	<% } %>

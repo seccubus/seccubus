@@ -25,14 +25,20 @@
 <td>
 	<div 
 		issue_id=<%= id %>
-		class='findings-expander<%= findings.length > 0 ? " collapsed" : "" %>'
+		class='finding-table'
 		>
-		<div id='issue_finding_count_<%= id %>'><%= findings.length %></div>
-		<table issue_id=<%= id %> id='findings_issue_<%= id %>' hidden=true class=findings_issue></table>
-	</div>
+		<div id='count'><%= findings.length %></div>
+		<table id='findings' hidden=true class=findings_issue></table>
+		<div class='findings-expander<%= findings.length > 0 ? " collapsed" : "" %>'>
+			&nbsp;
+		</div>
+	</div>	
 </td>
 <td>
 	<img class='edit_issue' src='img/edit.png'><br>
+	<% if  ( finding > 0) { %>
+		<img class='unlink' src='img/unlink.png' findingId=<%= finding %>><br>
+	<% } %>
 	<% if ( status == 2 ) { %>
 		<img class='set_status' src='img/open.png' newStatus=1 newStatusName='Open'><br>
 	<% } %>

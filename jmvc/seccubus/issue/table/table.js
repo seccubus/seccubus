@@ -40,6 +40,11 @@ $.Controller('Seccubus.Issue.Table',
 		 */
 		workspace	: -1,
 		/*
+		 * @attribute options.finding
+		 * The currently selected finding, -1 = no finding
+		 */
+		finding		: -1,
+		/*
 		 * @attribute options.onEdit
 		 * The function that is called when the Edit finding button is called
 		 */
@@ -77,33 +82,52 @@ $.Controller('Seccubus.Issue.Table',
 	 * This fuction rerenders the entire control with data from findAll
 	 */
 	updateView : function() {
-		this.element.html(
-			this.view(
-				'init',
-				Seccubus.Models.Issue.findAll({
-					workspaceId	: this.options.workspace	
-				}),
-				{ 
-					workspace	: this.options.workspace	
-				}
-			) 
-		);		
+		if ( this.options.finding > 0 ) {
+			this.element.html(
+				this.view(
+					'init',
+					Seccubus.Models.Issue.findAll({
+						workspaceId	: this.options.workspace,
+						findingId 	: this.options.finding	
+					}),
+					{ 
+						workspace	: this.options.workspace,
+						finding 	: this.options.finding	
+					}
+				)
+			);		
+		} else {
+			this.element.html(
+					this.view(
+					'init',
+					Seccubus.Models.Issue.findAll({
+						workspaceId	: this.options.workspace
+					}),
+					{ 
+						workspace	: this.options.workspace,
+						finding 	: this.options.finding	
+					}
+				) 
+			);
+		}
 	},
 
 	// Handle expand clicks
 	".findings-expander click" : function(el,ev) {
+		ev.preventDefault();
 		el.toggleClass('expanded');
 		el.toggleClass('collapsed');
-		fid = el.attr('issue_id');
-		$( '#issue_finding_count_'+fid).toggle();
-		var target = $( '#findings_issue_'+fid );
-		console.log(target);
+		var iid = el.parent().attr('issue_id');
+		el.parent().children('#count').toggle();
+		var target = el.parent().children('#findings');
 		target.toggle();
-		target.seccubus_issuelink_table({
-			workspace 	: this.options.workspace,
-			issue 		: target.attr("issue_id"),
-			onEdit 		: this.options.onFindingEdit
-		});
+		if ( ! target.hidden ) {
+			target.seccubus_issuelink_table({
+				workspace 	: this.options.workspace,
+				issue 		: iid,
+				onEdit 		: this.options.onFindingEdit
+			});
+		}
 	},
 
 	// Handle select clicks
@@ -132,6 +156,36 @@ $.Controller('Seccubus.Issue.Table',
 
 	".create_issue click" : function(el,ev) {
 		this.options.onCreate(this.options.workspace);
+	},
+
+	".unlink click" : function(el,ev) {
+		var issue = el.closest('.issue').model();
+		console.log(issue);
+		issue.attr("workspaceId",this.options.workspace);
+		issue.attr("findingIdsRemove[]",this.options.finding);
+		// Don't confuse issues with findings
+		issue.removeAttr("findings");
+		issue.save();
+		/*
+		var links = Seccubus.Models.Issuelink.findAll({
+			workspaceId	: this.options.workspace,
+			findingId   : this.options.finding,
+			Issue 		: issue.id
+		});
+		console.log
+		for(i=0;i<links.length();i++) {
+			console.log(link);
+		}
+		//console.log(links);
+		
+		//issuelink.attr("workspaceId",this.options.workspace);
+		issuelink.attr("findingIdsRemove[]",this.options.finding);
+		issuelink.attr("issueId",issue.id);
+		// Don't confuse issues with findings
+		issuelink.removeAttr("severity");
+		issuelink.removeAttr("status");
+		issuelink.save();
+		*/
 	},
 
 	/*

@@ -45,6 +45,7 @@ $params->{status} = 1 unless ( $params->{status} || $params->{issueId} );
 # A little translation
 $params->{workspace_id} = $params->{workspaceId};
 $params->{issue_id} = $params->{issueId};
+$params->{issue_id} = $params->{id} unless $params->{issue_id};
 $params->{findings} = $params->{'findingIds[]'};
 $params->{findings_remove} = $params->{'findingIdsRemove[]'};
 
