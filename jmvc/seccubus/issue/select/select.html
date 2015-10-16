@@ -27,6 +27,9 @@ limitations under the License.
 	    <h1>Seccubus.Issue.Select Demo</h1>
 		<select id='issues'></select><br>
 		<a href='javascript://' id='select' workspace='100'>Select workspace 100</a><br>
+		<a href='javascript://' id='select' workspace='101'>Select workspace 101</a><br>
+		<a href='javascript://' id='iNew'>Include new</a><br>
+		<a href='javascript://' id='oOnly'>Open Only</a><br>
 		<script type='text/javascript' 
                 src='../../../steal/steal.js'>
         </script>
@@ -40,12 +43,23 @@ limitations under the License.
 				$('#issues').seccubus_issue_select();
 
 				$('#select').click(function(el, ev) {
-					ws = $( this ).attr("workspace");
-					console.log(ws);
+					console.log($(this));
 					$('#issues').seccubus_issue_select({
 						workspace : $(this).attr("workspace")
-					});
-				})
+					})
+				});
+
+				$('#iNew').click(function(el, ev) {
+					$('#issues').seccubus_issue_select({
+						includeNew : true
+					})
+				});
+
+				$('#oOnly').click(function(el, ev) {
+					$('#issues').seccubus_issue_select({
+						openOnly : true
+					})
+				});
 			})
 		</script>
 	</body>

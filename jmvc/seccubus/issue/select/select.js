@@ -37,7 +37,17 @@ $.Controller('Seccubus.Issue.Select',
 		 * @attribute options.workspace
 		 * The currently selected workspace, -1 = no workspace
 		 */
-		workspace	: -1
+		workspace	: -1,
+		/*
+		 * @attribute options.includeNew
+		 * Include creating a new issue in the options
+		 */
+		includeNew 	: false,
+		/*
+		 * @attribute options.openOnly
+		 * Only include open issues in the options
+		 */
+		openOnly 	: false
 	}
 },
 /** @Prototype */
@@ -64,16 +74,20 @@ $.Controller('Seccubus.Issue.Select',
 	 * This fuction rerenders the entire control with data from findAll
 	 */
 	updateView : function() {
-		console.log(this.options.workspace);
 		if ( this.options.workspace == -1 ) {
 			this.element.html(this.view('error'));
 		} else {
+			console.log(this.options);
 			this.element.html(
 				this.view(
 					'init',
 					Seccubus.Models.Issue.findAll({
 							workspaceId	: this.options.workspace	
-					})
+					}),
+					{
+						includeNew 	: this.options.includeNew,
+						openOnly	: this.options.openOnly
+					}
 				) 
 			);		
 		}
@@ -85,7 +99,6 @@ $.Controller('Seccubus.Issue.Select',
 	update : function(options){
 		this._super(options);
 		this.updateView();
-		console.log("update");
 	}
 }); // Controller
 

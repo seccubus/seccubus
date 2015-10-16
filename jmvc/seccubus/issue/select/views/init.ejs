@@ -16,9 +16,14 @@
 	<%== $.View('//seccubus/issue/select/views/error.ejs') %>
 <% } else { %>
 	<option selected value=-1 disabled=true>Select a issue below</option>
+	<% if ( includeNew ) { %>
+		<option value=-2>Create new issue...</option>
+	<% } %>
 	<% for(var i = 0; i < this.length ; i++) { %>
-		<option <%= this[i] %> value='<%= this[i].id %>'>
-			<%== $.View('//seccubus/issue/select/views/issue.ejs', this[i] )%>
-		</option>
+		<% if (! (openOnly && this[i].status != 1) ) { %>
+			<option <%= this[i] %> value='<%= this[i].id %>'>
+				<%== $.View('//seccubus/issue/select/views/issue.ejs', this[i] )%>
+			</option>
+		<% } %>
 	<% } %>
 <% } %>
