@@ -68,6 +68,7 @@ steal(
 			render_create_scan();
 			render_create_asset();
 			render_bulkedit();
+			render_issues();
 		});
 		gui_state.bind("scans", function(ev, scan){
 			console.log("scan changed");
@@ -140,7 +141,6 @@ steal(
 		// Runs - tab 1
 		// Findigns - tab 2
 		// Issues - tab 3
-		$('#navTab').seccubus_tabs("hide", 3);
 		// Manage Workspaces - tab 4
 		// Manage Scans - tab 5
 		// Reports - tab 6
@@ -556,5 +556,11 @@ steal(
 				}
 			});
 		};
+
+		function render_issues(){
+			$('#issue_table').seccubus_issue_table({
+				workspace 	: gui_state.workspace
+			})
+		}
 }
 )
