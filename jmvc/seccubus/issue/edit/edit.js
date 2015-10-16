@@ -56,7 +56,13 @@ $.Controller('Seccubus.Issue.Edit',
 		/* @attribute options.workspace
 		 * Id of the current workspace
 		 */
-		workspace : -1
+		workspace : -1,
+		/* @attribute options.onClear
+		 * Function that is called when the cancel button is clicked
+		 */
+		onClear : function() {
+			console.warn("Seccubus.Issue.Edit onClear function called but not set");
+		}
 
 	}
 },
@@ -82,7 +88,6 @@ $.Controller('Seccubus.Issue.Edit',
 			});
 		}
 
-		console.log(this.options.findings);
 		if ( this.options.findings != null ) {
 			/* Display the findings for this issue */
 			$(this.options.findings).seccubus_finding_table({
@@ -128,6 +133,7 @@ $.Controller('Seccubus.Issue.Edit',
 			issue.attr("workspaceId",this.options.workspace);
 			issue.attr("issueId",issue.id);
 			issue.save();
+			this.options.onClear();
 		} else {
 			this.nok(elements);
 		}
@@ -162,6 +168,10 @@ $.Controller('Seccubus.Issue.Edit',
 	// Autoclear nok status
 	".nok change" : function(el) {
 		el.removeClass("nok");
+	},
+	".cancel click" : function(el, ev) {
+		ev.preventDefault();
+		this.options.onClear();
 	},
 	update : function(options) {
 		this._super(options);
