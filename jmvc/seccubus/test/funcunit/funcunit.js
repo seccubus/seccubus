@@ -26,6 +26,8 @@ steal("funcunit",
 	// 'seccubus/notification/create/create_test.js', 
 	'seccubus/notification/table/table_test.js',
 	'seccubus/asset/create/create_test.js',
-	'seccubus/asset/table/table_test.js'
+	'seccubus/asset/table/table_test.js',
+	'seccubus/schedule/create/create_test.js'
+	// 'seccubus/asset/table/table_test.js'
 	)
  .then("./seccubus_test.js");

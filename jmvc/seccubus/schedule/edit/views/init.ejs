@@ -1,0 +1,82 @@
+<%# Copyright 2014 Frank Breedijk, Petr                                      %>
+<%#                                                                          %>
+<%# Licensed under the Apache License, Version 2.0 (the "License");          %>
+<%# you may not use this file except in compliance with the License.         %>
+<%# You may obtain a copy of the License at                                  %>
+<%#                                                                          %>
+<%# http://www.apache.org/licenses/LICENSE-2.0                               %>
+<%#                                                                          %>
+<%# Unless required by applicable law or agreed to in writing, software      %>
+<%# distributed under the License is distributed on an "AS IS" BASIS,        %>
+<%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
+<%# See the License for the specific language governing permissions and      %>
+<%# limitations under the License.                                           %>
+<h2>Edit your Schedule</h2>
+<table class='noborder'>
+ 	<tr><td class='noborder'>
+		<label for='subject' valign='top'>Month: </label> 
+	</td><td class='noborder' valign='top'>
+		<select name='month' multiple size=7>
+			<% var monthes = ['January','February','Marth','April','May','June','July','August','September','October','November','December']; %>
+			<% for( var i=1; i<=12; i++){ %>
+				<option value='<%= i %>' <% if(monthR[i]) { %>selected<% } %>><%= monthes[i-1] %></option>
+			<% } %>
+		</select>
+		<BR><BR><input type=checkbox name='month' <% if(monthR['*']) { %> checked <% } %> > Every month
+	</td>
+	<td class='noborder' valign='top'>
+		<label for='trigger'>Week: </label> 
+	</td><td class='noborder' valign='top'>
+		<select name='week' multiple size=7>
+			<% for(var i=1; i<=5; i++){ %>
+				<option value='<%= i %>' <% if(weekR[i]) { %>selected<% } %>><%= i %></option>
+			<% } %>
+		</select>
+		<BR><BR><input type=checkbox name='week' <% if(weekR['*']) { %> checked <% } %> > Every week
+	</td>
+	<td class='noborder' valign='top'>
+		<label for='trigger'>Week day: </label> 
+	</td><td class='noborder' valign='top'>
+		<select name='wday' multiple size=7>
+			<% var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thirsday', 'Friday', 'Saturday', 'Sunday']; %>
+			<% for(var i=0; i<=6; i++){ %>
+				<option value='<%= i %>' <% if(wdayR[i]) { %>selected<% } %>><%= weekdays[i] %></option>
+			<% } %>
+		</select>
+		<BR><BR><input type=checkbox name='wday' <% if(wdayR['*']) { %> checked <% } %> > Every week day
+	</td>
+	<td class='noborder' valign='top'>
+		<label for='trigger'>Day: </label> 
+	</td><td class='noborder' valign='top'>
+		<select name='day' multiple size=7>
+			<% for(var i=1; i<=31; i++){ %>
+				<option value='<%= i %>' <% if(dayR[i]) { %>selected<% } %>><%= i %></option>
+			<% } %>
+		</select>
+		<BR><BR><input type=checkbox name='day' <% if(dayR['*']) { %> checked <% } %> > Every week day
+	</td>
+	<td class='noborder' valign='top'>
+		<label for='trigger'>Hour: </label> 
+	</td><td class='noborder' valign='top'>
+		<select name='hour' multiple size=7>
+			<% for(var i=0; i<=23; i++){ %>
+				<option value='<%= i %>' <% if(hourR[i]) { %>selected<% } %>><%= i %></option>
+			<% } %>
+		</select>
+		<BR><BR><input type=checkbox name='hour' <% if(hourR['*']) { %> checked <% } %> > Every hour
+	</td>
+	<td class='noborder' valign='top'>
+		<label for='trigger'>Minute</label> 
+	</td><td class='noborder' valign='top'>
+		<select name='min' multiple size=7>
+			<% for(var i=0; i<=59; i++){ %>
+				<option value='<%= i %>' <% if(minR[i]) { %>selected<% } %>><%= i %></option>
+			<% } %>
+		</select>
+		<BR><BR><input type=checkbox name='min' <% if(minR['*']) { %> checked <% } %> > Every minute
+	</td></tr>
+	<tr><td class='noborder' colspan=12 align='right'>
+		<input type='submit' value='Update Schedule'/>
+		<button type='button' class='cancel'>Cancel</button>
+	</td></tr>
+</table>

@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk, Petr
+# Copyright 2014 Frank Breedijk, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,36 +13,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# List the scans
+# Gets notificationdata
 # ------------------------------------------------------------------------------
 
-# Fixes Ticket [ 2981907 ] - Online up2date check
 use strict;
-use lib "..";
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
-use SeccubusV2;
-use LWP::Simple;
 use JSON;
-
-#my (
-   #);
+use lib "..";
+use SeccubusV2;
+use SeccubusScanSchedule;
 
 my $query = CGI::new();
 my $json = JSON->new();
-my $data = [];
 
-print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
 
-my $verdict = get("http://v2.seccubus.com/up2date.json.pl?version=".$SeccubusV2::VERSION);
-if ( ! $verdict ) {
-	print $json->pretty->encode( [ {
-		'currentVersion' => $SeccubusV2::VERSION,
-		'status'	=> "Error",
-		'message'	=> "Cannot check version online! Online version checks are disabled",
-		'link'		=> "",
-	} ]);
-} else { 
-	print $verdict;
+my $schedule_id = $query->param("id");
+
+bye("parameter id is missing") if( not (defined $schedule_id) );
+bye('id is not numeric') if( $schedule_id+0 ne $schedule_id );
+
+eval {
+	bye("Permission denied") if(! del_schedule( $schedule_id ) );
+	print $json->pretty->encode( {'id' => $schedule_id} );
+} or do {
+	bye(join "\n", $@);
+};
+
+sub bye($) {
+	my $error=shift;
+	print $json->pretty->encode([{ error => $error }]);
+	exit;
 }
-exit;
