@@ -15,33 +15,37 @@
 Show: <input type="checkbox" class="openclose" name="status" checked value="Open" <%= workspace == -1 ? "disabled" : "" %>>Open
 <input type="checkbox" class="openclose" name="status" value="Closed" <%= workspace == -1 ? "disabled" : "" %>>Closed
 <table>
-	<tr>
-		<td>Name</td>
-		<td>Description</td>
-		<td>External reference</td>
-		<td>Severity</td>
-		<td>Status</td>
-		<td>Findings</td>
-		<td>Actions</td>
-	</tr>
-	<% if ( this.length == 0 ) { %>
-		<tr><td colspan=7>No issues found</td></tr>
-	<% } else { %>
-		<% for(var i = 0; i < this.length ; i++) { %>
-			<tr 
-				<%= this[i] %> 
-				class='<%= this[i].statusName %>'
-				<%= this[i].status == 2 ? "hidden" : "" %>
-			>
-				<%== 
-					$.View('//seccubus/issue/table/views/issue.ejs', 
-						this[i], 
-						{ 
-							finding 	: finding
-						} 
-					)
-				%>
-			</tr>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+			<th>External reference</th>
+			<th>Severity</th>
+			<th>Status</th>
+			<th>Findings</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if ( this.length == 0 ) { %>
+			<tr><td colspan=7>No issues found</td></tr>
+		<% } else { %>
+			<% for(var i = 0; i < this.length ; i++) { %>
+				<tr 
+					<%= this[i] %> 
+					class='<%= this[i].statusName %> sev_<%= this[i].severity%>'
+					<%= this[i].status == 2 ? "hidden" : "" %>
+				>
+					<%== 
+						$.View('//seccubus/issue/table/views/issue.ejs', 
+							this[i], 
+							{ 
+								finding 	: finding
+							} 
+						)
+					%>
+				</tr>
+			<% } %>
 		<% } %>
-	<% } %>
+	</tbody>
 </table>

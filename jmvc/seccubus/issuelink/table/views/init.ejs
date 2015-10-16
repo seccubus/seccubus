@@ -23,20 +23,20 @@
 <% } else { %>
 	<thead>
 		<tr>
-			<td>Host</td>
-			<td>Hostname</td>
-			<td>Port</td>
-			<td>Scan</td>
-			<td>Plugin</td>
-			<td>Finding</td>
-			<td>Remark</td>
-			<td>Status</td>
-			<td>Actions</td>
+			<th>Host</th>
+			<th>Hostname</th>
+			<th>Port</th>
+			<th>Scan</th>
+			<th>Plugin</th>
+			<th>Finding</th>
+			<th>Remark</th>
+			<th>Status</th>
+			<th>Actions</th>
 		</tr>
 	</thead>
 	<tbody>
 		<% for(var i = 0; i < this.length ; i++) { %>
-			<tr <%= this[i] %>>
+			<tr class='sev_<%= this[i].severity %>' <%= this[i] %>>
 				<%== $.View('//seccubus/issuelink/table/views/link.ejs', this[i] ) %>
 			</tr>
 		<% } %>
