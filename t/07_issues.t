@@ -434,15 +434,14 @@ if (`hostname` =~ /^sbpd/) {
 	
 	# Lets get a single issue
 	$json = webcall("getIssues.pl", "workspaceId=100", "issueId=4");
-	is(@$json, 1, "Correct number of records"); $tests++;
-	is($$json[0]->{id}, 4, "Correct ID fetched"); $tests++;
-	is(@{$$json[0]->{findings}}, 1, "number of linked findings ok"); $tests++;
-	is($$json[0]->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
+	is($json->{id}, 4, "Correct ID fetched"); $tests++;
+	is(@{$json->{findings}}, 1, "number of linked findings ok"); $tests++;
+	is($json->{findings}[0]->{id}, 1, "linked finding ok"); $tests++;
 
 	# Lets get a non-existant issue
 	$json = webcall("getIssues.pl", "workspaceId=101", "issueId=4");
-	is(@$json, 0, "Correct number of records"); $tests++;
-
+	is_deeply($json, {}, "The result is empty"); $tests++;
+	
 	# Prep a more full GUI
 	$json = webcall("updateIssue.pl", "issueId=4", "workspaceId=100", "findingIds[]=4", "findingIds[]=3", "findingIds[]=2");
 	$json = webcall("updateIssue.pl", "issueId=3", "workspaceId=100", "findingIds[]=4", "findingIds[]=3");
