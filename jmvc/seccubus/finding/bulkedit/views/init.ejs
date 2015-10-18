@@ -18,6 +18,7 @@
 	<input type=hidden name='status' id='bulkEditStatus' value='<%= status %>'/>
 	<input type=hidden name='workspaceId' value='<%= workspace %>'/>
 	<input type=button newStatus=<%= status %> value='Update' class='bulkSetStatus'/>
+	<input type=button value='Link to isse' class='bulkLink'/>
 	<% if ( status == 99) { %>
 		<input type=button newStatus=1 value='Set to New' class='bulkSetStatus'/>
 	<% }  %>
