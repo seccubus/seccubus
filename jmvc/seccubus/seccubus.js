@@ -37,6 +37,7 @@ steal(
 	'seccubus/issue/table',
 	'seccubus/issue/create',
 	'seccubus/issue/edit',
+	'seccubus/issuelink/create',
 	'widgets/modal',
 	'seccubus/event/select',
 	'seccubus/notification/table',
@@ -556,7 +557,23 @@ steal(
 			$('#finding_bulkedit').seccubus_finding_bulkedit({
 				workspace	: gui_state.workspace,
 				status		: gui_state.findStatus,
-				onDone		: render_findings
+				onDone		: render_findings,
+				onLink		: function (findings) {
+					console.log("onLink");
+					$('#createIssuelink').seccubus_issuelink_create({
+						workspace 	: gui_state.workspace,
+						findings 	: findings,
+						onClear		: function() {
+							$("#widgetsModalMask").click();
+							render_findings();
+						}
+					});
+					$('#modalDialog').widgets_modal({
+						query : "#createIssuelinkDialog",
+						close : true
+					});					
+
+				}
 			});
 		};
 
