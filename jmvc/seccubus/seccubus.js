@@ -227,10 +227,6 @@ steal(
 						afterSave:updateView,
 						onClear:function(){
 							$("#widgetsModalMask").click();
-							// $('#modalDialog').widgets_modal({
-							// 	query : "#saveSQLDialog",
-							// 	close : true
-							// });
 						}
 					});
 					$('#modalDialog').widgets_modal({
@@ -559,14 +555,29 @@ steal(
 				status		: gui_state.findStatus,
 				onDone		: render_findings,
 				onLink		: function (findings) {
-					console.log("onLink");
 					$('#createIssuelink').seccubus_issuelink_create({
 						workspace 	: gui_state.workspace,
 						findings 	: findings,
 						onClear		: function() {
 							$("#widgetsModalMask").click();
 							render_findings();
+						},
+						onNewIssue 	: function(findings) {
+							$("#widgetsModalMask").click();
+							$('#createIssue').seccubus_issue_create({
+								workspace 	: gui_state.workspace,
+								findings 	: findings,
+								onClear		: function() {
+									$("#widgetsModalMask").click();
+									render_findings();
+								}
+							});
+							$('#modalDialog').widgets_modal({
+								query : "#createIssueDialog",
+								close : true
+							});												
 						}
+
 					});
 					$('#modalDialog').widgets_modal({
 						query : "#createIssuelinkDialog",
