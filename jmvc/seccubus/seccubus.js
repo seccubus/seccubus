@@ -430,7 +430,40 @@ steal(
 						query : "#editIssueDialog",
 						close : true
 					});					
-				} 
+				},
+				onLink		: function (finding) {
+					var findings = [];
+					findings.push(finding);
+					$('#createIssuelink').seccubus_issuelink_create({
+						workspace 	: gui_state.workspace,
+						findings 	: findings,
+						onClear		: function() {
+							$("#widgetsModalMask").click();
+							render_findings();
+						},
+						onNewIssue 	: function(findings) {
+							$("#widgetsModalMask").click();
+							$('#createIssue').seccubus_issue_create({
+								workspace 	: gui_state.workspace,
+								findings 	: findings,
+								onClear		: function() {
+									$("#widgetsModalMask").click();
+									render_findings();
+								}
+							});
+							$('#modalDialog').widgets_modal({
+								query : "#createIssueDialog",
+								close : true
+							});												
+						}
+
+					});
+					$('#modalDialog').widgets_modal({
+						query : "#createIssuelinkDialog",
+						close : true
+					});					
+				}
+
 			});
 		};
 
@@ -583,7 +616,6 @@ steal(
 						query : "#createIssuelinkDialog",
 						close : true
 					});					
-
 				}
 			});
 		};
