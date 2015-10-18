@@ -1,0 +1,94 @@
+<!--
+Copyright 2015 Frank Breedijk
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+-->
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Seccubus.Issuelink.Create</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+	    .asc { background: url("img/sort_asc.png") no-repeat scroll right center ; padding-right: 20px;}
+	    .desc { background: url("img/sort_desc.png") no-repeat scroll right center ;padding-right: 20px; }
+	    .both { background: url("img/sort_both.png") no-repeat scroll right center ;padding-right: 20px; }
+	    .nok { background-color: #FF6666; }
+	    tr.sev_1 { background-color: red; };
+	    tr.sev_2 { background-color: yellow; };
+	    tr.sev_3 { background-color: green; };
+	    tr.sev_4 { background-color: blue; };
+        </style>
+	</head>
+	<body>
+	    <h1>Seccubus.Issue.Create Demo</h1>
+		Workspace: <select id='workspace'></select><br>
+		<a href=javascript:// id='with_findings'>With findings...</a><br>
+		<form id='create_issue'>Form will go here</form><br>
+		<table id='issues' border=1></table>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal(	
+				'seccubus/issuelink/create',
+				'seccubus/issue/table',
+				'seccubus/workspace/select',
+				'seccubus/models',
+				//'seccubus/fixtures',
+			function(){
+				var gui_state=new Seccubus.GuiState({
+					workspace       : -1
+				});
+				gui_state.bind("workspace", function(ev, ws){
+					$('#create_issue').seccubus_issuelink_create({
+						workspace	: gui_state.attr("workspace")
+					});
+					$('#issues').seccubus_issuelink_table({
+						workspace	: gui_state.attr("workspace")
+					});
+				});
+				$('#workspace').change(function() {
+					gui_state.attr("workspace",$(this).attr("value"));
+				});
+				$('#workspace').seccubus_workspace_select();
+				$('#workspace').attr("value", -1);
+				$('#issues').seccubus_issue_table();
+
+				$('#create_issue').seccubus_issuelink_create({
+					workspace	: gui_state.attr("workspace")
+				});
+
+				$('#with_findings').click(function(el, ev) {
+					var findings = Seccubus.Models.Finding;
+					findings.findAll(
+						{
+							workspaceId : gui_state.attr("workspace")
+						},
+						function(findings) {
+							$('#create_issue').seccubus_issuelink_create({
+								workspace 	: gui_state.attr("workspace"),
+								findings 	: findings,
+								findingsTable : '#findings_tab'
+							});
+						}
+					);
+				});
+
+			})
+		</script>
+	</body>
+</html>
