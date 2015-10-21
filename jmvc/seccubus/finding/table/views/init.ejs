@@ -35,10 +35,15 @@
 				<%== $.View('//seccubus/finding/table/views/finding.ejs', 
 					this[i], 
 					{
-						columns : columns,
-						state	: fStatus,
-						checked : checked,
-						noEdit	: noEdit
+						columns 	: columns,
+						state		: fStatus,
+						checked 	: checked,
+						noEdit		: noEdit,
+						noLink		: noLink,
+						noFindingUnlink	
+									: noFindingUnlink,
+						noIssueUnlink	
+									: noIssueUnlink
 					}
 				) %>
 			</tr>

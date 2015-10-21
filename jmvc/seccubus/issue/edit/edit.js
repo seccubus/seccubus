@@ -93,7 +93,7 @@ $.Controller('Seccubus.Issue.Edit',
 			$(this.options.findings).seccubus_finding_table({
 				workspace	: this.options.workspace,
 				issue		: this.options.issue.id,
-				noEdit 		: true,
+				noLink 		: true,
 				status 		: "*",
 				columns		: [
 					"host", "IP", 
@@ -106,7 +106,13 @@ $.Controller('Seccubus.Issue.Edit',
 					"remark", "Remark",
 					"status", "Status",
 					"", "Action"
-				  ]
+				],
+				noEdit		: true,
+				noLink		: true,
+				noFindingUnlink	
+							: false,
+				noIssueUnlink	
+							: true
 			});
 		}
 	},

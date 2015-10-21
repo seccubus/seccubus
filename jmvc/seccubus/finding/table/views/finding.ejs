@@ -18,25 +18,32 @@
 			<td>
 			    <% if ( ! noEdit ) { %> 
 					<img class='editFinding' src='img/edit.png'><br>
+				<% } %>
+			    <% if ( ! noLink ) { %> 
 					<img class='linkFinding' src='img/link.png'><br>
 				<% } %>
-				<% if (status == 99 ) { %>
-					<a href='javascript://' value='1' class='small changeState'><img src='img/new.png'></a><br>
+			    <% if ( ! noFindingUnlink ) { %> 
+					<img class='unlinkFinding' src='img/unlink.png'><br>
 				<% } %>
-				<% if (status <= 2 || status == 4 ) { %>
-					<a href='javascript://' value='3' class='small changeState'><img src='img/open.png'></a><br>
-				<% } %>
-				<% if (status < 4 ) { %>
-					<a href='javascript://' value='4' class='small changeState'><img src='img/noissue.png'></a><br>
-				<% } %>
-				<% if (status == 6 ) { %>
-					<a href='javascript://' value='5' class='small changeState'><img src='img/gone.png'></a><br>
-				<% } %>
-				<% if (status == 5 ) { %>
-					<a href='javascript://' value='6' class='small changeState'><img src='img/closed.png'></a><br>
-				<% } %>
-				<% if (status != 99 ) { %>
-					<a href='javascript://' value='99' class='small changeState'><img src='img/masked.png'></a><br>
+			    <% if ( ! noEdit ) { %> 
+					<% if (status == 99 ) { %>
+						<a href='javascript://' value='1' class='small changeState'><img src='img/new.png'></a><br>
+					<% } %>
+					<% if (status <= 2 || status == 4 ) { %>
+						<a href='javascript://' value='3' class='small changeState'><img src='img/open.png'></a><br>
+					<% } %>
+					<% if (status < 4 ) { %>
+						<a href='javascript://' value='4' class='small changeState'><img src='img/noissue.png'></a><br>
+					<% } %>
+					<% if (status == 6 ) { %>
+						<a href='javascript://' value='5' class='small changeState'><img src='img/gone.png'></a><br>
+					<% } %>
+					<% if (status == 5 ) { %>
+						<a href='javascript://' value='6' class='small changeState'><img src='img/closed.png'></a><br>
+					<% } %>
+					<% if (status != 99 ) { %>
+						<a href='javascript://' value='99' class='small changeState'><img src='img/masked.png'></a><br>
+					<% } %>
 				<% } %>
 			</td>
 		<% } else if (columns[i+1] == "select") { %>
@@ -80,8 +87,11 @@
 					<% for ( x = 0; x < issues.length ; x++ ) { %>
 						<li>
 							<div title='<%= issues[x].description %>'>
-							    <% if ( ! noEdit ) { %> 
+							    <% if ( ! noLink ) { %> 
 									<img class='editIssue' issueId='<%= issues[x].id %>' src='img/edit.png'>
+								<% } %>
+							    <% if ( ! noIssueUnlink ) { %> 
+									<img class='unlinkIssue' issueId='<%= issues[x].id %>' src='img/unlink.png'>
 								<% } %>
 								<%= issues[x].name %>
 								<% if ( issues[x].url ) { %>

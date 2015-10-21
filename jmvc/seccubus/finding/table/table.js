@@ -154,7 +154,7 @@ $.Controller('Seccubus.Finding.Table',
 		},
 		/*
 		 * @attribute options.onLink
-		 * Function that is called when an attribute's link button is 
+		 * Function that is called when a finding's link button is 
 		 * clicked
 		 */
 		onLink		:  function(find) {
@@ -163,7 +163,7 @@ $.Controller('Seccubus.Finding.Table',
 		},
 		/*
 		 * @attribute options.onIssueEdit
-		 * Function that is called when an attribute's link button is 
+		 * Function that is called when an issue's edit button is 
 		 * clicked
 		 */
 		onIssueEdit		:  function(issue) {
@@ -174,7 +174,22 @@ $.Controller('Seccubus.Finding.Table',
 		 * @attribute options.noEdit
 		 * Boolean that turns the edit button off
 		 */
-		noEdit		: false
+		noEdit		: false,
+		/*
+		 * @attribute options.noLink
+		 * Boolean that turns the link button off
+		 */
+		noLink		: false,
+		/*
+		 * @attribute options.noUnlink
+		 * Boolean that turns the unlink button for a finding off
+		 */
+		noFindingUnlink	: true,
+		/*
+		 * @attribute options.noUnlink
+		 * Boolean that turns the unlink button for a issue off
+		 */
+		noIssueUnlink	: false
 	}
 },
 /** @Prototype */
@@ -236,7 +251,12 @@ $.Controller('Seccubus.Finding.Table',
 						descending	: this.options.descending,
 						fn			: this.sortFunc(this.options.orderBy,this.options.descending),
 						checked		: this.options.checked,
-						noEdit		: this.options.noEdit
+						noEdit		: this.options.noEdit,
+						noLink		: this.options.noLink,
+						noFindingUnlink	
+									: this.options.noFindingUnlink,
+						noIssueUnlink	
+									: this.options.noIssueUnlink
 					}
 				)
 			);
@@ -318,6 +338,25 @@ $.Controller('Seccubus.Finding.Table',
 		var find = el.closest('.finding').model();
 		this.options.onLink(find);
 	},
+	// Handle unlink clicks
+	".unlinkFinding click" : function(el,ev) {
+		ev.preventDefault();
+		var find = el.closest('.finding').model();
+		var issue = new Seccubus.Models.Issue;
+		issue.attr("issueId",this.options.issue);
+		issue.attr("workspaceId",this.options.workspace);
+		issue.attr("findingIdsRemove",[find.id]);
+		issue.save();
+	},
+	".unlinkIssue click" : function(el,ev) {
+		ev.preventDefault();
+		var find = el.closest('.finding').model();
+		var issue = new Seccubus.Models.Issue;
+		issue.attr("issueId",el.attr('issueId'));
+		issue.attr("workspaceId",this.options.workspace);
+		issue.attr("findingIdsRemove",[find.id]);
+		issue.save();
+	},
 	// Handle issue edits
 	".editIssue click" : function(el, ev) {
 		ev.preventDefault();
@@ -383,6 +422,9 @@ $.Controller('Seccubus.Finding.Table',
 	},
 	// Handle issue events
 	"{Seccubus.Models.Issue} updated" : function(Issue, ev, issue) {
+		this.updateView();
+	},
+	"{Seccubus.Models.Issue} created" : function(Issue, ev, issue) {
 		this.updateView();
 	},
 	/*
