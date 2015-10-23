@@ -134,8 +134,8 @@ sub load_ivil($;$$$$$$) {
 		my $count = @{$ivil->{findings}->{finding}};
 		print "There are $count findings\n" if $print;
 		foreach my $finding ( @{$ivil->{findings}->{finding}} ) {
-			$finding->{severity} = 0 unless defined $finding->{severity};
-			$finding->{severity} = 0 if $finding->{severity} eq "";
+			$finding->{severity} = 99 unless defined $finding->{severity};
+			$finding->{severity} = 99 if $finding->{severity} eq "";
 			# TODO: Seccubus currently does not handle the 
 			# references as specified in the IVIL format
 			update_finding(
