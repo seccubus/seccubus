@@ -136,6 +136,7 @@ sub load_ivil($;$$$$$$) {
 		foreach my $finding ( @{$ivil->{findings}->{finding}} ) {
 			$finding->{severity} = 99 unless defined $finding->{severity};
 			$finding->{severity} = 99 if $finding->{severity} eq "";
+			$finding->{severity} = 99 if $finding->{severity} eq "0";
 			# TODO: Seccubus currently does not handle the 
 			# references as specified in the IVIL format
 			update_finding(
