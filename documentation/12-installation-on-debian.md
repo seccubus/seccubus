@@ -1,8 +1,8 @@
 ---
 version: 2
-category: documentation
+category: user
 layout: page
-title: How to install Seccubus V2 on Debian
+title: Installation on Debian
 ---
 # DEB based install
 By: [Scott Pack](https://twitter.com/packscott)  

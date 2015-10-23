@@ -1,6 +1,5 @@
 ---
-
-category: faq
+category: hidden
 layout: page
 title: Who are the authors of Seccubus?
 ---

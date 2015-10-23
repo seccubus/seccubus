@@ -1,5 +1,4 @@
 ---
-
 category: licence
 layout: page
 title: Who has the Copyright of Seccubus?

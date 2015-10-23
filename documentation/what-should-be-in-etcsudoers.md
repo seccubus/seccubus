@@ -1,6 +1,5 @@
 ---
-version: 2
-category: documentation
+category: user
 layout: page
 title: What should be in /etc/sudoers?
 ---

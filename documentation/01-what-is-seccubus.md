@@ -1,6 +1,5 @@
 ---
-
-category: faq
+category: user
 layout: page
 title: What is Seccubus?
 ---

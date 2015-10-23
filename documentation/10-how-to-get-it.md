@@ -1,8 +1,8 @@
 ---
 version: 2
-category: documentation
+category: user
 layout: page
-title: How to get Seccubus V2?
+title: How to get Seccubus
 ---
 # How to get Seccubus V2?
 

@@ -1,8 +1,8 @@
 ---
 version: 2
-category: documentation
+category: user
 layout: page
-title: How to set up scans in Seccubus V2
+title: Setting up scans
 ---
 # 1 How to set up scans
 

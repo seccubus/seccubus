@@ -1,8 +1,7 @@
 ---
-version: 2
-category: documentation
+category: faq
 layout: page
-title: What is the difference between Seccubus V1 and Seccubus V2?
+title: Difference between V1 and V2
 ---
 # What is the difference between Seccubus V1 and Seccubus V2?
 

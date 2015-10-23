@@ -1,8 +1,8 @@
 ---
 version: 2
-category: documentation
+category: user
 layout: page
-title: How to install Seccubus V2?
+title: General installation
 ---
 # How to install Seccubus V2?
 

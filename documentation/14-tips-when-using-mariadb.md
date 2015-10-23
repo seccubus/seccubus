@@ -1,6 +1,6 @@
 ---
 version: 2
-category: documentation
+category: user
 layout: page
 title: Tips when using MariaDB
 ---

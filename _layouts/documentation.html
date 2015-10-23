@@ -8,16 +8,26 @@ layout: default
         </h2>
         <div class="row documentation">
             <div class="medium-6 small-12 column">
-                <h3 id="version2">Version 2</h3>
+                <h3 id="usr">User documentation</h3>
                 {% for p in site.pages%}
                     <ul>
-                    {% if p.category == 'documentation' and p.version == 2 %}
+                    {% if p.category == 'user' %}
                         <li><a href="{{p.url | prepend: site.baseurl }}">{{ p.title }}</a></li>
                     {% endif %}
                     </ul>
                 {% endfor %}
             </div>
-            <div class="small-12 column">
+            <div class="medium-6 small-12 column">
+                <h3 id="usr">Developer documentation</h3>
+                {% for p in site.pages%}
+                    <ul>
+                    {% if p.category == 'dev' %}
+                        <li><a href="{{p.url | prepend: site.baseurl }}">{{ p.title }}</a></li>
+                    {% endif %}
+                    </ul>
+                {% endfor %}
+            </div>
+            <div class="medium-6 small-12 column">
                 <div class="faq">
                     <h3 id="faq">FAQ</h3>
                 {% for p in site.pages%}
@@ -29,7 +39,7 @@ layout: default
                 {% endfor %}
                 </div>
             </div>
-            <div class="small-12 column">
+            <div class="medium-6 small-12 column">
                 <div class="licence">
                     <h3>Licence</h3>
                 {% for p in site.pages%}

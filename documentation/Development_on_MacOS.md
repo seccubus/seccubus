@@ -1,6 +1,6 @@
 ---
 version: 2
-category: documentation
+category: dev
 layout: page
 title: How to set up a Mac OS X development environment
 ---
