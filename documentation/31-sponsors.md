@@ -14,3 +14,5 @@ provided:
   * Many cups of coffee
   * The development hardware
   * Much much more…
+
+[Parallels Inc.](https://www.parallels.com) has also sponsored development capacity. 
