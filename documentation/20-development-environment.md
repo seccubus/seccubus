@@ -2,7 +2,7 @@
 version: 2
 category: dev
 layout: page
-title: How to set up a Mac OS X development environment
+title: Setup development environment
 ---
 
 Seccubus development on Mac OS X
@@ -11,7 +11,7 @@ Seccubus development on Mac OS X
 I recently switched from a Windows laptop to a Macbook and this means I now have a portable
 development environment on me at all times.
 
-This file details what you have to do to set up a development environment on Mac OS X.
+This document details what you have to do to set up a development environment on Mac OS X.
 
 Check out the code
 ------------------
