@@ -23,6 +23,7 @@ use JSON;
 use lib "..";
 use SeccubusV2;
 use SeccubusFindings;
+use Data::Dumper;
 
 my $query = CGI::new();
 my $json = JSON->new();
@@ -40,14 +41,16 @@ if (not (defined ($workspace_id))) {
 } elsif ( $workspace_id + 0 ne $workspace_id ) {
 	bye("WorkspaceId is not numeric");
 } elsif ( 0 == @scan_ids && 0 == @asset_ids  ) {
-	bye("Scan_ids or Asset_ids a mandatory parameter");
+	bye("Scan_ids or Asset_ids mandatory parameter missing");
 };
 
 eval {
 	my @data;
 	my %filter;
-	foreach my $key ( qw( Status Host Hostname Port Plugin Severity Finding Remark Severity ) ) {
-		if ( $query->param($key) ne undef and $query->param($key) ne "all" and $query->param($key) ne "null" and $query->param($key) ne "*" ) {
+	foreach my $key ( qw( Status Host Hostname Port Plugin Severity Finding Remark Severity Issue ) ) {
+		if ( $query->param($key) ne undef && $query->param($key) ne "all" && $query->param($key) ne "null" &&
+			$query->param($key) ne "*" ) 
+		{
 			$filter{lc($key)} = $query->param($key); 
 		}
 	}
@@ -56,6 +59,7 @@ eval {
 
 	print $json->pretty->encode(\%filters);
 } or do {
+	die Dumper $@;
 	bye(join "\n", $@);
 };
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2015 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -264,6 +264,16 @@ tr.sev_3 {
 tr.sev_4 {
 	background-color: blue;
 }
+
+.collapsed { 
+	background: url("img/expand.png") no-repeat scroll right center ; 
+	padding-right: 20px;
+}
+.expanded { 
+	background: url("img/sort_desc.png") no-repeat scroll right center ; 
+	padding-right: 20px;
+}
+
 
 /* 
  * Modal window stuff

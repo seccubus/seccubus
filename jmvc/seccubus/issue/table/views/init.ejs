@@ -1,0 +1,51 @@
+<%# Copyright 2015 Frank Breedijk                                            %>
+<%#                                                                          %>
+<%# Licensed under the Apache License, Version 2.0 (the "License");          %>
+<%# you may not use this file except in compliance with the License.         %>
+<%# You may obtain a copy of the License at                                  %>
+<%#                                                                          %>
+<%# http://www.apache.org/licenses/LICENSE-2.0                               %>
+<%#                                                                          %>
+<%# Unless required by applicable law or agreed to in writing, software      %>
+<%# distributed under the License is distributed on an "AS IS" BASIS,        %>
+<%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
+<%# See the License for the specific language governing permissions and      %>
+<%# limitations under the License.                                           %>
+<input type="button" class="create_issue" value='Create issue...' <%= workspace == -1 ? "disabled" : "" %>>
+Show: <input type="checkbox" class="openclose" name="status" checked value="Open" <%= workspace == -1 ? "disabled" : "" %>>Open
+<input type="checkbox" class="openclose" name="status" value="Closed" <%= workspace == -1 ? "disabled" : "" %>>Closed
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+			<th>External reference</th>
+			<th>Severity</th>
+			<th>Status</th>
+			<th>Findings</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if ( this.length == 0 ) { %>
+			<tr><td colspan=7>No issues found</td></tr>
+		<% } else { %>
+			<% for(var i = 0; i < this.length ; i++) { %>
+				<tr 
+					<%= this[i] %> 
+					class='<%= this[i].statusName %> sev_<%= this[i].severity%>'
+					<%= this[i].status == 2 ? "hidden" : "" %>
+				>
+					<%== 
+						$.View('//seccubus/issue/table/views/issue.ejs', 
+							this[i], 
+							{ 
+								finding 	: finding
+							} 
+						)
+					%>
+				</tr>
+			<% } %>
+		<% } %>
+	</tbody>
+</table>

@@ -45,11 +45,15 @@ if (`hostname` =~ /^sbpd/) {
 		`mysql -uroot -e "drop database seccubus_upgrade"`;
 		`mysql -uroot -e "create database seccubus_create"`;
 		`mysql -uroot -e "create database seccubus_upgrade"`;
+		ok(1,"Created empty DBs"); $tests++;
 		`mysql -uroot seccubus_create < db/structure_v$version.mysql`;
-		`mysql -uroot seccubus_upgrade < db/structure_v$p_version.mysql`;
 		`mysql -uroot seccubus_create < db/data_v$version.mysql`;
+		ok(1,"Database structure v$version created"); $tests++;
+		`mysql -uroot seccubus_upgrade < db/structure_v$p_version.mysql`;
 		`mysql -uroot seccubus_upgrade < db/data_v$p_version.mysql`;
+		ok(1,"Database data v$p_version created"); $tests++;
 		`mysql -uroot seccubus_upgrade < db/upgrade_$u_version.mysql`;
+		ok(1,"$u_version upgrade procedure done"); $tests++;
 		my $create = `mysqldump -uroot seccubus_create`;
 		my $upgrade = `mysqldump -uroot seccubus_upgrade`;
 

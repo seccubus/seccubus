@@ -1,4 +1,4 @@
-<%# Copyright 2013 Frank Breedijk                                            %>
+<%# Copyright 2015 Frank Breedijk                                            %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -66,6 +66,11 @@
 		Status :
 	</td><td class='noborder'>
 		<%= statusName %>
+	</td></tr>
+	<tr><td class='noborder'>
+		Issues:
+	</td><td class='noborder'>
+		<table id='issue_table_findings'></table>
 	</td></tr>
 	<tr><td class='noborder' colspan=2>
 		<input type=button newStatus=<%= status %> value='Update' class='editSetStatus'/>

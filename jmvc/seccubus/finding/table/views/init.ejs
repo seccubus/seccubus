@@ -1,4 +1,4 @@
-<%# Copyright 2013 Frank Breedijk                                            %>
+<%# Copyright 2015 Frank Breedijk                                            %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -35,13 +35,18 @@
 				<%== $.View('//seccubus/finding/table/views/finding.ejs', 
 					this[i], 
 					{
-						columns : columns,
-						state	: fStatus,
-						checked : checked
-					} 
+						columns 	: columns,
+						state		: fStatus,
+						checked 	: checked,
+						noEdit		: noEdit,
+						noLink		: noLink,
+						noFindingUnlink	
+									: noFindingUnlink,
+						noIssueUnlink	
+									: noIssueUnlink
+					}
 				) %>
 			</tr>
-			<% count++ %>
 		<% } %>
 		<% if ( this.length == 0 ) { %>
 			<tr><td colspan=<%= columns.length/2 %>>No findings match you selection</td></tr>

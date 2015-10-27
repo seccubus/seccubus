@@ -1,5 +1,5 @@
 #/usr/bin/perl
-# Copyright 2014 Frank Breedijk
+# Copyright 2015 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ WriteMakefile (
 				'Net::IP'				=> 1.0
 			},
 	PM		=> { 
+				'SeccubusV2/IVIL.pm'					=> '$(INST_LIBDIR)/IVIL.pm',
 				'SeccubusV2.pm'							=> '$(INST_LIBDIR)/SeccubusV2.pm',
 				'SeccubusV2/SeccubusAssets.pm'			=> '$(INST_LIBDIR)/SeccubusAssets.pm',
 				'SeccubusV2/SeccubusCustomSQL.pm'		=> '$(INST_LIBDIR)/SeccubusCustomSQL.pm',
@@ -52,6 +53,7 @@ WriteMakefile (
 				'SeccubusV2/SeccubusFindings.pm'		=> '$(INST_LIBDIR)/SeccubusFindings.pm',
 				'SeccubusV2/SeccubusHelpers.pm'			=> '$(INST_LIBDIR)/SeccubusHelpers.pm',
 				'SeccubusV2/SeccubusHostnames.pm'		=> '$(INST_LIBDIR)/SeccubusHostnames.pm',
+				'SeccubusV2/SeccubusIssues.pm'			=> '$(INST_LIBDIR)/SeccubusIssues.pm',
 				'SeccubusV2/SeccubusIVIL.pm'			=> '$(INST_LIBDIR)/SeccubusIVIL.pm',
 				'SeccubusV2/SeccubusNotifications.pm'	=> '$(INST_LIBDIR)/SeccubusNotifications.pm',
 				'SeccubusV2/SeccubusRights.pm'			=> '$(INST_LIBDIR)/SeccubusRights.pm',
@@ -60,7 +62,6 @@ WriteMakefile (
 				'SeccubusV2/SeccubusScans.pm'			=> '$(INST_LIBDIR)/SeccubusScans.pm',
 				'SeccubusV2/SeccubusUsers.pm'			=> '$(INST_LIBDIR)/SeccubusUsers.pm',
 				'SeccubusV2/SeccubusWorkspaces.pm'		=> '$(INST_LIBDIR)/SeccubusWorkspaces.pm',
-				'SeccubusV2/IVIL.pm'					=> '$(INST_LIBDIR)/IVIL.pm',
 			},
 
 );
