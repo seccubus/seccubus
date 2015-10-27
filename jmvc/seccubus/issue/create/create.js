@@ -55,8 +55,8 @@ $.Controller('Seccubus.Issue.Create',
 		 * Funciton that is called when the form is cleared, e.g. to 
 		 * disable a modal display
 		 */
-		onClear : function () { },
-		}
+		onClear : function () { }
+	}
 },
 /** @Prototype */
 {
