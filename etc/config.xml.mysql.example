@@ -36,7 +36,7 @@
 		<from>seccubus@localhost</from>
 	</smtp>
 	<tickets>
-		<url_head>https://jira.atlassian.com/browse/</url_heads>
+		<url_head>https://jira.atlassian.com/browse/</url_head>
 		<url_tail></url_tail>
 	</tickets>
 </seccubus>
