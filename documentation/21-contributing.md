@@ -19,7 +19,7 @@ If you have a contribution, we do accept pull requests. Please make sure you hav
 # Travis-CI
 Seccubus has quite a few, but never enough, unit tests. If you can please add unit test to your work that would be highly appreciated.
 
-All commits and pull requests will trigger unit tests in [Travis-CI](). Please make sure all unit tests pass before you create a pull requests, or fix your pull request if you were too late ;)
+All commits and pull requests will trigger unit tests in [Travis-CI](https://travis-ci.org/schubergphilis/Seccubus_v2/). Please make sure all unit tests pass before you create a pull requests, or fix your pull request if you were too late ;)
 
 # Issue tracker
 We use the issue tracker in [GitHub](https://github.com/schubergphilis/Seccubus_v2/issues) to support users, raise chance requests and file bugs.
@@ -31,4 +31,4 @@ Most developers are the [Seccubus organisation on Slack](https://seccubus.slack.
 Seccubus is licensed under the Apache 2.0 license. Please read the license and make sure you are allowed to contribute to the project before you do so. Copyright law is confusing, complex and different from country to country. We expect that you know best how it applies to you.
 
 # Contributing to this website
-The website is open source too. Clone and check out the [GitHub repo]()
+This website is open source too. Clone and check out the [GitHub repo](https://github.com/seccubus/seccubus.github.io). Pull requests accepted.
