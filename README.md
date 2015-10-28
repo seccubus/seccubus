@@ -29,7 +29,7 @@ For more information visit [www.seccubus.com]
 
 ---
 
-23-10-2015 - 2.20 - What is the issue?
+28-10-2015 - 2.20 - What is the issue?
 ======================================
 This release introduces a major new feature that has been in my head since the beginning of Seccubus version 2: Issues.
 
@@ -40,8 +40,9 @@ If you want to know more about issue, please see the online documentation at [ww
 
 Enhancements
 ------------
-# 238 - Issues
+#238 - Issues
 
 Bug Fixes
 ---------
+#244 - Database model and database not consistent anymore
 

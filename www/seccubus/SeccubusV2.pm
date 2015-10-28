@@ -1,1 +1,1 @@
-/home/frank/Seccubus_v2/SeccubusV2.pm
+../../SeccubusV2.pm
