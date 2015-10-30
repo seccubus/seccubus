@@ -42,6 +42,7 @@ sub sql(@);
 
 my (
 	$dbh,
+        $db_engine
    );
 
 ###############################################################################
@@ -84,18 +85,23 @@ sub open_database() {
 	# a single DB connection in stead on multiple
 
 	my $config = SeccubusV2::get_config();
-	if ( $config->{database}->{engine} == "mysql" ) {
+	if ( $config->{database}->{engine} eq "mysql" ) {
 		$dsn = "DBI:" . $config->{database}->{engine} 
 			. ":database=" . $config->{database}->{database} 
 			. ";host=" . $config->{database}->{host} 
 			. ";port=" . $config->{database}->{port};
-	} elsif (  $config->{database}->{engine} == "SQLite" ) {
+		$db_engine = "mysql";
+	} elsif ( $config->{database}->{engine} eq "SQLite" ) {
 		$dsn = "DBI:SQLite:dbname=$config->{database}->{database}";
+		$db_engine = "SQLite";
+	} elsif ( $config->{database}->{engine} eq "Pg" ) {
+	        $dsn = "DBI:Pg:dbname=$config->{database}->{database}";
+		$db_engine = "Pg";
 	} else {
 		die "Database engine  $config->{database}->{engine} is currently not supported";
 	}
 	$dbh = DBI->connect_cached($dsn, $config->{database}->{user}, $config->{database}->{password});
-	return $dbh;
+	return ($db_engine,$dbh);
 }
 
 =head2 sql
@@ -145,7 +151,24 @@ sub sql(@) {
 	$arg{return} = "ref" unless $arg{return};
 
 	confess "No query parameter specified" unless exists $arg{query};
-	$dbh = open_database();
+
+	($db_engine,$dbh) = open_database();
+
+	if ( $db_engine eq "Pg") {
+	    # PostGres hates backticks.
+	    $arg{query} =~ s/\`//g;
+	    
+	    if( $arg{return} eq "id" ){
+		# PostGres wants you to specify to return the id
+		# There may be more places where queries need to have their return
+		# type changes from 'id' to 'none' (see below).
+		if($arg{query} =~ /;\s*$/){
+		    $arg{query} =~ s/;/ RETURNING id;/;
+		}else{
+		    $arg{query} .= " RETURNING id";
+		}
+	    }
+	}
 	confess("Unable to open database") unless $dbh;
 	my $sth = $dbh->prepare($arg{query}) or
 		confess "Problem with preparing sql statement $arg{query}\n" . $dbh->errstr; 
@@ -159,8 +182,20 @@ sub sql(@) {
 	$sth->execute() or
 		confess "Problem with execution of sql statement $arg{query}\n" . $sth->errstr;
 	if ( $arg{return} eq "id" ) {		# We need to return the inserted
-						# ID
+	                                        # ID
+	    if( $db_engine eq "mysql") {
 		return $sth->{mysql_insertid};  # This is MySQL specific
+	    }elsif ( $db_engine eq "Pg") {
+		# something here is throwing a DBI warning, but it works.
+		# it might also be the default fetchall down below.
+		# I've add a return option of "none", but only changed it in a couple
+		# locations
+		my $insert_id = $sth->fetchall_arrayref();
+		return ${$insert_id}[0][0];
+	    }else{
+		## Something for SQLite?
+	    }
+
 	} elsif ($arg{return} eq "rows") {	# Return the number of rows changed by the last command
 		return $sth->rows();	
 	} elsif ( $arg{return} eq "handle" ) {
@@ -169,6 +204,8 @@ sub sql(@) {
 		return $sth->fetchrow_array();
 	} elsif ( $arg{return} eq 'arrayref') {
 		return $sth->fetchall_arrayref({});
+	} elsif ( $arg{return} eq "none") {
+	        return $sth->finish;
 	} else {
 		return $sth->fetchall_arrayref();
 	}

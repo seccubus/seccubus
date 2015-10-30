@@ -1,0 +1,1544 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = off;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET escape_string_warning = off;
+
+--
+-- Name: plpgsql; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: postgres
+--
+
+CREATE PROCEDURAL LANGUAGE plpgsql;
+
+
+ALTER PROCEDURAL LANGUAGE plpgsql OWNER TO postgres;
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: update_stamp(); Type: FUNCTION; Schema: public; Owner: seccubus
+--
+
+CREATE FUNCTION update_stamp() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$begin new.time := now(); return new; end;$$;
+
+
+ALTER FUNCTION public.update_stamp() OWNER TO seccubus;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: asset2scan; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE asset2scan (
+    id bigint NOT NULL,
+    asset_id bigint NOT NULL,
+    scan_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.asset2scan OWNER TO seccubus;
+
+--
+-- Name: asset_hosts; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE asset_hosts (
+    id bigint NOT NULL,
+    asset_id bigint NOT NULL,
+    ip character varying(16) NOT NULL,
+    host character varying(255)
+);
+
+
+ALTER TABLE public.asset_hosts OWNER TO seccubus;
+
+--
+-- Name: asset_hosts_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE asset_hosts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.asset_hosts_id_seq OWNER TO seccubus;
+
+--
+-- Name: asset_hosts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE asset_hosts_id_seq OWNED BY asset_hosts.id;
+
+
+--
+-- Name: assets; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE assets (
+    id bigint NOT NULL,
+    workspace_id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    hosts text,
+    recipients character varying(1024)
+);
+
+
+ALTER TABLE public.assets OWNER TO seccubus;
+
+--
+-- Name: attachments; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE attachments (
+    id bigint NOT NULL,
+    run_id bigint NOT NULL,
+    name text NOT NULL,
+    description text,
+    data bytea NOT NULL
+);
+
+
+ALTER TABLE public.attachments OWNER TO seccubus;
+
+--
+-- Name: attachments_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE attachments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.attachments_id_seq OWNER TO seccubus;
+
+--
+-- Name: attachments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE attachments_id_seq OWNED BY attachments.id;
+
+
+--
+-- Name: checkpoints; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE checkpoints (
+    id integer NOT NULL,
+    workspace_id bigint NOT NULL,
+    label character varying(45) NOT NULL,
+    tags character varying(45),
+    "timestamp" timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.checkpoints OWNER TO seccubus;
+
+--
+-- Name: checkpoints_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE checkpoints_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.checkpoints_id_seq OWNER TO seccubus;
+
+--
+-- Name: checkpoints_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE checkpoints_id_seq OWNED BY checkpoints.id;
+
+
+--
+-- Name: config; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE config (
+    name character varying(45) NOT NULL,
+    value character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.config OWNER TO seccubus;
+
+--
+-- Name: customsql; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE customsql (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    sql text NOT NULL
+);
+
+
+ALTER TABLE public.customsql OWNER TO seccubus;
+
+--
+-- Name: customsql_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE customsql_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.customsql_id_seq OWNER TO seccubus;
+
+--
+-- Name: customsql_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE customsql_id_seq OWNED BY customsql.id;
+
+
+--
+-- Name: events; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE events (
+    id integer NOT NULL,
+    name character varying(45)
+);
+
+
+ALTER TABLE public.events OWNER TO seccubus;
+
+--
+-- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.events_id_seq OWNER TO seccubus;
+
+--
+-- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE events_id_seq OWNED BY events.id;
+
+
+--
+-- Name: finding_changes; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE finding_changes (
+    id bigint NOT NULL,
+    finding_id bigint NOT NULL,
+    finding text,
+    remark text,
+    severity bigint NOT NULL,
+    status bigint NOT NULL,
+    user_id bigint NOT NULL,
+    run_id bigint NOT NULL,
+    "time" timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.finding_changes OWNER TO seccubus;
+
+--
+-- Name: finding_changes_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE finding_changes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.finding_changes_id_seq OWNER TO seccubus;
+
+--
+-- Name: finding_changes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE finding_changes_id_seq OWNED BY finding_changes.id;
+
+
+--
+-- Name: finding_status; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE finding_status (
+    id bigint NOT NULL,
+    name character varying(20) NOT NULL,
+    description character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.finding_status OWNER TO seccubus;
+
+--
+-- Name: findings; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE findings (
+    id bigint NOT NULL,
+    workspace_id bigint NOT NULL,
+    scan_id bigint NOT NULL,
+    host character varying(255) NOT NULL,
+    port character varying(20) NOT NULL,
+    plugin character varying(255) NOT NULL,
+    finding text,
+    remark text,
+    severity bigint NOT NULL,
+    status bigint NOT NULL,
+    run_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.findings OWNER TO seccubus;
+
+--
+-- Name: findings_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE findings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.findings_id_seq OWNER TO seccubus;
+
+--
+-- Name: findings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE findings_id_seq OWNED BY findings.id;
+
+
+--
+-- Name: groups; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE groups (
+    id bigint NOT NULL,
+    name character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.groups OWNER TO seccubus;
+
+--
+-- Name: groups_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.groups_id_seq OWNER TO seccubus;
+
+--
+-- Name: groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE groups_id_seq OWNED BY groups.id;
+
+
+--
+-- Name: host_names; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE host_names (
+    workspace_id bigint NOT NULL,
+    ip character varying(16) NOT NULL,
+    name character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.host_names OWNER TO seccubus;
+
+--
+-- Name: issue2finding_changes; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE issue2finding_changes (
+    id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    finding_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    "time" timestamp without time zone DEFAULT now() NOT NULL,
+    deleted smallint DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public.issue2finding_changes OWNER TO seccubus;
+
+--
+-- Name: issue2finding_changes_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE issue2finding_changes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.issue2finding_changes_id_seq OWNER TO seccubus;
+
+--
+-- Name: issue2finding_changes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE issue2finding_changes_id_seq OWNED BY issue2finding_changes.id;
+
+
+--
+-- Name: issue_changes; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE issue_changes (
+    id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    ext_ref character varying(255) DEFAULT NULL::bpchar,
+    description text,
+    severity bigint NOT NULL,
+    status bigint NOT NULL,
+    user_id bigint NOT NULL,
+    "time" timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.issue_changes OWNER TO seccubus;
+
+--
+-- Name: issue_changes_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE issue_changes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.issue_changes_id_seq OWNER TO seccubus;
+
+--
+-- Name: issue_changes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE issue_changes_id_seq OWNED BY issue_changes.id;
+
+
+--
+-- Name: issue_status; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE issue_status (
+    id bigint NOT NULL,
+    name character varying(20) NOT NULL,
+    description character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.issue_status OWNER TO seccubus;
+
+--
+-- Name: issues; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE issues (
+    id bigint NOT NULL,
+    workspace_id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    ext_ref character varying(255) DEFAULT NULL::bpchar,
+    description text,
+    severity bigint NOT NULL,
+    status bigint NOT NULL
+);
+
+
+ALTER TABLE public.issues OWNER TO seccubus;
+
+--
+-- Name: issues2findings; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE issues2findings (
+    issue_id bigint NOT NULL,
+    finding_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.issues2findings OWNER TO seccubus;
+
+--
+-- Name: issues_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE issues_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.issues_id_seq OWNER TO seccubus;
+
+--
+-- Name: issues_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE issues_id_seq OWNED BY issues.id;
+
+
+--
+-- Name: notifications; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE notifications (
+    id integer NOT NULL,
+    scan_id bigint NOT NULL,
+    event_id integer NOT NULL,
+    subject character varying(255) NOT NULL,
+    recipients character varying(1024) NOT NULL,
+    message text NOT NULL
+);
+
+
+ALTER TABLE public.notifications OWNER TO seccubus;
+
+--
+-- Name: notifications_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE notifications_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.notifications_id_seq OWNER TO seccubus;
+
+--
+-- Name: notifications_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE notifications_id_seq OWNED BY notifications.id;
+
+
+--
+-- Name: rights; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE rights (
+    workspace_id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    allow_read smallint NOT NULL,
+    allow_write smallint NOT NULL
+);
+
+
+ALTER TABLE public.rights OWNER TO seccubus;
+
+--
+-- Name: runs; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE runs (
+    id bigint NOT NULL,
+    scan_id bigint NOT NULL,
+    "time" timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.runs OWNER TO seccubus;
+
+--
+-- Name: runs_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE runs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.runs_id_seq OWNER TO seccubus;
+
+--
+-- Name: runs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE runs_id_seq OWNED BY runs.id;
+
+
+--
+-- Name: scans; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE scans (
+    id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    scannername character varying(255) NOT NULL,
+    scannerparam character varying(1024) DEFAULT NULL::bpchar,
+    password character varying(255) DEFAULT NULL::bpchar,
+    targets text,
+    workspace_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.scans OWNER TO seccubus;
+
+--
+-- Name: scans_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE scans_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.scans_id_seq OWNER TO seccubus;
+
+--
+-- Name: scans_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE scans_id_seq OWNED BY scans.id;
+
+
+--
+-- Name: severity; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE severity (
+    id bigint NOT NULL,
+    name character varying(20) NOT NULL,
+    description character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.severity OWNER TO seccubus;
+
+--
+-- Name: user2group; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE user2group (
+    user_id bigint NOT NULL,
+    group_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.user2group OWNER TO seccubus;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE users (
+    id bigint NOT NULL,
+    username character varying(255) NOT NULL,
+    name character varying(255) DEFAULT NULL::bpchar
+);
+
+
+ALTER TABLE public.users OWNER TO seccubus;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO seccubus;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE users_id_seq OWNED BY users.id;
+
+
+--
+-- Name: workspaces; Type: TABLE; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE TABLE workspaces (
+    id bigint NOT NULL,
+    name character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.workspaces OWNER TO seccubus;
+
+--
+-- Name: workspaces_id_seq; Type: SEQUENCE; Schema: public; Owner: seccubus
+--
+
+CREATE SEQUENCE workspaces_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.workspaces_id_seq OWNER TO seccubus;
+
+--
+-- Name: workspaces_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: seccubus
+--
+
+ALTER SEQUENCE workspaces_id_seq OWNED BY workspaces.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY asset_hosts ALTER COLUMN id SET DEFAULT nextval('asset_hosts_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY attachments ALTER COLUMN id SET DEFAULT nextval('attachments_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY checkpoints ALTER COLUMN id SET DEFAULT nextval('checkpoints_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY finding_changes ALTER COLUMN id SET DEFAULT nextval('finding_changes_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY findings ALTER COLUMN id SET DEFAULT nextval('findings_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY groups ALTER COLUMN id SET DEFAULT nextval('groups_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY issue2finding_changes ALTER COLUMN id SET DEFAULT nextval('issue2finding_changes_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY issue_changes ALTER COLUMN id SET DEFAULT nextval('issue_changes_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY issues ALTER COLUMN id SET DEFAULT nextval('issues_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY notifications ALTER COLUMN id SET DEFAULT nextval('notifications_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY runs ALTER COLUMN id SET DEFAULT nextval('runs_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY scans ALTER COLUMN id SET DEFAULT nextval('scans_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY workspaces ALTER COLUMN id SET DEFAULT nextval('workspaces_id_seq'::regclass);
+
+
+--
+-- Name: asset2scan_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY asset2scan
+    ADD CONSTRAINT asset2scan_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: asset_hosts_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY asset_hosts
+    ADD CONSTRAINT asset_hosts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: assets_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY assets
+    ADD CONSTRAINT assets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: attachments_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY attachments
+    ADD CONSTRAINT attachments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: checkpoints_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY checkpoints
+    ADD CONSTRAINT checkpoints_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: config_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY config
+    ADD CONSTRAINT config_pkey PRIMARY KEY (name);
+
+
+--
+-- Name: events_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY events
+    ADD CONSTRAINT events_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: finding_changes_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY finding_changes
+    ADD CONSTRAINT finding_changes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: finding_status_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY finding_status
+    ADD CONSTRAINT finding_status_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: findings_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY findings
+    ADD CONSTRAINT findings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: groups_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY groups
+    ADD CONSTRAINT groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: host_names_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY host_names
+    ADD CONSTRAINT host_names_pkey PRIMARY KEY (workspace_id, ip);
+
+
+--
+-- Name: issue2finding_changes_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY issue2finding_changes
+    ADD CONSTRAINT issue2finding_changes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: issue_changes_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY issue_changes
+    ADD CONSTRAINT issue_changes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: issue_status_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY issue_status
+    ADD CONSTRAINT issue_status_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: issues2findings_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY issues2findings
+    ADD CONSTRAINT issues2findings_pkey PRIMARY KEY (issue_id, finding_id);
+
+
+--
+-- Name: issues_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY issues
+    ADD CONSTRAINT issues_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: notifications_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY notifications
+    ADD CONSTRAINT notifications_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: rights_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY rights
+    ADD CONSTRAINT rights_pkey PRIMARY KEY (workspace_id, group_id);
+
+
+--
+-- Name: runs_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY runs
+    ADD CONSTRAINT runs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: scans_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY scans
+    ADD CONSTRAINT scans_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: severity_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY severity
+    ADD CONSTRAINT severity_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user2group_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY user2group
+    ADD CONSTRAINT user2group_pkey PRIMARY KEY (user_id, group_id);
+
+
+--
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: workspaces_pkey; Type: CONSTRAINT; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+ALTER TABLE ONLY workspaces
+    ADD CONSTRAINT workspaces_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: fk_asset2scan_scans1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_asset2scan_scans1_idx ON asset2scan USING btree (scan_id);
+
+
+--
+-- Name: fk_asset_hosts_assets1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_asset_hosts_assets1_idx ON asset_hosts USING btree (asset_id);
+
+
+--
+-- Name: fk_assets_workspaces1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_assets_workspaces1_idx ON assets USING btree (workspace_id);
+
+
+--
+-- Name: fk_attachments_runs1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_attachments_runs1_idx ON attachments USING btree (run_id);
+
+
+--
+-- Name: fk_finding_changes_finding_status1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_finding_changes_finding_status1_idx ON finding_changes USING btree (status);
+
+
+--
+-- Name: fk_finding_changes_findings1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_finding_changes_findings1_idx ON finding_changes USING btree (finding_id);
+
+
+--
+-- Name: fk_finding_changes_runs1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_finding_changes_runs1_idx ON finding_changes USING btree (run_id);
+
+
+--
+-- Name: fk_finding_changes_severity1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_finding_changes_severity1_idx ON finding_changes USING btree (severity);
+
+
+--
+-- Name: fk_finding_changes_users1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_finding_changes_users1_idx ON finding_changes USING btree (user_id);
+
+
+--
+-- Name: fk_findings_finding_status1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_findings_finding_status1_idx ON findings USING btree (status);
+
+
+--
+-- Name: fk_findings_runs1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_findings_runs1_idx ON findings USING btree (run_id);
+
+
+--
+-- Name: fk_findings_severity1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_findings_severity1_idx ON findings USING btree (severity);
+
+
+--
+-- Name: fk_issue2finding_findings1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_issue2finding_findings1_idx ON issues2findings USING btree (finding_id);
+
+
+--
+-- Name: fk_issue2finding_issues1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_issue2finding_issues1_idx ON issues2findings USING btree (issue_id);
+
+
+--
+-- Name: fk_issues2findings_findings1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_issues2findings_findings1_idx ON issues2findings USING btree (finding_id);
+
+
+--
+-- Name: fk_issues_issue_status1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_issues_issue_status1_idx ON issues USING btree (status);
+
+
+--
+-- Name: fk_issues_severity1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_issues_severity1_idx ON issues USING btree (severity);
+
+
+--
+-- Name: fk_issues_workspaces1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_issues_workspaces1_idx ON issues USING btree (workspace_id);
+
+
+--
+-- Name: fk_notifications_events1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_notifications_events1_idx ON notifications USING btree (event_id);
+
+
+--
+-- Name: fk_scans_workspaces1_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX fk_scans_workspaces1_idx ON scans USING btree (workspace_id);
+
+
+--
+-- Name: host_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX host_idx ON findings USING btree (host);
+
+
+--
+-- Name: id_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE UNIQUE INDEX id_idx ON groups USING btree (id);
+
+
+--
+-- Name: name_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE UNIQUE INDEX name_idx ON workspaces USING btree (name);
+
+
+--
+-- Name: plugin_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX plugin_idx ON findings USING btree (plugin);
+
+
+--
+-- Name: port_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE INDEX port_idx ON findings USING btree (port);
+
+
+--
+-- Name: username_idx; Type: INDEX; Schema: public; Owner: seccubus; Tablespace: 
+--
+
+CREATE UNIQUE INDEX username_idx ON users USING btree (username);
+
+
+--
+-- Name: finding_changes_run_time; Type: TRIGGER; Schema: public; Owner: seccubus
+--
+
+CREATE TRIGGER finding_changes_run_time
+    BEFORE UPDATE ON finding_changes
+    FOR EACH ROW
+    EXECUTE PROCEDURE update_stamp();
+
+
+--
+-- Name: finding_changes_run_time; Type: TRIGGER; Schema: public; Owner: seccubus
+--
+
+CREATE TRIGGER finding_changes_run_time
+    BEFORE UPDATE ON issue2finding_changes
+    FOR EACH ROW
+    EXECUTE PROCEDURE update_stamp();
+
+
+--
+-- Name: finding_changes_run_time; Type: TRIGGER; Schema: public; Owner: seccubus
+--
+
+CREATE TRIGGER finding_changes_run_time
+    BEFORE UPDATE ON issue_changes
+    FOR EACH ROW
+    EXECUTE PROCEDURE update_stamp();
+
+
+--
+-- Name: update_run_time; Type: TRIGGER; Schema: public; Owner: seccubus
+--
+
+CREATE TRIGGER update_run_time
+    BEFORE UPDATE ON runs
+    FOR EACH ROW
+    EXECUTE PROCEDURE update_stamp();
+
+
+--
+-- Name: fk_asset2scan_assets1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY asset2scan
+    ADD CONSTRAINT fk_asset2scan_assets1 FOREIGN KEY (scan_id) REFERENCES assets(id);
+
+
+--
+-- Name: fk_asset2scan_scans1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY asset2scan
+    ADD CONSTRAINT fk_asset2scan_scans1 FOREIGN KEY (scan_id) REFERENCES scans(id);
+
+
+--
+-- Name: fk_asset_hosts_assets1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY asset_hosts
+    ADD CONSTRAINT fk_asset_hosts_assets1 FOREIGN KEY (asset_id) REFERENCES assets(id);
+
+
+--
+-- Name: fk_attachments_runs1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY attachments
+    ADD CONSTRAINT fk_attachments_runs1 FOREIGN KEY (run_id) REFERENCES runs(id);
+
+
+--
+-- Name: fk_checkpoints_workspaces1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY checkpoints
+    ADD CONSTRAINT fk_checkpoints_workspaces1 FOREIGN KEY (workspace_id) REFERENCES workspaces(id);
+
+
+--
+-- Name: fk_finding_changes_finding_status1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY finding_changes
+    ADD CONSTRAINT fk_finding_changes_finding_status1 FOREIGN KEY (status) REFERENCES finding_status(id);
+
+
+--
+-- Name: fk_finding_changes_findings1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY finding_changes
+    ADD CONSTRAINT fk_finding_changes_findings1 FOREIGN KEY (finding_id) REFERENCES findings(id);
+
+
+--
+-- Name: fk_finding_changes_runs1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY finding_changes
+    ADD CONSTRAINT fk_finding_changes_runs1 FOREIGN KEY (run_id) REFERENCES runs(id);
+
+
+--
+-- Name: fk_finding_changes_severity1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY finding_changes
+    ADD CONSTRAINT fk_finding_changes_severity1 FOREIGN KEY (severity) REFERENCES severity(id);
+
+
+--
+-- Name: fk_finding_changes_users1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY finding_changes
+    ADD CONSTRAINT fk_finding_changes_users1 FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
+-- Name: fk_findings_finding_status1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY findings
+    ADD CONSTRAINT fk_findings_finding_status1 FOREIGN KEY (status) REFERENCES finding_status(id);
+
+
+--
+-- Name: fk_findings_runs1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY findings
+    ADD CONSTRAINT fk_findings_runs1 FOREIGN KEY (run_id) REFERENCES runs(id);
+
+
+--
+-- Name: fk_findings_severity1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY findings
+    ADD CONSTRAINT fk_findings_severity1 FOREIGN KEY (severity) REFERENCES severity(id);
+
+
+--
+-- Name: fk_findings_workspaces1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY findings
+    ADD CONSTRAINT fk_findings_workspaces1 FOREIGN KEY (workspace_id) REFERENCES workspaces(id);
+
+
+--
+-- Name: fk_host_names_workspaces1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY host_names
+    ADD CONSTRAINT fk_host_names_workspaces1 FOREIGN KEY (workspace_id) REFERENCES workspaces(id);
+
+
+--
+-- Name: fk_issue_changes_issue_status1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY issue_changes
+    ADD CONSTRAINT fk_issue_changes_issue_status1 FOREIGN KEY (status) REFERENCES issue_status(id);
+
+
+--
+-- Name: fk_issue_changes_issues1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY issue_changes
+    ADD CONSTRAINT fk_issue_changes_issues1 FOREIGN KEY (issue_id) REFERENCES issues(id);
+
+
+--
+-- Name: fk_issue_changes_severity1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY issue_changes
+    ADD CONSTRAINT fk_issue_changes_severity1 FOREIGN KEY (severity) REFERENCES severity(id);
+
+
+--
+-- Name: fk_issue_changes_users1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY issue_changes
+    ADD CONSTRAINT fk_issue_changes_users1 FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
+-- Name: fk_issues2findings_findings1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY issues2findings
+    ADD CONSTRAINT fk_issues2findings_findings1 FOREIGN KEY (finding_id) REFERENCES findings(id);
+
+
+--
+-- Name: fk_issues2findings_issues1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY issues2findings
+    ADD CONSTRAINT fk_issues2findings_issues1 FOREIGN KEY (issue_id) REFERENCES issues(id);
+
+
+--
+-- Name: fk_issues_issue_status1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY issues
+    ADD CONSTRAINT fk_issues_issue_status1 FOREIGN KEY (status) REFERENCES issue_status(id);
+
+
+--
+-- Name: fk_issues_severity1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY issues
+    ADD CONSTRAINT fk_issues_severity1 FOREIGN KEY (severity) REFERENCES severity(id);
+
+
+--
+-- Name: fk_issues_workspaces1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY issues
+    ADD CONSTRAINT fk_issues_workspaces1 FOREIGN KEY (workspace_id) REFERENCES workspaces(id);
+
+
+--
+-- Name: fk_notifications_events1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY notifications
+    ADD CONSTRAINT fk_notifications_events1 FOREIGN KEY (event_id) REFERENCES events(id);
+
+
+--
+-- Name: fk_notifications_scans1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY notifications
+    ADD CONSTRAINT fk_notifications_scans1 FOREIGN KEY (scan_id) REFERENCES scans(id);
+
+
+--
+-- Name: fk_rights_groups1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY rights
+    ADD CONSTRAINT fk_rights_groups1 FOREIGN KEY (group_id) REFERENCES groups(id);
+
+
+--
+-- Name: fk_rights_workspaces1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY rights
+    ADD CONSTRAINT fk_rights_workspaces1 FOREIGN KEY (workspace_id) REFERENCES workspaces(id);
+
+
+--
+-- Name: fk_runs_scans1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY runs
+    ADD CONSTRAINT fk_runs_scans1 FOREIGN KEY (scan_id) REFERENCES scans(id);
+
+
+--
+-- Name: fk_scans_workspaces1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY scans
+    ADD CONSTRAINT fk_scans_workspaces1 FOREIGN KEY (workspace_id) REFERENCES workspaces(id);
+
+
+--
+-- Name: fk_user2group_groups1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY user2group
+    ADD CONSTRAINT fk_user2group_groups1 FOREIGN KEY (group_id) REFERENCES groups(id);
+
+
+--
+-- Name: fk_user2group_users1; Type: FK CONSTRAINT; Schema: public; Owner: seccubus
+--
+
+ALTER TABLE ONLY user2group
+    ADD CONSTRAINT fk_user2group_users1 FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

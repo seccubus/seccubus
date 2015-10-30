@@ -81,7 +81,7 @@ sub update_hostname($$$;) {
 				 "values"	=> [ $workspace_id, $ip ]
 			       );
 		if ( $count == 0 ) {
-			sql( "return"	=> "id",
+			sql( "return"	=> "none",
 			     "query"	=> "INSERT INTO host_names (workspace_id, ip, name) values (?, ?, ?);",
 			     "values"	=> [ $workspace_id, $ip, $name ],
 			   );

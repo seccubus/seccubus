@@ -1,0 +1,366 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = off;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET escape_string_warning = off;
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: asset_hosts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('asset_hosts_id_seq', 1, false);
+
+
+--
+-- Name: attachments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('attachments_id_seq', 22, true);
+
+
+--
+-- Name: checkpoints_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('checkpoints_id_seq', 1, false);
+
+
+--
+-- Name: customsql_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('customsql_id_seq', 1, false);
+
+
+--
+-- Name: events_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('events_id_seq', 1, false);
+
+
+--
+-- Name: finding_changes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('finding_changes_id_seq', 126, true);
+
+
+--
+-- Name: findings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('findings_id_seq', 51, true);
+
+
+--
+-- Name: groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('groups_id_seq', 2, true);
+
+
+--
+-- Name: issue2finding_changes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('issue2finding_changes_id_seq', 2, true);
+
+
+--
+-- Name: issue_changes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('issue_changes_id_seq', 1, false);
+
+
+--
+-- Name: issues_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('issues_id_seq', 1, false);
+
+
+--
+-- Name: notifications_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('notifications_id_seq', 1, false);
+
+
+--
+-- Name: runs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('runs_id_seq', 7, true);
+
+
+--
+-- Name: scans_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('scans_id_seq', 2, true);
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('users_id_seq', 3, true);
+
+
+--
+-- Name: workspaces_id_seq; Type: SEQUENCE SET; Schema: public; Owner: seccubus
+--
+
+SELECT pg_catalog.setval('workspaces_id_seq', 1, true);
+
+
+--
+-- Data for Name: assets; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY assets (id, workspace_id, name, hosts, recipients) FROM stdin;
+\.
+
+
+--
+-- Data for Name: workspaces; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY workspaces (id, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: scans; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY scans (id, name, scannername, scannerparam, password, targets, workspace_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: asset2scan; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY asset2scan (id, asset_id, scan_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: asset_hosts; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY asset_hosts (id, asset_id, ip, host) FROM stdin;
+\.
+
+
+--
+-- Data for Name: runs; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY runs (id, scan_id, "time") FROM stdin;
+\.
+
+
+--
+-- Data for Name: attachments; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY attachments (id, run_id, name, description, data) FROM stdin;
+\.
+
+
+--
+-- Data for Name: checkpoints; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY checkpoints (id, workspace_id, label, tags, "timestamp") FROM stdin;
+\.
+
+
+--
+-- Data for Name: config; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY config (name, value) FROM stdin;
+version	8
+\.
+
+
+--
+-- Data for Name: customsql; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY customsql (id, name, sql) FROM stdin;
+\.
+
+
+--
+-- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY events (id, name) FROM stdin;
+1	Before scan
+2	After scan
+3	On open
+\.
+
+
+--
+-- Data for Name: finding_status; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY finding_status (id, name, description) FROM stdin;
+1	New	This finding was found for the first time or found after it disappeared
+2	Changed	The output finding changed from a previous scan
+3	Open	The output of the finding represents a risk
+4	No issue	The output of the finding does not represent a risk
+5	Gone	This finding was previously detected, but is not currently present
+6	Closed	This finding is not currently present and should not be
+99	MASKED	The finding is ignored by the system
+\.
+
+
+--
+-- Data for Name: severity; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY severity (id, name, description) FROM stdin;
+0	Not set	No serverity has been set
+1	High	Direct compromise of Confidentiality, Integrity or Availbility or policy violation
+2	Medium	Could compromise of Confidentiality, Integrity or Availbility in combination with other issue. Disclosure of sensitive information
+3	Low	Weakens security posture
+4	Note	Not a security issue, but deemed noteworthy
+\.
+
+
+--
+-- Data for Name: findings; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY findings (id, workspace_id, scan_id, host, port, plugin, finding, remark, severity, status, run_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY users (id, username, name) FROM stdin;
+1	admin	Builtin administrator account
+2	system	Builtin system user
+3	importer	Builtin importer utility account
+\.
+
+
+--
+-- Data for Name: finding_changes; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY finding_changes (id, finding_id, finding, remark, severity, status, user_id, run_id, "time") FROM stdin;
+\.
+
+
+--
+-- Data for Name: groups; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY groups (id, name) FROM stdin;
+1	ADMINISTRATORS
+2	ALL
+\.
+
+
+--
+-- Data for Name: host_names; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY host_names (workspace_id, ip, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: issue2finding_changes; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY issue2finding_changes (id, issue_id, finding_id, user_id, "time", deleted) FROM stdin;
+\.
+
+
+--
+-- Data for Name: issue_status; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY issue_status (id, name, description) FROM stdin;
+1	Open	This issue requires action
+2	Closed	This issue is resolved
+\.
+
+
+--
+-- Data for Name: issues; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY issues (id, workspace_id, name, ext_ref, description, severity, status) FROM stdin;
+\.
+
+
+--
+-- Data for Name: issue_changes; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY issue_changes (id, issue_id, name, ext_ref, description, severity, status, user_id, "time") FROM stdin;
+\.
+
+
+--
+-- Data for Name: issues2findings; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY issues2findings (issue_id, finding_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: notifications; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY notifications (id, scan_id, event_id, subject, recipients, message) FROM stdin;
+\.
+
+
+--
+-- Data for Name: rights; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY rights (workspace_id, group_id, allow_read, allow_write) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user2group; Type: TABLE DATA; Schema: public; Owner: seccubus
+--
+
+COPY user2group (user_id, group_id) FROM stdin;
+1	1
+2	1
+3	1
+1	2
+2	2
+3	2
+\.
+
+
+--
+-- PostgreSQL database dump complete
+--
+

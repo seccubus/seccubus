@@ -306,8 +306,9 @@ sub get_status($$$;$) {
 		}
 		$query .= " ) ";
 
-				
-		$query .= " GROUP BY finding_status.id";
+		# PostGres didn't like finding_status.name not being involved
+		# in the grouping.
+		$query .= " GROUP BY finding_status.id, finding_status.name";
 		#die $query;
 		return sql( "return"	=> "ref",
 			    "query"	=> $query,
