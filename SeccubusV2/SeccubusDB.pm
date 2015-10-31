@@ -101,7 +101,7 @@ sub open_database() {
 		die "Database engine  $config->{database}->{engine} is currently not supported";
 	}
 	$dbh = DBI->connect_cached($dsn, $config->{database}->{user}, $config->{database}->{password});
-	return ($db_engine,$dbh);
+	return ($dbh,$db_engine);
 }
 
 =head2 sql
@@ -152,7 +152,7 @@ sub sql(@) {
 
 	confess "No query parameter specified" unless exists $arg{query};
 
-	($db_engine,$dbh) = open_database();
+	($dbh,$db_engine) = open_database();
 
 	if ( $db_engine eq "Pg") {
 	    # PostGres hates backticks.
