@@ -37,8 +37,8 @@ use strict;
 use Carp;
 
 sub get_schedules($;);
-sub create_schedule($$$$$$$$);
-sub update_schedule($$$$$$$);
+sub create_schedule($$$$$$$$$$);
+sub update_schedule($$$$$$$$$);
 sub del_schedule($;);
 
 =head1 Data manipulation - schedules
@@ -95,6 +95,8 @@ sub get_schedules($;){
 			$data->{scanId} = $_->[1];
 			$data->{status} = $_->[2];
 			$data->{lastRun} = $_->[3];
+			$data->{enabled} = _getScheduleType('enabled',$data->{id});
+			$data->{launch} = _getScheduleType('launch',$data->{id});
 			$data->{month} = _getScheduleType('month',$data->{id});
 			$data->{week} = _getScheduleType('week',$data->{id});
 			$data->{wday} = _getScheduleType('wday',$data->{id});
@@ -113,9 +115,8 @@ sub _getScheduleType($$){
 		"query" => "select distinct `$typeName` from `schedules` where schedule_id = ?",
 		'values' => [$schedule_id]
 	) };
-
-
 }
+
 =head2 create_schedule
 
 Creates a schedule
@@ -130,9 +131,21 @@ Creates a schedule
 
 =item scan_id - Id of the scan this schedule belongs to
 
+=item enabled - boolean, schedule is enabled
+
+=item launch - launch type ( 
+	'd' => 'On demand', 
+	'o' => 'Once', 
+	'w' => 'Weekly', 
+	'b' => 'Bi-weekly', 
+	'm' => 'Monthly'  
+	)
+
 =item month - Month number (1-12). If every month, then '*' (default)
 
-=item week - Month week number (1-5). If every week, then * (default)
+=item week - Month week number (1-4). If every week, then * (default)
+
+=item wday - Month week number (1-7). If every week, then * (default)
 
 =item day - Month day number (1-31), if every day, then * (default)
 
@@ -166,15 +179,28 @@ Newly inserted id
 
 =cut
 
-sub create_schedule($$$$$$$$){
+sub create_schedule($$$$$$$$$$){
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_id = shift or die "No scan_id provided";
-	my @months = _checkData('month', 1, 12, shift);
-	my @weeks = _checkData('week', 1, 5, shift);
-	my @wdays = _checkData('wday', 0, 6, shift);
-	my @days = _checkData('day', 1, 31, shift);
-	my @hours = _checkData('hour', 0, 23, shift);
-	my @mins = _checkData('min', 0, 23, shift);
+	my $enabled = shift || 0;
+	my $launch = _checkByValues('launch', shift, ['d','o','w','b','m'], 1);
+	my $month = _checkDataOne('month', 1, 12, shift, 1);
+	my $week = _checkByValues('week', shift, ['w','2w','3w','4w'], 0);
+	my @wdays = _checkData('wday', 0, 6, shift, 0);
+	my $day = _checkDataOne('day', 1, 31, shift, 1);
+	my $hour = _checkDataOne('hour', 0, 23, shift, 1);
+	my $min = _checkDataOne('min', 0, 59, shift, 1);
+	
+	# die "Launch is not correct" if(! grep /$launch/ ['d','o','w','b','m']) ;
+	# die "Week is not correct" if($week && ! grep /$week/ ['w','2w','3w','4w']) ;
+	# die "day is out of range [1-31]" if($day > 31 || $day < 1 );
+	# die "hour is out of range [0-23]" if($hour > 23 || $day < 0);
+	# die "min is out of range [0-59]" if($min > 59 || $min < 0);
+	# my @months = _checkData('month', 1, 12, shift);
+	# my @weeks = _checkData('week', 1, 5, shift);
+	# my @days = _checkData('day', 1, 31, shift);
+	# my @hours = _checkData('hour', 0, 23, shift);
+	# my @mins = _checkData('min', 0, 23, shift);
 
 	return undef if(! may_write($workspace_id) );
 	my ($scan_test_id) = sql( 'return' => "array",
@@ -195,39 +221,26 @@ sub create_schedule($$$$$$$$){
 	);
 
 	map {
-		my $month = $_;
-		map {
-			my $week = $_;
-			map {
-				my $wday = $_;
-				map {
-					my $day = $_;
-					map {
-						my $hour = $_;
-						map {
-							my $min = $_;
-							sql('return' => 'id',
-								'query' => "INSERT INTO `schedules` 
-								(`schedule_id`,`month`,`week`,`wday`,`day`,`hour`,`min`)
-								VALUES (?,?,?,?,?,?,?)",
-								'values' => [$id,$month,$week,$wday,$day,$hour, $min]
-								);
-							} @mins;
-						} @hours;
-					} @days;
-				} @wdays;
-			} @weeks;
-		} @months;
+		my $wDay = $_;
+		sql('return' => 'id',
+			 'query' => 'INSERT INTO `schedules`
+			 	(`schedule_id`,`enabled`,`launch`,`month`,`week`, `wday`, `day`, `hour`, `min`)
+			  	VALUES (?,?,?,?,?,?,?,?,?)
+			 ',
+			 'values' => [$id, $enabled, $launch, $month, $week, $_, $day, $hour, $min]
+			);
+		} @wdays;
 	return $id;
 }
 
 
 
 
-sub _checkData($$$$){
-	my ($parName, $min, $max, $par) = @_;
+sub _checkData($$$$$){
+	my ($parName, $min, $max, $par, $need) = @_;
 	my $defStr = "need to be * or ".$min."-".$max." and/or splitted by ',', eg: 1,5,10";
-	die "No ".$parName." provided [".$par."], ".$defStr if($par eq '');
+	die "No ".$parName." provided [".$par."], ".$defStr if($par eq '' && ! $need);
+	return ($par) if($par eq '' && $need);
 	return ($par) if($par eq '*');
 	return map {
 		die $parName." is not int [".$_."], ".$defStr if($_ ne int($_));
@@ -235,6 +248,26 @@ sub _checkData($$$$){
 		$_;
 		} split /,/, $par;
 }
+
+sub _checkDataOne($$$$$){
+	my ($parName,$min,$max,$par, $need) = @_;
+	my $defStr = "need to be ".$min."-".$max;
+	if(! defined $par || $par eq ''){
+		die "No ".$parName." provided" if( $need);
+		return;
+	}
+	die $parName." is not int [".$par."], ".$defStr if( $par ne int($par) );
+	die $parName." is out of range [".$par."], ".$defStr if($par < $min || $par > $max);
+	return $par;
+}
+
+sub _checkByValues($$$$){
+	my ($parName, $par, $canValues, $need) = @_;
+	die $parName." is not given" if(!$par && $need);
+	die $parName." is not correct [".$par.'] ' if(! grep { $_ eq $par; } @{$canValues} );
+	return $par;
+}
+
 =head2 update_schedule
 
 Updates a Schedule
@@ -247,9 +280,21 @@ Updates a Schedule
 
 =item schedule_id - Id of the schedule
 
+=item enabled - boolean, schedule is enabled
+
+=item launch - launch type ( 
+	'd' => 'On demand', 
+	'o' => 'Once', 
+	'w' => 'Weekly', 
+	'b' => 'Bi-weekly', 
+	'm' => 'Monthly'  
+	)
+
 =item month - Month number (1-12). If every month, then '*' (default)
 
-=item week - Month week number (1-5). If every week, then * (default)
+=item week - Month week number (1-4). If every week, then * (default)
+
+=item wday - Month week number (1-7). If every week, then * (default)
 
 =item day - Month day number (1-31), if every day, then * (default)
 
@@ -283,14 +328,16 @@ updated ID
 
 =cut
 
-sub update_schedule($$$$$$$){
+sub update_schedule($$$$$$$$$){
 	my $schedule_id = shift or die "No schedule_id provided";
-	my @months = _checkData('month',1,12,shift);
-	my @weeks = _checkData('week',1,5,shift);
-	my @wdays = _checkData('weekday',0,6,shift);
-	my @days = _checkData('day',1,31,shift);
-	my @hours = _checkData('hour',0,23,shift);
-	my @mins = _checkData('min',0,59,shift);
+	my $enabled = shift || 0;
+	my $launch = _checkByValues('launch', shift, ['d','o','w','b','m'], 1);
+	my $month = _checkDataOne('month', 1, 12, shift, 1);
+	my $week = _checkByValues('week', shift, ['w','2w','3w','4w'], 0);
+	my @wdays = _checkData('wday', 0, 6, shift, 0);
+	my $day = _checkDataOne('day', 1, 31, shift, 1);
+	my $hour = _checkDataOne('hour', 0, 23, shift, 1);
+	my $min = _checkDataOne('min', 0, 59, shift, 1);
 	my ($workspace_id) = sql( 'return' => 'array',
 		'query' => 'SELECT s.workspace_id
 			FROM `scan_schedule` sch, `scans` s
@@ -304,30 +351,31 @@ sub update_schedule($$$$$$$){
 		'values'=>[$schedule_id]
 		);
 
+	# map {
+		# my $month = $_;
+		# map {
+		# 	my $week = $_;
+		# 	map {
+	my $wday = $_;
 	map {
-		my $month = $_;
-		map {
-			my $week = $_;
-			map {
-				my $wday = $_;
-				map {
-					my $day = $_;
-					map {
-						my $hour = $_;
-						map {
-							my $min = $_;
-							sql('return' => 'id',
-								'query' => "INSERT INTO `schedules` 
-								(`schedule_id`,`month`,`week`,`wday`,`day`,`hour`,`min`)
-								VALUES (?,?,?,?,?,?,?)",
-								'values' => [$schedule_id,$month,$week,$wday,$day,$hour, $min]
-								);
-							} @mins;
-						} @hours;
-					} @days;
-				} @wdays;
-			} @weeks;
-		} @months;
+		# my $day = $_;
+		# map {
+		# 	my $hour = $_;
+		# 	map {
+		# 		my $min = $_;
+		sql('return' => 'id',
+			'query' => "INSERT INTO `schedules` 
+			(`schedule_id`,`enabled`,`launch`,`month`,`week`, `wday`, `day`, `hour`, `min`)
+  			 VALUES (?,?,?,?,?,?,?,?,?)
+  			 ",
+			'values' => [$schedule_id, $enabled, $launch, $month, $week, $_, $day, $hour, $min]
+			);
+		# 		} @mins;
+		# 	} @hours;
+		# } @days;
+	} @wdays;
+		# 	} @weeks;
+		# } @months;
 	return $schedule_id;
 }
 

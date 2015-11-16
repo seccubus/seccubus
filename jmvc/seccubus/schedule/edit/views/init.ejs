@@ -13,68 +13,89 @@
 <%# limitations under the License.                                           %>
 <h2>Edit your Schedule</h2>
 <table class='noborder'>
- 	<tr><td class='noborder'>
-		<label for='subject' valign='top'>Month: </label> 
+	<tr><td class='noborder' valign='top'>
+		<label for='subject'>Enable schedule:</label> 
 	</td><td class='noborder' valign='top'>
-		<select name='month' multiple size=7>
-			<% var monthes = ['January','February','Marth','April','May','June','July','August','September','October','November','December']; %>
-			<% for( var i=1; i<=12; i++){ %>
-				<option value='<%= i %>' <% if(monthR[i]) { %>selected<% } %>><%= monthes[i-1] %></option>
-			<% } %>
-		</select>
-		<BR><BR><input type=checkbox name='month' <% if(monthR['*']) { %> checked <% } %> > Every month
-	</td>
-	<td class='noborder' valign='top'>
-		<label for='trigger'>Week: </label> 
-	</td><td class='noborder' valign='top'>
-		<select name='week' multiple size=7>
-			<% for(var i=1; i<=5; i++){ %>
-				<option value='<%= i %>' <% if(weekR[i]) { %>selected<% } %>><%= i %></option>
-			<% } %>
-		</select>
-		<BR><BR><input type=checkbox name='week' <% if(weekR['*']) { %> checked <% } %> > Every week
-	</td>
-	<td class='noborder' valign='top'>
-		<label for='trigger'>Week day: </label> 
-	</td><td class='noborder' valign='top'>
-		<select name='wday' multiple size=7>
-			<% var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thirsday', 'Friday', 'Saturday', 'Sunday']; %>
-			<% for(var i=0; i<=6; i++){ %>
-				<option value='<%= i %>' <% if(wdayR[i]) { %>selected<% } %>><%= weekdays[i] %></option>
-			<% } %>
-		</select>
-		<BR><BR><input type=checkbox name='wday' <% if(wdayR['*']) { %> checked <% } %> > Every week day
-	</td>
-	<td class='noborder' valign='top'>
-		<label for='trigger'>Day: </label> 
-	</td><td class='noborder' valign='top'>
-		<select name='day' multiple size=7>
-			<% for(var i=1; i<=31; i++){ %>
-				<option value='<%= i %>' <% if(dayR[i]) { %>selected<% } %>><%= i %></option>
-			<% } %>
-		</select>
-		<BR><BR><input type=checkbox name='day' <% if(dayR['*']) { %> checked <% } %> > Every week day
-	</td>
-	<td class='noborder' valign='top'>
-		<label for='trigger'>Hour: </label> 
-	</td><td class='noborder' valign='top'>
-		<select name='hour' multiple size=7>
-			<% for(var i=0; i<=23; i++){ %>
-				<option value='<%= i %>' <% if(hourR[i]) { %>selected<% } %>><%= i %></option>
-			<% } %>
-		</select>
-		<BR><BR><input type=checkbox name='hour' <% if(hourR['*']) { %> checked <% } %> > Every hour
-	</td>
-	<td class='noborder' valign='top'>
-		<label for='trigger'>Minute</label> 
-	</td><td class='noborder' valign='top'>
-		<select name='min' multiple size=7>
-			<% for(var i=0; i<=59; i++){ %>
-				<option value='<%= i %>' <% if(minR[i]) { %>selected<% } %>><%= i %></option>
-			<% } %>
-		</select>
-		<BR><BR><input type=checkbox name='min' <% if(minR['*']) { %> checked <% } %> > Every minute
+		<input type=checkbox name='enabled' value=1 <%= (enabled) ? 'checked' : '' %> >
 	</td></tr>
+
+	<tr><td class='noborder' valign='top'>
+		<label for='subject'>Launch:</label> 
+	</td><td class='noborder' valign='top'>
+		<select name='launch'>
+			<!-- <option value='*' selected>Every month</option> -->
+			<% var types = { 'd' : 'On demand', 'o' : 'Once', 'w' : 'Weekly', 'b' : 'Bi-weekly', 'm' : 'Monthly' }; %>
+			<% for( var key in types){ %>
+				<option value='<%= key %>' <%= (key == launch) ? 'selected' : '' %> ><%= types[key] %></option>
+			<% } %>
+		</select>
+	</td></tr>
+
+	<tr><td class='noborder' valign='top'>
+		<label for='trigger'>Starts on: </label> 
+	</td><td class='noborder' valign='top'>
+		<% var monthes = { 'January' : 31 ,'Febrary' : 29, 'Marth' : 31, 'April' : 30, 'May' : 31, 'June' : 30, 'July' : 31, 'August' : 31, 'September' : 30,'October' : 31, 'November' : 30, 'December' : 31 }; 
+			var mNum=1;  
+			var maxDays = 31;
+			%>
+			
+		<select name='month'>
+			<% for(var key in monthes){ 
+				var sel = '';
+				if( month == mNum){ sel = 'selected'; maxDays = monthes[key]; }
+				%>
+				<option value='<%= mNum %>' <%= sel %> ><%= key %></option>
+			<% mNum++; } %>
+		</select>
+		
+		<select name='day'>
+			<% for( var i=1; i<=maxDays; i++ ){ %>
+				<% var cNum = i; if(cNum < 10){ cNum = '0'+cNum; } %>
+				<option value='<%= i %>' <%= day == i ? 'selected' : '' %> ><%= cNum %></option>
+			<% } %>
+		</select>
+		&nbsp; &nbsp;
+		<select name='hour'>
+			<% for( var i=0; i<=23; i++ ){ %>
+				<% var cNum = i; if(cNum < 10){ cNum = '0'+cNum; } %>
+				<option value='<%= i %>' <%= hour == i ? 'selected' : '' %> ><%= cNum %></option>
+			<% } %>
+		</select>
+		:
+		<select name='min'>
+			<!-- <option value='*' selected>*</option> -->
+			<% for( var i=0; i<=59; i+=5 ){ %>
+				<% var cNum = i; if(cNum < 10){ cNum = '0'+cNum; } %>
+				<option value='<%= i %>' <%= min == i ? 'selected' : '' %> ><%= cNum %></option>
+			<% } %>
+		</select>
+	</td></tr>
+
+	<tr><td class='noborder' valign='top'>
+		<label for='trigger'>Repeat every: </label> 
+	</td><td class='noborder'>
+		<% var repeatTypes = {'w' : 'week', '2w' : '2nd week', '3w' : '3rd week', '4w' : '4th week'}; %>
+		<select name='week' <%= ( launch == 'b' ) ? '' : 'disabled' %>>
+
+			<!-- <option value='*' selected>Every week</option> -->
+			<% for( var key in repeatTypes ){ %>
+				<option value='<%= key %>' <%= ( week == key ) ? 'selected' : '' %> ><%= repeatTypes[key] %></option>
+			<% } %>
+		</select>
+	</td></tr>
+
+	<tr><td class='noborder' valign='top'>
+		<label for='trigger'>Repeat on: </label> 
+	</td><td class='noborder' valign='top'>
+		<select name='wday' multiple size=7 <%= (launch == 'w' || launch == 'b') ? '' : 'disabled' %> >
+			<% var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thirsday', 'Friday', 'Saturday', 'Sunday']; %>
+			<!-- <option value='*' selected>Every week day</option> -->
+			<% for(var i=0; i<=6; i++){ %>
+				<option value='<%= i %>' <%= wdayR[i] ? 'selected' : '' %> ><%= weekdays[i] %></option>
+			<% } %>
+		</select>
+	</td></tr>
+
 	<tr><td class='noborder' colspan=12 align='right'>
 		<input type='submit' value='Update Schedule'/>
 		<button type='button' class='cancel'>Cancel</button>

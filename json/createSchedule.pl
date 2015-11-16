@@ -30,19 +30,23 @@ print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Con
 
 my $workspace_id = $query->param("workspaceId");
 my $scan_id = $query->param("scanId");
+my $enabled = $query->param('enabled') ? 1 : '0';
+my $launch = $query->param('launch');
 my $month = $query->param("month");
-my $week = $query->param('week');
-my $wday = $query->param('wday');
 my $day = $query->param('day');
 my $hour = $query->param('hour');
 my $min = $query->param('min');
+my $wday = $query->param('wday');
+my $week = $query->param('week');
 
 
 eval {
 	my @data = ();
-	my ($newid) = create_schedule($workspace_id,$scan_id,$month,$week,$wday,$day,$hour,$min);
+	my ($newid) = create_schedule($workspace_id,$scan_id,$enabled,$launch,$month,$week,$wday,$day,$hour,$min);
 	push @data, {
 		id => $newid,
+		enabled => $enabled,
+		launch => $launch,
 		month => $month,
 		week => $week,
 		wday => $wday,

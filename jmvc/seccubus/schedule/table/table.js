@@ -84,6 +84,8 @@ $.Controller('Seccubus.Schedule.Table',
 	updateView : function() {
 		var monthNames = ['','January','February','Marth','April','May','June','July','August','September','October','November','December'];
 		var weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thirsday', 'Friday', 'Saturday', 'Sunday'];
+		var launch = {'d' : 'On demand', 'o' : 'Once', 'w' : 'Weekly', 'b' : 'Bi-weekly', 'm' : 'Monthly'};
+		var weekTypes = {'w' : 'Every week', '2w' : 'Every 2nd week', '3w' : 'Every 3rd week', '4w' : 'Every 4th weel'};
 		if ( this.options.scan  == -1 ) {
 			console.warn("Seccubus.Schedule.Table: scan is not set");
 			this.element.html(
@@ -103,23 +105,35 @@ $.Controller('Seccubus.Schedule.Table',
 						var data = to.options.getSaveSchedules();	
 						return data.map(function(val){
 							val.lastRun = '';
-							val.monthR = {};
-							val.monthT = to.splitJoinData(val.month,'month',val.monthR,monthNames);
-
-							val.weekR = {};
-							val.weekT = to.splitJoinData(val.week,'week',val.weekR);
+							val.enabled = val.enabled ? 'Yes' : ' ';
+							val.launchT = launch[val.launch] || ' - ';
+							val.monthT = monthNames[val.month] || ' - ';
+							val.weekT = weekTypes[val.week];
+							if(val.day < 10) { val.day = '0'+val.day; }
 							
 							val.wdayR = {};
-							val.wdayT = to.splitJoinData(val.wday,'week day',val.wdayR,weekDays);
+							val.wdayT = to.splitJoinData(val.wday,'day',val.wdayR,weekDays);
 
-							val.dayR = {};
-							val.dayT = to.splitJoinData(val.day,'day',val.dayR);
+							
+							// val.lastRun = '';
 
-							val.hourR = {};
-							val.hourT = to.splitJoinData(val.hour,'hour',val.hourR);
+							// val.monthR = {};
+							// val.monthT = to.splitJoinData(val.month,'month',val.monthR,monthNames);
 
-							val.minR = {};
-							val.minT = to.splitJoinData(val.min,'minute',val.minR);
+							// val.weekR = {};
+							// val.weekT = to.splitJoinData(val.week,'week',val.weekR,weekTypes);
+							
+							// val.wdayR = {};
+							// val.wdayT = to.splitJoinData(val.wday,'week day',val.wdayR,weekDays);
+
+							// val.dayR = {};
+							// val.dayT = to.splitJoinData(val.day,'day',val.dayR);
+
+							// val.hourR = {};
+							// val.hourT = to.splitJoinData(val.hour,'hour',val.hourR);
+
+							// val.minR = {};
+							// val.minT = to.splitJoinData(val.min,'minute',val.minR);
 							val.noEdit = true;
 							return val;	
 						});
@@ -138,23 +152,22 @@ $.Controller('Seccubus.Schedule.Table',
 					},
 					function(data){
 						return data.map(function(val){
-							val.monthR = {};
-							val.monthT = to.splitJoinData(val.month,'month',val.monthR,monthNames);
-
-							val.weekR = {};
-							val.weekT = to.splitJoinData(val.week,'week',val.weekR);
+							val.enabled = val.enabled ? 'Yes' : ' ';
+							val.launchT = launch[val.launch] || ' - ';
+							val.monthT = monthNames[val.month] || ' - ';
+							val.weekT = weekTypes[val.week];
+							if(val.day < 10) { val.day = '0'+val.day; }
 							
 							val.wdayR = {};
-							val.wdayT = to.splitJoinData(val.wday,'week day',val.wdayR,weekDays);
+							val.wdayT = to.splitJoinData(val.wday,'day',val.wdayR,weekDays);
 
-							val.dayR = {};
-							val.dayT = to.splitJoinData(val.day,'day',val.dayR);
+							
 
-							val.hourR = {};
-							val.hourT = to.splitJoinData(val.hour,'hour',val.hourR);
+							// val.hourR = {};
+							// val.hourT = to.splitJoinData(val.hour,'hour',val.hourR);
 
-							val.minR = {};
-							val.minT = to.splitJoinData(val.min,'minute',val.minR);
+							// val.minR = {};
+							// val.minT = to.splitJoinData(val.min,'minute',val.minR);
 							val.noEdit = false;
 
 							return val;	
@@ -166,9 +179,10 @@ $.Controller('Seccubus.Schedule.Table',
 	},
 
 	splitJoinData:function(data,paramName,setArr,toChangeArr){
+		if(!data){ data = ''; }
 		if(data === '*'){
 			setArr[data] = true;
-			return 'every '+paramName;
+			return 'Every '+paramName;
 		}
 		return data.split(',').map(function(val){
 			setArr[val] = true;

@@ -30,20 +30,24 @@ print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Con
 
 my $schedule_id = $query->param('id');
 bye('no ScheduleId') if(!$schedule_id);
+my $enabled = $query->param('enabled') ? 1 : '0';
+my $launch = $query->param('launch');
 my $month = $query->param('month');
-my $week = $query->param('week');
-my $wday = $query->param('wday');
 my $day = $query->param('day');
 my $hour = $query->param('hour');
 my $min = $query->param('min');
+my $wday = $query->param('wday');
+my $week = $query->param('week');
 
 
 
 eval {
 	my @data = ();
-	my ($newid) = update_schedule($schedule_id,$month,$week,$wday,$day,$hour,$min);
+	my ($newid) = update_schedule($schedule_id,$enabled,$launch,$month,$week,$wday,$day,$hour,$min);
 	push @data, {
 		id => $schedule_id,
+		enabled => $enabled,
+		launch => $launch,
 		month => $month,
 		week => $week,
 		wday => $wday,

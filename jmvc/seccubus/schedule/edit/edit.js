@@ -80,12 +80,19 @@ $.Controller('Seccubus.Schedule.Edit',
 		if ( ok ) {
 			this.element.find('[type=submit]').val('Updating...')
 			schedule = this.options.schedule;
-			schedule.month  = this.setParam(params.month);
-			schedule.week   = this.setParam(params.week);
+			schedule.enabled = params.enabled;
+			schedule.launch = params.launch;
+			schedule.month = params.month;
+			schedule.week = params.week;
+			// schedule.month  = this.setParam(params.month);
+			// schedule.week   = this.setParam(params.week);
 			schedule.wday   = this.setParam(params.wday);
-			schedule.day    = this.setParam(params.day);
-			schedule.hour   = this.setParam(params.hour);
-			schedule.min    = this.setParam(params.min);
+			schedule.day = params.day;
+			schedule.hour = params.hour;
+			schedule.min = params.min	
+			// schedule.day    = this.setParam(params.day);
+			// schedule.hour   = this.setParam(params.hour);
+			// schedule.min    = this.setParam(params.min);
 			// schedule.month = params.month;
 			// schedule.week = params.week;
 			// schedule.day = params.day;
@@ -123,18 +130,41 @@ $.Controller('Seccubus.Schedule.Edit',
 		this.clearAll();
 	},
 
-	"select click" :function(el){
-		// console.log(el.attr('name'));
-		if(el.find('option:checked').length > 0){
-			$('input[name='+el.attr('name')+']').removeAttr('checked');
-		} else{
-			$('input[name='+el.attr('name')+']').attr('checked',true);
-		}
+	// "select click" :function(el){
+	// 	// console.log(el.attr('name'));
+	// 	if(el.find('option:checked').length > 0){
+	// 		$('input[name='+el.attr('name')+']').removeAttr('checked');
+	// 	} else{
+	// 		$('input[name='+el.attr('name')+']').attr('checked',true);
+	// 	}
+	// },
+
+	// "input[type=checkbox] click" : function(el){
+	// 	$('select[name='+el.attr('name')+'] option').removeAttr('selected');
+	// 	el.attr('checked',true);
+	// },
+
+	"select[name=launch] change" : function(el){
+		var weekDay = $('select[name=wday]').attr('disabled',true);
+		var week = $('select[name=week]').attr('disabled',true);
+		if(el.val() == 'w' || el.val() == 'b' ){ weekDay.removeAttr('disabled'); }
+		if(el.val() == 'b'){ week.removeAttr('disabled'); }
 	},
 
-	"input[type=checkbox] click" : function(el){
-		$('select[name='+el.attr('name')+'] option').removeAttr('selected');
-		el.attr('checked',true);
+	"select[name=month] change" : function(el){
+		var days = $('select[name=day]');
+		var selDay = days.val();
+		var sm = el.val();
+		days.empty();
+		var daysMuch = 30;
+		if(sm == 1 || sm == 3 || sm == 5 || sm == 7 || sm == 8 || sm == 10 || sm == 12 ){ daysMuch = 31; }
+		else if( sm == 2){ daysMuch = 29; }
+		for(var i=1; i <= daysMuch; i++){
+			var cNum = i;
+			if(cNum < 10) { cNum = '0'+cNum; }
+			var option = $('<option>').html(cNum).attr('value',i).appendTo(days); 
+			if(i == selDay){ option.attr('selected', true); }
+		}
 	},
 
 

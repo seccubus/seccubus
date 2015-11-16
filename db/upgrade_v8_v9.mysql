@@ -1,0 +1,41 @@
+/*
+Copyright 2015 Frank Breedijk, Petr
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
+
+ALTER TABLE `schedules` 
+ADD COLUMN `enabled` INT(1) NOT NULL DEFAULT 0 AFTER `schedule_id`,
+ADD COLUMN `launch` VARCHAR(1) NOT NULL DEFAULT 'd' AFTER `enabled`,
+CHANGE COLUMN `month` `month` INT(2) NOT NULL DEFAULT 1 COMMENT 'Month number (1-12). If every month, then * (default)' ,
+CHANGE COLUMN `week` `week` VARCHAR(2) NOT NULL DEFAULT 'w' COMMENT 'Month week number (1-5). If every week, then * (default)' ,
+CHANGE COLUMN `day` `day` INT(2) NOT NULL DEFAULT 0 COMMENT 'Month day number (1-31), if every day, then * (default)' ,
+CHANGE COLUMN `hour` `hour` INT(2) NOT NULL DEFAULT 0 ,
+CHANGE COLUMN `min` `min` INT(2) NOT NULL DEFAULT 0 COMMENT 'Minute number (0-59), if every minute, then * (default)' ;
+
+TRUNCATE `schedules`;
+TRUNCATE `scan_schedule`;
+update `schedules` set `week` = 'w' where `week` like '*' or `week` like '1';
+update `schedules` set `week` = '2w' where `week` like '2';
+update `schedules` set `week` = '3w' where `week` like '3';
+update `schedules` set `week` = '4w' where `week` like '4' or `week` like '5';
+
+
+update config set value=9 where name = 'version';
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
