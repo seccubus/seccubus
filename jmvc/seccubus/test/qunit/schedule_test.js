@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Petr, Frank Breedijk
+ * Copyright 2015 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,11 +35,13 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/schedule.js", func
 	})
 	
 	test("create", function(){
-		expect(8)
+		expect(10)
 		stop();
 		new Seccubus.Models.Schedule({
+					enabled:"1",
+					launch:"d",
 					month: "1", 
-					week: "0",
+					week: "2w",
 					wday: "1",
 					day: "3",
 					hour: "5",
@@ -50,23 +52,27 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/schedule.js", func
 					console.log("Scheule:",schedule);
 					ok(schedule);
 			        ok(schedule.id);
+			        equals(schedule.enabled,"1")
+			        equals(schedule.launch,"d")
 			        equals(schedule.month,"1")
-			        equals(schedule.week,"0")
+			        equals(schedule.week,"2w")
 			        equals(schedule.wday,'1')
 			        equals(schedule.day,"3")
 			        equals(schedule.hour,"5")
 			        equals(schedule.min,"4")
-			        schedule.destroy()
+			        schedule.destroy();
 					start();
 		})
 	})
 	test("update" , function(){
 		expect(7);
 		stop();
-		new Seccubus.Models.Asset({
+		new Seccubus.Models.Schedule({
 				id:20,
+				enabled:"1",
+				launch:"d",
 				month: "1", 
-				week: "0",
+				week: "w",
 				wday: "1",
 				day: "3",
 				hour: "5",
@@ -75,8 +81,10 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/schedule.js", func
 				workspace:"1"
 			}).
 	            save(function(schedule){
+	            	equals(schedule.enabled,"1")
+			        equals(schedule.launch,"d")
 	            	equals(schedule.month,"1")
-			        equals(schedule.week,"0")
+			        equals(schedule.week,"w")
 			        equals(schedule.wday,'1')
 			        equals(schedule.day,"3")
 			        equals(schedule.hour,"5")
