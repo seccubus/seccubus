@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Frank Breedijk, Petr
+ * Copyright 2015 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -288,12 +288,16 @@ steal("jquery/dom/fixture", function(){
 		return [assets];
 	});
 
+	// Schedules
+
 	var schedules = [];
 	for(var i=1; i<9; i++){
 		schedules.push({
 			id: i,
+			enabled : 1,
+			launch : 'd'
 			month : i,
-			week : i>4 ? 8-i : i,
+			week : 'w',
 			wday : i>6 ? 8 - i : i,
 			day : i+10,
 			hour : i+5,
@@ -325,5 +329,12 @@ steal("jquery/dom/fixture", function(){
 
 		if(foundNum) schedules.splice(foundNum,1)
 		return [{'id':id}];
+	});
+	$.fixture.make("issue", 5, function(i, issue){
+		var descriptions = ["grill fish", "make ice", "cut onions"]
+		return {
+			name: "issue "+i,
+			description: $.fixture.rand( descriptions , 1)[0]
+		}
 	});
 });

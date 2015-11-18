@@ -1,0 +1,68 @@
+<!--
+Copyright 2015 Frank Breedijk
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<title>Seccubus.Issue.Table Demo</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .collapsed { background: url("img/expand.png") no-repeat scroll right center ; padding-right: 20px;}
+            .expanded { background: url("img/sort_desc.png") no-repeat scroll right center ; padding-right: 20px;}
+            .findings_issue { margin: 5px;}
+            .finding_status_4 { text-decoration: line-through;}
+            .finding_status_5 { text-decoration: line-through;}
+            .finding_status_6 { text-decoration: line-through;}
+            .finding_status_99 { text-decoration: line-through;}
+            .issueOpen {}
+            .issueClosed {}
+        </style>
+	</head>
+	<body>
+	    <h1>Seccubus.Issue.Table Demo</h1>
+		<div id='issues'></div><br>
+		<a href='javascript://' id='select' workspace='100'>Select workspace 100</a><br>
+		<a href='javascript://' id='finding' finding='3'>Set finding=3</a><br>
+		<script type='text/javascript' 
+                src='../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal(	
+				'seccubus/issue/table',
+				'seccubus/seccubus.css',
+				//'seccubus/fixtures',
+				function(){
+				
+				$('#issues').seccubus_issue_table();
+
+				$('#select').click(function(el, ev) {
+					ws = $( this ).attr("workspace");
+					$('#issues').seccubus_issue_table({
+						workspace : $(this).attr("workspace")
+					});
+				})
+
+				$('#finding').click(function(el, ev) {
+					ws = $( this ).attr("workspace");
+					$('#issues').seccubus_issue_table({
+						finding : $(this).attr("finding")
+					});
+				})
+			})
+		</script>
+	</body>
+</html>

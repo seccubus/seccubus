@@ -24,6 +24,7 @@ of all functions within the module.
 use SeccubusDB;
 use SeccubusRights;
 use SeccubusUsers;
+use SeccubusIssues;
 use Algorithm::Diff qw( diff );
 use JSON;
 use Data::Dumper;
@@ -103,6 +104,7 @@ sub get_findings($;$$$) {
 			LEFT JOIN severity on findings.severity = severity.id
 			LEFT JOIN finding_status on findings.status = finding_status.id
 			LEFT JOIN scans on scans.id = findings.scan_id
+			LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id
 			WHERE
 				findings.workspace_id = ?";
 		if ( $scan_id != 0 ) {
@@ -125,6 +127,7 @@ sub get_findings($;$$$) {
 				LEFT JOIN severity on findings.severity = severity.id
 				LEFT JOIN finding_status on findings.status = finding_status.id
 				LEFT JOIN scans on scans.id = findings.scan_id,
+				LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id
 				assets,
 				asset_hosts
 			
@@ -174,10 +177,14 @@ sub get_findings($;$$$) {
 				$query .= " AND remark LIKE ?";
 				push @$params, "%" . $filter->{remark} . "%";
 			}
+			if ( $filter->{issue} ) {
+				$query .= " AND issues2findings.issue_id = ?";
+				push @$params, $filter->{issue};
+			}
 		}
 		
 		$query .= " ORDER BY host, port, plugin ";
-
+		#die $query;
 
 		return sql( "return"	=> "ref",
 			    "query"	=> $query,
@@ -275,6 +282,10 @@ sub get_status($$$;$) {
 				$query .= " AND remark LIKE ?";
 				push @$params, "%" . $filter->{remark} . "%";
 			}
+			if ( $filter->{issue} ) {
+				$query .= " AND findings.id IN ( SELECT finding_id from issues2findings WHERE issue_id = ? ) ";
+				push @$params, $filter->{issue};
+			}
 
 		$query .= " ) ";
 
@@ -293,11 +304,11 @@ sub get_status($$$;$) {
 				push @$params, $filter->{hostname};
 			}
 		}
-
 		$query .= " ) ";
-		
-		$query .= " GROUP BY finding_status.id";
 
+				
+		$query .= " GROUP BY finding_status.id";
+		#die $query;
 		return sql( "return"	=> "ref",
 			    "query"	=> $query,
 			    "values"	=> $params,
@@ -341,10 +352,11 @@ sub get_filters($$$;$) {
 	if(!$scan_ids && !$asset_ids)  { die "Must specify scanids or assetids for function get_status"; }
 	my $filter = shift;
 
-
 	# finding -> id, host, hostname, port, plugin, findingl, remark, severity, status, status_txt
-	# filter -> host hostname port plugin finding remark severity status
-	if ( may_read($workspace_id) ) {
+	# filter -> host hostname port plugin finding remark severity status issue
+	if ( ! may_read($workspace_id) ) {
+		die "Permission denied!";
+	} else {
 		my @findings;
 		my %filters;
 		foreach my $scan ( @$scan_ids ) {
@@ -355,12 +367,44 @@ sub get_filters($$$;$) {
 			my $finds = get_findings($workspace_id,undef,$asset);
 			push @findings, @$finds;
 		}
+
+		# Lets get the issues and add them to the findings
+		my $issues = get_issues($workspace_id,undef,1); # We want issues with finding links
+		my %i2f;
+		my %issues;
+		foreach my $issue ( @$issues ) {
+			# Update link from finding to issue
+			my $id = $$issue[8];
+			$id = 'none' unless $id;
+			$i2f{$id} = [] unless $i2f{$id};
+			push @{$i2f{$id}}, $issue;
+			# Update has containing issues
+			$issues{$$issue[0]} = [] unless $issues{$$issue[0]};
+			$issues{$$issue[0]} = $issue;
+			# (P)reset counter
+			$filters{issue}{$$issue[0]} = 0;
+		}
+
+		# Link issues to findings
 		foreach my $find ( @findings ) {
-			$filters{"host"}{$$find[1]} += match($find,$filter,[ "hostname", "port", "plugin", "finding", "remark", "severity", "status"]);
-			$filters{"hostname"}{$$find[2]} += match($find,$filter,[ "host", "port", "plugin", "finding", "remark", "severity", "status"]);
-			$filters{"port"}{$$find[3]} += match($find,$filter,[ "host", "hostname", "plugin", "finding", "remark", "severity", "status"]);
-			$filters{"plugin"}{$$find[4]} += match($find,$filter,[ "host", "hostname", "port", "finding", "remark", "severity", "status"]);
-			$filters{"severity"}{"$$find[7] - $$find[8]"} += match($find,$filter,[ "host", "hostname", "port", "plugin", "finding", "remark", "status"]);
+			if ( $i2f{$$find[0]} ) {
+				$$find[13] = $i2f{$$find[0]};
+			} else {
+				$$find[13] = [];
+			}
+		}
+
+		# Update all counters
+		foreach my $find ( @findings ) {
+			$filters{"host"}{$$find[1]} += match($find,$filter,[ "hostname", "port", "plugin", "finding", "remark", "severity", "status", "issue"]);
+			$filters{"hostname"}{$$find[2]} += match($find,$filter,[ "host", "port", "plugin", "finding", "remark", "severity", "status", "issue"]);
+			$filters{"port"}{$$find[3]} += match($find,$filter,[ "host", "hostname", "plugin", "finding", "remark", "severity", "status", "issue"]);
+			$filters{"plugin"}{$$find[4]} += match($find,$filter,[ "host", "hostname", "port", "finding", "remark", "severity", "status", "issue"]);
+			$filters{"severity"}{"$$find[7] - $$find[8]"} += match($find,$filter,[ "host", "hostname", "port", "plugin", "finding", "remark", "status", "issue"]);
+			$filters{"issue"}{"*"} += match($find,$filter,[ "host", "hostname", "port", "plugin", "finding", "remark", "severity", "status"]);					
+			foreach my $issue ( @{$$find[13]} ) {
+				$filters{"issue"}{$$issue[0]} += match($find,$filter,[ "host", "hostname", "port", "plugin", "finding", "remark", "severity", "status"]);				
+			}
 		}
 		# Host
 		# Generate wildcard values
@@ -560,14 +604,44 @@ sub get_filters($$$;$) {
 		);
 		$filters{"severity"} = \@sev;
 
+		# Issues
+		my @issue = ();
+		push @issue, {
+			name 	=> "*",
+			number	=> $filters{issue}{"*"},
+			selected 	=> ( $filter->{issue} eq "*" ? JSON::true : JSON::false ),
+		};
+		foreach my $i ( sort keys %{$filters{issue}} ) {
+			unless ( $i eq "*" || $filters{issue}->{$i} == 0 ) {
+				push @issue , {
+					name 	=> "${$issues{$i}}[1] ($issues{$i}[2])",
+					value 	=> $i,
+					number	=> $filters{issue}{$i},
+					selected => ( $filter->{issue} eq $i ? JSON::true : JSON::false ),	
+				}
+			}
+		}
+		push @issue, {
+			name 	=> "---",
+			number	=> -1,
+		};
+		foreach my $i ( @{$i2f{none}} ) {
+			push @issue, {
+				name => "$$i[1] ($$i[2])",
+				value => $$i[0],
+				number => 0,
+				selected => ( $filter->{issue} eq $$i[0] ? JSON::true : JSON::false ),
+			}
+		}
+		$filters{issue} = \@issue;
+
+		# Finding and remark are easy
 		$filter->{"finding"} = "" unless $filter->{"finding"};
 		$filters{"finding"} = $filter->{"finding"};
 		$filter->{"remark"} = "" unless $filter->{"remark"};
 		$filters{"remark"} = $filter->{"remark"};
 
 		return %filters;
-	} else {
-		die "Permission denied!";
 	}
 }
 
@@ -597,6 +671,8 @@ sub match($$;$) {
 	my $finding = shift or die "No finding specified for match";
 	my $filter = shift or die "No filter specified for match";
 	my $fields = shift;
+
+	#die Dumper $filter;
 
 	unless ($fields) {
 		$fields = [];
@@ -656,6 +732,18 @@ sub match($$;$) {
 	#status
 	if ( $match && $filter2{"status"} && $filter2{"status"} ne "*" && $$finding[9] ne $filter2{"status"} ) {
 		$match = 0;
+	}
+	#issue 
+	#die Dumper %filter2;
+	if ( $match && $filter2{"issue"} && $filter2{"issue"} ne "*" ) {
+		$match = 0;
+		foreach my $i ( @{$$finding[13]} ) {
+			if ( $$i[0] == $filter2{"issue"} ) {
+				#print Dumper $finding;
+				$match = 1;
+				last;
+			}
+		}
 	}
 	return $match;
 }

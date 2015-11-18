@@ -92,6 +92,11 @@ $.Controller('Seccubus.Filter.Filter',
 		 */
 		remark		: "",		
 		/*
+		 * @attribute options.issue
+		 * Value of the issue filter
+		 */
+		issue		: "*",		
+		/*
 		 * @attribute options.onChange
 		 * Function to be executed when the filter changes
 		 */
@@ -119,6 +124,7 @@ $.Controller('Seccubus.Filter.Filter',
 		this.options.severity = "*";
 		this.options.finding = "";
 		this.options.remark = "";
+		this.options.issue = "*"
 		this.options.onChange({
 			host		: this.options.host,
 			hostName	: this.options.hostName,
@@ -126,7 +132,8 @@ $.Controller('Seccubus.Filter.Filter',
 			plugin		: this.options.plugin,
 			severity	: this.options.severity,
 			finding		: this.options.finding,
-			remark		: this.options.remark
+			remark		: this.options.remark,
+			issue		: this.options.issue
 		});
 		if ( this.options.updateOnChange ) {
 			this.updateView();
@@ -141,7 +148,8 @@ $.Controller('Seccubus.Filter.Filter',
 			plugin		: this.options.plugin,
 			severity	: this.options.severity,
 			finding		: this.options.finding,
-			remark		: this.options.remark
+			remark		: this.options.remark,
+			issue		: this.options.issue
 		});
 		if ( this.options.updateOnChange ) {
 			this.updateView();
@@ -171,18 +179,20 @@ $.Controller('Seccubus.Filter.Filter',
 						Plugin		: this.options.plugin,
 						Severity	: this.options.severity,
 						Finding		: this.options.finding,
-						Remark		: this.options.remark
+						Remark		: this.options.remark,
+						Issue 		: this.options.issue
 					}), 
 					{
-						fScans : this.options.scans,
-						fStatus : this.options.status,
-						fHost : this.options.host,
-						fHostName : this.options.hostName,
-						fPort : this.options.port,
-						fPlugin : this.options.plugin,
-						fSeverity : this.options.severity,
-						fFinding : this.options.finding,
-						fRemark : this.options.remark
+						fScans 		: this.options.scans,
+						fStatus 	: this.options.status,
+						fHost 		: this.options.host,
+						fHostName 	: this.options.hostName,
+						fPort 		: this.options.port,
+						fPlugin 	: this.options.plugin,
+						fSeverity 	: this.options.severity,
+						fFinding 	: this.options.finding,
+						fRemark 	: this.options.remark,
+						fIssue 		: this.optionsissue
 					}
 				)
 			);

@@ -1,5 +1,5 @@
 <!--
-Copyright 2014 Frank Breedijk, Steve Launius, Petr
+Copyright 2015 Frank Breedijk, Steve Launius, Petr
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,229 +19,233 @@ limitations under the License.
   <head>
     <title>Seccubus 2</title>
     <link rel="shortcut icon" href="img/favicon.png" />
-  </head>
+    </head>
   <body>
     <header>
       <div class="shell">
         <div id="header-logo"><img src="img/logo.png" alt="" height="50"width="50" /></div>
         <div id="header-top">
           <h1><a href="#">Seccubus</a></h1>
-	  <h2>Automated vulnerability scanning and reporting</h2>
-	  <nav id="top-nav">
-	     <!-- Ticket 67 - Links in top right of UI do nothing -->
-	     <!-- <a href="#">Settings</a> <span> | </span> <ahref="#">Help</a> -->
-	   </nav>
-	 </div>
-	 <div id="header-bottom">
-	   <nav id="main-nav">
-	     <ul id='navTab'>
-	       <li><a href="#up2date">Status</a></li>
-	       <li><a href="#runs">Runs</a></li>
-	       <li><a href="#findings">Findings</a></li>
-	       <li><a href="#issues">Issues</a></li>
-	       <li><a href="#workspaces">Manage Workspaces</a></li>
-	       <li><a href="#scans">Manage Scans</a></li>
-	       <li><a href="#reports">Reports</a></li>
-	       <li><a href="#assets">Manage Assets</a></li>
-         <li><a href="#custSQL">Custom SQL</a></li>
-	     </ul>
-	   </nav>
-	 </div>
-       </div>
-     </header>
-     <div class="shell">
+          <h2>Automated vulnerability scanning and reporting</h2>
+          <nav id="top-nav">
+            <!-- Ticket 67 - Links in top right of UI do nothing -->
+            <!-- <a href="#">Settings</a> <span> | </span> <ahref="#">Help</a> -->
+          </nav>
+        </div>
+        <div id="header-bottom">
+          <nav id="main-nav">
+            <ul id='navTab'>
+              <li><a href="#up2date">Status</a></li>
+              <li><a href="#runs">Runs</a></li>
+              <li><a href="#findings">Findings</a></li>
+              <li><a href="#issues">Issues</a></li>
+              <li><a href="#workspaces">Manage Workspaces</a></li>
+              <li><a href="#scans">Manage Scans</a></li>
+              <li><a href="#reports">Reports</a></li>
+              <li><a href="#assets">Manage Assets</a></li>
+              <li><a href="#custSQL">Custom SQL</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+    <div class="shell">
 
-       <div id='up2date' class='tab'>
-	 <div class='full'>
-           <div id='up_to_dates'>Up 2 date goes here</div>
-	   <br>&nbsp;
-	   <br>&nbsp;
-           <div id='config_items'>Coniguration items test go here</div>
-	 </div>
-       </div>
-
-       <div id='runs' class='tab'>
-        <div class='left'>
-	 Workspace (<a href='javascript://' class='addWorkspace'>add</a>):<br>
-	 <select class='left workspaceSelector' id='workspace_selector_findings'>
-	  <option>Workspace selector</option>
-	  <option>----</option>
-	  <option>This is where we load the workspace selector</option>
-	 </select>
-	 <br>Scans (<a href='javascript://' disabled=true class='addScan'>add</a>):<br>
-	 <select class='left scanSelector' id='scan_selector_runs' size=20>
-	  <option>Select a workspace to start</option>
-	 </select>
-	</div>
-	<div class='main'>
-	 <h1>Runs for this scan:</h1>
-	 <table id='run_table'>
-	 	<tr><th>Time</th><th>Attachments</th></tr>
-	</table>
-	</div>
-       </div>
-
-       <div id='findings' class='tab'>
-         <div class='left'>
-	   Workspace (<a href='javascript://' class='addWorkspace'>add</a>):<br>
-           <select class='left workspaceSelector' id='workspace_selector_findings'>
-	     <option>Workspace selector</option>
-	     <option>----</option>
-	     <option>This is where we load the workspace selector</option>
-	   </select>
-	   <br>Scans (<a href='javascript://' disabled=true class='addScan'>add</a>):<br>
-	   <select class='left scanSelector' id='scan_multiselector_findings' MULTIPLE size=20>
-	     <option>Select a workspace to start</option>
-	   </select>
-      <BR>Assets:<BR>
-      <select class='left assetSelector' id='asset_multiselector_findings' MULTIPLE size=20>
-        <option>Select a workspace to start</option>
-      </select>
-	 </div>
-	 <div class=main>
-	   <h2>Show findings with this status:</h2>
-	   <div id='status_buttons'>
-	     Status buttons will go here
-	   </div>
-	   <br>
-	   <h2>Filter findings:</h2>
-	   <div id='filters'>Filters will go here</div>
-	   <br>
-	   <h2>Update selected findings:</h2>
-	   <form id='finding_bulkedit'>Bulk update will go here</form>
-	   <br>
-	   <table id='finding_table'>
-	     <tr><td>Table with findings will go here</td></tr>
-	   </table>
-	 </div>
-       </div>
-
-       <div id='issues' class='tab'>
-	 <div class='left'>
-	   Workspace:<br>
-           <select class='left workspaceSelector' id='workspace_selector_issues'>
-	     <option>Workspace selector</option>
-	     <option>----</option>
-	     <option>This is where we load the workspace selector</option>
-	   </select>
-	 </div>
-	 <div class='main'>
-	   <table id='issue_table'>
-	     <tr><td>Issue table will go here</td></tr>
-	   </table>
-	 </div>
-       </div>
-
-       <div id='scans' class='tab'>
-         <div class='left'>
-	   Workspace:<br>
-           <select class='left workspaceSelector' id='workspace_selector_scans'>
-	     <option>Workspace selector</option>
-	     <option>----</option>
-	     <option>This is where we load the workspace selector</option>
-	   </select>
-	 </div>
-	 <div class='main'>
-	   <h1>Manage your scans below</h1>
-	   <button class='addScan'>New scan</button>
-           <table id='scan_table'>
-	   	<tr><td>Scan table goes here</td></tr>
-	   </table>
-	 </div>
-       </div>
-
-       <div id='workspaces' class='tab'>
-         <div class='full'>
-	   <h1>Manage your workspaces below</h1>
-	   <button class='addWorkspace'>New workspace</button>
-           <table id='workspace_table'>
-	   	<tr><td>Workspace table goes here</td></tr>
-	   </table>
-	 </div>
-       </div>
-
-   <div id='reports' class='tab'>
-     <div class='full'>
-	   The Reports will go here
-  	 </div>
-   </div>
-
-   <div id='custSQL' class='tab'>
-    
-     <div class='left'>
-     Load Saved SQLs:<br>
-     <select class='left SQLsSelector' id='sqls_selector'>
-       <option>SQLs selector</option>
-       <option>----</option>
-       <option>This is where we load the SQLs selector</option>
-     </select>
+    <div id='up2date' class='tab'>
+      <div class='full'>
+        <div id='up_to_dates'>Up 2 date goes here</div>
+        <br>&nbsp;
+        <br>&nbsp;
+        <div id='config_items'>Coniguration items test go here</div>
+      </div>
     </div>
-    <div class='main'>
-     <h1>Run custom SQL bellow</h1>
-     <span id='custSQL_table'>
-           <table>
-      <tr><td>SQL table goes here</td></tr>
-     </table>
-      </span>
-     </div>
-   </div>
 
-       <div id='assets' class='tab'>
-       <div class='left'>
-	   Workspace:<br>
-           <select class='left workspaceSelector' id='workspace_selector_assets'>
-	     <option>Workspace selector</option>
-	     <option>----</option>
-	     <option>This is where we load the workspace selector</option>
-	   </select>
-	 </div>
-	 <div class='main'>
-	   <h1>Manage your assets below</h1>
-	   <button class='addAsset'>New Asset</button>
-           <table id='asset_table'>
-	   	<tr><td>Asset table goes here</td></tr>
-	   </table>
-	 </div>
+    <div id='runs' class='tab'>
+      <div class='left'>
+      Workspace (<a href='javascript://' class='addWorkspace'>add</a>):<br>
+         <select class='left workspaceSelector' id='workspace_selector_findings'>
+          <option>Workspace selector</option>
+          <option>----</option>
+          <option>This is where we load the workspace selector</option>
+        </select>
+        <br>Scans (<a href='javascript://' disabled=true class='addScan'>add</a>):<br>
+        <select class='left scanSelector' id='scan_selector_runs' size=20>
+          <option>Select a workspace to start</option>
+        </select>
+      </div>
+      <div class='main'>
+        <h1>Runs for this scan:</h1>
+        <table id='run_table'>
+          <tr><th>Time</th><th>Attachments</th></tr>
+        </table>
+      </div>
+    </div>
+
+    <div id='findings' class='tab'>
+      <div class='left'>
+        Workspace (<a href='javascript://' class='addWorkspace'>add</a>):<br>
+        <select class='left workspaceSelector' id='workspace_selector_findings'>
+          <option>Workspace selector</option>
+          <option>----</option>
+          <option>This is where we load the workspace selector</option>
+        </select>
+        <br>Scans (<a href='javascript://' disabled=true class='addScan'>add</a>):<br>
+        <select class='left scanSelector' id='scan_multiselector_findings' MULTIPLE size=20>
+          <option>Select a workspace to start</option>
+        </select>
+        <BR>Assets:<BR>
+        <select class='left assetSelector' id='asset_multiselector_findings' MULTIPLE size=20>
+          <option>Select a workspace to start</option>
+        </select>
+      </div>
+      <div class=main>
+        <h2>Show findings with this status:</h2>
+        <div id='status_buttons'>Status buttons will go here</div>
+        <br>
+        <h2>Filter findings:</h2>
+        <div id='filters'>Filters will go here</div>
+        <br>
+        <h2>Update selected findings:</h2>
+        <form id='finding_bulkedit'>Bulk update will go here</form>
+        <br>
+        <table id='finding_table'>
+          <tr><td>Table with findings will go here</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div id='issues' class='tab'>
+      <div class='left'>
+        Workspace:<br>
+        <select class='left workspaceSelector' id='workspace_selector_issues'>
+          <option>Workspace selector</option>
+          <option>----</option>
+          <option>This is where we load the workspace selector</option>
+        </select>
+      </div>
+      <div class='main'>
+        <br>
+        <div id='issue_table'>
+          Issue table will go here...
+        </div>
+      </div>
+    </div>
+
+    <div id='scans' class='tab'>
+      <div class='left'>
+        Workspace:<br>
+        <select class='left workspaceSelector' id='workspace_selector_scans'>
+          <option>Workspace selector</option>
+          <option>----</option>
+          <option>This is where we load the workspace selector</option>
+        </select>
+      </div>
+      <div class='main'>
+        <h1>Manage your scans below</h1>
+        <button class='addScan'>New scan</button>
+        <table id='scan_table'>
+          <tr><td>Scan table goes here</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div id='workspaces' class='tab'>
+      <div class='full'>
+        <h1>Manage your workspaces below</h1>
+        <button class='addWorkspace'>New workspace</button>
+        <table id='workspace_table'>
+          <tr><td>Workspace table goes here</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div id='reports' class='tab'>
+      <div class='full'>
+        The Reports will go here
+      </div>
+    </div>
+
+    <div id='custSQL' class='tab'>
+      <div class='left'>
+        Load Saved SQLs:<br>
+        <select class='left SQLsSelector' id='sqls_selector'>
+          <option>SQLs selector</option>
+          <option>----</option>
+          <option>This is where we load the SQLs selector</option>
+        </select>
+      </div>
+      <div class='main'>
+        <h1>Run custom SQL bellow</h1>
+        <span id='custSQL_table'>
+          <table>
+            <tr><td>SQL table goes here</td></tr>
+          </table>
+        </span>
+      </div>
+    </div>
+
+    <div id='assets' class='tab'>
+      <div class='left'>
+        Workspace:<br>
+        <select class='left workspaceSelector' id='workspace_selector_assets'>
+          <option>Workspace selector</option>
+          <option>----</option>
+          <option>This is where we load the workspace selector</option>
+        </select>
+      </div>
+      <div class='main'>
+        <h1>Manage your assets below</h1>
+        <button class='addAsset'>New Asset</button>
+        <table id='asset_table'>
+          <tr><td>Asset table goes here</td></tr>
+        </table>
+      </div>
+    </div>
+
   </div>
+    <!-- This is where the modal diaglog windows live -->
+    <div id="createWorkspaceDialog" class='hidden'>
+      <h1>Please provide the details for a new workspace</h1>
+      <form id="createWorkspace">
+        Room for modal creatWorkspace
+      </form>
+    </div>
+    
+    <div id="editWorkspaceDialog" class='hidden'>
+      <h1>Please update the name of your scan</h1>
+      <form id="editWorkspace">
+        Room for modal editWorkspace
+      </form>
+    </div>
 
-     </div>
-     <!-- This is where the modal diaglog windows live -->
-     <div id="createWorkspaceDialog" class='hidden'>
-       <h1>Please provide the details for a new workspace</h1>
-       <form id="createWorkspace">
-         Room for modal creatWorkspace
-       </form>
-     </div>
-     <div id="editWorkspaceDialog" class='hidden'>
-       <h1>Please update the name of your scan</h1>
-       <form id="editWorkspace">
-         Room for modal editWorkspace
-       </form>
-     </div>
-     <div id="createScanDialog" class='hidden'>
-       <h1>Please provide the details for a new scan</h1>
-       <form id="createScan">
-         Room for modal createScan
-       </form>
-     </div>
-     <div id="editScanDialog" class='hidden'>
-       <h1>Please update your scan</h1>
-       <form id="editScan">
-         Room for modal editScan
-       </form>
-     </div>
-     <div id="editNotificationDialog" class='hidden'>
-       <h1>Update your notification</h1>
-       <form id="editNotification">
-         Room for modal Edit Notification
-       </form>
-     </div>
-     <div id="createNotificationDialog" class='hidden'>
-       <h1>Enter data</h1>
-       <form id="createNotification">
-         Room for modal create Notification
-       </form>
-     </div>
+    <div id="createScanDialog" class='hidden'>
+      <h1>Please provide the details for a new scan</h1>
+      <form id="createScan">
+        Room for modal createScan
+      </form>
+    </div>
+
+    <div id="editScanDialog" class='hidden'>
+      <h1>Please update your scan</h1>
+      <form id="editScan">
+        Room for modal editScan
+      </form>
+    </div>
+
+    <div id="editNotificationDialog" class='hidden'>
+      <h1>Update your notification</h1>
+      <form id="editNotification">
+        Room for modal Edit Notification
+      </form>
+    </div>
+    
+    <div id="createNotificationDialog" class='hidden'>
+      <h1>Enter data</h1>
+      <form id="createNotification">
+        Room for modal create Notification
+      </form>
+    </div>
+    </div>
       <div id="createScheduleDialog" class='hidden'>
        <h1>Create new schedule</h1>
        <form id="createSchedule">
@@ -253,51 +257,76 @@ limitations under the License.
        <form id="editSchedule">
          Room for modal Edit Schedule
        </form>
-     </div>
-     <div id="editFindingDialog" class='hidden wide'>
-       <form id="editFinding">
-         Room for modal editFinding
-       </form>
-       <table id='findingHistory'>
-       	<tr><td>Room for findingHistory<br>
-	 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-	</td></tr>
-       </table>
-     </div>
-     <div id="editAssetDialog" class='hidden'>
-       <h1>Update your Asset</h1>
-       <form id="editAsset">
-         Room for modal Edit Asset
-       </form>
-     </div>
-     <div id="createAssetDialog" class='hidden'>
-       <h1>Create your Asset</h1>
-       <form id="createAsset">
-         Room for modal Create Asset
-       </form>
-     </div>
-     <div id="editAssetHostDialog" class='hidden'>
-       <h1>Update your Asset</h1>
-       <form id="editHostAsset">
-         Room for modal Edit Asset
-       </form>
-     </div>
-     <div id="createAssetHostDialog" class='hidden'>
-       <h1>Create your Asset Host</h1>
-       <form id="createHostAsset">
-         Room for modal Create Asset Host
-       </form>
-     </div>
-     <div id="saveSQLDialog" class='hidden'>
-       <h1>Save your SQL</h1>
-       <form id="saveSQL">
-         Room for modal Save SQL
-       </form>
-     </div>
-     <div id="modalDialog">
-     </div>
-     <!-- Get the javascript out -->
-     <script type='text/javascript' src='../steal/steal.js?seccubus'>
-     </script>
+    </div>
+    <div id="editFindingDialog" class='hidden wide'>
+      <form id="editFinding">
+        Room for modal editFinding
+      </form>
+      <table id='findingHistory'>
+      <tr><td>Room for findingHistory<br>
+        xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      </td></tr>
+      </table>
+    </div>
+   
+    <div id="createIssueDialog" class='hidden wide'>
+      <form id="createIssue">
+        Room for modal createIssue
+      </form>
+    </div>
+
+    <div id="createIssuelinkDialog" class='hidden wide'>
+      <form id="createIssuelink">
+        Room for modal createIssuelink
+      </form>
+    </div>
+   
+    <div id="editIssueDialog" class='hidden wide'>
+      <form id="editIssue">
+        Room for modal editIssue
+      </form>
+      <table id='issueFindingTable'></table>
+    </div>
+   
+    <div id="editAssetDialog" class='hidden'>
+      <h1>Update your Asset</h1>
+      <form id="editAsset">
+        Room for modal Edit Asset
+      </form>
+    </div>
+    
+    <div id="createAssetDialog" class='hidden'>
+      <h1>Create your Asset</h1>
+      <form id="createAsset">
+        Room for modal Create Asset
+      </form>
+    </div>
+    
+    <div id="editAssetHostDialog" class='hidden'>
+      <h1>Update your Asset</h1>
+      <form id="editHostAsset">
+        Room for modal Edit Asset
+      </form>
+    </div>
+    
+    <div id="createAssetHostDialog" class='hidden'>
+      <h1>Create your Asset Host</h1>
+      <form id="createHostAsset">
+        Room for modal Create Asset Host
+      </form>
+    </div>
+    
+    <div id="saveSQLDialog" class='hidden'>
+      <h1>Save your SQL</h1>
+      <form id="saveSQL">
+        Room for modal Save SQL
+      </form>
+    </div>
+    
+    <div id="modalDialog">
+    </div>
+
+    <!-- Get the javascript out -->
+    <script type='text/javascript' src='../steal/steal.js?seccubus'></script>
   </body>
 </html>

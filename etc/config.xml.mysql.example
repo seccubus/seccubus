@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone='yes'?>
 <!--
-     Copyright 2013 Frank Breedijk
+     Copyright 2015 Frank Breedijk
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -35,4 +35,8 @@
 		<server>localhost</server>
 		<from>seccubus@localhost</from>
 	</smtp>
+	<tickets>
+		<url_head>https://jira.atlassian.com/browse/</url_head>
+		<url_tail></url_tail>
+	</tickets>
 </seccubus>

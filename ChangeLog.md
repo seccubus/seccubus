@@ -25,6 +25,23 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+28-10-2015 - 2.20 - What is the issue?
+======================================
+This release introduces a major new feature that has been in my head since the beginning of Seccubus version 2: Issues.
+
+An issue is a sort of trouble ticket that allows you to link multiple findings together, in order to help keeping track of the remediation process.
+An issues can be linked to multiple findings (e.g. because you have the same finding across different hosts) and at the same time a single finding can be linked to multiple issue (e.g. multiple certificate issues found in a single finding).
+
+If you want to know more about issue, please see the online documentation at [www.seccubus.com]
+
+Enhancements
+------------
+#238 - Issues
+
+Bug Fixes
+---------
+#244 - Database model and database not consistent anymore
+
 08-10-2015 - 2.18 - Fixed a notifications error
 ================================================
 Some people noticed that notifications were not visible anymore, Jordan and I fixed them

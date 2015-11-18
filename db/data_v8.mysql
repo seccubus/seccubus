@@ -1,5 +1,5 @@
 /*
-Copyright 2014 Frank Breedijk, Petr
+Copyright 2015 Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `severity` WRITE;
 /*!40000 ALTER TABLE `severity` DISABLE KEYS */;
-INSERT INTO `severity` VALUES (0,'Not set','No serverity has been set'),(1,'High','Direct compromise of Confidentiality, Integrity or Availbility or policy violation'),(2,'Medium','Could compromise of Confidentiality, Integrity or Availbility in combination with other issue. Disclosure of sensitive information'),(3,'Low','Weakens security posture'),(4,'Note','Not a security issue, but deemed noteworthy');
+INSERT INTO `severity` VALUES (0,'Not set','No severity has been set'),(1,'High','Direct compromise of Confidentiality, Integrity or Availbility or policy violation'),(2,'Medium','Could compromise of Confidentiality, Integrity or Availbility in combination with other issue. Disclosure of sensitive information'),(3,'Low','Weakens security posture'),(4,'Note','Not a security issue, but deemed noteworthy');
 /*!40000 ALTER TABLE `severity` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -17,22 +17,38 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
-ALTER TABLE `schedules` 
-ADD COLUMN `enabled` INT(1) NOT NULL DEFAULT 0 AFTER `schedule_id`,
-ADD COLUMN `launch` VARCHAR(1) NOT NULL DEFAULT 'd' AFTER `enabled`,
-CHANGE COLUMN `month` `month` INT(2) NOT NULL DEFAULT 1 COMMENT 'Month number (1-12). If every month, then * (default)' ,
-CHANGE COLUMN `week` `week` VARCHAR(2) NOT NULL DEFAULT 'w' COMMENT 'Month week number (1-5). If every week, then * (default)' ,
-CHANGE COLUMN `day` `day` INT(2) NOT NULL DEFAULT 0 COMMENT 'Month day number (1-31), if every day, then * (default)' ,
-CHANGE COLUMN `hour` `hour` INT(2) NOT NULL DEFAULT 0 ,
-CHANGE COLUMN `min` `min` INT(2) NOT NULL DEFAULT 0 COMMENT 'Minute number (0-59), if every minute, then * (default)' ;
+-- -----------------------------------------------------
+-- Table `scan_schedule`
+-- -----------------------------------------------------
+CREATE TABLE `scan_schedule` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Row Id',
+  `scan_id` INT(11) NOT NULL DEFAULT 0 COMMENT 'Scan ID',
+  `status` INT(1) NOT NULL DEFAULT 0 COMMENT 'Status of schedule: 0 - not runing yet, 1 - running, 2 - complete',
+  `last_run` DATETIME NULL COMMENT 'Last date run',
+  PRIMARY KEY (`id`),
+  INDEX `scan_id` (`scan_id` ASC),
+  INDEX `last_run` (`last_run` ASC),
+  INDEX `status` (`status` ASC)
+);
 
-TRUNCATE `schedules`;
-TRUNCATE `scan_schedule`;
-update `schedules` set `week` = 'w' where `week` like '*' or `week` like '1';
-update `schedules` set `week` = '2w' where `week` like '2';
-update `schedules` set `week` = '3w' where `week` like '3';
-update `schedules` set `week` = '4w' where `week` like '4' or `week` like '5';
-
+-- -----------------------------------------------------
+-- Table `schedules`
+-- -----------------------------------------------------
+CREATE TABLE `schedules` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Row ID',
+  `schedule_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'Schedule ID',
+  `enabled` INT(1) NOT NULL DEFAULT 0 COMMENT 'Is schedule enabled',
+  `launch` VARCHAR(1) NOT NULL DEFAULT 'd' COMMEND 'Launch type',
+  `month` INT(2) NOT NULL DEFAULT 1 COMMENT 'Month number (1-12)',
+  `week` VARCHAR(2) NOT NULL DEFAULT 'w' COMMENT 'Every week type: w - every weel, 2w - 2nd week, 3w - 3rd week, 4w - fourth',
+  `wday` VARCHAR(1) NOT NULL DEFAULT '*' COMMENT 'Week day number (0-6), if every week day, then * (default)',
+  `day` INT(2) NOT NULL DEFAULT 1 COMMENT 'Month day number (1-31)',
+  `hour` INT(2) NOT NULL DEFAULT 0 COMMENT 'Hour number (0-23)',
+  `min` INT(2) NOT NULL DEFAULT 0 COMMENT 'Minute number (0-59)',
+  PRIMARY KEY (`id`),
+  INDEX `schedule_id` (`schedule_id` ASC),
+  INDEX `date_run` (`month` ASC, `week` ASC, `wday` ASC, `day` ASC, `hour` ASC, `min` ASC)
+);
 
 update config set value=9 where name = 'version';
 
