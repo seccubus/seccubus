@@ -15,7 +15,7 @@ limitations under the License.
 */
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
 -- Table `scan_schedule`
@@ -38,7 +38,7 @@ CREATE TABLE `schedules` (
   `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Row ID',
   `schedule_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'Schedule ID',
   `enabled` INT(1) NOT NULL DEFAULT 0 COMMENT 'Is schedule enabled',
-  `launch` VARCHAR(1) NOT NULL DEFAULT 'd' COMMEND 'Launch type',
+  `launch` VARCHAR(1) NOT NULL DEFAULT 'd' COMMENT 'Launch type',
   `month` INT(2) NOT NULL DEFAULT 1 COMMENT 'Month number (1-12)',
   `week` VARCHAR(2) NOT NULL DEFAULT 'w' COMMENT 'Every week type: w - every weel, 2w - 2nd week, 3w - 3rd week, 4w - fourth',
   `wday` VARCHAR(1) NOT NULL DEFAULT '*' COMMENT 'Week day number (0-6), if every week day, then * (default)',
