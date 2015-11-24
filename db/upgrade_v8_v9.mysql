@@ -20,6 +20,8 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Table `scan_schedule`
 -- -----------------------------------------------------
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `scan_schedule` (
   `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Row Id',
   `scan_id` INT(11) NOT NULL DEFAULT 0 COMMENT 'Scan ID',
@@ -34,6 +36,8 @@ CREATE TABLE `scan_schedule` (
 -- -----------------------------------------------------
 -- Table `schedules`
 -- -----------------------------------------------------
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `schedules` (
   `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Row ID',
   `schedule_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'Schedule ID',
