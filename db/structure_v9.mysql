@@ -670,7 +670,7 @@ CREATE TABLE `scan_schedule` (
   INDEX `scan_id` (`scan_id` ASC),
   INDEX `last_run` (`last_run` ASC),
   INDEX `status` (`status` ASC)
-);
+)  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `scan_schedule`
@@ -702,7 +702,7 @@ CREATE TABLE `schedules` (
   PRIMARY KEY (`id`),
   INDEX `schedule_id` (`schedule_id` ASC),
   INDEX `date_run` (`month` ASC, `week` ASC, `wday` ASC, `day` ASC, `hour` ASC, `min` ASC)
-);
+)  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `schedules`
