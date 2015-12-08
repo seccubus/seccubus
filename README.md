@@ -38,4 +38,4 @@ Enhancements
 Bug Fixes
 ---------
 #289 - Online version test needs a unit test
-
+#269 - Correct handling of multiple address nodes in NMap XML
