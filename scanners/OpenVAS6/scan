@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Fabien Guillaume (FGuillaume), Frank Breedijk
+# Copyright 2015 Fabien Guillaume (FGuillaume), Frank Breedijk, Andrey Danin
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@
 # ------------------------------------------------------------------------------
 
 
-use OpenVAS::OMP;
 use SeccubusV2;
+use OpenVAS::OMP;
 use SeccubusIVIL;
 use strict;
 use Getopt::Long;
@@ -339,7 +339,7 @@ close (OV6_scanresult);
 
 
 #Convert scan result to Ivil
-$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=OpenVAS6 --timestamp=$timestamp --infile $tempfile";
+$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=OpenVAS6 --timestamp=$timestamp --infile '$tempfile'";
 $cmd .= " -v" ;
 print "Executing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
@@ -514,7 +514,7 @@ $xmlrequest=~ s/<name>/<target_name>/g;
 $xmlrequest=~ s!</name>!</target_name>!g;
 print $xmlrequest."\n";
 
-my $targetlist=XMLin($xmlrequest, keyattr =>[]);
+my $targetlist=XMLin($xmlrequest, keyattr =>[], forcearray =>[]);
 print Dumper($targetlist);
 
 foreach my $target(@{$targetlist->{target}}) {
