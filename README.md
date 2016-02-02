@@ -39,3 +39,5 @@ Bug Fixes
 ---------
 #289 - Online version test needs a unit test
 #269 - Correct handling of multiple address nodes in NMap XML
+#298 - OpenVAS6: fix scan and import to ivil 
+#297 - Port field abused to store port state
