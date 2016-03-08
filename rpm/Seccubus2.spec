@@ -84,7 +84,7 @@ mkdir -p %{buildroot}/etc/httpd/conf.d
 
 %build
 ./build_jmvc
-make
+#make
 
 %install
 ./install.pl --buildroot=%{buildroot} --confdir=%{confdir} --bindir=%{bindir} --dbdir=%{vardir} --wwwdir=%{webdir} --basedir=%{homedir} --docdir=%{docsdir}
