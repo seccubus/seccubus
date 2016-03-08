@@ -69,7 +69,8 @@ Nikto scanning needs the Nikto scanner
 %prep
 %setup -q -n  %{name}-%{version}
 
-perl Makefile.PL
+#perl Makefile.PL
+./build_jmvc
 mkdir -p %{buildroot}/%{installdir}
 #mkdir -p %{buildroot}/%{webdir}
 #mkdir -p %{buildroot}/%{bindir}
