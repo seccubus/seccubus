@@ -40,7 +40,6 @@ BuildArch:	noarch
 Source0:	http://downloads.sourceforge.net/project/%{name}/%{name}_v2/%{name}-%{version}.tar.gz
 
 #BuildRequires:	
-Requires:	perl-devel
 Requires:	perl-Algorithm-Diff
 Requires:	perl-DBD-mysql
 Requires:	perl-JSON
