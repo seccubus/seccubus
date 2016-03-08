@@ -39,7 +39,8 @@ BuildArch:	noarch
 
 Source0:	http://downloads.sourceforge.net/project/%{name}/%{name}_v2/%{name}-%{version}.tar.gz
 
-#BuildRequires:	
+BuildRequires:	java-1.7.0-openjdk
+
 Requires:	perl-Algorithm-Diff
 Requires:	perl-DBD-mysql
 Requires:	perl-JSON
@@ -70,7 +71,6 @@ Nikto scanning needs the Nikto scanner
 %setup -q -n  %{name}-%{version}
 
 #perl Makefile.PL
-./build_jmvc
 mkdir -p %{buildroot}/%{installdir}
 #mkdir -p %{buildroot}/%{webdir}
 #mkdir -p %{buildroot}/%{bindir}
@@ -83,6 +83,7 @@ mkdir -p %{buildroot}/%{docsdir}/GUI
 mkdir -p %{buildroot}/etc/httpd/conf.d
 
 %build
+./build_jmvc
 make
 
 %install
