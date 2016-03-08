@@ -87,6 +87,7 @@ mkdir -p %{buildroot}/etc/httpd/conf.d
 #make
 
 %install
+mkdir -p %{homedir}
 ./install.pl --buildroot=%{buildroot} --confdir=%{confdir} --bindir=%{bindir} --dbdir=%{vardir} --wwwdir=%{webdir} --basedir=%{homedir} --docdir=%{docsdir}
 
 cp ChangeLog.md LICENSE.txt NOTICE.txt README.md AUTHORS.txt %{buildroot}/%{docsdir}
