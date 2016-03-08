@@ -1,0 +1,46 @@
+<services>
+  <!--
+    This block downloads you source as a tar archive from github
+
+    Be aware that the tag should always start with a number
+    (See https://github.com/openSUSE/obs-service-set_version/issues/30 for details)
+
+    If you start with a letter, you will see this error:
+
+    Files could not be expanded: Running /usr/lib/obs/service/set_version - -outdir /lxc.tmp.29937/out
+    -->
+  <service name="tar_scm">
+    <param name="scm">git</param>
+    <param name="url">https://github.com/schubergphilis/Seccubus_v2/</param>
+    <param name="versionformat">@PARENT_TAG@.@TAG_OFFSET@</param>
+    <param name="filename">Seccubus</param>
+  </service>
+  <!--
+    This block tells the build service to extract your spec files from the tar archive
+
+    If you mess up with e.g. the changelog file you can get very strange results like
+    this error message
+    Files could not be expanded: TypeError: expected a character buffer object
+
+    There is an open issue on GitHub for this:
+    https://github.com/openSUSE/obs-service-extract_file/issues/9
+    -->
+  <service name="extract_file">
+    <param name="archive">*.tar</param>
+    <param name="files">*/rpm/*.spec */deb/*</param>
+  </service>
+  <!--
+    This block tells the build service to recompress the tar file to a tar.gz tarbal
+    as that is what is expected by the build script.
+    Be aware that this compresses to *.tar.gz and not to *.tgz.
+    -->
+  <service name="recompress">
+    <param name="file">*.tar</param>
+    <param name="compression">gz</param>
+  </service>
+  <!--
+    This updates your spec file to match the version with was was generated in the
+    tar_scm step
+    -->
+  <service name="set_version" />
+</services>
