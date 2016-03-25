@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk
+# Copyright 2016 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ foreach my $file ( @files ) {
 		chomp($type);
 		if ( $type =~ /Perl|shell script|ASCII|XML\s+document text|HTML document|script text|exported SGML document|Unicode text/i ) {
 			if ( ! $exclude{$file} ) {
-				if ( $file =~ /\.xml\..*\.example$|\.xml$|\.nessus$/ ) {
+				if ( $file =~ /\_service|\.xml\..*\.example$|\.xml$|\.nessus$/ ) {
 					# License starts at line 2
 					is(checklic($file,2), 0, "Is the Apache license applied to $file");
 					$tests++;
