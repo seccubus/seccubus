@@ -37,6 +37,7 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 	perl Makefile.PL
+	./build_jmvc
 	touch $@
 
 install:
