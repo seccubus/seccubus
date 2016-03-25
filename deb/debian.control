@@ -2,7 +2,7 @@ Source: seccubus
 Section: net
 Priority: optional
 Maintainer: Frank Breedijk <fbreedijk@schubergphilis.com>
-Build-Depends: debhelper (>= 4.1.16), default-jre
+Build-Depends: debhelper (>= 4.1.16), default-jdk
 
 Package: seccubus
 Architecture: any
