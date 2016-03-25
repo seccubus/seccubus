@@ -1,91 +1,75 @@
 #!/usr/bin/make -f
-# Adepted from
-# Sample debian/rules that uses debhelper.
-# GNU copyright 1997 to 1999 by Joey Hess.
+# Copyright 2013 Frank Breedijk
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 
-# This is the debhelper compatibility version to use.
-export DH_COMPAT=4
-
-CFLAGS = -g
-ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-CFLAGS += -O0
-else
-CFLAGS += -O2
-endif
-
-build: build-stamp
-build-stamp:
-	dh_testdir
-
-	# Add here commands to compile the package.
-	#./configure
-	#make all
-	mkdir etc
-	touch etc/bla.txt
-	# --- end custom part for compiling
-
-	touch build-stamp
+NAME=seccubus
+BASEDIR=/opt/${NAME}
+HOMEDIR=${BASEDIR}
+BINDIR=${BASEDIR}/bin
+CONFDIR=/etc/${NAME}
+WEBDIR=${BASEDIR}/www
+VARDIR=/var/lib/${NAME}
+USER=${NAME}
+DOCDIR=/usr/share/doc/${NAME}
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
-
-	# Add here commands to clean up after the build process.
-	#make clean || true
-	rm -rf etc
-	# --- end custom part for cleaning up
-
 	dh_clean
 
-install: build
+build: build-stamp
+
+build-stamp:
+	dh_testdir
+	perl Makefile.PL
+	./build_jmvc
+	touch $@
+
+install:
 	dh_testdir
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package
-	# The DESTDIR Has To Be Exactly  /usr/src/packages/BUILD/debian/<nameOfPackage>
-	#make install DESTDIR=/usr/src/packages/BUILD/debian/ace
-	cp -r etc /usr/src/packages/BUILD/debian/obs_autobuild_test
-	# --- end custom part for installing
+	mkdir -p $(CURDIR)/debian/tmp/${BASEDIR}
+	mkdir -p $(CURDIR)/debian/tmp/${DOCDIR}/db
+	mkdir -p $(CURDIR)/debian/tmp/${DOCDIR}/GUI
+	mkdir -p $(CURDIR)/debian/tmp/etc/apache2/conf.d
 
-# Build architecture-independent files here.
-binary-indep: build install
-	# We have nothing to do by default.
+	./install.pl -v --buildroot=$(CURDIR)/debian/tmp \
+	    --confdir=${CONFDIR} --bindir=${BINDIR} --dbdir=${VARDIR} \
+	    --wwwdir=${WEBDIR} --basedir=${HOMEDIR} --docdir=${DOCDIR}
 
-# Build architecture-dependent files here.
-binary-arch: build install
+binary: build install
 	dh_testdir
 	dh_testroot
-#	dh_installdebconf
+	dh_installchangelogs
 	dh_installdocs
 	dh_installexamples
-	dh_installmenu
-#	dh_installlogrotate
-#	dh_installemacsen
-#	dh_installpam
-#	dh_installmime
-#	dh_installinit
-	dh_installcron
+	dh_installinit
 	dh_installman
-	dh_installinfo
-#	dh_undocumented
-	dh_installchangelogs
 	dh_link
 	dh_strip
 	dh_compress
 	dh_fixperms
-#	dh_makeshlibs
 	dh_installdeb
-#	dh_perl
 	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
 
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install
