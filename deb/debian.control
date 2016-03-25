@@ -2,7 +2,7 @@ Source: seccubus
 Section: net
 Priority: optional
 Maintainer: Frank Breedijk <fbreedijk@schubergphilis.com>
-Build-Depends: debhelper (>= 4.1.16), java
+Build-Depends: debhelper (>= 4.1.16), openjdk-6-jre-headless
 
 Package: seccubus
 Architecture: any
