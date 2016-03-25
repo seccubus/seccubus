@@ -2,7 +2,8 @@ Source: seccubus
 Section: net
 Priority: optional
 Maintainer: Frank Breedijk <fbreedijk@schubergphilis.com>
-Build-Depends: debhelper (>= 4.1.16), openjdk-8-jdk
+Build-Depends: debhelper (>= 4.1.16)
+Build-Depends-Indep: default-jdk
 
 Package: seccubus
 Architecture: any
