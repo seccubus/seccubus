@@ -11,7 +11,7 @@
     -->
   <service name="tar_scm">
     <param name="scm">git</param>
-    <param name="url">https://github.com/schubergphilis/seccubus_v2/</param>
+    <param name="url">https://github.com/schubergphilis/seccubus/</param>
     <param name="versionformat">@PARENT_TAG@.@TAG_OFFSET@</param>
     <param name="filename">seccubus</param>
   </service>
