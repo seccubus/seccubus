@@ -37,6 +37,9 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 	perl Makefile.PL
+	if [ `which java|wc -l` -eq 0 ]; then
+	  sudo apt-get install default-jre -y
+	fi
 	./build_jmvc
 	touch $@
 
