@@ -5,7 +5,7 @@ Binary: seccubus
 Maintainer: Frank Breedijk <fbreedijk@schubergphilis.com>
 Architecture: any
 Build-Depends: debhelper (>= 4.1.16)
-Build-Depends-Indeb: default-jre
+Build-Depends-Indep: default-jre
 Files: 
  0 0 seccubus.tar.gz
  
