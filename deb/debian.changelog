@@ -1,8 +1,14 @@
-seccubus (2.0.beta6-1) unstable; urgency=low
+seccubus (2.0.0-1) unstable; urgency=low
 
-  * Updated Relese.
+  * Current release.
   
   -- Frank Breedijk <fbreedijk@schubergphilis.com>  Thu, 11 Oct 2012 23:08:00 +0100
+
+seccubus (2.21.1-1) unstable; urgency=low
+
+  * Got obs to automatically build this after a commit on github
+  
+  -- Frank Breedijk <fbreedijk@schubergphilis.com>  Fri, 25 Mar 2016 23:08:00 +0100
 
 seccubus (2.0.beta2-1) unstable; urgency=low
 
