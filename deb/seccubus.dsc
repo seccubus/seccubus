@@ -1,10 +1,10 @@
 Format: 1.0
 Source: seccubus
-Version: 2.0.rc1
+Version: 0.1-1
 Binary: seccubus
 Maintainer: Frank Breedijk <fbreedijk@schubergphilis.com>
 Architecture: any
 Build-Depends: debhelper (>= 4.1.16)
-DebTransform-Tar: *.tar.gz
-Files:
- 0  0 seccubus-2.0.beta6.B53.tar.gz
+Files: 
+ 0 0 seccubus.tar.gz
+ 

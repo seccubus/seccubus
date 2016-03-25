@@ -1,0 +1,11 @@
+Source: seccubus
+Section: net
+Priority: optional
+Maintainer: Frank Breedijk <fbreedijk@schubergphilis.com>
+Build-Depends: debhelper (>= 4.1.16)
+
+Package: seccubus
+Architecture: any
+Depends: ${shlibs:Depends}, apache2, mysql-server, ruby, libalgorithm-diff-perl, libjson-perl, libxml-simple-perl
+Description: Automated regular vulnerability scanning with delta reporting
+ For more inforamtion see http://www.seccubus.com
