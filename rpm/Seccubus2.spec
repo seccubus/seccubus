@@ -1,12 +1,12 @@
 #
-# Copyright 2015 Frank Breedijk, Peter Slootweg, Glenn ten Cate, blabla1337
-# 
+# Copyright 2016 Peter Slootweg, Frank Breedijk, Glenn ten Cate
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@
 %define scandir		%{installdir}/scanners
 
 Name:		Seccubus
-Version:	2.0.beta5
+Version:	master
 Release:	0
 Summary:	Automated regular vulnerability scanning with delta reporting
 Group:		Network/Tools
@@ -37,7 +37,8 @@ Packager:	Frank Breedijk <fbreedijk@schubergphilis.com>
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:	noarch
 
-Source0:	http://downloads.sourceforge.net/project/%{name}/%{name}_v2/%{name}-%{version}.tar.gz
+Source0:	%{name}-%{version}.tar.gz
+#Source0:	https://github.com/schubergphilis/%{name}_v2/tarball/%{version}
 
 BuildRequires:	java-1.7.0-openjdk
 
@@ -49,20 +50,22 @@ Requires:	perl-libwww-perl
 Requires:	perl-HTML-Tree
 Requires:	perl-Net-IP
 Requires:	perl-REST-Client
-Requires:   perl-CGI
+Requires:   	perl-CGI
 Requires:	httpd
 Requires:	mysql
 Requires:	ruby
 
 %description
-Tool to automatically fire regular vulnerability scans with Nessus, OpenVAS, 
-Nikto or Nmap. 
-Compare results of the current scan with the previous scan and report on the 
-delta in a web interface. Main objective of the tool is to make repeated scans 
+Tool to automatically fire regular vulnerability scans with Nessus, OpenVAS,
+Nikto or Nmap.
+Compare results of the current scan with the previous scan and report on the
+delta in a web interface. Main objective of the tool is to make repeated scans
 more efficient.
-Nessus scanning needs Ruby 
+Nessus scanning needs Ruby
 Nmap scanning needs the Nmap scanner
 Nikto scanning needs the Nikto scanner
+
+See http://www.seccubus.com for more information
 
 %clean
 [ %{buildroot} != "/" ] && %{__rm} -rf %{buildroot}
@@ -70,21 +73,8 @@ Nikto scanning needs the Nikto scanner
 %prep
 %setup -q -n  %{name}-%{version}
 
-#perl Makefile.PL
-mkdir -p %{buildroot}/%{installdir}
-#mkdir -p %{buildroot}/%{webdir}
-#mkdir -p %{buildroot}/%{bindir}
-#mkdir -p %{buildroot}/%{confdir}
-#mkdir -p %{buildroot}/%{vardir}
-mkdir -p %{buildroot}/%{docsdir}/db
-mkdir -p %{buildroot}/%{docsdir}/GUI
-#mkdir -p %{buildroot}/%{moddir}
-#mkdir -p %{buildroot}/%{scandir}
-mkdir -p %{buildroot}/etc/httpd/conf.d
-
 %build
 ./build_jmvc
-#make
 
 %install
 mkdir -p %{buildroot}%{homedir}
@@ -92,7 +82,8 @@ mkdir -p %{buildroot}%{homedir}
 
 cp ChangeLog.md LICENSE.txt NOTICE.txt README.md AUTHORS.txt %{buildroot}/%{docsdir}
 
-cat > %{buildroot}/etc/httpd/conf.d/%{name}.conf <<-EOF
+mkdir -p %{buildroot}/etc/httpd/conf
+cat > %{buildroot}/etc/httpd/conf/%{name}.conf <<-EOF
 #
 # This configuration file maps the Seccubus logs
 # into the URL space. By default these results are
@@ -168,39 +159,55 @@ You can change the db name and username/password, make sure you update
 
 Look for more information on http://www.seccubus.com/documentation/seccubus-v2
 
-Apache on this host now has a configfile /etc/httpd/conf.d/%{name}.conf
+Apache on this host now has a configfile /etc/httpd/conf/%{name}.conf
 The default config makes Seccubus available on http://localhost/seccubus
 (Note: you may have to restart Apache)
 
 ################################################################################
 OEF
+chcon -R --reference=/var/www/htdocs %{webdir}
 chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
+%{_sbindir}/service httpd reload
 ## %post
 
 %postun
 %{_sbindir}/usermod -G $(id -nG apache|sed -e 's/%{seccuser}//' -e 's/  *$//g' -e 's/  */,/g') apache
+%{_sbindir}/service httpd reload
 ## %postun
 
 ################################################################################
 %files
-%defattr(-,%{seccuser}, %{seccuser})
+%defattr(640,%{seccuser}, %{seccuser},750)
 #
-%attr(644, root, root) %config /etc/httpd/conf.d/%{name}.conf
-%attr(644, root, root) %config %{confdir}/config.xml
+%attr(-, root, root) %config /etc/httpd/conf/%{name}.conf
 #
-%{confdir}
-
+%attr(-, root, root) %config %{confdir}
+%attr(-, root, root) %config %{confdir}/config.xml
+#
 %{installdir}
-%attr(644, %{seccuser}, %{seccuser}) %{installdir}/SeccubusV2.pm
-
+#
 %{moddir}
+#
 %{bindir}
-%{docsdir}
+%attr(750,-,-) %{bindir}/*
+#
+%docdir %{docsdir}
+#
 %{scandir}
-%{webdir}
-%{vardir}
+%attr(750,-,-) %{scandir}/*/scan
+%attr(750,-,-) %{scandir}/Nessus/nivil.rb
+%attr(750,-,-) %{scandir}/NessusLegacy/update-nessusrc
+%attr(750,-,-) %{scandir}/NessusLegacy/update-rcs
+#
+%attr(750,-,-) %{webdir}/seccubus/json/*
+#
+%attr(750,-,-) %{vardir}/create*
+#
 
 %changelog
+* Fri Mar 25 2016 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Removed dependancy on MakeMaker
+- Better handling of file permissions
 * Fri Dec 5 2014 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Added dependancies for Nessus6 interface and Assets
 * Tue Sep 23 2014 Frank Breedijk <fbreedijk@schubergphilis.com>
@@ -236,9 +243,9 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 - Added support for rebuilt GUI
 - Removed quadruplicate docs/HTML reference
 * Thu Nov 18 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
-- Fixed missing dependancies 
+- Fixed missing dependancies
 * Thu Nov 17 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
-- Permissions of scanner files are not correct 
+- Permissions of scanner files are not correct
 * Tue Sep 13 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
 - version 2.0.alpha4
 * Thu Aug 25 2011 Peter Slootweg <peter@pxmedia.nl>
