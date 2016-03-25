@@ -13,7 +13,7 @@
     <param name="scm">git</param>
     <param name="url">https://github.com/schubergphilis/Seccubus_v2/</param>
     <param name="versionformat">@PARENT_TAG@.@TAG_OFFSET@</param>
-    <param name="filename">Seccubus</param>
+    <param name="filename">seccubus</param>
   </service>
   <!--
     This block tells the build service to extract your spec files from the tar archive
