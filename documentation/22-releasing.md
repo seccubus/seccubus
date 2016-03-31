@@ -29,7 +29,7 @@ Make sure that README.md reflects all changes since the last released version, M
 
 # Make sure that all unit tests pass
 
-Check ![Travis build status](https://travis-ci.org/schubergphilis/Seccubus_v2.svg?branch=master)
+Check [![Travis build status](https://travis-ci.org/schubergphilis/Seccubus_v2.svg?branch=master)](https://travis-ci.org/schubergphilis/Seccubus_v2/)
 
 # Make sure the package builds on all platforms
 
@@ -48,12 +48,13 @@ To git@github.com:schubergphilis/Seccubus_v2
 ```
 
 *CAUTION:*
+
 * Use qualified tags!
 * Don't prepend a v to the version or OpenSUSE build services will fail!
 
 # Make sure that all unit tests pass (AGAIN!)
 
-Check ![Travis build status](https://travis-ci.org/schubergphilis/Seccubus_v2.svg?branch=master)
+Check [![Travis build status](https://travis-ci.org/schubergphilis/Seccubus_v2.svg?branch=master)](https://travis-ci.org/schubergphilis/Seccubus_v2/)
 
 # Make sure the package builds on all platforms (AGAIN!)
 
@@ -63,11 +64,12 @@ Check [OpenSUSE Build Serice](https://build.opensuse.org/package/show/home:seccu
 
 See [GitHub release page](https://github.com/schubergphilis/Seccubus_v2/releases).
 
-Use the tag you have just created. If you committed after you created the tag you need to [move the tag](http://stackoverflow.com/questions/8044583/how-can-i-move-a-tag-on-a-git-branch-to-a-different-commit)
+Use the tag you have just created. If you committed after you created the tag you need to [move the tag](http://stackoverflow.com/questions/8044583/how-can-i-move-a-tag-on-a-git-branch-to-a-different-commit).
 
 # Download the binary packages
 
 Platform(s):
+
 * [RedHat based RPM](http://download.opensuse.org/repositories/home:/seccubus/RHEL_7/noarch/)
 * [RedHat based SRPM](http://download.opensuse.org/repositories/home:/seccubus/RHEL_7/src/)
 * [Debian based deb amd64](http://download.opensuse.org/repositories/home:/seccubus/xUbuntu_15.10/amd64/)

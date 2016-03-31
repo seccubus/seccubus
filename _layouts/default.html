@@ -10,6 +10,26 @@
 
     <link href="{{ site.baseurl }}/css/app.css" rel="stylesheet" />
     <script src="{{ site.baseurl }}/js/vendor/modernizr.js"></script>
+    <style> html{display:none;} </style>
+    <script>
+        if ( top.location.host == "127.0.0.1:4000") { // Local Jekyll server
+            document.documentElement.style.display = 'block';
+        } else if ( top.location.host == "seccubus.com" ) { // Correct URL
+            if ( top.location.protocol == "https:" ) { // are we on https?
+                document.documentElement.style.display = 'block';
+            } else {
+                top.location = "https://www.seccubus.com/" + top.location.pathname;
+            }
+        } else if ( top.location.host == "seccubus.github.io" ) { // Somehow we ended at origin
+            top.location = "https://www.seccubus.com/" + top.location.pathname;
+            // Redirect to CDN url
+        } else {
+            var r = confirm("It seems like the page at " + top.location + "is trying to frame " + window.location + ".\nAre you ok if I redirect you to " + window.location + " to view this content?");
+            if ( r == true ) {
+                top.location = window.location;
+            }
+        }
+    </script>
     <link rel="alternate" type="application/rss+xml" title="{{ site.name }}" href="{{ site.url }}/feed.xml">
 </head>
 <body class="antialiased hide-extras">

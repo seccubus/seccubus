@@ -1,4 +1,5 @@
 paginate: 10
+gems: [jekyll-paginate]
 
 name: Seccubus
 description: Easy Automated vulnerability scanning and reporting
