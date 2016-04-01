@@ -314,10 +314,6 @@ my $nbe_report = $1;
 
 print "nbe_report: $nbe_report\n" if $verbose >1;
 
-my $result_index = index($nbe_report, "</report>");
-print "result_index file end : $result_index \n" if $verbose >1;
-$nbe_report = substr($nbe_report, 0, $result_index);
-
 # For investigations : in case verbose >2, dump files to disk
 if ($verbose >2) {
 open (Rawfile,">$tempfile.raw") or die "cannot open file $tempfile.raw";
