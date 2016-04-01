@@ -309,12 +309,12 @@ print "Retrieve report result code : $request_code_result \n" if $verbose >0;
 
 
 # extract base64 nbe from xmlresult string
-my $result_index = index($xmlrequest, "\">", 120);
-$result_index +=2;
-print "result_index : $result_index\n" if $verbose >1;
-my $nbe_report=substr($xmlrequest, $result_index);
+$xmlrequest =~ m#\>([^<]+)</report>#;
+my $nbe_report = $1;
 
-$result_index = index($nbe_report, "</report>");
+print "nbe_report: $nbe_report\n" if $verbose >1;
+
+my $result_index = index($nbe_report, "</report>");
 print "result_index file end : $result_index \n" if $verbose >1;
 $nbe_report = substr($nbe_report, 0, $result_index);
 
