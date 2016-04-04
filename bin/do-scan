@@ -69,6 +69,8 @@ print "\nDone\n" unless $quiet;
 exit();
 
 sub help() {
+	my $message = shift;
+	if( $message ) print "Error: $message\n";
 	print "
 Usage: do-scan --workspace <workspace name> --scan <scan name> [--verbose] 
                [--quiet] [--help]
