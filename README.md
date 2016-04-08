@@ -35,11 +35,11 @@ Enhancements
 ------------
 * #308 - Rewrote the OpenVAS scan script with the following objectives:
 
-  * Remove dependancy on the omp utility (because I don't have it on my Mac for starters)
-  * XML parsing is now done with XML::Simple in stead of manually (which is fragile)
-  * Better error handling
+  - Remove dependancy on the omp utility (because I don't have it on my Mac for starters)
+  - XML parsing is now done with XML::Simple in stead of manually (which is fragile)
+  - Better error handling
 
-Improved the release process (see [https://www.seccubus.com/documentation/22-releasing/])
+* Improved the release process (see [https://www.seccubus.com/documentation/22-releasing/])
 
 Bug Fixes
 ---------
