@@ -64,26 +64,28 @@ $nodelete = undef;
 $verbose = 0;
 
 GetOptions (
-	'help'				=> \$help,
+	'workspace|ws=s'	=> \$workspace,
+	'scan|sc=s'			=> \$scan,
+	'server|s=s'		=> \$server,
 	'port=s'			=> \$port,
-	'targetip|tip=s'	=> \$targetip,
-	'targetname|tname=s'=> \$targetname,
 	'user|u=s'			=> \$user,
 	'password|pw=s'		=> \$password,
-	'server|s=s'		=> \$server,
-	'quiet|q!'			=> \$quiet,
-	'sleep=s'			=> \$sleep,
 	'policy|pol=s'		=> \$policy,
-	'verbose|v+'		=> \$verbose,	
-	'nodelete'			=> \$nodelete,
-	'scan|sc=s'			=> \$scan,
+	'target|t=s'		=> \$targetname,
+	'targetip|tip=s'	=> \$targetip,
+	'portlist=s'		=> \$portlistname,
+	'portrange=s'		=> \$portlist,
+	'sleep=s'			=> \$sleep,
 	'timeout=s' 		=> \$timeout,
-	'workspace|ws=s'	=> \$workspace,
-	'portlistname=s'	=> \$portlistname,
-	'portlist=s'		=> \$portlist,
+	'nodelete'			=> \$nodelete,
+	'verbose|v+'		=> \$verbose,	
+	'quiet|q!'			=> \$quiet,
+	'help'				=> \$help,
 );
 
 help() if $help;
+
+$verbose = 0 if $quiet;
 
 #if target name not specified, then it is the ip adress
 $targetname=$targetip unless $targetname;
@@ -98,8 +100,7 @@ help("You must specify an OpenVAS server") unless $server;
 $timestamp = make_timestamp();
 print "timestamp : $timestamp\n" if $verbose > 0;
 
-my $tempscan = "seccubus.OV6.$scan.$timestamp";
-my $tempfile = "/tmp/$tempscan.$$";
+my $tempfile = "seccubus.OV6.$scan.$timestamp.$$";
 
 my $config = get_config();
 
@@ -351,26 +352,41 @@ sub help {
 	print "Error: $message\n";
 
 	print "
-	--help : display this message
-	--port : OpenVAS manager port (default 9390)
-	--targetip or --tip : ip adress of scan target 
-	--targetname or --tname : name of the target existing in OpenVas6, or to be created in OpenVas6 if does not already exist
-	--portlist : list of comma separated portlist
-	--portlistname : name of the portlist to be used or created
-	--user or --u OpenVas6 username
-	--password or --pw OpenVas6 password
-	--reporthtml or --rhtml : also retrieve scan report in html format
-	--reportpdf  or --rpdf : also retrieve scan report in pdf format
-	--reporttxt or --rtxt  : also retrieve scan report in txt format
-	--server or --s : specify OpenVAS6 server adress
-	--quiet or --q : quiet mode, do not print output
-	--sleep : seconds to sleep between polls of OpenVAS manager (default : 10)
-	--policy or --pol : OpenVas6 scan policy 
-	--verbose --v : verbose mode. -v -v : level 2 debug. -v -v -v : max debug level.
-	--nodelete : do not delete temporary files located in /tmp.
-	--scan or --sc : Seccubus scan name
-	--timeout : scan timeout in seconds : if scan duration exeed this time, exit. Default is 14400 seconds (ie 4 hours)
-	--workspace or --ws : Seccubus workspace name.
+Usage: scan     --workspace=<seccubus workspace> --scan=<seccubus scan>
+		        --server=<OpenVAS server> [--port=<OpenVAS server port>
+		        --user=<OpenVAS user> --password=<OpenVAS password>
+		        --policy=<OpenVAS Scan Config name> [--target=<OpenVAS target>]
+		        [--targetip=<IP(s) to scan>] [--portlist=<OpenVAS port listname>]
+		        [--portrange=<Port range(s) to scan>] [--sleep=<sleeptime>]
+		        [--timeout=<timeout>] [--nodelete] [--verbose] [--quiet] [--help]
+
+--workspace (-ws) - Seccubus workspace the scan should be in
+--scan (-sc)	  - Seccubus scan the data should be saved in
+--server          - IP address or hostname of OpenVAS scanner
+--port            - TCP port the OpenVAS scanner is listening on (optional, 
+                    defaults=9390)
+--user            - OpenVAS user name
+--password        - OpenVAS password
+--policy          - OpenVAS policy (aka Scan Config) to use for scanning
+--target          - Name of the OpenVAS target to use when scanning (if the 
+	                target doesn't exist, it will be created using this name.
+	                optional, default=<targetip)
+--targetip        - Definition of the IPs to scan. (optional if target is 
+	                specified and exists)
+--portlist        - Name of the OpenVAS portlist to use when scanning (if 
+	                the portlist doesn't existm it will be created using this
+	                name. optional, default=use the portlist from the target 
+	                copy the name from portrange)
+--portrange       - OpenVAS port range to scan (optional if a target or portlist
+	                is specified and it exists)
+--sleep           - Seconds to sleep between polls of the API  (optional, 
+	                default=10) 
+--timeout         - # Seconds after which to abort a scan (optional, 
+	                default=14400 (4 hours))
+--nodelete        - Don't erase temporary files
+--verbose (-v)    - Be verbose during execution (repeat to increase verbosity)
+--quiet (-q)      - Don't print output
+--help (-h)       - Print this message	
 	";
 
 	exit(1);
