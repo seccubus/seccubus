@@ -1,1 +1,1 @@
-OpenVAS6 vulnerability scanner via omp interface
+OpenVAS6+ vulnerability scanner via omp interface

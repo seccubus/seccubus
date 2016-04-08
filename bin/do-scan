@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk
+# Copyright 2016 Frank Breedijk, Floris Kraak
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -69,6 +69,8 @@ print "\nDone\n" unless $quiet;
 exit();
 
 sub help() {
+	my $message = shift;
+	if( $message ) { print "Error: $message\n" };
 	print "
 Usage: do-scan --workspace <workspace name> --scan <scan name> [--verbose] 
                [--quiet] [--help]

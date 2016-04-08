@@ -1,5 +1,5 @@
 <!--
-Copyright 2014 Fabien Guillaume (FGuillaume), Frank Breedijk
+Copyright 2016 Fabien Guillaume, Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,46 +21,42 @@ Usage :
 <br>
 minimum arguments : 
 <p>
--s &lt;server> -u &lt;user> --pw &lt;password> --policy &lt;policy> --targetip $HOSTS
+Usage: scan     --workspace=&lt;seccubus workspace&gt; --scan=&lt;seccubus scan&gt;
+		        --server=&lt;OpenVAS server&gt; [--port=&lt;OpenVAS server port&gt;
+		        --user=&lt;OpenVAS user&gt; --password=&lt;OpenVAS password&gt;
+		        --policy=&lt;OpenVAS Scan Config name&gt; [--target=&lt;OpenVAS target&gt;]
+		        [--targetip=&lt;IP(s) to scan&gt;] [--portlist=&lt;OpenVAS port listname&gt;]
+		        [--portrange=&lt;Port range(s) to scan&gt;] [--sleep=&lt;sleeptime&gt;]
+		        [--timeout=&lt;timeout&gt;] [--nodelete] [--verbose] [--quiet] [--help]
 <p>
 <br><br>
 Parameters description :
 <ul>
-<li> --help : display help message
-<li> --port : OpenVAS manager port (default 9390)
-<li> --targetip or --tip : ip adress of scan target 
-<li> --targetname or --tname : name of the target existing in OpenVas6, or to be created in OpenVas6 if does not already exist
-<li> --user or --u OpenVas6 username
-<li> --password or --pw OpenVas6 password
-<li> --reporthtml or --rhtml : also retrieve scan report in html format
-<li> --reportpdf  or --rpdf : also retrieve scan report in pdf format
-<li> --reporttxt or --rtxt  : also retrieve scan report in txt format
-<li> --server or --s : specify OpenVAS6 server adress
-<li> --quiet or --q : quiet mode, do not print output
-<li> --sleep : seconds to sleep between polls of OpenVAS manager (default : 10)
-<li> --policy or --pol : OpenVas6 scan policy 
-<li> --verbose --v : display additionnal output messages. <br> -v -v : level 2 debug. <br> -v -v -v : max debug level.
-<li> --nodelete : do not delete temporary files located in /tmp.
-<li> --timeout : scan timeout in seconds : if scan duration exeed this time, exit. Default is 14400 seconds (ie 4 hours)
-</ul>
-<br><br>
-This script first check if specified target name and ip correspond to a target host in OpenVas6, if not it create it. 
-<br> If no target name is provided, it is defaulted to the ip adress of the target.
-<br> After the corresponding OpenVas6 target id is retrieved, an OpenVas6 scan is initiated with provided policy. 
-<br> Scan report is retrieved in IVIL format.
-In addition, html, pdf and txt format can also be retrieved if specified.
-<p>
-<br><br>
-Limitation : 
-<ul>
-<li> this script do not manage multiple hosts
-<li> this script currently allow only one ip per host target while OpenVas6 allow multiple ip for one host target 
-<li> this script may create host target and scans in OpenVAS6, but not delete them.
-</ul>
-<br><br>
-Todo : 
-<p>
-- Manage multiple host for one Seccubus scan.
-<br>- Allow creation and scan of host target with more than one ip
-<br>- Allow management of target port list during target creation
-<br>- Allow deletion of scan and host target from OpenVas6 -> storage of scans and targets in Seccubus only.
+<li>--workspace (-ws) - Seccubus workspace the scan should be in
+<li>--scan (-sc)	  - Seccubus scan the data should be saved in
+<li>--server          - IP address or hostname of OpenVAS scanner
+<li>--port            - TCP port the OpenVAS scanner is listening on (optional, 
+                    defaults=9390)
+<li>--user            - OpenVAS user name
+<li>--password        - OpenVAS password
+<li>--policy          - OpenVAS policy (aka Scan Config) to use for scanning
+<li>--target          - Name of the OpenVAS target to use when scanning (if the 
+	                target doesn't exist, it will be created using this name.
+	                optional, default=&lt;targetip&gt;)
+<li>--targetip        - Definition of the IPs to scan. (optional if target is 
+	                specified and exists)
+<li>--portlist        - Name of the OpenVAS portlist to use when scanning (if 
+	                the portlist doesn't existm it will be created using this
+	                name. optional, default=use the portlist from the target 
+	                copy the name from portrange)
+<li>--portrange       - OpenVAS port range to scan (optional if a target or portlist
+	                is specified and it exists)
+<li>--sleep           - Seconds to sleep between polls of the API  (optional, 
+	                default=10) 
+<li>--timeout         - # Seconds after which to abort a scan (optional, 
+	                default=14400 (4 hours))
+<li>--nodelete        - Don't erase temporary files
+<li>--verbose (-v)    - Be verbose during execution (repeat to increase verbosity)
+<li>--quiet (-q)      - Don't print output
+<li>--help (-h)       - Print this message
+</ul>	
