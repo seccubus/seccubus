@@ -25,6 +25,27 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+08-04-2016 - 2.22 - OpenVAS intergration fixed
+==============================================
+
+Enhancements
+------------
+* Improved the release process (see [https://www.seccubus.com/documentation/22-releasing/])
+* #308 - Rewrote the OpenVAS scan script with the following objectives:
+
+  - Remove dependancy on the omp utility (because I don't have it on my Mac for starters)
+  - XML parsing is now done with XML::Simple in stead of manually (which is fragile)
+  - Better error handling
+
+
+Bug Fixes
+---------
+* #289 - Online version test needs a unit test
+* #269 - Correct handling of multiple address nodes in NMap XML
+* #298 - OpenVAS6: fix scan and import to ivil 
+* #297 - Port field abused to store port state
+* #307 - OpenVAS integration was broken
+
 28-10-2015 - 2.20 - What is the issue?
 ======================================
 This release introduces a major new feature that has been in my head since the beginning of Seccubus version 2: Issues.
