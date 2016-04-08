@@ -100,7 +100,7 @@ help("You must specify an OpenVAS server") unless $server;
 $timestamp = make_timestamp();
 print "timestamp : $timestamp\n" if $verbose > 0;
 
-my $tempfile = "seccubus.OV6.$scan.$timestamp.$$";
+my $tempfile = "/tmp/seccubus.OV6.$scan.$timestamp.$$";
 
 my $config = get_config();
 
@@ -185,7 +185,7 @@ if ( exists $xml->{target}->{$targetname} ) {
 		die "Need to create a new target '$targetname', but there was no target IP range specified.";
 	}
 	if ( ! $portlist_id ) {
-		print "Need to create a new target '$targetname', but there was no port list specified.\nPort list will default to OpenVAS Default" if $verbose;		
+		print "Need to create a new target '$targetname', but there was no port list specified.\nPort list will default to OpenVAS Default\n" if $verbose;		
 	}
 	$xml = omp_request("
 		<create_target>
@@ -290,7 +290,7 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
 # Load the results
-my ( $workspace_id, $scan_id, $run_id) = load_ivil("$tempfile.ivil.xml", "OpenVAS6", "", $timestamp, $workspace );
+my ( $workspace_id, $scan_id, $run_id) = load_ivil("$tempfile.ivil.xml", "OpenVAS6", "", $timestamp, $workspace, $scan, $verbose );
 # Process the results
 process_status($workspace_id, $scan_id, $run_id, $verbose);
 
