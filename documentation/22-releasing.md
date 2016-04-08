@@ -64,7 +64,7 @@ Check [OpenSUSE Build Serice](https://build.opensuse.org/package/show/home:seccu
 
 See [GitHub release page](https://github.com/schubergphilis/Seccubus_v2/releases).
 
-Use the tag you have just created. If you committed after you created the tag you need to [move the tag](http://stackoverflow.com/questions/8044583/how-can-i-move-a-tag-on-a-git-branch-to-a-different-commit).
+Use the tag you have just created. If you committed after you created the tag you need to [delete the tag](https://nathanhoad.net/how-to-delete-a-remote-git-tag) first.
 
 # Download the binary packages
 
