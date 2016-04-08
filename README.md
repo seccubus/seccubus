@@ -33,8 +33,8 @@ xx-xx-xxx - 2.23 - xxx
 
 Enhancements
 ------------
-* #xxx - xxx
+* #310 - Root CA for v2.seccubus.com ([LetsEncrypt](https://letsencrypt.org/)) is now pinned for the version check
 
 Bug Fixes
 ---------
-* #xxx - xxx
+* #310 - Version check does not like my certificate

@@ -26,6 +26,11 @@ use LWP::UserAgent;
 use JSON;
 use Data::Dumper;
 
+my $config = get_config();
+
+$ENV{PERL_LWP_SSL_CA_FILE} = "$config->{paths}->{configdir}/v2.seccubus.com.bundle";
+#die Dumper $config;
+
 #my (
    #);
 
