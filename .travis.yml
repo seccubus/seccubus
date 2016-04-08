@@ -13,3 +13,5 @@ sudo: false
 notifications:
   slack:
     secure: XWiapPB78I09dke7/JTe22nmOVEuWbQl183iCP/8ML3MFAUZ1SnckMSKyqVMxtYZpFrBGHtY3xFjikG1148KS74/HVW6WREV4agDqHRI5FN8z2LQjgs1cD2svbK2uVxYN+a1oubX+mdZG2TTXfejN23P+HAwMo/8rNUcx+Qfb7M=
+git:
+  depth: 1000000000
