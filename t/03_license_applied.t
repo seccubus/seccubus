@@ -51,6 +51,7 @@ my %exclude = (
 	"./Makefile"		=> "Generated",
 	"./junit_output.xml"	=> "Build file",
 	"./etc/config.xml"	=> "Local config file",
+	"./etc/v2.seccubus.com.bundle"	=> "Certificate bundle"
 );
 my $tests = 0;
 
