@@ -74,7 +74,7 @@ foreach my $file ( @files ) {
 	) { #skip certain files
 		my $type = `file '$file'`;
 		chomp($type);
-		if ( $type =~ /Perl|shell script|ASCII|XML\s+document text|HTML document|script text|exported SGML document|Unicode text/i ) {
+		if ( $type =~ /Perl|shell script|ASCII|XML\s+document text|HTML document|script text|exported SGML document|Unicode text|PEM certificate/i ) {
 			if ( ! $exclude{$file} ) {
 				if ( $file =~ /\_service|\.xml\..*\.example$|\.xml$|\.nessus$/ ) {
 					# License starts at line 2
