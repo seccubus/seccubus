@@ -9,7 +9,7 @@ timezone: Europe/Amsterdam
 
 permalink: pretty
 paginate_path: "news/:num/"
-highlighter: pygments
+highlighter: rouge
 markdown: redcarpet
 redcarpet:
     extensions:
