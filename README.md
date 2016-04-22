@@ -42,3 +42,4 @@ Bug Fixes
 * #311 - RPM: Config could not be found after version upgrade to 2.22
 * #313 - RPM: Seccubus.conf not placed in correct directory (v2.22)
 * #314 - RPM: v2.22 /opt/seccubus/www/dev should not exist
+* #315 - RPM: v2.22 dependancy mysql-server is not installed 

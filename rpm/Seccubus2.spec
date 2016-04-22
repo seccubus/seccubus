@@ -53,6 +53,7 @@ Requires:	perl-REST-Client
 Requires:   perl-CGI
 Requires:	httpd
 Requires:	mysql
+Requires:   mysql-server
 Requires:	ruby
 
 %description
