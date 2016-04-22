@@ -40,3 +40,4 @@ Bug Fixes
 ---------
 * #310 - Version check does not like my certificate
 * #311 - RPM: Config could not be found after version upgrade to 2.22
+* #312 - RPM: Seccubus.conf not placed in correct directory (v2.22)

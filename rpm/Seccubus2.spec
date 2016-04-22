@@ -82,8 +82,8 @@ mkdir -p %{buildroot}%{homedir}
 
 cp ChangeLog.md LICENSE.txt NOTICE.txt README.md AUTHORS.txt %{buildroot}/%{docsdir}
 
-mkdir -p %{buildroot}/etc/httpd/conf
-cat > %{buildroot}/etc/httpd/conf/%{name}.conf <<-EOF
+mkdir -p %{buildroot}/etc/httpd/conf.d
+cat > %{buildroot}/etc/httpd/conf.d/%{name}.conf <<-EOF
 #
 # This configuration file maps the Seccubus logs
 # into the URL space. By default these results are
@@ -159,7 +159,7 @@ You can change the db name and username/password, make sure you update
 
 Look for more information on http://www.seccubus.com/documentation/seccubus-v2
 
-Apache on this host now has a configfile /etc/httpd/conf/%{name}.conf
+Apache on this host now has a configfile /etc/httpd/conf.d/%{name}.conf
 The default config makes Seccubus available on http://localhost/seccubus
 (Note: you may have to restart Apache)
 
@@ -179,7 +179,7 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 %files
 %defattr(640,%{seccuser}, %{seccuser},750)
 #
-%attr(-, root, root) %config /etc/httpd/conf/%{name}.conf
+%attr(-, root, root) %config /etc/httpd/conf.d/%{name}.conf
 #
 %config %{confdir}
 #
