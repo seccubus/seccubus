@@ -31,6 +31,8 @@ For more information visit [www.seccubus.com]
 22-04-2016 - 2.24 - RPM and cert improvements
 =============================================
 
+Not everything went perfect upgrading the build process, so we had to tweak the RPM a little and fix an error in the UpToDate.pl script.
+
 Enhancements
 ------------
 * #310 - Root CA for v2.seccubus.com ([LetsEncrypt](https://letsencrypt.org/)) is now pinned for the version check
