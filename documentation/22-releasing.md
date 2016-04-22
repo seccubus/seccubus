@@ -39,7 +39,7 @@ Check [OpenSUSE Build Serice](https://build.opensuse.org/package/show/home:seccu
 
 ```
 $ git tag -a 2.22 -m "This will be release 2.22"
-$ git push origin 2.22
+$ git push --follow-tags
 Counting objects: 1, done.
 Writing objects: 100% (1/1), 179 bytes | 0 bytes/s, done.
 Total 1 (delta 0), reused 0 (delta 0)
