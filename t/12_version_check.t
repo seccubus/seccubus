@@ -40,7 +40,7 @@ eval {
     $tests++;
 };
 
-isnt($$json[0]->{status},'Error',"Status does not return an error");
+isnt($$json[0]->{status},'Error',"Status does not return an error. Message: $$json[0]->{message}");
 $tests++;
 isnt($$json[0]->{message},'',"Status has a message: $$json[0]->{message}");
 $tests++;
