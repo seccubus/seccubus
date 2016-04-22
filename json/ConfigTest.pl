@@ -89,7 +89,7 @@ require SeccubusDB;
 my $dbh = SeccubusDB::open_database();
 
 if ( ! $dbh ) {
-	result($data, "Database login", "Unable to log into the the database. Either the definitions in '$config_file' are incorrect or you need to create '$config->{database}->{engine}' database '$config->{database}->{database}' on host '$config->{database}->{host}' and grant user '$config->{database}->{user}' the rights to login in with the specified password and use the database", "Error");
+	result($data, "Database login", "Unable to log into the the database. Either the definitions in '$config_file' are incorrect or you need to create '$config->{database}->{engine}' database '$config->{database}->{database}' on host '$config->{database}->{host}' and grant user '$config->{database}->{user}' the rights to login in with the specified password.\nFor mysql execute the following command: create database $config->{database}->{database};grant all privileges on $config->{database}->{database}.* to $config->{database}->{user} identified by '<password>';exit", "Error");
 	bye($data);
 } else {
 	result($data, "Database login", "Login to database '$config->{database}->{database}' on host '$config->{database}->{host}' with the credentials from '$config_file', was successful", "OK");
