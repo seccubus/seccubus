@@ -181,8 +181,7 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 #
 %attr(-, root, root) %config /etc/httpd/conf/%{name}.conf
 #
-%attr(-, root, root) %config %{confdir}
-%attr(-, root, root) %config %{confdir}/config.xml
+%config %{confdir}
 #
 %{installdir}
 #

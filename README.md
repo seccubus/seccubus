@@ -39,3 +39,4 @@ Enhancements
 Bug Fixes
 ---------
 * #310 - Version check does not like my certificate
+* #311 - RPM: Config could not be found after version upgrade to 2.22
