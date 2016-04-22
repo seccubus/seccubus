@@ -184,6 +184,7 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 %config %{confdir}
 #
 %{installdir}
+%exclude %{webdir}/dev
 #
 %{moddir}
 #
