@@ -28,20 +28,15 @@ For more information visit [www.seccubus.com]
 ![Travis build status](https://travis-ci.org/schubergphilis/Seccubus_v2.svg?branch=master)
 
 ---
-22-04-2016 - 2.24 - RPM and cert improvements
+xx-xx-2016 - 2.25 - 
 =============================================
 
-Not everything went perfect upgrading the build process, so we had to tweak the RPM a little and fix an error in the UpToDate.pl script.
+...
 
 Enhancements
 ------------
-* #310 - Root CA for v2.seccubus.com ([LetsEncrypt](https://letsencrypt.org/)) is now pinned for the version check
-* #316 - Clarify create database and grant statement in ConfigTest.pl
+* #xxx - 
 
 Bug Fixes
 ---------
-* #310 - Version check does not like my certificate
-* #311 - RPM: Config could not be found after version upgrade to 2.22
-* #313 - RPM: Seccubus.conf not placed in correct directory (v2.22)
-* #314 - RPM: v2.22 /opt/seccubus/www/dev should not exist
-* #315 - RPM: v2.22 dependancy mysql-server is not installed 
+* #xxx - 
