@@ -30,6 +30,7 @@ use Carp;
 
 use JSON;
 use REST::Client;
+use LWP::Simple;
 use Data::Dumper;
 
 sub help();
@@ -70,18 +71,18 @@ $userAgent = "seccubus-ssllabs v0.1";
 $noClearCache = 0;
 
 GetOptions(	
-	    'hosts|h=s'				=> \$hosts,
-	    'workspace|ws=s'			=> \$workspace,
-	    'scan|sc=s'				=> \$scan,
+	    'hosts|h=s'			=> \$hosts,
+	    'workspace|ws=s'	=> \$workspace,
+	    'scan|sc=s'			=> \$scan,
 		'api|a=s'			=> \$api,
 		'sleep|s=s'			=> \$sleep,
-		'nosslcheck!'			=> \$nosslcheck,
-		'useragent=s'			=> \$userAgent,
-		'no-clear-cache!'		=> \$noClearCache,
-		'from-cache!'			=> \$fromCache,
+		'nosslcheck!'		=> \$nosslcheck,
+		'useragent=s'		=> \$userAgent,
+		'no-clear-cache!'	=> \$noClearCache,
+		'from-cache!'		=> \$fromCache,
 		'nodelete!'			=> \$nodelete,
 		'publish'			=> \$publish,
-		'verbose|v+'			=> \$verbose,
+		'verbose|v+'		=> \$verbose,
 		'quiet|q!'			=> \$quiet,
 		'help'				=> \$help,
 	  );
@@ -135,9 +136,9 @@ if ( $noClearCache || $fromCache ) {
 }
 
 
-# Setup REST client
-my $client = REST::Client->new(host => $api);
-my $ua = $client->getUseragent();
+# Setup LWP::UserAgent client
+#my $client = REST::Client->new(host => $api);
+my $ua = LWP::UserAgent->new();
 $ua->agent("$userAgent ");
 # Disable max return size set by REST::Client
 $ua->max_size(undef);
@@ -146,35 +147,40 @@ $ua->max_size(undef);
 # Test if SSL labs is active
 my $json;
 print "calling info\n" if $verbose > 1;
-$client->GET(
-	"info", 
+my $response = $ua->get(
+	"$api/info", 
 	{ 	
 		'Content-Type' => 'application/json',
 		'Accept' => 'application/json',
 	}
 );
-
-die "Unable to contact SSL labs at $api" if ($client->responseCode() != 200);
-$json = decode_json($client->responseContent());
-
+die "Unable to contact SSL labs at $api" if (! $response->is_success);
+$json = decode_json($response->decoded_content());
 # Verbose 3 or higher is true debug mode
+
 if ( $verbose > 2 ) {  
 	print "*** QUERY ***\n";
 	print "$api/info\n";
 	print "*** RESPONSE HEADERS *** \n";
-	foreach my $header ( $client->responseHeaders()) {
-		print "$header : " . $client->responseHeader($header) . "\n";
-	}
+	my $headers = $response->headers();
+	print $headers->as_string();
 	print "*** RESPONSE DATA ***\n";
-	print $client->responseContent();
+	print $response->decoded_content();
 }
 
+
+
 my $scanner_ver = "v$json->{engineVersion} (criteria version $json->{criteriaVersion})";
-print "Scans will be performed by SSL Labs v$json->{engineVersion} (criteria version $json->{criteriaVersion}) - www.ssllabs.com\n" unless $quiet;
 my $maxScans = $json->{clientMaxAssessments};
-print "Maximum number of concurrent assessments: $maxScans\n" if $verbose;
 my $coolOff = $json->{newAssessmentCoolOff};
-print "Cool off period before starting a new assessment: $coolOff ms\n" if $verbose;
+unless($quiet) {
+	print "Scans will be performed by SSL Labs v$json->{engineVersion} (criteria version $json->{criteriaVersion}) - www.ssllabs.com\n" unless $quiet;
+	print "Maximum number of concurrent assessments: $maxScans\n" if $verbose;
+	print "Cool off period before starting a new assessment: $coolOff ms\n" if $verbose;
+	print "\n";
+	print join "\n", @{$json->{messages}};
+	print "\n";
+}
 
 my $active = 9999;
 my $results = {};
@@ -221,36 +227,40 @@ while ( $active ) {
 			# Do the actual API call
 			my $url = "analyze?" . join "&", @params;
 			print "Calling $url\n" if $verbose > 1;
-			$client->GET(
-				$url, 
+			my $response = $ua->get(
+				"$api/$url", 
 				{ 	
 					'Content-Type' => 'application/json',
 					'Accept' => 'application/json',
 				}
 			);
 
+
 			# Verbose 3 or higher is true debug mode
 			if ( $verbose > 2 ) {  
 				print "*** QUERY ***\n";
-				print "$api$url\n";
+				print "$api/info\n";
 				print "*** RESPONSE HEADERS *** \n";
-				foreach my $header ( $client->responseHeaders()) {
-					print "$header : " . $client->responseHeader($header) . "\n";
-				}
+				my $headers = $response->headers();
+				print $headers->as_string();
 				print "*** RESPONSE DATA ***\n";
-				print $client->responseContent();
+				print $response->decoded_content();
 			}
 
-			# If the API tells us the number of parallel assessments has changed
-			if ( $client->responseHeader('X-ClientMaxAssessments') && $client->responseHeader('X-ClientMaxAssessments') != $maxScans ) {
-				$maxScans = $client->responseHeader('X-ClientMaxAssessments');
+			my $newMaxScans = $response->headers()->header('X-ClientMaxAssessments');
+			if ( $newMaxScans && $newMaxScans != $maxScans ) {
+				$maxScans = $newMaxScans;
 				print "API has sent new max scan limit of $maxScans, adjusting...\n" unless $quiet;
 			}
 
 			# Handle responses: 200 - All OK
-			$json = decode_json($client->responseContent());
-			if ($client->responseCode == 200) {
-				# Store result an continue normal timing
+			eval {
+				$json = decode_json($response->decoded_content());
+			} or do {
+				die "Unable to decode JSON from: " . $response->decoded_content();
+			};
+			if ($response->code() == 200) {
+				# Store result and continue normal timing
 				$extraSleep = 0;
 				print "$host -> $json->{status}\n" if $verbose;
 				$results->{$host} = $json;
@@ -262,13 +272,13 @@ while ( $active ) {
 
 				}
 			# Other statuses are a problem
-			} elsif ($client->responseCode == 429 ) {
+			} elsif ( $response->code() == 429 ) {
 				print "Request rate too high, sleeping 5 minutes before next request\n" unless $quiet;
 				$extraSleep = 300;
-			} elsif ( $client->responseCode == 503 ) {
+			} elsif ( $response->code() == 503 ) {
 				print "Service not available, sleeping 15 minutes before next request\n" unless $quiet;
 				$extraSleep = 900;
-			} elsif ( $client->responseCode == 529 ) {
+			} elsif ( $response->code() == 529 ) {
 				print "Service overloaded, sleeping 30 minutes before next request\n" unless $quiet;
 				$extraSleep = 1800;
 			} else {
@@ -277,7 +287,7 @@ while ( $active ) {
 				foreach my $error ( @{$json->{errors}} ) {
 					$msg .= "$error->{message}\n";
 				}
-				print "Received error. Error code ". $client->responseCode() . " messages:\n$msg" unless $quiet;
+				print "Received error. Error code ". $response->code() . " messages:\n$msg" unless $quiet;
 				print "Host: $host, status: ERROR - done\n" unless $quiet;
 
 				# Atrifically construct an ERROR API reply
@@ -661,5 +671,4 @@ sub make_timestamp() {
 
 	return "$year$month$day$hour$minute$second";
 }
-
 
