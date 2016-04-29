@@ -49,8 +49,7 @@ Requires:	perl-XML-Simple
 Requires:	perl-libwww-perl
 Requires:	perl-HTML-Tree
 Requires:	perl-Net-IP
-Requires:	perl-REST-Client
-Requires:   perl-CGI
+Requires:   perl(CGI)
 Requires:	httpd
 Requires:	mysql
 Requires:   mysql-server
@@ -178,7 +177,7 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 
 ################################################################################
 %files
-%defattr(640,%{seccuser}, %{seccuser},750)
+%defattr(640,%{seccuser},%{seccuser},750)
 #
 %attr(-, root, root) %config /etc/httpd/conf.d/%{name}.conf
 #

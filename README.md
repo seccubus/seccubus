@@ -35,7 +35,8 @@ xx-xx-2016 - 2.25 -
 
 Enhancements
 ------------
-* #xxx - 
+* #320 - Nessus6 scanner now downloads PDF and HTML version of report too
+* #312 - SSLLabs and Nessus6 scanner no longer depend on perl-REST-Client
 
 Bug Fixes
 ---------

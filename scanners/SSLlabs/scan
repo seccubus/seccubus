@@ -142,18 +142,14 @@ my $ua = LWP::UserAgent->new();
 $ua->agent("$userAgent ");
 # Disable max return size set by REST::Client
 $ua->max_size(undef);
-
+# Default headers
+$ua->default_header('Content-Type' => 'application/json');
+$ua->default_header('Accept' => 'application/json');
 
 # Test if SSL labs is active
 my $json;
 print "calling info\n" if $verbose > 1;
-my $response = $ua->get(
-	"$api/info", 
-	{ 	
-		'Content-Type' => 'application/json',
-		'Accept' => 'application/json',
-	}
-);
+my $response = $ua->get("$api/info");
 die "Unable to contact SSL labs at $api" if (! $response->is_success);
 $json = decode_json($response->decoded_content());
 # Verbose 3 or higher is true debug mode
@@ -227,13 +223,7 @@ while ( $active ) {
 			# Do the actual API call
 			my $url = "analyze?" . join "&", @params;
 			print "Calling $url\n" if $verbose > 1;
-			my $response = $ua->get(
-				"$api/$url", 
-				{ 	
-					'Content-Type' => 'application/json',
-					'Accept' => 'application/json',
-				}
-			);
+			my $response = $ua->get("$api/$url");
 
 
 			# Verbose 3 or higher is true debug mode
