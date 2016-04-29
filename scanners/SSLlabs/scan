@@ -29,7 +29,6 @@ use Getopt::Long;
 use Carp;
 
 use JSON;
-use REST::Client;
 use LWP::Simple;
 use Data::Dumper;
 
