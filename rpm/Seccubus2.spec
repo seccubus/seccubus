@@ -14,7 +14,7 @@
 # limitations under the License.
 
 # OS detection
-%define is_el5 %(grep -qi 'release 5' /etc/redhat-release && echo 1 || echo 0)
+%define is_rh5 %(grep -qi 'Tikanga' /etc/redhat-release && echo 1 || echo 0)
 
 # Seccubus
 %define installdir	/opt/seccubus
@@ -45,7 +45,7 @@ BuildArch:	noarch
 Source0:	%{name}-%{version}.tar.gz
 #Source0:	https://github.com/schubergphilis/%{name}_v2/tarball/%{version}
 
-%if 0%{?is_el5}
+%if 0%{?is_rh5}
 BuildRequires:	java-1.6.0-openjdk
 %else
 BuildRequires:	java-1.7.0-openjdk
