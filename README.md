@@ -34,6 +34,7 @@ xx-xx-2016 - 2.25 -
 
 Enhancements
 ------------
+* #319 - RPM now builds and installs under CentOs/RHEL 5 too
 * #320 - Nessus6 scanner now downloads PDF and HTML version of report too
 * #312 - SSLLabs and Nessus6 scanner no longer depend on perl-REST-Client
 * #322 - Removed old scanners: Nessus v5 and earlier, OpenVAS v5 and earlier
