@@ -216,9 +216,6 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 #
 %{scandir}
 %attr(750,%{seccuser},%{seccuser}) %{scandir}/*/scan
-%attr(750,%{seccuser},%{seccuser}) %{scandir}/Nessus/nivil.rb
-%attr(750,%{seccuser},%{seccuser}) %{scandir}/NessusLegacy/update-nessusrc
-%attr(750,%{seccuser},%{seccuser}) %{scandir}/NessusLegacy/update-rcs
 #
 %attr(750,%{seccuser},%{seccuser}) %{webdir}/seccubus/json/*
 #
@@ -229,6 +226,7 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 * Mon May 2 2016 Frank Breedijk <fbreedijk@schubergphilis.com>
 - RPM now builds on RHEL5 and CentOS5 too. 
 - Removed RPM lint warnings
+- Removed old scanners
 * Fri Mar 25 2016 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Removed dependancy on MakeMaker
 - Better handling of file permissions
