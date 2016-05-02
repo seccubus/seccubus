@@ -40,7 +40,6 @@ WriteMakefile (
 				'Socket'				=> 0.1,
 				'Net::SMTP'				=> 0.1,
 				'HTML::TreeBuilder'		=> 0.1,
-				'REST::Client'			=> 0.1,
 				'Net::IP'				=> 1.0
 			},
 	PM		=> { 
