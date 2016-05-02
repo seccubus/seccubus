@@ -70,8 +70,8 @@ Use the tag you have just created. If you committed after you created the tag yo
 
 Platform(s):
 
-* [RedHat based RPM](http://download.opensuse.org/repositories/home:/seccubus/RHEL_7/noarch/)
-* [RedHat based SRPM](http://download.opensuse.org/repositories/home:/seccubus/RHEL_7/src/)
+* [RedHat based RPM](http://download.opensuse.org/repositories/home:/seccubus/CentOS_5/noarch/)
+* [RedHat based SRPM](http://download.opensuse.org/repositories/home:/seccubus/CentOS_5/src/)
 * [Debian based deb amd64](http://download.opensuse.org/repositories/home:/seccubus/xUbuntu_15.10/amd64/)
 * [Debian based deb i386](http://download.opensuse.org/repositories/home:/seccubus/xUbuntu_15.10/i386/)
 * [Debian based deb all](http://download.opensuse.org/repositories/home:/seccubus/xUbuntu_15.10/all/) (Might be empty)
