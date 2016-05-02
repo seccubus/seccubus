@@ -33,8 +33,8 @@ Name:		Seccubus
 Version:	master
 Release:	0
 Summary:	Automated regular vulnerability scanning with delta reporting
-Group:		Network/Tools
-License:	GPL
+Group:		Applications/Internet
+License:	ASL 2.0
 URL:		http://www.seccubus.com
 
 Packager:	Frank Breedijk <fbreedijk@schubergphilis.com>
@@ -59,10 +59,10 @@ Requires:	perl(XML::Simple)
 Requires:	perl-libwww-perl
 Requires:	perl(HTML::Tree)
 Requires:	perl(Net::IP)
-Requires:   perl(CGI)
+Requires:	perl(CGI)
 Requires:	httpd
 Requires:	mysql
-Requires:   mysql-server
+Requires:	mysql-server
 Requires:	ruby
 
 %description
@@ -81,12 +81,13 @@ See http://www.seccubus.com for more information
 [ %{buildroot} != "/" ] && %{__rm} -rf %{buildroot}
 
 %prep
-%setup -q -n  %{name}-%{version}
+%setup -q -n %{name}-%{version}
 
 %build
 ./build_jmvc
 
 %install
+rm -rf %{buildroot}
 mkdir -p %{buildroot}%{homedir}
 ./install.pl --buildroot=%{buildroot} --confdir=%{confdir} --bindir=%{bindir} --dbdir=%{vardir} --wwwdir=%{webdir} --basedir=%{homedir} --docdir=%{docsdir}
 
@@ -181,7 +182,7 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 ## %post
 
 %postun
-%{_sbindir}/usermod -G $(id -nG apache|sed -e 's/%{seccuser}//' -e 's/  *$//g' -e 's/  */,/g') apache
+%{_sbindir}/usermod -G $(id -nG apache|sed -e 's/%{seccuser}//' -e 's/ +$//g' -e 's/ +/,/g') apache
 %{_sbindir}/service httpd reload
 ## %postun
 
@@ -189,9 +190,9 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 %files
 %defattr(640,%{seccuser},%{seccuser},750)
 #
-%attr(-, root, root) %config /etc/httpd/conf.d/%{name}.conf
+%attr(-, root, root) %config(noreplace) /etc/httpd/conf.d/%{name}.conf
 #
-%config %{confdir}
+%config(noreplace) %{confdir}
 #
 %{installdir}
 %exclude %{webdir}/dev
@@ -199,19 +200,19 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 %{moddir}
 #
 %{bindir}
-%attr(750,-,-) %{bindir}/*
+%attr(750,%{seccuser},%{seccuser}) %{bindir}/*
 #
 %docdir %{docsdir}
 #
 %{scandir}
-%attr(750,-,-) %{scandir}/*/scan
-%attr(750,-,-) %{scandir}/Nessus/nivil.rb
-%attr(750,-,-) %{scandir}/NessusLegacy/update-nessusrc
-%attr(750,-,-) %{scandir}/NessusLegacy/update-rcs
+%attr(750,%{seccuser},%{seccuser}) %{scandir}/*/scan
+%attr(750,%{seccuser},%{seccuser}) %{scandir}/Nessus/nivil.rb
+%attr(750,%{seccuser},%{seccuser}) %{scandir}/NessusLegacy/update-nessusrc
+%attr(750,%{seccuser},%{seccuser}) %{scandir}/NessusLegacy/update-rcs
 #
-%attr(750,-,-) %{webdir}/seccubus/json/*
+%attr(750,%{seccuser},%{seccuser}) %{webdir}/seccubus/json/*
 #
-%attr(750,-,-) %{vardir}/create*
+%attr(750,%{seccuser},%{seccuser}) %{vardir}/create*
 #
 
 %changelog
@@ -231,7 +232,7 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 * Tue Mar 19 2013 Frank Breedijk <fbreedijk@schubergphilis.com>
 - New DB version
 * Mon Dec 24 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
-- Fixed permissions of files in  %{webdir}/seccubus/json/updateWorkspace.pl
+- Fixed permissions of files in % { webdir } /seccubus/json/updateWorkspace.pl
 * Sat Oct 05 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Building the rpm is now part of an automated build process. Unless there
   are any changes to this file in the Git repository changes will not be
