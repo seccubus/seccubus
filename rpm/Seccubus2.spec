@@ -12,6 +12,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# OS detection
+%define is_el5 %(grep -qi 'release 5' /etc/redhat-release && echo 1 || echo 0)
+
+# Seccubus
 %define installdir	/opt/seccubus
 %define homedir		%{installdir}
 %define bindir		%{installdir}/bin
@@ -40,15 +45,20 @@ BuildArch:	noarch
 Source0:	%{name}-%{version}.tar.gz
 #Source0:	https://github.com/schubergphilis/%{name}_v2/tarball/%{version}
 
+%if 0%{?is_el5}
+BuildRequires:	java-1.6.0-openjdk
+%else
 BuildRequires:	java-1.7.0-openjdk
+%endif
 
-Requires:	perl-Algorithm-Diff
-Requires:	perl-DBD-mysql
-Requires:	perl-JSON
-Requires:	perl-XML-Simple
+Requires:	perl(Algorithm::Diff)
+Requires:	perl(DBI)
+Requires:	perl(DBD::mysql)
+Requires:	perl(JSON)
+Requires:	perl(XML::Simple)
 Requires:	perl-libwww-perl
-Requires:	perl-HTML-Tree
-Requires:	perl-Net-IP
+Requires:	perl(HTML::Tree)
+Requires:	perl(Net::IP)
 Requires:   perl(CGI)
 Requires:	httpd
 Requires:	mysql
