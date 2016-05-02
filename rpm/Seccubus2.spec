@@ -51,13 +51,13 @@ BuildRequires:	java-1.6.0-openjdk
 BuildRequires:	java-1.7.0-openjdk
 %endif
 
-Requires:	perl(Algorithm::Diff)
+Requires:	perl-Algorithm-Diff
 Requires:	perl(DBI)
 Requires:	perl(DBD::mysql)
-Requires:	perl(JSON)
+Requires:	perl-JSON
 Requires:	perl(XML::Simple)
 Requires:	perl-libwww-perl
-Requires:	perl(HTML::Tree)
+Requires:	perl-HTML-Tree
 Requires:	perl(Net::IP)
 Requires:	perl(CGI)
 Requires:	httpd
