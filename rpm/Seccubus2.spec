@@ -216,9 +216,6 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 #
 %{scandir}
 %attr(750,%{seccuser},%{seccuser}) %{scandir}/*/scan
-%attr(750,%{seccuser},%{seccuser}) %{scandir}/Nessus/nivil.rb
-%attr(750,%{seccuser},%{seccuser}) %{scandir}/NessusLegacy/update-nessusrc
-%attr(750,%{seccuser},%{seccuser}) %{scandir}/NessusLegacy/update-rcs
 #
 %attr(750,%{seccuser},%{seccuser}) %{webdir}/seccubus/json/*
 #
