@@ -40,4 +40,4 @@ Enhancements
 
 Bug Fixes
 ---------
-* #xxx - 
+* #323 - Non-critical warnings in unit tests fixed
