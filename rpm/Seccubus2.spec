@@ -14,7 +14,7 @@
 # limitations under the License.
 
 # OS detection
-%define is_rh5 %(grep -qi 'Tikanga' /etc/redhat-release && echo 1 || echo 0)
+%define is_rh5 %(grep -qi 'Red Hat Enterprise Linux Server release 5' /etc/redhat-release && echo 1 || echo 0)
 
 # Seccubus
 %define installdir	/opt/seccubus
@@ -57,13 +57,23 @@ Requires:	perl(DBD::mysql)
 Requires:	perl(JSON)
 Requires:	perl(XML::Simple)
 Requires:	perl-libwww-perl
-Requires:	perl(HTML::Tree)
 Requires:	perl(Net::IP)
 Requires:	perl(CGI)
+Requires:	perl(CGI::Carp)
+Requires:	perl(Exporter)
+Requires:	perl(Getopt::Long)
+Requires:	perl(Data::Dumper)
+Requires:	perl(HTML::Entities)
+Requires:	perl(LWP::Simple)
+Requires:	perl(MIME::Base64)
+Requires:	perl(File::Basename)
+Requires:	perl(Socket)
+Requires:	perl(Net::SMTP)
+Requires:	perl(Net::IP)
+
 Requires:	httpd
 Requires:	mysql
 Requires:	mysql-server
-Requires:	ruby
 
 %description
 Tool to automatically fire regular vulnerability scans with Nessus, OpenVAS,
@@ -206,9 +216,6 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 #
 %{scandir}
 %attr(750,%{seccuser},%{seccuser}) %{scandir}/*/scan
-%attr(750,%{seccuser},%{seccuser}) %{scandir}/Nessus/nivil.rb
-%attr(750,%{seccuser},%{seccuser}) %{scandir}/NessusLegacy/update-nessusrc
-%attr(750,%{seccuser},%{seccuser}) %{scandir}/NessusLegacy/update-rcs
 #
 %attr(750,%{seccuser},%{seccuser}) %{webdir}/seccubus/json/*
 #
@@ -219,6 +226,7 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 * Mon May 2 2016 Frank Breedijk <fbreedijk@schubergphilis.com>
 - RPM now builds on RHEL5 and CentOS5 too. 
 - Removed RPM lint warnings
+- Removed old scanners
 * Fri Mar 25 2016 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Removed dependancy on MakeMaker
 - Better handling of file permissions
