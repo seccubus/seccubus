@@ -100,7 +100,7 @@ See http://www.seccubus.com for more information
 rm -rf %{buildroot}
 mkdir -p %{buildroot}%{homedir}
 ./install.pl --buildroot=%{buildroot} --confdir=%{confdir} --bindir=%{bindir} --dbdir=%{vardir} --wwwdir=%{webdir} --basedir=%{homedir} --docdir=%{docsdir}
-rm -f %{webdir}/dev
+rm -f %{buildroot}/%{webdir}/dev
 
 cp ChangeLog.md LICENSE.txt NOTICE.txt README.md AUTHORS.txt %{buildroot}/%{docsdir}
 
