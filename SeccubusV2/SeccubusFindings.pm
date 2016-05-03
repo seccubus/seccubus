@@ -982,14 +982,31 @@ sub create_finding_change($:) {
 	my $finding_id = shift or die "No fidnings_id given";
 	my $user_id = get_user_id($ENV{REMOTE_USER});
 
-	my @data = sql( "return"	=> "array",
+	my @new_data = sql( "return"	=> "array",
 			"query"		=> "select status, finding, remark, severity, run_id from findings where id = ?",
 			"values"	=> [ $finding_id ],
 		      );
-	sql( "return"	=> "id",
-	     "query"	=> "insert into finding_changes(finding_id, status, finding, remark, severity, run_id, user_id) values (?, ?, ?, ?, ?, ?, ?)",
-	     "values"	=> [ $finding_id, @data, $user_id ],
-	   );
+	my @old_data = sql( "return"	=> "array",
+			"query"		=> "
+				select status, finding, remark, severity, run_id from finding_changes 
+				where finding_id = ?
+				order by id DESC
+				limit 1",
+			"values"	=> [ $finding_id ],
+	);
+	my $changed = 0;
+	foreach my $i ( (0..3) ) {
+		if ( $old_data[$i] ne $new_data[$i] ) {
+			$changed = 1;
+			last;
+		}
+	}
+	if ( $changed ) {
+		sql( "return"	=> "id",
+		     "query"	=> "insert into finding_changes(finding_id, status, finding, remark, severity, run_id, user_id) values (?, ?, ?, ?, ?, ?, ?)",
+		     "values"	=> [ $finding_id, @new_data, $user_id ],
+		   );
+	}
 }
 
 =head2 process_status
