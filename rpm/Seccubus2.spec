@@ -100,6 +100,7 @@ See http://www.seccubus.com for more information
 rm -rf %{buildroot}
 mkdir -p %{buildroot}%{homedir}
 ./install.pl --buildroot=%{buildroot} --confdir=%{confdir} --bindir=%{bindir} --dbdir=%{vardir} --wwwdir=%{webdir} --basedir=%{homedir} --docdir=%{docsdir}
+rm -f %{webdir}/dev
 
 cp ChangeLog.md LICENSE.txt NOTICE.txt README.md AUTHORS.txt %{buildroot}/%{docsdir}
 
@@ -206,6 +207,7 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 #
 %{installdir}
 %exclude %{webdir}/dev
+%exclude %{webdir}/dev/
 #
 %{moddir}
 #
@@ -244,7 +246,7 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 - New DB version
 * Mon Dec 24 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Fixed permissions of files in % { webdir } /seccubus/json/updateWorkspace.pl
-* Sat Oct 05 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
+* Fri Oct 05 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Building the rpm is now part of an automated build process. Unless there
   are any changes to this file in the Git repository changes will not be
   recorded here
@@ -261,10 +263,10 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 - Moved old GUi to oldstyle
 - New GUI is now main GUI
 - Version 2.0.beta1
-* Thu Nov 23 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
+* Wed Nov 23 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Added support for rebuilt GUI
 - Removed quadruplicate docs/HTML reference
-* Thu Nov 18 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
+* Fri Nov 18 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Fixed missing dependancies
 * Thu Nov 17 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Permissions of scanner files are not correct
