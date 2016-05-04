@@ -191,7 +191,7 @@ if ( exists $xml->{target}->{$targetname} ) {
 		<create_target>
 			<name>$targetname</name>
 			<hosts>$targetip</hosts>
-			<port_list>$portlist_id</port_list>
+			<port_list id=\"$portlist_id\"/>
 		</create_target>
 	");
 	if ( $xml->{status} eq "201" ) {

@@ -43,3 +43,4 @@ Bug Fixes
 ---------
 * #323 - Non-critical warnings in unit tests fixed
 * #305 - Finding change records are generated even if a finding did not actually change
+* #327 - OpenVAS target is always created with the default portlist
