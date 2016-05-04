@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2015 Frank Breedijk, Steve Launius, Petr
+# Copyright 2016 Frank Breedijk, Steve Launius, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -995,7 +995,7 @@ sub create_finding_change($:) {
 			"values"	=> [ $finding_id ],
 	);
 	my $changed = 0;
-	foreach my $i ( (0..3) ) {
+	foreach my $i ( (0..4) ) {
 		if ( $old_data[$i] ne $new_data[$i] ) {
 			$changed = 1;
 			last;

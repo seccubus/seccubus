@@ -81,8 +81,10 @@ if (`hostname` =~ /^sbpd/) {
 			is($$json[1]->{finding},"A","Finding was preserved"); $tests++;
 		}
 	}
-	$json = webcall("getFindingHistory.pl", "workspaceId=100", "findingId=4");
-	is(1,@$json,"Should have 1 change record"); $tests++;
+	foreach my $id ( 4..7 ) {
+		$json = webcall("getFindingHistory.pl", "workspaceId=100", "findingId=$id");
+		is(1,@$json,"Finding $id should have 1 change record"); $tests++;
+	}
 	is($$json[0]->{user},"importer","Change 1 is made by importer"); $tests++;
 	$json = webcall("updateFinding.pl", "workspaceId=100", "id=4", "status=1", "remark=");
 	$json = webcall("updateFinding.pl", "workspaceId=100", "id=5", "status=2", "remark=");
@@ -91,6 +93,10 @@ if (`hostname` =~ /^sbpd/) {
 
 	$json = webcall("getFindings.pl","workspaceId=100","scanIds[]=1");
 	is(7,@$json,"7 findings returned"); $tests++;
+	foreach my $id ( 1..4 ) {
+		$json = webcall("getFindingHistory.pl", "workspaceId=100", "findingId=$id");
+		is(@$json,2,"Finding $id should have 2 change records"); $tests++;
+	}
 	foreach my $id ( (5..7) ) {
 		$json = webcall("getFindingHistory.pl", "workspaceId=100", "findingId=$id");
 		is(2,@$json,"Should have 2 change records"); $tests++;
