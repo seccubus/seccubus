@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk
+# Copyright 20016 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -142,13 +142,13 @@ sub hasauthors {
 	my $head = `head -20 '$file'|grep Copyright`;
 	$head =~ /Copyright (\d+)/;
 	my $year = $1;
-
+	
 	$ENV{PERLBREW_ROOT} = "" unless $ENV{PERLBREW_ROOT};
 	my $blame = `git blame '$file' 2>&1`;
 	my %authors = ();
 	my $cyear = 0;
 
-	unless ( $blame =~ /no such path.*in HEAD/ ) {
+	unless ( $blame =~ /no such path.*in HEAD/ && $file ne "./t/03_license_applied.t" ) {
 		foreach my $line ( split /\n/, $blame ) {
 			$line =~ /\((.*?)\s+(\d\d\d\d)\-\d\d\-\d\d/;
 			my $name = $1;
@@ -164,11 +164,11 @@ sub hasauthors {
 				$tests++;
 			}
 		}
-		unless( $travis ) {
+		#unless( $travis ) {
 			# Travis CI uses a truncated history (-depth=50), so this gives skewed results
 			is($year, $cyear, "Copyright year of file: $file");
 			$tests++;
-		}
+		#}
 	}
 
 	return 1;
