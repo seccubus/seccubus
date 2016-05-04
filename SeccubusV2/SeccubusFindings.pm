@@ -916,10 +916,13 @@ sub update_finding(@) {
 		if ( exists $arg{remark} ) {
 			if ( $arg{overwrite} ) {
 				$query .= ", remark = ? ";
+				push @values, $arg{remark};
 			} else {
-				$query .= ", remark = CONCAT_WS('\n', remark, ?) ";
+				if ( $arg{remark} ) {
+					$query .= ", remark = CONCAT_WS('\n', remark, ?) ";
+					push @values, $arg{remark};
+				}
 			}
-			push @values, $arg{remark};
 		}
 		$query .= "where id = ? and workspace_id = ?";
 		sql( "return"	=> "handle",
@@ -996,7 +999,7 @@ sub create_finding_change($:) {
 	);
 	my $changed = 0;
 	foreach my $i ( (0..4) ) {
-		if ( $old_data[$i] ne $new_data[$i] ) {
+		if ( $old_data[$i] ne $new_data[$i] || ( defined($old_data[$i]) && !defined($new_data[$i]) ) ||  ( ! defined($old_data[$i]) && defined($new_data[$i]) ) ) {
 			$changed = 1;
 			last;
 		}

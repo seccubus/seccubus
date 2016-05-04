@@ -30,28 +30,33 @@ my %exclude = (
 	"./ChangeLog.md"	=> "No license needed",
 	"./README.md"		=> "No license needed",
 	"./docs/Development_environment.md"
-				=> "No license needed",
+						=> "No license needed",
 	"./docs/Development_on_MacOS.md"
-				=> "No license needed",
+						=> "No license needed",
 	"./LICENSE.txt"		=> "It is the license itself",
 	"./MANIFEST"		=> "Auto generated",
 	"./MYMETA.json"		=> "Auto generated",
 	"./MYMETA.yml"		=> "Auto generated",
-	"Makefile"		=> "Auto generated",
+	"Makefile"			=> "Auto generated",
 	"./jmvc/seccubus/production.css"	
-				=> "Compiled file",
+						=> "Compiled file",
 	"./jmvc/seccubus/production.js" 	
-				=> "Compiled file",
+						=> "Compiled file",
 	"./scanners/NessusLegacy/update-nessusrc"
-				=> "Third party software",
-	"./deb/debian.changelog"	=> "No comments supported",
-	"./deb/debian.control"	=> "No comments supported",
+						=> "Third party software",
+	"./deb/debian.changelog"	
+						=> "No comments supported",
+	"./deb/debian.control"	
+						=> "No comments supported",
 	"./deb/debian.docs"	=> "No comments supported",
-	"./deb/seccubus.dsc"	=> "No comments supported",
+	"./deb/seccubus.dsc"	
+						=> "No comments supported",
 	"./Makefile"		=> "Generated",
-	"./junit_output.xml"	=> "Build file",
+	"./junit_output.xml"	
+						=> "Build file",
 	"./etc/config.xml"	=> "Local config file",
-	"./etc/v2.seccubus.com.bundle"	=> "Certificate bundle"
+	"./etc/v2.seccubus.com.bundle"	
+						=> "Certificate bundle"
 );
 my $tests = 0;
 
