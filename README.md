@@ -43,3 +43,4 @@ Bug Fixes
 ---------
 * #323 - Non-critical warnings in unit tests fixed
 * #305 - Finding change records are generated even if a finding did not actually change
+* #328 - CopyRight year unit test appears to be broken on Travis
