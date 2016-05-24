@@ -29,7 +29,7 @@ use Getopt::Long;
 use Carp;
 
 use JSON;
-use LWP::Simple;
+use LWP::UserAgent;
 use Data::Dumper;
 
 sub help();
