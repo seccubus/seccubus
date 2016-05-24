@@ -125,7 +125,7 @@ if ( ! $hosts_file ) {
 
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose > 1;
-my $tempscan = "seccubus.$scan.$timestamp";
+my $tempscan = "seccubus.$workspace.$scan.$timestamp";
 my $tempfile = "/tmp/$tempscan.$$";
 my $nivil = "$config->{paths}->{scanners}\/Nessus\/nivil.rb";
 my $nessus2ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nessus2ivil";
@@ -455,9 +455,21 @@ sub rest_call($$$;$$$){
 		print "GET to https://$server:$port$geturi\n" if $verbose > 2;
 		$r = $ua->get("https://$server:$port$geturi");
 	} elsif ( $method eq "delete" ) {
-		$r = $ua->delete("https://$server:$port$uri", $param);
-	} else {
-		confess "Unknown rest method $method";		
+		print "DELETE to https://$server:$port$uri\n" if $verbose > 2;
+		if ( ! defined $ua->{delote} ) {
+			print "Monkey patching LWP::UserAgent because of RedHat\n" if $verbose;
+			package LWP::UserAgent;
+				# Copy of the LPW:UserAgent delete code from: 
+				# https://github.com/libwww-perl/libwww-perl/commit/f6147731bbc1267d13b6815c33226d76870b3c35
+				sub delote {
+				    require HTTP::Request::Common;
+				    my($self, @parameters) = @_;
+				    my @suff = $self->_process_colonic_headers(\@parameters,1);
+				    return $self->request( HTTP::Request::Common::DELETE( @parameters ), @suff );
+				}
+			package main;			
+		}			
+		$r = $ua->delote("https://$server:$port$uri", $param);
 	}
 	print "Server response : " . $r->decoded_content() . "\n" if $verbose > 2;
 
