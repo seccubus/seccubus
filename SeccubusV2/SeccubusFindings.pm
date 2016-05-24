@@ -1202,24 +1202,14 @@ sub diff_finding($$$$$;) {
 	my $prev_run =shift;
 
 	if ( may_read($workspace_id) ) {
-		my @findings = sql( return	=> "array",
-				    query	=> "SELECT id
+		my @current = sql( return	=> "array",
+				    query	=> "SELECT finding
 				    		    FROM findings
 						    WHERE id = ? 
 						    AND workspace_id = ?",
 				    values	=> [ $finding_id, $workspace_id ],
 				  );
-		die "There is no finding '$finding_id' in workspace '$workspace_id'" unless @findings;
-		my @current = sql( 
-			return	=> "array",
-			query	=> "SELECT finding
-			   		    FROM finding_changes
-					    WHERE finding_id = ?
-					    AND run_id = ?
-					    ORDER BY time DESC
-					    LIMIT 1",
-			values	=> [ $finding_id, $this_run ],
-		);
+		die "Unable to load current finding, ws: $workspace_id, id: $finding_id, run: $this_run" unless ( @current );
 		my @prev = sql( return	=> "array",
 				query	=> "SELECT finding
 				   	    FROM finding_changes
@@ -1229,7 +1219,6 @@ sub diff_finding($$$$$;) {
 					    LIMIT 1",
 				   values	=> [ $finding_id, $prev_run ],
 				 );
-		die "Unable to load current finding, ws: $workspace_id, id: $finding_id, run: $this_run" unless ( @current );
 		if ( @prev ) {
 			if ( $current[0] ne $prev[0] ) {
 				# There is a difference
