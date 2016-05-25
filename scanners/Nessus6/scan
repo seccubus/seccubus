@@ -232,7 +232,7 @@ do {
 
 	if ($r->code() eq 200) {
 		my $vulncount = @{$json->{vulnerabilities}};
-		print "Scan status: $json->{info}->{status}. $vulncount findings on $json->{info}->{hostcount} host(s)\n" if $verbose;
+		print "Scan status: $json->{info}->{status}. $vulncount findings on $json->{info}->{hostcount} host(s). Running for " . \n" if $verbose;
 	} else {
 		die "Scan status request returned " . $r->code();
 	} 
@@ -456,7 +456,7 @@ sub rest_call($$$;$$$){
 		$r = $ua->get("https://$server:$port$geturi");
 	} elsif ( $method eq "delete" ) {
 		print "DELETE to https://$server:$port$uri\n" if $verbose > 2;
-		if ( defined $ua->{delote} ) {
+		if ( defined $ua->{delete} ) {
 			$r = $ua->delete("https://$server:$port$uri", $param);
 		} else {
 			print "Delete not supported on this platform\n" unless $quiet;
