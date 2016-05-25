@@ -232,7 +232,7 @@ do {
 
 	if ($r->code() eq 200) {
 		my $vulncount = @{$json->{vulnerabilities}};
-		print "Scan status: $json->{info}->{status}. $vulncount findings on $json->{info}->{hostcount} host(s). Running for " . \n" if $verbose;
+		print "Scan status: $json->{info}->{status}. $vulncount findings on $json->{info}->{hostcount} host(s).\n" if $verbose;
 	} else {
 		die "Scan status request returned " . $r->code();
 	} 
