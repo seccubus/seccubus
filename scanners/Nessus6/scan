@@ -232,7 +232,7 @@ do {
 
 	if ($r->code() eq 200) {
 		my $vulncount = @{$json->{vulnerabilities}};
-		print "Scan status: $json->{info}->{status}. $vulncount findings on $json->{info}->{hostcount} host(s)\n" if $verbose;
+		print "Scan status: $json->{info}->{status}. $vulncount findings on $json->{info}->{hostcount} host(s).\n" if $verbose;
 	} else {
 		die "Scan status request returned " . $r->code();
 	} 
@@ -456,20 +456,11 @@ sub rest_call($$$;$$$){
 		$r = $ua->get("https://$server:$port$geturi");
 	} elsif ( $method eq "delete" ) {
 		print "DELETE to https://$server:$port$uri\n" if $verbose > 2;
-		if ( ! defined $ua->{delote} ) {
-			print "Monkey patching LWP::UserAgent because of RedHat\n" if $verbose;
-			package LWP::UserAgent;
-				# Copy of the LPW:UserAgent delete code from: 
-				# https://github.com/libwww-perl/libwww-perl/commit/f6147731bbc1267d13b6815c33226d76870b3c35
-				sub delote {
-				    require HTTP::Request::Common;
-				    my($self, @parameters) = @_;
-				    my @suff = $self->_process_colonic_headers(\@parameters,1);
-				    return $self->request( HTTP::Request::Common::DELETE( @parameters ), @suff );
-				}
-			package main;			
-		}			
-		$r = $ua->delote("https://$server:$port$uri", $param);
+		if ( defined $ua->{delete} ) {
+			$r = $ua->delete("https://$server:$port$uri", $param);
+		} else {
+			print "Delete not supported on this platform\n" unless $quiet;
+		}
 	}
 	print "Server response : " . $r->decoded_content() . "\n" if $verbose > 2;
 
