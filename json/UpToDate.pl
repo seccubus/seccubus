@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk
+# Copyright 2016 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,6 +25,11 @@ use SeccubusV2;
 use LWP::UserAgent;
 use JSON;
 use Data::Dumper;
+
+my $config = get_config();
+
+$ENV{PERL_LWP_SSL_CA_FILE} = "$config->{paths}->{configdir}/v2.seccubus.com.bundle";
+#die Dumper $config;
 
 #my (
    #);

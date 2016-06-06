@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk
+# Copyright 2016 Frank Breedijk, Andrey Danin, blabla1337, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -73,6 +73,7 @@ my $nmap = XMLin($infile,
 			   					 'osmatch', 
 			   					 'port', 
 			   					 'extrareasons',
+			   					 'address',
 			   					 'hostname',
 			   					 'extraports',
 			   					 'script',
@@ -148,7 +149,21 @@ print "Iterating over hosts\n" if $verbose;
 
 foreach my $host ( @{$nmap->{host}} ) {
 	# Lets get the basic host parameters first
-	my $ip = $host->{address}->{addr};	# This values stores the IP address
+	my $ip = "";
+	for my $addr ( @{$host->{address}} ) {
+		print "Found addr $addr->{addr} with type $addr->{addrtype}\n" if $verbose;
+		if ( $addr->{addrtype} eq "ipv6" ) {
+			$ip = $addr->{addr};	# This values stores the IP address
+		} elsif ( $addr->{addrtype} eq "ipv4" ) {
+			$ip = $addr->{addr};	# This values stores the IP address
+		}
+	}
+
+	if ( $ip eq "" ) {
+		print "Failed to find IPv4/IPv6 address for host '$host->{hostnames}->{hostname}[0]->{name}'\n";
+		next;
+	}
+
 	print "IP: $ip\n" if $verbose;
 	foreach my $item ( keys %{$host} ) {
 		# O.K. lets go through all findings
@@ -182,8 +197,8 @@ foreach my $host ( @{$nmap->{host}} ) {
 			}
 		} elsif ( $item eq 'ports') {
 			foreach my $port ( @{$host->{$item}->{'port'}} ) {
-				$finding->{port} = "$port->{portid}/$port->{protocol} - $port->{state}->{state}";
-				$finding->{finding} = "Port         : $port->{portid}/$port->{protocol}\n";
+				$finding->{port} = "$port->{portid}/$port->{protocol}";
+				$finding->{finding} = "Port         : $port->{portid}/$port->{protocol} - $port->{state}->{state}\n";
 				$finding->{finding} .= "State        : $port->{state}->{state}\n";
 				$finding->{finding} .= "Confirmed by : $port->{state}->{reason} (TTL: $port->{state}->{reason_ttl})\n";
 				$finding->{finding} .= "\n";

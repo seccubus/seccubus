@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk
+# Copyright 2016 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,18 +17,32 @@
 # ------------------------------------------------------------------------------
 
 use strict;
-use Test::More tests => 3;
+use Test::More;
 use Data::Dumper;
 use JSON;
 
+my $tests = 0;
 my $cmd = "perl -MSeccubusV2 -I SeccubusV2 json/UpToDate.pl ";
 $cmd .= join " ", @_;
 ok($cmd, "Running command $cmd");
+$tests++;
 my @result = split /\r?\n/, `$cmd`;
 while ( shift @result ) {};
-my $json = decode_json(join "\n", @result);
+my $json = [{ status => 'Error', message => 'JSON was not updated by UpToDate.pl' }];
+eval {
+    $json = decode_json(join "\n", @result);
+    1;
+} or do {
+    my $e = $@;
+    fail("Something went wrong: $e\n");
+    $tests++;
+    fail("Something went wrong: " . join "\n", @result);
+    $tests++;
+};
 
-isnt($$json[0]->{status},'Error',"Status does not return an error");
+isnt($$json[0]->{status},'Error',"Status does not return an error. Message: $$json[0]->{message}");
+$tests++;
 isnt($$json[0]->{message},'',"Status has a message: $$json[0]->{message}");
+$tests++;
 
-done_testing();
+done_testing($tests);

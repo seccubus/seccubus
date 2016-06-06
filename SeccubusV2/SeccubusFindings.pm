@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2015 Frank Breedijk, Steve Launius, Petr
+# Copyright 2016 Frank Breedijk, Steve Launius, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -916,10 +916,13 @@ sub update_finding(@) {
 		if ( exists $arg{remark} ) {
 			if ( $arg{overwrite} ) {
 				$query .= ", remark = ? ";
+				push @values, $arg{remark};
 			} else {
-				$query .= ", remark = CONCAT_WS('\n', remark, ?) ";
+				if ( $arg{remark} ) {
+					$query .= ", remark = CONCAT_WS('\n', remark, ?) ";
+					push @values, $arg{remark};
+				}
 			}
-			push @values, $arg{remark};
 		}
 		$query .= "where id = ? and workspace_id = ?";
 		sql( "return"	=> "handle",
@@ -982,14 +985,31 @@ sub create_finding_change($:) {
 	my $finding_id = shift or die "No fidnings_id given";
 	my $user_id = get_user_id($ENV{REMOTE_USER});
 
-	my @data = sql( "return"	=> "array",
+	my @new_data = sql( "return"	=> "array",
 			"query"		=> "select status, finding, remark, severity, run_id from findings where id = ?",
 			"values"	=> [ $finding_id ],
 		      );
-	sql( "return"	=> "id",
-	     "query"	=> "insert into finding_changes(finding_id, status, finding, remark, severity, run_id, user_id) values (?, ?, ?, ?, ?, ?, ?)",
-	     "values"	=> [ $finding_id, @data, $user_id ],
-	   );
+	my @old_data = sql( "return"	=> "array",
+			"query"		=> "
+				select status, finding, remark, severity, run_id from finding_changes 
+				where finding_id = ?
+				order by id DESC
+				limit 1",
+			"values"	=> [ $finding_id ],
+	);
+	my $changed = 0;
+	foreach my $i ( (0..4) ) {
+		if ( $old_data[$i] ne $new_data[$i] || ( defined($old_data[$i]) && !defined($new_data[$i]) ) ||  ( ! defined($old_data[$i]) && defined($new_data[$i]) ) ) {
+			$changed = 1;
+			last;
+		}
+	}
+	if ( $changed ) {
+		sql( "return"	=> "id",
+		     "query"	=> "insert into finding_changes(finding_id, status, finding, remark, severity, run_id, user_id) values (?, ?, ?, ?, ?, ?, ?)",
+		     "values"	=> [ $finding_id, @new_data, $user_id ],
+		   );
+	}
 }
 
 =head2 process_status
@@ -1182,24 +1202,14 @@ sub diff_finding($$$$$;) {
 	my $prev_run =shift;
 
 	if ( may_read($workspace_id) ) {
-		my @findings = sql( return	=> "array",
-				    query	=> "SELECT id
+		my @current = sql( return	=> "array",
+				    query	=> "SELECT finding
 				    		    FROM findings
 						    WHERE id = ? 
 						    AND workspace_id = ?",
 				    values	=> [ $finding_id, $workspace_id ],
 				  );
-		die "There is no finding '$finding_id' in workspace '$workspace_id'" unless @findings;
-		my @current = sql( 
-			return	=> "array",
-			query	=> "SELECT finding
-			   		    FROM finding_changes
-					    WHERE finding_id = ?
-					    AND run_id = ?
-					    ORDER BY time DESC
-					    LIMIT 1",
-			values	=> [ $finding_id, $this_run ],
-		);
+		die "Unable to load current finding, ws: $workspace_id, id: $finding_id, run: $this_run" unless ( @current );
 		my @prev = sql( return	=> "array",
 				query	=> "SELECT finding
 				   	    FROM finding_changes
@@ -1209,7 +1219,6 @@ sub diff_finding($$$$$;) {
 					    LIMIT 1",
 				   values	=> [ $finding_id, $prev_run ],
 				 );
-		die "Unable to load current finding, ws: $workspace_id, id: $finding_id, run: $this_run" unless ( @current );
 		if ( @prev ) {
 			if ( $current[0] ne $prev[0] ) {
 				# There is a difference

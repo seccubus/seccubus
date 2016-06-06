@@ -1,5 +1,5 @@
 #!/usr/bin/make -f
-# Copyright 2013 Frank Breedijk
+# Copyright 2016 Frank Breedijk
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 	perl Makefile.PL
+	./build_jmvc
 	touch $@
 
 install:

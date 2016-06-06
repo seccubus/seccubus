@@ -26,7 +26,6 @@ WriteMakefile (
                 'Exporter'				=> 5.58,
 				'ExtUtils::MakeMaker'	=> 6.30,
 				'Getopt::Long'			=> 2.35,
-				'IPC::Open2'			=> 1.02,
 				'LWP::UserAgent'		=> 2.0,
 				'DBI'					=> 1.58,
 				'DBD::mysql'			=> 0.1,
@@ -39,8 +38,6 @@ WriteMakefile (
 				'File::Basename'		=> 0.1,
 				'Socket'				=> 0.1,
 				'Net::SMTP'				=> 0.1,
-				'HTML::TreeBuilder'		=> 0.1,
-				'REST::Client'			=> 0.1,
 				'Net::IP'				=> 1.0
 			},
 	PM		=> { 

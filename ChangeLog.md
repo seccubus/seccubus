@@ -25,6 +25,45 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+22-04-2016 - 2.24 - RPM and cert improvements
+=============================================
+
+Not everything went perfect upgrading the build process, so we had to tweak the RPM a little and fix an error in the UpToDate.pl script.
+
+Enhancements
+------------
+* #310 - Root CA for v2.seccubus.com ([LetsEncrypt](https://letsencrypt.org/)) is now pinned for the version check
+* #316 - Clarify create database and grant statement in ConfigTest.pl
+
+Bug Fixes
+---------
+* #310 - Version check does not like my certificate
+* #311 - RPM: Config could not be found after version upgrade to 2.22
+* #313 - RPM: Seccubus.conf not placed in correct directory (v2.22)
+* #314 - RPM: v2.22 /opt/seccubus/www/dev should not exist
+* #315 - RPM: v2.22 dependancy mysql-server is not installed 
+
+08-04-2016 - 2.22 - OpenVAS intergration fixed
+==============================================
+
+Enhancements
+------------
+* Improved the release process (see [https://www.seccubus.com/documentation/22-releasing/])
+* #308 - Rewrote the OpenVAS scan script with the following objectives:
+
+  - Remove dependancy on the omp utility (because I don't have it on my Mac for starters)
+  - XML parsing is now done with XML::Simple in stead of manually (which is fragile)
+  - Better error handling
+
+
+Bug Fixes
+---------
+* #289 - Online version test needs a unit test
+* #269 - Correct handling of multiple address nodes in NMap XML
+* #298 - OpenVAS6: fix scan and import to ivil 
+* #297 - Port field abused to store port state
+* #307 - OpenVAS integration was broken
+
 28-10-2015 - 2.20 - What is the issue?
 ======================================
 This release introduces a major new feature that has been in my head since the beginning of Seccubus version 2: Issues.
