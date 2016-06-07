@@ -125,7 +125,7 @@ if ( ! $hosts_file ) {
 
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose > 1;
-my $tempscan = "seccubus.$scan.$timestamp";
+my $tempscan = "seccubus.$workspace.$scan.$timestamp";
 my $tempfile = "/tmp/$tempscan.$$";
 my $nivil = "$config->{paths}->{scanners}\/Nessus\/nivil.rb";
 my $nessus2ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nessus2ivil";
@@ -232,7 +232,7 @@ do {
 
 	if ($r->code() eq 200) {
 		my $vulncount = @{$json->{vulnerabilities}};
-		print "Scan status: $json->{info}->{status}. $vulncount findings on $json->{info}->{hostcount} host(s)\n" if $verbose;
+		print "Scan status: $json->{info}->{status}. $vulncount findings on $json->{info}->{hostcount} host(s).\n" if $verbose;
 	} else {
 		die "Scan status request returned " . $r->code();
 	} 
@@ -455,9 +455,12 @@ sub rest_call($$$;$$$){
 		print "GET to https://$server:$port$geturi\n" if $verbose > 2;
 		$r = $ua->get("https://$server:$port$geturi");
 	} elsif ( $method eq "delete" ) {
-		$r = $ua->delete("https://$server:$port$uri", $param);
-	} else {
-		confess "Unknown rest method $method";		
+		print "DELETE to https://$server:$port$uri\n" if $verbose > 2;
+		if ( defined $ua->{delete} ) {
+			$r = $ua->delete("https://$server:$port$uri", $param);
+		} else {
+			print "Delete not supported on this platform\n" unless $quiet;
+		}
 	}
 	print "Server response : " . $r->decoded_content() . "\n" if $verbose > 2;
 

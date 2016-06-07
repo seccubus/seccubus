@@ -30,28 +30,33 @@ my %exclude = (
 	"./ChangeLog.md"	=> "No license needed",
 	"./README.md"		=> "No license needed",
 	"./docs/Development_environment.md"
-				=> "No license needed",
+						=> "No license needed",
 	"./docs/Development_on_MacOS.md"
-				=> "No license needed",
+						=> "No license needed",
 	"./LICENSE.txt"		=> "It is the license itself",
 	"./MANIFEST"		=> "Auto generated",
 	"./MYMETA.json"		=> "Auto generated",
 	"./MYMETA.yml"		=> "Auto generated",
-	"Makefile"		=> "Auto generated",
+	"Makefile"			=> "Auto generated",
 	"./jmvc/seccubus/production.css"	
-				=> "Compiled file",
+						=> "Compiled file",
 	"./jmvc/seccubus/production.js" 	
-				=> "Compiled file",
+						=> "Compiled file",
 	"./scanners/NessusLegacy/update-nessusrc"
-				=> "Third party software",
-	"./deb/debian.changelog"	=> "No comments supported",
-	"./deb/debian.control"	=> "No comments supported",
+						=> "Third party software",
+	"./deb/debian.changelog"	
+						=> "No comments supported",
+	"./deb/debian.control"	
+						=> "No comments supported",
 	"./deb/debian.docs"	=> "No comments supported",
-	"./deb/seccubus.dsc"	=> "No comments supported",
+	"./deb/seccubus.dsc"	
+						=> "No comments supported",
 	"./Makefile"		=> "Generated",
-	"./junit_output.xml"	=> "Build file",
+	"./junit_output.xml"	
+						=> "Build file",
 	"./etc/config.xml"	=> "Local config file",
-	"./etc/v2.seccubus.com.bundle"	=> "Certificate bundle"
+	"./etc/v2.seccubus.com.bundle"	
+						=> "Certificate bundle"
 );
 my $tests = 0;
 
@@ -137,13 +142,13 @@ sub hasauthors {
 	my $head = `head -20 '$file'|grep Copyright`;
 	$head =~ /Copyright (\d+)/;
 	my $year = $1;
-
+	
 	$ENV{PERLBREW_ROOT} = "" unless $ENV{PERLBREW_ROOT};
 	my $blame = `git blame '$file' 2>&1`;
 	my %authors = ();
 	my $cyear = 0;
 
-	unless ( $blame =~ /no such path.*in HEAD/ ) {
+	unless ( $blame =~ /no such path.*in HEAD/ && $file ne "./t/03_license_applied.t" ) {
 		foreach my $line ( split /\n/, $blame ) {
 			$line =~ /\((.*?)\s+(\d\d\d\d)\-\d\d\-\d\d/;
 			my $name = $1;
@@ -159,11 +164,11 @@ sub hasauthors {
 				$tests++;
 			}
 		}
-		unless( $travis ) {
+		#unless( $travis ) {
 			# Travis CI uses a truncated history (-depth=50), so this gives skewed results
 			is($year, $cyear, "Copyright year of file: $file");
 			$tests++;
-		}
+		#}
 	}
 
 	return 1;
