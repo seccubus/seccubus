@@ -1,0 +1,80 @@
+<!--
+Copyright 2016, Glenn ten Cate (blabla1337)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+This scanner takes the following parameters:
+<ul>
+	<li>-e, --each-cipher	
+		<br>checks each local cipher remotely.
+ 	<li>-E, --cipher-per-proto	
+		<br>checks those per protocol.
+ 	<li>-f, --ciphers	
+ 			<br>checks common cipher suites.
+ 	<li>-p, --protocols	
+ 			<br>checks TLS/SSL protocols (including SPDY/HTTP2).
+ 	<li>-y, --spdy, --npn
+ 			<br>checks for SPDY/NPN.
+ 	<li>-Y, --http2, --alpn	
+ 			<br>checks for HTTP2/ALPN. 			                             
+ 	<li>-S, --server-defaults
+ 			<br>displays the server's default picks and certificate info.
+ 	<li>-P, --server-preference
+ 			<br>displays the server's picks: protocol+cipher.
+  	<li>-x, --single-cipher
+ 			<br><pattern> tests matched <pattern> of ciphers (if <pattern> not a number: word match).
+  	<li>-c, --client-simulation
+ 			<br>test client simulations, see which client negotiates with cipher and protocol.
+  	<li>-H, --header, --headers
+ 			<br>tests HSTS, HPKP, server/app banner, security headers, cookie, reverse proxy, IPv4 address.
+  	<li>-c, --client-simulation
+ 			<br>test client simulations, see which client negotiates with cipher and protocol.
+  	<li>-U, --vulnerable
+ 			<br>tests all vulnerabilities.
+   	<li>-B, --heartbleed
+ 			<br>tests for heartbleed vulnerability.  
+	<li>-I, --ccs, --ccs-injection
+			<br>tests for CCS injection vulnerability.  
+	<li>-R, --renegotiation
+			<br>tests for renegotiation vulnerabilities.  
+	<li>-C, --compression, --crime
+			<br>tests for CRIME vulnerability.  
+	<li>-T, --breach
+			<br>tests for BREACH vulnerability.  
+	<li>-O, --poodle
+			<br>tests for POODLE (SSL) vulnerability.     
+	<li>-Z, --tls-fallback
+			<br>checks TLS_FALLBACK_SCSV mitigation.  
+	<li>-F, --freak
+			<br>tests for FREAK vulnerability.  
+	<li>-A, --beast
+			<br>tests for BEAST vulnerability.  
+	<li>-J, --logjam
+			<br>tests for LOGJAM vulnerability.  
+	<li>-D, --drown
+			<br>tests for DROWN vulnerability. 
+	<li>-s, --pfs, --fs, --nsa
+			<br>checks (perfect) forward secrecy settings.
+	<li>-4, --rc4, --appelbaum
+			<br>hich RC4 ciphers are being offered?. 
+</ul>
+<p>
+Subsitutions:
+<ul>
+	<li>$HOSTS is substituted with the contents of the host field
+	<li>@HOSTS is substituted with the path of a file containig the hosts field
+	<li>$WORSKPACE is substituted with the workspace name
+	<li>$SCAN is substituted with the scan name
+	<li>$PASSWORD is substituted with the value in the password field
+</ul>
