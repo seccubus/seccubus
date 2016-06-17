@@ -23,8 +23,15 @@ then
 	echo
 	echo "Executes /command/ when day of the week is /weekday/"
 	echo
-	echo "Weekday is a number where 0 = sunday, 1 = moday, etc.."
-	exit
+	echo "Weekday is a number where 0 = sunday, 1 = moday, etc.. and not empty."
+	exit 1
+fi
+
+# BASE SHOULD NOT BE NULL
+if [ "$2" == "" ]
+then
+        echo "Weekday should not be empty."
+        exit 1
 fi
 
 DAYOFWEEK=`date +%u`
