@@ -154,7 +154,7 @@ Arguments:
 }
 
 sub get_testssl_path() {
-	$path = run_cmd("ls /opt/testssl.sh/testssl.sh",0,$remote);
+	my $path = run_cmd("ls /opt/testssl.sh/testssl.sh",0,$remote);
 	if ( $path == '/opt/testssl.sh/testssl.sh' ) {
 		return '/opt/testssl.sh/testssl.sh';
 	}
