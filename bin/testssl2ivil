@@ -103,14 +103,16 @@ my $array = decode_json($json);
 
 while (my ($index, $element) = each($array)){
   if ($element->{'severity'} =~ /^NOT ok/){
-  	my @hostname = split /\//, $str;
-	my %finding = {};
-	$finding{ip} = $element->{'ip'};
-	$finding{hostname} = $hostname[0];
-	$finding{port} = $element->{'port'};
-	$finding{severity} = 2;
-	$finding{id} = 192171337;
-	print "Done processing key $element->{'ip'}\n" if $verbose;
+        my @hostname = split /\//, $element->{'ip'};
+        my %finding = {};
+        $finding{ip} = $hostname[1];
+        $finding{hostname} = $hostname[0];
+        $finding{port} = $element->{'port'};
+        $finding{severity} = 2;
+        $finding{finding} = $element->{'finding'};
+        $finding{id} = $element->{'id'};
+        print "Done processing key $element->{'ip'}\n" if $verbose;
+        push @findings, \%finding;
   }
 }
 
@@ -130,7 +132,7 @@ Usage: sslyze2ivil [--scanner <scanner>] --timestamp <timestamp> \\
 
 Arguments:
 --scanner (--sc)- Optional: The name of the scanner used to create the .xml file
-		  Default value: SSLyze
+		  Default value: testssl
 --timestamp	- Timestamp of when the file was created in the format 
 		  YYYYMMDDhhmmss or YYYYMMDDhhmm so 11 december 2011 1:14:00 pm
 		  is 20111211131400 or 201112111314
