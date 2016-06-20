@@ -97,11 +97,11 @@ my $scanner_version = "1.0";
 print "Creating sender block\n" if $verbose;
 print OUT ivil_sender($scanner, $scanner_version, $timestamp);
 
-my @array = decode_json($json);
+my $array = decode_json($json);
 
 @findings = ();
 
-while (my ($index, $element) = each %array){
+while (my ($index, $element) = each $array){
   if ($element->{'severity'} =~ /^NOT ok/){
         my @hostname = split /\//, $element->{'ip'};
         my %finding = {};
