@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2013 Frank Breedijk
+# Copyright 2016 Alexander Kaasjager (SBP)
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,8 +23,15 @@ then
 	echo
 	echo "Executes /command/ when day of the week is /weekday/"
 	echo
-	echo "Weekday is a number where 0 = sunday, 1 = moday, etc.."
-	exit
+	echo "Weekday is a number where 0 = sunday, 1 = moday, etc.. and not empty."
+	exit 1
+fi
+
+# BASE SHOULD NOT BE NULL
+if [ "$2" == "" ]
+then
+        echo "Weekday should not be empty."
+        exit 1
 fi
 
 DAYOFWEEK=`date +%u`
