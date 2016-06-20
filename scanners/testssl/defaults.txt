@@ -1,1 +1,1 @@
--o <testssl options> --hosts @HOSTS
+-o "<testssl options>" --hosts @HOSTS
