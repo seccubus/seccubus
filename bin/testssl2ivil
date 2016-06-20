@@ -101,7 +101,7 @@ my $array = decode_json($json);
 
 @findings = ();
 
-while (my ($index, $element) = each($array)){
+while (my ($index, $element) = each %array){
   if ($element->{'severity'} =~ /^NOT ok/){
         my @hostname = split /\//, $element->{'ip'};
         my %finding = {};
