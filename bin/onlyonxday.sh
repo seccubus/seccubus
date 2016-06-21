@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2013 Frank Breedijk, Alexander Kaasjager (SBP)
+# Copyright 2016 Frank Breedijk, Alexander Kaasjager
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
