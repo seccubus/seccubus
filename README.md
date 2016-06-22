@@ -38,6 +38,7 @@ Enhancements
 * #320 - Nessus6 scanner now downloads PDF and HTML version of report too
 * #312 - SSLLabs and Nessus6 scanner no longer depend on perl-REST-Client
 * #322 - Removed old scanners: Nessus v5 and earlier, OpenVAS v5 and earlier
+* Improved exit codes for the onlyonxday.sh utility
 
 Bug Fixes
 ---------
