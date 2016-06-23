@@ -1,0 +1,51 @@
+@import '../vendor/connect-material/src/style/material';
+
+@import '/vendor/connect-material/sprites/sprite-action-black.css';
+@import '/vendor/connect-material/sprites/sprite-action-white.css';
+@import '/vendor/connect-material/sprites/sprite-navigation-black.css';
+@import '/vendor/connect-material/sprites/sprite-navigation-white.css';
+@import '/vendor/connect-material/sprites/sprite-content-black.css';
+@import '/vendor/connect-material/sprites/sprite-content-white.css';
+
+@font-face {
+    font-family: Roboto;
+    src: url('/font/Roboto-Regular.ttf');
+    font-weight: normal;
+}
+
+body {
+  background: #fafafa;
+  font-family: Roboto, sans-serif;
+  color: #333;
+  font-size: 12px;
+}
+
+.page-title {
+    padding-left: 64px;
+    background: url('/images/logo.png') 15px center no-repeat;
+    background-size: 36px 36px;
+}
+
+.viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.page-host {
+    flex: 1;
+    position: relative;
+
+    > router-component {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+    }
+}

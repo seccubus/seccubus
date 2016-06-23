@@ -1,0 +1,86 @@
+@import './components/table/table';
+
+@import './components/nav-bar/nav-bar';
+@import './components/nav-menu/nav-menu';
+@import './components/status-page/status-page';
+@import './components/runs-page/runs-page';
+@import './components/workspaces-page/workspaces-page';
+@import "./components/scans-page/scans-page";
+@import "./components/findings-page/findings-page";
+/* MARKER: insert component less files here */
+
+html {
+  font-size: 62.5%;
+  line-height: 1.4;
+}
+
+
+body {
+  overflow: hidden;
+  max-width: 100%;
+  max-height: 100%;
+  font-size: 1.6rem;
+}
+
+.page-host {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.page-view {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  .md-button.md-fab.md-fab-bottom-right {
+    position: fixed;
+  }
+
+  .md-subheader .md-subheader-inner {
+    padding: 18px 0px 17px 16px;
+  }
+
+  > * {
+    display: block;
+    flex: 1;
+    overflow: auto;
+  }
+
+  > * > md-toolbar {
+    h1 {
+      margin: 0;
+      padding: 0;
+      font-weight: 200;
+      font-size: 1.6em;
+      color: rgb(25, 118, 210) !important;
+    }
+    justify-content: flex-end;
+    background: linear-gradient(rgb(255, 255, 255), rgb(238, 241, 243));
+    padding: 16px 20px;
+    height: 64px;
+    // color: rgb(25, 118, 210) !important;
+    color: rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .filter-selects {
+    padding: 0 20px;
+  }
+}
+
+.page-drawer md-sidenav {
+  width: 50%;
+  min-width: 300px;
+  max-width: 60%;
+
+  md-input-container {
+    padding-bottom: 20px;
+  }
+
+  .submit-error {
+    color: red;
+    font-size: 0.8em;
+  }
+}

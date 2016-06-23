@@ -1,0 +1,101 @@
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+:focus {
+	outline: none;
+}
+
+html, body {
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-webkit-touch-callout: none;
+	-webkit-text-size-adjust: 100%;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	outline: none;
+}
+
+a {
+	background: transparent;
+	outline: none;
+}
+
+select,
+button,
+textarea,
+input {
+	margin: 0;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
+}
+
+// Fix Android 4.0 button bugs
+input[type="reset"],
+input[type="submit"],
+html input[type="button"],
+button {
+	cursor: pointer;
+	-webkit-appearance: button;
+
+	&[disabled] {
+		cursor: default;
+	}
+}
+
+textarea {
+	vertical-align: top;
+	overflow: auto;
+}
+
+input {
+	&[type="radio"],
+	&[type="checkbox"] {
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	&[type="search"] {
+		-webkit-appearance: textfield;
+		box-sizing: content-box;
+		-webkit-box-sizing: content-box;
+
+		&::-webkit-search-decoration,
+		&::-webkit-search-cancel-button {
+		    -webkit-appearance: none;
+		}
+	}
+}
+
+material-content,
+.material-content {
+	display: block;
+	margin: @material-content-spacing;
+	overflow: visible;
+}
+
+.material-backdrop {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    left: -100000px;
+    background-color: rgba(0, 0, 0, 0);
+
+    &.material-opened,
+    &.material-opened-remove {
+        .ease-out(@property: background-color);
+        left: 0;
+    }
+
+    &.material-opened, {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+}

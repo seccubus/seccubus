@@ -1,0 +1,17 @@
+<material-title class="page-title">Seccubus<h2>Automated vulnerability scanning and reporting</h2></material-title>
+<material-appbar>
+	<material-sidenav-button current-page="{{page.key}}">
+		<material-item page="status" ui-sref="seccubus.status">Status</material-item>
+		<material-item page="runs" ui-sref="seccubus.runs">Runs</material-item>
+		<material-item page="findings" ui-sref="seccubus.findings">Findings</material-item>
+		<material-divider></material-divider>
+		<material-item page="workspaces" ui-sref="seccubus.workspaces">Manage Workspaces</material-item>
+		<material-item page="scans" ui-sref="seccubus.scans">Manage Scans</material-item>
+	</material-sidenav-button>
+
+	<material-title>{{page.name}}</material-title>
+
+	<material-selectfield ng-model="activeWorkspace" options="workspaces" select-config="{valueField:'name', displayField:'name'}"></material-selectfield>
+</material-appbar>
+
+<div class="page-card-content" ui-view></div>

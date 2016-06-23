@@ -1,0 +1,39 @@
+<!doctype html>
+<!--[if IE 9]>         <html lang="en-gb" class="lt-ie10"> <![endif]-->
+<!--[if gt IE 9]><!--> <html lang="en-gb"> <!--<![endif]-->
+<html>
+    <head>
+        <title>Seccubus</title>
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+        <base href="/">
+
+        <!-- build:css styles/vendor.css -->
+        <!-- bower:css -->
+        <!-- endbower -->
+        <!-- endbuild -->
+
+        <!-- build:css styles/main.css -->
+        <link rel="stylesheet" href="app.compiled/styles/app.css">
+        <!-- endbuild -->
+    </head>
+
+    <body ng-cloak data-main-app>
+        <!--[if lt IE 10]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <router-component component-name="app"></router-component>
+
+        <script src="/vendor/traceur-runtime/traceur-runtime.js"></script>
+        <script src="/vendor/es6-module-loader/dist/es6-module-loader.src.js"></script>
+        <script src="/vendor/system.js/dist/system.src.js"></script>
+
+        <script src="/loader.config.js"></script>
+
+        <script>
+            System.import('app/bootstrap');
+        </script>
+    </body>
+</html>

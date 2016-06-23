@@ -1,0 +1,49 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+material-title,
+.material-title {
+    display: block;
+    text-align: left;
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 24px;
+    color: #000;
+    margin: @material-content-spacing;
+
+    .unselectable;
+
+    h2 {
+        display: inline;
+        font-size: 0.7em;
+        margin-left: @material-content-spacing;
+        color: @material-gray-darker;
+        font-weight: normal;
+    }
+
+    &.material-has-icon {
+        padding-left: @material-block-large-size;
+        > .material-icon {
+            position: absolute;
+            top: @material-content-spacing;
+            left: @material-content-spacing;
+        }
+    }
+
+    &.material-title-has-sub {
+        font-size: 20px;
+        line-height: 20px;
+        margin: @material-content-spacing - 2;
+    }
+
+    material-subtitle,
+    .material-subtitle {
+        display: block;
+        text-align: left;
+        font-weight: 300;
+        font-size: 0.7em;
+        line-height: 0.7em;
+        opacity: 0.6;
+        margin-top: 6px;
+    }
+}

@@ -1,0 +1,36 @@
+<status-page layout="column" layout-fill>
+  <md-content>
+    <section>
+      <md-subheader class="md-primary">Version Check</md-subheader>
+
+      <div ng-if="statusPage.statusStore.isLoading" layout="row" layout-align="center center">
+          <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+      </div>
+
+      <md-list ng-if="!statusPage.statusStore.isLoading" layout-padding>
+        <md-list-item class="md-offset">
+          <md-icon ng-if="statusPage.statusStore.upToDate.status === 'OK'" class="success" md-svg-icon="navigation:check"></md-icon>
+          <md-icon ng-if="statusPage.statusStore.upToDate.status !== 'OK'" class="error" md-svg-icon="alert:error"></md-icon>
+
+          <p>{{statusPage.statusStore.upToDate.message}}</p>
+        </md-list-item>
+      </md-list>
+    </section>
+
+    <section>
+      <md-subheader class="md-primary">Config Test</md-subheader>
+
+      <div ng-if="statusPage.statusStore.isLoading" layout="row" layout-align="center center">
+          <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+      </div>
+
+      <md-list ng-if="!statusPage.statusStore.isLoading" layout-padding>
+        <md-list-item ng-repeat="item in statusPage.statusStore.items">
+          <md-icon ng-if="item.result === 'OK'" class="success" md-svg-icon="navigation:check"></md-icon>
+          <md-icon ng-if="item.result === 'Error'" class="error" md-svg-icon="alert:error"></md-icon>
+          <p>{{item.message}}</p>
+        </md-list-item>
+      </md-list>
+    </section>
+  </md-content>
+</status-page>

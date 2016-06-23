@@ -1,0 +1,25 @@
+{
+  "name": "sink",
+  "version": "0.0.1",
+  "authors": [
+    "Tommy Maintz <tmaintz@schubergphilis.com>"
+  ],
+  "description": "Kitchensink for Connect Material",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.4",
+    "angular-animate": "~1.3.4",
+    "requirejs-domready": "~2.0.1"
+  }
+}

@@ -1,0 +1,96 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+@material-tabs-minwidth: 120px;
+@material-tabs-bar-height: 48px;
+
+material-tabs,
+.material-tabs {
+    display: block;
+
+    .material-tabs-bar {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        height: @material-tabs-bar-height;
+        background-color: @material-primary-color;
+        font-weight: 500;
+    }
+
+    &[center] .material-tabs-bar {
+        justify-content: center;
+    }
+
+    material-tab,
+    .material-tab {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        cursor: pointer;
+        min-width: @material-tabs-minwidth;
+
+        margin: 0;
+        font-size: 14px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.7);
+        white-space: nowrap;
+
+        border-bottom: 2px solid transparent;
+
+        &.material-tab-active {
+            color: #fff;
+            border-bottom-color: @material-secondary-color;
+        }
+
+        &[disabled] {
+            pointer-events: none;
+            cursor: default;
+        }
+
+        material-tab-label,
+        .material-tab-label {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            .unselectable();
+        }
+    }
+
+    .material-tabs-content {
+        overflow: hidden;
+        position: relative;
+
+        .material-tabcontent {
+            opacity: 0;
+            position: absolute;
+            left: -10000px;
+
+            &.material-opened {
+                transition: opacity 0.4s;
+                position: relative;
+                opacity: 1;
+                left: 0;
+            }
+        }
+    }
+
+    &.material-tabs-blank {
+        .material-tabs-bar {
+            background-color: #fff;
+            border-bottom: 1px solid @material-gray-lighter;
+
+            material-tab,
+            .material-tab {
+                color: rgba(0, 0, 0, 0.5);
+                &.material-tab-active {
+                    color: #000;
+                    border-bottom-color: @material-primary-color;
+                }
+            }
+        }
+    }
+}

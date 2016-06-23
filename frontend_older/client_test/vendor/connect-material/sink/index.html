@@ -1,0 +1,320 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Connect Material Kitchensink</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="../dist/material.css">
+
+        <link rel="stylesheet" href="../sprites/sprite-action-black.css">
+        <link rel="stylesheet" href="../sprites/sprite-action-white.css">
+        <link rel="stylesheet" href="../sprites/sprite-navigation-black.css">
+        <link rel="stylesheet" href="../sprites/sprite-navigation-white.css">
+        <link rel="stylesheet" href="../sprites/sprite-content-black.css">
+        <link rel="stylesheet" href="../sprites/sprite-content-white.css">
+
+        <script data-main="sink" src="bower_components/requirejs/require.js"></script>
+
+        <style>
+            .logo {
+                display: inline-block;
+                height: 24px;
+                margin-right: 20px;
+            }
+
+            body {
+                font-size: 12px;
+                font-family: Helvetica;
+                padding: 0;
+                margin: 0;
+
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+
+                display: -webkit-flex;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-flex-direction: column;
+                -ms-flex-direction: column;
+                flex-direction: column;
+
+                -webkit-align-items: stretch;
+                -ms-flex-align: stretch;
+                align-items: stretch;
+            }
+
+            .page-content {
+                -webkit-flex: 1;
+                -ms-flex: 1;
+                flex: 1;
+                background-color: #eee;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .inner-content {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                overflow-y: auto;
+            }
+
+            .sink-gridlist material-gridlist-headers {
+                padding-right: 46px;
+            }
+
+            .field-birth {
+                margin-right: 10px;
+                -webkit-flex: 2;
+                -ms-flex: 2;
+                flex: 2;
+            }
+
+            .field-gender {
+                -webkit-flex: 1;
+                -ms-flex: 1;
+                flex: 1;
+            }
+
+            .buttton-examples material-button:not(.material-fab) {
+                min-width: 100px;
+            }
+
+            .buttton-examples material-button {
+                margin: 10px;
+            }
+
+            .cell-firstName,
+            .cell-lastName,
+            .cell-dateOfBirth {
+                -webkit-flex: 1;
+                -ms-flex: 1;
+                flex: 1;
+            }
+            .cell-company {
+                -webkit-flex: 2;
+                -ms-flex: 2;
+                flex: 2;
+            }
+        </style>
+    </head>
+
+    <body ng-controller="SinkCtrl">
+        <material-title>
+            <img class="logo" src="https://www.schubergphilis.com/bundles/schubergfrontend/image/default/logo.svg">
+            <span>Connect Material Kitchensink<span>
+        </material-title>
+        <material-appbar>
+            <material-sidenav-button current-page="status">
+                <material-item page="status">Status</material-item>
+                <material-item page="runs">Runs</material-item>
+                <material-item page="findings">Findings</material-item>
+                <material-divider></material-divider>
+                <material-item page="workspaces">Manage Workspaces</material-item>
+                <material-item page="scans">Manage Scans</material-item>
+            </material-sidenav-button>
+
+            <material-title page="status">Status</material-title>
+
+            <material-searchfield class="material-searchfield-blank" ng-model="search" placeholder="Search..."></material-searchfield>
+
+            <material-button ng-click="openDrawer('left')">Drawer</material-button>
+
+            <material-menu-button icon="navigation-white:apps_white" menu-config="{icons:menu.icons}">
+                <material-item icon="action-black:dashboard_black">Dashboard</material-item>
+                <material-item icon="action-black:credit_card_black">Credit</material-item>
+                <material-item icon="action-black:account_balance_black">Balance</material-item>
+                <material-divider></material-divider>
+                <material-item icon="action-black:alarm_black">Set Alarm</material-item>
+                <material-item icon="action-black:announcement_black">Announcements</material-item>
+                <material-divider></material-divider>
+                <material-checkbox ng-model="menu.icons">Menu Icons</material-checkbox>
+                <material-item>Some Item</material-item>
+            </material-menu-button>
+
+            <material-menu-button label="Text Button Menu" icon="navigation-white:more_vert_white">
+                <material-item>Menu Item 1</material-item>
+                <material-item>Menu Item 2</material-item>
+                <material-item>Menu Item 3</material-item>
+                <material-divider></material-divider>
+                <material-item>Menu Item 4</material-item>
+                <material-item>Menu Item 5</material-item>
+            </material-menu-button>
+
+            <material-menu-button icon="content-white:filter_list_white">
+                <material-title>List Filters</material-title>
+                <material-checkbox ng-model="filters.active">Active</material-checkbox>
+                <material-checkbox ng-model="filters.pending">Long Installation Pending</material-checkbox>
+                <material-checkbox ng-model="filters.decommissioned">Decommissioned</material-checkbox>
+                <material-checkbox ng-model="filters.deleted">Deleted</material-checkbox>
+            </material-menu-button>
+        </material-appbar>
+
+        <div class="page-content">
+            <div class="inner-content">
+                <material-card>
+                    <material-toolbar>
+                        <material-progress-circular material-mode="indeterminate"></material-progress-circular>
+                        <material-title>Card</material-title>
+                        <material-searchfield ng-model="search" placeholder="Search..."></material-searchfield>
+                        <material-button ng-click="openDialog('custom')">Custom</material-button>
+                        <material-button ng-click="openDialog('datepicker')">Datepicker</material-button>
+                        <material-button ng-click="openDialog('alert')" class="material-warn">Alert</material-button>
+                        <material-button ng-click="openDialog('confirm')" class="material-raised material-primary">Confirm</material-button>
+                        <material-button ng-click="openDrawer('form')">Forms</material-button>
+                        <material-button ng-click="openDrawer('tabs')" class="material-primary">Tabs</material-button>
+                    </material-toolbar>
+                    <region class="buttton-examples">
+
+                        <material-buttonbar layout="row" layout-align="center center">
+                            <material-button>Normal</material-button>
+                            <material-button class="material-primary">Primary</material-button>
+                            <material-button ng-disabled="true">Disabled</material-button>
+                            <material-button class="material-warn">Warn</material-button>
+                        </material-buttonbar>
+                        <material-buttonbar layout="row" layout-align="center center">
+                            <material-button class="material-raised">Normal</material-button>
+                            <material-button class="material-raised material-primary">Primary</material-button>
+                            <material-button class="material-raised" ng-disabled="true">Disabled</material-button>
+                            <material-button class="material-raised material-warn">Warn</material-button>
+                        </material-buttonbar>
+                        <material-buttonbar layout="row" layout-align="center center">
+                            <material-button class="material-fab" icon="action-black:alarm_black"></material-button>
+                            <material-button class="material-fab" icon="action-black:dashboard_black"></material-button>
+                            <material-button class="material-fab" icon="action-black:credit_card_black" ng-disabled="true"></material-button>
+                            <material-button class="material-fab material-primary" icon="action-black:account_balance_black"></material-button>
+                        </material-buttonbar>
+                    </region>
+                </material-card>
+
+
+                <material-card>
+                    <material-toolbar>
+                        <material-title class="material-title-has-sub">
+                            Progress
+                            <material-subtitle>
+                                Examples
+                            </material-subtitle>
+                        </material-title>
+                    </material-toolbar>
+                        <region class="progress-examples">
+                            <material-progress-circular material-mode="indeterminate"></material-progress-circular>
+                        </region>
+                </material-card>
+
+                <material-gridlist class="sink-gridlist material-view-list">
+                    <material-gridlist-headers>
+                        <material-checkbox ng-model="list.headerCheckbox"></material-checkbox>
+                        <material-cell class="cell-firstName">First Name</material-cell>
+                        <material-cell class="cell-lastName">Last Name</material-cell>
+                        <material-cell class="cell-dateOfBirth">Date of Birth</material-cell>
+                        <material-cell class="cell-company">Company</material-cell>
+                    </material-gridlist-headers>
+
+                    <material-gridlist-content>
+                        <material-row ng-repeat="user in list.usersPage">
+                            <material-checkbox ng-model="list.selected[asset.id]"></material-checkbox>
+
+                            <material-cell class="cell-firstName">{{user.firstName}}</material-cell>
+                            <material-cell class="cell-lastName">{{user.lastName}}</material-cell>
+                            <material-cell class="cell-dateOfBirth">{{user.dateOfBirth}}</material-cell>
+                            <material-cell class="cell-company">{{user.company}}</material-cell>
+
+                            <material-menu-button menu-id="user-menu-{{$index}}" icon="navigation-black:more_vert_black">
+                                <material-item>Activate</material-item>
+                                <material-item>Decommission</material-item>
+                                <material-item>Stock</material-item>
+                                <material-item>Delete</material-item>
+                            </material-menu-button>
+                        </material-row>
+                    </material-gridlist-content>
+
+                    <material-gridlist-pagination current-page="list.currentPage" in-data="list.gridData" out-data="list.usersPage" pagination-config="{pageSize:5}"></material-gridlist-pagination>
+                    <material-gridlist-pagination current-page="list.currentPage" on-page-change="pageChange($page)" pagination-config="list.paginationConfig"></material-gridlist-pagination>
+                </material-gridlist>
+            </div>
+
+            <material-dialog dialog-id="custom">
+                <material-title>Custom Dialog</material-title>
+                <material-content>Can you please confirm that you like material?</material-content>
+                <material-buttonbar>
+                    <material-button ng-click="closeDialog('custom')">Cancel</material-button>
+                    <material-button ng-click="closeDialog('custom')" class="material-primary">Ok</material-button>
+                </material-buttonbar>
+            </material-dialog>
+
+            <material-datepicker-dialog dialog-id="datepicker" ng-model="someDate" datepicker-config="{minDate: 1980, yearRange: 40}"></material-datepicker-dialog>
+
+            <material-drawer drawer-id="left" drawer-config="{position:'left', modal: isModal()}">
+                <material-buttonbar>
+                    <material-button ng-click="closeDrawer('left')">Close</material-button>
+                    <material-button ng-click="openDrawer('subleft')" class="material-primary">Deeper</material-button>
+                </material-buttonbar>
+            </material-drawer>
+
+            <material-drawer drawer-id="tabs">
+                <material-tabs class="material-tabs-blank">
+                    <material-tab tab-id="tab-asset-basic" label="Basic">
+                        <material-content>
+                            <material-textfield label="Status" ng-model="asset.status" disabled></material-textfield>
+                            <material-textfield label="Hostname" ng-model="asset.host_name"></material-textfield>
+                            <material-textfield label="Vendor" ng-model="asset.vendor"></material-textfield>
+                            <material-textfield label="Hardware Type" ng-model="asset.hardware_type"></material-textfield>
+                            <material-textfield label="Owner" ng-model="asset.owner"></material-textfield>
+                            <material-textfield label="Serial Number" ng-model="asset.serial_no"></material-textfield>
+                            <material-textfield label="Actual Quantity" ng-model="asset.actual_quantity"></material-textfield>
+                            <material-textfield label="Date Active (date)" ng-model="asset.date_active"></material-textfield>
+                            <material-textarea label="Description" ng-model="asset.description"></material-textarea>
+                            <material-textfield label="Support Contract Number" ng-model="asset.support_contract_no"></material-textfield>
+                        </material-content>
+                    </material-tab>
+                    <material-tab tab-id="tab-asset-support" label="Support">Support Tab</material-tab>
+                    <material-tab tab-id="tab-asset-costmodel" label="Cost Model">Cost Model Tab</material-tab>
+                </material-tabs>
+            </material-drawer>
+
+            <material-drawer drawer-id="subleft" drawer-config="{position:'left'}">
+                <material-buttonbar>
+                    <material-button ng-click="closeDrawer('subleft')" class="material-primary">Go back</material-button>
+                </material-buttonbar>
+            </material-drawer>
+
+            <material-drawer drawer-id="form" drawer-config="{position:'right'}">
+                <material-title>Edit User<material-subtitle>Some subtitle</material-subtitle></material-title>
+                <material-content>
+                    <material-textfield label="First Name" ng-model="user.firstName" required></material-textfield>
+                    <material-textfield label="Last Name" ng-model="user.lastName" required></material-textfield>
+                    <material-textfield label="Address" ng-model="user.address"></material-textfield>
+                    <material-textfield label="Email Address" ng-model="user.email" type="email"></material-textfield>
+
+                    <div layout="row">
+                        <material-datefield label="Date of Birth" ng-model="user.dateOfBirth" class="field-birth" datepicker-config="{minDate:1900, maxDate:'now'}"></material-datefield>
+                        <material-selectfield label="Gender" ng-model="user.gender" options="['Male', 'Female']" class="field-gender"></material-selectfield>
+                    </div>
+
+                    <material-textfield label="City" ng-model="user.city"></material-textfield>
+                    <material-selectsearch on-search="doSearch($query)" label="State" ng-model="user.state" results="stateSearch" select-config="{valueField: 'shortName', labelField: 'name'}"></material-selectsearch>
+
+                    <material-textfield label="Disabled Field" ng-model="user.address" ng-disabled="true"></material-textfield>
+                </material-content>
+
+                <material-content>
+                    <material-checkbox ng-model="user.receiveEmail">Allow us to send you email and spam your inbox forever and ever and ever...</material-checkbox>
+                    <material-checkbox ng-model="user.receiveNewsletter">I want to receive newsletters</material-checkbox>
+                </material-content>
+
+                <material-buttonbar>
+                    <material-button ng-click="closeDrawer('form')">Cancel</material-button>
+                    <material-button ng-click="closeDrawer('form')" class="material-primary">Save</material-button>
+                </material-buttonbar>
+            </material-drawer>
+        </div>
+    </body>
+</html>

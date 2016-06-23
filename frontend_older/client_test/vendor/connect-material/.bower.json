@@ -1,0 +1,36 @@
+{
+  "name": "connect-material",
+  "authors": [
+    "Victor Verhaagen <vverhaagen@schubergphilis.com>",
+    "Tommy Maintz <tmaintz@schubergphilis.com>"
+  ],
+  "description": "test",
+  "homepage": "https://github.schubergphilis.com/frontend/connect-material",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "license": "SBP",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "gulpfile.js",
+    "node_modules",
+    "package.json",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.3.7"
+  },
+  "_release": "4c6d1c5ec0",
+  "_resolution": {
+    "type": "branch",
+    "branch": "es6_refresh",
+    "commit": "4c6d1c5ec0fb9a315abc170311a2621b8375beec"
+  },
+  "_source": "git@github.schubergphilis.com:frontend/connect-material.git",
+  "_target": "es6_refresh",
+  "_originalSource": "git@github.schubergphilis.com:frontend/connect-material.git"
+}

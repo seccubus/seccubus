@@ -1,0 +1,21 @@
+{
+  "name": "traceur",
+  "version": "0.0.74",
+  "main": "./traceur.js",
+  "ignore": [
+    "node_modules",
+    "Gruntfile.js",
+    "*.json",
+    ".*"
+  ],
+  "homepage": "https://github.com/jmcriffey/bower-traceur",
+  "_release": "0.0.74",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.0.74",
+    "commit": "7d65a389772e712cee729251511b12e49d2c673d"
+  },
+  "_source": "git://github.com/jmcriffey/bower-traceur.git",
+  "_target": "0.0.74",
+  "_originalSource": "traceur"
+}

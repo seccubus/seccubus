@@ -1,0 +1,21 @@
+<md-toolbar class="md-whiteframe-z2">
+  <div class="md-toolbar-tools">
+    <md-button
+      ng-click="navBar.toggleNavMenu()"
+      hide-gt-md
+      aria-label="Toggle Menu"
+      class="md-icon-button nav-menu-button">
+      <md-icon md-svg-icon="navigation:menu"></md-icon>
+    </md-button>
+
+    <h1 flex>Seccubus</h1>
+
+    <md-select ng-model="navBar.selectedWorkspace">
+      <md-select-label>{{navBar.selectedWorkspace.name || 'Select a workspace...'}}</md-select-label>
+      <md-option
+        ng-repeat="workspace in navBar.workspaceStore.items track by workspace.id"
+        ng-value="workspace"
+      >{{workspace.name}}</md-option>
+    </md-select>
+  </div>
+</md-toolbar>

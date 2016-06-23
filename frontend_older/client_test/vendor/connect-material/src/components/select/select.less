@@ -1,0 +1,68 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+@import '../textfield/textfield';
+
+material-selectfield,
+.material-selectfield {
+	display: block;
+	position: relative;
+
+	material-select,
+	.material-select {
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+
+	.material-icon {
+		position: absolute;
+		right: 0;
+		top: 18px;
+	}
+}
+
+material-selectsearch,
+.material-selectsearch {
+    display: block;
+    position: relative;
+
+    material-select,
+    .material-select {
+        top: 100%;
+        left: 0;
+        right: 0;
+        position: absolute;
+        display: block;
+    }
+
+    .material-icon {
+        position: absolute;
+        right: 0;
+        top: 18px;
+    }
+}
+
+material-menu.material-selectsearch-menu {
+    max-height: 306px;
+}
+
+material-menu.material-select-menu,
+.material-menu.material-select-menu {
+	min-width: 0;
+
+    .ease-out(@duration: 200ms; @property: transform);
+    transform: scale(1, 0);
+    transform-origin: center 24px;
+
+    &.material-opened {
+    	transform: scale(1, 1);
+    }
+
+    material-item .material-text {
+    	line-height: 26px;
+    }
+}
