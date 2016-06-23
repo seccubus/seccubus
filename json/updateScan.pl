@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk, Artien Bel (Ar0xA)
+# Copyright 2015 Frank Breedijk, Artien Bel (Ar0xA)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,15 +27,16 @@ use SeccubusScans;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $scan_id = $query->param("id");
-my $workspace_id = $query->param("workspace");
-my $name = $query->param("name");
-my $scanner = $query->param("scanner");
-my $parameters = $query->param("parameters");
-my $password = $query->param("password");
-my $targets = $query->param("targets");
+my $params = $query->Vars;
+my $scan_id = $params->{id};
+my $workspace_id = $params->{workspace};
+my $name = $params->{name};
+my $scanner = $params->{scanner};
+my $parameters = $params->{parameters};
+my $password = $params->{password};
+my $targets = $params->{targets};
 
 # Return an error if the required parameters were not passed
 if (not (defined ($scan_id))) {

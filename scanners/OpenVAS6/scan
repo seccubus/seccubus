@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Fabien Guillaume (FGuillaume), Frank Breedijk
+# Copyright 2016 Fabien Guillaume, Frank Breedijk, Andrey Danin, Floris Kraak
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,11 +19,13 @@
 #  It then use the nbe2ivil script (included in Seccubus) to convert to Ivil format before import in Seccubus.
 # ------------------------------------------------------------------------------
 
-
-use OpenVAS::OMP;
-use SeccubusV2;
-use SeccubusIVIL;
 use strict;
+
+use SeccubusV2;
+use OpenVAS::OMP;
+use SeccubusIVIL;
+use SeccubusRuns;
+use SeccubusFindings;
 use Getopt::Long;
 use Carp;
 use MIME::Base64;
@@ -31,33 +33,25 @@ use XML::Simple;
 use Data::Dumper;
 
 my (
-	$cmd,
-	$id_index,
-	$id_length,
-	$length,
+	$server,
+	$user,
+	$password,
 	$port,	
 	$policy,
-	$report_html,
-	$report_pdf,
-	$report_txt,
-	$request,
-	$request_code_result,
-	$nodelete,
-	$password,
-	$help,
-	$quiet,
-	$sleep,
-	$server,
 	$targetip,
-	$target_id,
 	$targetname,
+	$portlist,
+	$portlistname,
 	$timeout,
-	$user,
 	$verbose,
 	$scan,
 	$timestamp,
-	$xmlrequest,
+	$xml,
 	$workspace,
+	$sleep,
+	$help,
+	$quiet,
+	$nodelete,
 );
 
 # default values for command line values : 
@@ -68,420 +62,254 @@ $sleep = 10;
 $targetip = 0;
 $nodelete = undef;
 $verbose = 0;
- 
 
-
-
- GetOptions (
-	'help'		=> \$help,
-	'port=s'	=> \$port,
-	'targetip|tip=s'	=> \$targetip,
-	'targetname|tname=s' => \$targetname,
-	'user|u=s'	=> \$user,
-	'password|pw=s'	=> \$password,
-	'reporthtml|rhtml+' => \$report_html,
-	'reportpdf|rpdf+'  => \$report_pdf,
-	'reporttxt|rtxt+'  => \$report_txt,
-	'server|s=s'	=> \$server,
-	'quiet|q!'	=> \$quiet,
-	'sleep=s'	=> \$sleep,
-	'policy|pol=s'	=> \$policy,
-	'verbose|v+'	=> \$verbose,	
-	'nodelete'	=> \$nodelete,
-	'scan|sc=s'	=> \$scan,
-	'timeout=s' => \$timeout,
+GetOptions (
 	'workspace|ws=s'	=> \$workspace,
+	'scan|sc=s'			=> \$scan,
+	'server|s=s'		=> \$server,
+	'port=s'			=> \$port,
+	'user|u=s'			=> \$user,
+	'password|pw=s'		=> \$password,
+	'policy|pol=s'		=> \$policy,
+	'target|t=s'		=> \$targetname,
+	'targetip|tip=s'	=> \$targetip,
+	'portlist=s'		=> \$portlistname,
+	'portrange=s'		=> \$portlist,
+	'sleep=s'			=> \$sleep,
+	'timeout=s' 		=> \$timeout,
+	'nodelete'			=> \$nodelete,
+	'verbose|v+'		=> \$verbose,	
+	'quiet|q!'			=> \$quiet,
+	'help'				=> \$help,
 );
 
 help() if $help;
-print "Target IP is mandatory" if $targetip eq '0';
-help() if $targetip eq '0';
+
+$verbose = 0 if $quiet;
 
 #if target name not specified, then it is the ip adress
-if (! $targetname) {
-$targetname=$targetip;
-}
-if (! $timeout) {
-$timeout=14400;
-}
-if (! $policy) {
-print "you must specify a policy";
-help();
-} elsif ( ! $user ) {
-	print "you must specify a user";
-	help();
-} elsif ( ! $password ) {
-	print "You must specify a password";
-	help();
-} elsif ( ! $server ) {
-	print "You must specify an OpenVAS server";
-	help();
-}
+$targetname=$targetip unless $targetname;
+$portlistname=$portlist unless $portlistname;
+$timeout=14400 unless $timeout;
 
+help("You must specify a policy") unless $policy;
+help("You must specify a user") unless $user;
+help("You must specify a password") unless $password;
+help("You must specify an OpenVAS server") unless $server;
 
 $timestamp = make_timestamp();
 print "timestamp : $timestamp\n" if $verbose > 0;
 
-my $tempscan = "seccubus.OV6.$scan.$timestamp";
-my $tempfile = "/tmp/$tempscan.$$";
-
+my $tempfile = "/tmp/seccubus.OV6.$scan.$timestamp.$$";
 
 my $config = get_config();
 
 my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
 my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
-print "config : $config \n";
+my $nbe2ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil";
+
 print "attach_file : $attach_file \n";
 print "scan : $scan \n";
 print "workspace : $workspace\n";
 
-## Create new OpenVAS::OMP object {{{
-my $omp = OpenVAS::OMP->new
-(
-        host            => $server,
-        ssl_verify      => 0,
-        username        => $user,
-        password        => $password,
+## Create new OpenVAS::OMP object
+my $omp = OpenVAS::OMP->new(
+	host            => $server,
+	ssl_verify      => 0,
+	username        => $user,
+	password        => $password,
 );
-# }}}
-
 
 #Get Policy id from text
 
-my $cmd = "omp -u $user --password $password -g"; 
+$xml = omp_request("<get_configs/>");
+my $pol_id = $xml->{config}->{$policy}->{id};
 
-print "Executing $cmd \n" if $verbose > 1;
-my $polresult= `$cmd 2>1&`;
-print "polresult : $polresult \n" if $verbose >1;
-my $pol_id = "";
-foreach my $line ( split /\n/, $polresult ) {
-	$line =~ /^(\S+)\s+(.*)$/;
-	my ($id, $name) = ($1, $2);
-	if ( uc($name) eq uc($policy) ) {
-		$pol_id = $id;
-		last;
-	}
-}
 if ( $pol_id ) { 
 	print "Policy ID is $pol_id\n" if $verbose >1;
 } else {
 	die "Could not find policy id for policy $policy";
 }
 
+my $portlist_id = "";
+# Get port list id if a portlist is specified. If it doesn't exist create it
+if ( $portlistname ) {
+	print "Port list name : $portlistname \n" if $verbose >1;
+	print "Port list      : $portlist \n" if $verbose >1;
 
-print "Target name : $targetname \n" if $verbose >1;
-print "Target ip : $targetip \n" if $verbose >1;
-
-# Get ID for specified target
-gettargetid();
-
- 
-#create scan task in OV
-
-$request="<create_task><name>$targetip</name><comment>$timestamp</comment><config id=\"$pol_id\"/><target id=\"$target_id\"/></create_task>";
-print "task creation request : $request\n" if $verbose >1;      
-$xmlrequest          = $omp->commandXML($request, 1 );
-print "Task creation xml result : $xmlrequest\n" if $verbose >1;
-
-
-# Check task creation result and get task id
-
-my $Task_id;
-my $status_index = index ($xmlrequest, "status");
-$status_index +=8;
-$request_code_result=substr($xmlrequest,$status_index,3);
-
-print "Task creation status scode= $request_code_result \n" if $verbose >0;
-
-if ($request_code_result eq '201'){
-$id_index = index($xmlrequest, "id=");
-$id_index +=4;
-$id_length = index($xmlrequest, "\"/>")-$id_index;
-
-$Task_id= substr($xmlrequest,$id_index,$id_length);
-print "Task created with id=$Task_id \n" if $verbose >1;
-} else {
-die "Error while creating task \n";
+	# Get all portlists
+	$xml = omp_request("<get_port_lists/>");
+	if ( exists $xml->{port_list}->{$portlistname} ) {
+		$portlist_id = $xml->{port_list}->{$portlistname}->{id};
+	} else { 
+		# We need to create it
+		$xml = omp_request("
+			<create_port_list>
+				<name>$portlistname</name>
+				<comment>Created by Seccubus</comment>
+				<port_range>$portlist</port_range>
+			</create_port_list>
+		");
+		if ( $xml->{status} == '201' ) {
+			$portlist_id = $xml->{id};
+		} else {
+			die "Error creating portlist $portlistname: $xml->{status_text}";
+		}
+	}
 }
 
+print "Portlist ID is $portlist_id\n" if $verbose >1 && $portlist_id;     
+
+my $target_id = "";
+# Get target id
+
+print "Target    : $targetname \n" if $verbose >1;
+print "Target ip : $targetip \n" if $verbose >1 && $targetip ne "0";
+
+$xml = omp_request("<get_targets/>");
+if ( exists $xml->{target}->{$targetname} ) {
+	if ( $targetip ne "0" ) {
+		if ( $xml->{target}->{$targetname}->{hosts} ne $targetip ) {
+			die "Target '$targetname' found, but it doesn't match target ip '$targetip', please omit target IP specification or edit the target manualy in OpenVAS to correct the problem";
+		}
+	} 
+	if ( $portlist_id ) {
+		if ( $xml->{target}->{$targetname}->{port_list}->{id} ne $portlist_id ) {
+			die "Target '$targetname' found, but it doesn't match the specified port list, please omit port list specification or edit the target manualy in OpenVAS to correct the problem";
+		}
+	}
+	$target_id = $xml->{target}->{$targetname}->{id};
+} else {
+	# Need to create a target
+	if ( $targetip eq "0" ) {
+		die "Need to create a new target '$targetname', but there was no target IP range specified.";
+	}
+	if ( ! $portlist_id ) {
+		print "Need to create a new target '$targetname', but there was no port list specified.\nPort list will default to OpenVAS Default\n" if $verbose;		
+	}
+	$xml = omp_request("
+		<create_target>
+			<name>$targetname</name>
+			<hosts>$targetip</hosts>
+			<port_list id=\"$portlist_id\"/>
+		</create_target>
+	");
+	if ( $xml->{status} eq "201" ) {
+		$target_id = $xml->{id};
+	} else {
+		die "Unable to create target '$targetname' with hosts '$targetip' and portlist '$portlist_id' ($portlistname): $xml->{status_text}";
+	}
+}
+#die Dumper($xml);
+print "Target ID : $target_id \n" if $verbose >1;
+
+# Create scan task 
+
+my $task_id = "";
+$xml = omp_request("
+	<create_task>
+		<name>Seccubus $targetname</name>
+		<comment>$timestamp</comment>
+		<config id='$pol_id' />
+		<target id='$target_id' />
+	</create_task>
+");
+if ( $xml->{status} eq "201" ) {
+	$task_id = $xml->{id};
+	print "Task ID   : $task_id\n" if $verbose >1;
+} else {
+	die "Unable to create task 'Seccubus $targetname': $xml->{status_text}";
+}
 
 #start task
-
-$request="<start_task task_id=\"$Task_id\"/>";
-print "start task with request : $request\n" if $verbose >1;
-$xmlrequest = $omp->commandXML($request, 1 );
-print "Task start xml result : $xmlrequest\n" if $verbose >1;
-
-
-# Check that task is started and get report id
-my $Report_id;
-$status_index = index ($xmlrequest, "status");
-$status_index +=8;
-$request_code_result=substr($xmlrequest,$status_index,3);
-
-print "Task start result code= $request_code_result \n" if $verbose >1;
-
-if ($request_code_result eq '202'){
-	$id_index = index($xmlrequest, "id>");
-	$id_index +=3;
-	$id_length = index($xmlrequest, "</report_")-$id_index;
-	$Report_id= substr($xmlrequest,$id_index,$id_length);
-	print "Task $Task_id started with report id=$Report_id \n" if $verbose >0;
-} else {
-	print "Error while starting task with id=$Task_id, start answer from OpenVAS 6 was : $xmlrequest \n";
-	exit(1);
+my $report_id = "";
+my $scan_status = "";
+$xml = omp_request("<start_task task_id=\"$task_id\"/>");
+if ( $xml->{status} eq "202" ) {
+	print "$xml->{status_text}\n" if $verbose >1;
+	$report_id = $xml->{report_id};
+	$scan_status = $xml->{status};
 }
 
-
-# Loop until task completion. Time out if scan longer than 4 hours.
-
-my $scan_status="Requested";
+print "Scan requested.\n" unless $quiet;
 my $timecount=0;
-
-while ($scan_status ne "Done") {
-
-$request="<get_tasks task_id=\"$Task_id\"/>";
-print "Get task status request : $request\n" if $verbose >1;
-$xmlrequest          = $omp->commandXML($request, 1 );
-print "Get task status xml result : $xmlrequest\n" if $verbose >1;
-$id_index = index($xmlrequest, "<status>");
-$id_index +=8;
-$id_length = index ($xmlrequest, "</status>")-$id_index;
-$scan_status=substr($xmlrequest, $id_index, $id_length);
-sleep(10) if $scan_status ne "Done";
-
-# if scan last more than 4 hours, there is a problem : exit on timeout
-$timecount+=10;
-if ($timecount > $timeout) { die "scanning for more than 4 hours, exiting on timeout \n";}
+while ($scan_status eq "202" || $scan_status eq "New" || $scan_status eq "Requested" ) {
+	sleep($sleep);
+	$timecount+=$sleep;
+	if ( $timecount > $timeout ) {
+		die "scanning for more than $timeout seconds, exiting on timeout \n";
+	}
+	$xml = omp_request("<get_tasks task_id='$task_id'/>");
+	$scan_status = $xml->{task}->{status};
+	print "Scan status: $scan_status\n" if $verbose >1;
 }
-print "Scan finished\n";
-
+while ($scan_status eq "Running" ) {
+	sleep($sleep);
+	$timecount+=$sleep;
+	if ( $timecount > $timeout ) {
+		die "scanning for more than $timeout seconds, exiting on timeout \n";
+	}
+	$xml = omp_request("<get_tasks task_id='$task_id'/>");
+	$scan_status = $xml->{task}->{status};
+	print "Scan status: $scan_status\n" if $verbose >1;
+}
+if ( $scan_status eq "Done") {
+	print "Scan finished\n";
+} else {
+	die "Scan ended with unexpected status: '$scan_status'"
+}
 
 # get report format id for nbe, HTML and xml
 
-my $report_format_nbe = "";
-my $report_format_pdf = "";
-my $report_format_html= "";
-my $report_format_txt= "";
-
-$cmd = "omp -u $user --password $password --get-report-formats"; 
-
-print "Executing $cmd \n" if $verbose > 1;
-my $report_format_result= `$cmd 2>1&`;
-print "Report format list : $report_format_result \n" if $verbose >1;
-foreach my  $line ( split /\n/, $report_format_result ) {
-	$line =~ /^(\S+)\s+(.*)$/;
-	my ($id, $name) = ($1, $2);
-	if ( uc($name) eq uc("HTML") ) {
-		$report_format_html = $id;
-	}
-	elsif (uc($name) eq uc("NBE") ) {
-                $report_format_nbe = $id;
-	}
-	elsif (uc($name) eq uc("PDF") ) {
-                $report_format_pdf = $id;
-	}
-		elsif (uc($name) eq uc("TXT") ) {
-                $report_format_txt = $id;
-	}
-}
-
-print "report_format_nbe : $report_format_nbe\n" if $verbose >1;
-print "report_format_html : $report_format_html\n" if $verbose >1;
-print "report_format_pdf : $report_format_pdf\n" if $verbose >1;
-print "report_format_txt : $report_format_txt\n" if $verbose >1;
+my $formats = omp_request("<get_report_formats/>");
 
 # Retrieve report nbe format
 
-$request="<get_reports report_id=\"$Report_id\" format_id=\"$report_format_nbe\"/>";
-	$xmlrequest = $omp->commandXML($request, 1 );
-
-print "Retrieve report with request : $request\n" if $verbose >1;
-print "Retrieve report result : $xmlrequest\n" if $verbose >1;
-
-$status_index = index ($xmlrequest, "status");
-$status_index +=8;
-$request_code_result=substr($xmlrequest,$status_index,3);
-
-print "Retrieve report result code : $request_code_result \n" if $verbose >0;
-
-
-
-
-# extract base64 nbe from xmlresult string
-my $result_index = index($xmlrequest, "\">", 120);
-$result_index +=2;
-print "result_index : $result_index\n" if $verbose >1;
-my $nbe_report=substr($xmlrequest, $result_index);
-
-$result_index = index($nbe_report, "</report>");
-print "result_index file end : $result_index \n" if $verbose >1;
-$nbe_report = substr($nbe_report, 0, $result_index);
-
-# For investigations : in case verbose >2, dump files to disk
-if ($verbose >2) {
-open (Rawfile,">$tempfile.raw") or die "cannot open file $tempfile.raw";
-print Rawfile $nbe_report;
-close (Rawfile);
+# NBE, HTML, XML, PDF, TXT
+my @types = qw(nbe html xml txt);
+foreach my $type ( @types ) {
+	print "Getting $type report\n" if $verbose >1;
+	$xml = omp_request("
+		<get_reports report_id='$report_id' format_id='$formats->{report_format}->{uc($type)}->{id}'/>
+	");
+	if ( $xml->{status} eq "200" ) {
+		open(OUT,">$tempfile.$type") or die "Unable to open file '$tempfile.$type' for write";
+		print OUT MIME::Base64::decode_base64($xml->{report}->{content});
+		close OUT;
+	} else {
+		die "Get report request failed with status '$xml->{status}' : $xml->{status_text}";
+	}
 }
 
-
-#decode base64 result file
-$nbe_report = MIME::Base64::decode_base64($nbe_report);
-
-#remove the \n from the decoded nbe file : 
-$nbe_report=~ s/\\n//g;
-
-open (OV6_scanresult, ">$tempfile") or die "cannot open file $tempfile";
-print OV6_scanresult $nbe_report;
-close (OV6_scanresult);
-
-
-
 #Convert scan result to Ivil
-$cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=OpenVAS6 --timestamp=$timestamp --infile $tempfile";
+print "Converting scan results to IVIL\n" unless $quiet;
+my $cmd = "$nbe2ivil --scanner=OpenVAS6 --timestamp=$timestamp --infile '$tempfile.nbe'";
 $cmd .= " -v" ;
 print "Executing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
+# Load the results
+my ( $workspace_id, $scan_id, $run_id) = load_ivil("$tempfile.ivil.xml", "OpenVAS6", "", $timestamp, $workspace, $scan, $verbose );
+# Process the results
+process_status($workspace_id, $scan_id, $run_id, $verbose);
 
-print "Importing ivil\n" unless $quiet;
-$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner OpenVAS6 --timestamp $timestamp";
-$cmd .= " -v" if $verbose > 1;
-$cmd .= " '$tempfile.ivil.xml'";
-print "Execuing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
-
-#Attach files in Seccubus
-
-print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
-
-# Attach file in Ivil format
-
-$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
-$cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
-
-# Attach report in html format if required
-
-if ($report_html>0){
-	$request="<get_reports report_id=\"$Report_id\" format_id=\"$report_format_html\"/>";
-	$xmlrequest = $omp->commandXML($request, 1 );
-
-	print "Retrieve html report with request : $request\n" if $verbose >1;
-	print "Retrieve html report result : $xmlrequest\n" if $verbose >1;
-
-	$status_index = index ($xmlrequest, "status");
-	$status_index +=8;
-	$request_code_result=substr($xmlrequest,$status_index,3);
-
-	print "Retrieve html report result code : $request_code_result \n" if $verbose >0;
-
-	my $result_index = index($xmlrequest, "\">", 120);
-	$result_index +=2;
-	print "result_index : $result_index\n" if $verbose >1;
-	my $html_report=substr($xmlrequest, $result_index);
-
-	$result_index = index($html_report, "</report>");
-	print "result_index file end : $result_index \n" if $verbose >1;
-	$html_report = substr($html_report, 0, $result_index);
-    
-	#decode base64 result
-    $html_report = MIME::Base64::decode_base64($html_report);
-	
-	open (OV6_htmlresult, ">$tempfile.html") or die "cannot open file $tempfile.html";
-	print OV6_htmlresult $html_report;
-	close (OV6_htmlresult);
-
-	$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.html' --description 'HTML output'";
-	$cmd .= " -v" if $verbose > 1;
-	print "Executing $cmd\n" if $verbose > 1;
-	my $result = `$cmd 2>&1`;
-	print "$result\n" if $verbose > 1;
+# Attach files
+print "Attaching file '$tempfile.ivil.xml' to scan '$scan'\n" if $verbose;
+update_run($workspace_id, $scan_id, $timestamp, "$tempfile.ivil.xml", "IVIL file");
+foreach my $type ( @types ) {
+	print "Attaching file '$tempfile.$type' to scan '$scan'\n" if $verbose;
+	update_run($workspace_id, $scan_id, $timestamp, "$tempfile.$type", "Raw $type results");
 }
 
-
-
-# Attach report in pdf format if required
-if ($report_pdf>0){
-
-$request="<get_reports report_id=\"$Report_id\" format_id=\"$report_format_pdf\"/>";
-	$xmlrequest = $omp->commandXML($request, 1 );
-
-print "Retrieve pdf report with request : $request\n" if $verbose >1;
-print "Retrieve pdf report result : $xmlrequest\n" if $verbose >1;
-
-$status_index = index ($xmlrequest, "status");
-$status_index +=8;
-$request_code_result=substr($xmlrequest,$status_index,3);
-
-print "Retrieve pdf report result code : $request_code_result \n" if $verbose >0;
-
-my $result_index = index($xmlrequest, "\">", 120);
-$result_index +=2;
-print "result_index : $result_index\n" if $verbose >1;
-my $pdf_report=substr($xmlrequest, $result_index);
-
-$result_index = index($pdf_report, "</report>");
-print "result_index file end : $result_index \n" if $verbose >1;
-$pdf_report = substr($pdf_report, 0, $result_index);
-
-	#decode base64 result
-    $pdf_report = MIME::Base64::decode_base64($pdf_report);
-	
-open (OV6_pdfresult, ">$tempfile.pdf") or die "cannot open file $tempfile.pdf";
-print OV6_pdfresult $pdf_report;
-close (OV6_pdfresult);
-
-$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.pdf' --description 'PDF output'";
-$cmd .= " -v" if $verbose > 1;
-print "Executing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
+unless ( $nodelete ) {
+	foreach my $type ( @types ) {
+		unlink "$tempfile.$type";
+	}
+	unlink "$tempfile.ivil.xml";
 }
 
-# Attach report in TXT format if required
-if ($report_txt>0){
-
-$request="<get_reports report_id=\"$Report_id\" format_id=\"$report_format_txt\"/>";
-	$xmlrequest = $omp->commandXML($request, 1 );
-
-print "Retrieve txt report with request : $request\n" if $verbose >1;
-print "Retrieve txt report result : $xmlrequest\n" if $verbose >1;
-
-$status_index = index ($xmlrequest, "status");
-$status_index +=8;
-$request_code_result=substr($xmlrequest,$status_index,3);
-
-print "Retrieve txt report result code : $request_code_result \n" if $verbose >0;
-
-my $result_index = index($xmlrequest, "\">", 120);
-$result_index +=2;
-print "result_index : $result_index\n" if $verbose >1;
-my $txt_report=substr($xmlrequest, $result_index);
-
-$result_index = index($txt_report, "</report>");
-print "result_index file end : $result_index \n" if $verbose >1;
-$txt_report = substr($txt_report, 0, $result_index);
-
-	
-open (OV6_txtresult, ">$tempfile.txt") or die "cannot open file $tempfile.txt";
-print OV6_txtresult $txt_report;
-close (OV6_txtresult);
-
-$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.txt' --description 'TXT output'";
-$cmd .= " -v" if $verbose > 1;
-print "Executing $cmd\n" if $verbose > 1;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
-}
-
-
-
+exit(0);
 
 # Cleanup
 unless ( $nodelete ) {
@@ -496,71 +324,6 @@ unless ( $nodelete ) {
 
 exit (0);
 
-sub gettargetid() {
-print "host name : $targetname \n" if $verbose >1;
-print "host ip : $targetip \n" if $verbose >1;
-
-
-# Get OpenVAS target list
-my $request="<get_targets />";
-	my $xmlrequest		= $omp->commandXML($request, 1 );
-print "xmlresponse : $xmlrequest \n";
-
-$length = index($xmlrequest, "\<filters");
-$length -=52;
-$xmlrequest= substr($xmlrequest,52, $length);
-$xmlrequest="<targets>".$xmlrequest."</targets>";
-$xmlrequest=~ s/<name>/<target_name>/g;
-$xmlrequest=~ s!</name>!</target_name>!g;
-print $xmlrequest."\n";
-
-my $targetlist=XMLin($xmlrequest, keyattr =>[]);
-print Dumper($targetlist);
-
-foreach my $target(@{$targetlist->{target}}) {
-if(($target->{target_name} eq $targetname)&& ($target->{hosts} eq $targetip)) {
-print "Existing target found in OpenVAS, with same name and ip adress \n" if $verbose >1;
-$target_id=$target->{id};
-print "its ID is : $target_id \n" if $verbose >1;
-last;
-	}
-elsif(($target->{target_name} eq $targetname)&&($target->{hosts} ne $targetip))
-	{
-print "Existing target found in OpenVAS with provided name, but with a different ip adress : $target->{hosts} \n";
-print "Please fix in OpenVAS, or correct name or ip adress for scanning \n";
-exit(1);
-	}
-}
-if (! $target_id) {
-# Create target in OpenVAS
-$request="<create_target><name>$targetname</name><hosts>$targetip</hosts></create_target>";
-$xmlrequest		= $omp->commandXML($request, 1 );
-
- print "Target creation xmlresult : $xmlrequest \n" if $verbose >1;
-
-#check target creation result and get target id
-
-my $request_code_result=substr($xmlrequest,32,3);
-my $request_text_result=substr($xmlrequest,50,6);
-
-print "target creation status code= $request_code_result \n" if $verbose >0;
-print "target creation result text = $request_text_result \n" if $verbose >1;
-
-if ($request_code_result eq '201'){
-$id_index = index($xmlrequest, "id=");
-$id_index +=4;
-$id_length = index($xmlrequest, "\"/>")-$id_index;
-
-$target_id= substr($xmlrequest,$id_index,$id_length);
-print "Target $targetname created with id=$target_id \n" if $verbose >1;
-} 
-else {print "Issue creating target, may be wrong format, please check logs \n";
-print "Cannot create or find this target in OpenVAS, please create manualy via OpenVAS GUI. Now exiting \n";
-exit(1);}
-	}
- 
-}
-
 sub make_timestamp() {
 	my ($second, $minute, $hour, $day, $month, $year) = localtime();
 	$month++;
@@ -574,29 +337,57 @@ sub make_timestamp() {
 	return "$year$month$day$hour$minute$second";
 }
 
+sub omp_request($) {
+	my $request = shift;
+	die "No omp request specified" unless $request;
+	print "sumbitted omp request : $request\n" if $verbose >2;
+	my $xmlrequest = $omp->commandXML($request,1);
+	print "retreived omp result  : $xmlrequest\n" if $verbose >2;
+	return XMLin($xmlrequest);
+}
+
 sub help {
+	my $message = shift;
 
-print "
---help : display this message
---port : OpenVAS manager port (default 9390)
---targetip or --tip : ip adress of scan target 
---targetname or --tname : name of the target existing in OpenVas6, or to be created in OpenVas6 if does not already exist
---user or --u OpenVas6 username
---password or --pw OpenVas6 password
---reporthtml or --rhtml : also retrieve scan report in html format
---reportpdf  or --rpdf : also retrieve scan report in pdf format
---reporttxt or --rtxt  : also retrieve scan report in txt format
---server or --s : specify OpenVAS6 server adress
---quiet or --q : quiet mode, do not print output
---sleep : seconds to sleep between polls of OpenVAS manager (default : 10)
---policy or --pol : OpenVas6 scan policy 
---verbose --v : verbose mode. -v -v : level 2 debug. -v -v -v : max debug level.
---nodelete : do not delete temporary files located in /tmp.
---scan or --sc : Seccubus scan name
---timeout : scan timeout in seconds : if scan duration exeed this time, exit. Default is 14400 seconds (ie 4 hours)
---workspace or --ws : Seccubus workspace name.
+	print "Error: $message\n";
 
-";
+	print "
+Usage: scan     --workspace=<seccubus workspace> --scan=<seccubus scan>
+		        --server=<OpenVAS server> [--port=<OpenVAS server port>
+		        --user=<OpenVAS user> --password=<OpenVAS password>
+		        --policy=<OpenVAS Scan Config name> [--target=<OpenVAS target>]
+		        [--targetip=<IP(s) to scan>] [--portlist=<OpenVAS port listname>]
+		        [--portrange=<Port range(s) to scan>] [--sleep=<sleeptime>]
+		        [--timeout=<timeout>] [--nodelete] [--verbose] [--quiet] [--help]
 
-exit(1);
+--workspace (-ws) - Seccubus workspace the scan should be in
+--scan (-sc)	  - Seccubus scan the data should be saved in
+--server          - IP address or hostname of OpenVAS scanner
+--port            - TCP port the OpenVAS scanner is listening on (optional, 
+                    defaults=9390)
+--user            - OpenVAS user name
+--password        - OpenVAS password
+--policy          - OpenVAS policy (aka Scan Config) to use for scanning
+--target          - Name of the OpenVAS target to use when scanning (if the 
+	                target doesn't exist, it will be created using this name.
+	                optional, default=<targetip)
+--targetip        - Definition of the IPs to scan. (optional if target is 
+	                specified and exists)
+--portlist        - Name of the OpenVAS portlist to use when scanning (if 
+	                the portlist doesn't existm it will be created using this
+	                name. optional, default=use the portlist from the target 
+	                copy the name from portrange)
+--portrange       - OpenVAS port range to scan (optional if a target or portlist
+	                is specified and it exists)
+--sleep           - Seconds to sleep between polls of the API  (optional, 
+	                default=10) 
+--timeout         - # Seconds after which to abort a scan (optional, 
+	                default=14400 (4 hours))
+--nodelete        - Don't erase temporary files
+--verbose (-v)    - Be verbose during execution (repeat to increase verbosity)
+--quiet (-q)      - Don't print output
+--help (-h)       - Print this message	
+	";
+
+	exit(1);
 }

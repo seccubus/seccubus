@@ -1,4 +1,4 @@
-<%# Copyright 2013 Frank Breedijk                                            %>
+<%# Copyright 2015 Frank Breedijk                                            %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -16,26 +16,34 @@
 	<% if (columns[i] == "") { %>
 		<% if(columns[i+1] == "Action") { %>
 			<td>
-				<a href='javascript://' class='editFinding'>
-					<img src='img/edit.png'>
-				</a><br>
-				<% if (state == 99 ) { %>
-					<a href='javascript://' value='1' class='small changeState'><img src='img/new.png'></a><br>
+			    <% if ( ! noEdit ) { %> 
+					<img class='editFinding' src='img/edit.png'><br>
 				<% } %>
-				<% if (state <= 2 || state == 4 ) { %>
-					<a href='javascript://' value='3' class='small changeState'><img src='img/open.png'></a><br>
+			    <% if ( ! noLink ) { %> 
+					<img class='linkFinding' src='img/link.png'><br>
 				<% } %>
-				<% if (state < 4 ) { %>
-					<a href='javascript://' value='4' class='small changeState'><img src='img/noissue.png'></a><br>
+			    <% if ( ! noFindingUnlink ) { %> 
+					<img class='unlinkFinding' src='img/unlink.png'><br>
 				<% } %>
-				<% if (state == 6 ) { %>
-					<a href='javascript://' value='5' class='small changeState'><img src='img/gone.png'></a><br>
-				<% } %>
-				<% if (state == 5 ) { %>
-					<a href='javascript://' value='6' class='small changeState'><img src='img/closed.png'></a><br>
-				<% } %>
-				<% if (state != 99 ) { %>
-					<a href='javascript://' value='99' class='small changeState'><img src='img/masked.png'></a><br>
+			    <% if ( ! noEdit ) { %> 
+					<% if (status == 99 ) { %>
+						<a href='javascript://' value='1' class='small changeState'><img src='img/new.png'></a><br>
+					<% } %>
+					<% if (status <= 2 || status == 4 ) { %>
+						<a href='javascript://' value='3' class='small changeState'><img src='img/open.png'></a><br>
+					<% } %>
+					<% if (status < 4 ) { %>
+						<a href='javascript://' value='4' class='small changeState'><img src='img/noissue.png'></a><br>
+					<% } %>
+					<% if (status == 6 ) { %>
+						<a href='javascript://' value='5' class='small changeState'><img src='img/gone.png'></a><br>
+					<% } %>
+					<% if (status == 5 ) { %>
+						<a href='javascript://' value='6' class='small changeState'><img src='img/closed.png'></a><br>
+					<% } %>
+					<% if (status != 99 ) { %>
+						<a href='javascript://' value='99' class='small changeState'><img src='img/masked.png'></a><br>
+					<% } %>
 				<% } %>
 			</td>
 		<% } else if (columns[i+1] == "select") { %>
@@ -67,6 +75,37 @@
 		</td>
 	<% } else if (columns[i] == "remark") { %>
 		<td><%== this.asHTML("remark") %></td>
+	<% } else if (columns[i] == "status") { %>
+		<td><%= status %>. <%= statusName %></td>
+	<% } else if (columns[i] == "issues") { %>
+		<td>
+			<% if ( this["issues"] == null )  { %>
+				0 issues
+			<% } else { %>
+				<%= issues.length %> issue<%= issues.length > 1 ? "s" : "" %>:<br>
+				<ul>
+					<% for ( x = 0; x < issues.length ; x++ ) { %>
+						<li>
+							<div title='<%= issues[x].description %>'>
+							    <% if ( ! noLink ) { %> 
+									<img class='editIssue' issueId='<%= issues[x].id %>' src='img/edit.png'>
+								<% } %>
+							    <% if ( ! noIssueUnlink ) { %> 
+									<img class='unlinkIssue' issueId='<%= issues[x].id %>' src='img/unlink.png'>
+								<% } %>
+								<%= issues[x].name %>
+								<% if ( issues[x].url ) { %>
+									(<a href='<%= issues[x].url%>' target=_blank><%= issues[x].ext_ref %><a/>)
+								<% } else { %>
+									(<%= issues[x].ext_ref %>)
+								<% } %>
+								- <%= issues[x].severityName %> - <%= issues[x].statusName %>
+							</div>
+						</li>
+					<% } %>
+				</ul>
+			<% } %>
+		</td>
 	<% } else { %>
 		<td><%= this[columns[i]] %></td>
 	<% } %>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Frank Breedijk, Petr
+ * Copyright 2015 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,5 +26,6 @@ steal("funcunit/qunit",
 	'./run_test.js', 
 	'./event_test.js', 
 	'./notification_test.js',
-	'./asset_test.js'
-	);
+	'./asset_test.js',
+	'./issue_test.js'
+);

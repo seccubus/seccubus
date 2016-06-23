@@ -11,28 +11,39 @@ Seccubus 2.x is the only actively developed and maintained branch and all suppor
 for Seccubus V1 has officially been dropped. 
 
 Seccubus V2 works with the following scanners:
-* Nessus 4.x and 5.x (professional and home feed)
-* Skipfish
+* Nessus 
 * OpenVAS
+* Skipfish
 * Medusa (local and remote)
 * Nikto (local and remote)
 * NMap (local and remote)
+* OWASP-ZAP (local and remote)
 * SSLyze
 * Medusa
-* Burp Suite
 * Qualys SSL labs
 
 For more information visit [www.seccubus.com]
 
+![Travis build status](https://travis-ci.org/schubergphilis/Seccubus_v2.svg?branch=master)
+
 ---
+xx-xx-2016 - 2.25 - 
+=============================================
 
-Release notes
-=============
+...
 
-24-02-2015 - 2.14 - SSL labs API
-================================
-The SSL labs scanner now uses the SSL labs API (see https://github.com/ssllabs/ssllabs-scan/blob/master/ssllabs-api-docs.md) to check the SSL configuration of your website in stead of scraping the site.
+Enhancements
+------------
+* #319 - RPM now builds and installs under CentOs/RHEL 5 too
+* #320 - Nessus6 scanner now downloads PDF and HTML version of report too
+* #312 - SSLLabs and Nessus6 scanner no longer depend on perl-REST-Client
+* #322 - Removed old scanners: Nessus v5 and earlier, OpenVAS v5 and earlier
+* Improved exit codes for the onlyonxday.sh utility
 
 Bug Fixes
-=========
-* No additional bugfixes
+---------
+* #323 - Non-critical warnings in unit tests fixed
+* #305 - Finding change records are generated even if a finding did not actually change
+* #327 - OpenVAS target is always created with the default portlist
+* #328 - CopyRight year unit test appears to be broken on Travis
+* #333 - LWP::UserAgent is missing method delete on RH5 and RH6

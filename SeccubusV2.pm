@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2015 Frank Breedijk, blabla1337, Glenn ten Cate
+# Copyright 2016 Frank Breedijk, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ $config = "etc/dummy.config.xml" unless -e $config;
 use lib "/opt/seccubus/SeccubusV2";
 push (@main::INC, @INC);
 
-$VERSION = '2.14';
+$VERSION = '2.25';
 
 use strict;
 use Carp;
@@ -75,7 +75,7 @@ Reference to a hash containing the config in XML
 
 sub get_config() {
 	if ( ! ref($config) ) {
-		$config = XMLin($config, ForceArray => [qw(monkey)], KeyAttr => [ qw(id) ]);
+		$config = XMLin($config, ForceArray => [qw(monkey)], KeyAttr => [ qw(id) ], SuppressEmpty => '');
 	}
 	return $config;
 }

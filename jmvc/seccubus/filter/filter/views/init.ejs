@@ -1,4 +1,4 @@
-<%# Copyright 2013 Frank Breedijk                                            %>
+<%# Copyright 2015 Frank Breedijk                                            %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -12,111 +12,8 @@
 <%# See the License for the specific language governing permissions and      %>
 <%# limitations under the License.                                           %>
 <% if ( typeof this[0] != "undefined" && typeof this[0].error != "undefined" ) { %>
-	 <%== $.View('//seccubus/finding/filter/views/error.ejs',{ message : this[0].error }) %>
-<% } else { 
-/*	var hosts = {};
-	hosts["*"] = 0;
-	var hostNames = {};
-	hostNames["*"] = 0;
-	var ports= {};
-	ports["*"] = 0;
-	var plugins= {};
-	plugins["*"] = 0;
-	var severitys= {};
-	severitys["*"] = 0;
-
-	for ( var i = 0; i < this.length ; i++ ) { 
-*/
-/*
-		if(this[i].isMatch({ 			// Only consider stuff in scans
-			scans : fScans
-		})) {
-*/
-/*
-			if ( typeof hosts[this[i].host] == 'undefined' ) {
-				hosts[this[i].host] = 0;
-			}
-			if ( typeof hostNames[this[i].hostName] == 'undefined' ) {
-				hostNames[this[i].hostName] = 0;
-			}
-			if ( typeof ports[this[i].port] == 'undefined' ) {
-				ports[this[i].port] = 0;
-			}
-			if ( typeof plugins[this[i].plugin] == 'undefined' ) {
-				plugins[this[i].plugin] = 0;
-			}
-			if ( typeof severitys[this[i].severity] == 'undefined' ) {
-				severitys[this[i].severity] = 0;
-			}
-			if(this[i].isMatch({ 
-				status : fStatus,
-				host : fHost,
-				hostName : fHostName,
-				port : fPort,
-				plugin : fPlugin,
-				severity : fSeverity,
-				finding : fFinding,
-				remark : fRemark
-			})) { 
-				hosts[this[i].host]++; 
-				hosts["*"]++;
-				hostNames[this[i].hostName]++; 
-				hostNames["*"]++;
-				ports[this[i].port]++;
-				ports["*"]++;
-				plugins[this[i].plugin]++;
-				plugins["*"]++;
-				severitys[this[i].severity]++;
-				severitys["*"]++;
-			} 
-		}
-//	} 
-
-	for(var ip in hosts) {
-		var octets = ip.split(".");
-		for(i=1;i<octets.length;i++) {
-			var f = "";
-			for(j=0;j<i;j++) {
-				f = f + octets[j] + ".";
-			}
-			f = f + "*";
-			if ( typeof hosts[f] == "undefined" ) {
-				hosts[f] = 0;
-			}
-			hosts[f] += hosts[ip];
-		}
-	}
-	hostList = [];
-	for(var i in hosts) {
-		hostList.push(i);
-	}
-	hostList.sort();
-
-	hostNameList = [];
-	for(var i in hostNames) {
-		hostNameList.push(i);
-	}
-	hostNameList.sort();
-
-	portList = [];
-	for(var i in ports) {
-		portList.push(i);
-	}
-	portList.sort();
-
-	pluginList = [];
-	for(var i in plugins) {
-		pluginList.push(i);
-	}
-	pluginList.sort(); 
-
-	severityList = [];
-	for(var i in severitys) {
-		severityList.push(i);
-	}
-	severityList.sort(); 
-*/
-%>
+	 <%== $.View('//seccubus/filter/filter/views/error.ejs',{ message : this[0].error }) %>
+<% } else { %>
 
 	Host:
 	<select filter='host' class='filter hostFilter'>
@@ -205,6 +102,23 @@
 					(<%= this.severity[i].number %>)
 				<% } %>
 			</option>
+		<% } %>
+	</select>
+
+	<br>
+
+	Issue:
+	<select filter='issue' class='filter issueFilter'>
+		<% for(var i=0;i<this.issue.length;i++) { %>
+			<option 
+				<%= this.issue[i].number == -1 ? "disabled" : "" %>
+				value='<%= this.issue[i].value %>'
+				<%= this.issue[i].selected ? "selected" : "" %>
+			>
+				<%= this.issue[i].name %>
+				<% if (this.issue[i].number > 0 )  { %>
+					(<%= this.issue[i].number %>)
+				<% } %>
 		<% } %>
 	</select>
 	

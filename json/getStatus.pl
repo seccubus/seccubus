@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk, Petr
+# Copyright 2015 Frank Breedijk, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,11 +27,12 @@ use SeccubusFindings;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $workspace_id = $query->param("workspaceId");
-my @scan_ids = $query->param("scanIds[]");
-my @asset_ids = $query->param("assetIds[]");
+my $params = $query->Vars;
+my $workspace_id = $params->{workspaceId};
+my @scan_ids = split(/\0/, $params->{"scanIds[]"});
+my @asset_ids = split(/\0/, $params->{"assetIds[]"});
 
 # Return an error if the required parameters were not passed 
 if (not (defined ($workspace_id))) {
@@ -45,7 +46,7 @@ if (not (defined ($workspace_id))) {
 eval {
 	my @data;
 	my %filter;
-	foreach my $key ( qw( Status Host Hostname Port Plugin Severity Finding Remark Severity ) ) {
+	foreach my $key ( qw( Status Host Hostname Port Plugin Severity Finding Remark Severity Issue ) ) {
 		if ($query->param($key) ne undef and $query->param($key) ne "all" and $query->param($key) ne "null" and $query->param($key) ne "*" ) {
 			$filter{lc($key)} = $query->param($key); 
 		}

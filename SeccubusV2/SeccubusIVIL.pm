@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2014 Frank Breedijk, Alex Smirnoff
+# Copyright 2015 Frank Breedijk, Alex Smirnoff
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -108,7 +108,6 @@ sub load_ivil($;$$$$$$) {
 	$scan = $workspace unless $scan;
 	
 	$scanner = $ivil->{sender}->{scanner_type} unless $scanner;
-	confess "Unable to determine scanner" unless $scanner;
 	$scanner_ver = $ivil->{sender}->{version} unless $scanner_ver;
 
 	$timestamp = $ivil->{sender}->{timestamp} unless $timestamp;
@@ -124,6 +123,7 @@ sub load_ivil($;$$$$$$) {
 	}
 	my $scan_id = get_scan_id($workspace_id, $scan);
 	unless ( $scan_id ) {
+		confess "Unable to determine scanner" unless $scanner;
 		$scan_id = create_scan($workspace_id, $scan, $scanner, "Please update manually");
 	}
 	my $run_id = update_run($workspace_id, $scan_id, $timestamp);
@@ -135,6 +135,7 @@ sub load_ivil($;$$$$$$) {
 		print "There are $count findings\n" if $print;
 		foreach my $finding ( @{$ivil->{findings}->{finding}} ) {
 			$finding->{severity} = 0 unless defined $finding->{severity};
+			$finding->{severity} = 0 if $finding->{severity} eq "";
 			# TODO: Seccubus currently does not handle the 
 			# references as specified in the IVIL format
 			update_finding(

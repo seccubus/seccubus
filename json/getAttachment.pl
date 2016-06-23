@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk
+# Copyright 2015 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,10 +26,11 @@ use SeccubusRuns;
 
 my $query = CGI::new();
 
-my $workspace_id = $query->param("workspaceId");
-my $scan_id = $query->param("scanId");
-my $run_id = $query->param("runId");
-my $attachment_id = $query->param("attachmentId");
+my $params = $query->Vars;
+my $workspace_id = $params->{workspaceId};
+my $scan_id = $params->{scanId};
+my $run_id = $params->{runId};
+my $attachment_id = $params->{attachmentId};
 
 # Return an error if the required parameters were not passed 
 if (not (defined ($workspace_id))) {

@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk, Alex Smirnoff
+# Copyright 2016 Frank Breedijk, Alex Smirnoff
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,12 +27,15 @@ use Getopt::Long;
 use Carp;
 
 use JSON;
-use REST::Client;
 use Data::Dumper;
-use LWP::Simple;
+use LWP::UserAgent;
 
 sub help();
 sub make_timestamp();
+sub rest_get($;$$$$);
+sub rest_post($;$$$$);
+sub rest_delete($;$$$$);
+sub rest_call($$$;$$$);
 
 my (
 	$user,
@@ -52,7 +55,10 @@ my (
 	$cmd,
 	$nosslcheck,
 	$token,
+	$r,
    );
+
+my @formats = qw(nessus pdf html);
 
 sub login();
 sub help();
@@ -119,25 +125,18 @@ if ( ! $hosts_file ) {
 
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose > 1;
-my $tempscan = "seccubus.$scan.$timestamp";
+my $tempscan = "seccubus.$workspace.$scan.$timestamp";
 my $tempfile = "/tmp/$tempscan.$$";
 my $nivil = "$config->{paths}->{scanners}\/Nessus\/nivil.rb";
 my $nessus2ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nessus2ivil";
 my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
 my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
 
-my $client = REST::Client->new(host => "https://$server:$port");
-
 my $json;
 login();
 
-$client->GET("/editor/policy/templates", { 	
-				'Content-Type' => 'application/json',
-			      	'Accept' => 'application/json',
-				'X-Cookie' => 'token=' . $token});
-
-die "Cannot get policy list" if ($client->responseCode() != 200);
-$json = decode_json($client->responseContent());
+$json = rest_get("/editor/policy/templates",undef,\$r);
+die "Cannot get policy list" if ($r->code() != 200);
 
 my $tuuid;
 my $pid = -1;
@@ -157,13 +156,8 @@ if (!$tuuid) {
 		}
 	}
 
-	$client->GET("/policies", {
-				'Content-Type' => 'application/json',
-			      	'Accept' => 'application/json',
-				'X-Cookie' => 'token=' . $token});
-
-	die "Cannot get policy list" if ($client->responseCode() != 200);
-	$json =	 decode_json($client->responseContent());
+	$json = rest_get("/policies",undef,\$r);
+	die "Cannot get policy list" if ($r->code() != 200);
 
 	foreach my $pol (@{$json->{policies}} ) {
 		if ($pol->{name} eq $policy) {
@@ -204,34 +198,20 @@ if ( -e $hosts_file ) {			# Assume its a host spect rather then a
 }
 
 print "Imported scan targets: $scandata->{settings}{text_targets} \n" if $verbose;
-
-$client->POST('/scans', encode_json($scandata), {
-				'Content-Type' => 'application/json',
-                                'Accept' => 'application/json',
-                                'X-Cookie' => 'token=' . $token});
-
-die "Cannot create scan" if ($client->responseCode() != 200); 
-$json = decode_json($client->responseContent());
+$json = rest_post('/scans',encode_json($scandata),\$r);
+die "Cannot create scan" if ($r->code() != 200); 
 
 my $sid = $json->{scan}{id};
 print "Created scan $sid\n" if $verbose;
-	
-$client->addHeader('X-Cookie', 'token=' . $token);
-$client->POST("/scans/$sid/launch");
 
-die "Cannot launch scan" if ($client->responseCode() != 200); 
+$json = rest_post("/scans/$sid/launch",{},\$r);
+die "Cannot launch scan" if ($r->code() != 200); 
 
-$json = decode_json($client->responseContent());
 my $launched = $json->{scan_uuid};
 print "Launched scan $launched\n" if $verbose;
 
-$client->GET("/scans/$sid", { 	
-			'Content-Type' => 'application/json',
-		      	'Accept' => 'application/json',
-			'X-Cookie' => 'token=' . $token});
-$json = decode_json($client->responseContent());
-
-die "Cannot get scan history" if ($client->responseCode() != 200); 
+$json = rest_get("/scans/$sid", {}, \$r);
+die "Cannot get scan history" if ($r->code() != 200); 
 my $hid;
 
 for my $history (@{$json->{history}} ) {
@@ -248,81 +228,63 @@ if ($hid) {
 
 do {
 	sleep(5);
-	$client->GET("/scans/$sid?history_id=$hid", { 	
-				'Content-Type' => 'application/json',
-			      	'Accept' => 'application/json',
-				'X-Cookie' => 'token=' . $token});
+	$json = rest_get("/scans/$sid", { 'history_id' => $hid }, \$r);
 
-	if ($client->responseCode() eq 200) {
-		$json = decode_json($client->responseContent());
-		print "Scan status: $json->{info}->{status}\n" if $verbose;
-		die "Scan aborted" if ($json->{info}->{status} eq "aborted");
-		die "Scan cancelled" if ($json->{info}->{status} eq "cancelled");
+	if ($r->code() eq 200) {
+		my $vulncount = @{$json->{vulnerabilities}};
+		print "Scan status: $json->{info}->{status}. $vulncount findings on $json->{info}->{hostcount} host(s).\n" if $verbose;
 	} else {
-		print "Scan status request returned " . $client->responseCode() . "\n" if $verbose;
-		login() if (($client->responseCode() == 401) || ($client->responseCode() == 503));
+		die "Scan status request returned " . $r->code();
 	} 
-} until ($json->{info}->{status} eq "completed");
- 
-my $exportdata = {
-	'history_id'	=>	$hid,
-	'format'	=>	'nessus'
-};
+} until ($json->{info}->{status} eq "completed" || $json->{info}->{status} eq "canceled" || $json->{info}->{status} eq "aborted" );
 
-$client->POST("/scans/$sid/export", encode_json($exportdata), {
-				'Content-Type' => 'application/json',
-                                'Accept' => 'application/json',
-                                'X-Cookie' => 'token=' . $token});
+foreach my $format ( @formats ) {
+	print "Exporting report in $format format\n" unless $quiet;
 
-die "Cannot initiate scan export" if ($client->responseCode() != 200); 
-$json = decode_json($client->responseContent());
-my $filehandle=$json->{file};
-print "Initiated scan export to file $filehandle\n" if $verbose;
+	my $exportdata = {
+		'history_id'	=>	$hid,
+		'format'		=>	$format,
+	};
 
-do {
-	sleep(5);
-	$client->GET("/scans/$sid/export/$filehandle/status", { 	
-				'Content-Type' => 'application/json',
-			      	'Accept' => 'application/json',
-				'X-Cookie' => 'token=' . $token});
-	if ($client->responseCode() eq 200) {
-		$json = decode_json($client->responseContent());
-		print "Scan export status: $json->{status}\n";
+	$json = rest_post("/scans/$sid/export", encode_json($exportdata), \$r);
+
+	if ( $r->code == 200 ) {
+		my $filehandle=$json->{file};
+		print "Initiated scan export to file $filehandle\n" if $verbose;
+
+		do {
+			sleep(5);
+			$json = rest_get("/scans/$sid/export/$filehandle/status", {}, \$r);
+			if ($r->code() eq 200) {
+				print "Scan export status: $json->{status}\n";
+			} else {
+				print "Scan export status request returned " . $r->code() if $verbose;
+			}
+		} until ($json->{status} eq 'ready');
+
+		rest_get("/scans/$sid/export/$filehandle/download", {}, \$r,1 ); # This call doesn't return json, but a file
+
+		die "Cannot download report" if ($r->code() != 200); 
+		print "Report downloaded, saving $filehandle to $tempfile.$format\n" if $verbose;
+		open FILE, ">". "$tempfile.$format" or die "Cannot save report";
+		print FILE $r->decoded_content();
+		close FILE;
+
 	} else {
-		print "Scan export status request returned $client->responseCode()" if $verbose;
+		print "Could not initiate export in $format format, skipping.\n" if ($r->code() != 200 && ! $quiet); 
 	}
-} until ($json->{status} eq 'ready');
+}
 
-$client->GET("/scans/$sid/export/$filehandle/download", { 	
-				'Content-Type' => 'application/json',
-			      	'Accept' => 'application/json',
-				'X-Cookie' => 'token=' . $token});
-
-die "Cannot download report" if ($client->responseCode() != 200); 
-print "Report downloaded, saving $filehandle to $tempfile.nessus\n" if $verbose;
-
-open FILE, ">", "$tempfile.nessus" or die "Cannot save report";
-
-print FILE $client->responseContent();
-
-close FILE;
-
-$client->DELETE("/scans/$sid/history/$hid" , { 	'Content-Type' => 'application/json',
-			      	'Accept' => 'application/json',
-				'X-Cookie' => 'token=' . $token});
-die "Cannot delete report" if ($client->responseCode() != 200); 
+rest_delete("/scans/$sid/history/$hid",{},\$r);
+die "Cannot delete report" if ($r->code() != 200); 
 print "Report deleted from server\n" if $verbose;
 
-$client->DELETE("/scans/$sid" , { 	'Content-Type' => 'application/json',
-			      	'Accept' => 'application/json',
-				'X-Cookie' => 'token=' . $token});
-die "Cannot delete scan" if ($client->responseCode() != 200); 
+rest_delete("/scans/$sid" , {}, \$r);
+die "Cannot delete scan" if ($r->code() != 200); 
 print "Scan deleted from server\n" if $verbose;
 
-$client->DELETE("/session", { 	'Content-Type' => 'application/json',
-			      	'Accept' => 'application/json',
-				'X-Cookie' => 'token=' . $token});
-die "Cannot log out" if ($client->responseCode() != 200); 
+rest_delete("/session", {}, \$r);
+die "Cannot log out" if ($r->code() != 200); 
 print "Logged off server\n" if $verbose;
 
 print "Converting $tempfile.nessus to $tempfile.ivil.xml\n" unless $quiet;
@@ -341,23 +303,25 @@ $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
 print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
-$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.nessus' --description 'Nessus xml output'";
-$cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
-$result = `$cmd 2>&1`;
-
-print "$result\n" if $verbose > 1;
-
-$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
-$cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
-$result = `$cmd 2>&1`;
-print "$result\n" if $verbose > 1;
+foreach my $format ( @formats, "ivil.xml") {
+	if ( -e "$tempfile.$format" ) {
+		print "Attaching file $tempfile.$format to scan\n" if $verbose;
+		$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.$format' --description '$format output'";
+		$cmd .= " -v" if $verbose > 1;
+		print "Execuing $cmd\n" if $verbose > 1;
+		$result = `$cmd 2>&1`;
+		print "$result\n" if $verbose > 1;
+	}
+}
 
 # Cleanup
 unless ( $nodelete ) {
-	unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
-	unlink "$tempfile.nessus" if -e "$tempfile.nessus";
+	foreach my $format ( @formats, "ivil.xml") {
+		if ( -e "$tempfile.$format" ) {
+			print "Deleting $tempfile.$format\n" if $verbose >1;
+			unlink "$tempfile.$format";
+		}
+	}
 }
 
 print "Done\n" unless $quiet;
@@ -409,21 +373,121 @@ sub login() {
 		'username' => $user,
 		'password' => $password
 	};
+	$token = undef;
+	my $r;
+	my $json = rest_post("/session",$cred, \$r);
 
-	my $client = REST::Client->new(host => "https://$server:$port");
-
-	do {
-		$client->POST("/session", encode_json($cred), { 'Content-Type' => 'application/json',
-								'Accept' => 'application/json'});
-		if (($client->responseCode() == 500) || ($client->responseCode() == 503)) {
-			print "Server returned " . $client->responseCode() . " on login\n" if $verbose;
-			sleep(15);
-		}
-	} while (($client->responseCode() == 500) || ($client->responseCode() == 503)); 
-
-	die "Cannot authenticate to scanner: " . $client->responseCode() if ($client->responseCode() != 200);
+	confess "Cannot authenticate to scanner: " unless $r->is_success;
 
 	print "Authenticated\n" if $verbose;
 
-	$token = decode_json($client->responseContent())->{token};
+	$token = $json->{token};
+}
+
+sub rest_get($;$$$$) {
+	my $uri = shift;
+	my $params = shift;
+	my $response = shift;
+	my $nojson = shift;
+
+	rest_call("get",$uri,$params,$response,$nojson);
+}
+
+sub rest_post($;$$$$) {
+	my $uri = shift;
+	my $params = shift;
+	my $response = shift;
+	my $nojson = shift;
+
+	rest_call("post",$uri, $params,$response,$nojson);
+}
+
+sub rest_delete($;$$$$) {
+	my $uri = shift;
+	my $params = shift;
+	my $response = shift;
+	my $nojson = shift;
+
+	rest_call("delete",$uri, $params,$response,$nojson);
+}
+
+sub rest_call($$$;$$$){
+	my $method = shift;
+	my $uri = shift;
+	my $param = shift;
+	my $response = shift;
+	my $nojson = shift;
+	my $last = shift;
+
+	my $ua = LWP::UserAgent->new();
+	$ua->agent("Seccubus $SeccubusV2::VERSION ");
+
+	$ua->default_header('Content-Type' => 'application/json');
+	$ua->default_header('Accept' => 'application/json');
+	# Disable max return size
+	$ua->max_size(undef);
+
+	if ( $token ) {
+		$ua->default_header('X-Cookie' => "token=$token");
+	}
+
+	my $r;
+	if ( $method eq "post" ) {
+		if ( $verbose > 2 ) {
+			print "POST to https://$server:$port$uri\nParams:\n";
+			print Dumper $param;
+		}
+		if ( ref $param ) {
+			$r = $ua->post("https://$server:$port$uri", $param);
+		} else {
+			my $req = HTTP::Request->new(POST => "https://$server:$port$uri");
+			$req->content_type('application/json');
+			$req->content($param);
+
+			$r = $ua->request($req);
+		}
+	} elsif ( $method eq "get" ) {
+		my $geturi = "$uri?";
+		foreach my $key ( sort keys %$param ) {
+			$geturi .= $key . "=" . $param->{$key} . "&";
+		}
+		$geturi =~ s/\&$//;
+		print "GET to https://$server:$port$geturi\n" if $verbose > 2;
+		$r = $ua->get("https://$server:$port$geturi");
+	} elsif ( $method eq "delete" ) {
+		print "DELETE to https://$server:$port$uri\n" if $verbose > 2;
+		if ( defined $ua->{delete} ) {
+			$r = $ua->delete("https://$server:$port$uri", $param);
+		} else {
+			print "Delete not supported on this platform\n" unless $quiet;
+		}
+	}
+	print "Server response : " . $r->decoded_content() . "\n" if $verbose > 2;
+
+	if ( $token && ( $r->code() == 401 || $r->code() == 503 ) && ! $last) {
+		print "Authentication failed, attempting to re-login\n" if $verbose;
+		# Login and retry if failed
+		login();
+		return(rest_call($method,$uri,$param,$response,undef,1)); 
+	}
+
+	$$response = $r if $response; # Return response object
+
+	unless ( $nojson ) {
+		my $json;
+
+		eval {
+			if ( $r->decoded_content() ) {
+				$json = decode_json($r->decoded_content());
+			} else {
+				$json = {};
+			}
+		} or do {
+			die "Unable to decode JSON from: " . $r->decoded_content();
+		};
+		if ( $json->{error} ) {
+			print "Server returned error: $json->{error}\n";
+		}
+		return $json;
+	}
 }

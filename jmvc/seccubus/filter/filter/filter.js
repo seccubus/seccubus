@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Frank Breedijk, Petr
+ * Copyright 2015 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,12 @@ $.Controller('Seccubus.Filter.Filter',
 		 * @attribute options.remark
 		 * Value of the remark filter
 		 */
-		remark		: "",
+		remark		: "",		
+		/*
+		 * @attribute options.issue
+		 * Value of the issue filter
+		 */
+		issue		: "*",		
 		/*
 		 * @attribute options.onChange
 		 * Function to be executed when the filter changes
@@ -119,6 +124,7 @@ $.Controller('Seccubus.Filter.Filter',
 		this.options.severity = "*";
 		this.options.finding = "";
 		this.options.remark = "";
+		this.options.issue = "*"
 		this.options.onChange({
 			host		: this.options.host,
 			hostName	: this.options.hostName,
@@ -126,7 +132,8 @@ $.Controller('Seccubus.Filter.Filter',
 			plugin		: this.options.plugin,
 			severity	: this.options.severity,
 			finding		: this.options.finding,
-			remark		: this.options.remark
+			remark		: this.options.remark,
+			issue		: this.options.issue
 		});
 		if ( this.options.updateOnChange ) {
 			this.updateView();
@@ -141,7 +148,8 @@ $.Controller('Seccubus.Filter.Filter',
 			plugin		: this.options.plugin,
 			severity	: this.options.severity,
 			finding		: this.options.finding,
-			remark		: this.options.remark
+			remark		: this.options.remark,
+			issue		: this.options.issue
 		});
 		if ( this.options.updateOnChange ) {
 			this.updateView();
@@ -171,19 +179,20 @@ $.Controller('Seccubus.Filter.Filter',
 						Plugin		: this.options.plugin,
 						Severity	: this.options.severity,
 						Finding		: this.options.finding,
-						Remark		: this.options.remark
-						
+						Remark		: this.options.remark,
+						Issue 		: this.options.issue
 					}), 
 					{
-						fScans : this.options.scans,
-						fStatus : this.options.status,
-						fHost : this.options.host,
-						fHostName : this.options.hostName,
-						fPort : this.options.port,
-						fPlugin : this.options.plugin,
-						fSeverity : this.options.severity,
-						fFinding : this.options.finding,
-						fRemark : this.options.remark
+						fScans 		: this.options.scans,
+						fStatus 	: this.options.status,
+						fHost 		: this.options.host,
+						fHostName 	: this.options.hostName,
+						fPort 		: this.options.port,
+						fPlugin 	: this.options.plugin,
+						fSeverity 	: this.options.severity,
+						fFinding 	: this.options.finding,
+						fRemark 	: this.options.remark,
+						fIssue 		: this.optionsissue
 					}
 				)
 			);
@@ -193,7 +202,9 @@ $.Controller('Seccubus.Filter.Filter',
 		this.updateView();
 	},
 	"{Seccubus.Models.Finding} updated" : function(Finding, ev, finding) {
-		this.updateView();
+		if ( ! finding.bulk ) {
+			this.updateView();
+		}
 	},
 	"{Seccubus.Models.Finding} destroyed" : function(Finding, ev, finding) {
 		this.updateView();

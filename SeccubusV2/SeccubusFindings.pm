@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2014 Frank Breedijk, Steve Launius, Petr
+# Copyright 2016 Frank Breedijk, Steve Launius, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,8 +24,10 @@ of all functions within the module.
 use SeccubusDB;
 use SeccubusRights;
 use SeccubusUsers;
+use SeccubusIssues;
 use Algorithm::Diff qw( diff );
 use JSON;
+use Data::Dumper;
 
 @ISA = ('Exporter');
 
@@ -102,6 +104,7 @@ sub get_findings($;$$$) {
 			LEFT JOIN severity on findings.severity = severity.id
 			LEFT JOIN finding_status on findings.status = finding_status.id
 			LEFT JOIN scans on scans.id = findings.scan_id
+			LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id
 			WHERE
 				findings.workspace_id = ?";
 		if ( $scan_id != 0 ) {
@@ -124,13 +127,14 @@ sub get_findings($;$$$) {
 				LEFT JOIN severity on findings.severity = severity.id
 				LEFT JOIN finding_status on findings.status = finding_status.id
 				LEFT JOIN scans on scans.id = findings.scan_id,
+				LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id
 				assets,
 				asset_hosts
 			
 			WHERE
 				findings.workspace_id = ? AND
 				assets.workspace_id = findings.workspace_id AND
-				asset_hosts.asset_id = assets.id and (asset_hosts.ip = findings.`host` or asset_hosts.`host` = findings.`host`)
+				asset_hosts.asset_id = assets.id and (asset_hosts.ip = findings.`host` or asset_hosts.`host` = findings.`host` or findings.`host` LIKE CONCAT('%/',asset_hosts.ip))
 				";
 			$query .= "AND assets.id = ?";
 			push @$params, $asset_id;
@@ -173,10 +177,14 @@ sub get_findings($;$$$) {
 				$query .= " AND remark LIKE ?";
 				push @$params, "%" . $filter->{remark} . "%";
 			}
+			if ( $filter->{issue} ) {
+				$query .= " AND issues2findings.issue_id = ?";
+				push @$params, $filter->{issue};
+			}
 		}
 		
 		$query .= " ORDER BY host, port, plugin ";
-
+		#die $query;
 
 		return sql( "return"	=> "ref",
 			    "query"	=> $query,
@@ -274,6 +282,10 @@ sub get_status($$$;$) {
 				$query .= " AND remark LIKE ?";
 				push @$params, "%" . $filter->{remark} . "%";
 			}
+			if ( $filter->{issue} ) {
+				$query .= " AND findings.id IN ( SELECT finding_id from issues2findings WHERE issue_id = ? ) ";
+				push @$params, $filter->{issue};
+			}
 
 		$query .= " ) ";
 
@@ -292,11 +304,11 @@ sub get_status($$$;$) {
 				push @$params, $filter->{hostname};
 			}
 		}
-
 		$query .= " ) ";
-		
-		$query .= " GROUP BY finding_status.id";
 
+				
+		$query .= " GROUP BY finding_status.id";
+		#die $query;
 		return sql( "return"	=> "ref",
 			    "query"	=> $query,
 			    "values"	=> $params,
@@ -340,10 +352,11 @@ sub get_filters($$$;$) {
 	if(!$scan_ids && !$asset_ids)  { die "Must specify scanids or assetids for function get_status"; }
 	my $filter = shift;
 
-
 	# finding -> id, host, hostname, port, plugin, findingl, remark, severity, status, status_txt
-	# filter -> host hostname port plugin finding remark severity status
-	if ( may_read($workspace_id) ) {
+	# filter -> host hostname port plugin finding remark severity status issue
+	if ( ! may_read($workspace_id) ) {
+		die "Permission denied!";
+	} else {
 		my @findings;
 		my %filters;
 		foreach my $scan ( @$scan_ids ) {
@@ -354,17 +367,58 @@ sub get_filters($$$;$) {
 			my $finds = get_findings($workspace_id,undef,$asset);
 			push @findings, @$finds;
 		}
+
+		# Lets get the issues and add them to the findings
+		my $issues = get_issues($workspace_id,undef,1); # We want issues with finding links
+		my %i2f;
+		my %issues;
+		foreach my $issue ( @$issues ) {
+			# Update link from finding to issue
+			my $id = $$issue[8];
+			$id = 'none' unless $id;
+			$i2f{$id} = [] unless $i2f{$id};
+			push @{$i2f{$id}}, $issue;
+			# Update has containing issues
+			$issues{$$issue[0]} = [] unless $issues{$$issue[0]};
+			$issues{$$issue[0]} = $issue;
+			# (P)reset counter
+			$filters{issue}{$$issue[0]} = 0;
+		}
+
+		# Link issues to findings
 		foreach my $find ( @findings ) {
-			$filters{"host"}{$$find[1]} += match($find,$filter,[ "hostname", "port", "plugin", "finding", "remark", "severity", "status"]);
-			$filters{"hostname"}{$$find[2]} += match($find,$filter,[ "host", "port", "plugin", "finding", "remark", "severity", "status"]);
-			$filters{"port"}{$$find[3]} += match($find,$filter,[ "host", "hostname", "plugin", "finding", "remark", "severity", "status"]);
-			$filters{"plugin"}{$$find[4]} += match($find,$filter,[ "host", "hostname", "port", "finding", "remark", "severity", "status"]);
-			$filters{"severity"}{"$$find[7] - $$find[8]"} += match($find,$filter,[ "host", "hostname", "port", "plugin", "finding", "remark", "status"]);
+			if ( $i2f{$$find[0]} ) {
+				$$find[13] = $i2f{$$find[0]};
+			} else {
+				$$find[13] = [];
+			}
+		}
+
+		# Update all counters
+		foreach my $find ( @findings ) {
+			$filters{"host"}{$$find[1]} += match($find,$filter,[ "hostname", "port", "plugin", "finding", "remark", "severity", "status", "issue"]);
+			$filters{"hostname"}{$$find[2]} += match($find,$filter,[ "host", "port", "plugin", "finding", "remark", "severity", "status", "issue"]);
+			$filters{"port"}{$$find[3]} += match($find,$filter,[ "host", "hostname", "plugin", "finding", "remark", "severity", "status", "issue"]);
+			$filters{"plugin"}{$$find[4]} += match($find,$filter,[ "host", "hostname", "port", "finding", "remark", "severity", "status", "issue"]);
+			$filters{"severity"}{"$$find[7] - $$find[8]"} += match($find,$filter,[ "host", "hostname", "port", "plugin", "finding", "remark", "status", "issue"]);
+			$filters{"issue"}{"*"} += match($find,$filter,[ "host", "hostname", "port", "plugin", "finding", "remark", "severity", "status"]);					
+			foreach my $issue ( @{$$find[13]} ) {
+				$filters{"issue"}{$$issue[0]} += match($find,$filter,[ "host", "hostname", "port", "plugin", "finding", "remark", "severity", "status"]);				
+			}
 		}
 		# Host
 		# Generate wildcard values
 		foreach my $host ( keys %{$filters{"host"}} ) {
 			$filters{"host"}{"*"} += $filters{"host"}{$host};
+			# Split on slashes first
+			my @subs = split(/\//, $host);
+			my $addr = "";
+			while ( 1 < @subs ) {
+				$addr .= shift @subs;
+				$addr .= "/";
+				$filters{"host"}{"$addr*"} += $filters{"host"}{$host};
+			}
+			# Then on dots
 			my @subs = split(/\./, $host);
 			my $addr = "";
 			while ( 1 < @subs ) {
@@ -550,14 +604,44 @@ sub get_filters($$$;$) {
 		);
 		$filters{"severity"} = \@sev;
 
+		# Issues
+		my @issue = ();
+		push @issue, {
+			name 	=> "*",
+			number	=> $filters{issue}{"*"},
+			selected 	=> ( $filter->{issue} eq "*" ? JSON::true : JSON::false ),
+		};
+		foreach my $i ( sort keys %{$filters{issue}} ) {
+			unless ( $i eq "*" || $filters{issue}->{$i} == 0 ) {
+				push @issue , {
+					name 	=> "${$issues{$i}}[1] ($issues{$i}[2])",
+					value 	=> $i,
+					number	=> $filters{issue}{$i},
+					selected => ( $filter->{issue} eq $i ? JSON::true : JSON::false ),	
+				}
+			}
+		}
+		push @issue, {
+			name 	=> "---",
+			number	=> -1,
+		};
+		foreach my $i ( @{$i2f{none}} ) {
+			push @issue, {
+				name => "$$i[1] ($$i[2])",
+				value => $$i[0],
+				number => 0,
+				selected => ( $filter->{issue} eq $$i[0] ? JSON::true : JSON::false ),
+			}
+		}
+		$filters{issue} = \@issue;
+
+		# Finding and remark are easy
 		$filter->{"finding"} = "" unless $filter->{"finding"};
 		$filters{"finding"} = $filter->{"finding"};
 		$filter->{"remark"} = "" unless $filter->{"remark"};
 		$filters{"remark"} = $filter->{"remark"};
 
 		return %filters;
-	} else {
-		die "Permission denied!";
 	}
 }
 
@@ -587,6 +671,8 @@ sub match($$;$) {
 	my $finding = shift or die "No finding specified for match";
 	my $filter = shift or die "No filter specified for match";
 	my $fields = shift;
+
+	#die Dumper $filter;
 
 	unless ($fields) {
 		$fields = [];
@@ -647,6 +733,18 @@ sub match($$;$) {
 	if ( $match && $filter2{"status"} && $filter2{"status"} ne "*" && $$finding[9] ne $filter2{"status"} ) {
 		$match = 0;
 	}
+	#issue 
+	#die Dumper %filter2;
+	if ( $match && $filter2{"issue"} && $filter2{"issue"} ne "*" ) {
+		$match = 0;
+		foreach my $i ( @{$$finding[13]} ) {
+			if ( $$i[0] == $filter2{"issue"} ) {
+				#print Dumper $finding;
+				$match = 1;
+				last;
+			}
+		}
+	}
 	return $match;
 }
 
@@ -702,7 +800,7 @@ sub get_finding($$;) {
 				finding_changes.severity = severity.id AND
 				finding_changes.status = finding_status.id AND
 				runs.id = finding_changes.run_id 
-			ORDER BY finding_changes.time DESC
+			ORDER BY finding_changes.time DESC, finding_changes.id DESC
 			";
 
 
@@ -818,10 +916,13 @@ sub update_finding(@) {
 		if ( exists $arg{remark} ) {
 			if ( $arg{overwrite} ) {
 				$query .= ", remark = ? ";
+				push @values, $arg{remark};
 			} else {
-				$query .= ", remark = CONCAT_WS('\n', remark, ?) ";
+				if ( $arg{remark} ) {
+					$query .= ", remark = CONCAT_WS('\n', remark, ?) ";
+					push @values, $arg{remark};
+				}
 			}
-			push @values, $arg{remark};
 		}
 		$query .= "where id = ? and workspace_id = ?";
 		sql( "return"	=> "handle",
@@ -884,14 +985,31 @@ sub create_finding_change($:) {
 	my $finding_id = shift or die "No fidnings_id given";
 	my $user_id = get_user_id($ENV{REMOTE_USER});
 
-	my @data = sql( "return"	=> "array",
+	my @new_data = sql( "return"	=> "array",
 			"query"		=> "select status, finding, remark, severity, run_id from findings where id = ?",
 			"values"	=> [ $finding_id ],
 		      );
-	sql( "return"	=> "id",
-	     "query"	=> "insert into finding_changes(finding_id, status, finding, remark, severity, run_id, user_id) values (?, ?, ?, ?, ?, ?, ?)",
-	     "values"	=> [ $finding_id, @data, $user_id ],
-	   );
+	my @old_data = sql( "return"	=> "array",
+			"query"		=> "
+				select status, finding, remark, severity, run_id from finding_changes 
+				where finding_id = ?
+				order by id DESC
+				limit 1",
+			"values"	=> [ $finding_id ],
+	);
+	my $changed = 0;
+	foreach my $i ( (0..4) ) {
+		if ( $old_data[$i] ne $new_data[$i] || ( defined($old_data[$i]) && !defined($new_data[$i]) ) ||  ( ! defined($old_data[$i]) && defined($new_data[$i]) ) ) {
+			$changed = 1;
+			last;
+		}
+	}
+	if ( $changed ) {
+		sql( "return"	=> "id",
+		     "query"	=> "insert into finding_changes(finding_id, status, finding, remark, severity, run_id, user_id) values (?, ?, ?, ?, ?, ?, ?)",
+		     "values"	=> [ $finding_id, @new_data, $user_id ],
+		   );
+	}
 }
 
 =head2 process_status
@@ -950,8 +1068,8 @@ sub process_status($$$;$) {
 		      "values"	=> [ $workspace_id, $scan_id, $run_id ],
 		    );
 
-	foreach my $id ( @{$ref} ) {
-		$id = $$id[0]; # Get the id from the arrayref;
+	foreach my $row ( @{$ref} ) {
+		my $id = $$row[0]; # Get the id from the arrayref;
 		print "Set finding $id to status GONE\n" if $verbose;
 		update_finding(
 			"workspace_id"	=> $workspace_id,
@@ -963,6 +1081,7 @@ sub process_status($$$;$) {
 	# Find the ids that need to be set to NEW, basically these are the 
 	# findings that currently have the status GONE (5) or CLOSED (6) but 
 	# are associated with the current run (as provided by the user)
+	# If a finding is created for the first time, it gets the status NEW by default
 	$ref = sql( "return"	=> "ref",    
 		    "query"	=> "SELECT	id
 		      		    FROM	findings
@@ -983,49 +1102,55 @@ sub process_status($$$;$) {
 	}
 
 	# Find out if there has been a previous run
-	my $previous_run = sql( return	=> "array",
-				query	=> "SELECT	MAX(id) 
-					    FROM	runs
-					    WHERE	scan_id = ? AND
-					    		id <> ?",
-				values	=> [ $scan_id, $run_id ] 
-			      );
+	my $previous_run = sql( 
+		return	=> "array",
+		query	=> "SELECT	MAX(id) 
+				    FROM	runs
+				    WHERE	scan_id = ? AND
+				    		id <> ?",
+		values	=> [ $scan_id, $run_id ] 
+    );
 	print "Previous run is: $previous_run\n" if $verbose;
 	if ( $previous_run ) {		# No need to check for changes if this
-					# is the first run
+								# is the first run
 
 		# Find the ids that need to be tested for changes. basically 
 		# these are the findings with status OPEN(3), or NO ISSUE (4) 
 		# associated with the current run
-		$ref = sql( "return"	=> "ref",    
-			    "query"	=> "SELECT	id
-			      		    FROM	findings
+		$ref = sql( 
+			"return"	=> "ref",    
+			"query"	=> "SELECT	id
+			   		    FROM	findings
 					    WHERE 	workspace_id = ? AND
 					    		scan_id = ? AND
-							( status = 3 OR status = 4 ) AND
-							run_id = ?",
-			      "values"	=> [ $workspace_id, $scan_id, $run_id ],
-			    );
-		foreach my $id ( @{$ref} ) {
-			$id = $$id[0]; # Get the id from the arrayref;
+								( status = 3 OR status = 4 ) AND
+								run_id = ?",
+			"values"	=> [ $workspace_id, $scan_id, $run_id ],
+		);
+		foreach my $row ( @{$ref} ) {
+			my $id = $$row[0]; # Get the id from the arrayref;
 			print "Checking finding $id for changes\n" if $verbose;
 			# Get differences in diff format
 			my @diff = diff_finding("diff", $workspace_id, $id, $run_id, $previous_run); 
-			# update the finding to changed if there is a diff
-			if ( @diff[0] eq "NEW" ) {
-				# Handle a erronious situation
-				print "Finding wasn't present in previous run, while it should have been, resetting to NEW\n" if $verbose;
-				update_finding (
-					"workspace_id"  => $workspace_id,
-					"finding_id"    => $id,
-					"status"        => 1,
-				);
-			} elsif ( @diff ) {
-				update_finding (
-					"workspace_id"  => $workspace_id,
-					"finding_id"    => $id,
-					"status"        => 2,
-				);
+			if ( @diff ) {
+				print "Changes found\n" if $verbose;
+				print join "\n", @diff if $verbose > 1;
+				# update the finding to changed if there is a diff
+				if ( @diff[0] eq "NEW" ) {
+					# Handle a erronious situation
+					print "Finding wasn't present in previous run, while it should have been, resetting to NEW\n" if $verbose;
+					update_finding (
+						"workspace_id"  => $workspace_id,
+						"finding_id"    => $id,
+						"status"        => 1,
+					);
+				} elsif ( @diff ) {
+					update_finding (
+						"workspace_id"  => $workspace_id,
+						"finding_id"    => $id,
+						"status"        => 2,
+					);
+				}
 			}
 		}
 	}
@@ -1077,46 +1202,48 @@ sub diff_finding($$$$$;) {
 	my $prev_run =shift;
 
 	if ( may_read($workspace_id) ) {
-		my @findings = sql( return	=> "array",
-				    query	=> "SELECT id
+		my @current = sql( return	=> "array",
+				    query	=> "SELECT finding
 				    		    FROM findings
 						    WHERE id = ? 
 						    AND workspace_id = ?",
 				    values	=> [ $finding_id, $workspace_id ],
 				  );
-		die "There is no finding '$finding_id' in workspace '$workspace_id'" unless @findings;
-		my @current = sql( return	=> "array",
-				   query	=> "SELECT finding
-				   		    FROM finding_changes
-						    WHERE finding_id = ?
-						    AND run_id = ?
-						    ORDER BY time 
-						    LIMIT 1",
-				   values	=> [ $finding_id, $this_run ],
-				 );
+		die "Unable to load current finding, ws: $workspace_id, id: $finding_id, run: $this_run" unless ( @current );
 		my @prev = sql( return	=> "array",
 				query	=> "SELECT finding
 				   	    FROM finding_changes
 					    WHERE finding_id = ?
 					    AND run_id = ?
-					    ORDER BY time 
+					    ORDER BY time DESC
 					    LIMIT 1",
 				   values	=> [ $finding_id, $prev_run ],
 				 );
-		die "Unable to load current finding, ws: $workspace_id, id: $finding_id, run: $this_run" unless ( @current );
 		if ( @prev ) {
-			@current = split(/\n/, $current[0]);
-			@prev = split(/\n/, $prev[0]);
-			my @diff = diff(\@prev, \@current);
-	
-			if ( $type eq "diff" ) {
-				return @diff;
-			} elsif ( $type eq "txt" ) {
-				return join "\n", @diff;
-			} elsif ( $type eq "html" ) {
-				return join "<br>\n", @diff;
-			} else {
-				die "Unknown return type '$type'";
+			if ( $current[0] ne $prev[0] ) {
+				# There is a difference
+
+				@current = split(/\n/, $current[0]);
+				@prev = split(/\n/, $prev[0]);
+				my $diff = diff(\@prev, \@current);
+				my @diff;
+				foreach my $line ( @{$$diff[0]} ) {
+					push @diff, join " ", @$line;
+				}
+
+				if ( $type eq "diff" ) {
+					return @diff;
+				} elsif ( $type eq "txt" ) {
+					return join "\n", @diff;
+				} elsif ( $type eq "html" ) {
+					return join "<br>\n", @diff;
+				} else {
+					die "Unknown return type '$type'";
+				}
+			} else{
+				# No difference return empty array
+
+				return;
 			}
 		} else {
 			# There is no previous run, this should technically not

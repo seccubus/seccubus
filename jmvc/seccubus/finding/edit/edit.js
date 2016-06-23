@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2015 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ steal(	'jquery/controller',
 	'jquery/controller/view',
 	'jquery/dom/form_params',
 	'seccubus/models',
+	'seccubus/issue/table',
 	'seccubus/history/table'
 ).then( './views/init.ejs', 
 function($){
@@ -83,7 +84,11 @@ $.Controller('Seccubus.Finding.Edit',
 						length: this.options.findings.length
 					}
 				)
-			)
+			);
+			$('#issue_table_findings').seccubus_issue_table({
+				workspace 	: this.options.workspace,
+				finding		: this.options.findings[this.options.index].id
+			});
 		}
 		if ( this.options.history != null ) {
 			/* Display the finding history */

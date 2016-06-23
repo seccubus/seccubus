@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone='yes'?>
 <!--
-     Copyright 2013 Frank Breedijk
+     Copyright 2015 Frank Breedijk
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@
 		<password>seccubus</password>
 	</database>
 	<paths>
-		<modules>/opt/seccubus/SeccubusV2</modules>
-		<scanners>/opt/seccubus/scanners</scanners>
-		<bindir>/opt/seccubus/bin</bindir>
-		<configdir>/opt/seccubus/etc</configdir>
-		<dbdir>/opt/seccubus/db</dbdir>
+		<modules>/home/travis/build/schubergphilis/Seccubus_v2/SeccubusV2</modules>
+		<scanners>/home/travis/build/schubergphilis/Seccubus_v2/scanners</scanners>
+		<bindir>/home/travis/build/schubergphilis/Seccubus_v2/bin</bindir>
+		<configdir>/home/travis/build/schubergphilis/Seccubus_v2/etc</configdir>
+		<dbdir>/home/travis/build/schubergphilis/Seccubus_v2/db</dbdir>
 	</paths>
 </seccubus>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Frank Breedijk, Petr
+ * Copyright 2015 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,6 +82,11 @@ $.Controller('Seccubus.Finding.Table',
 		 */
 		severity	: "*",
 		/*
+		 * @attribute options.issue
+		 * The current issue filter
+		 */
+		issue		: "*",
+		/*
 		 * @attribute options.finding
 		 * The current finding filter
 		 */
@@ -110,13 +115,14 @@ $.Controller('Seccubus.Finding.Table',
 		 */
 		columns		: [ 	"", "select",
 					"host", "IP", 
-					"scanName","ScanName",
 					"hostName", "HostName", 
 					"port", "Port", 
 					"plugin", "Plugin", 
+					"scanName","ScanName",
 					"severity", "Severity", 
 					"find", "Finding",
 					"remark", "Remark",
+					"issues", "Issues",
 					"", "Action"
 				  ],
 		/*
@@ -143,8 +149,47 @@ $.Controller('Seccubus.Finding.Table',
 		 * clicked
 		 */
 		onEdit		:  function(find) {
-			alert("Options.onEdit function is not set");
-		}
+			console.warn("Seccubus.Finding.Table: onEdit function is not set.");
+			console.log(find);
+		},
+		/*
+		 * @attribute options.onLink
+		 * Function that is called when a finding's link button is 
+		 * clicked
+		 */
+		onLink		:  function(find) {
+			console.warn("Seccubus.Finding.Table: onLink function is not set.");
+			console.log(find);
+		},
+		/*
+		 * @attribute options.onIssueEdit
+		 * Function that is called when an issue's edit button is 
+		 * clicked
+		 */
+		onIssueEdit		:  function(issue) {
+			console.warn("Seccubus.Finding.Table: onIssueEdit function is not set.");
+			console.log(issue);
+		},
+		/*
+		 * @attribute options.noEdit
+		 * Boolean that turns the edit button off
+		 */
+		noEdit		: false,
+		/*
+		 * @attribute options.noLink
+		 * Boolean that turns the link button off
+		 */
+		noLink		: false,
+		/*
+		 * @attribute options.noUnlink
+		 * Boolean that turns the unlink button for a finding off
+		 */
+		noFindingUnlink	: true,
+		/*
+		 * @attribute options.noUnlink
+		 * Boolean that turns the unlink button for a issue off
+		 */
+		noIssueUnlink	: false
 	}
 },
 /** @Prototype */
@@ -170,13 +215,13 @@ $.Controller('Seccubus.Finding.Table',
 					checked		: this.options.checked
 				})
 			);
-		} else if ( this.options.scans == null && this.options.assets == null ) {
+		} else if ( this.options.scans == null && this.options.assets == null && this.options.issue == "*") {
 			this.element.html(
 				this.view('error',{
 					columns		: this.options.columns,
 					orderBy		: this.options.orderBy,
 					descending	: this.options.descending,
-					message 	: "Please select one or more scans or assets",
+					message 	: "Please select one or more scans, assets or an issue",
 					checked		: this.options.checked
 				})
 			);
@@ -195,6 +240,7 @@ $.Controller('Seccubus.Finding.Table',
 						Port		: this.options.port,
 						Plugin		: this.options.plugin,
 						Severity	: this.options.severity,
+						Issue 		: this.options.issue,
 						Finding		: this.options.finding,
 						Remark		: this.options.remark
 					}), 
@@ -203,8 +249,14 @@ $.Controller('Seccubus.Finding.Table',
 						columns		: this.options.columns,
 						orderBy		: this.options.orderBy,
 						descending	: this.options.descending,
-						fn		: this.sortFunc(this.options.orderBy,this.options.descending),
-						checked		: this.options.checked
+						fn			: this.sortFunc(this.options.orderBy,this.options.descending),
+						checked		: this.options.checked,
+						noEdit		: this.options.noEdit,
+						noLink		: this.options.noLink,
+						noFindingUnlink	
+									: this.options.noFindingUnlink,
+						noIssueUnlink	
+									: this.options.noIssueUnlink
 					}
 				)
 			);
@@ -280,6 +332,42 @@ $.Controller('Seccubus.Finding.Table',
 		var find = el.closest('.finding').model();
 		this.options.onEdit(find);
 	},
+	// Handle link clicks
+	".linkFinding click" : function(el,ev) {
+		ev.preventDefault();
+		var find = el.closest('.finding').model();
+		this.options.onLink(find);
+	},
+	// Handle unlink clicks
+	".unlinkFinding click" : function(el,ev) {
+		ev.preventDefault();
+		var find = el.closest('.finding').model();
+		var issue = new Seccubus.Models.Issue;
+		issue.attr("issueId",this.options.issue);
+		issue.attr("workspaceId",this.options.workspace);
+		issue.attr("findingIdsRemove",[find.id]);
+		issue.save();
+	},
+	".unlinkIssue click" : function(el,ev) {
+		ev.preventDefault();
+		var find = el.closest('.finding').model();
+		var issue = new Seccubus.Models.Issue;
+		issue.attr("issueId",el.attr('issueId'));
+		issue.attr("workspaceId",this.options.workspace);
+		issue.attr("findingIdsRemove",[find.id]);
+		issue.save();
+	},
+	// Handle issue edits
+	".editIssue click" : function(el, ev) {
+		ev.preventDefault();
+		var issue = Seccubus.Models.Issue.findOne(
+			{
+				workspaceId	: this.options.workspace,
+				issueId		: el.attr('issueId')
+			},
+			this.options.onIssueEdit
+		);
+	},
 	// Handle state change click by updating the finding in question via the
 	// model
 	".changeState click" : function(el,ev) {
@@ -309,17 +397,35 @@ $.Controller('Seccubus.Finding.Table',
 	},
 	// Handle update events by redrawing the view
 	"{Seccubus.Models.Finding} updated" : function(Finding, ev, finding) {
-		if(find.status == this.options.status) {
+		if(Number(finding.status) == Number(this.options.status)) {
 			finding.elements(this.element).html(
-				this.view('finding',finding)
+				this.view('finding',
+					finding,
+					{
+						columns : this.options.columns,
+						state	: this.options.status,
+						checked : this.options.checked.all
+
+					} 
+				)
 			);
 		} else {
-			this.updateView();
+			console.log("Not the same");
+			if ( ! finding.bulk ) {
+				this.updateView();
+			}
 		}
 	},
 	// Handle destroy events
 	"{Seccubus.Models.Finding} destroyed" : function(Finding, ev, finding) {
 		alert("table destroyed:" + finding.id);
+	},
+	// Handle issue events
+	"{Seccubus.Models.Issue} updated" : function(Issue, ev, issue) {
+		this.updateView();
+	},
+	"{Seccubus.Models.Issue} created" : function(Issue, ev, issue) {
+		this.updateView();
 	},
 	/*
 	 * Returns the specific sort function for an attribute

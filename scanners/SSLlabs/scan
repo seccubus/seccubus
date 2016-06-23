@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk, Alex Smirnoff
+# Copyright 2016 Frank Breedijk, Alex Smirnoff, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@
 
 use strict;
 use SeccubusV2;
+use SeccubusRuns;
+use SeccubusFindings;
 use SeccubusIVIL;
 use IVIL;
 
@@ -27,7 +29,7 @@ use Getopt::Long;
 use Carp;
 
 use JSON;
-use REST::Client;
+use LWP::UserAgent;
 use Data::Dumper;
 
 sub help();
@@ -62,7 +64,8 @@ $quiet = 0;
 $sleep = 15;
 $verbose = 0;
 $nosslcheck = 0;
-$api = "https://api.dev.ssllabs.com/api/fa78d5a4/";
+#$api = "https://api.dev.ssllabs.com/api/fa78d5a4/";
+$api = "https://api.ssllabs.com/api/v2/";
 $userAgent = "seccubus-ssllabs v0.1";
 $noClearCache = 0;
 
@@ -132,31 +135,47 @@ if ( $noClearCache || $fromCache ) {
 }
 
 
-# Setup REST client
-my $client = REST::Client->new(host => $api);
-my $ua = $client->getUseragent();
+# Setup LWP::UserAgent client
+#my $client = REST::Client->new(host => $api);
+my $ua = LWP::UserAgent->new();
 $ua->agent("$userAgent ");
 # Disable max return size set by REST::Client
 $ua->max_size(undef);
-
+# Default headers
+$ua->default_header('Content-Type' => 'application/json');
+$ua->default_header('Accept' => 'application/json');
 
 # Test if SSL labs is active
 my $json;
 print "calling info\n" if $verbose > 1;
-$client->GET(
-	"info", 
-	{ 	
-		'Content-Type' => 'application/json',
-		'Accept' => 'application/json',
-	}
-);
+my $response = $ua->get("$api/info");
+die "Unable to contact SSL labs at $api" if (! $response->is_success);
+$json = decode_json($response->decoded_content());
+# Verbose 3 or higher is true debug mode
 
-die "Unable to contact SSL labs at $api" if ($client->responseCode() != 200);
-$json = decode_json($client->responseContent());
+if ( $verbose > 2 ) {  
+	print "*** QUERY ***\n";
+	print "$api/info\n";
+	print "*** RESPONSE HEADERS *** \n";
+	my $headers = $response->headers();
+	print $headers->as_string();
+	print "*** RESPONSE DATA ***\n";
+	print $response->decoded_content();
+}
+
+
+
 my $scanner_ver = "v$json->{engineVersion} (criteria version $json->{criteriaVersion})";
-print "Scans will be performed by SSL Labs v$json->{engineVersion} (criteria version $json->{criteriaVersion}) - www.ssllabs.com\n" unless $quiet;
 my $maxScans = $json->{clientMaxAssessments};
-print "Maximum number of concurrent assessments: $maxScans\n" if $verbose;
+my $coolOff = $json->{newAssessmentCoolOff};
+unless($quiet) {
+	print "Scans will be performed by SSL Labs v$json->{engineVersion} (criteria version $json->{criteriaVersion}) - www.ssllabs.com\n" unless $quiet;
+	print "Maximum number of concurrent assessments: $maxScans\n" if $verbose;
+	print "Cool off period before starting a new assessment: $coolOff ms\n" if $verbose;
+	print "\n";
+	print join "\n", @{$json->{messages}};
+	print "\n";
+}
 
 my $active = 9999;
 my $results = {};
@@ -194,6 +213,8 @@ while ( $active ) {
 			if ( ! defined $results->{$host} ) {
 				push @params, "clearCache=on" if $clearCache;
 				print "Starting scan of $host\n" unless $quiet;
+				print "Sleeping for $coolOff ms before scan\n" if $verbose;
+				select(undef, undef, undef, $coolOff/1000);
 			} else {
 				print "Getting status of $host scan\n" if $verbose;
 			}
@@ -201,36 +222,34 @@ while ( $active ) {
 			# Do the actual API call
 			my $url = "analyze?" . join "&", @params;
 			print "Calling $url\n" if $verbose > 1;
-			$client->GET(
-				$url, 
-				{ 	
-					'Content-Type' => 'application/json',
-					'Accept' => 'application/json',
-				}
-			);
+			my $response = $ua->get("$api/$url");
+
 
 			# Verbose 3 or higher is true debug mode
 			if ( $verbose > 2 ) {  
 				print "*** QUERY ***\n";
-				print "$api$url\n";
+				print "$api/info\n";
 				print "*** RESPONSE HEADERS *** \n";
-				foreach my $header ( $client->responseHeaders()) {
-					print "$header : " . $client->responseHeader($header) . "\n";
-				}
+				my $headers = $response->headers();
+				print $headers->as_string();
 				print "*** RESPONSE DATA ***\n";
-				print $client->responseContent();
+				print $response->decoded_content();
 			}
 
-			# If the API tells us the number of parallel assessments has changed
-			if ( $client->responseHeader('X-ClientMaxAssessments') && $client->responseHeader('X-ClientMaxAssessments') != $maxScans ) {
-				$maxScans = $client->responseHeader('X-ClientMaxAssessments');
+			my $newMaxScans = $response->headers()->header('X-ClientMaxAssessments');
+			if ( $newMaxScans && $newMaxScans != $maxScans ) {
+				$maxScans = $newMaxScans;
 				print "API has sent new max scan limit of $maxScans, adjusting...\n" unless $quiet;
 			}
 
 			# Handle responses: 200 - All OK
-			$json = decode_json($client->responseContent());
-			if ($client->responseCode == 200) {
-				# Store result an continue normal timing
+			eval {
+				$json = decode_json($response->decoded_content());
+			} or do {
+				die "Unable to decode JSON from: " . $response->decoded_content();
+			};
+			if ($response->code() == 200) {
+				# Store result and continue normal timing
 				$extraSleep = 0;
 				print "$host -> $json->{status}\n" if $verbose;
 				$results->{$host} = $json;
@@ -242,13 +261,13 @@ while ( $active ) {
 
 				}
 			# Other statuses are a problem
-			} elsif ($client->responseCode == 429 ) {
+			} elsif ( $response->code() == 429 ) {
 				print "Request rate too high, sleeping 5 minutes before next request\n" unless $quiet;
 				$extraSleep = 300;
-			} elsif ( $client->responseCode == 503 ) {
+			} elsif ( $response->code() == 503 ) {
 				print "Service not available, sleeping 15 minutes before next request\n" unless $quiet;
 				$extraSleep = 900;
-			} elsif ( $client->responseCode == 529 ) {
+			} elsif ( $response->code() == 529 ) {
 				print "Service overloaded, sleeping 30 minutes before next request\n" unless $quiet;
 				$extraSleep = 1800;
 			} else {
@@ -257,7 +276,7 @@ while ( $active ) {
 				foreach my $error ( @{$json->{errors}} ) {
 					$msg .= "$error->{message}\n";
 				}
-				print "Received error. Error code ". $client->responseCode() . " messages:\n$msg" unless $quiet;
+				print "Received error. Error code ". $response->code() . " messages:\n$msg" unless $quiet;
 				print "Host: $host, status: ERROR - done\n" unless $quiet;
 
 				# Atrifically construct an ERROR API reply
@@ -302,10 +321,10 @@ foreach my $host ( @hosts ) {
 	}
 
 	# Handle errors first
-	if ( $scan->{status} eq "ERROR" ) {
+    if ( $scan->{status} eq "ERROR" || $scan->{status} eq "Assessment failed" ) {
 		$finding->{ip} = $host;
 		$finding->{hostname} = $host;
-		$finding->{id} = "ERROR";
+		$finding->{id} = "ERROR/Assessment failed";
 		$finding->{finding} = $scan->{statusMessage};
 		$finding->{severity} = 0;
 		print OUT ivil_finding($finding);
@@ -342,7 +361,7 @@ foreach my $host ( @hosts ) {
 							$epkey eq "eta" || $epkey eq "ipAddress" || $epkey eq "progress" ||
 							$epkey eq "statusMessage" || $epkey eq "statusDetailsMessage" || $epkey eq "statusDetails" ) {
 							# Ignore
-						} elsif ( $epkey eq "grade" || $epkey eq "serverName" || $epkey eq "npnProtocols" ) {
+						} elsif ( $epkey eq "grade" || $epkey eq "serverName" || $epkey eq "npnProtocols" || $epkey eq "gradeTrustIgnored" ) {
 							# Simpel dump values
 							$finding->{finding} = "$epkey - $ep->{$epkey}";
 							print OUT ivil_finding($finding);
@@ -360,10 +379,13 @@ foreach my $host ( @hosts ) {
 							# Iterate over keys
 							foreach my $dkey ( sort keys %{$ep->{$epkey}} ) {
 								my $det = $ep->{$epkey}->{$dkey};
-								if ( $dkey eq "chain" || $dkey eq "compressionMethods" || $dkey =~ /Time$/ || $dkey =~ /refixDelegation$/ || $dkey eq "sims" 
-									|| $dkey eq "suites"  || $dkey eq "statusDetails" ) {
+								if ( $dkey eq "chain" || $dkey eq "compressionMethods" || $dkey =~ /Time$/ 
+									|| $dkey =~ /refixDelegation$/ || $dkey eq "sims" || $dkey eq "suites"  || $dkey eq "statusDetails" 
+								) {
 									# Ignore
-								} elsif ( $dkey eq "compression" || $dkey eq "heartbeat" || $dkey eq "ocspStapling" || $dkey eq "sniRequired" || $dkey eq "supportsNpn") {
+								} elsif ( $dkey eq "compression" || $dkey eq "heartbeat" || $dkey eq "ocspStapling" 
+									|| $dkey eq "sniRequired" || $dkey eq "supportsNpn" || $dkey eq "fallbackScsv" 
+									|| $dkey eq "stsSubdomains") {
 									# Is supported type findings
 									$finding->{id} = $dkey;
 									if ( $det ) {
@@ -372,38 +394,61 @@ foreach my $host ( @hosts ) {
 										$finding->{finding} = "$dkey is supported";
 									}
 									print OUT ivil_finding($finding);
-								} elsif ( $dkey eq "heartbleed"  || $dkey eq "rc4WithModern" || $dkey eq "supportsRc4" || $dkey eq "vulnBeast" ) {
+								} elsif ( $dkey eq "heartbleed"  || $dkey eq "rc4WithModern" || $dkey eq "supportsRc4" 
+									|| $dkey eq "vulnBeast"  || $dkey eq "freak" || $dkey eq "logjam" || $dkey eq "poodle" ) {
 									# Is vulnerable type findings
 									if ( $det ) {
 										$finding->{id} = $dkey;
 										$finding->{finding} = "Server is vulnerable for $dkey";
 										print OUT ivil_finding($finding);
 									}
-								} elsif ( $dkey eq "httpStatusCode" || $dkey eq "serverSignature"  || $dkey eq "npnProtocols") {
+								} elsif ( $dkey eq "httpStatusCode" || $dkey eq "serverSignature"  || $dkey eq "npnProtocols" 
+									|| $dkey eq "httpForwarding" || $dkey eq "stsResponseHeader" ) {
 									# Dump type
 									$finding->{id} = $dkey;
 									$finding->{finding} = "$dkey - $det";
 									print OUT ivil_finding($finding);
+								} elsif ( $dkey eq "stsMaxAge" ) {
+									# Dump type
+									$finding->{id} = $dkey;
+									$finding->{finding} = "HSTS Maximum age: $det seconds\n";
+									$finding->{finding} .= "WARNING: This is below the recommended length of 180 days\n" if $det < 1555200;
+									print OUT ivil_finding($finding);
+								} elsif ( $dkey eq "hasSct" ) {
+									$finding->{id} = $dkey;
+									$finding->{finding} = "";
+									$finding->{finding} .= "SCT is provided in the certificate" if $det & 1;
+									$finding->{finding} .= "SCT is provided in stapled OCSP response" if $det & 2;
+									$finding->{finding} .= "SCT is provided in TLS extension (ServerHello)" if $det & 4;
+									$finding->{finding} .= "\n\nSee http://www.certificate-transparency.org/ for more info";
+									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "sessionTickets" ) {
 									$finding->{id} = $dkey;
 									$finding->{finding} = "";
-									$finding->{finding} .= "Session tickets are supported" if $det and 1;
-									$finding->{finding} .= "Session tickets not implemented correctly" if $det and 2;
-									$finding->{finding} .= "Server is intollerant to session tickets extension" if $det and 4;
+									$finding->{finding} .= "Session tickets are supported" if $det & 1;
+									$finding->{finding} .= "Session tickets not implemented correctly" if $det & 2;
+									$finding->{finding} .= "Server is intollerant to session tickets extension" if $det & 4;
+									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "poodleTls" ) {
 									$finding->{id} = $dkey;
-									$finding->{finding} = "Poodle over TLS - test failed\n" if $det == -1;
-									$finding->{finding} = "Poodle over TLS - status unknown\n" if $det == 0;
-									$finding->{finding} = "Poodle over TLS - vulnerable\n" if $det == 1;
-									$finding->{finding} = "Poodle over TLS - not vulnerable\n" if $det == 2;
+									$finding->{finding} = "";
+									$finding->{finding} .= "Poodle over TLS - timeout\n" if $det == -3;
+									$finding->{finding} .= "Poodle over TLS - TLS not supported\n" if $det == -2;
+									$finding->{finding} .= "Poodle over TLS - test failed\n" if $det == -1;
+									$finding->{finding} .= "Poodle over TLS - status unknown\n" if $det == 0;
+									$finding->{finding} .= "Poodle over TLS - not vulnerable\n" if $det == 1;
+									$finding->{finding} .= "Poodle over TLS - vulnerable\n" if $det == 2;
+									$finding->{finding} .= "Test value: $det\n";
 									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "openSslCcs" ) {
 									$finding->{id} = $dkey;
-									$finding->{finding} = "CVE-2014-0224 test failed\n" if $det == -1;
-									$finding->{finding} = "CVE-2014-0224 status unknown\n" if $det == 0;
-									$finding->{finding} = "CVE-2014-0224 not vulnerable\n" if $det == 1;
-									$finding->{finding} = "CVE-2014-0224 possibly vulnerable, but not exploitable\n" if $det == 2;
-									$finding->{finding} = "CVE-2014-0224 vulnerable and exploitable\n" if $det == 3;
+									$finding->{finding} = "";
+									$finding->{finding} .= "CVE-2014-0224 test failed\n" if $det == -1;
+									$finding->{finding} .= "CVE-2014-0224 status unknown\n" if $det == 0;
+									$finding->{finding} .= "CVE-2014-0224 not vulnerable\n" if $det == 1;
+									$finding->{finding} .= "CVE-2014-0224 possibly vulnerable, but not exploitable\n" if $det == 2;
+									$finding->{finding} .= "CVE-2014-0224 vulnerable and exploitable\n" if $det == 3;
+									$finding->{finding} .= "Test value: $det\n";
 									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "sessionResumption" ) {
 									$finding->{id} = $dkey;
@@ -428,32 +473,34 @@ foreach my $host ( @hosts ) {
 								} elsif ($dkey eq "forwardSecrecy") {
 									$finding->{id} = "pfs";
 									$finding->{finding} = "";
-									$finding->{finding} .= "PFS is supported with at least one browser\n" if ($det and 1);
-									$finding->{finding} .= "PFS is supported for modern browsers\n" if ($det and 2);
-									$finding->{finding} .= "PFS is supported for all browsers with PFS support\n" if ($det and 4);
+									$finding->{finding} .= "PFS is supported with at least one browser\n" if ($det & 1);
+									$finding->{finding} .= "PFS is supported for modern browsers\n" if ($det & 2);
+									$finding->{finding} .= "PFS is supported for all browsers with PFS support\n" if ($det & 4);
 									$finding->{finding} = "PFS not supported :(" unless $finding->{finding}; 
 									print OUT ivil_finding($finding);
 								} elsif ($dkey eq "renegSupport") {
 									$finding->{id} = "reneg";
 									$finding->{finding} = "";
-									$finding->{finding} .= "Insecure client-initiated renegotiation is supported\n" if ($det and 1);
-									$finding->{finding} .= "Secure renegotiation is supported\n" if ($det and 2);
-									$finding->{finding} .= "Secure client-initiated renegotiation is supported\n" if ($det and 4);
-									$finding->{finding} .= "The server requires secure renegotiation support\n" if ($det and 8);
+									$finding->{finding} = "The server does not support any renegotiation" if ( $det == 0 );
+									$finding->{finding} .= "Insecure client-initiated renegotiation is supported\n" if ($det & 1);
+									$finding->{finding} .= "Secure renegotiation is supported\n" if ($det & 2);
+									$finding->{finding} .= "Secure client-initiated renegotiation is supported\n" if ($det & 4);
+									$finding->{finding} .= "The server requires secure renegotiation support\n" if ($det & 8);
+									$finding->{finding} .= "Value: $det\n";
 									print OUT ivil_finding($finding);
 								} elsif ( $dkey eq "cert" ) {
 									$finding->{id} = "cert";
 									my $txt = "Subject: $det->{subject}\nIssuer: $det->{issuerLabel}\n\nCommon names:\n";
-									$txt .= join "\n", @{$det->{commonNames}};
+									if ( defined $det->{commonNames}) {
+										$txt .= join "\n", @{$det->{commonNames}};
+									} else {
+										$txt .= "undefined";
+									}
 									if ( $det->{altNames} ) {
 										$txt .= "\n\nAlternative names:\n";
 										$txt .= join "\n", @{ $det->{altNames} };
 									}
 									$txt .= "\n\n";
-									$txt .= "CRL info is available\n" if ( $det->{revocationInfo} and 1 );
-									$txt .= "CRL info NOT available\n" unless ( $det->{revocationInfo} and 1 );
-									$txt .= "OCSP info is available\n" if ( $det->{revocationInfo} and 2 );
-									$txt .= "OCSP info NOT available\n" unless ( $det->{revocationInfo} and 2 );
 
 									if ( $det->{sgc} ) {
 										$txt .= "Certificate has CSG support\n";
@@ -461,33 +508,52 @@ foreach my $host ( @hosts ) {
 										$txt .= "Certificate has NO CSG support\n";
 									}
 
+									$finding->{finding} = $txt;
+									print OUT ivil_finding($finding);
+
+									$finding->{id} = "EV";
 									if ( $det->{valdiationType} eq "E" ) {
-										$txt .= "Extended validation\n";
+										$txt = "Yes";
+									} else {
+										$txt = "No";
 									}
+
 									$finding->{finding} = $txt;
 									print OUT ivil_finding($finding);
 
 									$finding->{id} = "revocation";
-									$txt = "Revocation status not checked\n" if $det->{revocationStatus} = 0;
-									$txt = "Certificate revoked\n" if $det->{revocationStatus} = 1;
-									$txt = "Certificate not revoked\n" if $det->{revocationStatus} = 2;
-									$txt = "Revocation check error\n" if $det->{revocationStatus} = 3;
+									$txt = "RevocationInfo: $det->{revocationInfo}\n";
+									$txt .= "CRL info is available\n" if ( $det->{revocationInfo} & 1 );
+									$txt .= "CRL info NOT available\n" unless ( $det->{revocationInfo} & 1 );
+									$txt .= "OCSP info is available\n" if ( $det->{revocationInfo} & 2 );
+									$txt .= "OCSP info NOT available\n" unless ( $det->{revocationInfo} & 2 );
+									$txt .= "\nRevocationStatus: $det->{revocationStatus}\n";
+									$txt .= "Revocation status not checked\n" if $det->{revocationStatus} == 0;
+									$txt .= "Certificate revoked\n" if $det->{revocationStatus} == 1;
+									$txt .= "Certificate not revoked\n" if $det->{revocationStatus} == 2;
+									$txt .= "Revocation check error\n" if $det->{revocationStatus} == 3;
+									$txt .= "No revocation info available\n" if $det->{revocationStatus} == 4;
+									$txt .= "Internal SSL labs error\n" if $det->{revocationStatus} == 5;
 									$finding->{finding} = $txt;
+
 									print OUT ivil_finding($finding);
 
-									$finding->{id} = "cert_issues";
-									$txt = "Certificate issues:\n";
-									$txt .= "Certifcate has not valid chain of trust\n" if ( $det->{issues} and 1 );
-									$txt .= "Certifcate validity date not yet reached\n" if ( $det->{issues} and 2 );
-									$txt .= "Certifcate validity date expired\n" if ( $det->{issues} and 4 );
-									$txt .= "Certificate name does not match hostname\n" if ( $det->{issues} and 8 );
-									$txt .= "Certifcate is revoked\n" if ( $det->{issues} and 16 );
-									$txt .= "Certifcate has a bad common name\n" if ( $det->{issues} and 32 );
-									$txt .= "Certifcate is self signed\n" if ( $det->{issues} and 64 );
-									$txt .= "Certifcate is blacklisted\n" if ( $det->{issues} and 128 );
-									$txt .= "Certifcate has insecure signature\n" if ( $det->{issues} and 256 );
-									$finding->{finding} = $txt;
-									print OUT ivil_finding($finding);
+									# If we have issues
+									if ( $det->{issues} ) {
+										$finding->{id} = "cert_issues";
+										$txt = "Certificate issues:\n";
+										$txt .= "Certifcate has not valid chain of trust\n" if ( $det->{issues} & 1 );
+										$txt .= "Certifcate validity date not yet reached\n" if ( $det->{issues} & 2 );
+										$txt .= "Certifcate validity date expired\n" if ( $det->{issues} & 4 );
+										$txt .= "Certificate name does not match hostname\n" if ( $det->{issues} & 8 );
+										$txt .= "Certifcate is revoked\n" if ( $det->{issues} & 16 );
+										$txt .= "Certifcate has a bad common name\n" if ( $det->{issues} & 32 );
+										$txt .= "Certifcate is self signed\n" if ( $det->{issues} & 64 );
+										$txt .= "Certifcate is blacklisted\n" if ( $det->{issues} & 128 );
+										$txt .= "Certifcate has insecure signature\n" if ( $det->{issues} & 256 );
+										$finding->{finding} = $txt;
+										print OUT ivil_finding($finding);
+									}
 
 								} else {
 									# Treat anything we don't know as dump type
@@ -526,7 +592,15 @@ close OUT;
 #die Dumper($results);
 
 # Load the results
-my ( $workspace_id, $scan_id, $run) = load_ivil("$tempfile.ivil.xml", "Qualys SSL labs", $scanner_ver, $timestamp );
+my ( $workspace_id, $scan_id, $run_id) = load_ivil("$tempfile.ivil.xml", "Qualys SSL labs", $scanner_ver, $timestamp );
+# Process the results
+process_status($workspace_id, $scan_id, $run_id, $verbose);
+
+# Attach files
+print "Attaching file '$tempfile.json' to scan '$scan'\n" if $verbose;
+update_run($workspace_id, $scan_id, $timestamp, "$tempfile.json", "Raw JSON results");
+print "Attaching file '$tempfile.ivil.xml' to scan '$scan'\n" if $verbose;
+update_run($workspace_id, $scan_id, $timestamp, "$tempfile.ivil.xml", "IVIL file");
 
 unless ( $nodelete ) {
 	unlink "$tempfile.json";
@@ -550,7 +624,7 @@ Usage: scan     --hosts=<hosts file|hosts spec>
 --workspace (-ws) - Seccubus workspace the scan in in
 --scan (-sc)	  - Seccubus scan the data should be saved in
 --api (-a)		  - URL of the ssllabs API, defaults to 
-                    https://api.dev.ssllabs.com/api/fa78d5a4/
+                    https://api.ssllabs.com/api/v2/
 --sleep           - Seconds to sleep between polls of the API 
                     (default=15) Lower then 15 seconds is considered rude
                     and a violation of the terms of usage of the API
@@ -586,5 +660,4 @@ sub make_timestamp() {
 
 	return "$year$month$day$hour$minute$second";
 }
-
 

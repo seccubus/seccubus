@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk
+# Copyright 2015 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,9 +36,24 @@ foreach my $file ( @files ) {
 			if ( $file !~ qr|^./www/| ) { # Exclude www directory
 				isnt(`grep 'use strict;' '$file'`, '', "$file contains 'use strict'");
 				$tests++;
-			
+
+				if ( $file ne "./t/01_perl_ok.t" ) {
+					is(`grep '\$query->param' '$file'|grep '\@'`, '', "\$query->param not used in list context in $file");
+					$tests++;
+				}
+
 				like(`perl -ISeccubusV2 -It -c '$file' 2>&1`, qr/OK/, "Perl compile test: $file");
 				$tests++;
+
+				if ( $file =~ /\.pm$/ ) {
+					# Modules
+					like(`ls -l '$file'`, qr/^\-rw\-r.\-.\-\-/, "File '$file' has the correct permissions");
+					$tests++;
+				} else {
+					# Executables
+					like(`ls -l '$file'`, qr/^\-rwxr.x.\-./, "File '$file' has the correct permissions");
+					$tests++;
+				}
 			}
 		}
 	}

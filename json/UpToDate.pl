@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk
+# Copyright 2016 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,8 +22,14 @@ use lib "..";
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 use SeccubusV2;
-use LWP::Simple;
+use LWP::UserAgent;
 use JSON;
+use Data::Dumper;
+
+my $config = get_config();
+
+$ENV{PERL_LWP_SSL_CA_FILE} = "$config->{paths}->{configdir}/v2.seccubus.com.bundle";
+#die Dumper $config;
 
 #my (
    #);
@@ -32,9 +38,13 @@ my $query = CGI::new();
 my $json = JSON->new();
 my $data = [];
 
-print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
-my $verdict = get("http://v2.seccubus.com/up2date.json.pl?version=$SeccubusV2::VERSION");
+my $ua = LWP::UserAgent->new;
+#$ua->default_header('Accept-Encoding' => scalar HTTP::Message::decodable());
+#$ua->default_header('Accept-Language' => "no, en");
+
+my $verdict = $ua->get("http://v2.seccubus.com/up2date.json.pl?version=$SeccubusV2::VERSION", "Accept", "application/json");
 if ( ! $verdict ) {
 	print $json->pretty->encode( [ {
 		'status'	=> "Error",
@@ -42,6 +52,6 @@ if ( ! $verdict ) {
 		'link'		=> "",
 	} ]);
 } else { 
-	print $verdict;
+	print $verdict->decoded_content;
 }
 exit;

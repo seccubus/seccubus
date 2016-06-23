@@ -1,0 +1,122 @@
+<?xml version="1.0" standalone='yes'?>
+<!--
+     Copyright 2015 Frank Breedijk
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<IVIL version="0.2">
+<findings>
+		<finding>
+			<ip>scaninfo</ip>
+			<hostname></hostname>
+			<port>generic/tcp</port>
+			<id>scaninfo</id>
+			<severity></severity>
+			<finding_txt>
+Protocol        : tcp
+Number of ports : 1
+Ports scanned   : 443
+Scan type       : syn
+Nmap command    : /usr/bin/nmap -iL /tmp/seccubus.hosts.13130 -oA /tmp/seccubus.13132 --script ssl-enum-ciphers -p 443</finding_txt>
+		</finding>
+		<finding>
+			<ip>scaninfo</ip>
+			<hostname></hostname>
+			<port>generic/tcp</port>
+			<id>stats</id>
+			<severity></severity>
+			<finding_txt>Number of hosts
+Scanned : 1
+Up      : 1
+Down    : 0</finding_txt>
+		</finding>
+		<finding>
+			<ip>scaninfo</ip>
+			<hostname></hostname>
+			<port>generic/tcp</port>
+			<id>summary</id>
+			<severity></severity>
+			<finding_txt>Nmap done at Mon Mar  2 10:46:23 2015; 1 IP address (1 host up) scanned in 95.91 seconds</finding_txt>
+		</finding>
+		<finding>
+			<ip>x.x.x.x</ip>
+			<hostname></hostname>
+			<port>443/tcp</port>
+			<id>ports</id>
+			<severity></severity>
+			<finding_txt>Port         : 443/tcp
+State        : open
+Confirmed by : syn-ack (TTL: 115)
+
+Service      : https
+Method       : table
+Confidence   : 3</finding_txt>
+		</finding>
+		<finding>
+			<ip>x.x.x.x</ip>
+			<hostname></hostname>
+			<port>443/tcp</port>
+			<id>ssl-enum-ciphers</id>
+			<severity></severity>
+			<finding_txt>
+  TLSv1.0
+    Ciphers (5)
+      TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA - strong
+      TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA - unknown strength
+      TLS_RSA_WITH_3DES_EDE_CBC_SHA - strong
+      TLS_RSA_WITH_AES_128_CBC_SHA - strong
+      TLS_RSA_WITH_AES_256_CBC_SHA - unknown strength
+    Compressors (1)
+      NULL
+  TLSv1.1
+    Ciphers (5)
+      TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA - strong
+      TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA - unknown strength
+      TLS_RSA_WITH_3DES_EDE_CBC_SHA - strong
+      TLS_RSA_WITH_AES_128_CBC_SHA - strong
+      TLS_RSA_WITH_AES_256_CBC_SHA - unknown strength
+    Compressors (1)
+      NULL
+  Least strength = unknown strength
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>x.x.x.x</ip>
+			<hostname></hostname>
+			<port>other</port>
+			<id>ports</id>
+			<severity></severity>
+			<finding_txt></finding_txt>
+		</finding>
+		<finding>
+			<ip>x.x.x.x</ip>
+			<hostname></hostname>
+			<port>generic/tcp</port>
+			<id>hostnames</id>
+			<severity></severity>
+			<finding_txt>Host names
+x.x.x - user
+x.x.x - PTR
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>x.x.x.x</ip>
+			<hostname></hostname>
+			<port>generic/tcp</port>
+			<id>status</id>
+			<severity></severity>
+			<finding_txt>Host status : up
+Reason      : reset</finding_txt>
+		</finding>
+</findings>
+</IVIL>

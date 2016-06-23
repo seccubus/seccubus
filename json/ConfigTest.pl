@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk, Petr
+# Copyright 2016 Frank Breedijk, Petr, Andreas Thienemann
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,11 +26,11 @@ use JSON;
 sub result($$$$);
 sub bye($);
 
-my $current_db_version = 6;
+my $current_db_version = 8;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate");
+print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
 # This is where configurations can be found
 # Ticket #62 - Default locations for config.xml does not include 
@@ -89,7 +89,7 @@ require SeccubusDB;
 my $dbh = SeccubusDB::open_database();
 
 if ( ! $dbh ) {
-	result($data, "Database login", "Unable to log into the the database. Either the definitions in '$config_file' are incorrect or you need to create '$config->{database}->{engine}' database '$config->{database}->{database}' on host '$config->{database}->{host}' and grant user '$config->{database}->{user}' the rights to login in with the specified password and use the database", "Error");
+	result($data, "Database login", "Unable to log into the the database. Either the definitions in '$config_file' are incorrect or you need to create '$config->{database}->{engine}' database '$config->{database}->{database}' on host '$config->{database}->{host}' and grant user '$config->{database}->{user}' the rights to login in with the specified password.\nFor mysql execute the following command: create database $config->{database}->{database};grant all privileges on $config->{database}->{database}.* to $config->{database}->{user} identified by '<password>';exit", "Error");
 	bye($data);
 } else {
 	result($data, "Database login", "Login to database '$config->{database}->{database}' on host '$config->{database}->{host}' with the credentials from '$config_file', was successful", "OK");
@@ -128,7 +128,7 @@ eval {
 		} elsif ( $version[0] < $current_db_version ) {
 			$file .= "upgrade_v$version[0]_v" . ($version[0]+1) . "." . $config->{database}->{engine};
 		} else {
-			result($data,"Database error", "Your database returned version number '$version[0]', the developers for Seccubus do not know what to do with this", "Error");
+			result($data,"Database version error", "Your database returned version number '$version[0]', the developers for Seccubus do not know what to do with this", "Error");
 			bye($data);
 		}
 		result($data,"Database version", "Your database is not current, please execute the sql statements in '$file' to update the database to the next version and rerun this test", 'Error');
@@ -155,13 +155,13 @@ if ( exists $ENV{REMOTE_ADDR} ) {
 					    values	=> [ $ENV{REMOTE_USER} ],
 			   );
 		if ( $user[0] eq $ENV{REMOTE_USER} ) {
-			result($data, "HTTP authentication", "Authetication is set up on your HTTP server, and user '$ENV{REMOTE_USER}' exists in the database", 'OK');
+			result($data, "HTTP authentication", "Authentication is set up on your HTTP server, and user '$ENV{REMOTE_USER}' exists in the database", 'OK');
 		} else {
-			result($data, "HTTP authentication", "Authetication is set up on your HTTP server, but '$ENV{REMOTE_USER}' does not exist in the database, run the bin/add_user util", 'Error');
+			result($data, "HTTP authentication", "Authentication is set up on your HTTP server, but '$ENV{REMOTE_USER}' does not exist in the database, run the bin/add_user util", 'Error');
 			bye($data);
 		}
 	} else {
-		result($data, "HTTP authentication", "Authetication is not set up on your HTTP server, emulating user 'admin'", 'OK');
+		result($data, "HTTP authentication", "Authentication is not set up on your HTTP server, emulating user 'admin'", 'OK');
 	}
 }
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Glenn ten Cate, blabla1337
+# Copyright 2015 Glenn ten Cate, Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -113,10 +113,33 @@ foreach my $item ( @{$zap->{site}->{alerts}->{alertitem}} ) {
 	$finding->{hostname} = $zap->{site}->{name};
 	$finding->{id} = $item->{pluginid};
         $finding->{ip} = $zap->{site}->{host};
-        $finding->{finding} = "Vulnerability: \r\n".$finding->{alert}."\r\n";
-        $finding->{finding} .= "PoC: \r\n".$finding->{uri}."\r\n";
-        $finding->{finding} .= "Vulnerable parameter: \r\n".$finding->{param}."\r\n";
-        $finding->{finding} .= "Used attack vector: \r\n".$finding->{attack}."\r\n";
+        $finding->{finding} = "Vulnerability: \r\n".$item->{alert}."\r\n\r\n";
+        my $uri = $item->{uri};
+        foreach my $poc ($uri) {
+            if(ref($poc->[0]) eq 'HASH'){
+                $finding->{finding} .= "PoC/URL: \r\n".$poc->[0]->{content}->[0]."\r\n\r\n";
+            }else{
+                $finding->{finding} .= "PoC/URL: \r\n".$poc->[0]."\r\n\r\n";
+            }
+        }
+
+        my $param = $item->{param};
+        foreach my $par ($param) {
+            if(ref($par) eq 'HASH'){
+                $finding->{finding} .= "Vulnerable Parameter: \r\n".$par->{content}->[0]."\r\n\r\n";
+            }else{
+                $finding->{finding} .= "Vulnerable Parameter: \r\n".$par."\r\n\r\n";
+            }
+        }
+
+        my $attackv = $item->{attack};
+        foreach my $atk ($attackv) {
+            if(ref($atk) eq 'HASH'){
+                $finding->{finding} .= "Used attack vector: \r\n".$atk->{content}->[0].$atk->{content}->[1]."\r\n\r\n";
+            }else{
+                $finding->{finding} .= "Used attack vector: \r\n".$atk."\r\n\r\n";
+            }
+        }
 
 	if($item->{riskcode} == 0){
 	   $finding->{severity} = 2;

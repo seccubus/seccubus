@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2015 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,20 @@ $.Controller('Seccubus.Finding.Bulkedit',
 		 * - Default value: -1
 		 * - Special value: -1 - No workspace selected
 		 */
-		workspace : -1
+		workspace : -1,
+		/* 
+		 * @attribute: options.onDone
+		 * function to ber called when bulk editing is done
+		 */
+		onDone : function () { },
+		/*
+		 * @attribure: options.onLink
+		 * Function that is called when bulk link button is clicked
+		 */
+		onLink : function (findings) {
+			console.warn("Seccubus.Finding.Bulkedit: onLink called but not defined");
+			console.log(findings);
+		}
 	}
 },
 /** @Prototype */
@@ -85,8 +98,24 @@ $.Controller('Seccubus.Finding.Bulkedit',
 	bulkUpdate : function() {
 		var findings = $(".selectFinding[checked=checked]").closest(".finding").models();
 		var params = this.element.formParams();
+		// Set bulk to true to signal other components that this is a bulk update
+		for(i = 0;i < findings.length;i++) {
+			findings[i].bulk = true
+		}
 		params.workspaceId = this.options.workspace;
 		findings.update(params,this.callback('saved'));
+	},
+	/*
+	 * This functions get a model list of all findings with a checked
+	 * object of class selectFinding and updates them via the model
+	 */
+	".bulkLink click" : function(el, ev) {
+		ev.preventDefault();
+
+		var findings = $(".selectFinding[checked=checked]").closest(".finding").models();
+		if ( findings.length > 0 ) {
+			this.options.onLink(findings);			
+		}
 	},
 	/*
 	 * This is the callback function for update on the list
@@ -94,7 +123,10 @@ $.Controller('Seccubus.Finding.Bulkedit',
 	saved : function() {
 		this.element.find('[type=submit]').val('Update');
 		this.element[0].reset();
+		// Update our view
 		this.updateView();
+		// Do our callback
+		this.options.onDone();
 	},
 	/*
 	 * This function updates the view

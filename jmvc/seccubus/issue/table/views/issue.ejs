@@ -1,0 +1,48 @@
+<%# Copyright 2015 Frank Breedijk                                            %>
+<%#                                                                          %>
+<%# Licensed under the Apache License, Version 2.0 (the "License");          %>
+<%# you may not use this file except in compliance with the License.         %>
+<%# You may obtain a copy of the License at                                  %>
+<%#                                                                          %>
+<%# http://www.apache.org/licenses/LICENSE-2.0                               %>
+<%#                                                                          %>
+<%# Unless required by applicable law or agreed to in writing, software      %>
+<%# distributed under the License is distributed on an "AS IS" BASIS,        %>
+<%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
+<%# See the License for the specific language governing permissions and      %>
+<%# limitations under the License.                                           %>
+<td><%= name %></td>
+<td><%= description %></td>
+<td>
+	<% if ( url != "" ) { %> 
+		<a target=_blank href='<%= url %>'><%= ext_ref %></a></td>
+	<% } else { %>
+		<%= ext_ref %>
+	<% } %>
+</td>
+<td><%= severity %>. <%= severityName %></td>
+<td><%= statusName %></td>
+<td>
+	<div 
+		issue_id=<%= id %>
+		class='finding-table'
+		>
+		<div class='findings-expander<%= findings.length > 0 ? " collapsed" : "" %>'>
+			&nbsp;
+		</div>
+		<div id='count'><%= findings.length %></div>
+		<table id='findings' hidden=true class=findings_issue></table>
+	</div>	
+</td>
+<td>
+	<img class='edit_issue' src='img/edit.png'><br>
+	<% if  ( finding > 0) { %>
+		<img class='unlink' src='img/unlink.png' findingId=<%= finding %>><br>
+	<% } %>
+	<% if ( status == 2 ) { %>
+		<img class='set_status' src='img/open.png' newStatus=1 newStatusName='Open'><br>
+	<% } %>
+	<% if ( status == 1 ) {	%>
+		<img class='set_status' src='img/closed.png' newStatus=2 newStatusName='Closed'><br>
+	<% } %>
+</td>	

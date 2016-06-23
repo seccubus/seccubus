@@ -1,5 +1,5 @@
 /*
-Copyright 2013 Frank Breedijk
+Copyright 2015 Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -482,7 +482,7 @@ CREATE TABLE `user2group` (
   `group_id` int(11) NOT NULL,
   KEY `fk_user2group_users` (`user_id`),
   KEY `fk_user2group_groups1` (`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=100 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

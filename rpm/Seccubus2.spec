@@ -1,17 +1,22 @@
 #
-# Copyright 2014 Frank Breedijk, Peter Slootweg, Glenn ten Cate, blabla1337
-# 
+# Copyright 2016 Peter Slootweg, Frank Breedijk, Glenn ten Cate
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# OS detection
+%define is_rh5 %(grep -qi 'Red Hat Enterprise Linux Server release 5' /etc/redhat-release && echo 1 || echo 0)
+
+# Seccubus
 %define installdir	/opt/seccubus
 %define homedir		%{installdir}
 %define bindir		%{installdir}/bin
@@ -25,11 +30,11 @@
 %define scandir		%{installdir}/scanners
 
 Name:		Seccubus
-Version:	2.0.beta5
+Version:	master
 Release:	0
 Summary:	Automated regular vulnerability scanning with delta reporting
-Group:		Network/Tools
-License:	GPL
+Group:		Applications/Internet
+License:	ASL 2.0
 URL:		http://www.seccubus.com
 
 Packager:	Frank Breedijk <fbreedijk@schubergphilis.com>
@@ -37,57 +42,69 @@ Packager:	Frank Breedijk <fbreedijk@schubergphilis.com>
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:	noarch
 
-Source0:	http://downloads.sourceforge.net/project/%{name}/%{name}_v2/%{name}-%{version}.tar.gz
+Source0:	%{name}-%{version}.tar.gz
+#Source0:	https://github.com/schubergphilis/%{name}_v2/tarball/%{version}
 
-#BuildRequires:	
-Requires:	perl-Algorithm-Diff
-Requires:	perl-DBD-mysql
-Requires:	perl-JSON
-Requires:	perl-XML-Simple
+%if 0%{?is_rh5}
+BuildRequires:	java-1.6.0-openjdk
+%else
+BuildRequires:	java-1.7.0-openjdk
+%endif
+
+Requires:	perl(Algorithm::Diff)
+Requires:	perl(DBI)
+Requires:	perl(DBD::mysql)
+Requires:	perl(JSON)
+Requires:	perl(XML::Simple)
 Requires:	perl-libwww-perl
-Requires:	perl-HTML-Tree
-Requires:	perl-Net-IP
-Requires:	perl-REST-Client
+Requires:	perl(Net::IP)
+Requires:	perl(CGI)
+Requires:	perl(CGI::Carp)
+Requires:	perl(Exporter)
+Requires:	perl(Getopt::Long)
+Requires:	perl(Data::Dumper)
+Requires:	perl(HTML::Entities)
+Requires:	perl(LWP::Simple)
+Requires:	perl(MIME::Base64)
+Requires:	perl(File::Basename)
+Requires:	perl(Socket)
+Requires:	perl(Net::SMTP)
+Requires:	perl(Net::IP)
+
 Requires:	httpd
 Requires:	mysql
-Requires:	ruby
+Requires:	mysql-server
 
 %description
-Tool to automatically fire regular vulnerability scans with Nessus, OpenVAS, 
-Nikto or Nmap. 
-Compare results of the current scan with the previous scan and report on the 
-delta in a web interface. Main objective of the tool is to make repeated scans 
+Tool to automatically fire regular vulnerability scans with Nessus, OpenVAS,
+Nikto or Nmap.
+Compare results of the current scan with the previous scan and report on the
+delta in a web interface. Main objective of the tool is to make repeated scans
 more efficient.
-Nessus scanning needs Ruby 
+Nessus scanning needs Ruby
 Nmap scanning needs the Nmap scanner
 Nikto scanning needs the Nikto scanner
+
+See http://www.seccubus.com for more information
 
 %clean
 [ %{buildroot} != "/" ] && %{__rm} -rf %{buildroot}
 
 %prep
-%setup -q -n  %{name}-%{version}
-
-perl Makefile.PL
-mkdir -p %{buildroot}/%{installdir}
-#mkdir -p %{buildroot}/%{webdir}
-#mkdir -p %{buildroot}/%{bindir}
-#mkdir -p %{buildroot}/%{confdir}
-#mkdir -p %{buildroot}/%{vardir}
-mkdir -p %{buildroot}/%{docsdir}/db
-mkdir -p %{buildroot}/%{docsdir}/GUI
-#mkdir -p %{buildroot}/%{moddir}
-#mkdir -p %{buildroot}/%{scandir}
-mkdir -p %{buildroot}/etc/httpd/conf.d
+%setup -q -n %{name}-%{version}
 
 %build
-make
+./build_jmvc
 
 %install
+rm -rf %{buildroot}
+mkdir -p %{buildroot}%{homedir}
 ./install.pl --buildroot=%{buildroot} --confdir=%{confdir} --bindir=%{bindir} --dbdir=%{vardir} --wwwdir=%{webdir} --basedir=%{homedir} --docdir=%{docsdir}
+rm -f %{buildroot}/%{webdir}/dev
 
 cp ChangeLog.md LICENSE.txt NOTICE.txt README.md AUTHORS.txt %{buildroot}/%{docsdir}
 
+mkdir -p %{buildroot}/etc/httpd/conf.d
 cat > %{buildroot}/etc/httpd/conf.d/%{name}.conf <<-EOF
 #
 # This configuration file maps the Seccubus logs
@@ -156,8 +173,8 @@ scripts:
   flush privileges;
   EOF
 
-  # mysql -u seccubus -pseccubus seccubus < %{vardir}/structure_v4.mysql
-  # mysql -u seccubus -pseccubus seccubus < %{vardir}/data_v4.mysql
+  # mysql -u seccubus -pseccubus seccubus < %{vardir}/structure_v6.mysql
+  # mysql -u seccubus -pseccubus seccubus < %{vardir}/data_v6.mysql
 
 You can change the db name and username/password, make sure you update
 %{confdir}/config.xml accordingly
@@ -170,33 +187,49 @@ The default config makes Seccubus available on http://localhost/seccubus
 
 ################################################################################
 OEF
+chcon -R --reference=/var/www/htdocs %{webdir}
 chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
+%{_sbindir}/service httpd reload
 ## %post
 
 %postun
-%{_sbindir}/usermod -G $(id -nG apache|sed -e 's/%{seccuser}//' -e 's/  *$//g' -e 's/  */,/g') apache
+%{_sbindir}/usermod -G $(id -nG apache|sed -e 's/%{seccuser}//' -e 's/ +$//g' -e 's/ +/,/g') apache
+%{_sbindir}/service httpd reload
 ## %postun
 
 ################################################################################
 %files
-%defattr(-,%{seccuser}, %{seccuser})
+%defattr(640,%{seccuser},%{seccuser},750)
 #
-%attr(644, root, root) %config /etc/httpd/conf.d/%{name}.conf
-%attr(644, root, root) %config %{confdir}/config.xml
+%attr(-, root, root) %config(noreplace) /etc/httpd/conf.d/%{name}.conf
 #
-%{confdir}
-
+%config(noreplace) %{confdir}
+#
 %{installdir}
-%attr(644, %{seccuser}, %{seccuser}) %{installdir}/SeccubusV2.pm
-
+#
 %{moddir}
+#
 %{bindir}
-%{docsdir}
+%attr(750,%{seccuser},%{seccuser}) %{bindir}/*
+#
+%docdir %{docsdir}
+#
 %{scandir}
-%{webdir}
-%{vardir}
+%attr(750,%{seccuser},%{seccuser}) %{scandir}/*/scan
+#
+%attr(750,%{seccuser},%{seccuser}) %{webdir}/seccubus/json/*
+#
+%attr(750,%{seccuser},%{seccuser}) %{vardir}/create*
+#
 
 %changelog
+* Mon May 2 2016 Frank Breedijk <fbreedijk@schubergphilis.com>
+- RPM now builds on RHEL5 and CentOS5 too. 
+- Removed RPM lint warnings
+- Removed old scanners
+* Fri Mar 25 2016 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Removed dependancy on MakeMaker
+- Better handling of file permissions
 * Fri Dec 5 2014 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Added dependancies for Nessus6 interface and Assets
 * Tue Sep 23 2014 Frank Breedijk <fbreedijk@schubergphilis.com>
@@ -210,8 +243,8 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 * Tue Mar 19 2013 Frank Breedijk <fbreedijk@schubergphilis.com>
 - New DB version
 * Mon Dec 24 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
-- Fixed permissions of files in  %{webdir}/seccubus/json/updateWorkspace.pl
-* Sat Oct 05 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Fixed permissions of files in % { webdir } /seccubus/json/updateWorkspace.pl
+* Fri Oct 05 2012 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Building the rpm is now part of an automated build process. Unless there
   are any changes to this file in the Git repository changes will not be
   recorded here
@@ -228,13 +261,13 @@ chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
 - Moved old GUi to oldstyle
 - New GUI is now main GUI
 - Version 2.0.beta1
-* Thu Nov 23 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
+* Wed Nov 23 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Added support for rebuilt GUI
 - Removed quadruplicate docs/HTML reference
-* Thu Nov 18 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
-- Fixed missing dependancies 
+* Fri Nov 18 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Fixed missing dependancies
 * Thu Nov 17 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
-- Permissions of scanner files are not correct 
+- Permissions of scanner files are not correct
 * Tue Sep 13 2011 Frank Breedijk <fbreedijk@schubergphilis.com>
 - version 2.0.alpha4
 * Thu Aug 25 2011 Peter Slootweg <peter@pxmedia.nl>

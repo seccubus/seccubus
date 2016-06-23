@@ -1,5 +1,5 @@
 /*
-Copyright 2013 Frank Breedijk
+Copyright 2015 Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,12 +17,15 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
-CREATE  TABLE IF NOT EXISTS `Seccubus`.`events` (
+ALTER SCHEMA  DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci ;
+
+CREATE  TABLE IF NOT EXISTS `events` (
   `id` INT(11) NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(45) NULL DEFAULT NULL ,
-  PRIMARY KEY (`id`) );
+  PRIMARY KEY (`id`) )
+ENGINE=InnoDB;
 
-CREATE  TABLE IF NOT EXISTS `Seccubus`.`notifications` (
+CREATE  TABLE IF NOT EXISTS `notifications` (
   `id` INT(11) NOT NULL AUTO_INCREMENT ,
   `scan_id` INT(11) NOT NULL ,
   `event_id` INT(11) NOT NULL ,
@@ -36,6 +39,78 @@ LOCK TABLES `events` WRITE;
 /*!40000 ALTER TABLE `events` DISABLE KEYS */;
 INSERT INTO `events` VALUES (1,'Before scan'),(2,'After scan');
 /*!40000 ALTER TABLE `events` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `finding_changes` WRITE;
+ALTER TABLE `finding_changes` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `config` WRITE;
+ALTER TABLE `config` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `findings` WRITE;
+ALTER TABLE `findings` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `finding_status` WRITE;
+ALTER TABLE `finding_status` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `host_names` WRITE;
+ALTER TABLE `host_names` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `issues2findings` WRITE;
+ALTER TABLE `issues2findings` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `issue_changes` WRITE;
+ALTER TABLE `issue_changes` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `issue2finding_changes` WRITE;
+ALTER TABLE `issue2finding_changes` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `groups` WRITE;
+ALTER TABLE `groups` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `issue_status` WRITE;
+ALTER TABLE `issue_status` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `issues` WRITE;
+ALTER TABLE `issues` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `rights` WRITE;
+ALTER TABLE `rights` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `runs` WRITE;
+ALTER TABLE `runs` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `scans` WRITE;
+ALTER TABLE `scans` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `severity` WRITE;
+ALTER TABLE `severity` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `user2group` WRITE;
+ALTER TABLE `user2group` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `users` WRITE;
+ALTER TABLE `users` ENGINE = InnoDB;
+UNLOCK TABLES;
+
+LOCK TABLES `workspaces` WRITE;
+ALTER TABLE `workspaces` ENGINE = InnoDB;
 UNLOCK TABLES;
 
 update config set value=3 where name = 'version';

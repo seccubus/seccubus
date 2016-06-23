@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Frank Breedijk, Petr
+ * Copyright 2015 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,11 +31,13 @@ steal(
 	'seccubus/run/table',
 	'seccubus/filter/filter',
 	'seccubus/finding/table',
-	//'seccubus/finding/status',
-	//'seccubus/finding/filter',
 	'seccubus/finding/bulkedit',
 	'seccubus/finding/edit',
 	'seccubus/history/table',
+	'seccubus/issue/table',
+	'seccubus/issue/create',
+	'seccubus/issue/edit',
+	'seccubus/issuelink/create',
 	'widgets/modal',
 	'seccubus/event/select',
 	'seccubus/notification/table',
@@ -59,6 +61,7 @@ steal(
 			workspace	: -1
 		});
 		gui_state.bind("workspace", function(ev, ws){
+			console.log("workspace changed");
 			render_scan_selectors();
 			render_asset_selectors();
 			render_scan_table();
@@ -69,37 +72,52 @@ steal(
 			render_create_scan();
 			render_create_asset();
 			render_bulkedit();
+			render_issues();
 		});
 		gui_state.bind("scans", function(ev, scan){
+			console.log("scan changed");
 			render_findings();
 			render_runs();
 		});
 		gui_state.bind("assets", function(ev, asset){
+			console.log("Assets changed");
 			render_findings();
 		});
 		gui_state.bind("findStatus", function(ev, scan){
+			console.log("Status changed");
 			render_findings();
 			render_bulkedit();
 		});
 		gui_state.bind("host", function(ev, scan){
+			console.log("host changed");
 			render_findings();
 		});
 		gui_state.bind("hostName", function(ev, scan){
+			console.log("hostname changed");
 			render_findings();
 		});
 		gui_state.bind("port", function(ev, scan){
+			console.log("port changed");
 			render_findings();
 		});
 		gui_state.bind("plugin", function(ev, scan){
+			console.log("port changed")
 			render_findings();
 		});
 		gui_state.bind("severity", function(ev, scan){
+			console.log("severity changed")
 			render_findings();
 		});
+		gui_state.bind("issue", function(ev,issue) {
+			console.log("issue changed to "+issue);
+			render_findings();
+		})
 		gui_state.bind("finding", function(ev, scan){
+			console.log("finding changed")
 			render_findings();
 		});
 		gui_state.bind("remark", function(ev, scan){
+			console.log("remark changed")
 			render_findings();
 		});
 
@@ -110,8 +128,10 @@ steal(
 		Seccubus.Models.Finding.bind(
 			"updated",
 			function(ev,model) {
-				render_status();
-				render_filters();
+				if ( ! model.bulk ) {
+					render_status();
+					render_filters();			
+				}
 			}
 		);
 
@@ -125,7 +145,6 @@ steal(
 		// Runs - tab 1
 		// Findigns - tab 2
 		// Issues - tab 3
-		$('#navTab').seccubus_tabs("hide", 3);
 		// Manage Workspaces - tab 4
 		// Manage Scans - tab 5
 		// Reports - tab 6
@@ -208,10 +227,6 @@ steal(
 						afterSave:updateView,
 						onClear:function(){
 							$("#widgetsModalMask").click();
-							// $('#modalDialog').widgets_modal({
-							// 	query : "#saveSQLDialog",
-							// 	close : true
-							// });
 						}
 					});
 					$('#modalDialog').widgets_modal({
@@ -236,6 +251,9 @@ steal(
 
 		// Setup scan list
 		render_scan_lists();
+
+		// Setup issues
+		render_issues();
 
 		// Setup create workspace
 		$('#createWorkspace').seccubus_workspace_create({
@@ -376,6 +394,7 @@ steal(
 				port		: gui_state.port,
 				plugin		: gui_state.plugin,
 				severity	: gui_state.severity,
+				issue 		: gui_state.issue,
 				finding		: gui_state.finding,
 				remark		: gui_state.remark,
 				onEdit		: function(find) {
@@ -396,7 +415,55 @@ steal(
 							close : true
 						});
 					}
+				},
+				onIssueEdit : function(issue) {
+					console.log(issue);
+					$('#editIssue').seccubus_issue_edit({
+						workspace 	: gui_state.workspace,
+						issue 		: issue,
+						onClear		: function() {
+							$("#widgetsModalMask").click();
+						},
+						findings 	: '#issueFindingTable'
+					});
+					$('#modalDialog').widgets_modal({
+						query : "#editIssueDialog",
+						close : true
+					});					
+				},
+				onLink		: function (finding) {
+					var findings = [];
+					findings.push(finding);
+					$('#createIssuelink').seccubus_issuelink_create({
+						workspace 	: gui_state.workspace,
+						findings 	: findings,
+						onClear		: function() {
+							$("#widgetsModalMask").click();
+							render_findings();
+						},
+						onNewIssue 	: function(findings) {
+							$("#widgetsModalMask").click();
+							$('#createIssue').seccubus_issue_create({
+								workspace 	: gui_state.workspace,
+								findings 	: findings,
+								onClear		: function() {
+									$("#widgetsModalMask").click();
+									render_findings();
+								}
+							});
+							$('#modalDialog').widgets_modal({
+								query : "#createIssueDialog",
+								close : true
+							});												
+						}
+
+					});
+					$('#modalDialog').widgets_modal({
+						query : "#createIssuelinkDialog",
+						close : true
+					});					
 				}
+
 			});
 		};
 
@@ -468,6 +535,7 @@ steal(
 				port		: gui_state.port,
 				plugin		: gui_state.plugin,
 				severity	: gui_state.severity,
+				issue 		: gui_state.issue,
 				finding		: gui_state.finding,
 				remark		: gui_state.remark,
 				onClick		: function(s){
@@ -487,6 +555,7 @@ steal(
 				port		: gui_state.port,
 				plugin		: gui_state.plugin,
 				severity	: gui_state.severity,
+				issue 		: gui_state.issue,
 				finding		: gui_state.finding,
 				remark		: gui_state.remark,
 				onChange	: function(f) {
@@ -516,7 +585,38 @@ steal(
 		function render_bulkedit() {
 			$('#finding_bulkedit').seccubus_finding_bulkedit({
 				workspace	: gui_state.workspace,
-				status		: gui_state.findStatus
+				status		: gui_state.findStatus,
+				onDone		: render_findings,
+				onLink		: function (findings) {
+					$('#createIssuelink').seccubus_issuelink_create({
+						workspace 	: gui_state.workspace,
+						findings 	: findings,
+						onClear		: function() {
+							$("#widgetsModalMask").click();
+							render_findings();
+						},
+						onNewIssue 	: function(findings) {
+							$("#widgetsModalMask").click();
+							$('#createIssue').seccubus_issue_create({
+								workspace 	: gui_state.workspace,
+								findings 	: findings,
+								onClear		: function() {
+									$("#widgetsModalMask").click();
+									render_findings();
+								}
+							});
+							$('#modalDialog').widgets_modal({
+								query : "#createIssueDialog",
+								close : true
+							});												
+						}
+
+					});
+					$('#modalDialog').widgets_modal({
+						query : "#createIssuelinkDialog",
+						close : true
+					});					
+				}
 			});
 		};
 
@@ -537,5 +637,37 @@ steal(
 				}
 			});
 		};
+
+		function render_issues(){
+			$('#issue_table').seccubus_issue_table({
+				workspace 	: gui_state.workspace,
+				onCreate 	: function(ws) {
+					$('#createIssue').seccubus_issue_create({
+						workspace : ws,
+						onClear	: function() {
+							$("#widgetsModalMask").click();
+						}
+					});
+					$('#modalDialog').widgets_modal({
+						query : "#createIssueDialog",
+						close : true
+					});					
+				},
+				onIssueEdit	: function(issue) {
+					$('#editIssue').seccubus_issue_edit({
+						workspace 	: gui_state.workspace,
+						issue 		: issue,
+						onClear		: function() {
+							$("#widgetsModalMask").click();
+						},
+						findings 	: '#issueFindingTable'
+					});
+					$('#modalDialog').widgets_modal({
+						query : "#editIssueDialog",
+						close : true
+					});					
+				}
+			})
+		}
 }
 )

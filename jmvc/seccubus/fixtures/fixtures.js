@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Frank Breedijk, Petr
+ * Copyright 2015 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -287,4 +287,11 @@ steal("jquery/dom/fixture", function(){
 	$.fixture("json/getAssets.pl",function(orig,settings,headers){
 		return [assets];
 	});
+	$.fixture.make("issue", 5, function(i, issue){
+		var descriptions = ["grill fish", "make ice", "cut onions"]
+		return {
+			name: "issue "+i,
+			description: $.fixture.rand( descriptions , 1)[0]
+		}
+	})
 });

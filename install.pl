@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk
+# Copyright 2016 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -249,14 +249,20 @@ syst("cp -p -r $stage_dir/etc/* $build_root$conf_dir");
 syst("cp -p -r $stage_dir/db/* $build_root$db_dir");
 syst("cp -p -r $stage_dir/docs/* $build_root$doc_dir");
 
-# Link SeccubusV2.pm in www_dir
+# Removing/relinking unneeded symlinks
 if ( -e "$build_root$www_dir/seccubus/SeccubusV2.pm" ) {
-	print "Removing old symbolic links to SeccubusV2.pm in wwwdir/seccubus\n" if $verbose;
-	syst("rm $build_root$www_dir/seccubus/SeccubusV2.pm");
+	print "Removing old symbolic link to SeccubusV2.pm in wwwdir/seccubus\n" if $verbose;
+	unlink("$build_root$www_dir/seccubus/SeccubusV2.pm");
 }
-
 print "Creating symbolic links to SeccubusV2.pm in wwwdir/seccubus\n" if $verbose;
 syst("cd $build_root$www_dir/seccubus;ln -s $base_dir/SeccubusV2.pm");
+
+if ( -e "$build_root$www_dir/dev" ) {
+	print "Removing old symbolic link to dev in wwwdir\n" if $verbose;
+	unlink("$build_root$www_dir/dev");
+}
+
+
 
 # Clean up stage root
 print "Cleaning up...\n" if $verbose;
