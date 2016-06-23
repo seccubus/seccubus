@@ -21,6 +21,7 @@ Seccubus V2 works with the following scanners:
 * SSLyze
 * Medusa
 * Qualys SSL labs
+* testssl.sh (local and remote)
 
 For more information visit [www.seccubus.com]
 
