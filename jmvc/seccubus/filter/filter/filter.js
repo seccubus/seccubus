@@ -96,6 +96,10 @@ $.Controller('Seccubus.Filter.Filter',
 		 * Value of the issue filter
 		 */
 		issue		: "*",		
+		/* @attribute options.limit
+		 * Value of the limit filter
+		 */
+		limit 		: 200,
 		/*
 		 * @attribute options.onChange
 		 * Function to be executed when the filter changes
@@ -124,7 +128,8 @@ $.Controller('Seccubus.Filter.Filter',
 		this.options.severity = "*";
 		this.options.finding = "";
 		this.options.remark = "";
-		this.options.issue = "*"
+		this.options.issue = "*";
+		this.options.limit = 200;
 		this.options.onChange({
 			host		: this.options.host,
 			hostName	: this.options.hostName,
@@ -133,7 +138,8 @@ $.Controller('Seccubus.Filter.Filter',
 			severity	: this.options.severity,
 			finding		: this.options.finding,
 			remark		: this.options.remark,
-			issue		: this.options.issue
+			issue		: this.options.issue,
+			limit       : this.options.limit
 		});
 		if ( this.options.updateOnChange ) {
 			this.updateView();
@@ -149,7 +155,8 @@ $.Controller('Seccubus.Filter.Filter',
 			severity	: this.options.severity,
 			finding		: this.options.finding,
 			remark		: this.options.remark,
-			issue		: this.options.issue
+			issue		: this.options.issue,
+			limit       : this.options.limit
 		});
 		if ( this.options.updateOnChange ) {
 			this.updateView();
@@ -192,7 +199,8 @@ $.Controller('Seccubus.Filter.Filter',
 						fSeverity 	: this.options.severity,
 						fFinding 	: this.options.finding,
 						fRemark 	: this.options.remark,
-						fIssue 		: this.optionsissue
+						fIssue 		: this.options.issue,
+						fLimit      : this.options.limit
 					}
 				)
 			);
