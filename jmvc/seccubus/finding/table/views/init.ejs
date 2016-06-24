@@ -29,6 +29,9 @@
 		}) %>
 	<% } %>
 	<tbody>
+		<% if ( this.length >= fLimit ) { %>
+			<tr><td colspan=<%= columns.length/2 %>>Only showing the first <%= this.length %> findings</td></tr>
+		<% } %>
 		<% this.sort(fn) %>
 		<%for ( var i = 0; i < this.length ; i++ ){%>
 			<tr <%= this[i] %> class='sev_<%= this[i].severity %>'>
