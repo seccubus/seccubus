@@ -1,4 +1,4 @@
-<%# Copyright 2015 Frank Breedijk                                            %>
+<%# Copyright 2016 Frank Breedijk                                            %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -47,5 +47,11 @@ Issue:
 Finding: <input type='text' disabled=disabled value=''>
 
 Remark: <input type='text' disabled=disabled class='filter remarkFilter' value=''>
+
+max #findings: 
+<select disabled=true filter='limit' class='filter limitFIlter'>
+	<option selected disabled=true>-----</option>
+</select>
+
 
 <% if( typeof message != "undefined" ) { %><br><%= message %><% } %>
