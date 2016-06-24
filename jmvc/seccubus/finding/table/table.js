@@ -189,7 +189,12 @@ $.Controller('Seccubus.Finding.Table',
 		 * @attribute options.noUnlink
 		 * Boolean that turns the unlink button for a issue off
 		 */
-		noIssueUnlink	: false
+		noIssueUnlink	: false,
+		/*
+		 * @attribute options.limit
+		 * Limit the query to this maximum number of findings
+		 */
+		limit           : 200
 	}
 },
 /** @Prototype */
@@ -242,7 +247,8 @@ $.Controller('Seccubus.Finding.Table',
 						Severity	: this.options.severity,
 						Issue 		: this.options.issue,
 						Finding		: this.options.finding,
-						Remark		: this.options.remark
+						Remark		: this.options.remark,
+						Limit       : this.options.limit
 					}), 
 					{
 						fStatus		: this.options.status,
@@ -256,7 +262,8 @@ $.Controller('Seccubus.Finding.Table',
 						noFindingUnlink	
 									: this.options.noFindingUnlink,
 						noIssueUnlink	
-									: this.options.noIssueUnlink
+									: this.options.noIssueUnlink,
+						limit       : this.options.limit
 					}
 				)
 			);

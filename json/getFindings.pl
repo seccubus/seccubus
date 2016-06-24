@@ -37,6 +37,9 @@ my $params = $query->Vars;
 my $workspace_id = $query->param("workspaceId");
 my @scan_ids = split(/\0/,$params->{"scanIds[]"});
 my @asset_ids = split(/\0/,$params->{"assetIds[]"});
+my $limit = $query->param("Limit");
+
+$limit += 0; # Make sure limit is numeric
 
 # Return an error if the required parameters were not passed 
 if (not (defined ($workspace_id))) {
@@ -79,7 +82,7 @@ eval {
 	if( ! @asset_ids ){
 		@scan_ids = ( 0 ) unless @scan_ids;
 		foreach my $scan_id ( @scan_ids ) {
-			my $findings = get_findings($workspace_id, $scan_id,'0', \%filter);
+			my $findings = get_findings($workspace_id, $scan_id,'0', \%filter, $limit);
 
 			foreach my $row ( @$findings ) {
 				push (@data, {
@@ -102,7 +105,7 @@ eval {
 		}
 	} else{
 		foreach my $asset_id ( @asset_ids ) {
-			my $findings = get_findings($workspace_id, '0', $asset_id, \%filter);
+			my $findings = get_findings($workspace_id, '0', $asset_id, \%filter, $limit);
 			foreach my $row ( @$findings ) {
 				push (@data, {
 					'id'		=> $$row[0],

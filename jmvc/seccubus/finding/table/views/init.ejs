@@ -20,6 +20,7 @@
 		checked		: checked
 	}) %>
 <% } else { %>
+	Showing <%= this.length %> findings
 	<% if(typeof noHeader == "undefined" || ! noHeader ) { %>
 		<%== $.View('//seccubus/finding/table/views/header.ejs', {
 			columns		: columns,
