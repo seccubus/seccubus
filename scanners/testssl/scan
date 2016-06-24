@@ -153,12 +153,25 @@ Arguments:
 	exit(1);
 }
 
+
 sub get_testssl_path() {
 	my $path = run_cmd("ls /opt/testssl.sh/testssl.sh",0,$remote);
-	if ( $path == '/opt/testssl.sh/testssl.sh' ) {
-		return '/opt/testssl.sh/testssl.sh';
-	}
-	return undef;
+        if ( $path == '/opt/testssl.sh/testssl.sh' ) {
+        open my $fh, '<', $path or die "Could not open '$path' $!\n";
+                while (my $line = <$fh>) {
+                        if ($line =~ /(VERSION)/){
+                                $version = $line =~s/[^\d.]//g;
+                                $version =~s/\.//;
+                                if(int($version) => int(27) ){
+                                        return "VERSION $path";
+                                }else{  
+                                        return "ERROR: Installed testssl.sh version is not supported by Seccubus use the 2.7dev release at leaast.";
+                                }
+                                exit();
+                        }
+                }
+        return '/opt/testssl.sh/testssl.sh';
+        }
 }
 
 sub make_timestamp() {
