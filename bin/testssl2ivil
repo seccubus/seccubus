@@ -125,7 +125,7 @@ exit();
 sub help() {
 	print "
 
-Usage: sslyze2ivil [--scanner <scanner>] --timestamp <timestamp> \\
+Usage: testssl2ivil [--scanner <scanner>] --timestamp <timestamp> \\
 		   [--workspace <workspace>] [--scan <scan>] \\
 		   --infile <.xml file> [--outfile <.ivil.xml file>] \\
 		   [--verbose] [--help]
