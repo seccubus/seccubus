@@ -467,6 +467,7 @@ sub rest_call($$$;$$$){
 			$r = $ua->delete("https://$server:$port$uri", $param);
 		} else {
 			print "Delete not supported on this platform\n" unless $quiet;
+			return({});
 		}
 	}
 	print "Server response : " . $r->decoded_content() . "\n" if $verbose > 2;
