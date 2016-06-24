@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk, Petr
+# Copyright 2016 Frank Breedijk, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ my @scan_ids = split(/\0/,$params->{"scanIds[]"});
 my @asset_ids = split(/\0/,$params->{"assetIds[]"});
 my $limit = $query->param("Limit");
 
+$limit = 200 unless defined $limit;
 $limit += 0; # Make sure limit is numeric
 
 # Return an error if the required parameters were not passed 

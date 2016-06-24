@@ -44,7 +44,7 @@ use Data::Dumper;
 use strict;
 use Carp;
 
-sub get_findings($;$$$);
+sub get_findings($;$$$$);
 sub get_finding($$;);
 sub get_status($$$;$);
 sub get_filters($$$;$);
