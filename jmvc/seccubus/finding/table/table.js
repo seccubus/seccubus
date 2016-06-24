@@ -96,6 +96,10 @@ $.Controller('Seccubus.Finding.Table',
 		 * The current remark filter
 		 */
 		remark		: "*",
+		/* @attribute options.limit
+		 * The current finding limit
+		 */
+		limit       : 200,
 		/**
 		 * @attribute options.orderBy
 		 * By what attribute the table is sorted by
@@ -242,10 +246,12 @@ $.Controller('Seccubus.Finding.Table',
 						Severity	: this.options.severity,
 						Issue 		: this.options.issue,
 						Finding		: this.options.finding,
-						Remark		: this.options.remark
+						Remark		: this.options.remark,
+						Limit       : this.options.limit
 					}), 
 					{
 						fStatus		: this.options.status,
+						fLimit      : this.options.limit,
 						columns		: this.options.columns,
 						orderBy		: this.options.orderBy,
 						descending	: this.options.descending,

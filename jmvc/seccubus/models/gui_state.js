@@ -102,7 +102,11 @@ $.Model('Seccubus.GuiState',
 	 * - default value: *
 	 * - special value: * - Don't filter on remark
 	 */
-		remark		: "*"
+		remark		: "*",
+	/* @attribute limit
+	 * Determines how much findings are fetched from the backend
+	 */
+	    limit       : 200
 	}
 },
 /* @Prototype */

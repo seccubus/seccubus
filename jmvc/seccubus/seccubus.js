@@ -120,6 +120,10 @@ steal(
 			console.log("remark changed")
 			render_findings();
 		});
+		gui_state.bind("limit", function(ev, scan){
+			console.log("limit changed")
+			render_findings();
+		});
 
 		/***********************************************************
 		 * Hook into findings model to update findings view that
@@ -397,6 +401,7 @@ steal(
 				issue 		: gui_state.issue,
 				finding		: gui_state.finding,
 				remark		: gui_state.remark,
+				limit       : gui_state.limit,
 				onEdit		: function(find) {
 					var findings = $(".finding").models();
 					var n = 0;
