@@ -38,6 +38,7 @@ Enhancements
 * #320 - Nessus6 scanner now downloads PDF and HTML version of report too
 * #312 - SSLLabs and Nessus6 scanner no longer depend on perl-REST-Client
 * #322 - Removed old scanners: Nessus v5 and earlier, OpenVAS v5 and earlier
+* #128 - Limit the amount of findings that is returned from the back end
 * Improved exit codes for the onlyonxday.sh utility
 
 Bug Fixes
@@ -47,3 +48,5 @@ Bug Fixes
 * #327 - OpenVAS target is always created with the default portlist
 * #328 - CopyRight year unit test appears to be broken on Travis
 * #333 - LWP::UserAgent is missing method delete on RH5 and RH6
+* #344 - Nessus6 scanner script using LWP::UserAgent is too brittle
+

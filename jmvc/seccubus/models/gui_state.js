@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Petr, Frank Breedijk
+ * Copyright 2016 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,7 +102,11 @@ $.Model('Seccubus.GuiState',
 	 * - default value: *
 	 * - special value: * - Don't filter on remark
 	 */
-		remark		: "*"
+		remark		: "*",
+	/* @attribute limit
+	 * Determines how much findings are fetched from the backend
+	 */
+	    limit       : 200
 	}
 },
 /* @Prototype */

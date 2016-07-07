@@ -44,7 +44,7 @@ use Data::Dumper;
 use strict;
 use Carp;
 
-sub get_findings($;$$$);
+sub get_findings($;$$$$);
 sub get_finding($$;);
 sub get_status($$$;$);
 sub get_filters($$$;$);
@@ -80,11 +80,14 @@ Must have at least read rights
 
 =cut
 
-sub get_findings($;$$$) {
+sub get_findings($;$$$$) {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_id = shift;
 	my $asset_id = shift;
 	my $filter = shift;
+	my $limit = shift;
+
+	$limit = 200 unless defined $limit;
 
 	if ( may_read($workspace_id) ) {
 		my $params = [ $workspace_id, $workspace_id ];
@@ -184,6 +187,10 @@ sub get_findings($;$$$) {
 		}
 		
 		$query .= " ORDER BY host, port, plugin ";
+		if ( $limit ) {
+			$query .= "LIMIT ?\n";
+			push @$params, $limit;
+		}
 		#die $query;
 
 		return sql( "return"	=> "ref",

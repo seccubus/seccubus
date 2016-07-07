@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Frank Breedijk, Petr
+ * Copyright 2016 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,6 +118,10 @@ steal(
 		});
 		gui_state.bind("remark", function(ev, scan){
 			console.log("remark changed")
+			render_findings();
+		});
+		gui_state.bind("limit", function(ev, scan){
+			console.log("limit changed")
 			render_findings();
 		});
 
@@ -397,6 +401,7 @@ steal(
 				issue 		: gui_state.issue,
 				finding		: gui_state.finding,
 				remark		: gui_state.remark,
+				limit       : gui_state.limit,
 				onEdit		: function(find) {
 					var findings = $(".finding").models();
 					var n = 0;
