@@ -358,289 +358,454 @@ sub get_filters($$$;$) {
 	my $asset_ids = shift;
 	if(!$scan_ids && !$asset_ids)  { die "Must specify scanids or assetids for function get_status"; }
 	my $filter = shift;
+	my %filters;
 
 	# finding -> id, host, hostname, port, plugin, findingl, remark, severity, status, status_txt
 	# filter -> host hostname port plugin finding remark severity status issue
 	if ( ! may_read($workspace_id) ) {
 		die "Permission denied!";
 	} else {
-		my @findings;
-		my %filters;
-		foreach my $scan ( @$scan_ids ) {
-			my $finds = get_findings($workspace_id,$scan);
-			push @findings, @$finds;
-		}
-		foreach my $asset ( @$asset_ids ){
-			my $finds = get_findings($workspace_id,undef,$asset);
-			push @findings, @$finds;
-		}
+		my $from = " FROM findings";
+		my $where = "findings.workspace_id = ?";
+		my $join = "";
+		my $limit;
+		$join .= "LEFT JOIN issues2findings i2f ON i2f.finding_id = findings.id " if exists $filter->{issue};
+		$join .= "LEFT JOIN host_names on host_names.ip = findings.host AND host_names.workspace_id = findings.workspace_id " if exists $filter->{hostname};
 
-		# Lets get the issues and add them to the findings
-		my $issues = get_issues($workspace_id,undef,1); # We want issues with finding links
-		my %i2f;
-		my %issues;
-		foreach my $issue ( @$issues ) {
-			# Update link from finding to issue
-			my $id = $$issue[8];
-			$id = 'none' unless $id;
-			$i2f{$id} = [] unless $i2f{$id};
-			push @{$i2f{$id}}, $issue;
-			# Update has containing issues
-			$issues{$$issue[0]} = [] unless $issues{$$issue[0]};
-			$issues{$$issue[0]} = $issue;
-			# (P)reset counter
-			$filters{issue}{$$issue[0]} = 0;
-		}
-
-		# Link issues to findings
-		foreach my $find ( @findings ) {
-			if ( $i2f{$$find[0]} ) {
-				$$find[13] = $i2f{$$find[0]};
-			} else {
-				$$find[13] = [];
+		# If we have scan_ids
+		if ( @$scan_ids ) {
+			$where .= " AND ( " if @$scan_ids;
+			foreach my $scan ( @$scan_ids ) {
+				$where .= " scan_id = ? OR "
 			}
+			$where =~ s/OR $/\) /;
+		} elsif ( @$asset_ids ) {
+			$from .= ", asset2scan ";
+			$where .= " AND findings.scan_id = asset2scan.scan_id AND ( ";
+			foreach my $asset ( @$asset_ids ) {
+				$where .= " asset2scan.id = ? OR ";
+			}
+			$where =~ s/OR $/\) /;			
 		}
 
-		# Update all counters
-		foreach my $find ( @findings ) {
-			$filters{"host"}{$$find[1]} += match($find,$filter,[ "hostname", "port", "plugin", "finding", "remark", "severity", "status", "issue"]);
-			$filters{"hostname"}{$$find[2]} += match($find,$filter,[ "host", "port", "plugin", "finding", "remark", "severity", "status", "issue"]);
-			$filters{"port"}{$$find[3]} += match($find,$filter,[ "host", "hostname", "plugin", "finding", "remark", "severity", "status", "issue"]);
-			$filters{"plugin"}{$$find[4]} += match($find,$filter,[ "host", "hostname", "port", "finding", "remark", "severity", "status", "issue"]);
-			$filters{"severity"}{"$$find[7] - $$find[8]"} += match($find,$filter,[ "host", "hostname", "port", "plugin", "finding", "remark", "status", "issue"]);
-			$filters{"issue"}{"*"} += match($find,$filter,[ "host", "hostname", "port", "plugin", "finding", "remark", "severity", "status"]);					
-			foreach my $issue ( @{$$find[13]} ) {
-				$filters{"issue"}{$$issue[0]} += match($find,$filter,[ "host", "hostname", "port", "plugin", "finding", "remark", "severity", "status"]);				
-			}
-		}
-		# Host
-		# Generate wildcard values
-		foreach my $host ( keys %{$filters{"host"}} ) {
-			$filters{"host"}{"*"} += $filters{"host"}{$host};
+		# Hosts
+		my @hosts = ({name => "*", number => 0});
+		# Construct filter
+		# Get hosts in filter.
+		my $ffields = [];
+		my $fwhere = construct_filter($filter,"host",$ffields,1);
+		my $query = "
+			SELECT host, count(*)
+			$from
+			$join
+			WHERE $where $fwhere
+			GROUP BY host
+			ORDER BY INET_ATON(host), host
+			LIMIT 50
+		";
+		my $hosts_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
+		$limit = 50 - @$hosts_in;
+		unshift @hosts, {name => "First 50 only...", number => -1, selected => JSON::false } unless $limit;
+
+		# Get hosts outside filter.
+		#$ffields = [];
+		#$fwhere = construct_filter($filter,"host",$ffields,0);
+		$query = "
+			SELECT host, count(*)
+			$from
+			WHERE $where AND host NOT IN (
+				SELECT DISTINCT host
+				$from
+				$join
+				WHERE $where $fwhere
+			)
+			GROUP BY host		
+			ORDER BY INET_ATON(host), host	
+			LIMIT ?
+		";
+		my $hosts_out = sql(query => $query, values => [$workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields, $limit] );
+		my %count;
+
+		foreach my $host ( @$hosts_in ) {
+			$count{"*"} += $$host[1];
+
 			# Split on slashes first
-			my @subs = split(/\//, $host);
+			my @subs = split(/\//, $$host[0]);
 			my $addr = "";
 			while ( 1 < @subs ) {
 				$addr .= shift @subs;
 				$addr .= "/";
-				$filters{"host"}{"$addr*"} += $filters{"host"}{$host};
+				if ( ! exists $count{"$addr*"} ) {
+					push @hosts, { name => "$addr*", count => 0 };
+				}
+				$count{"$addr*"} += $$host[1];
 			}
 			# Then on dots
-			my @subs = split(/\./, $host);
+			my @subs = split(/\./, $$host[0]);
 			my $addr = "";
 			while ( 1 < @subs ) {
 				$addr .= shift @subs;
 				$addr .= ".";
-				$filters{"host"}{"$addr*"} += $filters{"host"}{$host};
+				if ( ! exists $count{"$addr*"} ) {
+					push @hosts, { name => "$addr*", count => 0 };
+				}
+				$count{"$addr*"} += $$host[1];
 			}
+			push @hosts, { name => $$host[0], number => $$host[1] };
 		}
-		# Sort by IP (See http://www.perlmonks.org/?node_id=22432)
-		my %hosts = %{$filters{"host"}};
-		my @hosts = map  { $_->[0] }
-			sort { $a->[1] cmp $b->[1] }
-			map  {  $_ =~ /^\d+\.\d+\.\d+\.\d+$/ ? [$_, sprintf("%03.f%03.f%03.f%03.f", split(/\./, $_))] : [$_,$_] }
-			keys %{$filters{"host"}} ;
-		my @hosts2 = ( );
-		my @hosts3 = ( );
-		$filter->{"host"} = "*" unless $filter->{"host"};
+		$hosts_in = undef;
 		foreach my $host ( @hosts ) {
-			my $selected = JSON::false;
-			$selected = JSON::true if $host eq $filter->{"host"};
-			if ( $hosts{$host} > 0 ) {
-				push @hosts2, { 
-					"name" => $host,
-					"selected" => $selected,
-					"number" => $hosts{$host}
-				};
+			if ( exists $count{$host->{name}} ) {
+				$host->{number} = $count{$host->{name}};
+			}
+			if ( $host->{name} eq $filter->{host} ) {
+				$host->{selected} = JSON::true;
 			} else {
-				push @hosts3, { 
-					"name" => $host,
-					"selected" => $selected,
-					"number" => $hosts{$host}
-				};
+				$host->{selected} = JSON::false;
 			}
 		}
-		@hosts = ( @hosts2, { "name" => "---", "number" => -1 }, @hosts3 );
+		push @hosts, { "name" => "---", "number" => -1, selected => JSON::false };
+		foreach my $host ( @$hosts_out ) {
+			if ( $$host[0] eq $filter->{host} ) {
+				push @hosts, { name => $$host[0], number => $$host[1], selected => JSON::true };
+			} else {
+				push @hosts, { name => $$host[0], number => $$host[1], selected => JSON::false };
+			}
+		}
+		$hosts_out = undef;
 		$filters{"host"} = \@hosts;
 
 		# Hostnames
-		my @hostnames1 = ();
-		my @hostnames2 = ();
-		my $total = 0;
-		$filter->{"hostname"} = "*" unless defined $filter->{"hostname"};
-		foreach my $hostname ( sort keys %{$filters{"hostname"}} ) {
-			$total += $filters{"hostname"}{$hostname};
-			my $selected = JSON::false;
-			$selected = JSON::true if $filter->{"hostname"} eq $hostname;
-			if ( $filters{"hostname"}{$hostname} > 0 ) {
-				push @hostnames1, {
-					"name" => $hostname,
-					"selected" => $selected,
-					"number" => $filters{"hostname"}{$hostname}
-				};
+		my @hostnames = ({name => "*", number => 0});
+		# Construct filter
+		# Get hosts in filter.
+		$ffields = [];
+		$fwhere = construct_filter($filter,"hostname",$ffields,1);
+		$query = "
+			SELECT host_names.name as hostname, count(*)
+			$from
+			$join";
+		$query .= " LEFT JOIN host_names on host_names.ip = findings.host AND host_names.workspace_id = findings.workspace_id " unless exists $filter->{hostname};
+		$query .= "
+			WHERE $where $fwhere
+			GROUP BY hostname
+			ORDER BY hostname
+			LIMIT 50
+		";
+		my $hostnames_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
+		$limit = 50 - @$hostnames_in;
+		unshift @hostnames, {name => "First 50 only...", number => -1, selected => JSON::false } if $limit == 0;
+
+		# Get outside filter
+		# Get hosts in filter.
+		$query = "
+			SELECT host_names.name as hostname, count(*)
+			$from
+			$join";
+		$query .= " LEFT JOIN host_names on host_names.ip = findings.host AND host_names.workspace_id = findings.workspace_id " unless exists $filter->{hostname};
+		$query .= "
+			WHERE $where AND host_names.ip NOT IN (
+				SELECT DISTINCT host
+				$from
+				$join
+				WHERE $where $fwhere
+			)
+			GROUP BY hostname			
+			ORDER BY hostname
+			LIMIT ?
+		";
+		my $hostnames_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields, $limit ] );
+
+		my $count = 0;
+		foreach my $host ( @$hostnames_in ) {
+			$count+=$$host[1];
+			if ( $$host[0] eq $filter->{hostname} ) {
+				push @hostnames, { name => $$host[0], number => $$host[1], selected => JSON::true };
 			} else {
-				push @hostnames2, {
-					"name" => $hostname,
-					"selected" => $selected,
-					"number" => $filters{"hostname"}{$hostname}
-				};
+				push @hostnames, { name => $$host[0], number => $$host[1], selected => JSON::false };
+			}
+			if ( $hostnames[-1]->{name} eq "" ) {
+				$hostnames[-1]->{name} = "(blank)";
+				$hostnames[-1]->{value} = "";				
 			}
 		}
-		my @hostnames = ( 
-			{ "name" => "*", 
-			  "number" => $total, 
-			  "selected" => ($filter->{"hostname"} eq "*" ? JSON::true : JSON::false) 
-			}, 
-			@hostnames1, 
-			{ "name" => "---", 
-			  "number" => -1 
-			}, 
-			@hostnames2 
-		);
+		$hostnames_in = undef;
+		push @hostnames, { "name" => "---", "number" => -1, selected => JSON::false };
+		foreach my $host ( @$hostnames_out ) {
+			$$host[0] = "" unless defined $$host[0];
+			if ( $$host[0] eq $filter->{hostname} ) {
+				push @hostnames, { name => $$host[0], number => $$host[1], selected => JSON::true };
+			} else {
+				push @hostnames, { name => $$host[0], number => $$host[1], selected => JSON::false };
+			}
+		}
+		$hostnames_out = undef;
+		if ( $limit == 0 ) {
+			$hostnames[1]->{number} = $count;
+		} else {
+			$hostnames[0]->{number} = $count;			
+		}
 		$filters{"hostname"} = \@hostnames;
 
-		# port
-		my @ports1 = ();
-		my @ports2 = ();
-		my $total = 0;
-		$filter->{"port"} = "*" unless $filter->{"port"};
-		foreach my $port ( sort { $a <=> $b} keys %{$filters{"port"}} ) {
-			$total += $filters{"port"}{$port};
-			my $selected = JSON::false;
-			$selected = JSON::true if $filter->{"port"} eq $port;
-			if ( $filters{"port"}{$port} > 0 ) {
-				push @ports1, {
-					"name" => $port,
-					"selected" => $selected,
-					"number" => $filters{"port"}{$port}
-				};
+		# Ports
+		my @ports = ({name => "*", number => 0});
+		# Construct filter
+		# Get hosts in filter.
+		$ffields = [];
+		$fwhere = construct_filter($filter,"port",$ffields,1);
+		$query = "
+			SELECT port, count(*)
+			$from
+			$join
+			WHERE $where $fwhere
+			GROUP BY port
+			ORDER BY CAST(port as SIGNED INTEGER), port
+			LIMIT 50
+		";
+		my $ports_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
+		$limit = 50 - @$ports_in;
+		unshift @ports, {name => "First 50 only...", number => -1, selected => JSON::false } if $limit == 0;
+
+		# Get outside filter
+		$query = "
+			SELECT port, count(*)
+			$from
+			WHERE $where AND port NOT IN (
+				SELECT DISTINCT port
+				$from
+				$join
+				WHERE $where $fwhere
+			)
+			GROUP BY port		
+			ORDER BY port
+			LIMIT ?
+		";
+		my $ports_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields, $limit ] );
+
+		$count = 0;
+		foreach my $port ( @$ports_in ) {
+			$count+=$$port[1];
+			$$port[0] = "" unless defined $$port[0];
+			if ( $$port[0] eq $filter->{port} ) {
+				push @ports, { name => $$port[0], number => $$port[1], selected => JSON::true };
 			} else {
-				push @ports2, {
-					"name" => $port,
-					"selected" => $selected,
-					"number" => $filters{"port"}{$port}
-				};
+				push @ports, { name => $$port[0], number => $$port[1], selected => JSON::false };
 			}
 		}
-		my @ports = ( 
-			{ "name" => "*", 
-			  "number" => $total,
-			  "selected" => ($filter->{"port"} eq "*" ? JSON::true : JSON::false )
-			}, 
-			@ports1, 
-			{ "name" => "---", 
-			  "number" => -1 
-			}, 
-			@ports2 
-		);
+		$ports_in = undef;
+		push @ports, { "name" => "---", "number" => -1, selected => JSON::false };
+		foreach my $port ( @$ports_out ) {
+			$$port[0] = "" unless defined $$port[0];
+			if ( $$port[0] eq $filter->{port} ) {
+				push @ports, { name => $$port[0], number => $$port[1], selected => JSON::true };
+			} else {
+				push @ports, { name => $$port[0], number => $$port[1], selected => JSON::false };
+			}
+		}
+		$ports_out = undef;
+		if ( $limit == 0 ) {
+			$ports[1]->{number} = $count;
+		} else {
+			$ports[0]->{number} = $count;			
+		}
 		$filters{"port"} = \@ports;
 
-		# Plugin
-		my @plugins1 = ();
-		my @plugins2 = ();
-		my $total = 0;
-		$filter->{"plugin"} = "*" unless $filter->{"plugin"};
-		foreach my $plugin ( sort keys %{$filters{"plugin"}} ) {
-			$total += $filters{"plugin"}{$plugin};
-			my $selected = JSON::false;
-			$selected = JSON::true if $filter->{"plugin"} eq $plugin;
-			if ( $filters{"plugin"}{$plugin} > 0 ) {
-				push @plugins1, {
-					"name" => $plugin,
-					"selected" => $selected,
-					"number" => $filters{"plugin"}{$plugin}
-				};
+		# Plugins
+		my @plugins = ({name => "*", number => 0});
+		# Construct filter
+		# Get hosts in filter.
+		$ffields = [];
+		$fwhere = construct_filter($filter,"plugin",$ffields,1);
+		$query = "
+			SELECT plugin, count(*)
+			$from
+			$join
+			WHERE $where $fwhere
+			GROUP BY plugin
+			ORDER BY CAST(plugin as SIGNED INTEGER), plugin
+			LIMIT 50
+		";
+		my $plugins_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
+		$limit = 50 - @$plugins_in;
+		unshift @plugins, {name => "First 50 only...", number => -1, selected => JSON::false } if $limit == 0;
+
+		# Get outside filter
+		$query = "
+			SELECT plugin, count(*)
+			$from
+			WHERE $where AND plugin NOT IN (
+				SELECT DISTINCT plugin
+				$from
+				$join
+				WHERE $where $fwhere
+			)
+			GROUP BY plugin		
+			ORDER BY plugin
+			LIMIT ?
+		";
+		my $plugins_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields, $limit ] );
+
+		$count = 0;
+		foreach my $plugin ( @$plugins_in ) {
+			$count+=$$plugin[1];
+			$$plugin[0] = "" unless defined $$plugin[0];
+			if ( $$plugin[0] eq $filter->{plugin} ) {
+				push @plugins, { name => $$plugin[0], number => $$plugin[1], selected => JSON::true };
 			} else {
-				push @plugins2, {
-					"name" => $plugin,
-					"selected" => $selected,
-					"number" => $filters{"plugin"}{$plugin}
-				};
+				push @plugins, { name => $$plugin[0], number => $$plugin[1], selected => JSON::false };
 			}
 		}
-		my @plugins = ( 
-			{ "name" => "*", 
-			  "number" => $total,
-			  "selected" => ($filter->{"plugin"} eq "*" ? JSON::true : JSON::false ),
-			}, 
-			@plugins1, 
-			{ "name" => "---", 
-			  "number" => -1 
-			}, 
-			@plugins2 
-		);
+
+		$plugins_in = undef;
+		push @plugins, { "name" => "---", "number" => -1, selected => JSON::false };
+		foreach my $plugin ( @$plugins_out ) {
+			$$plugin[0] = "" unless defined $$plugin[0];
+			if ( $$plugin[0] eq $filter->{plugin} ) {
+				push @plugins, { name => $$plugin[0], number => $$plugin[1], selected => JSON::true };
+			} else {
+				push @plugins, { name => $$plugin[0], number => $$plugin[1], selected => JSON::false };
+			}
+		}
+		$plugins_out = undef;
+		if ( $limit == 0 ) {
+			$plugins[1]->{number} = $count;
+		} else {
+			$plugins[0]->{number} = $count;			
+		}
 		$filters{"plugin"} = \@plugins;
 
-		# Severity
-		my @sev1 = ();
-		my @sev2 = ();
-		my $total = 0;
-		$filter->{"severity"} = "*" unless defined $filter->{"severity"};
-		foreach my $sev ( sort keys %{$filters{"severity"}} ) {
-			$total += $filters{"severity"}{$sev};
-			my $selected = JSON::false;
-			$sev =~ /^(\d+)/;
-			my $val = $1;
-			$selected = JSON::true if $val eq $filter->{"severity"};
-			if ( $filters{"severity"}{$sev} > 0 ) {
-				push @sev1, {
-					"name" => $sev,
-					"selected" => $selected,
-					"value" => $val,
-					"number" => $filters{"severity"}{$sev},
-				};
+		# Serverity
+		my @severitys = ({name => "*", number => 0});
+		# Construct filter
+		# Get hosts in filter.
+		$ffields = [];
+		$fwhere = construct_filter($filter,"severity",$ffields,1);
+		$query = "
+			SELECT severity.id as severity, severity.name, count(*)
+			$from
+			$join
+			LEFT JOIN severity on findings.severity = severity.id
+			WHERE $where $fwhere
+			GROUP BY severity, name
+			ORDER BY severity
+		";
+		my $severitys_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
+
+		# Get outside filter
+		$query = "
+			SELECT severity.id as severity, severity.name, count(*)
+			$from
+			$join
+			LEFT JOIN severity on findings.severity = severity.id
+			WHERE $where AND severity.id NOT IN (
+				SELECT DISTINCT severity
+				$from
+				$join
+				WHERE $where $fwhere
+			)
+			GROUP BY severity
+			ORDER BY severity
+			LIMIT ?
+		";
+		my $severitys_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields, $limit ] );
+
+		$count = 0;
+		foreach my $severity ( @$severitys_in ) {
+			$count+=$$severity[2];
+			if ( $$severity[0] eq $filter->{severity} ) {
+				push @severitys, { value => $$severity[0], name=>$$severity[1], number => $$severity[2], selected => JSON::true };
 			} else {
-				push @sev2, {
-					"name" => $sev,
-					"selected" => $selected,
-					"value" => $val,
-					"number" => $filters{"severity"}{$sev},
-				};
+				push @severitys, { value => $$severity[0], name=>$$severity[1], number => $$severity[2], selected => JSON::false };
 			}
 		}
-		my @sev = ( 
-			{ "name" => "*", 
-			  "number" => $total,
-			  "selected" => ( $filter->{"severity"} eq "*" ? JSON::true : JSON::false ),
-			}, 
-			@sev1, 
-			{ "name" => "---", 
-			  "number" => -1 
-			}, 
-			@sev2 
-		);
-		$filters{"severity"} = \@sev;
+		$severitys_in = undef;
+		push @severitys, { "name" => "---", "number" => -1, selected => JSON::false };
+		foreach my $severity ( @$severitys_out ) {
+			if ( $$severity[0] eq $filter->{severity} ) {
+				push @severitys, { value => $$severity[0], name=>$$severity[1], number => $$severity[2], selected => JSON::true };
+			} else {
+				push @severitys, { value => $$severity[0], name=>$$severity[1], number => $$severity[2], selected => JSON::false };
+			}
+		}
+		$severitys_out = undef;
+		$severitys[0]->{number} = $count;			
+		$filters{"severity"} = \@severitys;
 
 		# Issues
-		my @issue = ();
-		push @issue, {
-			name 	=> "*",
-			number	=> $filters{issue}{"*"},
-			selected 	=> ( $filter->{issue} eq "*" ? JSON::true : JSON::false ),
-		};
-		foreach my $i ( sort keys %{$filters{issue}} ) {
-			unless ( $i eq "*" || $filters{issue}->{$i} == 0 ) {
-				push @issue , {
-					name 	=> "${$issues{$i}}[1] ($issues{$i}[2])",
-					value 	=> $i,
-					number	=> $filters{issue}{$i},
-					selected => ( $filter->{issue} eq $i ? JSON::true : JSON::false ),	
+		my @issues = ({name => "*", number => 0});
+		# Construct filter
+		# Get hosts in filter.
+		$ffields = [];
+		$fwhere = construct_filter($filter,"issue",$ffields,1);
+		$query = "
+			SELECT issues.id as issue_id, issues.name, ext_ref, count(*)
+			$from
+			$join";
+		$query .= " LEFT JOIN issues2findings i2f on findings.id = i2f.finding_id " unless $filter->{issue};
+		$query .= "
+			LEFT JOIN issues on i2f.issue_id = issues.id
+			WHERE $where $fwhere 
+			GROUP BY issue_id, name, ext_ref
+			ORDER BY issue_id
+			LIMIT 50
+		";
+		my $issues_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
+		$limit = 50 - @$issues_in;
+		unshift @issues, {name => "First 50 only...", number => -1, selected => JSON::false } if $limit == 0;
+
+		# Get outside filter
+		$query = "
+			SELECT issues.id, issues.name, ext_ref, '?'
+			FROM issues
+			WHERE issues.workspace_id = ? AND id NOT IN (
+				SELECT DISTINCT issues.id as issue_id
+				$from
+				$join";
+		$query .= " LEFT JOIN issues2findings i2f on findings.id = i2f.finding_id " unless $filter->{issue};
+		$query .= "
+				LEFT JOIN issues on i2f.issue_id = issues.id
+				WHERE $where $fwhere AND issue_id IS NOT NULL
+			)
+			ORDER BY id
+			LIMIT ?
+		";
+		my $issues_out = sql(query => $query, values => [ $workspace_id, $workspace_id, @$scan_ids, @$asset_ids, @$ffields, $limit ] );
+
+		$count = 0;
+		foreach my $issue ( @$issues_in ) {
+			$count+=$$issue[3];
+			# SKIP nulls
+			if ( defined $$issue[1] ) {
+				my ($issue_name, $issue_value);
+				$issue_name = "$$issue[1] ($$issue[2])";
+				$issue_value = $$issue[0];
+				if ( $$issue[0] eq $filter->{issue} ) {
+					push @issues, { value => $$issue[0], name=>$issue_name, number => $$issue[3], selected => JSON::true };
+				} else {
+					push @issues, { value => $$issue[0], name=>$issue_name, number => $$issue[3], selected => JSON::false };
 				}
 			}
 		}
-		push @issue, {
-			name 	=> "---",
-			number	=> -1,
-		};
-		foreach my $i ( @{$i2f{none}} ) {
-			push @issue, {
-				name => "$$i[1] ($$i[2])",
-				value => $$i[0],
-				number => 0,
-				selected => ( $filter->{issue} eq $$i[0] ? JSON::true : JSON::false ),
+		$issues_in = undef;
+		push @issues, { "name" => "---", "number" => -1, selected => JSON::false };
+		foreach my $issue ( @$issues_out ) {
+			my $issue_name = "$$issue[1] ($$issue[2])";
+			if ( defined $$issue[1] ) {
+				if ( $$issue[0] eq $filter->{issue} ) {
+					push @issues, { value => $$issue[0], name=>$issue_name, number => $$issue[3], selected => JSON::true };
+				} else {
+					push @issues, { value => $$issue[0], name=>$issue_name, number => $$issue[3], selected => JSON::false };
+				}
 			}
 		}
-		$filters{issue} = \@issue;
+		$issues_out = undef;
+		$issues[0]->{number} = $count;		
+		if ( $limit == 0 ) {
+			$issues[1]->{number} = $count;
+		} else {
+			$issues[0]->{number} = $count;			
+		}
+		$filters{"issue"} = \@issues;
 
 		# Finding and remark are easy
 		$filter->{"finding"} = "" unless $filter->{"finding"};
@@ -651,6 +816,106 @@ sub get_filters($$$;$) {
 		return %filters;
 	}
 }
+
+sub construct_filter($$$$) {
+	my $filter = shift;
+	my $exclude = shift;
+	my $args = shift;
+	my $in = shift;
+
+	my $where = "AND ( ";
+	if ( exists $filter->{status} && $exclude ne "status" ) {
+		if ( $in ) {
+			$where .= "findings.status = ? AND ";
+		} else {
+			$where .= "findings.status != ? OR ";
+		}
+		push @$args, $filter->{status};
+	}
+
+	if ( exists $filter->{host} && $exclude ne "host" ) {
+		my $host = lc($filter->{host});
+		$host =~ s/\*/%/g;
+		if ( $in ) {
+			$where .= "host like ? AND ";
+		} else {
+			$where .= "host not like ? OR ";
+		}
+		push @$args, $host;
+	}
+
+	if ( exists $filter->{hostname} && $exclude ne "hostname" ) {
+		my $hostname = lc($filter->{hostname});
+		$hostname =~ s/\*/%/g;
+		if ( $in ) {
+			$where .= "host_names.name like ? AND ";
+		} else {
+			$where .= "host_names.name not like ? OR ";
+		}
+		push @$args, $hostname;
+	}
+
+	if ( exists $filter->{port} && $exclude ne "port" ) {
+		if ( $in ) {
+			$where .= "port = ? AND ";
+		} else {
+			$where .= "port != ? OR ";
+		}
+		push @$args, $filter->{port};
+	}
+
+	if ( exists $filter->{plugin} && $exclude ne "plugin" ) {
+		if ( $in ) {
+			$where .= "plugin = ? AND ";
+		} else {
+			$where .= "plugin != ? OR ";
+		}
+		push @$args, $filter->{plugin};
+	}
+
+	if ( exists $filter->{severity} && $exclude ne "severity" ) {
+		if ( $in ) {
+			$where .= "findings.severity = ? AND ";
+		} else {
+			$where .= "findings.severity != ? OR ";
+		}
+		push @$args, $filter->{port};
+	}
+
+	if ( exists $filter->{issue} && $exclude ne "issue" ) {
+		if ( $in ) {
+			$where .= "issue_id = ? AND ";
+		} else {
+			$where .= "issue_id != ? OR ";
+		}
+		push @$args, $filter->{issue};
+	}
+
+	if ( exists $filter->{finding} && $exclude ne "finding" ) {
+		my $finding = "%" . lc($filter->{finding}) . "%";
+		if ( $in ) {
+			$where .= "finding like ? AND ";
+		} else {
+			$where .= "finding not like ? OR ";
+		}
+		push @$args, $finding;
+	}
+
+	if ( exists $filter->{remark} && $exclude ne "remark" ) {
+		my $remark = "%" . lc($filter->{remark}) . "%";
+		if ( $in ) {
+			$where .= "remark like ? AND ";
+		} else {
+			$where .= "remark not like ? OR ";
+		}
+		push @$args, $filter;
+	}
+	$where =~ s/(AND|OR) $/\)/;
+	$where = "" if $where eq "AND ( ";
+
+	return $where;
+}
+
 
 =head2 match
 
@@ -746,7 +1011,6 @@ sub match($$;$) {
 		$match = 0;
 		foreach my $i ( @{$$finding[13]} ) {
 			if ( $$i[0] == $filter2{"issue"} ) {
-				#print Dumper $finding;
 				$match = 1;
 				last;
 			}

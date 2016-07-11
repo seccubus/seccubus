@@ -27,18 +27,28 @@ For more information visit [www.seccubus.com]
 ![Travis build status](https://travis-ci.org/schubergphilis/Seccubus_v2.svg?branch=master)
 
 ---
-xx-xx-2016 - 2.25 - 
-=============================================
+12-7-2016 - 2.26 - Speed improvements and others
+================================================
+This release is especially interesting for those of you that are working with large result sets.
+The number of findigns that is returned is now limited to 200 results by default and can be adjusted
+up or down.
+A lot of the filter logic has been moved from the Perl backend to more intelligent database queries 
+where caching and other optimalisations techniques prevent timeouts when working with larger result
+sets.
 
-...
+Additional improvements are done the rpm packaging and the Nessus6 scanner wich now no longer depends
+on certain excotic perl modules.
+
+The number of change records that is created and displayed has been reduced and some other more minor 
+have been fixed too.
 
 Enhancements
 ------------
+* #128 - Limit the amount of findings that is returned from the back end 
 * #319 - RPM now builds and installs under CentOs/RHEL 5 too
 * #320 - Nessus6 scanner now downloads PDF and HTML version of report too
 * #312 - SSLLabs and Nessus6 scanner no longer depend on perl-REST-Client
 * #322 - Removed old scanners: Nessus v5 and earlier, OpenVAS v5 and earlier
-* #128 - Limit the amount of findings that is returned from the back end
 * Improved exit codes for the onlyonxday.sh utility
 
 Bug Fixes
