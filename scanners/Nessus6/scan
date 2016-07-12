@@ -54,6 +54,7 @@ my (
 	$sleep,
 	$cmd,
 	$nosslcheck,
+	$sslcheck,
 	$token,
 	$r,
 	$retries,
@@ -86,6 +87,7 @@ GetOptions(
 		'sleep=s'		=> \$sleep,
 		'nodelete'		=> \$nodelete,
 		'nosslcheck!'	=> \$nosslcheck,
+		'sslcheck!'	    => \$sslcheck,
 		'retries'		=> \$retries,
 		'verbose|v+'	=> \$verbose,
 		'quiet|q!'		=> \$quiet,
@@ -95,11 +97,23 @@ GetOptions(
 help() if $help;
 $verbose = 0 if $quiet;
 
-# Disable SSL checking if needed
-$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0 unless $nosslcheck;
-
 $port = 8834 unless $port;		 # Default port is 8834
 $password = $password2 unless $password; # Equalize the use of --pw
+
+my $checkssl = 1;
+if ( $sslcheck ) {
+	$checkssl = 1;
+} elsif ( $nosslcheck ) {
+	$checkssl = 0;
+} elsif ( $port == 443 ) {
+	$checkssl = 1;
+} elsif ( $port == 8834 ) {
+	$checkssl = 0;
+}
+
+# Disable SSL checking if needed
+$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = $checkssl;
+
 
 my $config = get_config();
 
@@ -349,8 +363,10 @@ Usage: scan       --user=<username> --password=<password> --server=<server> \\
 --workspace (-ws) - Seccubus workspace the scan in in
 --scan (-sc)      - Seccubus scan the data should be saved in
 --nodelete        - Don't erase temporary files
---nosslcheck      - Don't validate Nessus' TLS certificate 
+--nosslcheck      - Don't validate Nessus' TLS certificate Common Name
                     (default: true when port is 8834 false when port is 443)
+--sslcheck        - Do validate Nessus' TLS certificate Common Name
+                    (default: false when port is 8834 true when port is 443)
 --retries         - How many times should rest calls be retried before aborting
                     the scan (default=3)
 --sleep           - Seconds to sleep between polls of the Nessus engine 
