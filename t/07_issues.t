@@ -68,10 +68,10 @@ if (`hostname` =~ /^sbpd/) {
 	ok($json->{issue}, "Should have an issue attribute in response"); $tests++;
 	is(@{$json->{issue}}, 2, "Correct number of items"); $tests++;
 	is($json->{issue}[0]->{name}, '*', "Correct issue name"); $tests++;
-	is($json->{issue}[0]->{selected}, 0,"Issue select value ok"); $tests++;
+	isnt($json->{issue}[0]->{selected}, 1, "Issue select value ok"); $tests++;
 	is($json->{issue}[0]->{number}, 7, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[1]->{name}, '---', "Correct issue name"); $tests++;
-	is($json->{issue}[1]->{selected}, undef,"Issue select value ok"); $tests++;
+	isnt($json->{issue}[1]->{selected}, 1,"Issue select value ok"); $tests++;
 	is($json->{issue}[1]->{number}, -1, "Correct number of findings linked"); $tests++;	
 	
 	# Need to provide a workspaceId
@@ -120,19 +120,19 @@ if (`hostname` =~ /^sbpd/) {
 	ok($json->{issue}, "Should have an issue attribute in response"); $tests++;
 	is(@{$json->{issue}}, 4, "Correct number of items"); $tests++;
 	is($json->{issue}[0]->{name}, '*', "Correct issue name"); $tests++;
-	is($json->{issue}[0]->{selected}, 0,"Issue select value ok"); $tests++;
+	isnt($json->{issue}[0]->{selected}, 1,"Issue select value ok"); $tests++;
 	is($json->{issue}[0]->{number}, 7, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[1]->{name}, '---', "Correct issue name"); $tests++;
-	is($json->{issue}[1]->{selected}, undef,"Issue select value ok"); $tests++;
+	isnt($json->{issue}[1]->{selected}, 1,"Issue select value ok"); $tests++;
 	is($json->{issue}[1]->{number}, -1, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[2]->{name}, 'test1 (SEC-1)', "Correct issue name"); $tests++;
 	is($json->{issue}[2]->{value}, 1, "Correct issue id"); $tests++;
-	is($json->{issue}[2]->{selected}, 0,"Issue select value ok"); $tests++;
-	is($json->{issue}[2]->{number}, 0, "Correct number of findings linked"); $tests++;	
+	isnt($json->{issue}[2]->{selected}, 1,"Issue select value ok"); $tests++;
+	is($json->{issue}[2]->{number}, "?", "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[3]->{name}, 'test1 (SEC-1)', "Correct issue name"); $tests++;
 	is($json->{issue}[3]->{value}, 2, "Correct issue id"); $tests++;
-	is($json->{issue}[3]->{selected}, 0,"Issue select value ok"); $tests++;
-	is($json->{issue}[3]->{number}, 0, "Correct number of findings linked"); $tests++;	
+	isnt($json->{issue}[3]->{selected}, 1,"Issue select value ok"); $tests++;
+	is($json->{issue}[3]->{number}, "?", "Correct number of findings linked"); $tests++;	
 
 	# Can we update the text fields?
 	$json = webcall("updateIssue.pl", "issueId=1", "workspaceId=100", "name=test2", "ext_ref=SEC-2", "description=description2");
@@ -302,23 +302,23 @@ if (`hostname` =~ /^sbpd/) {
 	ok($json->{issue}, "Should have an issue attribute in response"); $tests++;
 	is(@{$json->{issue}}, 6, "Correct number of items"); $tests++;
 	is($json->{issue}[0]->{name}, '*', "Correct issue name"); $tests++;
-	is($json->{issue}[0]->{selected}, 0,"Issue select value ok"); $tests++;
+	isnt($json->{issue}[0]->{selected}, 1,"Issue select value ok"); $tests++;
 	is($json->{issue}[0]->{number}, 7, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[1]->{name}, 'test4 (SEC-4)', "Correct issue name"); $tests++;
 	is($json->{issue}[1]->{value}, 4, "Correct issue id"); $tests++;
-	is($json->{issue}[1]->{selected}, 0,"Issue select value ok"); $tests++;
+	isnt($json->{issue}[1]->{selected}, 1,"Issue select value ok"); $tests++;
 	is($json->{issue}[1]->{number}, 3, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[2]->{name}, '---', "Correct issue name"); $tests++;
-	is($json->{issue}[2]->{selected}, undef,"Issue select value ok"); $tests++;
+	isnt($json->{issue}[2]->{selected}, 1,"Issue select value ok"); $tests++;
 	is($json->{issue}[2]->{number}, -1, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[3]->{name}, 'test2 (SEC-2)', "Correct issue name"); $tests++;
 	is($json->{issue}[3]->{value}, 1, "Correct issue id"); $tests++;
-	is($json->{issue}[3]->{selected}, 0,"Issue select value ok"); $tests++;
-	is($json->{issue}[3]->{number}, 0, "Correct number of findings linked"); $tests++;	
+	isnt($json->{issue}[3]->{selected}, 1,"Issue select value ok"); $tests++;
+	is($json->{issue}[3]->{number}, '?', "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[4]->{name}, 'test1 (SEC-1)', "Correct issue name"); $tests++;
 	is($json->{issue}[4]->{value}, 2, "Correct issue id"); $tests++;
-	is($json->{issue}[4]->{selected}, 0,"Issue select value ok"); $tests++;
-	is($json->{issue}[4]->{number}, 0, "Correct number of findings linked"); $tests++;	
+	isnt($json->{issue}[4]->{selected}, 1,"Issue select value ok"); $tests++;
+	is($json->{issue}[4]->{number}, '?', "Correct number of findings linked"); $tests++;	
 
 	# Can we link across workspaces?
 	$json = webcall("createWorkspace.pl", "name=test2");
@@ -467,67 +467,66 @@ if (`hostname` =~ /^sbpd/) {
 	is(@{$$json[3]->{issues}}, 2, "Correct number of issues"); $tests++;
 	is($$json[3]->{issues}[0]->{id}, 3, "Correct issue"); $tests++;
 	is($$json[3]->{issues}[1]->{id}, 4, "Correct issue"); $tests++;
-
+	
 	# Test if the correct filter is returned
 	$json = webcall("getFilters.pl", "workspaceId=100", "scanIds[]=1");
 	ok($json->{issue}, "Should have an issue attribute in response"); $tests++;
 	is(@{$json->{issue}}, 6, "Correct number of items"); $tests++;
 	is($json->{issue}[0]->{name}, '*', "Correct issue name"); $tests++;
-	is($json->{issue}[0]->{selected}, 0,"Issue select value ok"); $tests++;
-	is($json->{issue}[0]->{number}, 7, "Correct number of findings linked"); $tests++;	
+	isnt($json->{issue}[0]->{selected}, 1,"Issue select value ok"); $tests++;
+	is($json->{issue}[0]->{number}, 9, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[1]->{name}, 'test3 (SEC-3)', "Correct issue name"); $tests++;
 	is($json->{issue}[1]->{value}, 3, "Correct issue id"); $tests++;
-	is($json->{issue}[1]->{selected}, 0,"Issue select value ok"); $tests++;
+	isnt($json->{issue}[1]->{selected}, 1,"Issue select value ok"); $tests++;
 	is($json->{issue}[1]->{number}, 2, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[2]->{name}, 'test4 (SEC-4)', "Correct issue name"); $tests++;
 	is($json->{issue}[2]->{value}, 4, "Correct issue id"); $tests++;
-	is($json->{issue}[2]->{selected}, 0,"Issue select value ok"); $tests++;
+	isnt($json->{issue}[2]->{selected}, 1,"Issue select value ok"); $tests++;
 	is($json->{issue}[2]->{number}, 4, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[3]->{name}, '---', "Correct issue name"); $tests++;
-	is($json->{issue}[3]->{selected}, undef,"Issue select value ok"); $tests++;
+	isnt($json->{issue}[3]->{selected}, 1,"Issue select value ok"); $tests++;
 	is($json->{issue}[3]->{number}, -1, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[4]->{name}, 'test2 (SEC-2)', "Correct issue name"); $tests++;
 	is($json->{issue}[4]->{value}, 1, "Correct issue id"); $tests++;
-	is($json->{issue}[4]->{selected}, 0,"Issue select value ok"); $tests++;
-	is($json->{issue}[4]->{number}, 0, "Correct number of findings linked"); $tests++;	
+	isnt($json->{issue}[4]->{selected}, 1,"Issue select value ok"); $tests++;
+	is($json->{issue}[4]->{number}, '?', "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[5]->{name}, 'test1 (SEC-1)', "Correct issue name"); $tests++;
 	is($json->{issue}[5]->{value}, 2, "Correct issue id"); $tests++;
-	is($json->{issue}[5]->{selected}, 0,"Issue select value ok"); $tests++;
-	is($json->{issue}[5]->{number}, 0, "Correct number of findings linked"); $tests++;	
+	isnt($json->{issue}[5]->{selected}, 1,"Issue select value ok"); $tests++;
+	is($json->{issue}[5]->{number}, '?', "Correct number of findings linked"); $tests++;	
 	
 	# Test if the correct filter is returned filter on issue 3
 	$json = webcall("getFilters.pl", "workspaceId=100", "scanIds[]=1", "Issue=3");
 	ok($json->{issue}, "Should have an issue attribute in response"); $tests++;
 	is(@{$json->{issue}}, 6, "Correct number of items"); $tests++;
 	is($json->{issue}[0]->{name}, '*', "Correct issue name"); $tests++;
-	is($json->{issue}[0]->{selected}, 0,"Issue select value ok"); $tests++;
-	is($json->{issue}[0]->{number}, 7, "Correct number of findings linked"); $tests++;	
+	isnt($json->{issue}[0]->{selected}, 1,"Issue select value ok"); $tests++;
+	is($json->{issue}[0]->{number}, 9, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[1]->{name}, 'test3 (SEC-3)', "Correct issue name"); $tests++;
 	is($json->{issue}[1]->{value}, 3, "Correct issue id"); $tests++;
 	is($json->{issue}[1]->{selected}, 1,"Issue select value ok"); $tests++;
 	is($json->{issue}[1]->{number}, 2, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[2]->{name}, 'test4 (SEC-4)', "Correct issue name"); $tests++;
 	is($json->{issue}[2]->{value}, 4, "Correct issue id"); $tests++;
-	is($json->{issue}[2]->{selected}, 0,"Issue select value ok"); $tests++;
+	isnt($json->{issue}[2]->{selected}, 1,"Issue select value ok"); $tests++;
 	is($json->{issue}[2]->{number}, 4, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[3]->{name}, '---', "Correct issue name"); $tests++;
-	is($json->{issue}[3]->{selected}, undef,"Issue select value ok"); $tests++;
+	isnt($json->{issue}[3]->{selected}, 1,"Issue select value ok"); $tests++;
 	is($json->{issue}[3]->{number}, -1, "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[4]->{name}, 'test2 (SEC-2)', "Correct issue name"); $tests++;
 	is($json->{issue}[4]->{value}, 1, "Correct issue id"); $tests++;
-	is($json->{issue}[4]->{selected}, 0,"Issue select value ok"); $tests++;
-	is($json->{issue}[4]->{number}, 0, "Correct number of findings linked"); $tests++;	
+	isnt($json->{issue}[4]->{selected}, 1,"Issue select value ok"); $tests++;
+	is($json->{issue}[4]->{number}, '?', "Correct number of findings linked"); $tests++;	
 	is($json->{issue}[5]->{name}, 'test1 (SEC-1)', "Correct issue name"); $tests++;
 	is($json->{issue}[5]->{value}, 2, "Correct issue id"); $tests++;
-	is($json->{issue}[5]->{selected}, 0,"Issue select value ok"); $tests++;
-	is($json->{issue}[5]->{number}, 0, "Correct number of findings linked"); $tests++;	
+	isnt($json->{issue}[5]->{selected}, 1,"Issue select value ok"); $tests++;
+	is($json->{issue}[5]->{number}, '?', "Correct number of findings linked"); $tests++;	
 	is($json->{host}[0]->{number}, 2, "Correct number of findings in host filter"); $tests++;
 	is($json->{hostname}[0]->{number}, 2, "Correct number of findings in hostname filter"); $tests++;
 	is($json->{port}[0]->{number}, 2, "Correct number of findings in port filter"); $tests++;
 	is($json->{plugin}[0]->{number}, 2, "Correct number of findings in plugin filter"); $tests++;
 	is($json->{severity}[0]->{number}, 2, "Correct number of findings in severity filter"); $tests++;
-	#die Dumper $json;
-
+	
 	# Test if the correct status is returned
 	$json = webcall("getStatus.pl", "workspaceId=100", "scanIds[]=1");
 	is(@$json, 7, "Correct number of items"); $tests++;

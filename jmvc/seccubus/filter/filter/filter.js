@@ -146,6 +146,7 @@ $.Controller('Seccubus.Filter.Filter',
 		}
 	},
 	'.filter change' : function(el) {
+		console.log("Change" + el.attr("filter"));
 		this.options[el.attr("filter")] = el.val();
 		this.options.onChange({
 			host		: this.options.host,

@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk, Petr
+# Copyright 2016 Frank Breedijk, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -47,14 +47,13 @@ if (not (defined ($workspace_id))) {
 eval {
 	my @data;
 	my %filter;
-	foreach my $key ( qw( Status Host Hostname Port Plugin Severity Finding Remark Severity Issue ) ) {
+	foreach my $key ( qw( Status Host HostName Port Plugin Severity Finding Remark Severity Issue ) ) {
 		if ( $query->param($key) ne undef && $query->param($key) ne "all" && $query->param($key) ne "null" &&
 			$query->param($key) ne "*" ) 
 		{
 			$filter{lc($key)} = $query->param($key); 
 		}
 	}
-
 	my %filters = get_filters($workspace_id, \@scan_ids, \@asset_ids, \%filter);
 
 	print $json->pretty->encode(\%filters);

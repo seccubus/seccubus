@@ -384,7 +384,7 @@ sub login() {
 	my $r;
 	my $json = rest_post("/session",$cred, \$r);
 
-	confess "Cannot authenticate to scanner: " unless $r->is_success;
+	confess "Cannot authenticate to scanner.\nReturn code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " " unless $r->is_success;
 
 	print "Authenticated\n" if $verbose;
 
