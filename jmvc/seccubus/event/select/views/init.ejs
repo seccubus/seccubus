@@ -1,4 +1,4 @@
-<%# Copyright 2013 Frank Breedijk                                            %>
+<%# Copyright 2016 Frank Breedijk                                            %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -11,18 +11,17 @@
 <%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
 <%# See the License for the specific language governing permissions and      %>
 <%# limitations under the License.                                           %>
-<% this.sort(function(a,b) { return a.name > b.name }); %>
 <% if ( this.length == 0 ) { %>
-	<%== $.View('//seccubus/event/select/views/no_event.ejs') %>
+	<option selected value=-1 disabled=true>No events found in database</option>
 <% } else { %>
 	<!--	<option selected value=-1 disabled=true>Select an event to start</option> -->
 	<% for(var i = 0; i < this.length ; i++) { %>
 		<option <%= this[i] %> value='<%= this[i].id %>'
-			<% if(i == selected) { %>
+			<% if(this[i].id == selected) { %>
 				selected
 			<% } %>
 		>
-			<%== $.View('//seccubus/event/select/views/event.ejs', this[i] )%>
+			<%= this[i].name %>
 		</option>
 	<% } %>
 <% } %>
