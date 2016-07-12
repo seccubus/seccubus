@@ -62,3 +62,4 @@ Bug Fixes
 * #295 - Trigger in notification edit will fall back to previous on re-edit
 * #300 - Editing an issue and updating the severity doesn't work
 * #330 - Add perl-LWP-Protocol-https as RPM dependency
+* #277 - Remove redundant documentation from source tree
