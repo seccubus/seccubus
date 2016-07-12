@@ -59,4 +59,4 @@ Bug Fixes
 * #328 - CopyRight year unit test appears to be broken on Travis
 * #333 - LWP::UserAgent is missing method delete on RH5 and RH6
 * #344 - Nessus6 scanner script using LWP::UserAgent is too brittle
-
+* #295 - Trigger in notification edit will fall back to previous on re-edit
