@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk, Alex Smirnoff
+# Copyright 2016 Frank Breedijk, Alex Smirnoff, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -244,12 +244,12 @@ do {
 foreach my $format ( @formats ) {
 	print "Exporting report in $format format\n" unless $quiet;
 
-	my $exportdata = {
-		'history_id'	=>	$hid,
-		'format'		=>	$format,
-	};
+        my $exportdata = {
+                'format'                =>      $format,
+                'chapters'                =>      "vuln_hosts_summary;vuln_by_host;compliance_exec;remediations;vuln_by_plugin;compliance",
+        };
 
-	$json = rest_post("/scans/$sid/export", encode_json($exportdata), \$r);
+	$json = rest_post("/scans/$sid/export?history_id=$hid", encode_json($exportdata), \$r);
 
 	if ( $r->code == 200 ) {
 		my $filehandle=$json->{file};
