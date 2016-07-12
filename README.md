@@ -27,8 +27,8 @@ For more information visit [www.seccubus.com]
 ![Travis build status](https://travis-ci.org/schubergphilis/Seccubus_v2.svg?branch=master)
 
 ---
-12-7-2016 - 2.26 - Speed improvements and others
-================================================
+12-7-2016 - 2.26 - Speed improvements and a whole log of bugfixes
+=================================================================
 This release is especially interesting for those of you that are working with large result sets.
 The number of findigns that is returned is now limited to 200 results by default and can be adjusted
 up or down.
