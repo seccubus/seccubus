@@ -61,3 +61,4 @@ Bug Fixes
 * #344 - Nessus6 scanner script using LWP::UserAgent is too brittle
 * #295 - Trigger in notification edit will fall back to previous on re-edit
 * #300 - Editing an issue and updating the severity doesn't work
+* #330 - Add perl-LWP-Protocol-https as RPM dependency

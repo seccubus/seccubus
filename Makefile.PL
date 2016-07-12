@@ -1,5 +1,5 @@
 #/usr/bin/perl
-# Copyright 2015 Frank Breedijk
+# Copyright 2016 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ WriteMakefile (
 				'XML::Simple'			=> 2.17,
 				'HTML::Entities'		=> 1.35,
 				'LWP::Simple'			=> 1.41,
+				'LWP::Protocol::https'	=> 0.1,
 				'MIME::Base64'			=> 3.07,
 				'JSON'					=> 2.0,
 				'File::Basename'		=> 0.1,
