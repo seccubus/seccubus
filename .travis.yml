@@ -4,11 +4,18 @@ perl:
 - '5.10'
 services:
 - mysql
+addons:
+  apt:
+    packages:
+    - java
 before_script:
 - mysql -e "create database seccubus_create"
 - mysql -e "create database seccubus_upgrade"
 - mysql -e "create database seccubus"
 - cpanm DBI DBD::mysql
+script:
+- prove
+- ./build_jmvc
 sudo: false
 notifications:
   slack:
