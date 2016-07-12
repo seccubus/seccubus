@@ -14,7 +14,9 @@ before_script:
 - mysql -e "create database seccubus"
 - cpanm DBI DBD::mysql
 script:
-- prove
+- perl Makefile.PL
+- make 
+- make test
 - ./build_jmvc
 sudo: false
 notifications:
