@@ -6,7 +6,7 @@ layout: default
         <div class="callout">
             <h2>Seccubus</h2>
             <h3 class="subheader">Seccubus automates vulnerability scanning with: 
-	    	Nessus, OpenVAS, NMap, SSLyze, Burp, Medusa, SkipFish, OWASP ZAP and SSLlabs
+	    	Nessus, OpenVAS, NMap, SSLyze, Medusa, SkipFish, OWASP ZAP and SSLlabs
 	    </h3>
             <br/>
             <a href="/documentation/" class="button small">Learn more</a>
@@ -35,17 +35,33 @@ layout: default
 	converted to the Intermediate Vulnerability Information Language (IVIL) format to make
 	sure Seccubus can work with many different scanners</p>
     </div>
-    <div class="how">
+    <div> class="what">
+    	<h3>What scanners are supported?</h3>
+    	<p>THe following scanners are supported:
+    		<ul>
+    			<li>Nessus
+    			<li>OpenVAS
+    			<li>Nmap
+    			<li>Nikto
+    			<li>Medusa
+    			<li>SSLyze
+    			<li>Qualys SSL labs
+    			<li>SkipFish
+    			<li>ZAP
+    		</ul>
+    	</p>
+    </div>
+    <div class="news">
         <h2>News</h2>
-	<ul>
+		<ul>
             {% for post in site.posts %}
-		{% if forloop.index <= 10 %} 
-	            <li>
-		        <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-		    </li>
-		{% endif %}
-            {% endfor %}
-	</ul>
-	<a href='news'>More news...</a>
+				{% if forloop.index <= 10 %} 
+		            <li>
+			    	    <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+				    </li>
+				{% endif %}
+        	{% endfor %}
+		</ul>
+		<a href='news'>More news...</a>
     </div>
 </section>
