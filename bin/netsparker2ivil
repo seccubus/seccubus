@@ -1,0 +1,232 @@
+#!/usr/bin/env perl
+# Copyright 2014, 2015, 2016 ArkanoiD, Frank Breedijk, Glenn ten Cate, Artien Bel 
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+# This program converts a Netsparker XML file to the IVIL format
+# ------------------------------------------------------------------------------
+#
+# You can blame @arkenoi for netsparker2ivil 
+#
+
+use strict;
+use IVIL;
+
+use Getopt::Long;
+use Carp;
+use XML::Simple;
+use URI;
+use Socket;
+use Data::Dumper;
+
+my (
+	$scanname,
+	$scanner,
+	$scannerversion,
+	$help,
+	$verbose,
+	$workspace,
+	$timestamp,
+	$infile,
+	$outfile,
+	@findings,
+        $number,
+   );
+
+$help = 0;
+
+# Create default values
+
+GetOptions(	'scan=s'		=> \$scanname,
+		'scanner=s'		=> \$scanner,
+		'scannerversion=s'	=> \$scannerversion,
+		'help|h!'		=> \$help,
+		'verbose|v!'		=> \$verbose,
+		'workspace=s'		=> \$workspace,
+		'timestamp=s'		=> \$timestamp,
+		'infile=s'		=> \$infile,
+		'outfile=s'		=> \$outfile,
+	  );
+
+help() if $help;
+$scanname = $workspace unless $scanname;
+
+if ( ! $infile || ! -e $infile ) {
+	print "You must specify the infile parameter";
+	help();
+} elsif ( ( $workspace && ! $scanname ) || ( ! $workspace && $scanname ) ) {
+	print "workspace and scan have to specified both or not at all";
+	help();
+};
+
+print "Reading in Netsparker report file\n" if $verbose;
+my $netsparker = XMLin($infile,
+		   forceArray	=> [ 'target' , 'vulnerability' , 'info', 'knownvulnerability'], 
+		   KeyAttr	=> undef,
+	          );
+
+# Lets clear some memory space
+#$netsparker->{vulnerability}->{rawrequest} = undef;
+#$netsparker->{vulnerability}->{rawresponse} = undef;
+#die Dumper($netsparker);
+
+unless ( $outfile ) {
+	$outfile = $infile;
+	$outfile =~ s/\.xml$//;
+	$outfile .= ".ivil.xml";
+}
+print "Opening file $outfile for output\n" if $verbose;
+open(OUT, ">$outfile") or die "Unable to open output file $outfile";
+print OUT xml_header();
+print OUT ivil_open();
+
+if ($workspace) {
+	print "Creating addressee block\n" if $verbose;
+	print OUT ivil_addressee("Seccubus", {
+						"workspace" => $workspace,
+						"scan"		=> $scanname,
+			 		     });
+}
+
+print "Creating findings\n" if $verbose;
+print OUT "<findings>\n";
+
+#lets go through all issues
+
+$number = 0;
+foreach my $issue ( @{$netsparker->{vulnerability}}) {
+
+	my $finding = {};
+	#get the IP and the Hostname from the netsparker export
+        my $uri = URI->new($issue->{url});
+	my $hostname = $uri->host;
+        
+        #convert severity
+        my $severity = $issue->{severity};
+        if ($severity eq 'Information' ) {
+		$severity = 99;
+        } elsif ($severity eq 'High') {
+		$severity = 1;
+	}  elsif ($severity eq 'Medium') {
+                $severity = 2;
+        }  elsif ($severity eq 'Low') {
+                $severity = 3;
+        } else {
+        	print Dumper($issue);
+                die "Unknown severity";
+        } 
+
+	my $port = $uri->port;
+
+	#now we fill the finding_txt 
+	my $txt ="";	
+	
+	$txt = join ("", $txt, "Type: ", $issue -> {type}, "\nURL: ", $issue ->{url});
+	if ($issue->{vulnerableparametertype}) {
+		$txt .=  "\nParameter type: " . $issue->{vulnerableparametertype};
+		$txt .= ", Value: " . $issue->{vulnerableparametervalue};
+	}
+	$txt .= "\nConfirmed: " . $issue->{confirmed} . ", Certainty: " . $issue->{certainty} . "%";
+	if ( $issue->{extrainformation}->{info} ) {
+		$txt .= "\n\nExtra Information:";
+		foreach my $extra ( @{$issue->{extrainformation}->{info}}) {
+			$txt .= "\n\n" . $extra->{name} . ":\n" . $extra->{content};
+		}
+	}
+	if ( $issue->{knownvulnerabilities} ) {
+		foreach my $vuln ( @{$issue->{knownvulnerabilities}->{knownvulnerability}}) {
+			$txt .= "\nSeverity: " . $vuln->{severity} . ", " . $vuln->{title};
+			if ($vuln->{severity} eq 'High') {
+				$severity = 1;
+			} elsif (($vuln->{severity} eq 'Medium') && ($severity > 2)) {
+				$severity = 2;
+			} elsif (($vuln->{severity} eq 'Low') && ($severity > 3)) {
+				$severity = 3;
+			}
+		}
+	}
+	foreach my $dupe ( @{$netsparker->{vulnerability}}) {
+		if ($dupe->{type} eq $issue->{type}) {
+			$txt .= "\nand a dupe";
+		}
+	}
+
+	#The IP (hostname) /or/ PluginID needs to be unique. Since Burp Suite can have multiple findings with the same ID on different URL's we instead use fill the IP (host) field
+	#with the hostname + the location. This does look ugly with long URL's in the findings tab though.
+
+	$finding->{hostname} = $hostname;
+	$finding->{ip} = inet_ntoa(inet_aton($hostname));;
+	#add the finding ID
+	$finding->{id} = $issue->{type};
+	#add severity to finding
+	$finding->{severity} = $severity;
+	#add port to finding
+	$finding->{port} = $port;
+	#add finding_txt to finding
+	$finding->{finding} = $txt;
+        
+	#debug: dump the $finding
+        print "\n";
+	print Dumper($finding);
+	
+	#write to ivil
+	print OUT ivil_finding($finding);
+} 
+
+print OUT "</findings>\n";
+
+#print "Creating sender block\n" if $verbose;
+#print OUT ivil_sender($scanner, $scannerversion, $timestamp);
+
+
+print OUT ivil_close();
+
+close OUT;
+
+exit();
+
+sub help() {
+	print "
+
+Usage: netsparker2ivil --scanner <scanner> [--scannerversion <versionstring>] \\
+                   --timestamp <timestamp> [--workspace <workspacename>] \\
+		   [--scan <scanname>] --infile <filename input> \\
+		   [--outfile <filename output>] [--verbose] [--help]
+
+Arguments:
+--scanner	- The name of the scanner used to create the report file
+			Logical option is Netsparker
+--scannerversion- Optional: the version of the scanner used to create the 
+		  Netsparker file
+--timestamp	- Timestamp of when the file was created in the format 
+		  YYYYMMDDhhmmss or YYYYMMDDhhmm so 11 december 2011 1:14:00 pm
+		  is 20111211131400 or 201112111314
+--workspace	- Optional: Which Seccubus workspace do you want to load this 
+		  in, this informaiton is used to create the addressee block. 
+		  If not value is given for workspace no addressee block is 
+		  generated
+--scan		- Optional: Which Seccubus scan do you want to load this in, 
+		  this informaiton is used to create the addressee block. If 
+		  scan is not specified then the value for workspace is used.
+--infile	- This defines the XML file that will be converted to IVIL
+--outfile	- Optional: This defines the name of the file used to output 
+		  IVIL. If no filename is given, the infile value is used, 
+		  a trailing .xml is removed (if it exists) and .ivil.xml is 
+		  appended
+--verbose (-v)	- Be verbose
+--help (-h)	- Print this message
+";
+	exit();
+}
+
+
