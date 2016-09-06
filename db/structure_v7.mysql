@@ -23,6 +23,8 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
+-- -----------------------------------------------------
+-- Table `Seccubus`.`workspaces`
 ALTER SCHEMA  DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci ;
 
 -- -----------------------------------------------------
@@ -36,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `workspaces` (
   UNIQUE INDEX `id` (`id` ASC)
 )
 AUTO_INCREMENT = 100;
+
 
 
 -- -----------------------------------------------------
@@ -159,7 +162,6 @@ CREATE TABLE IF NOT EXISTS `groups` (
   UNIQUE INDEX `id` (`id` ASC)
 )
 AUTO_INCREMENT = 100;
-
 
 -- -----------------------------------------------------
 -- Table `host_names`
@@ -361,11 +363,11 @@ CREATE TABLE IF NOT EXISTS `asset_hosts` (
   `asset_id` INT(11) NOT NULL,
   `ip` VARCHAR(16) NOT NULL,
   `host` VARCHAR(255) NULL,
+  `auto_gen` INT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_asset_hosts_assets1_idx` (`asset_id` ASC),
   INDEX `fk_asset_hosts_ip1_idx` (`ip`),
   INDEX `fk_asset_hosts_host1_idx` (`host`)
-
 );
 
 

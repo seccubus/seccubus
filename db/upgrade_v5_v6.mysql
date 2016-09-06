@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS `asset_hosts` (
   `asset_id` int(11) NOT NULL,
   `ip` varchar(16) NOT NULL,
   `host` varchar(255) DEFAULT NULL,
+  `auto_gen` INT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `fk_asset_hosts_assets1_idx` (`asset_id`),
   KEY `fk_asset_hosts_ip1_idx` (`ip`),

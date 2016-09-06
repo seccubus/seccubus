@@ -27,5 +27,6 @@ steal("funcunit/qunit",
 	'./event_test.js', 
 	'./notification_test.js',
 	'./asset_test.js',
+	'./schedule_test.js',
 	'./issue_test.js'
 );

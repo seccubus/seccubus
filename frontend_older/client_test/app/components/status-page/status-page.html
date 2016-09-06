@@ -1,0 +1,21 @@
+<material-card>
+    <material-title>Online Version Check</material-title>
+    <ul class="version-check">
+        <li>
+            <div></div>
+            <h2>{{versionTest.status}}</h2>
+            <p>{{versionTest.message}}</p>
+        </li>
+    </ul>
+</material-card>
+
+<material-card>
+    <material-title>Configuration Status</material-title>
+    <ul class="configtests">
+        <li ng-repeat="item in configTests" class="config-test result-{{item.result | lowercase}}">
+            <div></div>
+            <h2>{{item.name}}</h2>
+            <p>{{item.message}}</p>
+        </li>
+    </ul>
+</material-card>

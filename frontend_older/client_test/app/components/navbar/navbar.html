@@ -1,0 +1,10 @@
+<material-title class="page-title">Seccubus<h2>Automated vulnerability scanning and reporting</h2></material-title>
+<material-appbar>
+    <material-sidenav-button current-page="{{navbar.currentRoute.component}}">
+        <material-item ng-repeat="route in navbar.routes | filter:pageName" page="{{route.component}}" router-link="{{route.component}}">
+            {{route.pageName}}
+        </material-item>
+    </material-sidenav-button>
+
+    <material-title>{{navbar.currentRoute.pageName}}</material-title>
+</material-appbar>

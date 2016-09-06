@@ -1,0 +1,47 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+@import '../button/button';
+@import '../menu/menu';
+
+@material-sidenav-width: 260px;
+
+material-sidenav-button,
+.material-sidenav-button {
+	display: block;
+	position: relative;
+	width: @material-block-large-size;
+	height: @material-block-large-size;
+	margin: 0;
+
+    > material-button,
+    > .material-button {
+        margin: 12px;
+    }
+
+	material-menu,
+	.material-menu {
+		border-top-width: 0px;
+		left: 0;
+		min-width: @material-sidenav-width;
+
+        .ease-out(@property: transform);
+		transform: translateX(-@material-sidenav-width);
+
+        &.material-opened {
+			transform: translateX(0);
+        }
+
+		material-item,
+		.material-item {
+			padding: 18px 32px;
+			font-weight: 500;
+			color: #222;
+			font-size: 16px;
+
+			&:hover {
+				color: #444;
+			}
+		}
+	}
+}

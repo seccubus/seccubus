@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Frank Breedijk, Petr
+ * Copyright 2015 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ steal("funcunit",
 	// 'seccubus/notification/create/create_test.js', 
 	'seccubus/notification/table/table_test.js',
 	'seccubus/asset/create/create_test.js',
-	'seccubus/asset/table/table_test.js'
+	'seccubus/asset/table/table_test.js',
+	'seccubus/schedule/create/create_test.js'
+	// 'seccubus/asset/table/table_test.js'
 	)
  .then("./seccubus_test.js");

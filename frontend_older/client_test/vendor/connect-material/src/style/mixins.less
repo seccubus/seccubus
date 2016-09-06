@@ -1,0 +1,51 @@
+.text() {
+    -webkit-font-smoothing: antialiased;
+}
+
+.unselectable() {
+    -webkit-user-select: none;
+}
+
+.ease-out(@duration: 450ms, @property: all, @delay: 0ms) {
+    transition: @property @duration @material-ease-out-timing-function @delay;
+}
+
+.text-field (@transition: false, @borderWidth: 1px) {
+    input, textarea {
+        border-bottom-width: @borderWidth;
+
+        & when not (@transition = false) {
+            transition: @transition
+        }
+    }
+}
+
+.text-hint (@size: large, @transition: false) {
+    label when (@size = small) {
+        transform: translateY(4px) scale(0.85);
+    }
+
+    label when not (@size = small) {
+        transform: translateY(22px);
+        transform-origin: left center;
+    }
+
+    label when not (@transition = false) {
+        transition: @transition;
+    }
+}
+
+.text-dashed-line(@dotGap, @dotSize) {
+    background-size: @dotSize @dotGap;
+    background-position: 0 bottom;
+    background-repeat: repeat-x;
+}
+
+.input-placeholder(@color) {
+    &:-ms-input-placeholder {
+        color: @color;
+    }
+    &::-webkit-input-placeholder {
+        color: @color;
+    }
+}

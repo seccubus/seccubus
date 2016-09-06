@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Petr, Frank Breedijk
+ * Copyright 2015 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,5 +82,6 @@ steal("funcunit/qunit", "seccubus/fixtures", "seccubus/models/asset.js", functio
 	            	ok( true ,"Destroy called" )
 					start();
 	            })
-	})
+	});
+	
 })

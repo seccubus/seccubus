@@ -1,0 +1,54 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+material-toolbar,
+.material-toolbar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+	height: @material-block-large-size;
+	background-color: @material-primary-color;
+
+	> material-title,
+	> .material-title {
+		color: #fff;
+		flex: 1;
+	}
+
+	> * {
+		margin-left: @material-content-spacing / 2;
+	}
+
+	>:last-child {
+        margin-right: @material-content-spacing / 2;
+    }
+}
+
+.material-toolbar-blank {
+	background-color: #fff;
+	border-bottom: 1px solid @material-gray-lighter;
+
+	material-title,
+	.material-title {
+		color: lighten(#000, 10%);
+	}
+}
+
+material-appbar,
+.material-appbar {
+	.material-toolbar;
+
+	background-color: @material-primary-color-dark;
+	box-shadow: @material-shadow-toolbar;
+
+	material-title,
+	.material-title {
+		margin: @material-content-spacing 0;
+	}
+
+	material-button,
+	.material-button {
+		color: #fff;
+	}
+}

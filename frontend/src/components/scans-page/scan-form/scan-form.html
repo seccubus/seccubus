@@ -1,0 +1,69 @@
+<form name="scan">
+  <div class="submit-error" ng-if="scanForm.submitError">{{scanForm.submitError}}</div>
+
+  <md-input-container>
+    <md-select placeholder="Scanner"
+               ng-model="scanForm.scan.scanner"
+               ng-change="scanForm.onScannerChange()"
+               required>
+      <md-option ng-repeat="scanner in scanForm.scannerStore.items track by scanner.name"
+                 value="{{scanner.name}}">
+        {{scanner.name}}
+      </md-option>
+    </md-select>
+  </md-input-container>
+
+  <md-input-container>
+    <label>Name</label>
+    <input name="name" ng-model="scanForm.scan.name" required>
+
+    <div ng-messages="scan.name.$error" ng-if="scan.name.$dirty">
+      <div ng-message="required">A name is required</div>
+    </div>
+  </md-input-container>
+
+  <md-input-container>
+    <label>Parameters</label>
+    <input name="parameters" ng-model="scanForm.scan.parameters" required>
+
+    <div ng-messages="scan.parameters.$error" ng-if="scan.parameters.$dirty">
+      <div ng-message="required">Parameters is required</div>
+    </div>
+  </md-input-container>
+
+  <md-input-container>
+    <label>Password</label>
+    <input type="password" name="password" ng-model="scanForm.scan.password">
+
+    <div ng-messages="scan.password.$error" ng-if="scan.password.$dirty">
+      <div ng-message="required">A password is required</div>
+    </div>
+  </md-input-container>
+
+  <md-input-container>
+    <label>Target Hosts</label>
+    <textarea name="targets" ng-model="scanForm.scan.targets"></textarea>
+
+    <div ng-messages="scan.targets.$error" ng-if="scan.targets.$dirty">
+      <div ng-message="required">At least one target host is required</div>
+    </div>
+  </md-input-container>
+
+  <div layout="row" layout-align="end center">
+    <md-button ng-click="scanForm.cancel()">
+      Cancel
+    </md-button>
+
+    <md-button ng-disabled="scan.$invalid"
+               ng-click="scanForm.submit()"
+               class="md-primary">
+      Save
+    </md-button>
+  </div>
+
+  <div class="scanner-info"
+       ng-if="scanForm.scannerHelp"
+       ng-bind-html="scanForm.scannerHelp"
+       layout-padding>
+  </div>
+</form>

@@ -361,6 +361,7 @@ CREATE TABLE IF NOT EXISTS `asset_hosts` (
   `asset_id` INT(11) NOT NULL,
   `ip` VARCHAR(16) NOT NULL,
   `host` VARCHAR(255) NULL,
+  `auto_gen` INT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_asset_hosts_assets1_idx` (`asset_id` ASC),
   INDEX `fk_asset_hosts_ip1_idx` (`ip`),

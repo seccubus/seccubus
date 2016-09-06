@@ -1,0 +1,112 @@
+<%# Copyright 2015 Frank Breedijk, Petr                                      %>
+<%#                                                                          %>
+<%# Licensed under the Apache License, Version 2.0 (the "License");          %>
+<%# you may not use this file except in compliance with the License.         %>
+<%# You may obtain a copy of the License at                                  %>
+<%#                                                                          %>
+<%# http://www.apache.org/licenses/LICENSE-2.0                               %>
+<%#                                                                          %>
+<%# Unless required by applicable law or agreed to in writing, software      %>
+<%# distributed under the License is distributed on an "AS IS" BASIS,        %>
+<%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
+<%# See the License for the specific language governing permissions and      %>
+<%# limitations under the License.                                           %>
+<h2>Add news Schedule</h2>
+<table class='noborder'>
+	<tr><td class='noborder' valign='top'>
+		<label for='subject'>Enable schedule:</label> 
+	</td><td class='noborder' valign='top'>
+		<input type=checkbox name='enabled' value=1 checked>
+	</td></tr>
+ 	<tr><td class='noborder' valign='top'>
+		<label for='subject'>Launch:</label> 
+	</td><td class='noborder' valign='top'>
+		<select name='launch'>
+			<!-- <option value='*' selected>Every month</option> -->
+			<% var types = { 'd' : 'On demand', 'o' : 'Once', 'w' : 'Weekly', 'b' : 'Bi-weekly', 'm' : 'Monthly' }; %>
+			<% for( var key in types){ %>
+				<option value='<%= key %>'><%= types[key] %></option>
+			<% } %>
+		</select>
+	</td></tr>
+	<tr><td class='noborder' valign='top'>
+		<label for='trigger'>Starts on: </label> 
+	</td><td class='noborder' valign='top'>
+		<% var monthes = { 'January' : 31 ,'Febrary' : 29, 'Marth' : 31, 'April' : 30, 'May' : 31, 'June' : 30, 'July' : 31, 'August' : 31, 'September' : 30,'October' : 31, 'November' : 30, 'December' : 31 }; 
+			var curMonth = new Date().getMonth()+1; 
+			var mNum=1;  
+			var maxDays = 31;
+			%>
+			
+		<select name='month'>
+			<!-- <option value='*' selected>Every day</option> -->
+			<% for(var key in monthes){ 
+				var sel = '';
+				if( curMonth == mNum){ sel = 'selected'; maxDays = monthes[key]; }
+				%>
+				<option value='<%= mNum %>' <%= sel %> ><%= key %></option>
+			<% mNum++; } %>
+		</select>
+		
+		<select name='day'>
+			<% var curDay = new Date().getDate(); %>
+			<!-- <option value='*' selected>Every day</option> -->
+			<% for( var i=1; i<=maxDays; i++ ){ %>
+				<% var cNum = i; if(cNum < 10){ cNum = '0'+cNum; } %>
+				<option value='<%= i %>' <%= curDay == i ? 'selected' : '' %> ><%= cNum %></option>
+			<% } %>
+		</select>
+		&nbsp; &nbsp;
+		<select name='hour'>
+			<% var curHour = new Date().getHours(); 
+			   var curMin = parseInt((new Date().getMinutes()+5)/5)*5;
+			   if(curMin > 55){ 
+			   		curMin = 0; 
+			   		curHour++; 
+			   		if(curHour > 23){ curHour = 0; }
+			   }
+			%>
+			<!-- <option value='*'  selected>Every hour</option> -->
+			<% for( var i=0; i<=23; i++ ){ %>
+				<% var cNum = i; if(cNum < 10){ cNum = '0'+cNum; } %>
+				<option value='<%= i %>' <%= curHour == i ? 'selected' : '' %> ><%= cNum %></option>
+			<% } %>
+		</select>
+		:
+		<select name='min'>
+			<!-- <option value='*' selected>*</option> -->
+			<% for( var i=0; i<=59; i+=5 ){ %>
+				<% var cNum = i; if(cNum < 10){ cNum = '0'+cNum; } %>
+				<option value='<%= i %>' <%= curMin == i ? 'selected' : '' %> ><%= cNum %></option>
+			<% } %>
+		</select>
+
+	</td></tr>
+	<tr><td class='noborder' valign='top'>
+		<label for='trigger'>Repeat every: </label> 
+	</td><td class='noborder'>
+		<% var repeatTypes = {'w' : 'week', '2w' : '2nd week', '3w' : '3rd week', '4w' : '4th week'}; %>
+		<select name='week' disabled>
+
+			<!-- <option value='*' selected>Every week</option> -->
+			<% for( var key in repeatTypes ){ %>
+				<option value='<%= key %>'><%= repeatTypes[key] %></option>
+			<% } %>
+		</select>
+	</td></tr>
+	<tr><td class='noborder' valign='top'>
+		<label for='trigger'>Repeat on: </label> 
+	</td><td class='noborder' valign='top'>
+		<select name='wday' multiple size=7>
+			<% var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thirsday', 'Friday', 'Saturday', 'Sunday']; %>
+			<!-- <option value='*' selected>Every week day</option> -->
+			<% for(var i=0; i<=6; i++){ %>
+				<option value='<%= i %>'><%= weekdays[i] %></option>
+			<% } %>
+		</select>
+	</td></tr>
+	<tr><td class='noborder' colspan=12 align='right' valign='bottom'>
+		<input type='submit' value='Create Schedule'/>
+		<button type='button' class='cancel'>Cancel</button>
+	</td></tr>
+</table>

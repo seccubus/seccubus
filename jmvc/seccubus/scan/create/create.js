@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Frank Breedijk, Artien Bel
+ * Copyright 2015 Frank Breedijk, Artien Bel, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,8 @@ steal(	'jquery/controller',
 	'jquery/dom/form_params',
 	'jquery/controller/view',
 	'seccubus/models',
-	'seccubus/scanner/select'
+	'seccubus/scanner/select',
+	'seccubus/schedule/table'
 ).then(	'./views/init.ejs',
 	function($){
 
@@ -58,7 +59,31 @@ $.Controller('Seccubus.Scan.Create',
 		 *
 		 * Special value: -1 - No scan selected
 		 */
-		workspace : -1
+		workspace : -1,
+
+		/* attribute options.onScheduleCreate
+		 * Function that is called when the edit link is click in the 
+		 * Schedule screen
+		 */
+
+		onScheduleCreate : function(ws,sc) {
+			alert("Seccubus.Scan.Create: no create function specified for schedule " + ws + "," + sc);
+		},
+
+		getSaveSchedules : function(){
+			alert("Seccubus.Scan.Create: no getSaveSchedules given ");
+			return [];
+		},
+
+		clearSaveSchedules : function(){
+			alert("Seccubus.Scan.Create: no clearSaveSchedules given ");
+		},
+		delSavedSchedule : function(sch){
+			alert("Seccubus.Scan.Create: no delSavedSchedule given ")
+		}
+
+
+
 	}
 },
 /** @Prototype */
@@ -70,6 +95,21 @@ $.Controller('Seccubus.Scan.Create',
 			paramsHere : '#newScanParam'
 		});
 		$('#newScanOtherScannerRow').hide();
+		this.updateView();
+
+	},
+	updateView: function(){
+		var to = this;
+		$('#editCreateScanSchedule').seccubus_schedule_table({
+			// scan	: to.options.scan.id,
+			// onEdit	: to.options.onScheduleEdit,
+			getSaveSchedules : to.options.getSaveSchedules,
+			delSavedSchedule : to.options.delSavedSchedule,
+			onCreate : to.options.onScheduleCreate,
+			scan : -2
+
+		});
+		
 	},
 	submit : function(el, ev){
 		ev.preventDefault();
@@ -130,7 +170,14 @@ $.Controller('Seccubus.Scan.Create',
 	".cancel click" : function() {
 		this.clearAll();
 	},
-	saved : function(){
+	saved : function(data){
+		var scanId = data[0].id;
+		var schedules = this.options.getSaveSchedules();
+		schedules.map(function(scd){
+			scd.scanId = scanId;
+			scd.save();
+		});
+		this.options.clearSaveSchedules();
 		this.clearAll();
 	},
 	clearAll : function() {
@@ -147,8 +194,17 @@ $.Controller('Seccubus.Scan.Create',
 		}
 		//if scanner is Nessus, nessuslegacy or openvas, show password field
 	},
+	".createSchedule click" : function(el, ev) {
+		ev.preventDefault();
+		this.options.onScheduleCreate(this.options.workspace, null);
+	},
+
 	".nok change" : function(el) {
 		el.removeClass("nok");
+	},
+	update : function(options) {
+		this._super(options);
+		this.updateView();
 	}
 })
 

@@ -23,6 +23,7 @@ steal(
 	'./scan.js', 
 	'./finding.js', 
 	'./filter.js',
+	'./schedule.js',
 	'./status.js', 
 	'./gui_state.js', 
 	'./scanner.js', 

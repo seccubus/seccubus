@@ -287,11 +287,54 @@ steal("jquery/dom/fixture", function(){
 	$.fixture("json/getAssets.pl",function(orig,settings,headers){
 		return [assets];
 	});
+
+	// Schedules
+
+	var schedules = [];
+	for(var i=1; i<9; i++){
+		schedules.push({
+			id: i,
+			enabled : 1,
+			launch : 'd'
+			month : i,
+			week : 'w',
+			wday : i>6 ? 8 - i : i,
+			day : i+10,
+			hour : i+5,
+			min : i+30 
+		});
+	}
+
+	$.fixture("json/getSchedules.pl", function(orig, settings, headers){
+		return [schedules];
+	});
+
+	$.fixture("json/updateSchedule.pl", function(orig, settings, headers){
+		return [settings.data];
+	});
+
+	$.fixture("json/createSchedule.pl", function(orig, settings, headers){
+		var data = orig.data;
+		data['id'] = 1;
+		schedules.push(data);
+		return data;
+	});
+
+	$.fixture("json/deleteSchedule.pl", function(orig, setting, headers){
+		var id = orig.data.id;
+		var foundNum;
+		for(var i=0;i<schedules.length;i++){
+			if(schedules[i].id == id) foundNum = i;
+		}
+
+		if(foundNum) schedules.splice(foundNum,1)
+		return [{'id':id}];
+	});
 	$.fixture.make("issue", 5, function(i, issue){
 		var descriptions = ["grill fish", "make ice", "cut onions"]
 		return {
 			name: "issue "+i,
 			description: $.fixture.rand( descriptions , 1)[0]
 		}
-	})
+	});
 });

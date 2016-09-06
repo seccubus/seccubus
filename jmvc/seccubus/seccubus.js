@@ -43,6 +43,9 @@ steal(
 	'seccubus/notification/table',
 	'seccubus/notification/create',
 	'seccubus/notification/edit',
+	'seccubus/schedule/table',
+	'seccubus/schedule/edit',
+	'seccubus/schedule/create',
 	'seccubus/status/status',
 	'seccubus/asset/table',
 	'seccubus/asset/edit',
@@ -58,7 +61,8 @@ steal(
 		 **********************************************************/
 
 		var gui_state=new Seccubus.GuiState({
-			workspace	: -1
+			workspace	: -1,
+			unsavedSchedules : []
 		});
 		gui_state.bind("workspace", function(ev, ws){
 			console.log("workspace changed");
@@ -368,7 +372,43 @@ steal(
 									query : '#createNotificationDialog',
 									close : true
 								});
+							},
+							onScheduleEdit : function(not){
+								$("#widgetsModalMask").click();
+								$('#editSchedule').seccubus_schedule_edit({
+									schedule : not,
+									onClear : function(){
+										$("#widgetsModalMask").click();
+										$('#modalDialog').widgets_modal({
+											query : "#editScanDialog",
+											close : true
+										});
+									}
+								});
+								$('#modalDialog').widgets_modal( {
+									query : '#editScheduleDialog',
+									close : true
+								});
+							},
+							onScheduleCreate : function(ws,sc){
+								$("#widgetsModalMask").click();
+								$('#createSchedule').seccubus_schedule_create({
+									workspace : ws,
+									scan	: sc,
+									onClear : function() {
+										$("#widgetsModalMask").click();
+										$('#modalDialog').widgets_modal({
+											query : "#editScanDialog",
+											close : true
+										});
+									}
+								});
+								$('#modalDialog').widgets_modal( {
+									query : '#createScheduleDialog',
+									close : true
+								});
 							}
+
 						});
 						$('#modalDialog').widgets_modal({
 							query : "#editScanDialog",
@@ -630,6 +670,43 @@ steal(
 				workspace	: gui_state.workspace,
 				onClear		: function() {
 					$("#widgetsModalMask").click();
+				},
+				getSaveSchedules: function(){
+					return gui_state.unsavedSchedules;
+				},
+				clearSaveSchedules: function(){
+					gui_state.unsavedSchedules = [];
+				},
+				delSavedSchedule : function(schedule){
+					var ind = gui_state.unsavedSchedules.indexOf(schedule);
+					if (ind > -1) {
+					    gui_state.unsavedSchedules.splice(ind, 1);
+					    schedule.updated();
+					    schedule = undefined;
+					}
+				},
+				onScheduleCreate : function(ws,sc){
+					$("#widgetsModalMask").click();
+					$('#createSchedule').seccubus_schedule_create({
+						workspace : ws,
+						// scan	: -2,
+						onClear : function() {
+							$("#widgetsModalMask").click();
+							$('#modalDialog').widgets_modal({
+								query : "#createScanDialog",
+								close : true
+							});
+						},
+						onSave : function(shPar){
+							gui_state.unsavedSchedules.push(shPar);
+							shPar.created();
+							//this.addSchedule(shPar);
+						}
+					});
+					$('#modalDialog').widgets_modal( {
+						query : '#createScheduleDialog',
+						close : true
+					});
 				}
 			});
 		};
