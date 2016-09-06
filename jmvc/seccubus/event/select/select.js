@@ -20,7 +20,6 @@ steal(
 	'seccubus/models'
      )
 .then( './views/init.ejs', 
-       './views/event.ejs', 
        function($){
 
 /**

@@ -1,4 +1,4 @@
-<%# Copyright 2015 Frank Breedijk                                            %>
+<%# Copyright 2016 Frank Breedijk                                            %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -29,6 +29,9 @@
 		}) %>
 	<% } %>
 	<tbody>
+		<% if ( this.length >= fLimit ) { %>
+			<tr><td colspan=<%= columns.length/2 %>>Only showing the first <%= this.length %> findings</td></tr>
+		<% } %>
 		<% this.sort(fn) %>
 		<%for ( var i = 0; i < this.length ; i++ ){%>
 			<tr <%= this[i] %> class='sev_<%= this[i].severity %>'>

@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk, Alex Smirnoff
+# Copyright 2016 Frank Breedijk, Alex Smirnoff, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -54,8 +54,10 @@ my (
 	$sleep,
 	$cmd,
 	$nosslcheck,
+	$sslcheck,
 	$token,
 	$r,
+	$retries,
    );
 
 my @formats = qw(nessus pdf html);
@@ -70,21 +72,24 @@ $quiet = 0;
 $sleep = 10;
 $verbose = 0;
 $nosslcheck = 0;
+$retries = 3;
 
 GetOptions(	
 		'user|u=s'		=> \$user,
-		'password|p=s'		=> \$password,
+		'password|p=s'	=> \$password,
 		'pw=s'			=> \$password2,
-		'server|s=s'		=> \$server,
-		'policy|pol=s'		=> \$policy,
+		'server|s=s'	=> \$server,
+		'policy|pol=s'	=> \$policy,
 		'port=s'		=> \$port,
 		'hosts|h=s'		=> \$hosts_file,
-		'workspace|ws=s'	=> \$workspace,
+		'workspace|ws=s'=> \$workspace,
 		'scan|sc=s'		=> \$scan,
 		'sleep=s'		=> \$sleep,
 		'nodelete'		=> \$nodelete,
-		'nosslcheck!'		=> \$nosslcheck,
-		'verbose|v+'		=> \$verbose,
+		'nosslcheck!'	=> \$nosslcheck,
+		'sslcheck!'	    => \$sslcheck,
+		'retries'		=> \$retries,
+		'verbose|v+'	=> \$verbose,
 		'quiet|q!'		=> \$quiet,
 		'help'			=> \$help,
 	  );
@@ -92,11 +97,23 @@ GetOptions(
 help() if $help;
 $verbose = 0 if $quiet;
 
-# Disable SSL checking if needed
-$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0 unless $nosslcheck;
-
 $port = 8834 unless $port;		 # Default port is 8834
 $password = $password2 unless $password; # Equalize the use of --pw
+
+my $checkssl = 1;
+if ( $sslcheck ) {
+	$checkssl = 1;
+} elsif ( $nosslcheck ) {
+	$checkssl = 0;
+} elsif ( $port == 443 ) {
+	$checkssl = 1;
+} elsif ( $port == 8834 ) {
+	$checkssl = 0;
+}
+
+# Disable SSL checking if needed
+$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = $checkssl;
+
 
 my $config = get_config();
 
@@ -241,12 +258,12 @@ do {
 foreach my $format ( @formats ) {
 	print "Exporting report in $format format\n" unless $quiet;
 
-	my $exportdata = {
-		'history_id'	=>	$hid,
-		'format'		=>	$format,
-	};
+        my $exportdata = {
+                'format'                =>      $format,
+                'chapters'                =>      "vuln_hosts_summary;vuln_by_host;compliance_exec;remediations;vuln_by_plugin;compliance",
+        };
 
-	$json = rest_post("/scans/$sid/export", encode_json($exportdata), \$r);
+	$json = rest_post("/scans/$sid/export?history_id=$hid", encode_json($exportdata), \$r);
 
 	if ( $r->code == 200 ) {
 		my $filehandle=$json->{file};
@@ -332,20 +349,26 @@ sub help() {
 	print "
 Usage: scan       --user=<username> --password=<password> --server=<server> \\
                   --port=<portnumber> --policy=<policy name> \\
-		  --hosts=<hosts file|hosts spec> \\
-		  --workspace=<seccubus workspace> --scan=<seccubus scan>\\
+                  --hosts=<hosts file|hosts spec> \\
+                  --workspace=<seccubus workspace> --scan=<seccubus scan>\\
                   [--nodelete] [--verbose] [--quiet] [--help]
---user (-u)	  - Nessus username
---password (-p)	  - Nessus password
---server (-s)	  - Nessus server (ip or name)
---port		  - Nessus server portnumber (default=8834)
---policy	  - Name of Nessus policy
---hosts		  - Specification of hosts to scan. Follows the Nessus rules 
-		    for specifying hosts, or path to a file containing such 
-		    specification
+--user (-u)       - Nessus username
+--password (-p)   - Nessus password
+--server (-s)     - Nessus server (ip or name)
+--port            - Nessus server portnumber (default=8834)
+--policy          - Name of Nessus policy
+--hosts           - Specification of hosts to scan. Follows the Nessus rules 
+                    for specifying hosts, or path to a file containing such 
+                    specification
 --workspace (-ws) - Seccubus workspace the scan in in
---scan (-sc)	  - Seccubus scan the data should be saved in
+--scan (-sc)      - Seccubus scan the data should be saved in
 --nodelete        - Don't erase temporary files
+--nosslcheck      - Don't validate Nessus' TLS certificate Common Name
+                    (default: true when port is 8834 false when port is 443)
+--sslcheck        - Do validate Nessus' TLS certificate Common Name
+                    (default: false when port is 8834 true when port is 443)
+--retries         - How many times should rest calls be retried before aborting
+                    the scan (default=3)
 --sleep           - Seconds to sleep between polls of the Nessus engine 
                     (default=10)
 --verbose (-v)    - Be verbose during execution
@@ -377,7 +400,7 @@ sub login() {
 	my $r;
 	my $json = rest_post("/session",$cred, \$r);
 
-	confess "Cannot authenticate to scanner: " unless $r->is_success;
+	confess "Cannot authenticate to scanner.\nReturn code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " " unless $r->is_success;
 
 	print "Authenticated\n" if $verbose;
 
@@ -390,7 +413,7 @@ sub rest_get($;$$$$) {
 	my $response = shift;
 	my $nojson = shift;
 
-	rest_call("get",$uri,$params,$response,$nojson);
+	rest_call("get",$uri,$params,$response,$nojson,$retries);
 }
 
 sub rest_post($;$$$$) {
@@ -399,7 +422,7 @@ sub rest_post($;$$$$) {
 	my $response = shift;
 	my $nojson = shift;
 
-	rest_call("post",$uri, $params,$response,$nojson);
+	rest_call("post",$uri, $params,$response,$nojson,$retries);
 }
 
 sub rest_delete($;$$$$) {
@@ -408,7 +431,7 @@ sub rest_delete($;$$$$) {
 	my $response = shift;
 	my $nojson = shift;
 
-	rest_call("delete",$uri, $params,$response,$nojson);
+	rest_call("delete",$uri, $params,$response,$nojson,$retries);
 }
 
 sub rest_call($$$;$$$){
@@ -417,7 +440,7 @@ sub rest_call($$$;$$$){
 	my $param = shift;
 	my $response = shift;
 	my $nojson = shift;
-	my $last = shift;
+	my $retries = shift;
 
 	my $ua = LWP::UserAgent->new();
 	$ua->agent("Seccubus $SeccubusV2::VERSION ");
@@ -460,15 +483,29 @@ sub rest_call($$$;$$$){
 			$r = $ua->delete("https://$server:$port$uri", $param);
 		} else {
 			print "Delete not supported on this platform\n" unless $quiet;
+			return({});
 		}
 	}
 	print "Server response : " . $r->decoded_content() . "\n" if $verbose > 2;
 
-	if ( $token && ( $r->code() == 401 || $r->code() == 503 ) && ! $last) {
+	if ( $token && ( $r->code() == 401 || $r->code() == 503 ) && $retries > 0) {
 		print "Authentication failed, attempting to re-login\n" if $verbose;
 		# Login and retry if failed
 		login();
-		return(rest_call($method,$uri,$param,$response,undef,1)); 
+		return(rest_call($method,$uri,$param,$response,$nojson,$retries-1)); 
+	}
+	unless ( $r->is_success ) {
+		unless ( $quiet ) {
+			print "Nessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content();
+			print "\n$retries retries left\n";
+		}
+		if ( $retries > 0 ) {
+			print "Sleeping for 30 seconds before retring\n" unless $quiet;
+			sleep 30;
+			return(rest_call($method,$uri,$param,$response,$nojson,$retries-1))
+		} else {
+			die "No more retries!\nNessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " ";
+		}
 	}
 
 	$$response = $r if $response; # Return response object
@@ -483,7 +520,9 @@ sub rest_call($$$;$$$){
 				$json = {};
 			}
 		} or do {
-			die "Unable to decode JSON from: " . $r->decoded_content();
+			$json = {
+				error => "Unable to decode JSON from: " . $r->decoded_content()
+			}
 		};
 		if ( $json->{error} ) {
 			print "Server returned error: $json->{error}\n";

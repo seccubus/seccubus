@@ -1,4 +1,4 @@
-<%# Copyright 2015 Frank Breedijk                                            %>
+<%# Copyright 2016 Frank Breedijk                                            %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -34,7 +34,7 @@
 	</select>
 	
 	Hostname:
-	<select filter='hostname' class='filter hostnameFilter'>
+	<select filter='hostName' class='filter hostnameFilter'>
 		<% for(var i=0;i<this.hostname.length;i++) { %>
 			<option 
 				<% if (this.hostname[i].number == -1 ) { %>
@@ -125,6 +125,16 @@
 	Finding: <input type='text' filter='finding' class='filter findingFilter' value='<%= this.finding %>'>
 
 	Remark: <input type='text' filter='remark' class='filter remarkFilter' value='<%= this.remark %>'>
+
+	Max #findings:
+	<select filter='limit' class='filter limitFilter'>
+		<option <%= fLimit == 0 ? "selected" : "d" %> value=0>No limit</option>
+		<option <%= fLimit == 50 ? "selected" : "d" %> value=50>50</option>
+		<option <%= fLimit == 100 ? "selected" : "d" %> value=100>100</option>
+		<option <%= fLimit == 200 ? "selected" : "d" %> value=200>200</option>
+		<option <%= fLimit == 500 ? "selected" : "d" %> value=500>500</option>
+		<option <%= fLimit == 1000 ? "selected" : "d" %> value=1000>1000</option>
+	</select>
 
 	<a href='javascript://' class='clearFilter'>Clear</a>
 <% } %>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Frank Breedijk
+ * Copyright 2016 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -138,6 +138,7 @@ $.Controller('Seccubus.Issue.Edit',
 			issue.attr("status",newState)
 			issue.attr("workspaceId",this.options.workspace);
 			issue.attr("issueId",issue.id);
+			issue.attr("severity",param.severity);
 			issue.save();
 			this.options.onClear();
 		} else {
