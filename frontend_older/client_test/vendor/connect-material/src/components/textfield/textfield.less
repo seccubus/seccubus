@@ -1,0 +1,114 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+@material-field-font-size: 14px;
+@material-field-line-height: 26px;
+@material-field-transition: all 0.15s cubic-bezier(0.35, 0, 0.25, 1);
+@material-field-focus-color: @material-primary-color-darker;
+
+material-input-group,
+.material-input-group {
+    padding-bottom: 2px;
+    margin-bottom: 8px;
+
+    position: relative;
+    display:  block;
+
+    .text-hint(large, @material-field-transition);
+    .text-field(@material-field-transition);
+
+    textarea,
+    input[type="text"],
+    input[type="password"],
+    input[type="datetime"],
+    input[type="datetime-local"],
+    input[type="date"],
+    input[type="month"],
+    input[type="time"],
+    input[type="week"],
+    input[type="number"],
+    input[type="email"],
+    input[type="url"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="color"] {
+        display: block;
+        border-width: 0 0 1px 0;
+        padding-top: 2px;
+        line-height: @material-field-line-height;
+        padding-bottom: 1px;
+        width: 100%;
+
+        &:focus {
+            outline: 0;
+        }
+    }
+
+    input, textarea {
+        .input-placeholder(@material-gray);
+        color: lighten(#000, 20%);
+        border-color: @material-gray;
+        font-size: @material-field-font-size;
+        font-weight: 500;
+        background: none;
+    }
+
+    label {
+        display: block;
+        font-size: @material-field-font-size;
+        z-index: 1;
+        pointer-events: none;
+        color: @material-gray;
+
+        &:hover {
+            cursor: text;
+        }
+    }
+
+    &.material-input-focused {
+        .text-hint(small);
+        .text-field(false, 2px);
+
+        input, textarea {
+            color: #000;
+            border-color: @material-field-focus-color;
+        }
+        label {
+            color: @material-field-focus-color;
+        }
+        input {
+            padding-bottom: 0px;
+        }
+    }
+
+    &:not(.material-input-focused) {
+        input, textarea {
+            &.ng-touched.ng-invalid {
+                border-color: @material-warning-color;
+            }
+        }
+    }
+
+    &.material-input-has-value {
+        .text-hint(small);
+
+        &:not(.material-input-focused) {
+            .text-hint(small);
+            label {
+                color: @material-gray;
+            }
+        }
+    }
+
+    &[disabled] {
+        .text-field(false, 0);
+
+        input, textarea {
+            .text-dashed-line(1px, 5px);
+            pointer-events: none;
+            border-bottom-color: @material-gray;
+            color: @material-gray;
+            background-image: linear-gradient(to right, @material-gray 0%, @material-gray 50%, rgba(0, 0, 0, 0) 0%);
+        }
+    }
+}

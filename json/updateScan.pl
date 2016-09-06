@@ -38,7 +38,7 @@ my $parameters = $params->{parameters};
 my $password = $params->{password};
 my $targets = $params->{targets};
 
-# Return an error if the required parameters were not passed 
+# Return an error if the required parameters were not passed
 if (not (defined ($scan_id))) {
 	bye("Parameter id is missing");
 };
@@ -65,6 +65,7 @@ eval {
 	my @data = ();
 	update_scan($workspace_id,$scan_id,$name,$scanner,$parameters,$password,$targets);
 	push @data, {
+		id		=> $scan_id,
 		name		=> $name,
 		scanner		=> $scanner,
 		parameters	=> $parameters,
@@ -81,4 +82,3 @@ sub bye($) {
 	print $json->pretty->encode([{ error => $error }]);
 	exit;
 }
-

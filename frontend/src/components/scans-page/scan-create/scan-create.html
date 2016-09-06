@@ -1,0 +1,18 @@
+<scan-create>
+  <md-sidenav md-component-id="drawer-scan-create"
+              md-is-open="scanCreate.drawerOpened"
+              class="md-sidenav-right"
+              layout="column"
+              layout-fill>
+    <md-content>
+      <section>
+        <md-subheader class="md-primary">Create a new scan</md-subheader>
+        <scan-form scan="scanCreate.scan"
+                   submit-error="scanCreate.lastSubmitError"
+                   on-submit="scanCreate.save()"
+                   on-cancel="scanCreate.cancel()">
+        </scan-form>
+      </section>
+    </md-content>
+  </md-sidenav>
+</scan-create>

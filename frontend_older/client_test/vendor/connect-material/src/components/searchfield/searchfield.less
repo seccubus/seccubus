@@ -1,0 +1,54 @@
+@import '../../style/variables';
+@import '../../style/mixins';
+
+material-searchfield,
+.material-searchfield {
+	display: block;
+	position: relative;
+
+	.material-searchfield-search {
+		pointer-events: none;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	.material-searchfield-clear {
+		position: absolute;
+		right: 0;
+		top: 0;
+		cursor: pointer;
+		display: none;
+	}
+
+	&.material-input-has-value .material-searchfield-clear {
+		display: block;
+	}
+
+	input {
+        .input-placeholder(rgba(0, 0, 0, 0.4));
+        color: rgba(0, 0, 0, 0.7);
+        border: none;
+        background: transparent;
+        font-size: 16px;
+        line-height: 24px;
+        height: 24px;
+        display: inline-block;
+        margin: 0;
+        padding: 0 34px;
+        font-weight: 300;
+    }
+    &.material-input-focused input {
+    	color: #000;
+    }
+
+    &.material-searchfield-blank {
+    	input {
+    		.input-placeholder(rgba(255, 255, 255, 0.4));
+    		color: rgba(255, 255, 255, 0.7);
+    	}
+    	&.material-input-focused input {
+    		color: #fff;
+    	}
+    }
+}

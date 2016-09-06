@@ -33,3 +33,8 @@ junit_output.xml
 etc/config.xml
 logs
 jmvc/testresults.xml
+
+# Frontend stuff
+jspm_packages
+node_modules
+frontend/build

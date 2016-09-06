@@ -1,0 +1,25 @@
+{
+  "name": "frontend",
+  "version": "0.0.0",
+  "dependencies": {
+    "requirejs": "^2.1.15",
+    "angular": "^1.3.0",
+    "json3": "^3.3.0",
+    "es5-shim": "^4.0.0",
+    "angular-animate": "^1.3.0",
+    "angular-cookies": "^1.3.0",
+    "angular-resource": "^1.3.0",
+    "angular-route": "^1.3.0",
+    "angular-sanitize": "^1.3.0",
+    "angular-touch": "^1.3.0",
+    "angular-ui-router": "~0.2.13",
+    "requirejs-domready": "~2.0.1",
+    "connect-material": "git@github.schubergphilis.com:frontend/connect-material.git#*",
+    "connect-collections": "git@github.schubergphilis.com:frontend/connect-collections.git#*"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.3.0",
+    "angular-scenario": "~1.3.0"
+  },
+  "appPath": "app"
+}

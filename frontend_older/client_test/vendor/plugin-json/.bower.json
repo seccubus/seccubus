@@ -1,0 +1,14 @@
+{
+  "name": "plugin-json",
+  "homepage": "https://github.com/systemjs/plugin-json",
+  "version": "0.1.0",
+  "_release": "0.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.0",
+    "commit": "476c01034237dfec4dec8c94a59e3bd0750bdf03"
+  },
+  "_source": "git@github.com:systemjs/plugin-json.git",
+  "_target": "*",
+  "_originalSource": "git@github.com:systemjs/plugin-json.git"
+}
