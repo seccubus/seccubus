@@ -133,7 +133,27 @@ if (`hostname` =~ /^sbpd/) {
 		is($$json[0]->{status}, 1, "Correct status record 1"); $tests++;
 	}
 
-	#die Dumper $json;
+
+	# Need to test this with assets too
+
+	# Let's try to create an asset
+
+	# Should not work without workspaceID
+	$json = webcall("createAsset.pl");
+	isnt($$json[0]->{error}, undef, "Got error"); $tests++;
+	like($$json[0]->{error}, qr/workspace is missing/i, "Should complain about workspace"); $tests++;
+
+	# Should not work without name
+	$json = webcall("createAsset.pl", "workspace=100");
+	isnt($$json[0]->{error}, undef, "Got error"); $tests++;
+	like($$json[0]->{error}, qr/name is missing/i, "Should complain about name"); $tests++;
+
+	# Should not work without name
+	$json = webcall("createAsset.pl", "workspace=100", "name=seccubus", "hosts=www.seccubus.com");
+	isnt($$json[0]->{error}, undef, "Got error"); $tests++;
+
+
+	die Dumper $json;
 }
 
 done_testing($tests);
