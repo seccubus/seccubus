@@ -328,8 +328,8 @@ CREATE TABLE `issue_changes` (
   KEY `fk_issue_changes_issue_status1` (`status`),
   KEY `fk_issue_changes_severity1` (`severity`),
   KEY `fk_issue_changes_users1` (`user_id`),
-  CONSTRAINT `fk_issue_changes_issue_status1` FOREIGN KEY (`status`) REFERENCES `issue_status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_issue_changes_issues1` FOREIGN KEY (`issue_id`) REFERENCES `issues` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_issue_changes_issue_status1` FOREIGN KEY (`status`) REFERENCES `issue_status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_issue_changes_severity1` FOREIGN KEY (`severity`) REFERENCES `severity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_issue_changes_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
