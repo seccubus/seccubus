@@ -133,6 +133,39 @@ if (`hostname` =~ /^sbpd/) {
 		is($$json[0]->{status}, 1, "Correct status record 1"); $tests++;
 	}
 
+
+	# Need to test this with assets too
+
+	# Let's try to create an asset
+
+	# Should not work without workspaceID
+	$json = webcall("createAsset.pl");
+	isnt($$json[0]->{error}, undef, "Got error"); $tests++;
+	like($$json[0]->{error}, qr/workspace is missing/i, "Should complain about workspace"); $tests++;
+
+	# Should not work without name
+	$json = webcall("createAsset.pl", "workspace=100");
+	isnt($$json[0]->{error}, undef, "Got error"); $tests++;
+	like($$json[0]->{error}, qr/name is missing/i, "Should complain about name"); $tests++;
+
+	# Should be ok
+	$json = webcall("createAsset.pl", "workspace=100", "name=seccubus", "hosts=www.seccubus.com");
+	is($$json[0]->{workspace},100,"Correct workspace"); $tests++;
+	is($$json[0]->{id},1,"Correct ID"); $tests++;
+	is($$json[0]->{hosts},"www.seccubus.com","Correct hosts"); $tests++;
+	is($$json[0]->{recipient},undef,"Correct recipient"); $tests++;
+	is($$json[0]->{name},"seccubus","Correct name"); $tests++;
+
+	# We should have a lot of findings
+	$json = webcall("getFindings.pl", "workspaceId=100", "assetIds[]=1");
+	is($$json[0]->{error},undef,"Should not error"); $tests++;
+	my $count = @$json;
+	cmp_ok(@$json, ">", 25, "Should have at least 25 findings ($count)"); $tests++;
+
+	foreach my $find ( @$json ) {
+		like($find->{host}, qr/www\.seccubus\.com/,"Finding $find->{id} is about www.seccubus.com"); $tests++;
+	}
+
 	#die Dumper $json;
 }
 

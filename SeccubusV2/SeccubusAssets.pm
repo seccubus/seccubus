@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2014 Arkanoi, Frank Breedijk, Petr
+# Copyright 2016 Arkanoi, Frank Breedijk, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -266,15 +266,22 @@ sub _set_asset_host_auto_gen($;$){
 				);		
 			} while (++$ipObj);
 		} else {
-			my ($name, $aliases, $addrtype,$length,@addrs) = gethostbyname($_);
+			my $qname = $_;
+			my ($name, $aliases, $addrtype,$length,@addrs) = gethostbyname($qname);
 			if(@addrs){
 				map {
 					my $ip = inet_ntoa($_);
+					sql("return"=>"id", 
+						"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?, auto_gen=1",
+						"values"=>[$assetid,$name,$ip]
+						);
+					if ( $qname ne $name ) {
 						sql("return"=>"id", 
 							"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?, auto_gen=1",
-							"values"=>[$assetid,$name,$ip]
+							"values"=>[$assetid,$qname,$ip]
 							);
-					} @addrs;
+					}
+				} @addrs;
 					
 			} else{
 				warn "Address [ ".$_." ] have no resolved IP and not added.";

@@ -129,15 +129,20 @@ sub get_findings($;$$$$) {
 				LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
 				LEFT JOIN severity on findings.severity = severity.id
 				LEFT JOIN finding_status on findings.status = finding_status.id
-				LEFT JOIN scans on scans.id = findings.scan_id,
-				LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id
+				LEFT JOIN scans on scans.id = findings.scan_id
+				LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id,
 				assets,
 				asset_hosts
 			
 			WHERE
 				findings.workspace_id = ? AND
 				assets.workspace_id = findings.workspace_id AND
-				asset_hosts.asset_id = assets.id and (asset_hosts.ip = findings.`host` or asset_hosts.`host` = findings.`host` or findings.`host` LIKE CONCAT('%/',asset_hosts.ip))
+				asset_hosts.asset_id = assets.id AND (
+					asset_hosts.ip = findings.`host` OR
+					asset_hosts.`host` = findings.`host` OR
+					findings.`host` LIKE CONCAT('%/',asset_hosts.ip) OR
+					findings.`host` LIKE CONCAT(asset_hosts.host, '/%') 
+				)
 				";
 			$query .= "AND assets.id = ?";
 			push @$params, $asset_id;
