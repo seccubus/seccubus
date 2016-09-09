@@ -38,3 +38,4 @@ Bug Fixes
 ---------
 * #364 - auto_gen column was missing from asset_host table
 * #358 - Could not get findings when an asset was used for the query
+* #360 - Non-critical RPM errors on CentOS 5
