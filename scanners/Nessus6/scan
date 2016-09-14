@@ -494,7 +494,9 @@ sub rest_call($$$;$$$){
 		login();
 		return(rest_call($method,$uri,$param,$response,$nojson,$retries-1)); 
 	}
-	unless ( $r->is_success ) {
+	# Export cvalls can actually return a 404 if an export has failed for some internal Nessus reason, we should not 
+	# retry in this case
+	unless ( $r->is_success || ( $uri =~ qr#/scans/\d+/export/\d+\/status# && $r->code() == 404 ) ) {
 		unless ( $quiet ) {
 			print "Nessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content();
 			print "\n$retries retries left\n";
