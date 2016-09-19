@@ -31,6 +31,8 @@ use Carp;
 use JSON;
 use LWP::UserAgent;
 use Data::Dumper;
+use Date::Format;
+use MIME::Base64;
 
 sub help();
 sub make_timestamp();
@@ -38,6 +40,7 @@ sub make_timestamp();
 my (
 	$workspace,
 	$scan,
+	$gradeonly,
 	$api,
 	$hosts,
 	$sleep,
@@ -65,14 +68,15 @@ $sleep = 15;
 $verbose = 0;
 $nosslcheck = 0;
 #$api = "https://api.dev.ssllabs.com/api/fa78d5a4/";
-$api = "https://api.ssllabs.com/api/v2/";
-$userAgent = "seccubus-ssllabs v0.1";
+$api = "https://api.ssllabs.com/api/v3";
+$userAgent = "seccubus-ssllabs v1.01";
 $noClearCache = 0;
 
 GetOptions(	
 	    'hosts|h=s'			=> \$hosts,
 	    'workspace|ws=s'	=> \$workspace,
 	    'scan|sc=s'			=> \$scan,
+	    'gradeonly!'		=> \$gradeonly,
 		'api|a=s'			=> \$api,
 		'sleep|s=s'			=> \$sleep,
 		'nosslcheck!'		=> \$nosslcheck,
@@ -110,6 +114,8 @@ if ( ! $scan ) {
 my $timestamp = make_timestamp();
 my $tempfile = "/tmp/seccubus.$scan.$timestamp";
 
+my $config = SeccubusV2::get_config();
+
 # Expand hosts
 if ( -e $hosts ) {
 	open HOSTS, $hosts or die "Unable to open file '$hosts'";
@@ -134,6 +140,14 @@ if ( $noClearCache || $fromCache ) {
 	$clearCache = 1;
 }
 
+# Get parsing hints files
+open KEYS, "$config->{paths}->{scanners}/SSLlabs/keys.json" or die "Unable to open parsing hints from $config->{paths}->{scanners}/SSLlabs/keys.json";
+my $keys = decode_json(join "", (<KEYS>));
+close KEYS;
+
+open DETAILS, "$config->{paths}->{scanners}/SSLlabs/details.json" or die "Unable to open parsing hints from $config->{paths}->{scanners}/SSLlabs/details.json";
+my $details = decode_json(join "", (<DETAILS>));
+close DETAILS;
 
 # Setup LWP::UserAgent client
 #my $client = REST::Client->new(host => $api);
@@ -161,12 +175,13 @@ if ( $verbose > 2 ) {
 	print $headers->as_string();
 	print "*** RESPONSE DATA ***\n";
 	print $response->decoded_content();
+	print "\n";
 }
 
 
 
 my $scanner_ver = "v$json->{engineVersion} (criteria version $json->{criteriaVersion})";
-my $maxScans = $json->{clientMaxAssessments};
+my $maxScans = $json->{maxAssessments};
 my $coolOff = $json->{newAssessmentCoolOff};
 unless($quiet) {
 	print "Scans will be performed by SSL Labs v$json->{engineVersion} (criteria version $json->{criteriaVersion}) - www.ssllabs.com\n" unless $quiet;
@@ -309,8 +324,10 @@ print OUT ivil_addressee("Seccubus", {
 # Findings
 print OUT "<findings>\n";
 
+
 # Iterate over each host
 foreach my $host ( @hosts ) {
+
 	my $scan = $results->{$host};
 
 	my $finding = {};
@@ -329,260 +346,45 @@ foreach my $host ( @hosts ) {
 		$finding->{severity} = 0;
 		print OUT ivil_finding($finding);
 	} else {
-		$finding->{hostname} = $host;
-		$finding->{ip} = $host;
 		$finding->{severity} = 0;
-		foreach my $key ( keys %$scan ) {
-			if ( $key eq "criteriaVersion" || $key eq "engineVersion" || $key eq "host"  || 
-				$key eq "port" || $key eq "status" || $key eq "startTime" || $key eq "endTime" ||
-				$key eq "testTime" ) {
-				# Ignore these keywords
-			} elsif ( $key eq "protocol" ) {
-				# Simple dump keys
-				$finding->{id} = $key;
-				$finding->{finding} = "$key - $scan->{$key}";
-				print OUT ivil_finding($finding);
-			} elsif ( $key eq "isPublic" ) {
-				$finding->{id} = $key;
-				if ( $scan->{isPublic} ) {
-					$finding->{finding} = "Scan results are visible to the general public";
-				} else {
-					$finding->{finding} = "Scan results are hidden"
-				}
-				print OUT ivil_finding($finding);
-			} elsif ( $key eq "endpoints" ) {
-				# Iterate through each endpoint
-				foreach my $ep ( @{$scan->{$key}} ) {
-					# Now the endpoint is the target
-					$finding->{ip} = "$host/$ep->{ipAddress}";
+		foreach my $key ( sort keys %$scan ) {
+			if ( $key eq "endpoints" ) {
+				foreach my $ep ( @{$scan->{endpoints}} ) {
+					#die Dumper $ep;
+					$finding->{hostname}="$host";
+					$finding->{ip}="$host/$ep->{ipAddress}";
 					foreach my $epkey ( sort keys %$ep ) {
-						$finding->{id} = $epkey;
-						if ( $epkey eq "delegation" || $epkey eq "duration" || $epkey eq "port" || 
-							$epkey eq "eta" || $epkey eq "ipAddress" || $epkey eq "progress" ||
-							$epkey eq "statusMessage" || $epkey eq "statusDetailsMessage" || $epkey eq "statusDetails" ) {
-							# Ignore
-						} elsif ( $epkey eq "grade" || $epkey eq "serverName" || $epkey eq "npnProtocols" || $epkey eq "gradeTrustIgnored" ) {
-							# Simpel dump values
-							$finding->{finding} = "$epkey - $ep->{$epkey}";
-							print OUT ivil_finding($finding);
-						} elsif ( $epkey eq "hasWarnings" ) {
-							if ( $ep->{$epkey} ) {
-								$finding->{finding} = "This host has findings that negatively effect the score";
-								print OUT ivil_finding($finding);
-							}
-						} elsif ( $epkey eq "isExceptional" ) {
-							if ( $ep->{$epkey} ) {
-								$finding->{finding} = "This host is exceptionally well configured";
-								print OUT ivil_finding($finding);
-							}
-						} elsif ( $epkey eq "details" ) {
-							# Iterate over keys
-							foreach my $dkey ( sort keys %{$ep->{$epkey}} ) {
-								my $det = $ep->{$epkey}->{$dkey};
-								if ( $dkey eq "chain" || $dkey eq "compressionMethods" || $dkey =~ /Time$/ 
-									|| $dkey =~ /refixDelegation$/ || $dkey eq "sims" || $dkey eq "suites"  || $dkey eq "statusDetails" 
-								) {
-									# Ignore
-								} elsif ( $dkey eq "compression" || $dkey eq "heartbeat" || $dkey eq "ocspStapling" 
-									|| $dkey eq "sniRequired" || $dkey eq "supportsNpn" || $dkey eq "fallbackScsv" 
-									|| $dkey eq "stsSubdomains") {
-									# Is supported type findings
-									$finding->{id} = $dkey;
-									if ( $det ) {
-										$finding->{finding} = "$dkey is supported";
-									} else {
-										$finding->{finding} = "$dkey is supported";
+						if ( ! $keys->{$epkey}->{ignore} ) {
+							if ( ( $gradeonly && $keys->{$epkey}->{type} eq "grade" ) || ! $gradeonly ) {
+								if ( $epkey eq "details" ) {
+									foreach my $dkey ( sort keys %{$ep->{$epkey}} ) {
+										if ( ! $details->{$dkey}->{ignore} ) {
+											$finding->{id} = $dkey;
+											$finding->{finding} = parse_finding($dkey,$ep->{details}->{$dkey},$details->{$dkey});
+											print OUT ivil_finding($finding);																			
+										}
 									}
-									print OUT ivil_finding($finding);
-								} elsif ( $dkey eq "heartbleed"  || $dkey eq "rc4WithModern" || $dkey eq "supportsRc4" 
-									|| $dkey eq "vulnBeast"  || $dkey eq "freak" || $dkey eq "logjam" || $dkey eq "poodle" ) {
-									# Is vulnerable type findings
-									if ( $det ) {
-										$finding->{id} = $dkey;
-										$finding->{finding} = "Server is vulnerable for $dkey";
-										print OUT ivil_finding($finding);
-									}
-								} elsif ( $dkey eq "httpStatusCode" || $dkey eq "serverSignature"  || $dkey eq "npnProtocols" 
-									|| $dkey eq "httpForwarding" || $dkey eq "stsResponseHeader" ) {
-									# Dump type
-									$finding->{id} = $dkey;
-									$finding->{finding} = "$dkey - $det";
-									print OUT ivil_finding($finding);
-								} elsif ( $dkey eq "stsMaxAge" ) {
-									# Dump type
-									$finding->{id} = $dkey;
-									$finding->{finding} = "HSTS Maximum age: $det seconds\n";
-									$finding->{finding} .= "WARNING: This is below the recommended length of 180 days\n" if $det < 1555200;
-									print OUT ivil_finding($finding);
-								} elsif ( $dkey eq "hasSct" ) {
-									$finding->{id} = $dkey;
-									$finding->{finding} = "";
-									$finding->{finding} .= "SCT is provided in the certificate" if $det & 1;
-									$finding->{finding} .= "SCT is provided in stapled OCSP response" if $det & 2;
-									$finding->{finding} .= "SCT is provided in TLS extension (ServerHello)" if $det & 4;
-									$finding->{finding} .= "\n\nSee http://www.certificate-transparency.org/ for more info";
-									print OUT ivil_finding($finding);
-								} elsif ( $dkey eq "sessionTickets" ) {
-									$finding->{id} = $dkey;
-									$finding->{finding} = "";
-									$finding->{finding} .= "Session tickets are supported" if $det & 1;
-									$finding->{finding} .= "Session tickets not implemented correctly" if $det & 2;
-									$finding->{finding} .= "Server is intollerant to session tickets extension" if $det & 4;
-									print OUT ivil_finding($finding);
-								} elsif ( $dkey eq "poodleTls" ) {
-									$finding->{id} = $dkey;
-									$finding->{finding} = "";
-									$finding->{finding} .= "Poodle over TLS - timeout\n" if $det == -3;
-									$finding->{finding} .= "Poodle over TLS - TLS not supported\n" if $det == -2;
-									$finding->{finding} .= "Poodle over TLS - test failed\n" if $det == -1;
-									$finding->{finding} .= "Poodle over TLS - status unknown\n" if $det == 0;
-									$finding->{finding} .= "Poodle over TLS - not vulnerable\n" if $det == 1;
-									$finding->{finding} .= "Poodle over TLS - vulnerable\n" if $det == 2;
-									$finding->{finding} .= "Test value: $det\n";
-									print OUT ivil_finding($finding);
-								} elsif ( $dkey eq "openSslCcs" ) {
-									$finding->{id} = $dkey;
-									$finding->{finding} = "";
-									$finding->{finding} .= "CVE-2014-0224 test failed\n" if $det == -1;
-									$finding->{finding} .= "CVE-2014-0224 status unknown\n" if $det == 0;
-									$finding->{finding} .= "CVE-2014-0224 not vulnerable\n" if $det == 1;
-									$finding->{finding} .= "CVE-2014-0224 possibly vulnerable, but not exploitable\n" if $det == 2;
-									$finding->{finding} .= "CVE-2014-0224 vulnerable and exploitable\n" if $det == 3;
-									$finding->{finding} .= "Test value: $det\n";
-									print OUT ivil_finding($finding);
-								} elsif ( $dkey eq "sessionResumption" ) {
-									$finding->{id} = $dkey;
-									$finding->{finding} = "Session resumption is not enabled and we're seeing empty session IDs\n" if $det == 0;
-									$finding->{finding} = "Endpoint returns session IDs, but sessions are not resumed\n" if $det == 1;
-									$finding->{finding} = "Session resumption is enabled\n" if $det == 2;
-									print OUT ivil_finding($finding);
-								} elsif ( $dkey eq "protocols" ) {
-									$finding->{id} = $dkey;
-									$finding->{finding} = "Supported protocols:\n";
-									foreach my $prot ( @$det ) {
-										$finding->{finding} .= "$prot->{name} $prot->{version}\n"
-									}
-									print OUT ivil_finding($finding);
-								} elsif ($dkey eq "key") {
-									$finding->{id} = "key";
-									$finding->{finding} = "Key\n$det->{alg}\nSize: $det->{size}\nStrength: $det->{strength}\n";
-									if ( $det->{debianFlaw} ) {
-											$finding->{finding} .= "Key was genereated on a Debian system with a flawed PRNG and is weak";
-									}
-									print OUT ivil_finding($finding);
-								} elsif ($dkey eq "forwardSecrecy") {
-									$finding->{id} = "pfs";
-									$finding->{finding} = "";
-									$finding->{finding} .= "PFS is supported with at least one browser\n" if ($det & 1);
-									$finding->{finding} .= "PFS is supported for modern browsers\n" if ($det & 2);
-									$finding->{finding} .= "PFS is supported for all browsers with PFS support\n" if ($det & 4);
-									$finding->{finding} = "PFS not supported :(" unless $finding->{finding}; 
-									print OUT ivil_finding($finding);
-								} elsif ($dkey eq "renegSupport") {
-									$finding->{id} = "reneg";
-									$finding->{finding} = "";
-									$finding->{finding} = "The server does not support any renegotiation" if ( $det == 0 );
-									$finding->{finding} .= "Insecure client-initiated renegotiation is supported\n" if ($det & 1);
-									$finding->{finding} .= "Secure renegotiation is supported\n" if ($det & 2);
-									$finding->{finding} .= "Secure client-initiated renegotiation is supported\n" if ($det & 4);
-									$finding->{finding} .= "The server requires secure renegotiation support\n" if ($det & 8);
-									$finding->{finding} .= "Value: $det\n";
-									print OUT ivil_finding($finding);
-								} elsif ( $dkey eq "cert" ) {
-									$finding->{id} = "cert";
-									my $txt = "Subject: $det->{subject}\nIssuer: $det->{issuerLabel}\n\nCommon names:\n";
-									if ( defined $det->{commonNames}) {
-										$txt .= join "\n", @{$det->{commonNames}};
-									} else {
-										$txt .= "undefined";
-									}
-									if ( $det->{altNames} ) {
-										$txt .= "\n\nAlternative names:\n";
-										$txt .= join "\n", @{ $det->{altNames} };
-									}
-									$txt .= "\n\n";
-
-									if ( $det->{sgc} ) {
-										$txt .= "Certificate has CSG support\n";
-									} else {
-										$txt .= "Certificate has NO CSG support\n";
-									}
-
-									$finding->{finding} = $txt;
-									print OUT ivil_finding($finding);
-
-									$finding->{id} = "EV";
-									if ( $det->{valdiationType} eq "E" ) {
-										$txt = "Yes";
-									} else {
-										$txt = "No";
-									}
-
-									$finding->{finding} = $txt;
-									print OUT ivil_finding($finding);
-
-									$finding->{id} = "revocation";
-									$txt = "RevocationInfo: $det->{revocationInfo}\n";
-									$txt .= "CRL info is available\n" if ( $det->{revocationInfo} & 1 );
-									$txt .= "CRL info NOT available\n" unless ( $det->{revocationInfo} & 1 );
-									$txt .= "OCSP info is available\n" if ( $det->{revocationInfo} & 2 );
-									$txt .= "OCSP info NOT available\n" unless ( $det->{revocationInfo} & 2 );
-									$txt .= "\nRevocationStatus: $det->{revocationStatus}\n";
-									$txt .= "Revocation status not checked\n" if $det->{revocationStatus} == 0;
-									$txt .= "Certificate revoked\n" if $det->{revocationStatus} == 1;
-									$txt .= "Certificate not revoked\n" if $det->{revocationStatus} == 2;
-									$txt .= "Revocation check error\n" if $det->{revocationStatus} == 3;
-									$txt .= "No revocation info available\n" if $det->{revocationStatus} == 4;
-									$txt .= "Internal SSL labs error\n" if $det->{revocationStatus} == 5;
-									$finding->{finding} = $txt;
-
-									print OUT ivil_finding($finding);
-
-									# If we have issues
-									if ( $det->{issues} ) {
-										$finding->{id} = "cert_issues";
-										$txt = "Certificate issues:\n";
-										$txt .= "Certifcate has not valid chain of trust\n" if ( $det->{issues} & 1 );
-										$txt .= "Certifcate validity date not yet reached\n" if ( $det->{issues} & 2 );
-										$txt .= "Certifcate validity date expired\n" if ( $det->{issues} & 4 );
-										$txt .= "Certificate name does not match hostname\n" if ( $det->{issues} & 8 );
-										$txt .= "Certifcate is revoked\n" if ( $det->{issues} & 16 );
-										$txt .= "Certifcate has a bad common name\n" if ( $det->{issues} & 32 );
-										$txt .= "Certifcate is self signed\n" if ( $det->{issues} & 64 );
-										$txt .= "Certifcate is blacklisted\n" if ( $det->{issues} & 128 );
-										$txt .= "Certifcate has insecure signature\n" if ( $det->{issues} & 256 );
-										$finding->{finding} = $txt;
-										print OUT ivil_finding($finding);
-									}
-
 								} else {
-									# Treat anything we don't know as dump type
-									$finding->{id} = $dkey;
-									$finding->{finding} = "Unknown detail $dkey\n\n" . to_json($det,{ pretty => 1, allow_nonref => 1});
-									print OUT ivil_finding($finding);
+									$finding->{id} = $epkey;
+									$finding->{finding} = parse_finding($epkey,$ep->{$epkey},$keys->{$epkey});
+									print OUT ivil_finding($finding);								
 								}
 							}
-
-							# TODO: Parse details
-						} else {
-							$finding->{id} = $epkey;
-							$finding->{finding} = "Unknown key $epkey\n\n" . to_json($ep->{$epkey},{ pretty => 1, allow_nonref => 1});
-							print OUT ivil_finding($finding);
-						}					
+						}
 					}
-
-					#die Dumper($ep);
 				}
-				$finding->{ip} = $host;
-			} else {
-				$finding->{id} = $key;
-				$finding->{finding} = to_json($scan->{$key},{ pretty => 1, allow_nonref => 1});
-				print OUT ivil_finding($finding);
+			} elsif ( ! $keys->{$key}->{ignore} ) {
+				if ( ( $gradeonly && $keys->{key}->{type} eq "grade" ) || ! $gradeonly ) {
+					$finding->{hostname} = $host;
+					$finding->{ip} = $host;
+					$finding->{id} = $key;
+					$finding->{finding} = parse_finding($key,$scan->{$key},$keys->{$key});
+					print OUT ivil_finding($finding);
+				}
 			}
 		}
-		#die Dumper($scan);
-	}
-}
+	} # error or not	
+} # Hosts
 
 # Close IVIL
 print OUT "</findings>\n";
@@ -614,17 +416,19 @@ sub help() {
 	print "
 Usage: scan     --hosts=<hosts file|hosts spec> 
                 --workspace=<seccubus workspace> --scan=<seccubus scan>
-		        [--api=<api_url>] [--sleep=<sleeptime>] [--nosslcheck]
-		        [--useragent=<string>] [--no-clear-cache] [--from-cache]
-		        [--publish] [--nodelete] [--verbose] [--quiet] [--help]
+                [--gradeonly] [--api=<api_url>] [--sleep=<sleeptime>] 
+                [--nosslcheck] [--useragent=<string>] [--no-clear-cache] 
+                [--from-cache] [--publish] [--nodelete] [--verbose] 
+                [--quiet] [--help]
 
 --hosts		      - Specification of hosts to scan. (A file containing) a 
                     list of hostnames separated by newlines. Empty lines 
                     are ignored. Comments start with #
 --workspace (-ws) - Seccubus workspace the scan in in
 --scan (-sc)	  - Seccubus scan the data should be saved in
+--gradeonly	      - Only process the findings that give a grade
 --api (-a)		  - URL of the ssllabs API, defaults to 
-                    https://api.ssllabs.com/api/v2/
+                    https://api.ssllabs.com/api/v3/
 --sleep           - Seconds to sleep between polls of the API 
                     (default=15) Lower then 15 seconds is considered rude
                     and a violation of the terms of usage of the API
@@ -632,12 +436,12 @@ Usage: scan     --hosts=<hosts file|hosts spec>
                     this can be used when the PI is e.g. intercepted by
                     a proxy that does not have a recognised SSL certificate
                     or when a outdated operating system is used (NOT RECOMMENDED)
---useragent       - Use a custom user agent string. Default: seccubus-ssllabs v0.1
+--useragent       - Use a custom user agent string. Default: seccubus-ssllabs v1.01
                     The default user agent string of REST::Client is appended
                     to this user agent string
 --no-clear-cache  - Do not clear the cache of the SSL labs scan engine 
                     Gives results faster but may be less accurate
---from-cache      - Prefer cached results over fresh results (for very 
+--from-cache      - Prefer cached results over fresh results (for very  
 	                quick results)
 --publish         - Publish the results of this scan on the SSL labs website
 --nodelete        - Don't erase temporary files
@@ -661,3 +465,224 @@ sub make_timestamp() {
 	return "$year$month$day$hour$minute$second";
 }
 
+sub parse_finding($$) {
+	my $key = shift;
+	my $finding = shift;
+	my $meta = shift;
+
+	if ( ! %$meta ) {
+		die "Unknown finding $key : " . Dumper $finding;
+		return "Unknown finding with id $key\nValue: " . Dumper($finding);
+	} else {
+		my $txt = "$meta->{description}";
+		if ( $meta->{type} eq "certificates" ) {
+			$txt .= parse_certs($finding);
+		} elsif ( $meta->{type} eq "boolean" ) {
+			 $txt .= ( $finding ? "True" : "False");
+		} elsif ( $meta->{type} eq "bitmap" ) {
+			$txt .= parse_bitmap($finding,@{$meta->{values}});
+		} elsif ( $meta->{type} eq "list" ) {
+			$txt .= parse_valuelist( $finding + $meta->{startsAt} , @{$meta->{values}});
+		} elsif ( $meta->{type} eq "grade" ) {
+			 $txt .= parse_grade($finding);
+		} elsif ( $meta->{type} eq "timestamp" ) {
+			 $txt .= parse_ts($finding);
+		} elsif ( $meta->{type} eq "milliseconds" ) {
+			 $txt .= ( $finding / 1000 ) . " seconds\n";
+		} elsif ( $meta->{type} eq "string" ) {
+			$txt .= $finding;
+		} elsif ( $meta->{type} eq "vulnerability" ) {
+			 $txt .= parse_vuln($finding,$meta);
+		} elsif ( $meta->{type} eq "hpkpPolicy" ) {
+			 $txt .= parse_hpkppolicy($finding);
+		} elsif ( $meta->{type} eq "hstsPolicy" ) {
+			 $txt .= parse_hstspolicy($finding);
+		} elsif ( $meta->{type} eq "hstsPreloads" ) {
+			 $txt .= parse_hstspreloads($finding);
+		} elsif ( $meta->{type} eq "array" ) {
+			 $txt .= parse_array($finding,$meta);
+		} else {
+			die "Unknow data type $meta->{type}" . ( Dumper $meta ) . " ";
+		}
+		$txt .= "\n\n$meta->{note}";
+		return $txt;
+	} # Unknown
+}
+
+sub parse_certs($) {
+	my $certs = shift;
+
+	my $number = 1;
+	my $txt;
+	foreach my $cert ( @$certs ) {
+		$txt .= "\n#$number\n\n";
+		$txt .= "Subject                   : $cert->{subject}\n";
+		$cert->{subject}=~/CN=(.*?),/;
+		$txt .= "Common names              : \n * ";
+		$txt .= join "\n * ", @{$cert->{commonNames}};
+		$txt .= "\nAlternative names         : \n * ";
+		$txt .= join "\n * ", @{$cert->{altNames}} if defined $cert->{altNames};
+		$txt .= "\n";
+		$txt .= "Valid from                : " . parse_ts($cert->{notBefore}) . "\n";
+		$txt .= "Valid until               : " . parse_ts($cert->{notAfter}) . "\n";
+		$txt .= "Key                       : $cert->{keyAlg} $cert->{keySize} bits\n";
+		$txt .= "Issuer                    : $cert->{issuerSubject}\n";
+		$cert->{issuerSubject} =~ /CN=(.*?),/;
+		$txt .= "Issuer CN                 : $1\n";
+		$txt .= "Signature algorithm       : $cert->{sigAlg}\n";
+		$txt .= "Extended validation       : " . ($cert->{validationType} eq 'E' ? 'Yes' :  'No') . "\n";
+		$txt .= "OCSP Must Staple          : ";
+		$txt .= parse_valuelist($cert->{mustStaple}, ( 
+			"Not supported", 
+			"Supported, but OCSP response is not stapled",
+			"Supported, OICSP response is stapled"
+		)) . "\n";
+		$txt .= "Revocation information    :\n" . parse_bitmap($cert->{revocationInfo}, (
+			"CRL information available",
+			"OCSP information available"
+		));
+		$txt .= "Revocation URLs           :\n";
+		$txt .= " * CRL : " . join("\nCRL: ", @{$cert->{crlURIs}}) . "\n" if defined $cert->{crlURIs};
+		$txt .= " * OCSP : " . join("\nOCSP: ", @{$cert->{ocspURIs}}) . "\n" if defined $cert->{ocspURIs};
+		$txt .= "Revocation status         : " . parse_valuelist($cert->{revocationStatus}, (
+			"Not checked",
+			"Certificate revoked",
+			"Certificate NOT revoked",
+			"Revocation check error",
+			"No revocation information",
+			"Internal error"
+		)) . "\n";
+		$txt .= "Hashes                    : \n * SHA1: $cert->{sha1Hash} \n * Pin SHA256 :  $cert->{pinSha256}\n";
+		$txt .= "Server Gated Crypto (SGC) : \n" . parse_bitmap($cert->{sgc}, "Netscape SGC", "Microsoft SGC");
+		$txt .= "\nCertificate issues        :\n";
+		$txt .= " * Known weak (insecure) Debian key\n" if $cert->{keyKnownDebianInsecure};
+		$txt .= parse_bitmap($cert->{issues}, (
+			"No chain of trust",
+			"Not yet valid (not before)",
+			"Expired (not after)",
+			"Hostname mismatch",
+			"Revoked",
+			"Bad common name",
+			"Self signed",
+			"Blacklisted",
+			"Insecure signature",
+		));
+		$number++;
+	}
+	return $txt;
+	# End certificate 
+}
+
+sub parse_ts($) {
+	my $ts = shift;
+	$ts /= 1000;
+	time2str("%a %d %b %Y %T UTC",$ts,"UTC");
+}
+
+sub parse_grade($) {
+	my $grade = shift;
+	my $txt = "$grade\n";
+	if ( $grade eq "T" ) {
+		$txt .= "The certificate is not trusted."
+	} elsif ( $grade eq "M" ) {
+		$txt .= "The name of the site could not be matched to a name in the certificate."
+	}
+	return $txt;
+}
+
+sub parse_vuln($$) {
+	my $finding = shift;
+	my $meta = shift;
+
+	if ( $finding ) {
+		return "VULNARABLE to $meta->{name}";
+	} else {
+		return "Not vulnerable to $meta->{name}";
+	}
+}
+
+sub parse_valuelist($@) {
+	my $val = shift;
+
+	if ( $val > @_ ) {
+		return "Unknown value: $val"
+	}
+
+	return $_[$val];
+}
+
+sub parse_bitmap($@) {
+	my $val = shift;
+
+	my $bit = 1;
+	my $txt = "";
+	foreach my $line ( @_ ) {
+		# Bitwise and to figure out if bit is set
+		if ( $val & $bit ) {
+			$txt .= " * $line\n";
+		}
+		$bit *= 2;
+	}
+	return $txt;
+}
+
+sub parse_hpkppolicy($) {
+	my $finding = shift;
+	my $matched = {};
+
+	my $txt = "HTKP Header: $finding->{header}\n";
+	$txt .= "Status: $finding->{status}\n";
+	$txt .= sprintf("Valid for %0.2f days ( %d second(s) )\n", $finding->{directives}->{'max-age'} / 84600, $finding->{directives}->{'max-age'});
+	$txt .= "Error: $finding->{error}\n" if $finding->{error};
+	foreach my $pin ( @{$finding->{matchedPins} }) {
+		$matched->{$pin->{value}} = "Found in chain"
+	}
+	my $count = 0;
+	foreach my $pin ( @{$finding->{pins}} ) {
+		my $bin = pack ("H*", $pin->{value});
+		my $b64 = encode_base64($bin,"");
+		#chomp($b64);
+		#$txt .= "pin-$pin->{hashFunction} : $b64 $matched->{$pin->{value}}\n";
+		$count ++;
+	}
+	$txt .= "$count pins are found in the chain.";
+	return $txt;
+}
+
+sub parse_hstspolicy($) {
+	my $finding = shift;
+
+	my $txt = "HSTS header : $finding->{header}\n";
+	$txt .= "Status : $finding->{status}\n";
+	if ( $finding->{maxAge} >= $finding->{LONG_MAX_AGE} ) {
+		$txt .= sprintf("HSTS duration of %0.2f days (%d seconds) is considered sufficiently long\n",$finding->{maxAge} / 84600, $finding->{maxAge});
+	} else {
+		$txt .= sprintf("HSTS duration of %0.2f days (%d seconds) is considered TOO SHORT\n",$finding->{maxAge} / 84600, $finding->{maxAge});
+	}
+	return $txt;
+}
+
+sub parse_hstspreloads($) {
+	my $finding = shift;
+
+	my $txt;
+	foreach my $b ( @$finding ) {
+		$txt .= " * $b->{source} - $b->{status}\n";
+	}
+	return $txt;
+}
+
+sub parse_array($$) {
+	my $finding = shift;
+	my $meta = shift;
+
+	my $txt;
+	foreach my $line ( @$finding ) {
+		$txt .= " *";
+		foreach my $f ( @{$meta->{fields}} ) {
+			$txt .= " $line->{$f}";
+		}
+		$txt .= "\n";
+	}
+	return $txt;
+}
