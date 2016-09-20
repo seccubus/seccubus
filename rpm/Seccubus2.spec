@@ -60,6 +60,7 @@ Requires:	perl-libwww-perl
 Requires:	perl(Net::IP)
 Requires:	perl(CGI)
 Requires:	perl(CGI::Carp)
+Requires:	perl(Date::Format)
 Requires:	perl(Exporter)
 Requires:	perl(Getopt::Long)
 Requires:	perl(Data::Dumper)
