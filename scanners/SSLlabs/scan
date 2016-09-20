@@ -470,11 +470,12 @@ sub parse_finding($$) {
 	my $finding = shift;
 	my $meta = shift;
 
+	my $txt;
 	if ( ! %$meta ) {
-		die "Unknown finding $key : " . Dumper $finding;
-		return "Unknown finding with id $key\nValue: " . Dumper($finding);
+		$txt = "Unknown finding '$key'\nAPI returned:\n";
+		$txt .= to_json({data => $finding});
 	} else {
-		my $txt = "$meta->{description}";
+		$txt = "$meta->{description}";
 		if ( $meta->{type} eq "certificates" ) {
 			$txt .= parse_certs($finding);
 		} elsif ( $meta->{type} eq "boolean" ) {
@@ -501,12 +502,16 @@ sub parse_finding($$) {
 			 $txt .= parse_hstspreloads($finding);
 		} elsif ( $meta->{type} eq "array" ) {
 			 $txt .= parse_array($finding,$meta);
+		} elsif ( $meta->{type} eq "sims" ) {
+			 $txt .= parse_sims($finding);
+		} elsif ( $meta->{type} eq "suites" ) {
+			 $txt .= parse_suites($finding);
 		} else {
 			die "Unknow data type $meta->{type}" . ( Dumper $meta ) . " ";
 		}
 		$txt .= "\n\n$meta->{note}";
-		return $txt;
 	} # Unknown
+	return $txt;
 }
 
 sub parse_certs($) {
@@ -619,7 +624,7 @@ sub parse_bitmap($@) {
 	foreach my $line ( @_ ) {
 		# Bitwise and to figure out if bit is set
 		if ( $val & $bit ) {
-			$txt .= " * $line\n";
+			$txt .= "\n * $line";
 		}
 		$bit *= 2;
 	}
@@ -630,20 +635,20 @@ sub parse_hpkppolicy($) {
 	my $finding = shift;
 	my $matched = {};
 
-	my $txt = "HTKP Header: $finding->{header}\n";
+	my $txt = "\n\nHTKP Header: $finding->{header}\n";
 	$txt .= "Status: $finding->{status}\n";
 	$txt .= sprintf("Valid for %0.2f days ( %d second(s) )\n", $finding->{directives}->{'max-age'} / 84600, $finding->{directives}->{'max-age'});
 	$txt .= "Error: $finding->{error}\n" if $finding->{error};
-	foreach my $pin ( @{$finding->{matchedPins} }) {
-		$matched->{$pin->{value}} = "Found in chain"
-	}
 	my $count = 0;
+	foreach my $pin ( @{$finding->{matchedPins} }) {
+		$matched->{$pin->{value}} = "Found in chain";
+		$count ++;
+	}
 	foreach my $pin ( @{$finding->{pins}} ) {
 		my $bin = pack ("H*", $pin->{value});
 		my $b64 = encode_base64($bin,"");
 		#chomp($b64);
 		#$txt .= "pin-$pin->{hashFunction} : $b64 $matched->{$pin->{value}}\n";
-		$count ++;
 	}
 	$txt .= "$count pins are found in the chain.";
 	return $txt;
@@ -652,7 +657,7 @@ sub parse_hpkppolicy($) {
 sub parse_hstspolicy($) {
 	my $finding = shift;
 
-	my $txt = "HSTS header : $finding->{header}\n";
+	my $txt = "\n\nHSTS header : $finding->{header}\n";
 	$txt .= "Status : $finding->{status}\n";
 	if ( $finding->{maxAge} >= $finding->{LONG_MAX_AGE} ) {
 		$txt .= sprintf("HSTS duration of %0.2f days (%d seconds) is considered sufficiently long\n",$finding->{maxAge} / 84600, $finding->{maxAge});
@@ -684,5 +689,47 @@ sub parse_array($$) {
 		}
 		$txt .= "\n";
 	}
+	return $txt;
+}
+
+sub parse_sims($) {
+	my $f = shift;
+
+	my $txt;
+	my $first = 1;
+	#die Dumper $f;
+	foreach my $s ( @{$f->{results}} ) {
+		$txt .= '-' x 80 . "\n" unless $first;
+		$first = 0;
+		$txt .= "$s->{client}->{name} $s->{client}->{version}";
+		$txt .= " / $s->{client}->{platform}" if $s->{client}->{platform};
+
+		if ( $s->{keyAlg} ) {
+			my $major = int($s->{protocolId}/256);
+			my $minor = $s->{protocolId}-(256*$major);
+
+			$major = "SSL 1" if $major == 0;
+			$major = "SSL 2" if $major == 1;
+			$major = "SSL 3" if $major == 2;
+			$major = "TLS 1" if $major == 3;
+			$s->{sigAlg} =~ s/withRSA$//;
+			$txt .= "\t$s->{keyAlg} $s->{keySize} ($s->{sigAlg})\t$major.$minor\t$s->{suiteName}\n";
+		}
+		$txt .= "\t\t$s->{errorMessage}\n" if $s->{errorMessage};
+	}
+	return $txt;
+}
+
+sub parse_suites($) {
+	my $f = shift;
+
+	my $txt;
+	if ( $f->{preference} ) {
+		$txt .= "Server sets the order of preference for cipher suites\n";
+	} else {
+		$txt .= "Server DOES NOT set the order of preference for cipher suites\n";
+	}
+	$txt .= parse_array($f->{list},{ fields => ["name", "cipherStrength"]});
+
 	return $txt;
 }

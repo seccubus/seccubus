@@ -97,7 +97,7 @@
 		"values"		: [
 			"Test failed", "Unknown", "Not vulnerable", "Vulnerable and insecure"
 		],
-		"description"	: "Outcome of test for CVE-2016-2107 (Lucky Minus 20)",
+		"description"	: "Outcome of test for CVE-2016-2107 (Lucky Minus 20) : ",
 		"startsAt"		: -1
 	},
 	"openSslCcs" : {
@@ -105,8 +105,12 @@
 		"values"		: [
 			"Test failed", "Unknown", "Not vulnerable", "Possibly vulnerable, but not exploitable", "Vulnerable and exploitable"
 		],
-		"description"	: "Outcome of test for CVE-2014-0224 (OpenSSL Ccs vulnerability)",
+		"description"	: "Outcome of test for CVE-2014-0224 (OpenSSL Ccs vulnerability) : ",
 		"startsAt"		: -1
+	},
+	"npnProtocols" : {
+		"type"			: "string",
+		"description"	: "Supported NPN protocols : "
 	},
 	"poodle" : {
 		"type"			: "vulnerability",
@@ -142,6 +146,58 @@
 			"Secure client-initiated renegotiation is supported (DoS risk)",
 			"Server requires secure renegotiation (good)"
 		]
+	},
+	"serverSignature" : {
+		"type"			: "string",
+		"description"	: "HTTP server header : "
+	},
+	"sessionResumption" : {
+		"type"			: "list",
+		"description"	: "Session resumption support : ",
+		"values"		: [
+			"Session resumption is not enabled, session IDs are empty",
+			"Endpoint returns session IDs, but sessions are not resumed",
+			"Session resumption is enabled"
+		]
+	},
+	"sessionTickets" : {
+		"type"			: "bitmap",
+		"description"	: "Session ticket support : ",
+		"values"		: [
+			"Session tickets are supported",
+			"Session ticket implementation is faulty",
+			"Server is intollerant to the session ticket extension"
+		]
+	},
+	"sims" :{
+		"type"			: "sims",
+		"description"	: "Client simulation results\n=========================\n",
+		"note"			: "Unable to determine DH/ECDH amd FS details from API results at this time."
+	},
+	"sniRequired" : {
+		"type"			: "boolean",
+		"description"	: "This site requires SNI : "
+	},
+	"suites" : {
+		"type"			: "suites",
+		"description"	: "List of cipher suites\n\n"
+	},
+	"supportsAlpn" : {
+		"type"			: "boolean",
+		"description"	: "This endpoint supports ALPN : "
+	},
+	"supportsNpn" : {
+		"type"			: "boolean",
+		"description"	: "This endpoint supports NPN : "
+	},
+	"supportsRc4" : {
+		"type"			: "boolean",
+		"description"	: "This endpoint supports RC4 : "
+	},
+	"vulnBeast" : {
+		"type"			: "vulnerability",
+		"name"			: "Beast",
+		"note"			: "Beast is considered to be mitigated client side now. See: https://blog.qualys.com/ssllabs/2013/09/10/is-beast-still-a-threat"
 	},
 	"certChains"			: { "ignore" : true },
 	"dhPrimes"				: { "ignore" : true },
