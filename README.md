@@ -33,6 +33,7 @@ x-x-2016 - 2.27 - ?
 Enhancements
 ------------
 * #361 - arkenoi created a netsparker2ivil tool that allows you to manually import Netsparker scans
+* #331 - Now using SSLLabs API v3
 
 Bug Fixes
 ---------

@@ -1,0 +1,211 @@
+{
+	"compressionMethods": {
+		"type"			: "bitmap",
+		"description"	: "Supported compression methods : ",
+		"values"		: [
+			"DEFLATE"
+		]
+	},
+	"dhUsesKnownPrimes" : {
+		"type"			: "list",
+		"description"	: "Reuse of known Diffie Hellman primes : ",
+		"values"		: [
+			"No", "Yes, but they are not weak", "Yes, WEAK DH primes are used"
+		]
+	},
+	"dhYsReuse" : {
+		"type"			: "boolean",
+		"description"	: "DH empheral server value is reused : "
+	},
+	"drownErrors": {
+		"type"			: "boolean",
+		"description"	: "Errors in drown test : ",
+		"note"			: "True if errors occured while running drowntests"
+	},
+	"drownVulnerable": {
+		"type"			: "vulnerability",
+		"name"			: "Drown attack",
+		"note"			: "See https://drownattack.com/"
+	},
+	"fallbackScsv": {
+		"type"			: "boolean",
+		"description"	: "TLS_FALLBACK_SVC support : ",
+		"note"			: "Indicates if the endpoint supports TLS_FALLBACK_SVC to prevent a downgrade attack"
+	},
+	"forwardSecrecy": {
+		"type"			: "bitmap",
+		"description"	: "Forward Secrecy support :",
+		"values"		: [
+			"At least one browser from our simulations negotiated a Forward Secrecy suite.",
+			"Forward Secrecy is achieved with modern clients. For example, the server supports ECDHE suites, but not DHE.",
+			"All simulated clients achieve FS. In other words, this requires an ECDHE + DHE combination to be supported."
+		],
+		"note"			: "This is based on client simulation results"
+	},	
+	"freak"	: {
+		"type"			: "vulnerability",
+		"name"			: "FREAK attack",
+		"note"			: "If a host is vulnerable to this attack is support 512-bit key exchange.\nSee: https://freakattack.com/"
+	},
+	"hasSct" : {
+		"type"			: "bitmap",
+		"description"	: "Certificate has the following embedded SCTs : ",
+		"values"		: [
+			"SCT in certificate",
+			"SCT in the stapled OCSP response",
+			"SCT in the TLS extension (ServerHello)"
+		],
+		"note"			: "SCTs (Signed Certificate Timestamps) indicate that the CA has submitted the certificate to a Certificate Transparency log server"
+	},
+	"heartbeat"	: {
+		"type"			: "boolean",
+		"description"	: "Endpoint supports the heartbeat extension : ",
+		"note"			: "See https://tools.ietf.org/html/rfc6520"
+	},
+	"heartbleed" : {
+		"type"			: "vulnerability",
+		"name"			: "heartbleed",
+		"note"			: "See: http://heartbleed.com/"
+	},
+	"hpkpPolicy" : {
+		"type"			: "hpkpPolicy",
+		"description"	: "HTTP Public Key Pinning Policy"
+	},
+	"hpkpRoPolicy" : {
+		"type"			: "hpkpPolicy",
+		"description"	: "REPORT ONLY HTTP Public Key Pinning Policy"
+	},
+	"hstsPolicy" : {
+		"type"			: "hstsPolicy",
+		"description"	: "HSTS (Hypertext Strict Transport Security) Policy\n\n"
+	},
+	"hstsPreloads" : {
+		"type"			: "hstsPreloads",
+		"description"	: "HSTS preloading status:\n"
+	},
+	"logjam" : {
+		"type"			: "vulnerability",
+		"name"			: "Log Jam",
+		"note"			: "See: https://weakdh.org/"
+	},
+	"ocspStapling" : {
+		"type"			: "boolean",
+		"description"	: "OCSP stapling support : "
+	},
+	"openSSLLuckyMinus20" : {
+		"type"			: "list",
+		"values"		: [
+			"Test failed", "Unknown", "Not vulnerable", "Vulnerable and insecure"
+		],
+		"description"	: "Outcome of test for CVE-2016-2107 (Lucky Minus 20) : ",
+		"startsAt"		: -1
+	},
+	"openSslCcs" : {
+		"type"			: "list",
+		"values"		: [
+			"Test failed", "Unknown", "Not vulnerable", "Possibly vulnerable, but not exploitable", "Vulnerable and exploitable"
+		],
+		"description"	: "Outcome of test for CVE-2014-0224 (OpenSSL Ccs vulnerability) : ",
+		"startsAt"		: -1
+	},
+	"npnProtocols" : {
+		"type"			: "string",
+		"description"	: "Supported NPN protocols : "
+	},
+	"poodle" : {
+		"type"			: "vulnerability",
+		"name"			: "Poodle",
+		"note"			: "See https://en.wikipedia.org/wiki/POODLE"
+	},
+	"poodleTls" : {
+		"type"			: "vulnerability",
+		"name"			: "Poodle over TLS",
+		"note"			: "See https://en.wikipedia.org/wiki/POODLE"
+	},
+	"protocols" : {
+		"type"			: "array",
+		"description"	: "This is a list of supported protocols : \n",
+		"fields"		: [ "name","version" ]
+	},
+	"rc4Only" : {
+		"type"			: "boolean",
+		"description"	: "Are only RC4 suites supported : ",
+		"note"			: "RC4 is considered insecure"
+	},
+	"rc4WithModern" : {
+		"type"			: "boolean",
+		"description"	: "Is RC4 used with modern browsers : ",
+		"note"			: "RC4 is considered insecure"
+	},
+	"renegSupport" : {
+		"type"			: "bitmap",
+		"description"	: "Renegotion support : ",
+		"values"		: [
+			"Insecure client-initiated renegotiation is supported",
+			"Secure renegotiation is supported (no issue)",
+			"Secure client-initiated renegotiation is supported (DoS risk)",
+			"Server requires secure renegotiation (good)"
+		]
+	},
+	"serverSignature" : {
+		"type"			: "string",
+		"description"	: "HTTP server header : "
+	},
+	"sessionResumption" : {
+		"type"			: "list",
+		"description"	: "Session resumption support : ",
+		"values"		: [
+			"Session resumption is not enabled, session IDs are empty",
+			"Endpoint returns session IDs, but sessions are not resumed",
+			"Session resumption is enabled"
+		]
+	},
+	"sessionTickets" : {
+		"type"			: "bitmap",
+		"description"	: "Session ticket support : ",
+		"values"		: [
+			"Session tickets are supported",
+			"Session ticket implementation is faulty",
+			"Server is intollerant to the session ticket extension"
+		]
+	},
+	"sims" :{
+		"type"			: "sims",
+		"description"	: "Client simulation results\n=========================\n",
+		"note"			: "Unable to determine DH/ECDH amd FS details from API results at this time."
+	},
+	"sniRequired" : {
+		"type"			: "boolean",
+		"description"	: "This site requires SNI : "
+	},
+	"suites" : {
+		"type"			: "suites",
+		"description"	: "List of cipher suites\n\n"
+	},
+	"supportsAlpn" : {
+		"type"			: "boolean",
+		"description"	: "This endpoint supports ALPN : "
+	},
+	"supportsNpn" : {
+		"type"			: "boolean",
+		"description"	: "This endpoint supports NPN : "
+	},
+	"supportsRc4" : {
+		"type"			: "boolean",
+		"description"	: "This endpoint supports RC4 : "
+	},
+	"vulnBeast" : {
+		"type"			: "vulnerability",
+		"name"			: "Beast",
+		"note"			: "Beast is considered to be mitigated client side now. See: https://blog.qualys.com/ssllabs/2013/09/10/is-beast-still-a-threat"
+	},
+	"certChains"			: { "ignore" : true },
+	"dhPrimes"				: { "ignore" : true },
+	"drownHosts"			: { "ignore" : true },
+	"hostStartTime"			: { "ignore" : true },
+	"httpStatusCode"		: { "ignore" : true },
+	"httpTransactions"		: { "ignore" : true },
+	"nonPrefixDelegation"	: { "ignore" : true },
+	"prefixDelegation"		: { "ignore" : true },
+	"zz" : {}
+}

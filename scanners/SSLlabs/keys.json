@@ -1,0 +1,63 @@
+{
+	"certs": {
+		"type"			: "certificates",
+		"description"	:	 
+			"This is an overview of the certificates returned by this url\n"
+	},
+	"delegation": {
+		"type"			: "bitmap",
+		"description"	: "Indicates domain name delegation with and without the www prefix:\n",
+		"values"		: [
+			"Delegation is set for non-prefixed access",
+			"Delegation is set for prefixed access"
+		]
+	},
+	"duration": {
+		"type"			: "milliseconds",
+		"description"	: "The assessment of this endpoint took: "
+	},
+	"grade" : {
+		"type"			: "grade",
+		"description"	: "This endpoint scores an : "
+	},
+	"gradeTrustIgnored" : {
+		"type"			: "grade",
+		"description"	: "This endpoint scores an : ",
+		"note"			: "Trust issue have been ignored when computing this grade."
+	},
+	"hasWarnings" : {
+		"type"			: "boolean",
+		"description"	: "Warnings : ",
+		"note"			: "Indicates  this endpoint has warnings that might affect the score (e.g., get A- instead of A)."
+	},
+	"isExceptional": {
+		"type"			: "boolean",
+		"description"	: "Exceptionally well configured : ",
+		"note"			: "This flag will be raised when an exceptional configuration is encountered. The SSL Labs test will give such sites an A+."
+	},
+	"isPublic": {
+		"type"			: "boolean",
+		"description"	: "Public : ",
+		"note"			: "Determines if this assessment is (publicly) visible on www.ssllabls.com website"
+	},
+	"serverName": {
+		"type"			: "string",
+		"description"	: "Resolves as : ",
+		"note"			: "Server name retrieved via reverse DNS"
+	},
+	"startTime": {
+		"type"			: "timestamp",
+		"description"	: "Scan started at : ",
+		"note"			: "Time at which the scan was started"
+	},
+	"criteriaVersion":  { "ignore" : true },
+	"engineVersion":  	{ "ignore" : true },
+	"host":  			{ "ignore" : true },
+	"ipAddress":		{ "ignore" : true },
+	"port":		  		{ "ignore" : true },
+	"progress":  		{ "ignore" : true },
+	"protocol":  		{ "ignore" : true },
+	"status":	  		{ "ignore" : true },
+	"statusMessage":	{ "ignore" : true },
+	"testTime":	  		{ "ignore" : true }
+}
