@@ -1,4 +1,8 @@
 {
+	"chaCha20Preference": {
+		"type"			: "boolean",
+		"description"	: "Server take client preferences into account when deciding if to use ChaCha20 suites : "
+	},
 	"compressionMethods": {
 		"type"			: "bitmap",
 		"description"	: "Supported compression methods : ",
