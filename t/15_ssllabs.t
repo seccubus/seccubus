@@ -114,7 +114,7 @@ if (`hostname` =~ /^sbpd/) {
 	# We should only have grade or gradeTrustIgnored plugins
 	$json = webcall("getFindings.pl", "workspaceId=100", "scanIds[]=2");
 	foreach my $f ( @$json ) {
-		like($f->{plugin}, qr/^grade(TrustIgnored)?$/i, "Finding $f->{id} is not plugin type grade or gradeTrustIgnored"); $tests++;
+		like($f->{plugin}, qr/^grade(TrustIgnored)?$/i, "Finding $f->{id} is plugin type grade or gradeTrustIgnored"); $tests++;
 	}
 
 	#die Dumper $json;
