@@ -637,20 +637,25 @@ sub parse_hpkppolicy($) {
 
 	my $txt = "\n\nHTKP Header: $finding->{header}\n";
 	$txt .= "Status: $finding->{status}\n";
-	$txt .= sprintf("Valid for %0.2f days ( %d second(s) )\n", $finding->{directives}->{'max-age'} / 84600, $finding->{directives}->{'max-age'});
+	my $age = 0;
+	foreach my $directive ( @{$finding->{directives}} ) {
+		$age=$directive->{value} if $directive->{name} eq 'max-age';
+		$txt .= "$directive->{name}: $directive->{value}\n" unless $directive->{name} =~ /^pin/;
+	}
+	$txt .= sprintf("Valid for %0.2f days ( %d second(s) )\n", $age / 84600, $age);
 	$txt .= "Error: $finding->{error}\n" if $finding->{error};
 	my $count = 0;
 	foreach my $pin ( @{$finding->{matchedPins} }) {
-		$matched->{$pin->{value}} = "Found in chain";
+		$matched->{$pin->{value}} = "(Found in chain)";
 		$count ++;
 	}
 	foreach my $pin ( @{$finding->{pins}} ) {
 		my $bin = pack ("H*", $pin->{value});
 		my $b64 = encode_base64($bin,"");
-		#chomp($b64);
-		#$txt .= "pin-$pin->{hashFunction} : $b64 $matched->{$pin->{value}}\n";
+		chomp($b64);
+		$txt .= "pin-$pin->{hashFunction} : $b64 $matched->{$pin->{value}}\n";
 	}
-	$txt .= "$count pins are found in the chain.";
+	$txt .= "\n$count pins are found in the chain.\n";
 	return $txt;
 }
 

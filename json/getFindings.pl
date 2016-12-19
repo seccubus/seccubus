@@ -52,8 +52,8 @@ if (not (defined ($workspace_id))) {
 eval {
 	my @data;
 	my %filter;
-	foreach my $key ( qw( Status Host Hostname Port Plugin Severity Finding Remark Severity Issue ) ) {
-		if ($query->param($key) ne undef and $query->param($key) ne "all" and $query->param($key) ne "null" and $query->param($key) ne "*" ) {
+	foreach my $key ( qw( Status Host HostName Port Plugin Severity Finding Remark Severity Issue ) ) {
+		if ($query->param($key) ne undef && $query->param($key) ne "all" && $query->param($key) ne "null" && $query->param($key) ne "*" ) {
 			$filter{lc($key)} = $params->{$key}; 
 		}
 	}

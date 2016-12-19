@@ -7,7 +7,7 @@ services:
 addons:
   apt:
     packages:
-    - java
+    - oracle-java8-set-default
 before_script:
 - mysql -e "create database seccubus_create"
 - mysql -e "create database seccubus_upgrade"

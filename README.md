@@ -41,3 +41,4 @@ Bug Fixes
 * #358 - Could not get findings when an asset was used for the query
 * #360 - Not able to export report in PDF format - This breaks the scan
 * #336 - Non-critical RPM errors on CentOS 5
+* #377 - Hostname filter wasn't working correctly, typed Hostname iso HostName

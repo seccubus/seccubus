@@ -56,13 +56,13 @@ if (`hostname` =~ /^sbpd/) {
 	$json = webcall("createWorkspace.pl", "name=test1");
 	is($$json[0]->{id},100,"Workspace created"); $tests++;
 	# Create a scan
-	$json = webcall("createScan.pl", "workspaceId=100", "name=ssl", "scanner=SSLlabs", "parameters=--hosts+\@HOSTS+--from-cache", "targets=www.seccubus.com\%0Awww.schubergphilis.com\%0Abadssl.com\%0Aexpired.badssl.com\%0Amozilla-old.badssl.com");
+	$json = webcall("createScan.pl", "workspaceId=100", "name=ssl", "scanner=SSLlabs", "parameters=--hosts+\@HOSTS+--from-cache", "targets=www.seccubus.com\%0Awww.schubergphilis.com\%0Abadssl.com\%0Aexpired.badssl.com\%0Amozilla-old.badssl.com\%0Assl.sectionzero.org");
 	is(@$json, 1, "Correct number of records returned"); $tests++;
 	is($$json[0]->{id}, 1, "Correct ID returned"); $tests++;
 	is($$json[0]->{name}, "ssl", "Correct name returned"); $tests++;
 	is($$json[0]->{scanner}, "SSLlabs", "Correct scanner returned"); $tests++;
 	is($$json[0]->{parameters}, '--hosts @HOSTS --from-cache', "Correct parameters returned"); $tests++;
-	is($$json[0]->{targets}, "www.seccubus.com\nwww.schubergphilis.com\nbadssl.com\nexpired.badssl.com\nmozilla-old.badssl.com", "Correct targets returned"); $tests++;
+	is($$json[0]->{targets}, "www.seccubus.com\nwww.schubergphilis.com\nbadssl.com\nexpired.badssl.com\nmozilla-old.badssl.com\nssl.sectionzero.org", "Correct targets returned"); $tests++;
 	is($$json[0]->{workspace}, 100, "Correct workspace returned"); $tests++;
 	is($$json[0]->{password}, undef, "Correct password returned"); $tests++;
 	
@@ -84,7 +84,7 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[1]->{name}, "ssl", "Correct name returned"); $tests++;
 	is($$json[1]->{scanner}, "SSLlabs", "Correct scanner returned"); $tests++;
 	is($$json[1]->{parameters}, '--hosts @HOSTS --from-cache', "Correct parameters returned"); $tests++;
-	is($$json[1]->{targets}, "www.seccubus.com\nwww.schubergphilis.com\nbadssl.com\nexpired.badssl.com\nmozilla-old.badssl.com", "Correct targets returned"); $tests++;
+	is($$json[1]->{targets}, "www.seccubus.com\nwww.schubergphilis.com\nbadssl.com\nexpired.badssl.com\nmozilla-old.badssl.com\nssl.sectionzero.org", "Correct targets returned"); $tests++;
 	is($$json[1]->{workspace}, 100, "Correct workspace returned"); $tests++;
 	is($$json[1]->{password}, undef, "Correct password returned"); $tests++;
 	is($$json[0]->{id}, 2, "Correct ID returned"); $tests++;
@@ -111,12 +111,10 @@ if (`hostname` =~ /^sbpd/) {
 		unlike($f->{find}, qr/^Unknown finding/i, "Finding $f->{id} is not an unknown finding"); $tests++;
 	}
 
-	# We should have 4 findings in scan 2
+	# We should only have grade or gradeTrustIgnored plugins
 	$json = webcall("getFindings.pl", "workspaceId=100", "scanIds[]=2");
-	my $count = @$json;
-	cmp_ok(@$json, "==", 4, "Should have 4 findings in gradeonly ($count)"); $tests++;
 	foreach my $f ( @$json ) {
-		unlike($f->{find}, qr/^Unknown finding/i, "Finding $f->{id} is not an unknown finding"); $tests++;
+		like($f->{plugin}, qr/^grade(TrustIgnored)?$/i, "Finding $f->{id} is plugin type grade or gradeTrustIgnored"); $tests++;
 	}
 
 	#die Dumper $json;
