@@ -406,15 +406,14 @@ sub get_filters($$$;$) {
 			WHERE $where $fwhere
 			GROUP BY host
 			ORDER BY INET_ATON(host), host
-			LIMIT 50
 		";
 		my $hosts_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
-		$limit = 50 - @$hosts_in;
-		unshift @hosts, {name => "First 50 only...", number => -1, selected => JSON::false } unless $limit;
+		my @ids;
+		foreach my $h ( @{$hosts_in} ) {
+			push @ids, $$h[0];
+		}
 
 		# Get hosts outside filter.
-		#$ffields = [];
-		#$fwhere = construct_filter($filter,"host",$ffields,0);
 		$query = "
 			SELECT host, count(*)
 			$from
@@ -426,9 +425,8 @@ sub get_filters($$$;$) {
 			)
 			GROUP BY host		
 			ORDER BY INET_ATON(host), host	
-			LIMIT ?
 		";
-		my $hosts_out = sql(query => $query, values => [$workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields, $limit] );
+		my $hosts_out = sql(query => $query, values => [$workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 		my %count;
 
 		foreach my $host ( @$hosts_in ) {
@@ -495,14 +493,10 @@ sub get_filters($$$;$) {
 			WHERE $where $fwhere
 			GROUP BY hostname
 			ORDER BY hostname
-			LIMIT 50
 		";
 		my $hostnames_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
-		$limit = 50 - @$hostnames_in;
-		unshift @hostnames, {name => "First 50 only...", number => -1, selected => JSON::false } if $limit == 0;
 
-		# Get outside filter
-		# Get hosts in filter.
+		# Get hosts not in filter.
 		$query = "
 			SELECT host_names.name as hostname, count(*)
 			$from
@@ -517,9 +511,8 @@ sub get_filters($$$;$) {
 			)
 			GROUP BY hostname			
 			ORDER BY hostname
-			LIMIT ?
 		";
-		my $hostnames_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields, $limit ] );
+		my $hostnames_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
 		my $count = 0;
 		foreach my $host ( @$hostnames_in ) {
@@ -565,13 +558,10 @@ sub get_filters($$$;$) {
 			WHERE $where $fwhere
 			GROUP BY port
 			ORDER BY CAST(port as SIGNED INTEGER), port
-			LIMIT 50
 		";
 		my $ports_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
-		$limit = 50 - @$ports_in;
-		unshift @ports, {name => "First 50 only...", number => -1, selected => JSON::false } if $limit == 0;
 
-		# Get outside filter
+		# Get ports outside filter
 		$query = "
 			SELECT port, count(*)
 			$from
@@ -583,9 +573,8 @@ sub get_filters($$$;$) {
 			)
 			GROUP BY port		
 			ORDER BY port
-			LIMIT ?
 		";
-		my $ports_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields, $limit ] );
+		my $ports_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
 		$count = 0;
 		foreach my $port ( @$ports_in ) {
@@ -628,13 +617,14 @@ sub get_filters($$$;$) {
 			WHERE $where $fwhere
 			GROUP BY plugin
 			ORDER BY CAST(plugin as SIGNED INTEGER), plugin
-			LIMIT 50
 		";
 		my $plugins_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
-		$limit = 50 - @$plugins_in;
-		unshift @plugins, {name => "First 50 only...", number => -1, selected => JSON::false } if $limit == 0;
+		my @ids = ();
+		foreach my $p ( @$plugins_in ) {
+			push @ids, $$p[0];
+		}
 
-		# Get outside filter
+		# Get plugins outside filter
 		$query = "
 			SELECT plugin, count(*)
 			$from
@@ -646,9 +636,8 @@ sub get_filters($$$;$) {
 			)
 			GROUP BY plugin		
 			ORDER BY plugin
-			LIMIT ?
 		";
-		my $plugins_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields, $limit ] );
+		my $plugins_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
 		$count = 0;
 		foreach my $plugin ( @$plugins_in ) {
@@ -696,7 +685,7 @@ sub get_filters($$$;$) {
 		";
 		my $severitys_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
-		# Get outside filter
+		# Get severities outside filter
 		$query = "
 			SELECT severity.id as severity, severity.name, count(*)
 			$from
@@ -710,9 +699,8 @@ sub get_filters($$$;$) {
 			)
 			GROUP BY severity
 			ORDER BY severity
-			LIMIT ?
 		";
-		my $severitys_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields, $limit ] );
+		my $severitys_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
 		$count = 0;
 		foreach my $severity ( @$severitys_in ) {
@@ -752,13 +740,10 @@ sub get_filters($$$;$) {
 			WHERE $where $fwhere 
 			GROUP BY issue_id, name, ext_ref
 			ORDER BY issue_id
-			LIMIT 50
 		";
 		my $issues_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
-		$limit = 50 - @$issues_in;
-		unshift @issues, {name => "First 50 only...", number => -1, selected => JSON::false } if $limit == 0;
 
-		# Get outside filter
+		# Get issues outside filter
 		$query = "
 			SELECT issues.id, issues.name, ext_ref, '?'
 			FROM issues
@@ -772,9 +757,8 @@ sub get_filters($$$;$) {
 				WHERE $where $fwhere AND issue_id IS NOT NULL
 			)
 			ORDER BY id
-			LIMIT ?
 		";
-		my $issues_out = sql(query => $query, values => [ $workspace_id, $workspace_id, @$scan_ids, @$asset_ids, @$ffields, $limit ] );
+		my $issues_out = sql(query => $query, values => [ $workspace_id, $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
 		$count = 0;
 		foreach my $issue ( @$issues_in ) {
