@@ -42,4 +42,5 @@ Bug Fixes
 * #360 - Not able to export report in PDF format - This breaks the scan
 * #336 - Non-critical RPM errors on CentOS 5
 * #376 - Removed 50 host limit in filters as it was counterproductive
+* #374 - Fixed Nikto path detection code
 * #377 - Hostname filter wasn't working correctly, typed Hostname iso HostName
