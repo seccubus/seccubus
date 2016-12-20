@@ -373,7 +373,6 @@ sub get_filters($$$;$) {
 		my $from = " FROM findings";
 		my $where = "findings.workspace_id = ?";
 		my $join = "";
-		my $limit;
 		$join .= "LEFT JOIN issues2findings i2f ON i2f.finding_id = findings.id " if exists $filter->{issue};
 		$join .= "LEFT JOIN host_names on host_names.ip = findings.host AND host_names.workspace_id = findings.workspace_id " if exists $filter->{hostname};
 
@@ -538,11 +537,7 @@ sub get_filters($$$;$) {
 			}
 		}
 		$hostnames_out = undef;
-		if ( $limit == 0 ) {
-			$hostnames[1]->{number} = $count;
-		} else {
-			$hostnames[0]->{number} = $count;			
-		}
+		$hostnames[0]->{number} = $count;			
 		$filters{"hostname"} = \@hostnames;
 
 		# Ports
@@ -597,11 +592,7 @@ sub get_filters($$$;$) {
 			}
 		}
 		$ports_out = undef;
-		if ( $limit == 0 ) {
-			$ports[1]->{number} = $count;
-		} else {
-			$ports[0]->{number} = $count;			
-		}
+		$ports[0]->{number} = $count;			
 		$filters{"port"} = \@ports;
 
 		# Plugins
@@ -661,11 +652,7 @@ sub get_filters($$$;$) {
 			}
 		}
 		$plugins_out = undef;
-		if ( $limit == 0 ) {
-			$plugins[1]->{number} = $count;
-		} else {
-			$plugins[0]->{number} = $count;			
-		}
+		$plugins[0]->{number} = $count;			
 		$filters{"plugin"} = \@plugins;
 
 		# Serverity
@@ -789,11 +776,6 @@ sub get_filters($$$;$) {
 		}
 		$issues_out = undef;
 		$issues[0]->{number} = $count;		
-		if ( $limit == 0 ) {
-			$issues[1]->{number} = $count;
-		} else {
-			$issues[0]->{number} = $count;			
-		}
 		$filters{"issue"} = \@issues;
 
 		# Finding and remark are easy
