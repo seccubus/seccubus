@@ -73,7 +73,6 @@ if (`hostname` =~ /^sbpd/) {
 	is($json->{issue}[1]->{name}, '---', "Correct issue name"); $tests++;
 	isnt($json->{issue}[1]->{selected}, 1,"Issue select value ok"); $tests++;
 	is($json->{issue}[1]->{number}, -1, "Correct number of findings linked"); $tests++;	
-	
 	# Need to provide a workspaceId
 	$json = webcall("updateIssue.pl");
 	ok($$json[0]->{error}, "Should error when workspaceId is missing"); $tests++;
