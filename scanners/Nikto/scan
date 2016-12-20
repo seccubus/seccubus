@@ -187,7 +187,7 @@ sub get_nikto_path() {
 		return $1;
 	}
 	$path = run_cmd("ls /opt/nikto/nikto.pl",0,$remote);
-	if ( $path == '/opt/nikto/nikto.pl' ) {
+	if ( $path eq '/opt/nikto/nikto.pl' ) {
 		return '/opt/nikto/nikto.pl';
 	}
 	return undef;
