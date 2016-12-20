@@ -407,10 +407,6 @@ sub get_filters($$$;$) {
 			ORDER BY INET_ATON(host), host
 		";
 		my $hosts_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
-		my @ids;
-		foreach my $h ( @{$hosts_in} ) {
-			push @ids, $$h[0];
-		}
 
 		# Get hosts outside filter.
 		$query = "
