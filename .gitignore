@@ -10,6 +10,7 @@ tmp/
 
 # Config
 etc/config.xml
+etc/config.xml.*
 etc/config.dev.xml
 etc/config.issues.xml
 
@@ -33,3 +34,4 @@ junit_output.xml
 etc/config.xml
 logs
 jmvc/testresults.xml
+.kitchen.yml
