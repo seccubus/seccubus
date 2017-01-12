@@ -61,15 +61,19 @@ json\/getNothing.pl$
 ^obs
 ^junit_output\.xml$
 ^HEADERS\.txt$
+^\.mailmap
+^\.travis
 
 # Misc
 ^www\/tmp\/
 ^tmp\/
 
-# Don't bundle RPM building files
+# Don't bundle  building files
 ^rpm\/
+^deb\/
 
 # Don't bundle tests
 ^t\/
+^t_install\/
 
 # JMVC files for now as well
