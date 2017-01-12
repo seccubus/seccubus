@@ -25,7 +25,7 @@
 echo '*************************************************************************'
 echo "Make sure everything is checked in"
 echo '*************************************************************************'
-if [ `git status|wc -l` -ne 2 ]
+if [ `git status|grep "nothing to commit"|wc -l` -ne 1 ]
 then
 	echo "Something isn't checked in yet"
 	git status
