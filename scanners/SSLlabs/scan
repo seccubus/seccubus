@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk, Alex Smirnoff, Glenn ten Cate
+# Copyright 2017 Frank Breedijk, Alex Smirnoff, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,11 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ------------------------------------------------------------------------------
-# This script will call Zate Berg's Nessis-IVIL-Wrapper (see 
-# https://github.com/Zate/Nessus-IVIL-Wrapper ) to connect to a Nessus instance,
-# initiate a scan, save the results as an IVIL file and import it
-# ------------------------------------------------------------------------------
 
 use strict;
 use SeccubusV2;
@@ -474,6 +469,7 @@ sub parse_finding($$) {
 	if ( ! %$meta ) {
 		$txt = "Unknown finding '$key'\nAPI returned:\n";
 		$txt .= to_json({data => $finding});
+		die $txt;
 	} else {
 		$txt = "$meta->{description}";
 		if ( $meta->{type} eq "certificates" ) {
@@ -506,6 +502,8 @@ sub parse_finding($$) {
 			 $txt .= parse_sims($finding);
 		} elsif ( $meta->{type} eq "suites" ) {
 			 $txt .= parse_suites($finding);
+		} elsif ( $meta->{type} eq "namedGroups") {
+			$txt .= parse_named_groups($finding);
 		} else {
 			die "Unknow data type $meta->{type}" . ( Dumper $meta ) . " ";
 		}
@@ -710,31 +708,54 @@ sub parse_sims($) {
 		$txt .= " / $s->{client}->{platform}" if $s->{client}->{platform};
 
 		if ( $s->{keyAlg} ) {
-			my $major = int($s->{protocolId}/256);
-			my $minor = $s->{protocolId}-(256*$major);
-
-			$major = "SSL 1" if $major == 0;
-			$major = "SSL 2" if $major == 1;
-			$major = "SSL 3" if $major == 2;
-			$major = "TLS 1" if $major == 3;
 			$s->{sigAlg} =~ s/withRSA$//;
-			$txt .= "\t$s->{keyAlg} $s->{keySize} ($s->{sigAlg})\t$major.$minor\t$s->{suiteName}\n";
+			my $proto = parse_version($s->{protocolId});
+			$txt .= "\t$s->{keyAlg} $s->{keySize} ($s->{sigAlg})\t$proto\t$s->{suiteName}\n";
 		}
 		$txt .= "\t\t$s->{errorMessage}\n" if $s->{errorMessage};
 	}
 	return $txt;
 }
 
+sub parse_version($) {
+	my $n = shift;
+
+	my $major = int($n/256);
+	my $minor = $n-(256*$major);
+
+	$major = "SSL 1" if $major == 0;
+	$major = "SSL 2" if $major == 1;
+	$major = "SSL 3" if $major == 2;
+	$major = "TLS 1" if $major == 3;
+
+	return "$major\.$minor";
+}
+
 sub parse_suites($) {
-	my $f = shift;
+	my $a = shift;
 
 	my $txt;
-	if ( $f->{preference} ) {
-		$txt .= "Server sets the order of preference for cipher suites\n";
-	} else {
-		$txt .= "Server DOES NOT set the order of preference for cipher suites\n";
-	}
-	$txt .= parse_array($f->{list},{ fields => ["name", "cipherStrength"]});
+	foreach my $f (@$a) { 
 
+		my $proto = parse_version($f->{protocol});
+		$txt .= "$proto\n-------\n";
+		if ( $f->{preference} ) {
+			$txt .= "Server sets the order of preference for cipher suites\n";
+		} else {
+			$txt .= "Server DOES NOT set the order of preference for cipher suites\n";
+		}
+		$txt .= parse_array($f->{list},{ fields => ["name", "cipherStrength"]});
+		$txt .= "\n";
+	}
+	return $txt;
+}
+
+sub parse_named_groups($) {
+	my $f = shift;
+
+	my $meta = { "fields" => [ "id", "name", "bits"] };
+	my $txt = "List of (named) DH groups:\n--------------------------\n\nID,name,bits\n";
+	$txt .= parse_array($f->{list},$meta);
+	
 	return $txt;
 }

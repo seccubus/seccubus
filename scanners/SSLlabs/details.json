@@ -31,6 +31,11 @@
 		"name"			: "Drown attack",
 		"note"			: "See https://drownattack.com/"
 	},
+	"ecdhParameterReuse": {
+		"type"			: "boolean",
+		"name"			: "ECHD parameter reuse : ",
+		"note"			: "DHE or ECDHE parameter reuse saves some CPU (more so for ECDHE than for DHE) at the theoretical expense of a weakening of the 'forward secrecy' rule, which is considered not a problem as long as the reused parameters are cached in RAM only and the server implementation does not leak information on the selected DH/ECDH secret key even when faced with invalid values from the client." 
+	},
 	"fallbackScsv": {
 		"type"			: "boolean",
 		"description"	: "TLS_FALLBACK_SVC support : ",
@@ -112,6 +117,19 @@
 		"description"	: "Outcome of test for CVE-2014-0224 (OpenSSL Ccs vulnerability) : ",
 		"startsAt"		: -1
 	},
+	"miscIntolerance" : {
+		"type"			: "bitmap",
+		"description"	: "Various types of intolerances",
+		"values"		: [
+			"Extension intolerance",
+			"Long handshake intolerance",
+			"Long handshake intolerance workaround success"
+		]
+	},
+	"namedGroups" : {
+		"type"			: "namedGroups",
+		"description"	: "List of (named) DH groups"
+	},
 	"npnProtocols" : {
 		"type"			: "string",
 		"description"	: "Supported NPN protocols : "
@@ -130,6 +148,18 @@
 		"type"			: "array",
 		"description"	: "This is a list of supported protocols : \n",
 		"fields"		: [ "name","version" ]
+	},
+	"protocolIntolerance" : {
+		"type"			: "bitmap",
+		"description"	: "Detected protocol intolerances : ",
+		"values"		: [
+			"TLS 1.0",
+			"TLS 1.1",
+			"TLS 1.2",
+			"TLS 1.3",
+			"TLS 1.152",
+			"TLS 2.152"
+		]
 	},
 	"rc4Only" : {
 		"type"			: "boolean",
@@ -184,7 +214,7 @@
 	},
 	"suites" : {
 		"type"			: "suites",
-		"description"	: "List of cipher suites\n\n"
+		"description"	: "List of cipher suites per protocols\n\n"
 	},
 	"supportsAlpn" : {
 		"type"			: "boolean",
