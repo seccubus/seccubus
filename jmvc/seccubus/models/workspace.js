@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,12 @@ steal('jquery/model', function(){
  */
 $.Model('Seccubus.Models.Workspace',
 /* @Static */
-// Not implemented:
-//destroy : "/workspaces/{id}.json"
 {
-  	create : "POST json/createWorkspace.pl",
-	findAll: "POST json/getWorkspaces.pl",
-	//findOne: "POST json/getWorkspace.pl",
-	update : "POST json/updateWorkspace.pl"
+  	create : api("createWorkspace.pl"),
+	findAll: api("getWorkspaces.pl"),
+	//findOne: api("getWorkspace.pl"),
+	update : api("updateWorkspace.pl")
+	//destroy : api("/workspaces/{id}.json")
 },
 /* @Prototype */
 {});

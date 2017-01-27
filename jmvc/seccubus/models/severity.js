@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.Severity',
 /* @Static */
 {
-	findAll: "json/getSeverity.pl"
+	findAll: api("getSeverity.pl")
   	//findOne : "/severity/{id}.json", 
   	//create : "/severity.json",
  	//update : "/severity/{id}.json",

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Frank Breedijk, Petr
+ * Copyright 2017 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 // steal model files
+
+function base_url() {
+	return "json/";
+} 
+function api(url, method){
+	method = method || 'POST';
+	return method + " " + base_url() + url;
+}
 
 steal(
 	'jquery/model', 

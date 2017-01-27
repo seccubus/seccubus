@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.Scanner',
 /* @Static */
 {
-	findAll: "json/getScanners.pl"
+	findAll: api("getScanners.pl")
   	//findOne : "/scanners/{id}.json", 
   	//create : "/scanners.json",
  	//update : "/scanners/{id}.json",

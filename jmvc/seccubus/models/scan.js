@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,10 @@ $.Model('Seccubus.Models.Scan',
 	 * Callback function in case of error
 	 * @return {Deferred} A deferred Scans (Scan.List)
 	 */
+	/*
 	findAll : function(params,success,error){
 		return $.ajax({
-			url	: "json/getScans.pl",
+			url	: base_url + "getScans.pl",
 			type	: "POST",
 			dataType: "json scan.models",
 			data	: params,
@@ -44,10 +45,12 @@ $.Model('Seccubus.Models.Scan',
 			error	: error
 		});
 	},
+	*/
+	findAll : api("getScans.pl"),
   	// Not implemented
 	//findOne	: "/scans/{id}.json", 
-  	create	: "POST json/createScan.pl",
-	update	: "POST json/updateScan.pl"
+  	create	: api("createScan.pl"),
+	update	: api("updateScan.pl")
   	// Not implemented yet
 	//destroy	: "/scans/{id}.json"
 },

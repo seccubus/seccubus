@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,16 +30,16 @@ $.Model('Seccubus.Models.Issue',
 	 * json/getFndings.pl
 	 * @return {Deferred} Deferred with all issues in it
 	 */
-	findAll: "POST json/getIssues.pl",
-  	findOne: "POST json/getIssues.pl", 
-  	create : "POST json/updateIssue.pl",
+	findAll: api("getIssues.pl"),
+  	findOne: api("getIssues.pl"), 
+  	create : api("updateIssue.pl"),
 	/*
 	 * @function update
 	 * This function updates a single issue, it is the interface to
 	 * json/updateIssue.pl
 	 * @return {Object} the updated object or an error
 	 */
- 	update : "POST json/updateIssue.pl"
+ 	update : api("updateIssue.pl")
  	//destroy : "/issues/{id}.json"
 },
 /* @Prototype */

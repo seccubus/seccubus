@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Petr, Frank Breedijk
+ * Copyright 2017 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,22 +34,12 @@ $.Model('Seccubus.Models.Assethost',
 	 * Callback function in case of error
 	 * @return {Deferred} A deferred Assets (Asset.Table)
 	 */
-	findAll : function(params,success,error){
-		return $.ajax({
-			url	: "json/getAssetHosts.pl",
-			type	: "POST",
-			dataType: "json assethost.models",
-			data	: params,
-			success	: success,
-			error	: error
-		});
-	},
-
+	findAll : api("getAssetHosts.pl"),
   	// Not implemented
 	//findOne	: "/scans/{id}.json", 
-	create : "POST json/createAssetHost.pl",
-	update : "POST json/updateAssetHost.pl",
-	destroy : "POST json/deleteAssetHost.pl"
+	create : api("createAssetHost.pl"),
+	update : api("updateAssetHost.pl"),
+	destroy : api("deleteAssetHost.pl")
   	// Not implemented yet
 	//destroy	: "/scans/{id}.json"
 },

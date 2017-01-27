@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.Notification',
 /* @Static */
 {
-	findAll: "POST json/getNotifications.pl",
+	findAll: api("getNotifications.pl"),
   	//findOne : "/notifications/{id}.json", 
-  	create : "POST json/createNotification.pl",
- 	update : "POST json/updateNotification.pl",
-  	destroy : "POST json/deleteNotification.pl"
+  	create : api("createNotification.pl"),
+ 	update : api("updateNotification.pl"),
+  	destroy : api("deleteNotification.pl")
 },
 /* @Prototype */
 {});

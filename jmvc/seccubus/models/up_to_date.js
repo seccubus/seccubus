@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ $.Model('Seccubus.Models.UpToDate',
 	 * one row will be returned
 	 * @return {Deferred} Deferred with all (1) UpToDate objects in it
 	 */
-	findAll: "json/UpToDate.pl"
+	findAll: api("UpToDate.pl")
 },
 /* @Prototype */
 {});
