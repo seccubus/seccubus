@@ -50,6 +50,7 @@
 		"description"	: "Scan started at : ",
 		"note"			: "Time at which the scan was started"
 	},
+	"cacheExpiryTime":  { "ignore" : true },
 	"criteriaVersion":  { "ignore" : true },
 	"engineVersion":  	{ "ignore" : true },
 	"host":  			{ "ignore" : true },
