@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ $.Model('Seccubus.Models.ConfigItem',
 	 *
 	 * message - String, message about the configuraiton item
 	 */
-	findAll: "json/ConfigTest.pl"
+	findAll: api("ConfigTest.pl")
 },
 /* @Prototype */
 {});

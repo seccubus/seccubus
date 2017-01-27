@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk, Steve Launius
+ * Copyright 2017 Frank Breedijk, Steve Launius
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,8 @@ $.Model('Seccubus.Models.Finding',
 	 * json/getFndings.pl
 	 * @return {Deferred} Deferred with all findings in it
 	 */
-	findAll: "POST json/getFindings.pl",
+	//findAll: "POST json/getFindings.pl",
+	findAll: api("getFindings.pl"),
   	//findOne : "/findings/{id}.json", 
   	//create : "/findings.json",
 	/*
@@ -39,7 +40,7 @@ $.Model('Seccubus.Models.Finding',
 	 * json/updateFinding.pl
 	 * @return {Object} the updated object or an error
 	 */
- 	update : "POST json/updateFinding.pl"
+ 	update : api("updateFinding.pl")
   	//destroy : "/findings/{id}.json"
 },
 /* @Prototype */

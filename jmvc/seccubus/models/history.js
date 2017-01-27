@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.History',
 /* @Static */
 {
-	findAll: "POST json/getFindingHistory.pl"
+	findAll: api("getFindingHistory.pl")
   	//findOne : "/histories/{id}.json", 
   	//create : "/histories.json",
  	//update : "/histories/{id}.json",
