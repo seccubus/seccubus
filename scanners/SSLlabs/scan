@@ -469,7 +469,6 @@ sub parse_finding($$) {
 	if ( ! %$meta ) {
 		$txt = "Unknown finding '$key'\nAPI returned:\n";
 		$txt .= to_json({data => $finding});
-		die $txt;
 	} else {
 		$txt = "$meta->{description}";
 		if ( $meta->{type} eq "certificates" ) {
