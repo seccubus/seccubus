@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -55,6 +55,10 @@ my %exclude = (
 	"./junit_output.xml"	
 						=> "Build file",
 	"./etc/config.xml"	=> "Local config file",
+	"./etc/config.xml.local"	
+						=> "Local config file",
+	"./etc/config.xml.oapp8"	
+						=> "Local config file",
 	"./etc/v2.seccubus.com.bundle"	
 						=> "Certificate bundle"
 );

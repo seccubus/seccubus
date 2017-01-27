@@ -26,6 +26,7 @@ For more information visit [www.seccubus.com]
 
 ![Travis build status](https://travis-ci.org/schubergphilis/Seccubus_v2.svg?branch=master)
 
+Changes of this branch vs the [latest/previous release](https://github.com/schubergphilis/Seccubus_v2/releases/tag/2.26)
 ---
 x-x-2016 - 2.27 - ?
 =================================================================
@@ -34,6 +35,7 @@ Enhancements
 ------------
 * #361 - arkenoi created a netsparker2ivil tool that allows you to manually import Netsparker scans
 * #331 - Now using SSLLabs API v3
+* #386 - New SSL labs API output featues incorporporated
 
 Bug Fixes
 ---------
@@ -44,3 +46,4 @@ Bug Fixes
 * #376 - Removed 50 host limit in filters as it was counterproductive
 * #374 - Fixed Nikto path detection code
 * #377 - Hostname filter wasn't working correctly, typed Hostname iso HostName
+* #385 - SSLlabs failed because cypher preference order was split out per protocol by SSLlabs now.
