@@ -75,7 +75,9 @@ Requires:	perl(Net::IP)
 
 Requires:	httpd
 Requires:	mysql
-Requires:	mysql-server
+%{?el5:Requires: mysql-server}
+%{?el6:Requires: mysql-server}
+%{?el7:Requires: mariadb-server}
 
 %description
 Tool to automatically fire regular vulnerability scans with Nessus, OpenVAS,
