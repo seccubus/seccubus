@@ -37,6 +37,7 @@ Enhancements
 * #331 - Now using SSLLabs API v3
 * #386 - New SSL labs API output featues incorporporated
 * #389 - API endpoint URL has moved to a single function so it can be patched if deployed in a three tier architecture
+* #392 - Alternative handling of the updateFIndings.pl API
 
 Bug Fixes
 ---------

@@ -31,10 +31,14 @@ print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Con
 
 my $params = $query->Vars;
 my $workspace_id = $params->{'attrs[workspaceId]'};
+$workspace_id = $params->{'workspaceId'} unless $workspace_id;
 my @ids = split(/\0/,$params->{"ids[]"});
 my $remark = $params->{'attrs[remark]'};
+$remark = $params->{'remark'} unless $remark;
 my $status = $params->{'attrs[status]'};
+$status = $params->{'status'} unless $status;
 my $overwrite = $params->{'attrs[overwrite]'};
+$overwrite = $params->{'overwrite'} unless $overwrite;
 
 if ( $overwrite eq "true" || $overwrite eq "on" ) {
 	$overwrite = 1;
