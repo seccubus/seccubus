@@ -24,7 +24,7 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
-![Travis build status](https://travis-ci.org/schubergphilis/Seccubus_v2.svg?branch=master)
+![Travis build status](https://travis-ci.org/schubergphilis/Seccubus.svg?branch=master)
 
 Changes of this branch vs the [latest/previous release](https://github.com/schubergphilis/Seccubus_v2/releases/tag/2.26)
 ---
