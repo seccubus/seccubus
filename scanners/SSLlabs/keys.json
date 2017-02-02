@@ -50,6 +50,11 @@
 		"description"	: "Scan started at : ",
 		"note"			: "Time at which the scan was started"
 	},
+	"statusMessage":	{ 
+		"type" 			: "string",
+		"description"	: "Status message received from SSL labs : ",
+		"note"			: ""
+	},
 	"cacheExpiryTime":  { "ignore" : true },
 	"criteriaVersion":  { "ignore" : true },
 	"engineVersion":  	{ "ignore" : true },
@@ -59,6 +64,5 @@
 	"progress":  		{ "ignore" : true },
 	"protocol":  		{ "ignore" : true },
 	"status":	  		{ "ignore" : true },
-	"statusMessage":	{ "ignore" : true },
 	"testTime":	  		{ "ignore" : true }
 }

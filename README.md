@@ -49,3 +49,4 @@ Bug Fixes
 * #374 - Fixed Nikto path detection code
 * #377 - Hostname filter wasn't working correctly, typed Hostname iso HostName
 * #385 - SSLlabs failed because cypher preference order was split out per protocol by SSLlabs now.
+* #394 - SSLlabs scanner failed if all enpoints fail and --gradeonly was used

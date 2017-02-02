@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -77,23 +77,41 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[0]->{workspace}, 100, "Correct workspace returned"); $tests++;
 	is($$json[0]->{password}, undef, "Correct password returned"); $tests++;
 	
+	# Create gradeonly scan that will fail
+	$json = webcall("createScan.pl", "workspaceId=100", "name=gradeonly_error", "scanner=SSLlabs", "parameters=--hosts+\@HOSTS+--from-cache+--gradeonly", "targets=www1.example.com\%0Anope.seccubus.com");
+	is(@$json, 1, "Correct number of records returned"); $tests++;
+	is($$json[0]->{id}, 3, "Correct ID returned"); $tests++;
+	is($$json[0]->{name}, "gradeonly_error", "Correct name returned"); $tests++;
+	is($$json[0]->{scanner}, "SSLlabs", "Correct scanner returned"); $tests++;
+	is($$json[0]->{parameters}, '--hosts @HOSTS --from-cache --gradeonly', "Correct parameters returned"); $tests++;
+	is($$json[0]->{targets}, "www1.example.com\nnope.seccubus.com", "Correct targets returned"); $tests++;
+	is($$json[0]->{workspace}, 100, "Correct workspace returned"); $tests++;
+	is($$json[0]->{password}, undef, "Correct password returned"); $tests++;
+
 	# Read scans back
 	$json = webcall("getScans.pl", "workspaceId=100");
-	is(@$json, 2, "Correct number of records returned"); $tests++;
-	is($$json[1]->{id}, 1, "Correct ID returned"); $tests++;
-	is($$json[1]->{name}, "ssl", "Correct name returned"); $tests++;
-	is($$json[1]->{scanner}, "SSLlabs", "Correct scanner returned"); $tests++;
-	is($$json[1]->{parameters}, '--hosts @HOSTS --from-cache', "Correct parameters returned"); $tests++;
-	is($$json[1]->{targets}, "www.seccubus.com\nwww.schubergphilis.com\nbadssl.com\nexpired.badssl.com\nmozilla-old.badssl.com\nssl.sectionzero.org", "Correct targets returned"); $tests++;
-	is($$json[1]->{workspace}, 100, "Correct workspace returned"); $tests++;
-	is($$json[1]->{password}, undef, "Correct password returned"); $tests++;
+	is(@$json, 3, "Correct number of records returned"); $tests++;
+	is($$json[2]->{id}, 1, "Correct ID returned"); $tests++;
+	is($$json[2]->{name}, "ssl", "Correct name returned"); $tests++;
+	is($$json[2]->{scanner}, "SSLlabs", "Correct scanner returned"); $tests++;
+	is($$json[2]->{parameters}, '--hosts @HOSTS --from-cache', "Correct parameters returned"); $tests++;
+	is($$json[2]->{targets}, "www.seccubus.com\nwww.schubergphilis.com\nbadssl.com\nexpired.badssl.com\nmozilla-old.badssl.com\nssl.sectionzero.org", "Correct targets returned"); $tests++;
+	is($$json[2]->{workspace}, 100, "Correct workspace returned"); $tests++;
+	is($$json[2]->{password}, undef, "Correct password returned"); $tests++;
 	is($$json[0]->{id}, 2, "Correct ID returned"); $tests++;
 	is($$json[0]->{name}, "gradeonly", "Correct name returned"); $tests++;
 	is($$json[0]->{scanner}, "SSLlabs", "Correct scanner returned"); $tests++;
 	is($$json[0]->{parameters}, '--hosts @HOSTS --from-cache --publish --gradeonly', "Correct parameters returned"); $tests++;
 	is($$json[0]->{targets}, "www.seccubus.com\nwww.schubergphilis.com", "Correct targets returned"); $tests++;
 	is($$json[0]->{workspace}, 100, "Correct workspace returned"); $tests++;
-	is($$json[0]->{password}, undef, "Correct password returned"); $tests++;
+	is($$json[1]->{id}, 3, "Correct ID returned"); $tests++;
+	is($$json[1]->{name}, "gradeonly_error", "Correct name returned"); $tests++;
+	is($$json[1]->{scanner}, "SSLlabs", "Correct scanner returned"); $tests++;
+	is($$json[1]->{parameters}, '--hosts @HOSTS --from-cache --gradeonly', "Correct parameters returned"); $tests++;
+	is($$json[1]->{targets}, "www1.example.com\nnope.seccubus.com", "Correct targets returned"); $tests++;
+	is($$json[1]->{workspace}, 100, "Correct workspace returned"); $tests++;
+	is($$json[1]->{password}, undef, "Correct password returned"); $tests++;
+	is($$json[1]->{password}, undef, "Correct password returned"); $tests++;
 	
 	# Lets run a scan
 	pass("Running ssllabs scan"); $tests++;
@@ -102,6 +120,9 @@ if (`hostname` =~ /^sbpd/) {
 	# Lets run a scan
 	pass("Running gradeonly scan"); $tests++;
 	`perl -MSeccubusV2 -I SeccubusV2 bin/do-scan -w test1 -s gradeonly`;
+
+	pass("Running gradeonly_error scan"); $tests++;
+	`perl -MSeccubusV2 -I SeccubusV2 bin/do-scan -w test1 -s gradeonly_error`;
 
 	# We should have a lot of findings in scan 1
 	$json = webcall("getFindings.pl", "workspaceId=100", "scanIds[]=1");
@@ -114,7 +135,13 @@ if (`hostname` =~ /^sbpd/) {
 	# We should only have grade or gradeTrustIgnored plugins
 	$json = webcall("getFindings.pl", "workspaceId=100", "scanIds[]=2");
 	foreach my $f ( @$json ) {
-		like($f->{plugin}, qr/^grade(TrustIgnored)?$/i, "Finding $f->{id} is plugin type grade or gradeTrustIgnored"); $tests++;
+		like($f->{plugin}, qr/^(grade(TrustIgnored)?|statusMessage|ERROR\/Assessment failed)$/i, "Finding $f->{id} is correct type"); $tests++;
+	}
+
+	# We should only have ERROR or statusMessage plugins
+	$json = webcall("getFindings.pl", "workspaceId=100", "scanIds[]=3");
+	foreach my $f ( @$json ) {
+		like($f->{plugin}, qr/^(statusMessage|ERROR\/Assessment failed)$/i, "Finding $f->{id} is correct type"); $tests++;
 	}
 
 	#die Dumper $json;

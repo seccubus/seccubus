@@ -350,7 +350,15 @@ foreach my $host ( @hosts ) {
 					$finding->{ip}="$host/$ep->{ipAddress}";
 					foreach my $epkey ( sort keys %$ep ) {
 						if ( ! $keys->{$epkey}->{ignore} ) {
-							if ( ( $gradeonly && $keys->{$epkey}->{type} eq "grade" ) || ! $gradeonly ) {
+							if ( $gradeonly ) {
+								if ( $keys->{$epkey}->{type} eq "grade" ||
+									 ( $epkey eq "statusMessage" && $ep->{$epkey} ne "Ready" )
+								   ) {
+									$finding->{id} = $epkey;
+									$finding->{finding} = parse_finding($epkey,$ep->{$epkey},$keys->{$epkey});
+									print OUT ivil_finding($finding);
+								} 
+							} else {
 								if ( $epkey eq "details" ) {
 									foreach my $dkey ( sort keys %{$ep->{$epkey}} ) {
 										if ( ! $details->{$dkey}->{ignore} ) {
@@ -369,7 +377,15 @@ foreach my $host ( @hosts ) {
 					}
 				}
 			} elsif ( ! $keys->{$key}->{ignore} ) {
-				if ( ( $gradeonly && $keys->{key}->{type} eq "grade" ) || ! $gradeonly ) {
+				if ( $gradeonly  )  { 
+					if ( $keys->{$key}->{type} eq "grade" ) {
+						$finding->{hostname} = $host;
+						$finding->{ip} = $host;
+						$finding->{id} = $key;
+						$finding->{finding} = parse_finding($key,$scan->{$key},$keys->{$key});
+						print OUT ivil_finding($finding);
+					}
+				} else {
 					$finding->{hostname} = $host;
 					$finding->{ip} = $host;
 					$finding->{id} = $key;
