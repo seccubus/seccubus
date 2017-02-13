@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk, Petr, Andreas Thienemann
+# Copyright 2017 Frank Breedijk, Petr, Andreas Thienemann
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ use lib "..";
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 use JSON;
+use Data::Dumper;
 
 sub result($$$$);
 sub bye($);

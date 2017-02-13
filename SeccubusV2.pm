@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2016 Frank Breedijk, Glenn ten Cate
+# Copyright 2017 Frank Breedijk, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -56,7 +56,15 @@ use Carp;
 use SeccubusHelpers;
 
 push (@main::INC, @INC);
-$ENV{REMOTE_USER} = "admin" unless $ENV{REMOTE_USER};		# Run as admin user if the web server auth is not setup
+if ( ! $ENV{REMOTE_USER} ) {
+	my $conf = get_config();
+	if ( $config->{auth}->{http_auth_header} && $ENV{"HTTP_" . $conf->{auth}->{http_auth_header}} ) {   
+										# A REMOTE_USER header is sent
+		$ENV{REMOTE_USER} = $ENV{"HTTP_" . $conf->{auth}->{http_auth_header}};
+	} else {
+		$ENV{REMOTE_USER} = "admin"		# Run as admin user if the web server auth is not setup
+	}
+}
 check_config();
 
 =head1 Utility functions
