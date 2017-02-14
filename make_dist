@@ -20,29 +20,6 @@
 # the jmvc unit test ha
 # ------------------------------------------------------------------------------
 
-
-# Updated this test to Git due to issue #20
-echo '*************************************************************************'
-echo "Make sure everything is checked in"
-echo '*************************************************************************'
-if [ `git status|grep "nothing to commit"|wc -l` -ne 1 ]
-then
-	echo "Something isn't checked in yet"
-	git status
-	exit 1
-fi 
-
-echo '*************************************************************************'
-echo "Lets see if all jmvc unit tests pass"
-echo '*************************************************************************'
-#./unit_test_jmvc |tee /tmp/test.$$
-echo OK > /tmp/test.$$
-if [ `grep 'OK' /tmp/test.$$|wc -l` -lt 1 ] 
-then
-	rm /tmp/test.$$
-	exit 1
-fi 
-
 echo '*************************************************************************'
 echo "Building jmvc"
 echo '*************************************************************************'
