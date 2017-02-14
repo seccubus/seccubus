@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone='yes'?>
 <!--
-     Copyright 2015 Frank Breedijk
+     Copyright 2017 Frank Breedijk
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -31,4 +31,7 @@
 		<configdir>/home/travis/build/schubergphilis/Seccubus_v2/etc</configdir>
 		<dbdir>/home/travis/build/schubergphilis/Seccubus_v2/db</dbdir>
 	</paths>
+	<auth>
+		<http_auth_header></http_auth_header>
+	</auth>
 </seccubus>
