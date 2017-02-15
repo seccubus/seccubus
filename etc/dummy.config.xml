@@ -25,11 +25,11 @@
 		<password>seccubus</password>
 	</database>
 	<paths>
-		<modules>/home/travis/build/schubergphilis/Seccubus_v2/SeccubusV2</modules>
-		<scanners>/home/travis/build/schubergphilis/Seccubus_v2/scanners</scanners>
-		<bindir>/home/travis/build/schubergphilis/Seccubus_v2/bin</bindir>
-		<configdir>/home/travis/build/schubergphilis/Seccubus_v2/etc</configdir>
-		<dbdir>/home/travis/build/schubergphilis/Seccubus_v2/db</dbdir>
+		<modules>/home/travis/build/schubergphilis/Seccubus/SeccubusV2</modules>
+		<scanners>/home/travis/build/schubergphilis/Seccubus/scanners</scanners>
+		<bindir>/home/travis/build/schubergphilis/Seccubus/bin</bindir>
+		<configdir>/home/travis/build/schubergphilis/Seccubus/etc</configdir>
+		<dbdir>/home/travis/build/schubergphilis/Seccubus/db</dbdir>
 	</paths>
 	<auth>
 		<http_auth_header></http_auth_header>
