@@ -117,15 +117,23 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-x-x-2016 - 2.27 - ?
+21-2-2017 - 2.28 - The Docker edition
 =================================================================
+
+For my work at [Schuberg Philis](https://www.schubergphilis.com) we wanted to run Seccubus in Docker 
+containers. This and inspiration from [Karl Newell](https://hub.docker.com/r/karlnewell/seccubus/) 
+caused me to add a Dockerfile (and some other files) to Seccubus so that Seccubus can now be 
+run in a docker container. 
+
+In addition I fixed a couple of bugs and changed the ssllabs scanner so it now uses the v3 API endpoint.
 
 Enhancements
 ------------
 * #361 - arkenoi created a netsparker2ivil tool that allows you to manually import Netsparker scans
 * #331 - Now using SSLLabs API v3
 * #386 - New SSL labs API output featues incorporporated
-* #389 - API endpoint URL has moved to a single function so it can be patched if deployed in a three tier architecture
+* #389 - API endpoint URL has moved to a single function so it can be patched if deployed in a 
+         three tier architecture
 * #392 - Alternative handling of the updateFIndings.pl API
 * #397 - Allow seccubus to authenticate via an http request header
 * #399 - Create a Docker container for Seccubus
