@@ -29,7 +29,7 @@ Make sure that README.md reflects all changes since the last released version, M
 
 # Make sure that all unit tests pass
 
-Check [![Travis build status](https://travis-ci.org/schubergphilis/Seccubus.svg?branch=master)](https://travis-ci.org/schubergphilis/Seccubus_v2/)
+Check [![Travis build status](https://travis-ci.org/schubergphilis/Seccubus.svg?branch=master)](https://travis-ci.org/schubergphilis/Seccubus/)
 
 # Make sure the package builds on all platforms
 
