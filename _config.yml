@@ -6,6 +6,7 @@ description: Easy Automated vulnerability scanning and reporting
 url: https://www.seccubus.com
 baseurl: 
 timezone: Europe/Amsterdam
+future: true
 
 permalink: pretty
 paginate_path: "news/:num/"
