@@ -90,7 +90,7 @@ You know how mail works.
 
 # Update online version check
 
-Code is on [Frank Breedijk's GitHub](https://github.com/seccubus/seccubus.github.io/tree/master/_posts)
+Code is on [Frank Breedijk's GitHub](https://github.com/seccubus/Seccubus_version_check)
 
 # Tweet, LinkedIn, Facebook, etc...
 
