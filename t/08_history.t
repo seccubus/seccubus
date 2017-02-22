@@ -79,7 +79,7 @@ if (`hostname` =~ /^sbpd/) {
 
 	# Lets run a scan
 	pass("Running scan test1"); $tests++;
-	`PERL5LIB=$HOME/SeccubusV2;$PERL5LIB perl -MSeccubusV2 -I SeccubusV2 bin/do-scan -w test1 -s ssl`;
+	`PERL5LIB="\$HOME/SeccubusV2;\$PERL5LIB" perl -MSeccubusV2 -I SeccubusV2 bin/do-scan -w test1 -s ssl`;
 
 	# We should have a lot of findings
 	$json = webcall("getFindings.pl", "workspaceId=100", "scanIds[]=1");
