@@ -18,6 +18,7 @@ script:
 - make 
 - pwd
 - ls -al /home/travis/build/schubergphilis/Seccubus/blib/arch
+- ls -al /home/travis/build/schubergphilis/Seccubus/blib/lib
 - make test
 - ./build_jmvc
 sudo: false
