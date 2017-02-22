@@ -16,6 +16,7 @@ before_script:
 script:
 - perl Makefile.PL
 - make 
+- pwd
 - make test
 - ./build_jmvc
 sudo: false
