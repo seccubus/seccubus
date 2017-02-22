@@ -16,7 +16,7 @@ before_script:
 script:
 - perl Makefile.PL
 - make 
-- for test in t/*; do echo "*** $test ***";perl -MSeccubusV2 $test; done
+- for test in t/*; do echo "*** $test ***";perl -ISeccubusV2 $test; done
 - ./build_jmvc
 sudo: false
 notifications:
