@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -78,7 +78,8 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[0]->{password}, undef, "Correct password returned"); $tests++;
 
 	# Lets run a scan
-	`perl -MSeccubusV2 -I SeccubusV2 bin/do-scan -w test1 -s ssl`;
+	ok("Runnin scan test1"); $tests++;
+	`perl -MSeccubusV2 -ISeccubusV2 bin/do-scan -w test1 -s ssl`;
 
 	# We should have a lot of findings
 	$json = webcall("getFindings.pl", "workspaceId=100", "scanIds[]=1");
