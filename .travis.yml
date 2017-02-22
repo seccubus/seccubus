@@ -17,6 +17,7 @@ script:
 - perl Makefile.PL
 - make 
 - pwd
+- ls -al /home/travis/build/schubergphilis/Seccubus/blib/arch
 - make test
 - ./build_jmvc
 sudo: false
