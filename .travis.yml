@@ -16,7 +16,7 @@ before_script:
 script:
 - perl Makefile.PL
 - make 
-- make test
+- travis_wait make test
 - ./build_jmvc
 sudo: false
 notifications:
