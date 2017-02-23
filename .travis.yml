@@ -14,12 +14,7 @@ before_script:
 - mysql -e "create database seccubus"
 - cpanm DBI DBD::mysql
 script:
-- perl Makefile.PL
-- make 
-- pwd
-- ls -al /home/travis/build/schubergphilis/Seccubus/blib/arch
-- ls -al /home/travis/build/schubergphilis/Seccubus/blib/lib
-- make test
+- prove
 - ./build_jmvc
 sudo: false
 notifications:
