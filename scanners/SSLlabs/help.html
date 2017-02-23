@@ -1,5 +1,5 @@
 <!--
-Copyright 2015 Frank Breedijk, Frank Spijkerman
+Copyright 2017 Frank Breedijk, Frank Spijkerman
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,8 +15,11 @@ limitations under the License.
 -->
 This scanner takes the following parameters:
 <ul>
-	<li>--hosts
-		<br>- The file containing the 'hosts' to scan
+	<li>
+		--hosts @HOSTS
+		<br>Specification of hosts to scan
+	<li>--gradeonly
+		<br>Only process the findings that give a grade
 	<li>--api (-a)
 		<br>- URL of the ssllabs API, defaults to
                     https://api.ssllabs.com/api/v2/

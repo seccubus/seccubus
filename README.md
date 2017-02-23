@@ -127,4 +127,4 @@ Enhancements
 
 Bug Fixes
 ---------
-* 
+* #403 - SSLlabs scanner help file was not up to date
