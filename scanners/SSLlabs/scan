@@ -14,7 +14,7 @@
 # limitations under the License.
 
 use strict;
-lib "../../SeccubusV2";
+use lib "../../SeccubusV2"
 use SeccubusV2;
 use SeccubusRuns;
 use SeccubusFindings;
