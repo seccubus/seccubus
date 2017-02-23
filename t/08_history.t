@@ -77,10 +77,6 @@ if (`hostname` =~ /^sbpd/) {
 	is($$json[0]->{workspace}, 100, "Correct workspace returned"); $tests++;
 	is($$json[0]->{password}, undef, "Correct password returned"); $tests++;
 
-	for my $dir ( @INC ) {
-		fail("--- $dir ---\n" . `ls $dir`); $tests++;
-	}
-
 	# Lets run a scan
 	pass("Running scan test1"); $tests++;
 	`PERL5LIB="\$HOME/SeccubusV2;\$PERL5LIB" perl -MSeccubusV2 -I SeccubusV2 bin/do-scan -w test1 -s ssl`;
