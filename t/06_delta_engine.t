@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,6 +21,9 @@ use Algorithm::Diff qw( diff );
 use JSON;
 use Data::Dumper;
 use Test::More;
+use SeccubusV2;
+use SeccubusFindings;
+
 my $tests = 0;
 
 sub decodeit(@);
@@ -133,7 +136,7 @@ if (`hostname` =~ /^sbpd/) {
 	ok($$json[5]->{statusName} eq 'Closed', "Status[6] ($$json[5]->{statusName}) is Closed, after reset");
 	ok($$json[6]->{statusName} eq 'MASKED', "Status[7] ($$json[6]->{statusName}) is MASKED, after reset");
 
-	# Loading none - 54-60
+	# Loading none - 53-59
 	`perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml`;
 	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
 	ok($$json[0]->{statusName} eq 'Gone', "Status[1] ($$json[0]->{statusName}) is Gone, after load none");
@@ -143,6 +146,96 @@ if (`hostname` =~ /^sbpd/) {
 	ok($$json[4]->{statusName} eq 'Gone', "Status[5] ($$json[4]->{statusName}) is Gone, after load none");
 	ok($$json[5]->{statusName} eq 'Closed', "Status[6] ($$json[5]->{statusName}) is Closed, after load none");
 	ok($$json[6]->{statusName} eq 'MASKED', "Status[7] ($$json[6]->{statusName}) is MASKED, after load none");
+
+	# Hard set 6 and 7 to Gone too
+	`perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=6 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=7 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
+	# Create a new Gone finding
+	update_finding(
+		workspace_id => 100,
+		scan_id => 1,
+		run_id => 4,
+		host => 'A',
+		port => '80/tcp',
+		plugin => '8',
+		finding => 'B',
+		severity => 2,
+		status => 5
+	);
+	# Validate 60 - 62
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
+	ok($$json[5]->{statusName} eq 'Gone', "Status[6] ($$json[5]->{statusName}) is Gone after setting it the hard way");
+	ok($$json[6]->{statusName} eq 'Gone', "Status[7] ($$json[6]->{statusName}) is Gone after setting it the hard way");
+	ok($$json[7]->{statusName} eq 'Gone', "Status[8] ($$json[7]->{statusName}) is Gone after creating it the hard way");
+
+
+	# Load BBBBBBBB - 63-70
+	`perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-BBBBBBBB.ivil.xml`;
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
+	is($$json[0]->{statusName}, 'New', "Status[1] ($$json[0]->{statusName}) is New, Status before gone is new");
+	is($$json[1]->{statusName}, 'Changed', "Status[2] ($$json[1]->{statusName}) is Changed, Status before gone is changed");
+	is($$json[2]->{statusName}, 'New', "Status[3] ($$json[2]->{statusName}) is New, Status before gone is Open");
+	is($$json[3]->{statusName}, 'No issue', "Status[4] ($$json[3]->{statusName}) is No issue, status before gone is No issdue and it didn't change");
+	is($$json[4]->{statusName}, 'New', "Status[5] ($$json[4]->{statusName}) is New, after load BBBBBBB");
+	is($$json[5]->{statusName}, 'New', "Status[6] ($$json[5]->{statusName}) is New, after load BBBBBBB");
+	is($$json[6]->{statusName}, 'MASKED', "Status[7] ($$json[6]->{statusName}) is MASKED, after load BBBBBBB");
+	is($$json[7]->{statusName}, 'New', "Status[8] ($$json[7]->{statusName}) is New, there is no status before gone");
+
+	# Set to all possible statusses
+	`perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=1 attrs[remark]= attrs[status]=1 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=2 attrs[remark]= attrs[status]=2 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=3 attrs[remark]= attrs[status]=3 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=4 attrs[remark]= attrs[status]=4 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=5 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=6 attrs[remark]= attrs[status]=6 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=7 attrs[remark]= attrs[status]=99 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=8 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
+
+	# Loading none - 71 - 78
+	`perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml`;
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
+	is($$json[0]->{statusName}, 'Gone', "Status[1] ($$json[0]->{statusName}) is Gone, after load none");
+	is($$json[1]->{statusName}, 'Gone', "Status[2] ($$json[1]->{statusName}) is Gone, after load none");
+	is($$json[2]->{statusName}, 'Gone', "Status[3] ($$json[2]->{statusName}) is Gone, after load none");
+	is($$json[3]->{statusName}, 'Gone', "Status[4] ($$json[3]->{statusName}) is Gone, after load none");
+	is($$json[4]->{statusName}, 'Gone', "Status[5] ($$json[4]->{statusName}) is Gone, after load none");
+	is($$json[5]->{statusName}, 'Closed', "Status[6] ($$json[5]->{statusName}) is Closed, after load none");
+	is($$json[6]->{statusName}, 'MASKED', "Status[7] ($$json[6]->{statusName}) is MASKED, after load none");
+	is($$json[7]->{statusName}, 'Gone', "Status[8] ($$json[7]->{statusName}) is Gone, after load none");
+	
+	# Hard set 6 and 7 to Gone too
+	`perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=6 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
+	`perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=7 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
+	# Create a new Gone finding
+	update_finding(
+		workspace_id => 100,
+		scan_id => 1,
+		run_id => 4,
+		host => 'A',
+		port => '80/tcp',
+		plugin => '9',
+		finding => 'B',
+		severity => 2,
+		status => 5
+	);
+	# Validate 79 - 81
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
+	ok($$json[5]->{statusName} eq 'Gone', "Status[6] ($$json[5]->{statusName}) is Gone after setting it the hard way");
+	ok($$json[6]->{statusName} eq 'Gone', "Status[7] ($$json[6]->{statusName}) is Gone after setting it the hard way");
+	ok($$json[8]->{statusName} eq 'Gone', "Status[9] ($$json[7]->{statusName}) is Gone after creating it the hard way");
+
+	# Load AAAAAAAAA 82 -
+	`perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAAAA.ivil.xml`;
+	$json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
+	is($$json[0]->{statusName}, 'New', "Status[1] ($$json[0]->{statusName}) is New, Status before gone is new");
+	is($$json[1]->{statusName}, 'Changed', "Status[2] ($$json[1]->{statusName}) is Changed, Status before gone is changed");
+	is($$json[2]->{statusName}, 'New', "Status[3] ($$json[2]->{statusName}) is New, Status before gone is Open");
+	is($$json[3]->{statusName}, 'Changed', "Status[4] ($$json[3]->{statusName}) is Changed, status before gone is No issdue and it didn't change");
+	is($$json[4]->{statusName}, 'New', "Status[5] ($$json[4]->{statusName}) is New, after load BBBBBBB");
+	is($$json[5]->{statusName}, 'New', "Status[6] ($$json[5]->{statusName}) is New, after load BBBBBBB");
+	is($$json[6]->{statusName}, 'MASKED', "Status[7] ($$json[6]->{statusName}) is MASKED, after load BBBBBBB");
+	is($$json[7]->{statusName}, 'New', "Status[8] ($$json[7]->{statusName}) is New, Status before gone is new");
+	is($$json[8]->{statusName}, 'New', "Status[9] ($$json[8]->{statusName}) is New, there is no status before gone");
 
 }
 

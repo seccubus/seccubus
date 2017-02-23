@@ -123,7 +123,7 @@ xx-x-2017 - 2.29 -
 
 Enhancements
 ------------
-* 
+* #126 - Delta engine improved: Beter recovery from GONE findings
 
 Bug Fixes
 ---------

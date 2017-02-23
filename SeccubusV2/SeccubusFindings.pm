@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2016 Frank Breedijk, Steve Launius, Petr
+# Copyright 2017 Frank Breedijk, Steve Launius, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1316,21 +1316,90 @@ sub process_status($$$;$) {
 		);
 	}
 
+	# Find ids for findings that were previously GONE (5) but
+	# are associated with the current run
+	$ref = sql( "return"	=> "ref",    
+		    "query"	=> "SELECT	id
+		      		    FROM	findings
+				    	WHERE 	workspace_id = ? AND
+				    			scan_id = ? AND
+							    status = 5 AND
+								run_id = ?",
+		      "values"	=> [ $workspace_id, $scan_id, $run_id ],
+		    );
+	foreach my $row ( @{$ref} ) {
+		my $id = $$row[0]; # Get the id from the arrayref;
+		# Find status before gone
+		my @sbg = sql( 	return 	=> "array",
+						query	=> "SELECT status, run_id
+									FROM finding_changes
+									WHERE
+										finding_id = ? AND
+										status <> 5 AND
+										run_id <> ?
+									ORDER BY time DESC
+									LIMIT 1",
+						values 	=> [ $id, $run_id ]
+					);
+		if ( $sbg[0] == 2 ) { # SBG is Changed,set to changed
+			print "Set finding $id to status NEW\n" if $verbose;
+			update_finding(
+				"workspace_id"	=> $workspace_id,
+				"finding_id"	=> $id,
+				"status"		=> 2,
+			);
+		} elsif ( $sbg[0] == 4 ) { #SBG is No issue, need to check if it changed.
+			# Get differences in diff format
+			my @diff = diff_finding("diff", $workspace_id, $id, $run_id, $sbg[1]);
+			if ( @diff ) {
+				# Finding changed from previous non-gone finding. Setting to changed.
+				print "Set finding $id to status CHANGED\n" if $verbose;
+				update_finding(
+					"workspace_id"	=> $workspace_id,
+					"finding_id"	=> $id,
+					"status"		=> 2,
+				);
+			} else {
+				# Finding changed from previous non-gone finding. Setting to changed.
+				print "Set finding $id to status NO ISSUE\n" if $verbose;
+				update_finding(
+					"workspace_id"	=> $workspace_id,
+					"finding_id"	=> $id,
+					"status"		=> 4,
+				);
+			}
+		} elsif ( $sbg[0] == 99 ) { #STB is MASKED, set to MASKED
+			print "Set finding $id to status NEW\n" if $verbose;
+			update_finding(
+				"workspace_id"	=> $workspace_id,
+				"finding_id"	=> $id,
+				"status"		=> 99,
+			);
+		} else { # In all other cases the status goes to New.
+			print "Set finding $id to status NEW\n" if $verbose;
+			update_finding(
+				"workspace_id"	=> $workspace_id,
+				"finding_id"	=> $id,
+				"status"		=> 1,
+			);
+		}
+	}
+
 	# Find the ids that need to be set to NEW, basically these are the 
-	# findings that currently have the status GONE (5) or CLOSED (6) but 
+	# findings that currently have the status CLOSED (6) but 
 	# are associated with the current run (as provided by the user)
 	# If a finding is created for the first time, it gets the status NEW by default
 	$ref = sql( "return"	=> "ref",    
 		    "query"	=> "SELECT	id
 		      		    FROM	findings
-				    WHERE 	workspace_id = ? AND
-				    		scan_id = ? AND
-						( status = 5 OR status = 6 ) AND
-						run_id = ?",
+				    	WHERE 	workspace_id = ? AND
+				    			scan_id = ? AND
+							    status = 6 AND
+								run_id = ?",
 		      "values"	=> [ $workspace_id, $scan_id, $run_id ],
 		    );
-	foreach my $id ( @{$ref} ) {
-		$id = $$id[0]; # Get the id from the arrayref;
+	foreach my $row ( @{$ref} ) {
+		my $id = $$row[0]; # Get the id from the arrayref;
 		print "Set finding $id to status NEW\n" if $verbose;
 		update_finding(
 			"workspace_id"	=> $workspace_id,
@@ -1375,13 +1444,8 @@ sub process_status($$$;$) {
 				print join "\n", @diff if $verbose > 1;
 				# update the finding to changed if there is a diff
 				if ( @diff[0] eq "NEW" ) {
-					# Handle a erronious situation
-					print "Finding wasn't present in previous run, while it should have been, resetting to NEW\n" if $verbose;
-					update_finding (
-						"workspace_id"  => $workspace_id,
-						"finding_id"    => $id,
-						"status"        => 1,
-					);
+					# This happens 'naturally' if we have set a finding back to No Issue when it was
+					# gone and the status before gone was No Issue. This is handled above.
 				} elsif ( @diff ) {
 					update_finding (
 						"workspace_id"  => $workspace_id,
