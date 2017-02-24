@@ -59,7 +59,7 @@ my $workspaces = get_workspaces();
 is(@$workspaces,'0',"There should be no workspaces after loading an empty ivil file" ); $tests++;
 
 pass("*** Loading AB into an empty system"); $tests++;
-`perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010002 -w test -s ab --scanner Nessus6 testdata/ab.ivil.xml`;
+`perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010002 -w test -s ab --scanner Nessus6 testdata/AB.ivil.xml`;
 my $workspaces = get_workspaces();
 is(@$workspaces,'1',"There should be a workspaces after loading AB" ); $tests++;
 is($$workspaces[0][0],100,"Workspace id is 100"); $tests++;
