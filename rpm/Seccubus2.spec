@@ -159,7 +159,7 @@ EOF
 %{_sbindir}/groupadd -r -f %{seccuser}
 grep \^%{seccuser} /etc/passwd >/dev/null
 if [ $? -ne 0 ]; then
-	%{_sbindir}/useradd -d %{installdir} -g %{seccuser} -r %{seccuser}
+	%{_sbindir}/useradd -d %{installdir} -r %{seccuser}
 fi
 %{_sbindir}/usermod -G $(id -nG apache|sed -e 's/  *$//g' -e 's/  */,/g'),%{seccuser} apache
 
@@ -207,7 +207,11 @@ fi
 
 %postun
 %{_sbindir}/usermod -G $(id -nG apache|sed -e 's/%{seccuser}//' -e 's/ +$//g' -e 's/ +/,/g') apache
-%{_sbindir}/service httpd reload
+if [[ -e %{_sbindir}/service ]]; then 
+	%{_sbindir}/service httpd reload
+else
+	/etc/init.d/httpd reload
+fi
 ## %postun
 
 ################################################################################
@@ -236,6 +240,8 @@ fi
 #
 
 %changelog
+* Fri Feb 24 2017 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Fixed some errors on CentOS5
 * Mon May 2 2016 Frank Breedijk <fbreedijk@schubergphilis.com>
 - RPM now builds on RHEL5 and CentOS5 too. 
 - Removed RPM lint warnings
