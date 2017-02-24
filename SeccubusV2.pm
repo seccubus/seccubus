@@ -25,6 +25,7 @@ functions within the module.
 
 @EXPORT = qw( 
 		VERSION 
+		DBVERSION
 		get_config
 		check_param
 	    );
@@ -48,7 +49,8 @@ $config = "etc/dummy.config.xml" unless -e $config;
 use lib "/opt/seccubus/SeccubusV2";
 push (@main::INC, @INC);
 
-$VERSION = '2.29';
+$VERSION = '2.28';
+$DBVERSION = 9;
 
 use strict;
 use Carp;

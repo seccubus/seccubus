@@ -25,13 +25,11 @@ use JSON;
 use Data::Dumper;
 
 sub result($$$$);
-sub bye($);
+sub bye($;$);
 
-my $current_db_version = 9;
 my $query = CGI::new();
 my $json = JSON->new();
 
-print $query->header(-type => "application/json", -expires => "-1d", -"Cache-Control"=>"no-store, no-cache, must-revalidate", -"X-Clacks-Overhead" => "GNU Terry Pratchett");
 
 # This is where configurations can be found
 # Ticket #62 - Default locations for config.xml does not include 
@@ -97,6 +95,8 @@ if ( ! $dbh ) {
 }
 
 ##### Test database tables
+my $current_db_version = $SeccubusV2::DBVERSION;
+
 # Make sure login to the database was successful
 my $tables = SeccubusDB::sql( return	=> "ref",
 		  	      query	=> "show tables",
@@ -172,9 +172,9 @@ if ( ! exists $config->{smtp} ) {
 } elsif(  ! exists $config->{smtp}->{server} ) {
 	result($data, "SMTP configuration", "No smtp server specified", "Error");
 } elsif( ! gethostbyname($config->{smtp}->{server}) ) {
-	result($data, "SMTP configuration", "Cannot resolve smtp server $config->{smtp}->{server}", "Error");
+	result($data, "SMTP configuration", "Cannot resolve smtp server $config->{smtp}->{server}", "Warn");
 } elsif( ! exists $config->{smtp}->{from} ) {
-	result($data, "SMTP configuration", "No from address specified", "Error");
+	result($data, "SMTP configuration", "No from address specified", "Warn");
 } elsif ( $config->{smtp}->{from} !~ /^[\w\.\+]+\@[\w\d\.]+$/ ) {
 	result($data, "SMTP configuration", "$config->{smtp}->{from} doesn't apear to be a valid email address", "Error");
 } else {
@@ -198,8 +198,23 @@ sub result($$$$) {
 	};
 }
 
-sub bye($) {
+sub bye($;$) {
 	my $data = shift;
+	my $error = shift;
+
+	my $status = ($error ? 500 : 200);
+
+	for my $line ( @$data ) {
+		$status = 500 if ( exists $line->{result} && $line->{result} eq "Error" );
+	}
+
+	print $query->header(
+		"-type" 				=> "application/json", 
+		"-expires" 				=> "-1d", 
+		"-Cache-Control" 		=>"no-store, no-cache, must-revalidate", 
+		"-X-Clacks-Overhead"	=> "GNU Terry Pratchett"
+	);
+
 
 	print $json->pretty->encode($data);
 	exit;
