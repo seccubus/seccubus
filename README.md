@@ -124,6 +124,7 @@ xx-x-2017 - 2.29 -
 Enhancements
 ------------
 * #126 - Delta engine improved: Beter recovery from GONE findings
+* #408 - Seccubus now refuses to load an ivil file with 0 findings
 
 Bug Fixes
 ---------
