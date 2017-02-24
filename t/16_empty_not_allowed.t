@@ -54,7 +54,7 @@ foreach my $t ( @$json ) {
 }
 
 pass("*** Loading none into an empty system"); $tests++;
-`perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010001-w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml`;
+`perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010001 -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml`;
 my $workspaces = get_workspaces();
 is(@$workspaces,'0',"There should be no workspaces after loading an empty ivil file" ); $tests++;
 
