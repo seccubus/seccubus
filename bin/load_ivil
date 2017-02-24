@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 # This program loads the findings from an IVIL file into the desired workspace 
 # and scan
 # ------------------------------------------------------------------------------
+# vim:et:sw=4:ts=4:ft=perl:
 
 use strict;
 use SeccubusV2;
@@ -35,6 +36,7 @@ my (
 	$timestamp,
 	$scan,
 	$noprocess,
+	$allowempty
    );
 
 $help = 0;
@@ -42,14 +44,15 @@ $help = 0;
 # Set defaults
 $timestamp = make_timestamp();
 
-GetOptions(	'scan|s=s'		=> \$scanname,
-		'scanner=s'		=> \$scanner,
-		'scannerversion=s'	=> \$scanner_version,
-		'help|h!'		=> \$help,
-		'verbose|v!'		=> \$verbose,
-		'workspace|w=s'		=> \$workspace,
-		'timestamp|t=s'		=> \$timestamp,
-		'noprocess'		=> \$noprocess,
+GetOptions(	'scan|s=s'			=> \$scanname,
+			'scanner=s'			=> \$scanner,
+			'scannerversion=s'	=> \$scanner_version,
+			'help|h!'			=> \$help,
+			'verbose|v!'		=> \$verbose,
+			'workspace|w=s'		=> \$workspace,
+			'timestamp|t=s'		=> \$timestamp,
+			'noprocess'			=> \$noprocess,
+			'allowempty'		=> \$allowempty,
 	  );
 my $filename = shift(@ARGV);
 help() unless $filename;
@@ -69,9 +72,9 @@ my $ivil = join("", <IVIL>);
 close(IVIL);
 print "File loaded\n" if $verbose;
 print "Parsing data\n" if $verbose;
-my ($workspace_id, $scan_id, $run_id) = load_ivil($ivil, $scanner, $scanner_version, $timestamp, $workspace, $scanname, $verbose);
+my ($workspace_id, $scan_id, $run_id) = load_ivil($ivil, $scanner, $scanner_version, $timestamp, $workspace, $scanname, $verbose, $allowempty);
 print "WorkspaceID: $workspace_id\nScanID: $scan_id\nRunID: $run_id\n" if $verbose;
-unless ( $noprocess ) {
+unless ( $noprocess && $workspace_id >= 0 ) {
 	process_status($workspace_id, $scan_id, $run_id, $verbose);
 }
 
@@ -81,25 +84,25 @@ sub help() {
 	print "
 Usage: load_ivil --workspace <workspace name> --scan <scan name> 
                  [--scanner <scanner name>] [--scannerversion <scanner version>]
-		 --timestamp <YYYYMMDDHHmm[ss]>
-		 [--help] [--verbose] <filename> 
+		 		  --timestamp <YYYYMMDDHHmm[ss]> [--help] [--verbose] <filename> 
 
 Arguments:
---workspace (-w)- The name of the workspace the file should be loaded into
---scan (-s)	- The name of the scan 
---scanner	- Optional: name of the scanner used. If not provided it will be
-		  read from the IVIL file
---scannerversion- Optional: Verison of the scanner used. If not provided it will
-		  be read from the IVIL file
---timestamp (-t)- Optional : Time the scan ran in the format YYYYMMDDHHmm[ss]
-                  Defaults to the current date and time
---noprocess	- Just load the file into Seccubus, but don't process the status
-                  This is handy for importing older data or data out of sequence
-		  into Seccubus. Findings that have not been seen before will 
-		  get the status NEW
---verbose (-v)	- Be verbose
---help (-h)	- Print this message
-<filename>	- Path to the file to be loaded
+--workspace (-w) - The name of the workspace the file should be loaded into
+--scan (-s)		 - The name of the scan 
+--scanner		 - Optional: name of the scanner used. If not provided it will be
+		  		   read from the IVIL file
+--scannerversion - Optional: Verison of the scanner used. If not provided it will
+		  		   be read from the IVIL file
+--timestamp (-t) - Optional : Time the scan ran in the format YYYYMMDDHHmm[ss]
+                   Defaults to the current date and time
+--noprocess		 - Just load the file into Seccubus, but don't process the status
+                   This is handy for importing older data or data out of sequence
+		           into Seccubus. Findings that have not been seen before will 
+		           get the status NEW
+--allowempty	 - Allow an empty ivil file to be imported (not allowed by default)
+--verbose (-v)	 - Be verbose
+--help (-h)		 - Print this message
+<filename>		 - Path to the file to be loaded
 ";
 	exit();
 }
