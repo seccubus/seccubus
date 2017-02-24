@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2015 Frank Breedijk, Alex Smirnoff
+# Copyright 2017 Frank Breedijk, Alex Smirnoff
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ run_id		- ID of the run that was created for this scan
 
 =cut
 
-sub load_ivil($;$$$$$$) {
+sub load_ivil($;$$$$$$$) {
 	my $ivil_xml_data = shift;
 	my $scanner = shift;
 	my $scanner_ver = shift;
@@ -92,6 +92,7 @@ sub load_ivil($;$$$$$$) {
 	my $workspace = shift;
 	my $scan = shift;
 	my $print = shift;
+	my $allowempty = shift;
 
 	my $xml = new XML::Simple;
 	my $ivil = $xml->XMLin($ivil_xml_data,
@@ -116,23 +117,26 @@ sub load_ivil($;$$$$$$) {
 	$timestamp .= "00" if  $timestamp =~ /^\d{12}$/;
 	confess "Timestamp: '$timestamp' is invalid" unless $timestamp =~ /^\d{14}$/;
 	
-	# This bocks gets the ID from and/or creates the workspace, scan and run
-	my $workspace_id = get_workspace_id("$workspace");
-	unless ( $workspace_id ) {
-		$workspace_id = create_workspace($workspace);
-	}
-	my $scan_id = get_scan_id($workspace_id, $scan);
-	unless ( $scan_id ) {
-		confess "Unable to determine scanner" unless $scanner;
-		$scan_id = create_scan($workspace_id, $scan, $scanner, "Please update manually");
-	}
-	my $run_id = update_run($workspace_id, $scan_id, $timestamp);
-
-	# Now we create the findings
-
+	my $count = 0;
 	if ( exists $ivil->{findings}->{finding} ) {
-		my $count = @{$ivil->{findings}->{finding}};
-		print "There are $count findings\n" if $print;
+		$count = @{$ivil->{findings}->{finding}};
+	}
+	print "There are $count findings\n" if $print;
+	if ( $count > 0 || $allowempty ) {
+		# This bocks gets the ID from and/or creates the workspace, scan and run
+		my $workspace_id = get_workspace_id("$workspace");
+		unless ( $workspace_id ) {
+			$workspace_id = create_workspace($workspace);
+		}
+		my $scan_id = get_scan_id($workspace_id, $scan);
+		unless ( $scan_id ) {
+			confess "Unable to determine scanner" unless $scanner;
+			$scan_id = create_scan($workspace_id, $scan, $scanner, "Please update manually");
+		}
+		my $run_id = update_run($workspace_id, $scan_id, $timestamp);
+
+		# Now we create the findings
+
 		foreach my $finding ( @{$ivil->{findings}->{finding}} ) {
 			$finding->{severity} = 0 unless defined $finding->{severity};
 			$finding->{severity} = 0 if $finding->{severity} eq "";
@@ -153,8 +157,10 @@ sub load_ivil($;$$$$$$) {
 			}
 			print "Finding: $finding->{ip}, $finding->{port}, $finding->{id}\n$finding->{finding_txt}\n" if $print >1;
 		}
+		return ($workspace_id, $scan_id, $run_id);
+	} else {
+		return (-1,-1,-1);
 	}
-	return ($workspace_id, $scan_id, $run_id);
 }
 
 # Close the PM file.
