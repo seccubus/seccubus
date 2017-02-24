@@ -128,3 +128,4 @@ Enhancements
 Bug Fixes
 ---------
 * #403 - SSLlabs scanner help file was not up to date
+* #405 - Fixes some RPM issues CentOS5 
