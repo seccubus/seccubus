@@ -6,7 +6,6 @@ use Mojo::Base 'Mojolicious::Controller';
 sub show {
 	my $self = shift;
 	
-	my $current_db_version = 9;
 	my $json = [];
 	my $status = 200;
 
@@ -47,6 +46,7 @@ sub show {
 	foreach my $dir ( @dirs ) {
 		if ( ! -d $config->{paths}->{$dir} ) {
 			push @$json, { name => "Path $dir", result => "Error", message => "The path for '$dir', '$config->{paths}->{$dir}' defined in '$config_file', does not exist"};
+			$status = 500;
 			goto EXIT;
 		} else {
 			push @$json, { name => "Path $dir", message => "The path for '$dir', '$config->{paths}->{$dir}' defined in '$config_file', was found", result => "OK"};
@@ -59,6 +59,7 @@ sub show {
 
 	if ( ! $dbh ) {
 		push @$json, { name => "Database login", message => "Unable to log into the the database. Either the definitions in '$config_file' are incorrect or you need to create '$config->{database}->{engine}' database '$config->{database}->{database}' on host '$config->{database}->{host}' and grant user '$config->{database}->{user}' the rights to login in with the specified password.\nFor mysql execute the following command: create database $config->{database}->{database};grant all privileges on $config->{database}->{database}.* to $config->{database}->{user} identified by '<password>';exit", result => "Error"};
+		$status = 500;
 		goto EXIT;
 	} else {
 		push @$json, { name => "Database login", message => "Login to database '$config->{database}->{database}' on host '$config->{database}->{host}' with the credentials from '$config_file', was successful", result => "OK"};
@@ -75,6 +76,7 @@ sub show {
 	if ( ! @$tables ) {
 		my $file = $config->{paths}->{dbdir} . "/structure_v$current_db_version" . "\." . $config->{database}->{engine};
 		push @$json, { name => "Database structure", message => "Your database seems to be empty, please execute the sql statements in '$file' to create the required tables", result => "Error"};
+		$status = 500;
 		goto EXIT;
 		# TODO: Add link to screen that does this for the user
 		# my $api = "api/updateDB.pl?toVersion=$current_db_version&action=structure";
@@ -100,9 +102,11 @@ sub show {
 				$file .= "upgrade_v$version[0]_v" . ($version[0]+1) . "." . $config->{database}->{engine};
 			} else {
 				push @$json, { name => "Database version error", message => "Your database returned version number '$version[0]', the developers for Seccubus do not know what to do with this", result => "Error"};
+				$status = 500;
 				goto EXIT;
 			}
 			push @$json,{ name => "Database version", message => "Your database is not current, please execute the sql statements in '$file' to update the database to the next version and rerun this test", result => 'Error'};
+			$status = 500;
 			goto EXIT;
 		} else {
 			push @$json,{ name => "Database version", message => "Your database has the base data and is the current version.", result => 'OK'};
@@ -110,6 +114,7 @@ sub show {
 	} or do {
 		my $file = $config->{paths}->{dbdir} . "/data_v$current_db_version" . "\." . $config->{database}->{engine};
 		push @$json, { name => "Database data", message => "Your database is missing data, please execute the sql statements in '$file' to insert the base data into the database", result => 'OK'};
+		$status = 500;
 		goto EXIT;
 		# TODO: Direct user to a helpfull screen
 		# my $api = "api/updateDB.pl?toVersion=&action=data";
@@ -128,21 +133,22 @@ sub show {
 			push @$json, {name => "HTTP authentication", message => "Authentication is set up on your HTTP server, and user '$ENV{REMOTE_USER}' exists in the database", result => 'OK'};
 		} else {
 			push @$json, {name => "HTTP authentication", message => "Authentication is set up on your HTTP server, but '$ENV{REMOTE_USER}' does not exist in the database, run the bin/add_user util", result => 'Error'};
+			$status = 500;
 			goto EXIT;
 		}
 	} else {
-		@$json, {name => "HTTP authentication", message => "Authentication is not set up on your HTTP server, emulating user 'admin'", result => 'OK'};
+		push @$json, {name => "HTTP authentication", message => "Authentication is not set up on your HTTP server, emulating user 'admin'", result => 'OK'};
 	}
 
 	##### Test SMTP config
 	if ( ! exists $config->{smtp} ) {
 		push @$json, {name => "SMTP configuration", message => "No smtp configuration specified in you config file, notification will NOT be sent", result => 'Warn'};
 	} elsif(  ! exists $config->{smtp}->{server} ) {
-		push @$json, {name => "SMTP configuration", message => "No smtp server specified", result => "Error"};
+		push @$json, {name => "SMTP configuration", message => "No smtp server specified", result => "Warning"};
 	} elsif( ! gethostbyname($config->{smtp}->{server}) ) {
-		push @$json, {name => "SMTP configuration", message => "Cannot resolve smtp server $config->{smtp}->{server}", result => "Warn"};
+		push @$json, {name => "SMTP configuration", message => "Cannot resolve smtp server $config->{smtp}->{server}", result => "Warning"};
 	} elsif( ! exists $config->{smtp}->{from} ) {
-		push @$json, {name => "SMTP configuration", message => "No from address specified", result => "Warn"};
+		push @$json, {name => "SMTP configuration", message => "No from address specified", result => "Warning"};
 	} elsif ( $config->{smtp}->{from} !~ /^[\w\.\+]+\@[\w\d\.]+$/ ) {
 		push @$json, {name => "SMTP configuration", message => "$config->{smtp}->{from} doesn't apear to be a valid email address", result => "Error"};
 	} else {
@@ -152,7 +158,7 @@ sub show {
 	
 EXIT:	
 	$self->render(
-		json => {json => $json},
+		json => $json,
 		status => $status,
 	);
 }

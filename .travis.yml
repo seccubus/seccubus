@@ -15,6 +15,7 @@ before_script:
 - cpanm DBI DBD::mysql
 script:
 - prove -I SeccubusV2
+- (cd mojo; ./seccubus test)
 - ./build_jmvc
 sudo: false
 notifications:
