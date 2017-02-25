@@ -40,7 +40,9 @@ WriteMakefile (
 				'File::Basename'		=> 0.1,
 				'Socket'				=> 0.1,
 				'Net::SMTP'				=> 0.1,
-				'Net::IP'				=> 1.0
+				'Net::IP'				=> 1.0,
+				'Mojolicious' 			=> '7.26',
+				'Mojolicious::Plugin::Routes::Restful' => '0.03'
 			},
 	PM		=> { 
 				'SeccubusV2/IVIL.pm'					=> '$(INST_LIBDIR)/IVIL.pm',
