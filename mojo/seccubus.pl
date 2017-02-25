@@ -4,6 +4,8 @@ use strict;
 use warnings;
 
 use lib 'lib';
+use lib '..';
+use lib '../SeccubusV2';
 use Mojolicious::Commands;
 
 # Start command line interface for application

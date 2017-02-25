@@ -14,7 +14,7 @@ before_script:
 - mysql -e "create database seccubus"
 - cpanm DBI DBD::mysql
 script:
-- prove -I SeccubusV2
+- #prove -I SeccubusV2
 - (cd mojo; ./seccubus.pl test)
 - ./build_jmvc
 sudo: false
