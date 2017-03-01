@@ -25,7 +25,7 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.Scanner',
 /* @Static */
 {
-	findAll: api("getScanners.pl")
+	findAll: api("scanners")
   	//findOne : "/scanners/{id}.json", 
   	//create : "/scanners.json",
  	//update : "/scanners/{id}.json",

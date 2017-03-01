@@ -8,6 +8,9 @@
 .*.swp
 tmp/
 
+# MojoExample app
+mojo_example
+
 # Config
 etc/config.xml
 etc/config.xml.*

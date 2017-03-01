@@ -26,92 +26,146 @@ use SeccubusScans;
 sub create {
 	my $self = shift;
 
-	my $workspace = $self->req->json();
+	my $scan = $self->req->json();
+	my $workspace_id = $self->param('workspace_id');
 
-	if ( ! $workspace ) {
-			$self->error("No json body found"); return;		
+	if ( ! $scan ) {
+			$self->error("No valid json body found"); return;		
 	}
-	if ( ! $workspace->{name} ) {
-			$self->error("No name provided"); return;				
-	}
-	my $id = get_workspace_id($workspace->{name});
-	if ( $id ) {
-		$self->error("Workspace with name $workspace->{name} already exists"); return
-	}
-	$id = create_workspace($workspace->{name});
 
-	$self->render(
-		json=> {
-			name => $workspace->{name},
-			id => $id
+	eval {
+		my @data = ();
+		my $newid = create_scan(
+			$workspace_id,
+			$scan->{name},
+			$scan->{scanner},
+			$scan->{parameters},
+			$scan->{password},
+			$scan->{targets}
+		);
+		if ( ! $newid ) {
+			$self->error("create_scan did not return a new scan_id");
+		} else {
+			my $newscan;
+		 	my $scans = get_scans($workspace_id,$newid);
+		 	my $i = 0;
+		 	foreach my $prop ( qw(id name scanner parameters lastScan runs findCount targets workspace notifications password) ) {
+		 		$newscan->{$prop} = $$scans[0][$i];
+		 		$i++
+		 	}
+
+			$self->render( json=> $newscan );
 		}
-	);
+	} or do {
+		$self->error(join "\n", $@);
+	};
 }
 
-#Read
-#sub read {
-#	my $self = shift;
-#
-#	my $data = [ $self->param('id') ];
-#
-#	$self->render(
-#		json => $data,
-#	);
-#}
+# Read
+sub read {
+	my $self = shift;
+
+	my $workspace_id = $self->param('workspace_id');
+	my $scan_id = $self->param('scan_id');
+	if ( ! $scan_id ) {
+		$self->error("Missing parameter scan_id"); 
+		return;
+	}
+
+	eval {
+		my $scan = {};
+
+	 	my $scans = get_scans($workspace_id,$scan_id);
+	 	if ( @$scans ) {
+		 	my $i = 0; 
+		 	foreach my $prop ( qw(id name scanner parameters lastScan runs findCount targets workspace notifications password) ) {
+		 		$scan->{$prop} = $$scans[0][$i];
+		 		$i++
+		 	}
+
+			$self->render( json => $scan );
+		} else {
+			$self->error("Scan not found");
+			return;
+		}
+	} or do {
+		$self->error(join "\n", $@);
+	};
+}
 
 # List
 sub list {
 	my $self = shift;
-	
-	my $data = [];
-	my $workspaces = get_workspaces;
-	foreach my $row ( @$workspaces ) {
-		push @$data, {
-			'id'		=> $$row[0],
-			'name'		=> $$row[1],
-			'lastScan'	=> $$row[2],
-			'findCount'	=> $$row[3],
-			'scanCount'	=> $$row[4],
-		};
+
+	my $workspace_id = $self->param('workspace_id');
+	if ( ! $workspace_id ) {
+		$self->error("Parameter workspace_id is missing");
+		return;
 	}
 
-	$self->render( json => $data );
+	eval {
+		my $data = [];
+
+	 	my $scans = get_scans($workspace_id);
+		foreach my $row ( @$scans ) {
+			push (@$data, {
+				'id'		=> $$row[0],
+				'name'		=> $$row[1],
+				'scanner'	=> $$row[2],
+				'parameters'	=> $$row[3],
+				'lastScan'	=> $$row[4],
+				'runs'		=> $$row[5],
+				'findCount'	=> $$row[6],
+				'targets'	=> $$row[7],
+				'workspace'	=> $$row[8],
+				'notifications'	=> $$row[9],
+				'password'	=> $$row[10],
+			});
+		}
+
+		$self->render( json => $data );
+	} or do {
+		$self->error(join "\n", $@);
+	};
 }
 
 sub update {
 	my $self = shift;
 
-	my $id = $self->param('id');
+	my $scan = $self->req->json();
+	my $workspace_id = $self->param('workspace_id');
+	my $scan_id = $self->param('scan_id');
 
-	if ( ! $id ) {
-		$self->error("Workspace id is missing"); return;
-	}
-
-	my $workspace = $self->req->json();
-
-	if ( ! $workspace ) {
-			$self->error("No json body found"); return;		
-	}
-	if ( ! $workspace->{name} ) {
-			$self->error("No name provided"); return;				
-	}
-	my $dubid = get_workspace_id($workspace->{name});
-
-	if ( $dubid && $id != $dubid ) {
-		$self->error("A workspace with name $workspace->{name} already exists");
-		return;
+	if ( ! $scan ) {
+			$self->error("No valid json body found"); return;		
 	}
 
 	eval {
-		my $count = edit_workspace($id, $workspace->{name});
-		if ( $count ) {
-			$self->render(json => { id => $id, name => $workspace->{name} });
-		} else {
-			$self->error("Workspace with id $id does not exist");
+		my @data = ();
+		update_scan(
+			$workspace_id,
+			$scan_id,
+			$scan->{name},
+			$scan->{scanner},
+			$scan->{parameters},
+			$scan->{password},
+			$scan->{targets}
+		);
+		my $newscan;
+	 	my $scans = get_scans($workspace_id,$scan_id);
+	 	my $i = 0;
+	 	foreach my $prop ( qw(id name scanner parameters lastScan runs findCount targets workspace notifications password) ) {
+		 	$newscan->{$prop} = $$scans[0][$i];
+		 	$i++
 		}
+
+		foreach my $prop ( qw(name scanner parameters password targets ) ) {
+			$newscan->{$prop} = $scan->{$prop};
+		}
+		$self->render( json=> $newscan );
 	} or do {
 		$self->error(join "\n", $@);
-	}
+	};
 }
 
 1;

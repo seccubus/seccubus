@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,6 +36,9 @@ foreach my $file ( @files ) {
 			if ( $file !~ qr|^./www/| ) { # Exclude www directory
 				isnt(`grep 'use strict;' '$file'`, '', "$file contains 'use strict'");
 				$tests++;
+
+				#is(`grep -ie '^\\s*use Data::Dumper;' '$file'`, '', "$file should not contain 'use Data::Dumper'");
+				#$tests++;
 
 				if ( $file ne "./t/01_perl_ok.t" ) {
 					is(`grep '\$query->param' '$file'|grep '\@'`, '', "\$query->param not used in list context in $file");
