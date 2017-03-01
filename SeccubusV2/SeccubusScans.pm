@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2015 Frank Breedijk, Steve Launius, Artien Bel (Ar0xA), Petr
+# Copyright 2017 Frank Breedijk, Steve Launius, Artien Bel (Ar0xA), Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ all functions within the module.
 use SeccubusDB;
 use SeccubusRights;
 use SeccubusNotifications;
+use Data::Dumper;
 
 @ISA = ('Exporter');
 
@@ -38,7 +39,7 @@ use strict;
 use Carp;
 
 sub get_scan_id($$;);
-sub get_scans($;);
+sub get_scans($;$);
 sub create_scan($$$$;$$);
 sub update_scan($$$$$;$$);
 sub run_scan($$;$$$);
@@ -87,7 +88,7 @@ sub create_scan($$$$;$$) {
 	my $targets = shift;
 
 	if ( get_scan_id($workspace_id, $scanname) ) {
-		die "A scan named '$scanname' already exists in workspace $workspace_id";
+		confess "A scan named '$scanname' already exists in workspace $workspace_id";
 	}
 	if ( may_write($workspace_id) ) {
 		return sql( "return"	=> "id",
@@ -103,7 +104,7 @@ sub create_scan($$$$;$$) {
 			    "values"	=> [$scanname, $scanner_name, $scanner_param, $password, $workspace_id, $targets],
 			  );
 	} else {
-		die "Permission denied";
+		confess "Permission denied";
 	}
 }
 
@@ -154,6 +155,8 @@ scannername, scannerparam, lastrun, total_runs, total_findings, targets)
 
 =item workspace_id - id of the workspace
 
+=item scan_id - optional id of the single scan to read back
+
 =back 
 
 =item Checks
@@ -164,24 +167,32 @@ Must have at least read rights
 
 =cut
 
-sub get_scans($;) {
+sub get_scans($;$) {
 	my $workspace_id = shift or die "No workspace_id provided";
+	my $scan_id = shift;
 
 	if ( may_read($workspace_id) ) {
+		my $values = [ $workspace_id ];
+		my $sql = "	SELECT id, name, scannername, scannerparam,
+					(SELECT MAX(time) FROM runs WHERE runs.scan_id = scans.id) as lastrun,
+					(SELECT COUNT(*) FROM runs WHERE runs.scan_id = scans.id) as total_runs,
+					'' as total_findings,
+					targets,
+					workspace_id,
+					(SELECT COUNT(*) FROM notifications WHERE notifications.scan_id = scans.id) as total_notifications,
+					password
+					FROM scans
+					WHERE workspace_id = ?
+		";
+		if ( $scan_id ) {
+			$sql .= " AND scans.id = ? ";
+			push @$values, $scan_id;
+		}
+		$sql .= " ORDER BY NAME ";
 		return sql( "return"	=> "ref",
-			    "query"	=> "SELECT id, name, scannername, scannerparam,
-			    		   (SELECT MAX(time) FROM runs WHERE runs.scan_id = scans.id) as lastrun,
-			    		   (SELECT COUNT(*) FROM runs WHERE runs.scan_id = scans.id) as total_runs,
-			    		   '' as total_findings,
-					   targets,
-					   workspace_id,
-					   (SELECT COUNT(*) FROM notifications WHERE notifications.scan_id = scans.id) as total_notifications,
-					   password
-			    		   FROM scans  
-					   WHERE workspace_id = ?
-					   ORDER BY NAME",
-			    "values"	=> [$workspace_id],
-		  );
+					"query"		=> $sql,
+					"values"	=> $values,
+		);
 	} else {
 		return undef;
 	}
@@ -231,6 +242,19 @@ sub update_scan($$$$$;$$) {
 	my $password = shift;
 	my $targets = shift;
 	if ( may_write($workspace_id) ) {
+		my @existing = sql(
+			return 		=> "array",
+			query		=> "
+				SELECT COUNT(*)
+				FROM 	scans
+				WHERE 	workspace_id = ? AND
+						id <> ? AND
+						name = ?",
+			values 		=> [ $workspace_id, $scan_id, $scanname ]
+		);
+		if ( $existing[0] > 0  ) {
+			die "A scan named $scanname already exists in this workspace";
+		}
 		if (length($password) > 0 ) {
 			return sql( "return"	=> "rows",
 				    "query"	=> "UPDATE scans

@@ -18,13 +18,32 @@ use strict;
 
 use Test::More;
 use Test::Mojo;
+use SeccubusV2;
 
 my $t = Test::Mojo->new('Seccubus');
-$t->get_ok('/version')
-	->status_is(200)
-	->json_is("/link","")
-	->json_like("/status",qr/^(OK|WARN)$/)
-	->json_like("/message",qr/(trunk version|is up to date)/i)
+
+my $config = get_config();
+
+# Get the scanners
+$t->get_ok('/scanners') 
 	;
+
+# Compare with what is in the directories
+my $i = 0;
+my @scanners = split "\n", `ls $config->{paths}->{scanners}`;
+foreach my $scanner ( @scanners ) {
+	my $help = `cat $config->{paths}->{scanners}/$scanner/help.html`;
+	my $description = `cat $config->{paths}->{scanners}/$scanner/description.txt`;
+	my $defaults = `cat $config->{paths}->{scanners}/$scanner/defaults.txt`;
+	$t->json_has("/$i")
+	->json_is("/$i/name", $scanner)
+	->json_is("/$i/help", $help)
+	->json_is("/$i/description", $description)
+	->json_is("/$i/params", $defaults)
+	;
+	$i++;
+}
+# That should be all folks
+$t->json_hasnt("/$i");
 
 done_testing();

@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk
+# Copyright 2017 Frank Breedijk, Glen Hinkle
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ use Seccubus::Controller;
 use lib "..";
 use SeccubusV2;
 use Data::Dumper;
+use Cwd 'cwd';
 
 # This method will run once at server start
 sub startup {
@@ -69,12 +70,51 @@ sub startup {
 	$r->get('workspace/:workspace_id/scans')->to('scans#list');
 	$r->get('workspace/:workspace_id/scan/:scan_id')->to('scans#read');
 	$r->put('workspace/:workspace_id/scan/:scan_id')->to('scans#update');
-	$r->delete('workspace/:id/scan/:scan_id')->to('scans#delete');
+	#$r->delete('workspace/:id/scan/:scan_id')->to('scans#delete');
 
-	$r->get('/')->to(cb => sub {  
-		my $c = shift;                                   
-		$c->redirect_to('seccubus/seccubus.html')                
-	}); 
+	# Scanners
+	$r->get('scanners')->to('scanners#list');
+
+	# Severities
+	$r->get('severities')->to('severities#list');
+
+	# Handle file requests
+	if ( $self->mode() eq 'production' ) {
+		$r->get('/')->to(cb => sub {  
+			my $c = shift;                                   
+			$c->redirect_to('seccubus/seccubus.html')                
+		}); 
+	} else {
+		# Inspired by https://github.com/tempire/app-dirserve
+		$r->get('/')->to(cb => sub {  
+			my $c = shift;                                   
+			$c->redirect_to('seccubus')                
+		}); 
+		$r->get('/(*dir)')->to(cb => sub {
+			my $c = shift;
+
+			my $dir = $c->param('dir');
+			my $fulldir = cwd() . "/public/$dir";
+			if ( -e $fulldir ) {
+				opendir DH, $fulldir;
+				my @items = map +{ name => $_, is_dir => -d "$fulldir/$_"}, readdir DH;
+				close DH;
+			
+				$c->stash(
+					dir     => $dir,
+					fulldir => $fulldir,
+					items   => \@items
+				);
+
+				$c->render('listing');
+			} else {
+				$c->render(
+					message => "File not found",
+					status => 404
+				);
+			}
+		});
+	}
 
 
 	# Normal route to controller
