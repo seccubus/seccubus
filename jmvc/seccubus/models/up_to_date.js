@@ -30,7 +30,7 @@ $.Model('Seccubus.Models.UpToDate',
 	 * one row will be returned
 	 * @return {Deferred} Deferred with all (1) UpToDate objects in it
 	 */
-	findAll: api("UpToDate.pl")
+	findAll: api("version")
 },
 /* @Prototype */
 {});

@@ -40,7 +40,7 @@ $.Controller('Seccubus.UpToDate.List',
 	 * model
 	 */
 	init : function(){
-		this.element.html(this.view('init',Seccubus.Models.UpToDate.findAll()) )
+		this.element.html(this.view('init',Seccubus.Models.UpToDate.findAll()) );
 	}
 });
 

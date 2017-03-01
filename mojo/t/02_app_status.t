@@ -18,7 +18,7 @@ ok($db_version > 0, "DB version = $db_version");
 `mysql -uroot seccubus < ../db/data_v$db_version.mysql`;
 
 my $t = Test::Mojo->new('Seccubus');
-$t->get_ok('/status')
+$t->get_ok('/appstatus')
 	->status_is(200)
 	->json_is("/0/name","Configuration file")
 	->json_is("/0/result","OK")
@@ -51,7 +51,7 @@ pass("Creating empty database");
 `mysql -uroot -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
 `mysql -uroot -e "flush privileges;"`;
 
-$t->get_ok('/status')
+$t->get_ok('/appstatus')
 	->status_is(500)
 	->json_is("/0/name","Configuration file")
 	->json_is("/0/result","OK")
@@ -77,7 +77,7 @@ $db_version--;
 `mysql -uroot seccubus < ../db/structure_v$db_version.mysql`;
 `mysql -uroot seccubus < ../db/data_v$db_version.mysql`;
 
-$t->get_ok('/status')
+$t->get_ok('/appstatus')
 	->status_is(500)
 	->json_is("/0/name","Configuration file")
 	->json_is("/0/result","OK")

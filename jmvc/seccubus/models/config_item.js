@@ -35,7 +35,7 @@ $.Model('Seccubus.Models.ConfigItem',
 	 *
 	 * message - String, message about the configuraiton item
 	 */
-	findAll: api("ConfigTest.pl")
+	findAll: api("appstatus")
 },
 /* @Prototype */
 {});
