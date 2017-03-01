@@ -289,7 +289,8 @@ sub edit_workspace($$;) {
 	die "You need to be an administrator to use this function" unless is_admin();
 
 	# Verify the newName passed does not already exist
-	if (get_workspace_id($newname)) {
+	my $wid = get_workspace_id($newname);
+	if ( $wid && $wid != $id ) {
 		die "The $newname Workspace name already exists.";
 	}
 	

@@ -16,10 +16,10 @@
 // steal model files
 
 function base_url() {
-	return "json/";
+	return "/";
 } 
 function api(url, method){
-	method = method || 'POST';
+	method = method || 'GET';
 	return method + " " + base_url() + url;
 }
 

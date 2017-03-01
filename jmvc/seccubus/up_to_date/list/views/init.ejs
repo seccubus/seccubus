@@ -12,8 +12,4 @@
 <%# See the License for the specific language governing permissions and      %>
 <%# limitations under the License.                                           %>
 <h2>Online version check</h2>
-<%for(var i = 0; i < this.length ; i++){%>
-	<div <%= this[i]%>>
-		<%== $.View('//seccubus/up_to_date/list/views/up_to_date.ejs', this[i] )%>
-	</div>
-<%}%>
+<%== $.View('//seccubus/up_to_date/list/views/up_to_date.ejs', this )%>
