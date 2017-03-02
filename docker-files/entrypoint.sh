@@ -93,6 +93,7 @@ export SSHKEY8=""
 echo "$SSHKEY9" > ~seccubus/.ssh/SSHKEY9
 export SSHKEY9=""
 chown -R seccubus:seccubus ~seccubus/.ssh
+chmod 600 ~seccubus/.ssh/SSHKEY*
 
 cat <<EOF >/opt/seccubus/etc/config.xml
 <seccubus>
