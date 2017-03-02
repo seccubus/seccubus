@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ $.Controller('Seccubus.Scan.Table',
 			);
 		} else {
 			Seccubus.Models.Scan.findAll(
-				{ workspaceId : this.options.workspace },
+				{ workspace : this.options.workspace },
 				this.callback('dataReady')
 			);
 		}

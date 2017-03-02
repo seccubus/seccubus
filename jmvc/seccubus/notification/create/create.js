@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,8 +104,8 @@ $.Controller('Seccubus.Notification.Create',
 		}
 		if ( ok ) {
 			this.element.find('[type=submit]').val('Creating...')
-			params.workspaceId = this.options.workspace;
-			params.scanId = this.options.scan;
+			params.workspace = this.options.workspace;
+			params.scan = this.options.scan;
 			new Seccubus.Models.Notification(params).save(this.callback('saved'));
 		} else {
 			this.nok(elements);

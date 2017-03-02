@@ -56,7 +56,7 @@ steal(
 		/***********************************************************
 		 * Initialize gui state and hook into it
 		 **********************************************************/
-
+		
 		var gui_state=new Seccubus.GuiState({
 			workspace	: -1
 		});

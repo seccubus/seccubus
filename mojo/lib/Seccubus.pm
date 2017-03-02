@@ -58,6 +58,11 @@ sub startup {
 	# Events
 	$r->get('/events')->to('events#list');
 
+	# Notifications
+	$r->post('workspace/:workspace_id/scan/:scan_id/notifications')->to('notifications#create');	
+	$r->get ('workspace/:workspace_id/scan/:scan_id/notification/:notification_id')->to('notifications#read');	
+	$r->get ('workspace/:workspace_id/scan/:scan_id/notifications')->to('notifications#list');	
+
 	# Version
 	$r->get('/version')->to('version#read');
 

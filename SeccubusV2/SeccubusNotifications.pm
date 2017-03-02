@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2015 Frank Breedijk, Petr
+# Copyright 2017 Frank Breedijk, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ use MIME::Base64;
 use strict;
 use Carp;
 
-sub get_notifications($;);
+sub get_notifications($;$);
 sub create_notification($$$$$$;);
 sub update_notification($$$$$;);
 sub do_notifications($$$;$);
@@ -72,8 +72,9 @@ User must be able to read workspace.
 
 =cut
 
-sub get_notifications($;) {
+sub get_notifications($;$) {
 	my $scan_id = shift or die "No scan_id provided";
+	my $id = shift;
 
 	my ($workspace_id) = 
 		sql( 	return	=> "array",
@@ -84,17 +85,22 @@ sub get_notifications($;) {
 			values	=> [ $scan_id ]
 	);
 	if ( $workspace_id && may_read($workspace_id)) {
-		return sql( "return"	=> "ref",
-			    "query"	=> "
-			    	SELECT	notifications.id, subject, recipients, 
-					message, event_id, events.name
-				FROM	notifications, events, scans
-				WHERE	scans.workspace_id = ? AND
+		my $sql = "
+			SELECT	notifications.id, subject, recipients, message, event_id, events.name
+			FROM	notifications, events, scans
+			WHERE	scans.workspace_id = ? AND
 					scans.id = ? AND
 					notifications.scan_id = scans.id AND
-					notifications.event_id = events.id
-				ORDER BY subject",
-			    "values"	=> [ $workspace_id, $scan_id ]
+					notifications.event_id = events.id";
+		my $values = [ $workspace_id, $scan_id ];
+		if ( $id ) {
+			$sql .= " AND notifications.id = ? ";
+			push @$values, $id;
+		}
+		$sql .= " ORDER BY events.id, subject ";
+		return sql( "return"	=> "ref",
+			    "query"	=> $sql,
+			    "values"	=> $values
 		);
 	} else {
 		return undef;
