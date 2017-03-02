@@ -125,6 +125,7 @@ Enhancements
 ------------
 * #126 - Delta engine improved: Beter recovery from GONE findings
 * #408 - Seccubus now refuses to load an ivil file with 0 findings
+* #412 - Disabled tofu to enhance Docker support
 
 Bug Fixes
 ---------
