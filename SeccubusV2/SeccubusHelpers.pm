@@ -282,14 +282,14 @@ sub run_cmd($;$$$$) {
 		confess "Remote specified, but host empty" unless $host;
 		confess "Remote specified, but user emprty" unless $user;
 		confess "Remote specified, but key empty" unless $key;
-		confess "Remote specified, but key doesn't exist" unless $key;
+		confess "Remote specified, but key doesn't exist" unless -e $key;
 	}
 
 	# Put files we need to put
 	if ( $remote && $put && @$put ) {
 		foreach my $file ( @$put ) {
 			confess "File $file specified in put argument doesn't exist" unless -e $file;
-			run_cmd("scp -i $key $file $user\@$host:/tmp",$print);
+			run_cmd("scp -i $key -o 'StrictHostKeyChecking no' $file  $user\@$host:/tmp",$print);
 		}
 	}
 
@@ -297,7 +297,7 @@ sub run_cmd($;$$$$) {
 	my @out;
 	print "\nRunning $cmd" if $print > 1;
 	if ( $remote ) {
-		$cmd = "ssh -t -t -i $key $user\@$host \"$cmd\"";
+		$cmd = "ssh -t -t -o 'StrictHostKeyChecking no' -i $key $user\@$host \"$cmd\"";
 		print " as user $user on $host" if $print > 1;
 	}
 	print "\n" if $print >1;
@@ -311,9 +311,9 @@ sub run_cmd($;$$$$) {
 	if ( $remote ) {
 		# Fetch files
 		if ( $files && @$files ) {
-			$cmd = "scp -i $key ";
+			$cmd = "scp -i $key -o 'StrictHostKeyChecking no' -r ";
 			foreach my $file ( @$files ) {
-				$cmd .= " -r $user\@$host:$file ";
+				$cmd .= " $user\@$host:$file ";
 			}
 			$cmd .= " /tmp 2>&1";
 			run_cmd($cmd,$print);
