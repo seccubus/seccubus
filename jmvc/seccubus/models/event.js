@@ -24,7 +24,7 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.Event',
 /* @Static */
 {
-	findAll: api("getEvents.pl")
+	findAll: api("events")
   	//findOne : "/events/{id}.json", 
   	//create : "/events.json",
  	//update : "/events/{id}.json",

@@ -24,11 +24,11 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.Workspace',
 /* @Static */
 {
-  	create : api("createWorkspace.pl"),
-	findAll: api("getWorkspaces.pl"),
-	//findOne: api("getWorkspace.pl"),
-	update : api("updateWorkspace.pl")
-	//destroy : api("/workspaces/{id}.json")
+  	create: create_api("workspaces"),
+  	//	api("/workspaces", "POST"),
+	findAll: api("workspaces"),
+	findOne: api("workspace/{id}"),
+	update : update_api("workspace/{id}")
 },
 /* @Prototype */
 {});

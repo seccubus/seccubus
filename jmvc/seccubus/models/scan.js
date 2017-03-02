@@ -34,23 +34,11 @@ $.Model('Seccubus.Models.Scan',
 	 * Callback function in case of error
 	 * @return {Deferred} A deferred Scans (Scan.List)
 	 */
-	/*
-	findAll : function(params,success,error){
-		return $.ajax({
-			url	: base_url + "getScans.pl",
-			type	: "POST",
-			dataType: "json scan.models",
-			data	: params,
-			success	: success,
-			error	: error
-		});
-	},
-	*/
-	findAll : api("getScans.pl"),
+	findAll : api("workspace/{workspace}/scans"),
   	// Not implemented
-	//findOne	: "/scans/{id}.json", 
-  	create	: api("createScan.pl"),
-	update	: api("updateScan.pl")
+	findOne	: api("workspace/{workspace}/scan/{id}"), 
+  	create	: create_api("workspace/{workspace}/scans"),
+	update	: update_api("workspace/{workspace}/scan/{id}")
   	// Not implemented yet
 	//destroy	: "/scans/{id}.json"
 },

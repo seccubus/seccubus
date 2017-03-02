@@ -24,11 +24,11 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.Notification',
 /* @Static */
 {
-	findAll: api("getNotifications.pl"),
+	findAll : api("workspace/{workspace}/scan/{scan}/notifications"),
   	//findOne : "/notifications/{id}.json", 
-  	create : api("createNotification.pl"),
- 	update : api("updateNotification.pl"),
-  	destroy : api("deleteNotification.pl")
+  	create  : create_api("workspace/{workspace}/scan/{scan}/notifications"),
+ 	update  : update_api("workspace/{workspace}/scan/{scan}/notification/{id}"),
+  	destroy : delete_api("workspace/{workspace}/scan/{scan}/notification/{id}")
 },
 /* @Prototype */
 {});
