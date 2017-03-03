@@ -30,16 +30,17 @@ $t->get_ok('/scanners')
 
 # Compare with what is in the directories
 my $i = 0;
-my @scanners = split "\n", `ls $config->{paths}->{scanners}|sort`; # Some ls' sort differently then others
+my @scanners = sort glob $config->{paths}->{scanners} . "/*";
+
 foreach my $scanner ( @scanners ) {
 	my $help = `cat $config->{paths}->{scanners}/$scanner/help.html`;
 	my $description = `cat $config->{paths}->{scanners}/$scanner/description.txt`;
 	my $defaults = `cat $config->{paths}->{scanners}/$scanner/defaults.txt`;
 	$t->json_has("/$i")
-	->json_is("/$i/name", $scanner)
 	->json_is("/$i/help", $help)
 	->json_is("/$i/description", $description)
 	->json_is("/$i/params", $defaults)
+	->json_is("/$i/name", $scanner)
 	;
 	$i++;
 }
