@@ -30,7 +30,7 @@ $t->get_ok('/scanners')
 
 # Compare with what is in the directories
 my $i = 0;
-my @scanners = split "\n", `ls $config->{paths}->{scanners}`;
+my @scanners = split "\n", `ls $config->{paths}->{scanners}|sort`; # Some ls' sort differently then others
 foreach my $scanner ( @scanners ) {
 	my $help = `cat $config->{paths}->{scanners}/$scanner/help.html`;
 	my $description = `cat $config->{paths}->{scanners}/$scanner/description.txt`;

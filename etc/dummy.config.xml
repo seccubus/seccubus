@@ -34,4 +34,8 @@
 	<auth>
 		<http_auth_header></http_auth_header>
 	</auth>
+	<smtp>
+		<server>localhost</server>
+		<from>seccubus@localhost</from>
+	</smtp>
 </seccubus>
