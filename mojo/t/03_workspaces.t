@@ -58,7 +58,7 @@ $t->get_ok('/workspaces')
 
 # Create duplicate
 $t->post_ok('/workspaces', json => { 'name' => 'workspace1'})
-	->status_is(500)
+	->status_is(400)
 	;
 
 # List one
@@ -72,7 +72,7 @@ $t->get_ok('/workspaces')
 
 # Create without name
 $t->post_ok('/workspaces', json => { 'names' => 'workspace2'})
-	->status_is(500)
+	->status_is(400)
 	;
 
 # List one
@@ -106,12 +106,12 @@ $t->get_ok('/workspaces')
 
 # Rename non-existent workspace
 $t->put_ok('/workspace/102', json => { name => 'aap'})
-	->status_is(500)
+	->status_is(400)
 	;
 
 # Rename to duplibate name
 $t->put_ok('/workspace/101', json => { name => 'workspace1'})
-	->status_is(500)
+	->status_is(400)
 	;
 
 # Rename ok

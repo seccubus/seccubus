@@ -49,7 +49,7 @@ $config = "etc/dummy.config.xml" unless -e $config;
 use lib "/opt/seccubus/SeccubusV2";
 push (@main::INC, @INC);
 
-$VERSION = '2.28';
+$VERSION = '2.29';
 $DBVERSION = 9;
 
 use strict;

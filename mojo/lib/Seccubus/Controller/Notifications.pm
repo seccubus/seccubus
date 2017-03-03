@@ -20,6 +20,7 @@ use strict;
 use lib "..";
 use SeccubusV2;
 use SeccubusNotifications;
+use Data::Dumper;
 
 # Create
 sub create {
@@ -33,9 +34,11 @@ sub create {
 			$self->error("No valid json body found"); return;		
 	}
 
+	#die Dumper $notification;
+
 	my $error = "";
-	$error = check_param("workspaceId", $workspace_id, 1);
-	$error = check_param("scanId", $scan_id, 1) unless $error;
+	$error = check_param("workspace", $workspace_id, 1);
+	$error = check_param("scan", $scan_id, 1) unless $error;
 	$error = check_param("trigger", $notification->{trigger}, 1) unless $error;
 	$error = check_param("subject", $notification->{subject}, 0) unless $error;
 	$error = check_param("recipients", $notification->{recipients}, 0) unless $error;
@@ -62,7 +65,7 @@ sub create {
 			my $new = {};
 		 	my $notifications = get_notifications($scan_id,$newid);
 		 	my $i = 0;
-		 	foreach my $prop ( qw() ) {
+		 	foreach my $prop ( qw(id subject recipients message trigger triggerName) ) {
 		 		$new->{$prop} = $$notifications[0][$i];
 		 		$i++
 		 	}

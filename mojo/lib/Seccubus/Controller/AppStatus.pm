@@ -22,7 +22,11 @@ sub read {
 	my $self = shift;
 
 	my $data = $self->req->json();
-	my $errorstatus = 200;
+	my $errorstatus = $self->param('errorcode');
+
+	$errorstatus = 200 unless $errorstatus;
+	$errorstatus = 200 if $errorstatus < 1;
+
 	if ( $data && exists $data->{errorstatus} ) {
 		$errorstatus = $data->{errorstatus};
 	}

@@ -169,20 +169,59 @@ $t->post_ok('/workspace/100/scan/1/notifications',
 	->json_has('/message')
 	;
 
-# Create one
+# Create one tigger 1
 $t->post_ok('/workspace/100/scan/1/notifications',
 	json => {
 		subject => "test1",
 		recipients => 'root@example.com',
 		message => 'bla',
-		trigger => 1
+		trigger => 1,
 	})
 	->status_is(200)
 	->json_is({
+		id => 1,
 		subject => "test1",
 		recipients => 'root@example.com',
 		message => 'bla',
-		trigger => 1
+		trigger => 1,
+		triggerName => 'Before scan'
+	})
+	;
+
+# Create one tigger 2
+$t->post_ok('/workspace/100/scan/1/notifications',
+	json => {
+		subject => "test2",
+		recipients => 'root@example.com',
+		message => 'bla',
+		trigger => 2,
+	})
+	->status_is(200)
+	->json_is({
+		id => 2,
+		subject => "test2",
+		recipients => 'root@example.com',
+		message => 'bla',
+		trigger => 2,
+		triggerName => 'After scan'
+	})
+	;
+# Create one tigger 3
+$t->post_ok('/workspace/100/scan/1/notifications',
+	json => {
+		subject => "test3",
+		recipients => 'root@example.com',
+		message => 'bla',
+		trigger => 3,
+	})
+	->status_is(200)
+	->json_is({
+		id => 3,
+		subject => "test3",
+		recipients => 'root@example.com',
+		message => 'bla',
+		trigger => 3,
+		triggerName => 'On Open'
 	})
 	;
 

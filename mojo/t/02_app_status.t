@@ -67,8 +67,53 @@ pass("Creating empty database");
 `mysql -uroot -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
 `mysql -uroot -e "flush privileges;"`;
 
+# Error without code
 $t->get_ok('/appstatus')
+	->status_is(200)
+	->json_is("/0/name","Configuration file")
+	->json_is("/0/result","OK")
+	->json_is("/1/name","Path modules")
+	->json_is("/1/result","OK")
+	->json_is("/2/name","Path scanners")
+	->json_is("/2/result","OK")
+	->json_is("/3/name","Path bindir")
+	->json_is("/3/result","OK")
+	->json_is("/4/name","Path configdir")
+	->json_is("/4/result","OK")
+	->json_is("/5/name","Path dbdir")
+	->json_is("/5/result","OK")
+	->json_is("/6/name","Database login")
+	->json_is("/6/result","OK")
+	->json_is("/7/name","Database structure")
+	->json_is("/7/result","Error")
+	->json_hasnt("/8")
+	;
+
+# Error with code 500
+$t->get_ok('/appstatus/500')
 	->status_is(500)
+	->json_is("/0/name","Configuration file")
+	->json_is("/0/result","OK")
+	->json_is("/1/name","Path modules")
+	->json_is("/1/result","OK")
+	->json_is("/2/name","Path scanners")
+	->json_is("/2/result","OK")
+	->json_is("/3/name","Path bindir")
+	->json_is("/3/result","OK")
+	->json_is("/4/name","Path configdir")
+	->json_is("/4/result","OK")
+	->json_is("/5/name","Path dbdir")
+	->json_is("/5/result","OK")
+	->json_is("/6/name","Database login")
+	->json_is("/6/result","OK")
+	->json_is("/7/name","Database structure")
+	->json_is("/7/result","Error")
+	->json_hasnt("/8")
+	;
+
+# Error with non numeric code 
+$t->get_ok('/appstatus/bla')
+	->status_is(200)
 	->json_is("/0/name","Configuration file")
 	->json_is("/0/result","OK")
 	->json_is("/1/name","Path modules")
@@ -93,7 +138,7 @@ $db_version--;
 `mysql -uroot seccubus < ../db/structure_v$db_version.mysql`;
 `mysql -uroot seccubus < ../db/data_v$db_version.mysql`;
 
-$t->get_ok('/appstatus')
+$t->get_ok('/appstatus/500')
 	->status_is(500)
 	->json_is("/0/name","Configuration file")
 	->json_is("/0/result","OK")

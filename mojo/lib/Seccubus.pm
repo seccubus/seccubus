@@ -54,6 +54,7 @@ sub startup {
 
 	# App Status 
 	$r->get('/appstatus')->to('app_status#read');
+	$r->get('/appstatus/:errorcode')->to('app_status#read');
 
 	# Events
 	$r->get('/events')->to('events#list');
