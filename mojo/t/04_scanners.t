@@ -33,14 +33,16 @@ my $i = 0;
 my @scanners = sort glob $config->{paths}->{scanners} . "/*";
 
 foreach my $scanner ( @scanners ) {
-	my $help = `cat $config->{paths}->{scanners}/$scanner/help.html`;
-	my $description = `cat $config->{paths}->{scanners}/$scanner/description.txt`;
-	my $defaults = `cat $config->{paths}->{scanners}/$scanner/defaults.txt`;
+	my $help = `cat $scanner/help.html`;
+	my $description = `cat $scanner/description.txt`;
+	my $defaults = `cat $scanner/defaults.txt`;
+	$scanner =~ /([^\/]*$)/;
+	my $scannername = $1;
 	$t->json_has("/$i")
 	->json_is("/$i/help", $help)
 	->json_is("/$i/description", $description)
 	->json_is("/$i/params", $defaults)
-	->json_is("/$i/name", $scanner)
+	->json_is("/$i/name", $scannername)
 	;
 	$i++;
 }
