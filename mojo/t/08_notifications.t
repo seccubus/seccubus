@@ -272,6 +272,15 @@ $t->get_ok('/workspace/100/scan/1/notifications')
 	])
 	;
 
+# Let's run a scan
+pass("Starting a scan");
+my $output = `(cd ..;perl -MSeccubusV2 -I SeccubusV2 bin/do-scan -w workspace1 -s ssl)`;
+pass("Scan finished");
+
+like($output, qr/Sending notifications for scan start\.\.\.\r?\n?\-?1 notification\(s\) sent/, "Pre scan notifications sent");
+like($output, qr/Sending notifications for scan end\.\.\.\r?\n?\-?1 notification\(s\) sent/, "Post scan notifications sent"); 
+
+
 # No notifications for scan 2
 $t->get_ok('/workspace/100/scan/2/notifications')
 	->status_is(200)
@@ -533,20 +542,4 @@ $t->delete_ok('/workspace/100/scan/1/notification/1')
 
 done_testing();
 exit;
-	my $json;
-	my $tests;
-	
-	# Lets run a scan
-	my $output = `perl -MSeccubusV2 -I SeccubusV2 bin/do-scan -w test1 -s ssl`;
 
-	like($output, qr/Sending notifications for scan start\.\.\.\r?\n?\-?1 notification\(s\) sent/, "Pre scan notifications sent"); $tests++;
-	like($output, qr/Sending notifications for scan end\.\.\.\r?\n?\-?1 notification\(s\) sent/, "Post scan notifications sent"); $tests++;
-
-	# Lets read back scans
-	$json = webcall("getScans.pl", "workspaceId=100");
-	is(@$json, 1, "Correct number of records returned"); $tests++;
-	is($$json[0]->{notifications}, 3, "Correct number of notifications set"); $tests++;
-	is($$json[0]->{runs}, 1, "Scan did run"); $tests++;
-done_testing();
-
-sub weball (){};

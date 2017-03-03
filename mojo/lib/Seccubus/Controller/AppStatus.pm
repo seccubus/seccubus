@@ -38,6 +38,7 @@ sub read {
 		/home/seccubus/etc/config.xml
 		/etc/seccubus/config.xml
 		/opt/seccubus/etc/config.xml
+		etc/dummy.config.xml
    	);
 
 	my @dirs = qw (
