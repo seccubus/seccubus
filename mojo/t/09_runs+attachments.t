@@ -129,15 +129,69 @@ $t->get_ok('/workspace/100/scan/3/runs')
 # Cannot get runs from a non-existing scan
 $t->get_ok('/workspace/101/scan/1/runs')
 	->status_is(200)
-	->json_is([]])
+	->json_is([])
 	;
 
 # Cannot get runs from from a non-existing scan
 $t->get_ok('/workspace/100/scan/4/runs')
 	->status_is(200)
-	->json_is([]])
+	->json_is([])
 	;
 
+my $xml = `cat ../testdata/delta-AAAAAAA.ivil.xml`;
+my $nbe = `cat ../testdata/delta-AAAAAAA.nbe`;
+
+$t->get_ok('/workspace/100/scan/2/run/3/attachment/2')
+	->status_is(200)
+	->content_is($xml)
+	;
+
+$t->get_ok('/workspace/100/scan/2/run/3/attachment/3')
+	->status_is(200)
+	->content_is($nbe)
+	;
+
+# Error on non-numeric parameters
+$t->get_ok('/workspace/a/scan/2/run/3/attachment/3')
+	->status_is(400)
+	->json_is("/status" => "Error")
+	->json_has("/message")
+	;
+
+$t->get_ok('/workspace/100/scan/a/run/3/attachment/3')
+	->status_is(400)
+	->json_is("/status" => "Error")
+	->json_has("/message")
+	;
+
+$t->get_ok('/workspace/100/scan/2/run/a/attachment/3')
+	->status_is(400)
+	->json_is("/status" => "Error")
+	->json_has("/message")
+	;
+
+$t->get_ok('/workspace/100/scan/2/run/3/attachment/a')
+	->status_is(400)
+	->json_is("/status" => "Error")
+	->json_has("/message")
+	;
+
+# Non existing combos return error too.
+$t->get_ok('/workspace/101/scan/2/run/3/attachment/3')
+	->status_is(404)
+	;
+
+$t->get_ok('/workspace/101/scan/3/run/3/attachment/3')
+	->status_is(404)
+	;
+
+$t->get_ok('/workspace/101/scan/2/run/30/attachment/3')
+	->status_is(404)
+	;
+
+$t->get_ok('/workspace/101/scan/2/run/3/attachment/30')
+	->status_is(404)
+	;
 
 done_testing();
 exit;

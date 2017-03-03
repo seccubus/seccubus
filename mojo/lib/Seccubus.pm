@@ -53,14 +53,14 @@ sub startup {
 	my $r = $self->routes;
 
 	# App Status 
-	$r->get('/appstatus')->to('app_status#read');
-	$r->get('/appstatus/:errorcode')->to('app_status#read');
+	$r->get('appstatus')->to('app_status#read');
+	$r->get('appstatus/:errorcode')->to('app_status#read');
 
 	# Attachments
 	$r->get   ('workspace/:workspace_id/scan/:scan_id/run/:run_id/attachment/:id')->to('attachments#read');
 
 	# Events
-	$r->get('/events')->to('events#list');
+	$r->get('events')->to('events#list');
 
 	# Notifications
 	$r->post  ('workspace/:workspace_id/scan/:scan_id/notifications')->to('notifications#create');
@@ -86,7 +86,7 @@ sub startup {
 	$r->get   ('workspace/:workspace_id/scan/:scan_id/runs')->to('runs#list');
 
 	# Version
-	$r->get('/version')->to('version#read');
+	$r->get('version')->to('version#read');
 
 	# Workspace
 	$r->post('workspaces')->to('workspaces#create');
