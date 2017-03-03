@@ -56,6 +56,9 @@ sub startup {
 	$r->get('/appstatus')->to('app_status#read');
 	$r->get('/appstatus/:errorcode')->to('app_status#read');
 
+	# Attachments
+	$r->get   ('workspace/:workspace_id/scan/:scan_id/run/:run_id/attachment/:id')->to('attachments#read');
+
 	# Events
 	$r->get('/events')->to('events#list');
 
@@ -80,7 +83,6 @@ sub startup {
 	$r->get('severities')->to('severities#list');
 
 	# Runs
-	$r->get   ('workspace/:workspace_id/scan/:scan_id/run/:id')->to('runs#read');
 	$r->get   ('workspace/:workspace_id/scan/:scan_id/runs')->to('runs#list');
 
 	# Version
