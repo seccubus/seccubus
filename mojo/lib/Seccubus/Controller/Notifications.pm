@@ -83,25 +83,27 @@ sub read {
 
 	my $workspace_id = $self->param('workspace_id');
 	my $scan_id = $self->param('scan_id');
-	if ( ! $scan_id ) {
-		$self->error("Missing parameter scan_id"); 
-		return;
-	}
+	my $id = $self->param('id');
 
 	eval {
-		my $scan = {};
+		my $notifications = get_notifications($scan_id, $id);
 
-	 	my $scans = get_scans($workspace_id,$scan_id);
-	 	if ( @$scans ) {
-		 	my $i = 0; 
-		 	foreach my $prop ( qw(id name scanner parameters lastScan runs findCount targets workspace notifications password) ) {
-		 		$scan->{$prop} = $$scans[0][$i];
-		 		$i++
-		 	}
+	 	if ( @$notifications ) {
+	 		# Check workspace id here
+	 		if ( $$notifications[0][6] == $workspace_id ) {
+				my $notification = {};
 
-			$self->render( json => $scan );
+		 		my $i = 0;
+			 	foreach my $prop ( qw(id subject recipients message trigger triggerName) ) {
+			 		$notification->{$prop} = $$notifications[0][$i];
+			 		$i++;
+			 	}
+				$self->render( json => $notification );
+			} else {
+				$self->error("Notification not found");
+			}
 		} else {
-			$self->error("Scan not found");
+			$self->error("notification not found");
 			return;
 		}
 	} or do {
@@ -113,24 +115,24 @@ sub read {
 sub list {
 	my $self = shift;
 
+	my $workspace_id = $self->param('workspace_id');
 	my $scan_id = $self->param('scan_id');
 
 	eval {
 		my $data = [];
 
-		my @data;
 		my $notifications = get_notifications($scan_id);
 
 		foreach my $row ( @$notifications ) {
-			if ( $$row[2] ) {
-				push (@data, {
-					'id'		=> $$row[0],
-					'subject'	=> $$row[1],
-					'recipients'	=> $$row[2],
-					'message'	=> $$row[3],
-					'event_id'	=> $$row[4],
-					'event_name'	=> $$row[5]
-				})
+		 	my $i = 0; 
+		 	# Check workspace id
+		 	if ( $$row[6] == $workspace_id ) {
+			 	my $not = {};
+			 	foreach my $prop ( qw(id subject recipients message trigger triggerName) ) {
+			 		$not->{$prop} = $$row[$i];
+			 		$i++
+			 	}
+			 	push @$data, $not;
 			}
 		}
 
@@ -143,40 +145,78 @@ sub list {
 sub update {
 	my $self = shift;
 
-	my $scan = $self->req->json();
 	my $workspace_id = $self->param('workspace_id');
 	my $scan_id = $self->param('scan_id');
+	my $id = $self->param('id');
 
-	if ( ! $scan ) {
-			$self->error("No valid json body found"); return;		
+	my $notification = $self->req->json();
+	if ( ! $notification ) {
+			$self->error("No valid json body found"); 
+			return;		
+	}
+	if ( $notification->{id} != $id ) {
+		$self->error("Id in url ($id) is not equal to id in object ($notification->{id}");
+	}
+
+	my $oldnot = get_notifications($scan_id,$id);
+	if ( $$oldnot[0][6] != $workspace_id ) {
+		$self->error("Notification $id not found in scan $scan_id in workspace $workspace_id");
+		return;
 	}
 
 	eval {
 		my @data = ();
-		update_scan(
-			$workspace_id,
-			$scan_id,
-			$scan->{name},
-			$scan->{scanner},
-			$scan->{parameters},
-			$scan->{password},
-			$scan->{targets}
+		update_notification(
+			$notification->{id },
+			$notification->{trigger},
+			$notification->{subject},
+			$notification->{recipients},
+			$notification->{message},
 		);
-		my $newscan;
-	 	my $scans = get_scans($workspace_id,$scan_id);
+		my $newnot;
+	 	my $nots = get_notifications($scan_id,$id);
 	 	my $i = 0;
-	 	foreach my $prop ( qw(id name scanner parameters lastScan runs findCount targets workspace notifications password) ) {
-		 	$newscan->{$prop} = $$scans[0][$i];
-		 	$i++
+	 	foreach my $prop ( qw(id subject recipients message trigger triggerName) ) {
+		 	$newnot->{$prop} = $$nots[0][$i];
+		 	$i++;
 		}
 
-		foreach my $prop ( qw(name scanner parameters password targets ) ) {
-			$newscan->{$prop} = $scan->{$prop};
-		}
-		$self->render( json=> $newscan );
+		$self->render( json=> $newnot );
 	} or do {
 		$self->error(join "\n", $@);
 	};
+}
+
+sub delete {
+	my $self = shift;
+
+	my $workspace_id = $self->param('workspace_id');
+	my $scan_id = $self->param('scan_id');
+	my $id = $self->param('id');
+
+	my $oldnot = get_notifications($scan_id,$id);
+	if ( $$oldnot[0][6] != $workspace_id ) {
+		$self->error("Notification $id not found in scan $scan_id in workspace $workspace_id");
+		return;
+	}
+
+	eval {
+		my $sth = del_notification($id);
+		if ( $sth ) {
+			$self->render( json => 
+				{
+					status => "OK",
+					message => "Notification deleted"
+				},
+				status => 200 
+			);
+		} else {
+			$self->error("Delete failed");
+		}
+	} or do {
+		$self->error(join "\n", $@);
+	};
+
 }
 
 1;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,11 @@ $.Controller('Seccubus.Notification.Table',
 		 */
 		scan : -1,
 		/*
+		 * @attribute options.workspace
+		 * The selected workspace. -1 (default) means on scan selected.
+		 */
+		workspace : -1,
+		/*
 		 * @attribute options.onEdit
 		 * This function is triggered with an edit link is clicked
 		 */
@@ -65,7 +70,17 @@ $.Controller('Seccubus.Notification.Table',
 				this.view(
 					'error',
 					{
-						message : "Please select a scan to start"
+						message : "Please select a scan and workspace to start"
+					}
+				)
+			);
+		} else if ( this.options.workspace  == -1 ) {
+			console.warn("Seccubus.Notification.Table: workspace is not set");
+			this.element.html(
+				this.view(
+					'error',
+					{
+						message : "Please select a scan and workspace to start"
 					}
 				)
 			);
@@ -74,7 +89,8 @@ $.Controller('Seccubus.Notification.Table',
 				this.view(
 					'init',
 					Seccubus.Models.Notification.findAll({
-						scanId		: this.options.scan
+						scan		: this.options.scan,
+						workspace	: this.options.workspace
 					})
 				)
 			);
@@ -88,7 +104,10 @@ $.Controller('Seccubus.Notification.Table',
 	".destroy click" : function(el, ev) {
 		ev.preventDefault();
 		if(confirm("Are you sure you want to delete this notification?")){
-			el.closest(".notification").model().destroy();
+			el.closest(".notification").model().destroy({
+				scan 	: this.options.scan,
+				workspace	: this.options.workspace
+			});
 		}
 	},
 	"{Seccubus.Models.Notification} destroyed" : function(Notification, ev, notification) {

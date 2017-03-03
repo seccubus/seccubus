@@ -86,7 +86,8 @@ sub get_notifications($;$) {
 	);
 	if ( $workspace_id && may_read($workspace_id)) {
 		my $sql = "
-			SELECT	notifications.id, subject, recipients, message, event_id, events.name
+			SELECT	notifications.id, subject, recipients, message, event_id, events.name, 
+					scans.workspace_id
 			FROM	notifications, events, scans
 			WHERE	scans.workspace_id = ? AND
 					scans.id = ? AND
@@ -238,7 +239,7 @@ Description of the event
 
 =cut
 sub update_notification($$$$$;) {
-	my $notification_id = shift or die "No workspace_id provided";
+	my $notification_id = shift or die "No notification_id provided";
 	my $event_id = shift or die "No event_id provided";
 	my $subject = shift or die "Subject is empty";
 	my $recipients = shift or die "Recipients empty";

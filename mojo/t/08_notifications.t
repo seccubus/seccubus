@@ -20,6 +20,9 @@ use Test::More;
 use Test::Mojo;
 use Data::Dumper;
 
+use SeccubusV2;
+use SeccubusScans;
+
 my $db_version = 0;
 foreach my $data_file (<../db/data_v*.mysql>) {
 	$data_file =~ /^\.\.\/db\/data_v(\d+)\.mysql$/;
@@ -58,6 +61,18 @@ $t->post_ok('/workspace/100/scans',
 	->status_is(200)
 	;
 
+# Create scan
+$t->post_ok('/workspace/100/scans', 
+	json => { 
+		'name' 			=> 'ssl2',
+		'scanner'		=> 'SSLlabs',
+		'parameters'	=> '--hosts @HOSTS --from-cache --publish',
+		'password'		=> '',
+		'targets'		=> "www.seccubus.com\nwww.schubergphilis.com",
+	})
+	->status_is(200)
+	;
+
 # Cannot create notification for non-existing workspace
 $t->post_ok('/workspace/101/scan/1/notifications',
 	json => {
@@ -72,7 +87,7 @@ $t->post_ok('/workspace/101/scan/1/notifications',
 	;
 
 # Cannot create notification for non-existing workspace
-$t->post_ok('/workspace/100/scan/2/notifications',
+$t->post_ok('/workspace/100/scan/3/notifications',
 	json => {
 		trigger => 1,
 		subject => "test1",
@@ -225,55 +240,301 @@ $t->post_ok('/workspace/100/scan/1/notifications',
 	})
 	;
 
+# Three notifications for scan 1
+$t->get_ok('/workspace/100/scan/1/notifications')
+	->status_is(200)
+	->json_has("/2")
+	->json_is([
+		{
+			id => 1,
+			subject => "test1",
+			recipients => 'root@example.com',
+			message => 'bla',
+			trigger => 1,
+			triggerName => 'Before scan'
+		},
+		{
+			id => 2,
+			subject => "test2",
+			recipients => 'root@example.com',
+			message => 'bla',
+			trigger => 2,
+			triggerName => 'After scan'
+		},
+		{
+			id => 3,
+			subject => "test3",
+			recipients => 'root@example.com',
+			message => 'bla',
+			trigger => 3,
+			triggerName => 'On Open'
+		}
+	])
+	;
+
+# No notifications for scan 2
+$t->get_ok('/workspace/100/scan/2/notifications')
+	->status_is(200)
+	->json_is([])
+	;
+
+# No notifications for scan 1 in wrong workspace
+$t->get_ok('/workspace/101/scan/1/notifications')
+	->status_is(200)
+	->json_is([])
+	;
+
+# Can read individual notifications
+$t->get_ok('/workspace/100/scan/1/notification/1')
+	->status_is(200)
+	->json_is(
+		{
+			id => 1,
+			subject => "test1",
+			recipients => 'root@example.com',
+			message => 'bla',
+			trigger => 1,
+			triggerName => 'Before scan'
+		}
+	)
+	;
+
+$t->get_ok('/workspace/100/scan/1/notification/2')
+	->status_is(200)
+	->json_is(
+		{
+			id => 2,
+			subject => "test2",
+			recipients => 'root@example.com',
+			message => 'bla',
+			trigger => 2,
+			triggerName => 'After scan'
+		}
+	)
+	;
+
+$t->get_ok('/workspace/100/scan/1/notification/3')
+	->status_is(200)
+	->json_is(
+		{
+			id => 3,
+			subject => "test3",
+			recipients => 'root@example.com',
+			message => 'bla',
+			trigger => 3,
+			triggerName => 'On Open'
+		}
+	)
+	;
+
+# Update
+$t->put_ok('/workspace/100/scan/1/notification/1',
+	json => {
+			id => 1,
+			subject => "test4",
+			recipients => 'toor@example.com',
+			message => 'iets',
+			trigger => 2,
+	})
+	->status_is(200)
+	->json_is(
+		{
+			id => 1,
+			subject => "test4",
+			recipients => 'toor@example.com',
+			message => 'iets',
+			trigger => 2,
+			triggerName => 'After scan'
+		}
+	)
+	;
+
+# Can read individual notifications
+$t->get_ok('/workspace/100/scan/1/notification/1')
+	->status_is(200)
+	->json_is(
+		{
+			id => 1,
+			subject => "test4",
+			recipients => 'toor@example.com',
+			message => 'iets',
+			trigger => 2,
+			triggerName => 'After scan'
+		}
+	)
+	;
+
+# Three notifications for scan 1
+$t->get_ok('/workspace/100/scan/1/notifications')
+	->status_is(200)
+	->json_has("/2")
+	->json_is([
+		{
+			id => 2,
+			subject => "test2",
+			recipients => 'root@example.com',
+			message => 'bla',
+			trigger => 2,
+			triggerName => 'After scan'
+		},
+		{
+			id => 1,
+			subject => "test4",
+			recipients => 'toor@example.com',
+			message => 'iets',
+			trigger => 2,
+			triggerName => 'After scan'
+		},
+		{
+			id => 3,
+			subject => "test3",
+			recipients => 'root@example.com',
+			message => 'bla',
+			trigger => 3,
+			triggerName => 'On Open'
+		},
+	])
+	;
+
+# Cannot update to empty subject
+$t->put_ok('/workspace/100/scan/1/notification/1',
+	json => {
+			id => 1,
+			recipients => 'toor@example.com',
+			message => 'iets',
+			trigger => 2,
+	})
+	->status_is(400)
+	->json_is("/status", "Error")
+	->json_has("/message")
+	;
+
+# Cannot update to empty recipients
+$t->put_ok('/workspace/100/scan/1/notification/1',
+	json => {
+			id => 1,
+			subject => "test4",
+			message => 'iets',
+			trigger => 2,
+	})
+	->status_is(400)
+	->json_is("/status", "Error")
+	->json_has("/message")
+	;
+
+# Cannot update to empty message
+$t->put_ok('/workspace/100/scan/1/notification/1',
+	json => {
+			id => 1,
+			subject => "test4",
+			recipients => 'toor@example.com',
+			trigger => 2,
+	})
+	->status_is(400)
+	->json_is("/status", "Error")
+	->json_has("/message")
+	;
+
+# Cannot update to non existing trigger
+$t->put_ok('/workspace/100/scan/1/notification/1',
+	json => {
+			id => 1,
+			subject => "test4",
+			recipients => 'toor@example.com',
+			message => 'iets',
+			trigger => 0,
+	})
+	->status_is(400)
+	->json_is("/status", "Error")
+	->json_has("/message")
+	;
+
+$t->put_ok('/workspace/100/scan/1/notification/1',
+	json => {
+			id => 1,
+			subject => "test4",
+			recipients => 'toor@example.com',
+			message => 'iets',
+			trigger => 4,
+	})
+	->status_is(400)
+	->json_is("/status", "Error")
+	->json_has("/message")
+	;
+
+$t->put_ok('/workspace/100/scan/1/notification/1',
+	json => {
+			id => 1,
+			subject => "test4",
+			recipients => 'toor@example.com',
+			message => 'iets',
+			trigger => "a",
+	})
+	->status_is(400)
+	->json_is("/status", "Error")
+	->json_has("/message")
+	;
+
+# Cannot update non-existing notification
+$t->put_ok('/workspace/100/scan/5/notification/5',
+	json => {
+			id => 1,
+			subject => "test4",
+			recipients => 'toor@example.com',
+			message => 'iets',
+			trigger => 1,
+	})
+	->status_is(400)
+	->json_is("/status", "Error")
+	->json_has("/message")
+	;
+
+# Can delete a notification
+$t->delete_ok('/workspace/100/scan/1/notification/1')
+	->status_is(200)
+	->json_is("/status", "OK")
+	->json_has("/message")
+	;
+
+# Two notifications for scan 1
+$t->get_ok('/workspace/100/scan/1/notifications')
+	->status_is(200)
+	->json_is([
+		{
+			id => 2,
+			subject => "test2",
+			recipients => 'root@example.com',
+			message => 'bla',
+			trigger => 2,
+			triggerName => 'After scan'
+		},
+		{
+			id => 3,
+			subject => "test3",
+			recipients => 'root@example.com',
+			message => 'bla',
+			trigger => 3,
+			triggerName => 'On Open'
+		},
+	])
+	;
+
+$t->get_ok('/workspace/100/scan/1/notification/1')
+	->status_is(400)
+	->json_is("/status", "Error")
+	->json_has("/message")
+	;
+
+$t->delete_ok('/workspace/100/scan/1/notification/1')
+	->status_is(400)
+	->json_is("/status", "Error")
+	->json_has("/message")
+	;
+
 done_testing();
 exit;
 	my $json;
 	my $tests;
-	is(@$json, 1, "Correct number of records returned"); $tests++;
-	is($$json[0]->{id}, 1, "Correct ID returned"); $tests++;
-	is($$json[0]->{event_id}, 1, "Correct event ID returned"); $tests++;
-	is($$json[0]->{event_name}, 'Before scan', "Correct event name returned"); $tests++;
-	is($$json[0]->{subject}, 'test1', "Correct subject returned"); $tests++;
-	is($$json[0]->{recipients}, 'root@example.com', "Correct recipient returned"); $tests++;
-	is($$json[0]->{message}, 'bla', "Correct message returned"); $tests++;
-	my $json_create1 = $$json[0];
-	
-	$json = webcall("createNotification.pl", "workspaceId=100", "scanId=1", "trigger=2", "subject=test2", 
-		"recipients=root\@example.com", "message=bla");
-	is(@$json, 1, "Correct number of records returned"); $tests++;
-	is($$json[0]->{id}, 2, "Correct ID returned"); $tests++;
-	is($$json[0]->{event_id}, 2, "Correct event ID returned"); $tests++;
-	is($$json[0]->{event_name}, 'After scan', "Correct event name returned"); $tests++;
-	is($$json[0]->{subject}, 'test2', "Correct subject returned"); $tests++;
-	is($$json[0]->{recipients}, 'root@example.com', "Correct recipient returned"); $tests++;
-	is($$json[0]->{message}, 'bla', "Correct message returned"); $tests++;
-	my $json_create2 = $$json[0];
-	
-	$json = webcall("createNotification.pl", "workspaceId=100", "scanId=1", "trigger=3", "subject=test3", 
-		"recipients=root\@example.com", "message=bla");
-	is(@$json, 1, "Correct number of records returned"); $tests++;
-	is($$json[0]->{id}, 3, "Correct ID returned"); $tests++;
-	is($$json[0]->{event_id}, 3, "Correct event ID returned"); $tests++;
-	is($$json[0]->{event_name}, 'On Open', "Correct event name returned"); $tests++;
-	is($$json[0]->{subject}, 'test3', "Correct subject returned"); $tests++;
-	is($$json[0]->{recipients}, 'root@example.com', "Correct recipient returned"); $tests++;
-	is($$json[0]->{message}, 'bla', "Correct message returned"); $tests++;
-	my $json_create3 = $$json[0];
-
-	# Read notifications back
-
-	# Must have numeric scanId
-	$json = webcall("getNotifications.pl");
-	isnt($$json[0]->{error}, undef, "Got error"); $tests++;
-	$json = webcall("getNotifications.pl", "scanId=a");
-	isnt($$json[0]->{error}, undef, "Got error"); $tests++;
-
-	# Happy flow
-	$json = webcall("getNotifications.pl", "scanId=1");
-	is(@$json, 3, "Correct number of records returned"); $tests++;
-	is_deeply($$json[0], $json_create1, "Objects match"); $tests++;
-	is_deeply($$json[1], $json_create2, "Objects match"); $tests++;
-	is_deeply($$json[2], $json_create3, "Objects match"); $tests++;
 	
 	# Lets run a scan
 	my $output = `perl -MSeccubusV2 -I SeccubusV2 bin/do-scan -w test1 -s ssl`;
