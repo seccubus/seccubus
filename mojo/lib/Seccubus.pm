@@ -66,17 +66,6 @@ sub startup {
 	$r->put   ('workspace/:workspace_id/scan/:scan_id/notification/:id')->to('notifications#update');
 	$r->delete('workspace/:workspace_id/scan/:scan_id/notification/:id')->to('notifications#delete');
 
-
-	# Version
-	$r->get('/version')->to('version#read');
-
-	# Workspace
-	$r->post('workspaces')->to('workspaces#create');
-	$r->get('workspaces')->to('workspaces#list');
-	#$r->get('workspace/:id')->to('workspaces#read');
-	$r->put('workspace/:id')->to('workspaces#update');
-	#$r->delete('workspace/:id')->to('workspaces#delete');
-
 	# Scans
 	$r->post('workspace/:workspace_id/scans')->to('scans#create');
 	$r->get('workspace/:workspace_id/scans')->to('scans#list');
@@ -89,6 +78,21 @@ sub startup {
 
 	# Severities
 	$r->get('severities')->to('severities#list');
+
+	# Runs
+	$r->get   ('workspace/:workspace_id/scan/:scan_id/run/:id')->to('runs#read');
+	$r->get   ('workspace/:workspace_id/scan/:scan_id/runs')->to('runs#list');
+
+	# Version
+	$r->get('/version')->to('version#read');
+
+	# Workspace
+	$r->post('workspaces')->to('workspaces#create');
+	$r->get('workspaces')->to('workspaces#list');
+	#$r->get('workspace/:id')->to('workspaces#read');
+	$r->put('workspace/:id')->to('workspaces#update');
+	#$r->delete('workspace/:id')->to('workspaces#delete');
+
 
 	# Handle file requests
 	if ( $self->mode() eq 'production' ) {

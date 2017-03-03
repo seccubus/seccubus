@@ -66,7 +66,7 @@ sub get_scanners(;) {
 
 	my $path = $config->{paths}->{scanners};
 
-	my @scanners =  glob $path . "/*";
+	my @scanners = sort glob $path . "/*";
 
 	foreach my $scanpath (sort @scanners) {
 		$scanpath =~ /^.*\/(.*?)$/;
