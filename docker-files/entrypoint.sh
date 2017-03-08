@@ -72,7 +72,7 @@ if [[ "$STACK" == "full" || "$STACK" == "front" || "$STACK" == "api" || "$STACK"
     apachectl -DFOREGROUND &
 fi
 
-mkdir ~seccubus/.ssh
+mkdir -p ~seccubus/.ssh
 chmod 700 ~seccubus/.ssh
 echo "$SSHKEY1" > ~seccubus/.ssh/SSHKEY1
 export SSHKEY1=""
