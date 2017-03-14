@@ -26,7 +26,7 @@ RUN yum install -y epel-release && \
 	"perl(DBI)" "perl(DBD::mysql)" 	"perl(Data::Dumper)" "perl(Date::Format)" "perl(HTML::Entities)" \
 	"perl(JSON)" "perl(LWP::Simple)" "perl(LWP::Protocol::https)" "perl(LWP::UserAgent)" \
 	"perl(Net::IP)" "perl(XML::Simple)" httpd nmap which git java-1.7.0-openjdk make \
-	"perl(ExtUtils::MakeMaker)" wgetn cronie
+	"perl(ExtUtils::MakeMaker)" wget cronie
 
 RUN mkdir -p /build/seccubus
 COPY . /build/seccubus/
