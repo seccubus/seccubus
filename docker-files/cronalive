@@ -1,0 +1,10 @@
+#!/bin/bash
+
+sleep 2
+if [[ -e "/var/run/crond.pid" && $(ps -ef|grep `cat /var/run/crond.pid`|grep cron|wc -l) -gt 0 ]]; then
+	echo "cron alive"
+	exit 0
+else
+	echo "cron dead"
+	exit 1
+fi

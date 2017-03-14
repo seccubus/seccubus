@@ -67,6 +67,18 @@ docker run -ti seccubus scan Example ssllabs
 
 Please be aware that you need soem data persistency here or the data will be stored in a local database that will be deleted whent he container terminates
 
+Running a scheduler
+---
+You can run a docker container as a scheduler. This will make it run cron and allow your crontab to execute scans.You can populate the crontab by either placing a file called `crontab` in the /opt/seccubus/data volume or puting the lines of you crontab in evironement variables starting with `CRON_`
+
+```
+dockjer run -e "STACK=cron" -e "CRON_1=* 0 * * * bin/do-scan -w Example -s ssllabs" -ti seccubus
+```
+
+This will spin up a container that executes scan ssllabs from workspace Example at midnight every night.
+
+You can set the TZ vairable to control the timezone.
+
 Show this help message
 ---
 ```
@@ -109,6 +121,7 @@ You can set the following environment variables:
   - You can use this mechanism to provide ssh keys that are used to start remote scans
 * HTTP_AUTH_HEADER - Set the http authentication header
   - If you are using something like OpenAM to authenticate your users, this allows you to set which http request header contains the user that OpenAM detected
+* TZ - Set the timezone of the container
 
 
 Change log
@@ -126,6 +139,7 @@ Enhancements
 * #126 - Delta engine improved: Beter recovery from GONE findings
 * #408 - Seccubus now refuses to load an ivil file with 0 findings
 * #412 - Disabled tofu to enhance Docker support
+* #419 - Enable crontab support in docker images
 
 Bug Fixes
 ---------
