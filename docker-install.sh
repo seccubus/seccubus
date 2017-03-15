@@ -48,6 +48,10 @@ groupmems -g seccubus -a apache
 # Install the software
 ./install.pl --basedir /opt/seccubus --wwwdir /opt/seccubus/www --stage_dir /build/stage --createdirs
 
+# Create mountpoint for data directory
+mkdir /opt/seccubus/data
+chmod 755 /opt/seccubus/data
+
 # Fix permissions
 chown -R seccubus:seccubus /opt/seccubus
 chmod 755 /opt/seccubus
@@ -103,11 +107,11 @@ json/createScan.pl workspaceId=100 name=nikto scanner=Nikto "password= " 'parame
 
 # Install Nikto
 cd /opt
-git clone https://github.com/sullo/nikto.git
+git clone https://github.com/sullo/nikto.git --depth 1
 
 # Install testssl.sh
 cd /opt
-git clone https://github.com/drwetter/testssl.sh.git
+git clone https://github.com/drwetter/testssl.sh.git --depth 1
 ln -s /opt/nikto
 
 # Cleanup default OS stuff

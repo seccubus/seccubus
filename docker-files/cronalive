@@ -1,4 +1,4 @@
-#
+#!/bin/bash
 # Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,26 +18,11 @@
 # not exist yet ;)
 # ------------------------------------------------------------------------------
 #
-FROM centos:7
-
-RUN yum install -y epel-release && \
-	yum update -y && \
-	yum install -y perl mariadb-server "perl(Algorithm::Diff)" "perl(CGI)" "perl(CGI::Carp)" \
-	"perl(DBI)" "perl(DBD::mysql)" 	"perl(Data::Dumper)" "perl(Date::Format)" "perl(HTML::Entities)" \
-	"perl(JSON)" "perl(LWP::Simple)" "perl(LWP::Protocol::https)" "perl(LWP::UserAgent)" \
-	"perl(Net::IP)" "perl(XML::Simple)" httpd nmap which git java-1.7.0-openjdk make \
-	"perl(ExtUtils::MakeMaker)" wget cronie
-
-RUN mkdir -p /build/seccubus
-COPY . /build/seccubus/
-
-COPY docker-install.sh /tmp/install.sh
-RUN bash -x /tmp/install.sh && rm /tmp/install.sh
-
-COPY docker-files /
-COPY README.md /
-
-ENTRYPOINT ["/entrypoint.sh"]
-VOLUME [ "/opt/seccubus/data" ]
-
-EXPOSE 80
+sleep 2
+if [[ -e "/var/run/crond.pid" && $(ps -ef|grep `cat /var/run/crond.pid`|grep cron|wc -l) -gt 0 ]]; then
+	echo "cron alive"
+	exit 0
+else
+	echo "cron dead"
+	exit 1
+fi
