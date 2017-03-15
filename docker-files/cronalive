@@ -18,7 +18,6 @@
 # not exist yet ;)
 # ------------------------------------------------------------------------------
 #
-sleep 2
 if [[ -e "/var/run/crond.pid" && $(ps -ef|grep `cat /var/run/crond.pid`|grep cron|wc -l) -gt 0 ]]; then
 	echo "cron alive"
 	exit 0
