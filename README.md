@@ -140,6 +140,7 @@ Enhancements
 * #408 - Seccubus now refuses to load an ivil file with 0 findings
 * #412 - Disabled tofu to enhance Docker support
 * #419 - Enable crontab support in docker images
+* #423 - Show futureGrade in SSLlabs scan results
 
 Bug Fixes
 ---------
