@@ -16,6 +16,11 @@
 		"type"			: "milliseconds",
 		"description"	: "The assessment of this endpoint took: "
 	},
+	"futureGrade" : {
+		"type"			: "grade",
+		"description"	: "Future grade : ",
+		"note"			: "This finding is fired when SSL labs' grading system is about to undergo a change.\nThis finding shows what the grade will be in the new grading system.\nUsually https://blog.qualys.com/ssllabs should have moe information."
+	},
 	"grade" : {
 		"type"			: "grade",
 		"description"	: "This endpoint scores an : "
