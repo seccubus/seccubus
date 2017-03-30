@@ -1,6 +1,6 @@
 About Seccubus
 ==============
-Seccubus automates regular vulnerability scans with vrious tools and aids 
+Seccubus automates regular vulnerability scans with various tools and aids 
 security people in the fast analysis of its output, both on the first scan and 
 on repeated scans.
 
@@ -34,21 +34,21 @@ Running a full stack (db/app/frontend) in a single container. And get an interac
 ---
 
 ```
-docker run -it seccubus /bin/bash
+docker run -it seccubus/seccubus /bin/bash
 ```
 
 By default the container holds a MariaDB server that runs and stores data locally. If you want data persistency there are two options:
 
 Mount a local filesystem to `/var/lib/mysql`
 ```
-docker run -it seccubus -v /some/local/dir:/var/lib/mysql /bin/bash
+docker run -it seccubus/seccubus -v /some/local/dir:/var/lib/mysql /bin/bash
 ```
 
 Please be aware that you can only run one container at a time if you mount a local directory on /var/lib/mysql.
 
 Alternativly you cloud connect the container to a remote mysql/MariaDB database with environment viariables:
 ```
-docker run -ti seccubus -e DBHOST=dns.name.of.db.host \
+docker run -ti seccubus/seccubus -e DBHOST=dns.name.of.db.host \
 -e DBPOSRT=3306 \
 -e DBNAME=name.of.database \
 -e DBUSER=db.username \
@@ -62,7 +62,7 @@ Running a scan
 Run the following command to start the scan 'ssllabs' in workspace 'Example' (this workspace is created by default if you use the local mysql database)
 
 ```
-docker run -ti seccubus scan Example ssllabs
+docker run -ti seccubus/seccubus scan Example ssllabs
 ```
 
 Please be aware that you need soem data persistency here or the data will be stored in a local database that will be deleted whent he container terminates
@@ -72,7 +72,7 @@ Running a scheduler
 You can run a docker container as a scheduler. This will make it run cron and allow your crontab to execute scans.You can populate the crontab by either placing a file called `crontab` in the /opt/seccubus/data volume or puting the lines of you crontab in evironement variables starting with `CRON_`
 
 ```
-dockjer run -e "STACK=cron" -e "CRON_1=* 0 * * * bin/do-scan -w Example -s ssllabs" -ti seccubus
+docker run -e "STACK=cron" -e "CRON_1=* 0 * * * bin/do-scan -w Example -s ssllabs" -ti seccubus/seccubus
 ```
 
 This will spin up a container that executes scan ssllabs from workspace Example at midnight every night.
@@ -82,14 +82,14 @@ You can set the TZ vairable to control the timezone.
 Show this help message
 ---
 ```
-docker run -ti seccubus help
+docker run -ti seccubus/seccubus help
 ```
 
 Default command
 ---
 If you don't specify a command to docker run
 ```
-docker run seccubus
+docker run seccubus/seccubus
 ```
 The apache access log and error log will be tailed to the screen.
 
@@ -146,3 +146,4 @@ Bug Fixes
 ---------
 * #403 - SSLlabs scanner help file was not up to date
 * #414 - Mkdir error will no longer appear if entrypoint.sh is run twice
+* #426 - Corrections to README.md from Karol Kozakowski merged
