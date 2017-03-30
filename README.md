@@ -146,3 +146,4 @@ Bug Fixes
 ---------
 * #403 - SSLlabs scanner help file was not up to date
 * #414 - Mkdir error will no longer appear if entrypoint.sh is run twice
+* #426 - Corrections to README.md from Karol Kozakowski merged
