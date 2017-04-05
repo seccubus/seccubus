@@ -1,0 +1,2725 @@
+<?xml version="1.0" standalone='yes'?>
+<IVIL version="0.2">
+	<addressee>
+		<program>Seccubus</program>
+		<programSpecificData>
+			<scan>schubergphilis</scan>
+			<workspace>export</workspace>
+		</programSpecificData>
+	</addressee>
+<findings>
+		<finding>
+			<ip>www.schubergphilis.com</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>certs</id>
+			<severity>0</severity>
+			<finding_txt>This is an overview of the certificates returned by this url
+
+#1
+
+Subject                   : CN=*.schubergphilis.com,OU=PositiveSSL Wildcard,OU=Domain Control Validated
+Common names              : 
+ * *.schubergphilis.com
+Alternative names         : 
+ * *.schubergphilis.com
+ * schubergphilis.com
+Valid from                : Tue 25 Oct 2016 00:00:00 UTC
+Valid until               : Sun 20 Oct 2019 23:59:59 UTC
+Key                       : RSA 2048 bits
+Issuer                    : CN=COMODO RSA Domain Validation Secure Server CA,O=COMODO CA Limited,L=Salford,ST=Greater Manchester,C=GB
+Issuer CN                 : COMODO RSA Domain Validation Secure Server CA
+Signature algorithm       : SHA256withRSA
+Extended validation       : No
+OCSP Must Staple          : Not supported
+Revocation information    :
+
+ * CRL information available
+ * OCSP information availableRevocation URLs           :
+ * CRL : http://crl.comodoca.com/COMODORSADomainValidationSecureServerCA.crl
+ * OCSP : http://ocsp.comodoca.com
+Revocation status         : Certificate NOT revoked
+Hashes                    : 
+ * SHA1: 2283a15e7f40ee37f788d17d9e2b906191b13e50 
+ * Pin SHA256 :  TR47gQz46Ps/tHvN+jp9URNhBEg1r2x8AKQh/SW+uis=
+Server Gated Crypto (SGC) : 
+
+Certificate issues        :
+
+#2
+
+Subject                   : CN=COMODO RSA Domain Validation Secure Server CA,O=COMODO CA Limited,L=Salford,ST=Greater Manchester,C=GB
+Common names              : 
+ * COMODO RSA Domain Validation Secure Server CA
+Alternative names         : 
+ * 
+Valid from                : Wed 12 Feb 2014 00:00:00 UTC
+Valid until               : Sun 11 Feb 2029 23:59:59 UTC
+Key                       : RSA 2048 bits
+Issuer                    : CN=COMODO RSA Certification Authority,O=COMODO CA Limited,L=Salford,ST=Greater Manchester,C=GB
+Issuer CN                 : COMODO RSA Certification Authority
+Signature algorithm       : SHA384withRSA
+Extended validation       : No
+OCSP Must Staple          : Not supported
+Revocation information    :
+
+ * CRL information available
+ * OCSP information availableRevocation URLs           :
+ * CRL : http://crl.comodoca.com/COMODORSACertificationAuthority.crl
+ * OCSP : http://ocsp.comodoca.com
+Revocation status         : Certificate NOT revoked
+Hashes                    : 
+ * SHA1: 339cdd57cfd5b141169b615ff31428782d1da639 
+ * Pin SHA256 :  klO23nT2ehFDXCfx3eHTDRESMz3asj1muO+4aIdjiuY=
+Server Gated Crypto (SGC) : 
+
+Certificate issues        :
+
+#3
+
+Subject                   : CN=COMODO RSA Certification Authority,O=COMODO CA Limited,L=Salford,ST=Greater Manchester,C=GB
+Common names              : 
+ * COMODO RSA Certification Authority
+Alternative names         : 
+ * 
+Valid from                : Tue 30 May 2000 10:48:38 UTC
+Valid until               : Sat 30 May 2020 10:48:38 UTC
+Key                       : RSA 4096 bits
+Issuer                    : CN=AddTrust External CA Root,OU=AddTrust External TTP Network,O=AddTrust AB,C=SE
+Issuer CN                 : AddTrust External CA Root
+Signature algorithm       : SHA384withRSA
+Extended validation       : No
+OCSP Must Staple          : Not supported
+Revocation information    :
+
+ * CRL information available
+ * OCSP information availableRevocation URLs           :
+ * CRL : http://crl.usertrust.com/AddTrustExternalCARoot.crl
+ * OCSP : http://ocsp.usertrust.com
+Revocation status         : Certificate NOT revoked
+Hashes                    : 
+ * SHA1: f5ad0bcc1ad56cd150725b1c866c30ad92ef21b0 
+ * Pin SHA256 :  grX4Ta9HpZx6tSHkmCrvpApTQGo67CYDnvprLg5yRME=
+Server Gated Crypto (SGC) : 
+
+Certificate issues        :
+
+#4
+
+Subject                   : CN=COMODO RSA Certification Authority,O=COMODO CA Limited,L=Salford,ST=Greater Manchester,C=GB
+Common names              : 
+ * COMODO RSA Certification Authority
+Alternative names         : 
+ * 
+Valid from                : Tue 19 Jan 2010 00:00:00 UTC
+Valid until               : Mon 18 Jan 2038 23:59:59 UTC
+Key                       : RSA 4096 bits
+Issuer                    : CN=COMODO RSA Certification Authority,O=COMODO CA Limited,L=Salford,ST=Greater Manchester,C=GB
+Issuer CN                 : COMODO RSA Certification Authority
+Signature algorithm       : SHA384withRSA
+Extended validation       : No
+OCSP Must Staple          : Not supported
+Revocation information    :
+Revocation URLs           :
+Revocation status         : Not checked
+Hashes                    : 
+ * SHA1: afe5d244a8d1194230ff479fe2f897bbcd7a8cb4 
+ * Pin SHA256 :  grX4Ta9HpZx6tSHkmCrvpApTQGo67CYDnvprLg5yRME=
+Server Gated Crypto (SGC) : 
+
+Certificate issues        :
+
+#5
+
+Subject                   : CN=AddTrust External CA Root,OU=AddTrust External TTP Network,O=AddTrust AB,C=SE
+Common names              : 
+ * AddTrust External CA Root
+Alternative names         : 
+ * 
+Valid from                : Tue 30 May 2000 10:48:38 UTC
+Valid until               : Sat 30 May 2020 10:48:38 UTC
+Key                       : RSA 2048 bits
+Issuer                    : CN=AddTrust External CA Root,OU=AddTrust External TTP Network,O=AddTrust AB,C=SE
+Issuer CN                 : AddTrust External CA Root
+Signature algorithm       : SHA1withRSA
+Extended validation       : No
+OCSP Must Staple          : Not supported
+Revocation information    :
+Revocation URLs           :
+Revocation status         : Not checked
+Hashes                    : 
+ * SHA1: 02faf3e291435468607857694df5e45b68851868 
+ * Pin SHA256 :  lCppFqbkrlJ3EcVFAkeip0+44VaoJUymbnOaEUk7tEU=
+Server Gated Crypto (SGC) : 
+
+Certificate issues        :
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>delegation</id>
+			<severity>0</severity>
+			<finding_txt>Indicates domain name delegation with and without the www prefix:
+
+ * Delegation is set for prefixed access
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>chaCha20Preference</id>
+			<severity>0</severity>
+			<finding_txt>Server take client preferences into account when deciding if to use ChaCha20 suites : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>compressionMethods</id>
+			<severity>0</severity>
+			<finding_txt>Supported compression methods : 
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>drownErrors</id>
+			<severity>0</severity>
+			<finding_txt>Errors in drown test : False
+
+True if errors occured while running drowntests</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>drownVulnerable</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to Drown attack
+
+See https://drownattack.com/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>ecdhParameterReuse</id>
+			<severity>0</severity>
+			<finding_txt>False
+
+DHE or ECDHE parameter reuse saves some CPU (more so for ECDHE than for DHE) at the theoretical expense of a weakening of the &#x27;forward secrecy&#x27; rule, which is considered not a problem as long as the reused parameters are cached in RAM only and the server implementation does not leak information on the selected DH/ECDH secret key even when faced with invalid values from the client.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>fallbackScsv</id>
+			<severity>0</severity>
+			<finding_txt>TLS_FALLBACK_SVC support : True
+
+Indicates if the endpoint supports TLS_FALLBACK_SVC to prevent a downgrade attack</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>forwardSecrecy</id>
+			<severity>0</severity>
+			<finding_txt>Forward Secrecy support :
+ * Forward Secrecy is achieved with modern clients. For example, the server supports ECDHE suites, but not DHE.
+
+This is based on client simulation results</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>freak</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to FREAK attack
+
+If a host is vulnerable to this attack is support 512-bit key exchange.
+See: https://freakattack.com/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hasSct</id>
+			<severity>0</severity>
+			<finding_txt>Certificate has the following embedded SCTs : 
+
+SCTs (Signed Certificate Timestamps) indicate that the CA has submitted the certificate to a Certificate Transparency log server</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>heartbeat</id>
+			<severity>0</severity>
+			<finding_txt>Endpoint supports the heartbeat extension : False
+
+See https://tools.ietf.org/html/rfc6520</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>heartbleed</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to heartbleed
+
+See: http://heartbleed.com/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hpkpPolicy</id>
+			<severity>0</severity>
+			<finding_txt>HTTP Public Key Pinning Policy
+
+HTKP Header: 
+Status: absent
+Valid for 0.00 days ( 0 second(s) )
+
+0 pins are found in the chain.
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hpkpRoPolicy</id>
+			<severity>0</severity>
+			<finding_txt>REPORT ONLY HTTP Public Key Pinning Policy
+
+HTKP Header: 
+Status: absent
+Valid for 0.00 days ( 0 second(s) )
+
+0 pins are found in the chain.
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hstsPolicy</id>
+			<severity>0</severity>
+			<finding_txt>HSTS (Hypertext Strict Transport Security) Policy
+
+
+
+HSTS header : max-age=63072000; includeSubDomains; preload
+Status : present
+HSTS duration of 745.53 days (63072000 seconds) is considered sufficiently long
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hstsPreloads</id>
+			<severity>0</severity>
+			<finding_txt>HSTS preloading status:
+ * Chrome - present
+ * Edge - present
+ * Firefox - present
+ * IE - present
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>logjam</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to Log Jam
+
+See: https://weakdh.org/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>miscIntolerance</id>
+			<severity>0</severity>
+			<finding_txt>Various types of intolerances
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>namedGroups</id>
+			<severity>0</severity>
+			<finding_txt>List of (named) DH groupsList of (named) DH groups:
+--------------------------
+
+ID,name,bits
+ * 23 secp256r1 256
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>npnProtocols</id>
+			<severity>0</severity>
+			<finding_txt>Supported NPN protocols : http/1.1 http/1.0
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>ocspStapling</id>
+			<severity>0</severity>
+			<finding_txt>OCSP stapling support : False
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>openSSLLuckyMinus20</id>
+			<severity>0</severity>
+			<finding_txt>Outcome of test for CVE-2016-2107 (Lucky Minus 20) : Test failed
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>openSslCcs</id>
+			<severity>0</severity>
+			<finding_txt>Outcome of test for CVE-2014-0224 (OpenSSL Ccs vulnerability) : Test failed
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>poodle</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to Poodle
+
+See https://en.wikipedia.org/wiki/POODLE</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>poodleTls</id>
+			<severity>0</severity>
+			<finding_txt>VULNARABLE to Poodle over TLS
+
+See https://en.wikipedia.org/wiki/POODLE</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>protocolIntolerance</id>
+			<severity>0</severity>
+			<finding_txt>Detected protocol intolerances : 
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>protocols</id>
+			<severity>0</severity>
+			<finding_txt>This is a list of supported protocols : 
+ * TLS 1.0
+ * TLS 1.1
+ * TLS 1.2
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>rc4Only</id>
+			<severity>0</severity>
+			<finding_txt>Are only RC4 suites supported : False
+
+RC4 is considered insecure</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>rc4WithModern</id>
+			<severity>0</severity>
+			<finding_txt>Is RC4 used with modern browsers : False
+
+RC4 is considered insecure</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>renegSupport</id>
+			<severity>0</severity>
+			<finding_txt>Renegotion support : 
+ * Secure renegotiation is supported (no issue)
+ * Secure client-initiated renegotiation is supported (DoS risk)
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sessionResumption</id>
+			<severity>0</severity>
+			<finding_txt>Session resumption support : Session resumption is enabled
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sessionTickets</id>
+			<severity>0</severity>
+			<finding_txt>Session ticket support : 
+ * Session tickets are supported
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sims</id>
+			<severity>0</severity>
+			<finding_txt>Client simulation results
+=========================
+Android 2.3.7		Server sent fatal alert: handshake_failure
+--------------------------------------------------------------------------------
+Android 4.0.4	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.1.1	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.2.2	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.3	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.4.2	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Android 5.0.0	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Android 6.0	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Android 7.0	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+--------------------------------------------------------------------------------
+Baidu Jan 2015	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+BingPreview Jan 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Chrome 49 / XP SP3	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Chrome 51 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Firefox 31.3.0 ESR / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Firefox 47 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Firefox 49 / XP SP3	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Firefox 49 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Googlebot Feb 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+IE 6 / XP		Server closed connection
+--------------------------------------------------------------------------------
+IE 7 / Vista	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+IE 8 / XP		Server sent fatal alert: handshake_failure
+--------------------------------------------------------------------------------
+IE 8-10 / Win 7	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+IE 11 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+IE 11 / Win 8.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+IE 10 / Win Phone 8.0	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+IE 11 / Win Phone 8.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+--------------------------------------------------------------------------------
+IE 11 / Win Phone 8.1 Update	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+IE 11 / Win 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Edge 13 / Win 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Edge 13 / Win Phone 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Java 6u45		Server sent fatal alert: handshake_failure
+--------------------------------------------------------------------------------
+Java 7u25	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+--------------------------------------------------------------------------------
+Java 8u31	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+OpenSSL 0.9.8y	RSA 2048 (SHA256)	TLS 1.1	TLS_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+OpenSSL 1.0.1l	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+OpenSSL 1.0.2e	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 5.1.9 / OS X 10.6.8	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Safari 6 / iOS 6.0.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 6.0.4 / OS X 10.8.4	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Safari 7 / iOS 7.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 7 / OS X 10.9	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 8 / iOS 8.4	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 8 / OS X 10.10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 9 / iOS 9	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 9 / OS X 10.11	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 10 / iOS 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 10 / OS X 10.12	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Apple ATS 9 / iOS 9	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Yahoo Slurp Jan 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+YandexBot Jan 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+
+
+Unable to determine DH/ECDH amd FS details from API results at this time.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sniRequired</id>
+			<severity>0</severity>
+			<finding_txt>This site requires SNI : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>suites</id>
+			<severity>0</severity>
+			<finding_txt>List of cipher suites per protocols
+
+TLS 1.1
+-------
+Server sets the order of preference for cipher suites
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA 128
+
+TLS 1.2
+-------
+Server sets the order of preference for cipher suites
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA 128
+
+TLS 1.3
+-------
+Server sets the order of preference for cipher suites
+ * TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 256
+ * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 128
+ * TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256 256
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 128
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA 128
+ * TLS_RSA_WITH_AES_256_GCM_SHA384 256
+ * TLS_RSA_WITH_AES_128_GCM_SHA256 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA256 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA256 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA 128
+
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>supportsAlpn</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint supports ALPN : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>supportsNpn</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint supports NPN : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>supportsRc4</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint supports RC4 : False
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>vulnBeast</id>
+			<severity>0</severity>
+			<finding_txt>VULNARABLE to Beast
+
+Beast is considered to be mitigated client side now. See: https://blog.qualys.com/ssllabs/2013/09/10/is-beast-still-a-threat</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>duration</id>
+			<severity>0</severity>
+			<finding_txt>The assessment of this endpoint took: 50.459 seconds
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>grade</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint scores an : A+
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>gradeTrustIgnored</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint scores an : A+
+
+
+Trust issue have been ignored when computing this grade.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hasWarnings</id>
+			<severity>0</severity>
+			<finding_txt>Warnings : False
+
+Indicates  this endpoint has warnings that might affect the score (e.g., get A- instead of A).</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>isExceptional</id>
+			<severity>0</severity>
+			<finding_txt>Exceptionally well configured : True
+
+This flag will be raised when an exceptional configuration is encountered. The SSL Labs test will give such sites an A+.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>serverName</id>
+			<severity>0</severity>
+			<finding_txt>Resolves as : a184-50-88-76.deploy.static.akamaitechnologies.com
+
+Server name retrieved via reverse DNS</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.76</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>statusMessage</id>
+			<severity>0</severity>
+			<finding_txt>Status message received from SSL labs : Ready
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>delegation</id>
+			<severity>0</severity>
+			<finding_txt>Indicates domain name delegation with and without the www prefix:
+
+ * Delegation is set for prefixed access
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>chaCha20Preference</id>
+			<severity>0</severity>
+			<finding_txt>Server take client preferences into account when deciding if to use ChaCha20 suites : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>compressionMethods</id>
+			<severity>0</severity>
+			<finding_txt>Supported compression methods : 
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>drownErrors</id>
+			<severity>0</severity>
+			<finding_txt>Errors in drown test : False
+
+True if errors occured while running drowntests</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>drownVulnerable</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to Drown attack
+
+See https://drownattack.com/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>ecdhParameterReuse</id>
+			<severity>0</severity>
+			<finding_txt>False
+
+DHE or ECDHE parameter reuse saves some CPU (more so for ECDHE than for DHE) at the theoretical expense of a weakening of the &#x27;forward secrecy&#x27; rule, which is considered not a problem as long as the reused parameters are cached in RAM only and the server implementation does not leak information on the selected DH/ECDH secret key even when faced with invalid values from the client.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>fallbackScsv</id>
+			<severity>0</severity>
+			<finding_txt>TLS_FALLBACK_SVC support : True
+
+Indicates if the endpoint supports TLS_FALLBACK_SVC to prevent a downgrade attack</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>forwardSecrecy</id>
+			<severity>0</severity>
+			<finding_txt>Forward Secrecy support :
+ * Forward Secrecy is achieved with modern clients. For example, the server supports ECDHE suites, but not DHE.
+
+This is based on client simulation results</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>freak</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to FREAK attack
+
+If a host is vulnerable to this attack is support 512-bit key exchange.
+See: https://freakattack.com/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hasSct</id>
+			<severity>0</severity>
+			<finding_txt>Certificate has the following embedded SCTs : 
+
+SCTs (Signed Certificate Timestamps) indicate that the CA has submitted the certificate to a Certificate Transparency log server</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>heartbeat</id>
+			<severity>0</severity>
+			<finding_txt>Endpoint supports the heartbeat extension : False
+
+See https://tools.ietf.org/html/rfc6520</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>heartbleed</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to heartbleed
+
+See: http://heartbleed.com/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hpkpPolicy</id>
+			<severity>0</severity>
+			<finding_txt>HTTP Public Key Pinning Policy
+
+HTKP Header: 
+Status: absent
+Valid for 0.00 days ( 0 second(s) )
+
+0 pins are found in the chain.
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hpkpRoPolicy</id>
+			<severity>0</severity>
+			<finding_txt>REPORT ONLY HTTP Public Key Pinning Policy
+
+HTKP Header: 
+Status: absent
+Valid for 0.00 days ( 0 second(s) )
+
+0 pins are found in the chain.
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hstsPolicy</id>
+			<severity>0</severity>
+			<finding_txt>HSTS (Hypertext Strict Transport Security) Policy
+
+
+
+HSTS header : max-age=63072000; includeSubDomains; preload
+Status : present
+HSTS duration of 745.53 days (63072000 seconds) is considered sufficiently long
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hstsPreloads</id>
+			<severity>0</severity>
+			<finding_txt>HSTS preloading status:
+ * Chrome - present
+ * Edge - present
+ * Firefox - present
+ * IE - present
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>logjam</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to Log Jam
+
+See: https://weakdh.org/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>miscIntolerance</id>
+			<severity>0</severity>
+			<finding_txt>Various types of intolerances
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>namedGroups</id>
+			<severity>0</severity>
+			<finding_txt>List of (named) DH groupsList of (named) DH groups:
+--------------------------
+
+ID,name,bits
+ * 23 secp256r1 256
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>npnProtocols</id>
+			<severity>0</severity>
+			<finding_txt>Supported NPN protocols : http/1.1 http/1.0
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>ocspStapling</id>
+			<severity>0</severity>
+			<finding_txt>OCSP stapling support : False
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>openSSLLuckyMinus20</id>
+			<severity>0</severity>
+			<finding_txt>Outcome of test for CVE-2016-2107 (Lucky Minus 20) : Test failed
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>openSslCcs</id>
+			<severity>0</severity>
+			<finding_txt>Outcome of test for CVE-2014-0224 (OpenSSL Ccs vulnerability) : Test failed
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>poodle</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to Poodle
+
+See https://en.wikipedia.org/wiki/POODLE</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>poodleTls</id>
+			<severity>0</severity>
+			<finding_txt>VULNARABLE to Poodle over TLS
+
+See https://en.wikipedia.org/wiki/POODLE</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>protocolIntolerance</id>
+			<severity>0</severity>
+			<finding_txt>Detected protocol intolerances : 
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>protocols</id>
+			<severity>0</severity>
+			<finding_txt>This is a list of supported protocols : 
+ * TLS 1.0
+ * TLS 1.1
+ * TLS 1.2
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>rc4Only</id>
+			<severity>0</severity>
+			<finding_txt>Are only RC4 suites supported : False
+
+RC4 is considered insecure</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>rc4WithModern</id>
+			<severity>0</severity>
+			<finding_txt>Is RC4 used with modern browsers : False
+
+RC4 is considered insecure</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>renegSupport</id>
+			<severity>0</severity>
+			<finding_txt>Renegotion support : 
+ * Secure renegotiation is supported (no issue)
+ * Secure client-initiated renegotiation is supported (DoS risk)
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sessionResumption</id>
+			<severity>0</severity>
+			<finding_txt>Session resumption support : Session resumption is enabled
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sessionTickets</id>
+			<severity>0</severity>
+			<finding_txt>Session ticket support : 
+ * Session tickets are supported
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sims</id>
+			<severity>0</severity>
+			<finding_txt>Client simulation results
+=========================
+Android 2.3.7	RSA 2048 (SHA256)	TLS 1.1	TLS_RSA_WITH_AES_128_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.0.4	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.1.1	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.2.2	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.3	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.4.2	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Android 5.0.0	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Android 6.0	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Android 7.0	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+--------------------------------------------------------------------------------
+Baidu Jan 2015	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+BingPreview Jan 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Chrome 49 / XP SP3	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Chrome 51 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Firefox 31.3.0 ESR / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Firefox 47 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Firefox 49 / XP SP3	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Firefox 49 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Googlebot Feb 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+IE 6 / XP		Server closed connection
+--------------------------------------------------------------------------------
+IE 7 / Vista	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+IE 8 / XP		Server sent fatal alert: handshake_failure
+--------------------------------------------------------------------------------
+IE 8-10 / Win 7	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+IE 11 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+IE 11 / Win 8.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+IE 10 / Win Phone 8.0	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+IE 11 / Win Phone 8.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+--------------------------------------------------------------------------------
+IE 11 / Win Phone 8.1 Update	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+IE 11 / Win 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Edge 13 / Win 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Edge 13 / Win Phone 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Java 6u45	RSA 2048 (SHA256)	TLS 1.1	TLS_RSA_WITH_AES_128_CBC_SHA
+--------------------------------------------------------------------------------
+Java 7u25	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+--------------------------------------------------------------------------------
+Java 8u31	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+OpenSSL 0.9.8y	RSA 2048 (SHA256)	TLS 1.1	TLS_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+OpenSSL 1.0.1l	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+OpenSSL 1.0.2e	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 5.1.9 / OS X 10.6.8	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Safari 6 / iOS 6.0.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 6.0.4 / OS X 10.8.4	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Safari 7 / iOS 7.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 7 / OS X 10.9	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 8 / iOS 8.4	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 8 / OS X 10.10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 9 / iOS 9	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 9 / OS X 10.11	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 10 / iOS 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 10 / OS X 10.12	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Apple ATS 9 / iOS 9	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Yahoo Slurp Jan 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+YandexBot Jan 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+
+
+Unable to determine DH/ECDH amd FS details from API results at this time.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sniRequired</id>
+			<severity>0</severity>
+			<finding_txt>This site requires SNI : False
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>suites</id>
+			<severity>0</severity>
+			<finding_txt>List of cipher suites per protocols
+
+TLS 1.1
+-------
+Server sets the order of preference for cipher suites
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA 128
+
+TLS 1.2
+-------
+Server sets the order of preference for cipher suites
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA 128
+
+TLS 1.3
+-------
+Server sets the order of preference for cipher suites
+ * TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 256
+ * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 128
+ * TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256 256
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 128
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA 128
+ * TLS_RSA_WITH_AES_256_GCM_SHA384 256
+ * TLS_RSA_WITH_AES_128_GCM_SHA256 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA256 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA256 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA 128
+
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>supportsAlpn</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint supports ALPN : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>supportsNpn</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint supports NPN : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>supportsRc4</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint supports RC4 : False
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>vulnBeast</id>
+			<severity>0</severity>
+			<finding_txt>VULNARABLE to Beast
+
+Beast is considered to be mitigated client side now. See: https://blog.qualys.com/ssllabs/2013/09/10/is-beast-still-a-threat</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>duration</id>
+			<severity>0</severity>
+			<finding_txt>The assessment of this endpoint took: 51.275 seconds
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>grade</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint scores an : A+
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>gradeTrustIgnored</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint scores an : A+
+
+
+Trust issue have been ignored when computing this grade.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hasWarnings</id>
+			<severity>0</severity>
+			<finding_txt>Warnings : False
+
+Indicates  this endpoint has warnings that might affect the score (e.g., get A- instead of A).</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>isExceptional</id>
+			<severity>0</severity>
+			<finding_txt>Exceptionally well configured : True
+
+This flag will be raised when an exceptional configuration is encountered. The SSL Labs test will give such sites an A+.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:192:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>statusMessage</id>
+			<severity>0</severity>
+			<finding_txt>Status message received from SSL labs : Ready
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>delegation</id>
+			<severity>0</severity>
+			<finding_txt>Indicates domain name delegation with and without the www prefix:
+
+ * Delegation is set for prefixed access
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>chaCha20Preference</id>
+			<severity>0</severity>
+			<finding_txt>Server take client preferences into account when deciding if to use ChaCha20 suites : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>compressionMethods</id>
+			<severity>0</severity>
+			<finding_txt>Supported compression methods : 
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>drownErrors</id>
+			<severity>0</severity>
+			<finding_txt>Errors in drown test : False
+
+True if errors occured while running drowntests</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>drownVulnerable</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to Drown attack
+
+See https://drownattack.com/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>ecdhParameterReuse</id>
+			<severity>0</severity>
+			<finding_txt>False
+
+DHE or ECDHE parameter reuse saves some CPU (more so for ECDHE than for DHE) at the theoretical expense of a weakening of the &#x27;forward secrecy&#x27; rule, which is considered not a problem as long as the reused parameters are cached in RAM only and the server implementation does not leak information on the selected DH/ECDH secret key even when faced with invalid values from the client.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>fallbackScsv</id>
+			<severity>0</severity>
+			<finding_txt>TLS_FALLBACK_SVC support : True
+
+Indicates if the endpoint supports TLS_FALLBACK_SVC to prevent a downgrade attack</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>forwardSecrecy</id>
+			<severity>0</severity>
+			<finding_txt>Forward Secrecy support :
+ * Forward Secrecy is achieved with modern clients. For example, the server supports ECDHE suites, but not DHE.
+
+This is based on client simulation results</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>freak</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to FREAK attack
+
+If a host is vulnerable to this attack is support 512-bit key exchange.
+See: https://freakattack.com/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hasSct</id>
+			<severity>0</severity>
+			<finding_txt>Certificate has the following embedded SCTs : 
+
+SCTs (Signed Certificate Timestamps) indicate that the CA has submitted the certificate to a Certificate Transparency log server</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>heartbeat</id>
+			<severity>0</severity>
+			<finding_txt>Endpoint supports the heartbeat extension : False
+
+See https://tools.ietf.org/html/rfc6520</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>heartbleed</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to heartbleed
+
+See: http://heartbleed.com/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hpkpPolicy</id>
+			<severity>0</severity>
+			<finding_txt>HTTP Public Key Pinning Policy
+
+HTKP Header: 
+Status: absent
+Valid for 0.00 days ( 0 second(s) )
+
+0 pins are found in the chain.
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hpkpRoPolicy</id>
+			<severity>0</severity>
+			<finding_txt>REPORT ONLY HTTP Public Key Pinning Policy
+
+HTKP Header: 
+Status: absent
+Valid for 0.00 days ( 0 second(s) )
+
+0 pins are found in the chain.
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hstsPolicy</id>
+			<severity>0</severity>
+			<finding_txt>HSTS (Hypertext Strict Transport Security) Policy
+
+
+
+HSTS header : max-age=63072000; includeSubDomains; preload
+Status : present
+HSTS duration of 745.53 days (63072000 seconds) is considered sufficiently long
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hstsPreloads</id>
+			<severity>0</severity>
+			<finding_txt>HSTS preloading status:
+ * Chrome - present
+ * Edge - present
+ * Firefox - present
+ * IE - present
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>logjam</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to Log Jam
+
+See: https://weakdh.org/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>miscIntolerance</id>
+			<severity>0</severity>
+			<finding_txt>Various types of intolerances
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>namedGroups</id>
+			<severity>0</severity>
+			<finding_txt>List of (named) DH groupsList of (named) DH groups:
+--------------------------
+
+ID,name,bits
+ * 23 secp256r1 256
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>npnProtocols</id>
+			<severity>0</severity>
+			<finding_txt>Supported NPN protocols : http/1.1 http/1.0
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>ocspStapling</id>
+			<severity>0</severity>
+			<finding_txt>OCSP stapling support : False
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>openSSLLuckyMinus20</id>
+			<severity>0</severity>
+			<finding_txt>Outcome of test for CVE-2016-2107 (Lucky Minus 20) : Test failed
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>openSslCcs</id>
+			<severity>0</severity>
+			<finding_txt>Outcome of test for CVE-2014-0224 (OpenSSL Ccs vulnerability) : Test failed
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>poodle</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to Poodle
+
+See https://en.wikipedia.org/wiki/POODLE</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>poodleTls</id>
+			<severity>0</severity>
+			<finding_txt>VULNARABLE to Poodle over TLS
+
+See https://en.wikipedia.org/wiki/POODLE</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>protocolIntolerance</id>
+			<severity>0</severity>
+			<finding_txt>Detected protocol intolerances : 
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>protocols</id>
+			<severity>0</severity>
+			<finding_txt>This is a list of supported protocols : 
+ * TLS 1.0
+ * TLS 1.1
+ * TLS 1.2
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>rc4Only</id>
+			<severity>0</severity>
+			<finding_txt>Are only RC4 suites supported : False
+
+RC4 is considered insecure</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>rc4WithModern</id>
+			<severity>0</severity>
+			<finding_txt>Is RC4 used with modern browsers : False
+
+RC4 is considered insecure</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>renegSupport</id>
+			<severity>0</severity>
+			<finding_txt>Renegotion support : 
+ * Secure renegotiation is supported (no issue)
+ * Secure client-initiated renegotiation is supported (DoS risk)
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sessionResumption</id>
+			<severity>0</severity>
+			<finding_txt>Session resumption support : Session resumption is enabled
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sessionTickets</id>
+			<severity>0</severity>
+			<finding_txt>Session ticket support : 
+ * Session tickets are supported
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sims</id>
+			<severity>0</severity>
+			<finding_txt>Client simulation results
+=========================
+Android 2.3.7	RSA 2048 (SHA256)	TLS 1.1	TLS_RSA_WITH_AES_128_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.0.4	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.1.1	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.2.2	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.3	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.4.2	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Android 5.0.0	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Android 6.0	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Android 7.0	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+--------------------------------------------------------------------------------
+Baidu Jan 2015	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+BingPreview Jan 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Chrome 49 / XP SP3	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Chrome 51 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Firefox 31.3.0 ESR / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Firefox 47 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Firefox 49 / XP SP3	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Firefox 49 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Googlebot Feb 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+IE 6 / XP		Server closed connection
+--------------------------------------------------------------------------------
+IE 7 / Vista	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+IE 8 / XP		Server sent fatal alert: handshake_failure
+--------------------------------------------------------------------------------
+IE 8-10 / Win 7	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+IE 11 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+IE 11 / Win 8.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+IE 10 / Win Phone 8.0	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+IE 11 / Win Phone 8.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+--------------------------------------------------------------------------------
+IE 11 / Win Phone 8.1 Update	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+IE 11 / Win 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Edge 13 / Win 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Edge 13 / Win Phone 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Java 6u45	RSA 2048 (SHA256)	TLS 1.1	TLS_RSA_WITH_AES_128_CBC_SHA
+--------------------------------------------------------------------------------
+Java 7u25	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+--------------------------------------------------------------------------------
+Java 8u31	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+OpenSSL 0.9.8y	RSA 2048 (SHA256)	TLS 1.1	TLS_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+OpenSSL 1.0.1l	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+OpenSSL 1.0.2e	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 5.1.9 / OS X 10.6.8	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Safari 6 / iOS 6.0.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 6.0.4 / OS X 10.8.4	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Safari 7 / iOS 7.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 7 / OS X 10.9	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 8 / iOS 8.4	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 8 / OS X 10.10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 9 / iOS 9	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 9 / OS X 10.11	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 10 / iOS 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 10 / OS X 10.12	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Apple ATS 9 / iOS 9	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Yahoo Slurp Jan 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+YandexBot Jan 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+
+
+Unable to determine DH/ECDH amd FS details from API results at this time.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sniRequired</id>
+			<severity>0</severity>
+			<finding_txt>This site requires SNI : False
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>suites</id>
+			<severity>0</severity>
+			<finding_txt>List of cipher suites per protocols
+
+TLS 1.1
+-------
+Server sets the order of preference for cipher suites
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA 128
+
+TLS 1.2
+-------
+Server sets the order of preference for cipher suites
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA 128
+
+TLS 1.3
+-------
+Server sets the order of preference for cipher suites
+ * TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 256
+ * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 128
+ * TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256 256
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 128
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA 128
+ * TLS_RSA_WITH_AES_256_GCM_SHA384 256
+ * TLS_RSA_WITH_AES_128_GCM_SHA256 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA256 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA256 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA 128
+
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>supportsAlpn</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint supports ALPN : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>supportsNpn</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint supports NPN : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>supportsRc4</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint supports RC4 : False
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>vulnBeast</id>
+			<severity>0</severity>
+			<finding_txt>VULNARABLE to Beast
+
+Beast is considered to be mitigated client side now. See: https://blog.qualys.com/ssllabs/2013/09/10/is-beast-still-a-threat</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>duration</id>
+			<severity>0</severity>
+			<finding_txt>The assessment of this endpoint took: 50.012 seconds
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>grade</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint scores an : A+
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>gradeTrustIgnored</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint scores an : A+
+
+
+Trust issue have been ignored when computing this grade.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hasWarnings</id>
+			<severity>0</severity>
+			<finding_txt>Warnings : False
+
+Indicates  this endpoint has warnings that might affect the score (e.g., get A- instead of A).</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>isExceptional</id>
+			<severity>0</severity>
+			<finding_txt>Exceptionally well configured : True
+
+This flag will be raised when an exceptional configuration is encountered. The SSL Labs test will give such sites an A+.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/2600:1406:1a:18d:0:0:0:2fdf</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>statusMessage</id>
+			<severity>0</severity>
+			<finding_txt>Status message received from SSL labs : Ready
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>delegation</id>
+			<severity>0</severity>
+			<finding_txt>Indicates domain name delegation with and without the www prefix:
+
+ * Delegation is set for prefixed access
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>chaCha20Preference</id>
+			<severity>0</severity>
+			<finding_txt>Server take client preferences into account when deciding if to use ChaCha20 suites : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>compressionMethods</id>
+			<severity>0</severity>
+			<finding_txt>Supported compression methods : 
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>drownErrors</id>
+			<severity>0</severity>
+			<finding_txt>Errors in drown test : False
+
+True if errors occured while running drowntests</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>drownVulnerable</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to Drown attack
+
+See https://drownattack.com/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>ecdhParameterReuse</id>
+			<severity>0</severity>
+			<finding_txt>False
+
+DHE or ECDHE parameter reuse saves some CPU (more so for ECDHE than for DHE) at the theoretical expense of a weakening of the &#x27;forward secrecy&#x27; rule, which is considered not a problem as long as the reused parameters are cached in RAM only and the server implementation does not leak information on the selected DH/ECDH secret key even when faced with invalid values from the client.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>fallbackScsv</id>
+			<severity>0</severity>
+			<finding_txt>TLS_FALLBACK_SVC support : True
+
+Indicates if the endpoint supports TLS_FALLBACK_SVC to prevent a downgrade attack</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>forwardSecrecy</id>
+			<severity>0</severity>
+			<finding_txt>Forward Secrecy support :
+ * Forward Secrecy is achieved with modern clients. For example, the server supports ECDHE suites, but not DHE.
+
+This is based on client simulation results</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>freak</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to FREAK attack
+
+If a host is vulnerable to this attack is support 512-bit key exchange.
+See: https://freakattack.com/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hasSct</id>
+			<severity>0</severity>
+			<finding_txt>Certificate has the following embedded SCTs : 
+
+SCTs (Signed Certificate Timestamps) indicate that the CA has submitted the certificate to a Certificate Transparency log server</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>heartbeat</id>
+			<severity>0</severity>
+			<finding_txt>Endpoint supports the heartbeat extension : False
+
+See https://tools.ietf.org/html/rfc6520</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>heartbleed</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to heartbleed
+
+See: http://heartbleed.com/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hpkpPolicy</id>
+			<severity>0</severity>
+			<finding_txt>HTTP Public Key Pinning Policy
+
+HTKP Header: 
+Status: absent
+Valid for 0.00 days ( 0 second(s) )
+
+0 pins are found in the chain.
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hpkpRoPolicy</id>
+			<severity>0</severity>
+			<finding_txt>REPORT ONLY HTTP Public Key Pinning Policy
+
+HTKP Header: 
+Status: absent
+Valid for 0.00 days ( 0 second(s) )
+
+0 pins are found in the chain.
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hstsPolicy</id>
+			<severity>0</severity>
+			<finding_txt>HSTS (Hypertext Strict Transport Security) Policy
+
+
+
+HSTS header : max-age=63072000; includeSubDomains; preload
+Status : present
+HSTS duration of 745.53 days (63072000 seconds) is considered sufficiently long
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hstsPreloads</id>
+			<severity>0</severity>
+			<finding_txt>HSTS preloading status:
+ * Chrome - present
+ * Edge - present
+ * Firefox - present
+ * IE - present
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>logjam</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to Log Jam
+
+See: https://weakdh.org/</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>miscIntolerance</id>
+			<severity>0</severity>
+			<finding_txt>Various types of intolerances
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>namedGroups</id>
+			<severity>0</severity>
+			<finding_txt>List of (named) DH groupsList of (named) DH groups:
+--------------------------
+
+ID,name,bits
+ * 23 secp256r1 256
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>npnProtocols</id>
+			<severity>0</severity>
+			<finding_txt>Supported NPN protocols : http/1.1 http/1.0
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>ocspStapling</id>
+			<severity>0</severity>
+			<finding_txt>OCSP stapling support : False
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>openSSLLuckyMinus20</id>
+			<severity>0</severity>
+			<finding_txt>Outcome of test for CVE-2016-2107 (Lucky Minus 20) : Test failed
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>openSslCcs</id>
+			<severity>0</severity>
+			<finding_txt>Outcome of test for CVE-2014-0224 (OpenSSL Ccs vulnerability) : Test failed
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>poodle</id>
+			<severity>0</severity>
+			<finding_txt>Not vulnerable to Poodle
+
+See https://en.wikipedia.org/wiki/POODLE</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>poodleTls</id>
+			<severity>0</severity>
+			<finding_txt>VULNARABLE to Poodle over TLS
+
+See https://en.wikipedia.org/wiki/POODLE</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>protocolIntolerance</id>
+			<severity>0</severity>
+			<finding_txt>Detected protocol intolerances : 
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>protocols</id>
+			<severity>0</severity>
+			<finding_txt>This is a list of supported protocols : 
+ * TLS 1.0
+ * TLS 1.1
+ * TLS 1.2
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>rc4Only</id>
+			<severity>0</severity>
+			<finding_txt>Are only RC4 suites supported : False
+
+RC4 is considered insecure</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>rc4WithModern</id>
+			<severity>0</severity>
+			<finding_txt>Is RC4 used with modern browsers : False
+
+RC4 is considered insecure</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>renegSupport</id>
+			<severity>0</severity>
+			<finding_txt>Renegotion support : 
+ * Secure renegotiation is supported (no issue)
+ * Secure client-initiated renegotiation is supported (DoS risk)
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sessionResumption</id>
+			<severity>0</severity>
+			<finding_txt>Session resumption support : Session resumption is enabled
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sessionTickets</id>
+			<severity>0</severity>
+			<finding_txt>Session ticket support : 
+ * Session tickets are supported
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sims</id>
+			<severity>0</severity>
+			<finding_txt>Client simulation results
+=========================
+Android 2.3.7		Server sent fatal alert: handshake_failure
+--------------------------------------------------------------------------------
+Android 4.0.4	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.1.1	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.2.2	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.3	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Android 4.4.2	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Android 5.0.0	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Android 6.0	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Android 7.0	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+--------------------------------------------------------------------------------
+Baidu Jan 2015	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+BingPreview Jan 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Chrome 49 / XP SP3	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Chrome 51 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Firefox 31.3.0 ESR / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Firefox 47 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+Firefox 49 / XP SP3	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Firefox 49 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Googlebot Feb 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+IE 6 / XP		Server closed connection
+--------------------------------------------------------------------------------
+IE 7 / Vista	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+IE 8 / XP		Server sent fatal alert: handshake_failure
+--------------------------------------------------------------------------------
+IE 8-10 / Win 7	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+IE 11 / Win 7	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+IE 11 / Win 8.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+IE 10 / Win Phone 8.0	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+IE 11 / Win Phone 8.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+--------------------------------------------------------------------------------
+IE 11 / Win Phone 8.1 Update	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+IE 11 / Win 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Edge 13 / Win 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Edge 13 / Win Phone 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Java 6u45		Server sent fatal alert: handshake_failure
+--------------------------------------------------------------------------------
+Java 7u25	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+--------------------------------------------------------------------------------
+Java 8u31	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+--------------------------------------------------------------------------------
+OpenSSL 0.9.8y	RSA 2048 (SHA256)	TLS 1.1	TLS_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+OpenSSL 1.0.1l	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+OpenSSL 1.0.2e	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 5.1.9 / OS X 10.6.8	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Safari 6 / iOS 6.0.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 6.0.4 / OS X 10.8.4	RSA 2048 (SHA256)	TLS 1.1	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+--------------------------------------------------------------------------------
+Safari 7 / iOS 7.1	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 7 / OS X 10.9	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 8 / iOS 8.4	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 8 / OS X 10.10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+--------------------------------------------------------------------------------
+Safari 9 / iOS 9	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 9 / OS X 10.11	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 10 / iOS 10	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Safari 10 / OS X 10.12	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Apple ATS 9 / iOS 9	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+Yahoo Slurp Jan 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+--------------------------------------------------------------------------------
+YandexBot Jan 2015	RSA 2048 (SHA256)	TLS 1.3	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+
+
+Unable to determine DH/ECDH amd FS details from API results at this time.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>sniRequired</id>
+			<severity>0</severity>
+			<finding_txt>This site requires SNI : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>suites</id>
+			<severity>0</severity>
+			<finding_txt>List of cipher suites per protocols
+
+TLS 1.1
+-------
+Server sets the order of preference for cipher suites
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA 128
+
+TLS 1.2
+-------
+Server sets the order of preference for cipher suites
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA 128
+
+TLS 1.3
+-------
+Server sets the order of preference for cipher suites
+ * TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 256
+ * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 128
+ * TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256 256
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 128
+ * TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA 128
+ * TLS_RSA_WITH_AES_256_GCM_SHA384 256
+ * TLS_RSA_WITH_AES_128_GCM_SHA256 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA256 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA256 128
+ * TLS_RSA_WITH_AES_256_CBC_SHA 256
+ * TLS_RSA_WITH_AES_128_CBC_SHA 128
+
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>supportsAlpn</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint supports ALPN : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>supportsNpn</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint supports NPN : True
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>supportsRc4</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint supports RC4 : False
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>vulnBeast</id>
+			<severity>0</severity>
+			<finding_txt>VULNARABLE to Beast
+
+Beast is considered to be mitigated client side now. See: https://blog.qualys.com/ssllabs/2013/09/10/is-beast-still-a-threat</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>duration</id>
+			<severity>0</severity>
+			<finding_txt>The assessment of this endpoint took: 50.461 seconds
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>grade</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint scores an : A+
+
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>gradeTrustIgnored</id>
+			<severity>0</severity>
+			<finding_txt>This endpoint scores an : A+
+
+
+Trust issue have been ignored when computing this grade.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>hasWarnings</id>
+			<severity>0</severity>
+			<finding_txt>Warnings : False
+
+Indicates  this endpoint has warnings that might affect the score (e.g., get A- instead of A).</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>isExceptional</id>
+			<severity>0</severity>
+			<finding_txt>Exceptionally well configured : True
+
+This flag will be raised when an exceptional configuration is encountered. The SSL Labs test will give such sites an A+.</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>serverName</id>
+			<severity>0</severity>
+			<finding_txt>Resolves as : a184-50-88-71.deploy.static.akamaitechnologies.com
+
+Server name retrieved via reverse DNS</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com/184.50.88.71</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>statusMessage</id>
+			<severity>0</severity>
+			<finding_txt>Status message received from SSL labs : Ready
+
+</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>isPublic</id>
+			<severity>0</severity>
+			<finding_txt>Public : True
+
+Determines if this assessment is (publicly) visible on www.ssllabls.com website</finding_txt>
+		</finding>
+		<finding>
+			<ip>www.schubergphilis.com</ip>
+			<hostname>www.schubergphilis.com</hostname>
+			<port>443/tcp</port>
+			<id>startTime</id>
+			<severity>0</severity>
+			<finding_txt>Scan started at : Fri 31 Mar 2017 08:13:07 UTC
+
+Time at which the scan was started</finding_txt>
+		</finding>
+</findings>
+</IVIL>
