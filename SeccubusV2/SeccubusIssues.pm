@@ -39,7 +39,7 @@ use strict;
 use Carp;
 
 sub update_issue(@);
-sub create_issue_change($);
+sub create_issue_change($;$);
 sub get_issues($;$$$);
 sub get_issue($$);
 sub issue_finding_link($$$;$);
@@ -53,7 +53,7 @@ parameter list with the following parameters:
 
 =over 2
 
-=item Parameters (name parameter list)
+=item Parameters (named parameter list)
 
 =over 4
 
@@ -153,7 +153,7 @@ sub update_issue(@) {
 		$arg{issue_id} = $return;
 	}
 	# Create an audit record
-	create_issue_change($arg{issue_id});
+	create_issue_change($arg{issue_id},$arg{timestamp});
 
 	# Link findings
 	if ( $arg{findings} ) {
@@ -183,6 +183,8 @@ This function adds a record to the finding_changes table.
 
 =item issue_id  - Mandatory
 
+=item timestamp - Optional timestamp of the change
+
 =back
 
 =item Returns
@@ -198,8 +200,10 @@ checking should have been doine a higher levels.
 
 =cut
 
-sub create_issue_change($) {
+sub create_issue_change($;$) {
 	my $issue_id = shift or die "No issue_id given";
+	my $timestamp = shift;
+
 	my $user_id = get_user_id($ENV{REMOTE_USER});
 
 	my @new_data = sql( "return"	=> "array",
@@ -215,16 +219,26 @@ sub create_issue_change($) {
 	my $x = 0;
 	my $diff = 0;
 	while ( $x < @new_data && ! $diff ) {
-		$diff = 1 if ( $old_data[$x] ne $new_data[$x]);
-		$x++
+		if ( $old_data[$x] ne $new_data[$x] ) {
+			$diff = 1;
+			last;
+		}
+		$x++;
 	}
 
 	my $id = 0;
 	if ( $diff || 0 == @old_data) {
+		my $query = "insert into issue_changes(issue_id, name, ext_ref, description, severity, status, user_id";
+		$query .= ", time" if $timestamp;
+		$query .= ") values (?, ?, ?, ?, ?, ?, ?";
+		$query .= ", ?" if $timestamp;
+		$query .= ")";
+		my @values = ($issue_id, @new_data, $user_id);
+		push @values, $timestamp if $timestamp;
 		$id = sql( 
 			"return"	=> "id",
-			"query"		=> "insert into issue_changes(issue_id, name, ext_ref, description, severity, status, user_id) values (?, ?, ?, ?, ?, ?, ?)",
-		    "values"	=> [ $issue_id, @new_data, $user_id ],
+			"query"		=> $query,
+		    "values"	=> \@values,
 		);
 	}
 	return $id;
@@ -244,7 +258,9 @@ This function returns a reference to an array of issues
 
 =item issue_id - id of a single issue to fetch
 
-=item with_finding_ids - true is we want to have finding ID's as well
+=item with_finding_ids - true if we want to have finding ID's as well
+
+=item finding_id (optional) - Only return results for this finding
 
 =back 
 

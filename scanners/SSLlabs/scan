@@ -618,7 +618,7 @@ sub parse_vuln($$) {
 	my $meta = shift;
 
 	if ( $finding ) {
-		return "VULNARABLE to $meta->{name}";
+		return "VULNERABLE to $meta->{name}";
 	} else {
 		return "Not vulnerable to $meta->{name}";
 	}

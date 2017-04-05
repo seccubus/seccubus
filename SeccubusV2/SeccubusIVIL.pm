@@ -151,6 +151,7 @@ sub load_ivil($;$$$$$$$) {
 					plugin		=> $finding->{id},
 					finding		=> $finding->{finding_txt},
 					severity	=> $finding->{severity},
+					timestamp 	=> $timestamp,
 				      );
 			if ( $finding->{ip} =~ /^\d+\.\d+\.\d+\.\d+$/ ) {
 				update_hostname($workspace_id, $finding->{ip}, $finding->{hostname});

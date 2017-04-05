@@ -50,6 +50,7 @@ sub get_status($$$;$);
 sub get_filters($$$;$);
 sub update_finding(@);
 sub diff_finding($$$$$;);
+sub create_finding_change($;$);
 
 =head1 Data manipulation - findings
 
@@ -88,6 +89,7 @@ sub get_findings($;$$$$) {
 	my $limit = shift;
 
 	$limit = 200 unless defined $limit;
+	$limit = undef if $limit < 0;
 
 	if ( may_read($workspace_id) ) {
 		my $params = [ $workspace_id, $workspace_id ];
@@ -1188,7 +1190,7 @@ sub update_finding(@) {
 				      );
 	}
 	# Create an audit record
-	create_finding_change($arg{finding_id});
+	create_finding_change($arg{finding_id},$arg{timestamp});
 	return $arg{finding_id};
 }
 
@@ -1203,6 +1205,8 @@ This function adds a record to the finding_changes table.
 =over 4
 
 =item finding_id  - Manditory
+
+=item timestamp - Optional - Timestamp for this change record
 
 =back
 
@@ -1219,8 +1223,10 @@ checking should have been doine a higher levels.
 
 =cut
 
-sub create_finding_change($:) {
+sub create_finding_change($;$) {
 	my $finding_id = shift or die "No fidnings_id given";
+	my $timestamp = shift;
+
 	my $user_id = get_user_id($ENV{REMOTE_USER});
 
 	my @new_data = sql( "return"	=> "array",
@@ -1243,9 +1249,17 @@ sub create_finding_change($:) {
 		}
 	}
 	if ( $changed ) {
+		my $query = "insert into finding_changes(finding_id, status, finding, remark, severity, run_id, user_id";
+		$query .= ", time" if $timestamp;
+		$query .= ") values (?, ?, ?, ?, ?, ?, ?";
+		$query .= ", ?" if $timestamp;
+		$query .= ")";
+		my $values = [ $finding_id, @new_data, $user_id ];
+		push @$values, $timestamp if $timestamp;
+
 		sql( "return"	=> "id",
-		     "query"	=> "insert into finding_changes(finding_id, status, finding, remark, severity, run_id, user_id) values (?, ?, ?, ?, ?, ?, ?)",
-		     "values"	=> [ $finding_id, @new_data, $user_id ],
+		     "query"	=> $query,
+		     "values"	=> $values,
 		   );
 	}
 }
@@ -1360,7 +1374,7 @@ sub process_status($$$;$) {
 					"status"		=> 2,
 				);
 			} else {
-				# Finding changed from previous non-gone finding. Setting to changed.
+				# Finding did not change from previous non-gone finding. Setting to No Issue.
 				print "Set finding $id to status NO ISSUE\n" if $verbose;
 				update_finding(
 					"workspace_id"	=> $workspace_id,
