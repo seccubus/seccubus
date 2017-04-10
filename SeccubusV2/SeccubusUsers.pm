@@ -77,7 +77,8 @@ sub get_user_id($) {
 	if ( $id ) {
 		return $id;
 	} else {
-		confess("Could not find a userid for user '$user'");
+		# Could not find a userid for user
+		return undef;
 	}
 }
 
