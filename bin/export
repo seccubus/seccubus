@@ -39,6 +39,7 @@ my (
 	$workspace,
 	$out,
 	@scans,
+	$after,
 	$compress,
 	$verbose,
 	$quiet,
@@ -51,6 +52,7 @@ GetOptions(
 	'out|o=s'		=> \$out,
 	'scan|s=s'		=> \@scans,
 	'compress|c'	=> \$compress,
+	'after|a=s'		=> \$after,
 	'verbose|v+'	=> \$verbose,
 	'help|h'		=> \$help,
 	'quiet|q'		=> \$quiet,
@@ -61,6 +63,9 @@ $verbose = 0 if $quiet;
 
 # Validate parameters
 help("Mandatory parameter workspace is missing") unless $workspace;
+if ( $after ) {
+	help("After should be in the format yyyymmddhhmmss") if $after !~ /^2\d\d\d[01]\d[0123]\d[012]\d[012345]\d[012345]\d$/;
+}
 
 my $workspace_id = get_workspace_id($workspace);
 help("Unable to find workspace '$workspace'") unless $workspace_id;
@@ -112,8 +117,8 @@ foreach my $s ( @{ get_scans($workspace_id) } ) {
 	my $scan = {
 		id => $$s[0],
 		name => $$s[1],
-		scannername => $$s[2],
-		scannerparam => $$s[3],
+		scanner_name => $$s[2],
+		scanner_param => $$s[3],
 		password => $$s[6],
 		targets => $$s[7],
 	};
@@ -150,40 +155,46 @@ foreach my $scan ( @$scans ) {
 	my $runs = [];
 	my $prev_run = -1;
 	foreach my $r ( @{ get_runs($workspace_id, $scan->{id}) } ) {
-		if ( $$r[0] != $prev_run ) {
-			# This is a new run
-			$prev_run = $$r[0];
-			my $ts = $$r[1];
-			$ts =~ s/[^0123456789]//g;
-			push @$runs, {
-				timestamp => $ts,
-				attachments => [ {
-					id => $$r[2],
-					name => $$r[3],
-					description => $$r[4],
-				} ]
-			};
+		my $ts = $$r[1];
+		$ts =~ s/[^0123456789]//g;
+		if ( ( ! $after ) || $ts >= $after ) {
+			mkdir "$scandir/att_$$r[2]", 0700;
+			my $att = get_attachment($workspace_id,$scan->{id},$$r[0],$$r[2]);
+			#die Dumper $att;
+			open ATT, ">$scandir/att_$$r[2]/$$r[3]" or die "Unable to write attachments $$r[2] in scan '$scan->{name}'";
+			print ATT $$att[0][1];
+			close ATT;
+			print "Wrote " if $verbose > 1;
+			print length $$att[0][1] if $verbose > 1;
+			print " bytes to $scandir/att_$$r[2]/$$r[3]\n" if $verbose > 1;
+			if ( $compress && $$r[3] !~ /\.(gz|zip)$/ ) {
+				print "Compressing file...\n" if $verbose > 1;
+				my $out = `(cd $scandir/att_$$r[2];zip -9 $$r[3].zip $$r[3];rm $$r[3])`;
+				print $out if $verbose;
+				$$r[3] .= ".zip";
+			}
+
+			if ( $$r[0] != $prev_run ) {
+				# This is a new run
+				$prev_run = $$r[0];
+					push @$runs, {
+						timestamp => $ts,
+						attachments => [ {
+							id => $$r[2],
+							name => $$r[3],
+							description => $$r[4],
+						} ]
+					};
+			} else {
+				my $att = {
+						id => $$r[2],
+						name => $$r[3],
+						description => $$r[4],				
+				};
+				push @{$$runs[-1]->{attachments}}, $att;
+			}
 		} else {
-			my $att = {
-					id => $$r[2],
-					name => $$r[3],
-					description => $$r[4],				
-			};
-			push @{$$runs[-1]->{attachments}}, $att;
-		}
-		mkdir "$scandir/att_$$r[2]", 0700;
-		my $att = get_attachment($workspace_id,$scan->{id},$$r[0],$$r[2]);
-		#die Dumper $att;
-		open ATT, ">$scandir/att_$$r[2]/$$r[3]" or die "Unable to write attachments $$r[2] in scan '$scan->{name}'";
-		print ATT $$att[0][1];
-		close ATT;
-		print "Wrote " if $verbose > 1;
-		print length $$att[0][1] if $verbose > 1;
-		print " bytes to $scandir/att_$$r[2]/$$r[3]\n" if $verbose > 1;
-		if ( $compress && $$r[3] !~ /\.(gz|zip)$/ ) {
-			print "Compressing file...\n" if $verbose > 1;
-			my $out = `(cd $scandir/att_$$r[2];zip -9 $$r[3].zip $$r[3];rm $$r[3])`;
-			print $out if $verbose;
+			print "Skipping data from run '$ts' because it is before '$after'\n" if $verbose > 1;
 		}
 	}
 	open JS, ">$scandir/runs.json" or die("Unable to open '$scandir/runs.json'");
@@ -194,46 +205,55 @@ foreach my $scan ( @$scans ) {
 	print "Exporting findings and history\n" if $verbose;
 	my $count = 0;
 	foreach my $f ( @{ get_findings($workspace_id,$scan->{id},undef,undef,-1) } ) {
-		my $finding = {
-			id => $$f[0],
-			host => $$f[1],
-			port => $$f[3],
-			plugin => $$f[4],
-			finding => $$f[5],
-			remark => $$f[6],
-			severity => $$f[7],
-			status => $$f[9],
-			history => [],
-		};
-		foreach my $h ( @{ get_finding($workspace_id,$finding->{id} )} ) {
-			# (id, finding.id, host, hostname, port, plugin, finding, remark, 
-			# severity, severity_name, status, status_txt, user_id, username, time, runtime)
-			my $ts = $$h[14];
-			my $rt = $$h[15];
-			$ts =~ s/[^0123456789]//g;
-			$rt =~ s/[^0123456789]//g;
-			my $hist = {
-				host => $$h[2],
-				port => $$h[4],
-				plugin => $$h[5],
-				finding => $$h[6],
-				remark => $$h[7],
-				severity => $$h[8],
-				status => $$h[10],
-				username => $$h[13],
-				time => $ts,
-				run => $rt,
+		my $ts = $$f[13];
+		$ts =~ s/[^0123456789]//g;
+		if ( ( ! $after ) || $ts >= $after ) {
+			my $finding = {
+				id => $$f[0],
+				host => $$f[1],
+				port => $$f[3],
+				plugin => $$f[4],
+				finding => $$f[5],
+				remark => $$f[6],
+				severity => $$f[7],
+				status => $$f[9],
+				run => $ts,
+				history => [],
 			};
-			push @{$finding->{history}}, $hist;
+			foreach my $h ( @{ get_finding($workspace_id,$finding->{id} )} ) {
+				# (id, finding.id, host, hostname, port, plugin, finding, remark, 
+				# severity, severity_name, status, status_txt, user_id, username, time, runtime)
+				my $ts = $$h[14];
+				my $rt = $$h[15];
+				$ts =~ s/[^0123456789]//g;
+				$rt =~ s/[^0123456789]//g;
+				if ( ( ! $after ) || ( $ts >= $after && $rt >= $after ) ) {
+					my $hist = {
+						host => $$h[2],
+						port => $$h[4],
+						plugin => $$h[5],
+						finding => $$h[6],
+						remark => $$h[7],
+						severity => $$h[8],
+						status => $$h[10],
+						username => $$h[13],
+						time => $ts,
+						run => $rt,
+					};
+					push @{$finding->{history}}, $hist;
+				} # After
+			}
+			#print Dumper $finding;die;
+			open JS, ">$scandir/finding_$finding->{id}.json" or die("Unable to open '$scandir/finding_$finding->{id}.json'");
+			print JS to_json($finding, { pretty => 1 });
+			close JS;
+			print to_json($finding, { pretty => 1 }) if $verbose > 3;
+			print "." if ! $quiet && $verbose <= 3;
+			$count++;
+		} else {
+			print "x" if ! $quiet && $verbose <= 3;
 		}
-		#print Dumper $finding;die;
-		open JS, ">$scandir/finding_$finding->{id}.json" or die("Unable to open '$scandir/finding_$finding->{id}.json'");
-		print JS to_json($finding, { pretty => 1 });
-		close JS;
-		print to_json($finding, { pretty => 1 }) if $verbose > 3;
-		print "." if ! $quiet && $verbose <= 3;
-		$count++;
-	}
+	} 
 	print "\n" if ! $quiet && $verbose <= 3;
 	print "$count findings written\n" unless $quiet;
 } # Scans
@@ -263,21 +283,23 @@ foreach my $i ( @{ get_issues($workspace_id,undef,1) } ) {
 			# u.username, ic.time as changetime 
 			my $ts = $$h[11];
 			$ts =~ s/[^1234567890]//g;
-			my $hist = {
-				id => $$h[0],
-				name => $$h[2],
-				ext_ref => $$h[3],
-				description => $$h[4],
-				severity => $$h[5],
-				status => $$h[7],
-				user => $$h[10],
-				time => $ts,
-			};
-			push @{$issue->{history}}, $hist;
+			if ( ( ! $after ) || $ts >= $after ) {
+				my $hist = {
+					id => $$h[0],
+					name => $$h[2],
+					ext_ref => $$h[3],
+					description => $$h[4],
+					severity => $$h[5],
+					status => $$h[7],
+					user => $$h[10],
+					time => $ts,
+				};
+				push @{$issue->{history}}, $hist;
+			}
 		}
 		push @$issues, $issue;
 	}
-	push @{$issue->{issues}}, $$i[8];
+	push @{$issue->{findings}}, $$i[8];
 }
 open JS, ">$out/issues.json" or die("Unable to open '$out/issues.json'");
 print JS to_json($issues, { pretty => 1 });
@@ -305,6 +327,8 @@ Usage: bin/export --workspace <workspace_name> --out <output_directory>
 --scan (-s)         - Name of the scan to export (can be repeated with 
                       multiple names to export more then one scan)
 --compress (-c)     - Compress attachments using zip
+--after (-a)        - Only export items created after or on 
+                      this time (Format: YYYYMMDDhhmmss)
 --verbose (-v)      - Be more verbose (repeat for extra verbosity)
 --quiet (-q)        - Be quiet (don't produce any output if not needed. 
                       Takes precidense over --verbose)

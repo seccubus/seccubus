@@ -50,7 +50,7 @@ sub get_status($$$;$);
 sub get_filters($$$;$);
 sub update_finding(@);
 sub diff_finding($$$$$;);
-sub create_finding_change($;$);
+sub create_finding_change($;$$);
 
 =head1 Data manipulation - findings
 
@@ -102,7 +102,8 @@ sub get_findings($;$$$$) {
 				findings.status as status_id, 
 				finding_status.name as status,
 				findings.scan_id as scan_id,
-				scans.name as scan_name
+				scans.name as scan_name,
+				runs.time as run_time
 			FROM
 				findings
 			LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
@@ -110,6 +111,7 @@ sub get_findings($;$$$$) {
 			LEFT JOIN finding_status on findings.status = finding_status.id
 			LEFT JOIN scans on scans.id = findings.scan_id
 			LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id
+			LEFT JOIN runs ON findings.run_id = runs.id
 			WHERE
 				findings.workspace_id = ?";
 		if ( $scan_id != 0 ) {
@@ -125,7 +127,8 @@ sub get_findings($;$$$$) {
 				findings.status as status_id, 
 				finding_status.name as status,
 				findings.scan_id as scan_id,
-				scans.name as scan_name
+				scans.name as scan_name,
+				runs.time as run_time
 			FROM
 				findings
 				LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
@@ -133,6 +136,7 @@ sub get_findings($;$$$$) {
 				LEFT JOIN finding_status on findings.status = finding_status.id
 				LEFT JOIN scans on scans.id = findings.scan_id
 				LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id,
+				LEFT JOIN runs on findings.run_id = runs.id,
 				assets,
 				asset_hosts
 			
@@ -1090,9 +1094,15 @@ parameter list with the following parameters:
 
 =item overwrite	  - 0 means append remark, 1 (default) means overwrite remark. 
 
+=item user_id     - User_id to "blame" in the log
+
 Append only happens if the finding exists
 
 =back
+
+=item Returns
+
+finding_id
 
 =item Checks
 
@@ -1190,7 +1200,7 @@ sub update_finding(@) {
 				      );
 	}
 	# Create an audit record
-	create_finding_change($arg{finding_id},$arg{timestamp});
+	create_finding_change($arg{finding_id},$arg{timestamp},$arg{userid});
 	return $arg{finding_id};
 }
 
@@ -1208,6 +1218,8 @@ This function adds a record to the finding_changes table.
 
 =item timestamp - Optional - Timestamp for this change record
 
+=item user_id - Optional - User_id to "blame" for this change
+
 =back
 
 =item Returns
@@ -1223,11 +1235,12 @@ checking should have been doine a higher levels.
 
 =cut
 
-sub create_finding_change($;$) {
+sub create_finding_change($;$$) {
 	my $finding_id = shift or die "No fidnings_id given";
 	my $timestamp = shift;
+	my $user_id = shift;
 
-	my $user_id = get_user_id($ENV{REMOTE_USER});
+	my $user_id = get_user_id($ENV{REMOTE_USER}) unless $user_id;
 
 	my @new_data = sql( "return"	=> "array",
 			"query"		=> "select status, finding, remark, severity, run_id from findings where id = ?",

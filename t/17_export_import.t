@@ -23,11 +23,14 @@ use Data::Dumper;
 use Test::More;
 use SeccubusV2;
 use SeccubusWorkspaces;
+use SeccubusScans;
 use SeccubusFindings;
 use SeccubusIssues;
 use SeccubusHostnames;
 use SeccubusAssets;
 use SeccubusNotifications;
+use SeccubusUsers;
+use SeccubusRuns;
 
 sub webcall(@);
 
@@ -194,13 +197,13 @@ isnt($?,0,"Export fails if non-existant scan is selected");
 `bin/export -w export -o /tmp/export.$$.1 --compress`;
 is($?,0,"export command ran ok with compression");
 
-for my $att ( <"/tmp/export.$$.1/scan_*/att_*/*"> ) {
+foreach my $att ( <"/tmp/export.$$.1/scan_*/att_*/*"> ) {
 	like($att, qr/\.zip$/, "Attachement $att is compressed");
 }
 
 `bin/export -w export -o /tmp/export.$$`;
 is($?,0,"export command ran ok without compression");
-for my $att ( <"/tmp/export.$$/scan_*/att_*/*"> ) {
+foreach my $att ( <"/tmp/export.$$/scan_*/att_*/*"> ) {
 	unlike($att, qr/\.zip$/, "Attachement $att is not compressed");
 }
 
@@ -217,15 +220,15 @@ is_deeply($json,
 	      "id" => "2",
 	      "targets" => "www.schubergphilis.com",
 	      "password" => "",
-	      "scannerparam" => "--hosts \@HOSTS --from-cache --publish",
-	      "scannername" => "SSLlabs",
+	      "scanner_param" => "--hosts \@HOSTS --from-cache --publish",
+	      "scanner_name" => "SSLlabs",
 	      "name" => "schubergphilis"
 	   },
 	   {
 	      "targets" => "www.seccubus.com",
-	      "scannername" => "SSLlabs",
+	      "scanner_name" => "SSLlabs",
 	      "password" => "",
-	      "scannerparam" => "--hosts \@HOSTS --from-cache --publish",
+	      "scanner_param" => "--hosts \@HOSTS --from-cache --publish",
 	      "id" => "1",
 	      "name" => "seccubus"
 	   }
@@ -240,14 +243,13 @@ is_deeply($json,
 	      "ext_ref" => "666",
 	      "description" => "Beast issue",
 	      "id" => "1",
-	      "issues" => [
+	      "findings" => [
 	         "41",
 	         "88"
 	      ],
 	      "name" => "Beast",
 	      "severity" => "0",
 	      "status" => "1",
-	      "findings" => [],
 	      "history" => [
 	         {
 	            "name" => "Beast",
@@ -262,7 +264,7 @@ is_deeply($json,
 	      ]
 	   },
 	   {
-	      "issues" => [
+	      "findings" => [
 	         "136",
 	         "227",
 	         "272"
@@ -271,7 +273,6 @@ is_deeply($json,
 	      "id" => "2",
 	      "ext_ref" => "rc4 ref",
 	      "severity" => "0",
-	      "findings" => [],
 	      "history" => [
 	         {
 	            "ext_ref" => "rc4 ref",
@@ -398,7 +399,8 @@ is_deeply($json,
 	         "port" => "443/tcp"
 	      }
 	   ],
-	   "host" => "www.seccubus.com"
+	   "host" => "www.seccubus.com",
+       "run" => "20170101000200"
 	},
 	"Finding 96 exported ok"
 );
@@ -451,7 +453,8 @@ is_deeply($json,
 	   "finding" => "VULNARABLE to Beast\n\nBeast is considered to be mitigated client side now. See: https://blog.qualys.com/ssllabs/2013/09/10/is-beast-still-a-threat",
 	   "id" => "41",
 	   "port" => "443/tcp",
-	   "host" => "www.seccubus.com/184.50.88.72"
+	   "host" => "www.seccubus.com/184.50.88.72",
+	   "run" => "20170101000200",
 	},
 	"Finding 41 exported ok"
 );
@@ -506,8 +509,8 @@ is_deeply($json,
 	      "id" => "2",
 	      "targets" => "www.schubergphilis.com",
 	      "password" => "",
-	      "scannerparam" => "--hosts \@HOSTS --from-cache --publish",
-	      "scannername" => "SSLlabs",
+	      "scanner_param" => "--hosts \@HOSTS --from-cache --publish",
+	      "scanner_name" => "SSLlabs",
 	      "name" => "schubergphilis"
 	   }	],
 	"Scan 2 exported ok"
@@ -515,12 +518,101 @@ is_deeply($json,
 
 ok(! -e "/tmp/export.$$.2/scan_1", "There is no scan_1 directory");
 
+`bin/export -w export -o /tmp/export.$$.3 --after 20170101000100`;
+is($?,0,"export command ran ok exporting only after 2017010100100");
+
+$json = get_json("/tmp/export.$$.3/scan_1/runs.json");
+is_deeply($json, 
+	[
+	   {
+	      "timestamp" => "20170101000200",
+	      "attachments" => [
+	         {
+	            "name" => "ssllabs-seccubus.ivil.xml",
+	            "id" => "4",
+	            "description" => "IVIL file"
+	         }
+	      ]
+	   }
+	]
+	,
+	"Scan 1 only has 1 run"
+);
+
+$json = get_json("/tmp/export.$$.3/scan_1/finding_1.json");
+is(@{$json->{history}},1,"Finding 1 only has 1 history record");
+
+`bin/export -w export -o /tmp/export.$$.4 --after 20170101000200`;
+is($?,0,"export command ran ok exporting only after 2017010100200");
+
+my @fs = glob "/tmp/export.$$.4/scan_2/finding_*";
+is(@fs,0,"Scan 2 should have 0 findings");
+
+$json = get_json("/tmp/export.$$.4/scan_2/runs.json");
+is_deeply($json, [], "Scan 2 has no associated runs" );
+
+#
+# Import
+#
+
 # Prep for import
 edit_workspace(100,"exported");
 
-`rm -rf /tmp/export.$$/`;
-`rm -rf /tmp/export.$$.1/`;
-`rm -rf /tmp/export.$$.2/`;
+$json = get_json("/tmp/export.$$/scan_1/finding_1.json");
+${$json->{history}}[1]->{username} = "seccubus";
+open JS, ">/tmp/export.$$/scan_1/finding_1.json" or die "Cannot write file";
+print JS to_json($json, {pretty => 1});
+close JS;
+
+`bin/import `;
+isnt($?,0,"Import fails if input directory is not specified");
+
+`bin/import -i /tmp/export.$$/export.$$`;
+isnt($?,0,"Import fails if input directory doesn't exist");
+
+`bin/import -i /tmp/export.$$ --nousers`;
+is($?,0,"import command ran ok with --nousers");
+
+my $user_id = get_user_id("seccubus");
+is($user_id,undef,"User 'seccubus' should not exist");
+
+`bin/import -w users -i /tmp/export.$$`;
+is($?,0,"import command ran ok ");
+
+$user_id = get_user_id("seccubus");
+is($user_id,100,"User 'seccubus' was created");
+
+# Compare a normal import $$ vs export
+cmp_scan(get_workspace_id("exported"),get_workspace_id("export"),{ nousers => 1 });
+
+# Compressed $$.1 vs compressed import
+`bin/import -w compressed_in -i /tmp/export.$$ --compress`;
+is($?,0,"import command ran ok ");
+`bin/import -w compressed_out -i /tmp/export.$$.1`;
+is($?,0,"import command ran ok ");
+cmp_scan(get_workspace_id("compressed_in"),get_workspace_id("compressed_out"));
+
+# Only scan 2 $$.2 vs scan 2
+`bin/import -w scan2_in -i /tmp/export.$$.2`;
+is($?,0,"import command ran ok ");
+`bin/import -w scan2_out -i /tmp/export.$$ --scan schubergphilis`;
+is($?,0,"import command ran ok ");
+cmp_scan(get_workspace_id("scan2_in"),get_workspace_id("scan2_out"));
+
+# export.$$.3 --after 20170101000100
+`bin/import -w 0100_in -i /tmp/export.$$.3`;
+is($?,0,"import command ran ok ");
+`bin/import -w 0100_out -i /tmp/export.$$ --after 20170101000100`;
+is($?,0,"import command ran ok ");
+cmp_scan(get_workspace_id("0100_in"),get_workspace_id("0100_out"));
+
+# export.$$.4 --after 20170101000200
+`bin/import -w 0200_in -i /tmp/export.$$.4`;
+is($?,0,"import command ran ok ");
+`bin/import -w 0200_out -i /tmp/export.$$ --after 20170101000200 -v -v -v >/tmp/exp.log`;
+is($?,0,"import command ran ok ");
+cmp_scan(get_workspace_id("0200_in"),get_workspace_id("0200_out"));
+#`rm -rf /tmp/export.$$*`;
 
 done_testing();
 
@@ -542,4 +634,129 @@ sub webcall(@) {
 	my @result = split /\r?\n/, `$cmd`;
 	while ( shift @result ) {};
 	return decode_json(join "\n", @result);
+}
+
+sub cmp_scan($$;$) {
+	my $in = shift;
+	my $out = shift;
+	my $flags = shift;
+
+	my $fin = {};
+	my $fout = {};
+	ok($in,"Got workspace id '$in' for in scan");
+	ok($in,"Got workspace id '$out' for out scan");
+	my $s_in = get_scans($in);
+	my $s_out = get_scans($out);
+	my $in_count = @$s_in;
+	my $out_count = @$s_out;
+	is($in_count,$out_count,"Both workspaces have the same amount of scans");
+	foreach my $x (0..$in_count-1) { # Scans
+		pass("Comparing scan $x");
+		# Comparing scan records
+		is($$s_in[$x][1],$$s_out[$x][1],"Names are the same");
+		is($$s_in[$x][2],$$s_out[$x][2],"Scannernames are the same");
+		is($$s_in[$x][3],$$s_out[$x][3],"Scannerparams are the same");
+		is($$s_in[$x][4],$$s_out[$x][4],"Lastruns are the same");
+		is($$s_in[$x][5],$$s_out[$x][5],"Scancounts are the same");
+		is($$s_in[$x][7],$$s_out[$x][7],"Targets are the same");
+		is($$s_in[$x][9],$$s_out[$x][9],"Notification counts are the same");
+		is($$s_in[$x][10] . "",$$s_out[$x][10] . "","Passwords are the same");
+
+		my $n_in = get_notifications($$s_in[$x][0]);
+		my $n_out = get_notifications($$s_out[$x][0]);
+		$in_count = @$n_in;
+		$out_count = @$n_out;
+		is($in_count,$out_count,"Same number of notifications");
+		foreach my $n (0..$in_count-1) {
+			pass("Comparing notification $n for scan $x");
+			# notifications.id, subject, recipients, message, event_id, events.name
+			is($$n_in[$n][1],$$n_out[$n][1],"Same subject");
+			is($$n_in[$n][2],$$n_out[$n][2],"Same recipients");
+			is($$n_in[$n][3],$$n_out[$n][3],"Same message");
+			is($$n_in[$n][4],$$n_out[$n][4],"Same trigger");
+			is($$n_in[$n][5],$$n_out[$n][5],"Same triggername");
+
+		} # Notifications
+
+		my $f_in  = get_findings($in, $$s_in[$x][0] ,undef,undef,-1);
+		my $f_out = get_findings($out,$$s_out[$x][0],undef,undef,-1);
+		$in_count = @$f_in;
+		$out_count = @$f_out;
+		is($in_count,$out_count,"Same number of findings");
+		foreach my $f (0..$in_count-1) {
+			pass("Comparing finding $f in scan $x");
+			# findings.id, findings.host, host_names.name as hostname, 	port, plugin, finding, remark,
+			# findings.severity as severity_id, severity.name as severity_name, 
+			# findings.status as status_id, finding_status.name as status, findings.scan_id as scan_id,
+			# scans.name as scan_name, runs.time as run_time
+			foreach my $field (1..10 , 12..13 ) {
+				is($$f_in[$f][$field],$$f_out[$f][$field],"Field $field is the same");
+			}
+
+			my $fh_in  = get_finding($in ,$$f_in[$f][0] );
+			my $fh_out = get_finding($out,$$f_out[$f][0]);
+			$in_count = @$fh_in;
+			$out_count = @$fh_out;
+			# finding_changes.id, findings.id, host, host_names.name, port, plugin, 
+			# finding_changes.finding, finding_changes.remark, finding_changes.severity, severity.name,
+			# finding_changes.status, finding_status.name, user_id, username, 
+			# finding_changes.time as changetime, runs.time as runtime
+			foreach my $fh ( 0..$in_count-1 ) {
+				pass("Comparting history record $fh of finding $f in scan $x");
+				foreach my $field ( 2..11, 13..14) {
+					unless ( $field == 13 && $flags->{nousers} ) {
+						is($$fh_in[$fh][$field],$$fh_out[$fh][$field],"Field $field is the same");
+					}
+				}
+			} # History
+
+			# Store for issue check
+			$fin->{$$f_in[$f][0]} = "$$f_in[$f][1]/$$f_in[$f][3]/$$f_in[$f][4]";
+			$fout->{$$f_out[$f][0]} = "$$f_out[$f][1]/$$f_out[$f][3]/$$f_out[$f][4]";
+		} # Findings
+
+		my $r_in  = get_runs($in,  $$s_in[$x][0] );
+		my $r_out = get_runs($out, $$s_out[$x][0]);
+		$in_count = @$r_in;
+		$out_count = @$r_out;
+		is($in_count,$out_count,"Same number of runs");
+		foreach my $r (0..$in_count-1) {
+			# runs.id, time, attachments.id, attachments.name, description
+			pass("Comparing run record $r of scan $x");
+			foreach my $f ( 1,3,4 ) {
+				is($$r_in[$r][$f],$$r_out[$r][$f],"Field $f is the same");
+			}
+			if ($$r_in[$r][2] || $$r_out[$r][2] ) {
+				my $att_in  = get_attachment($in ,$$s_in[$x][0], $$r_in[$r][0], $$r_in[$r][2]);
+				my $att_out = get_attachment($out,$$s_out[$x][0],$$r_out[$r][0],$$r_out[$r][2]);
+				is($$att_in[$r][0],$$att_out[$r][0],"Attachment names are the same");
+				if ( $$att_in[$r][0] !~ /\.zip$/ && $$att_out[$r][0] !~ /\.zip$/ ) {
+					is($$att_in[$r][1],$$att_out[$r][1],"Attachment content is the same");
+				}
+			}
+		}
+	} #scans
+
+	my $i_in = get_issues($in, undef,1,undef);
+	my $i_out= get_issues($out,undef,1,undef);
+	$in_count = @$i_in;
+	$out_count = @$i_out;
+	is($in_count,$out_count,"Smae number of issue records");
+	foreach my $i (0..$in_count-1) {
+		pass("Comparing issue record $i");
+		# i.id, i.name, i.ext_ref, i.description, i.severity, severity.name, i.status, 
+		# issue_status.name, i2f.finding_id
+		foreach my $f (1..7) {
+			is($$i_in[$i][$f],$$i_out[$i][$f],"Field $f is the same");
+		} 
+		if ( defined $$i_in[$i][8] && defined $$i_out[$i][8] ) {
+			is($fin->{$$i_in[$i][8]},$fout->{$$i_out[$i][8]},"Record $i refers to the same finding");
+		} elsif ( ! defined $$i_in[$i][8] && ! defined $$i_out[$i][8] ) {
+			pass("Record $i does not refer a finding");
+		} elsif ( defined $$i_in[$i][8] ) {
+			fail("Record $i in refers to a finding, but out doesn't");
+		} else {
+			fail("Record $i out refers to a finding, but in doesn't");
+		}
+	}
 }
