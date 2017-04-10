@@ -135,7 +135,7 @@ sub get_findings($;$$$$) {
 				LEFT JOIN severity on findings.severity = severity.id
 				LEFT JOIN finding_status on findings.status = finding_status.id
 				LEFT JOIN scans on scans.id = findings.scan_id
-				LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id,
+				LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id
 				LEFT JOIN runs on findings.run_id = runs.id,
 				assets,
 				asset_hosts
