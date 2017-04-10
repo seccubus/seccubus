@@ -522,6 +522,8 @@ sub parse_finding($$) {
 			} else {
 				$txt .= parse_suites($finding);
 			}
+		} elsif ( $meta->{type} eq "staticPkpPolicy" ) {
+			$txt .= parse_staticPkp($finding);
 		} elsif ( $meta->{type} eq "namedGroups") {
 			$txt .= parse_named_groups($finding);
 		} else {
@@ -697,6 +699,13 @@ sub parse_hstspreloads($) {
 	foreach my $b ( @$finding ) {
 		$txt .= " * $b->{source} - $b->{status}\n";
 	}
+	return $txt;
+}
+
+sub parse_staticPkp($) {
+	my $finding = shift;
+	my $txt = Dumper $finding;
+
 	return $txt;
 }
 
