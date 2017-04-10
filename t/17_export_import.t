@@ -179,19 +179,19 @@ create_notification(100,1,3,"On Open","nobody\@example.com","On open notificatio
 
 pass("Testbed setup complete");
 
-`bin/export -o /tmp/export.$$`;
+`bin/export -o /tmp/export.$$ 2>&1`;
 isnt($?,0,"Export should fail if workspace parameter is missing");
 
-`bin/export -w export`;
+`bin/export -w export 2>&1`;
 isnt($?,0,"Export should fail if out parameter is missing");
 
-`bin/export -w export -o /tmp`;
+`bin/export -w export -o /tmp 2>&1`;
 isnt($?,0,"Export should fail output path exists");
 
-`bin/export -w export -o /tmp/export.$$/export.$$`;
+`bin/export -w export -o /tmp/export.$$/export.$$ 2>&1`;
 isnt($?,0,"Export fails if we cannot create a directory");
 
-`bin/export -w export -o /tmp/export.$$ -s bla`;
+`bin/export -w export -o /tmp/export.$$ -s bla 2>&1`;
 isnt($?,0,"Export fails if non-existant scan is selected");
 
 `bin/export -w export -o /tmp/export.$$.1 --compress`;
@@ -564,10 +564,10 @@ open JS, ">/tmp/export.$$/scan_1/finding_1.json" or die "Cannot write file";
 print JS to_json($json, {pretty => 1});
 close JS;
 
-`bin/import `;
+`bin/import  2>&1`;
 isnt($?,0,"Import fails if input directory is not specified");
 
-`bin/import -i /tmp/export.$$/export.$$`;
+`bin/import -i /tmp/export.$$/export.$$ 2>&1`;
 isnt($?,0,"Import fails if input directory doesn't exist");
 
 `bin/import -i /tmp/export.$$ --nousers`;
@@ -612,7 +612,9 @@ is($?,0,"import command ran ok ");
 `bin/import -w 0200_out -i /tmp/export.$$ --after 20170101000200 -v -v -v >/tmp/exp.log`;
 is($?,0,"import command ran ok ");
 cmp_scan(get_workspace_id("0200_in"),get_workspace_id("0200_out"));
-#`rm -rf /tmp/export.$$*`;
+
+# Cleanup
+`rm -rf /tmp/export.$$*`;
 
 done_testing();
 
