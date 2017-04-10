@@ -237,6 +237,10 @@
 		"type"			: "boolean",
 		"description"	: "This endpoint supports RC4 : "
 	},
+	"staticPkpPolicy" : {
+		"type"			: "staticPkpPolicy",
+		"description"	: "Static Private Key Pinning is also known as HSTS preloading (See: https://community.qualys.com/thread/17152-what-is-static-public-key-pinning)"
+	},
 	"ticketbleed" : {
 		"type" 			: "vulnerability",
 		"name"			: "TicketBleed",
