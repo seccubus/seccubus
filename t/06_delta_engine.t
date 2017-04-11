@@ -234,8 +234,8 @@ sleep 1; # Make sure timestamp is different
 $json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
 is($$json[0]->{statusName}, 'New', "Status[1] ($$json[0]->{statusName}) is New, Status before gone is new");
 is($$json[1]->{statusName}, 'Changed', "Status[2] ($$json[1]->{statusName}) is Changed, Status before gone is changed");
-is($$json[2]->{statusName}, 'New', "Status[3] ($$json[2]->{statusName}) is New, Status before gone is Open");
-is($$json[3]->{statusName}, 'Changed', "Status[4] ($$json[3]->{statusName}) is Changed, status before gone is No issdue and it didn't change");
+is($$json[2]->{statusName}, 'New', "Status[3] ($$json[2]->{statusName}) is New, Status before gone is Open, after AAA");
+is($$json[3]->{statusName}, 'Changed', "Status[4] ($$json[3]->{statusName}) is Changed, status before gone is No issdue and it didn't change, after AAA");
 is($$json[4]->{statusName}, 'New', "Status[5] ($$json[4]->{statusName}) is New, after load BBBBBBB");
 is($$json[5]->{statusName}, 'New', "Status[6] ($$json[5]->{statusName}) is New, after load BBBBBBB");
 is($$json[6]->{statusName}, 'MASKED', "Status[7] ($$json[6]->{statusName}) is MASKED, after load BBBBBBB");
