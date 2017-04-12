@@ -228,7 +228,7 @@ ok($$json[5]->{statusName} eq 'Gone', "Status[6] ($$json[5]->{statusName}) is Go
 ok($$json[6]->{statusName} eq 'Gone', "Status[7] ($$json[6]->{statusName}) is Gone after setting it the hard way");
 ok($$json[8]->{statusName} eq 'Gone', "Status[9] ($$json[7]->{statusName}) is Gone after creating it the hard way");
 
-sleep 1;
+sleep 3;
 
 # Load AAAAAAAAA 82 -
 `perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010007 -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAAAA.ivil.xml`;
