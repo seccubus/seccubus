@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2014 Frank Breedijk, Alex Smirnoff
+# Copyright 2017 Frank Breedijk, Alex Smirnoff
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ use Socket;
 
 @EXPORT = qw ( 
 		update_hostname
+		get_hostnames
 	);
 
 use strict;
@@ -95,6 +96,48 @@ sub update_hostname($$$;) {
 		}
 	} else {
 		confess "You have no rights to write workspace $workspace_id";
+	}
+}
+
+=head2 get_hostnames
+
+This function returns all ip hostname combinations for a given workspace
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item workspace_id - workspace for which to get hte hostnames (mandatory)
+
+
+=back
+
+=item Checks
+
+Must have read rights in the workspace_id.
+
+=back
+
+=cut
+
+sub get_hostnames($;) {
+	my $workspace_id = shift;
+
+	confess "No workspace_id provided" unless $workspace_id;
+
+	if ( may_read($workspace_id) ) {
+		my $hosts = sql(
+			return	=> "ref",
+			query	=> "SELECT 	ip, name
+						FROM 	host_names
+						WHERE 	workspace_id = ?",
+			values	=> [ $workspace_id ]
+		);
+		return $hosts;
+	} else {
+		return [];
 	}
 }
 
