@@ -43,7 +43,7 @@ $ git push --follow-tags
 Counting objects: 1, done.
 Writing objects: 100% (1/1), 179 bytes | 0 bytes/s, done.
 Total 1 (delta 0), reused 0 (delta 0)
-To git@github.com:schubergphilis/Seccubus_v2
+To git@github.com:schubergphilis/Seccubus
  * [new tag]         2.22 -> 2.22
 ```
 
@@ -54,7 +54,7 @@ To git@github.com:schubergphilis/Seccubus_v2
 
 # Make sure that all unit tests pass (AGAIN!)
 
-Check [![Travis build status](https://travis-ci.org/schubergphilis/Seccubus_v2.svg?branch=master)](https://travis-ci.org/schubergphilis/Seccubus_v2/)
+Check [![Travis build status](https://travis-ci.org/schubergphilis/Seccubus.svg?branch=master)](https://travis-ci.org/schubergphilis/Seccubus/)
 
 # Make sure the package builds on all platforms (AGAIN!)
 
@@ -62,7 +62,7 @@ Check [OpenSUSE Build Serice](https://build.opensuse.org/package/show/home:seccu
 
 # Create a release on GitHub
 
-See [GitHub release page](https://github.com/schubergphilis/Seccubus_v2/releases).
+See [GitHub release page](https://github.com/schubergphilis/Seccubus/releases).
 
 Use the tag you have just created. If you committed after you created the tag you need to [delete the tag](https://nathanhoad.net/how-to-delete-a-remote-git-tag) first.
 
@@ -78,7 +78,7 @@ Platform(s):
 
 # Attach them to the build
 
-See the release you just created at the [GitHub release page](https://github.com/schubergphilis/Seccubus_v2/releases).
+See the release you just created at the [GitHub release page](https://github.com/schubergphilis/Seccubus/releases).
 
 # Write a blog post on [seccubus.com](/)
 
