@@ -132,7 +132,7 @@ ok($$json[4]->{statusName} eq 'Gone', "Status[5] ($$json[4]->{statusName}) is Go
 ok($$json[5]->{statusName} eq 'Closed', "Status[6] ($$json[5]->{statusName}) is Closed, after reset");
 ok($$json[6]->{statusName} eq 'MASKED', "Status[7] ($$json[6]->{statusName}) is MASKED, after reset");
 
-sleep 5; # Make sure timestamp is different
+sleep 1; # Make sure timestamp is different
 
 # Loading none - 53-59
 `perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010004 -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml --allowempty`;
@@ -166,21 +166,21 @@ ok($$json[5]->{statusName} eq 'Gone', "Status[6] ($$json[5]->{statusName}) is Go
 ok($$json[6]->{statusName} eq 'Gone', "Status[7] ($$json[6]->{statusName}) is Gone after setting it the hard way");
 ok($$json[7]->{statusName} eq 'Gone', "Status[8] ($$json[7]->{statusName}) is Gone after creating it the hard way");
 
-sleep 5; # Make sure timestamp is different
+sleep 1; # Make sure timestamp is different
 
 # Load BBBBBBBB - 63-70
 `perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010005 -w test -s ab --scanner Nessus6 testdata/delta-BBBBBBBB.ivil.xml`;
 $json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
 is($$json[0]->{statusName}, 'New', "Status[1] ($$json[0]->{statusName}) is New, Status before gone is new");
 is($$json[1]->{statusName}, 'Changed', "Status[2] ($$json[1]->{statusName}) is Changed, Status before gone is changed");
-is($$json[2]->{statusName}, 'New', "Status[3] ($$json[2]->{statusName}) is New, Status before gone is Open, after load BBBBBBB again");
-is($$json[3]->{statusName}, 'No issue', "Status[4] ($$json[3]->{statusName}) is No issue, status before gone is No issue and it didn't change, after load BBBBBBB again");
+is($$json[2]->{statusName}, 'New', "Status[3] ($$json[2]->{statusName}) is New, Status before gone is Open");
+is($$json[3]->{statusName}, 'No issue', "Status[4] ($$json[3]->{statusName}) is No issue, status before gone is No issdue and it didn't change");
 is($$json[4]->{statusName}, 'New', "Status[5] ($$json[4]->{statusName}) is New, after load BBBBBBB");
 is($$json[5]->{statusName}, 'New', "Status[6] ($$json[5]->{statusName}) is New, after load BBBBBBB");
 is($$json[6]->{statusName}, 'MASKED', "Status[7] ($$json[6]->{statusName}) is MASKED, after load BBBBBBB");
 is($$json[7]->{statusName}, 'New', "Status[8] ($$json[7]->{statusName}) is New, there is no status before gone");
 
-sleep 5; # Make sure timestamp is different
+sleep 1; # Make sure timestamp is different
 
 # Set to all possible statusses
 `perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=1 attrs[remark]= attrs[status]=1 attrs[workspaceId]=100`;
@@ -192,7 +192,7 @@ sleep 5; # Make sure timestamp is different
 `perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=7 attrs[remark]= attrs[status]=99 attrs[workspaceId]=100`;
 `perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=8 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
 
-sleep 5; # Make sure timestamp is different
+sleep 1; # Make sure timestamp is different
 
 # Loading none - 71 - 78
 `perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010006 -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml --allowempty`;
@@ -227,15 +227,15 @@ ok($$json[5]->{statusName} eq 'Gone', "Status[6] ($$json[5]->{statusName}) is Go
 ok($$json[6]->{statusName} eq 'Gone', "Status[7] ($$json[6]->{statusName}) is Gone after setting it the hard way");
 ok($$json[8]->{statusName} eq 'Gone', "Status[9] ($$json[7]->{statusName}) is Gone after creating it the hard way");
 
-sleep 5; # Make sure timestamp is different
+sleep 1; # Make sure timestamp is different
 
 # Load AAAAAAAAA 82 -
 `perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010007 -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAAAA.ivil.xml`;
 $json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getFindings.pl workspaceId=100 scanIds[]=1`);
 is($$json[0]->{statusName}, 'New', "Status[1] ($$json[0]->{statusName}) is New, Status before gone is new");
 is($$json[1]->{statusName}, 'Changed', "Status[2] ($$json[1]->{statusName}) is Changed, Status before gone is changed");
-is($$json[2]->{statusName}, 'New', "Status[3] ($$json[2]->{statusName}) is New, Status before gone is Open, after AAA");
-is($$json[3]->{statusName}, 'Changed', "Status[4] ($$json[3]->{statusName}) is Changed, status before gone is No issdue and it didn't change, after AAA");
+is($$json[2]->{statusName}, 'New', "Status[3] ($$json[2]->{statusName}) is New, Status before gone is Open");
+is($$json[3]->{statusName}, 'Changed', "Status[4] ($$json[3]->{statusName}) is Changed, status before gone is No issdue and it didn't change");
 is($$json[4]->{statusName}, 'New', "Status[5] ($$json[4]->{statusName}) is New, after load BBBBBBB");
 is($$json[5]->{statusName}, 'New', "Status[6] ($$json[5]->{statusName}) is New, after load BBBBBBB");
 is($$json[6]->{statusName}, 'MASKED', "Status[7] ($$json[6]->{statusName}) is MASKED, after load BBBBBBB");
