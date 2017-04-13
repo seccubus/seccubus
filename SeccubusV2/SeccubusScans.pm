@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2015 Frank Breedijk, Steve Launius, Artien Bel (Ar0xA), Petr
+# Copyright 2017	 Frank Breedijk, Steve Launius, Artien Bel (Ar0xA), Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -312,7 +312,7 @@ sub run_scan($$;$$$) {
 			my ( $scanname, $scanner, $param, $password, $targets, $workspace ) = @scan;
 			my $config = SeccubusV2::get_config();
 			if ( ! -e $config->{paths}->{scanners} . "/$scanner/scan" ) {
-				die "Scan script for $scanner is not installed";
+				die "Scan script for $scanner is not installed at " . $config->{paths}->{scanners} . "/$scanner/scan";
 			}
 			if ($scanner =~ /^Nessus/ || $scanner eq "OpenVAS") {
 				$param = $param .' --pw \''. $password. '\' ';

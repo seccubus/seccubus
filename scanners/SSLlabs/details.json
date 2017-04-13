@@ -239,7 +239,7 @@
 	},
 	"staticPkpPolicy" : {
 		"type"			: "staticPkpPolicy",
-		"description"	: "Static Private Key Pinning is also known as HSTS preloading (See: https://community.qualys.com/thread/17152-what-is-static-public-key-pinning)"
+		"description"	: "Static Private Key Pinning meanse that the hpkpPolicy is statically embedded in the browser (See: https://community.qualys.com/thread/17152-what-is-static-public-key-pinning)"
 	},
 	"ticketbleed" : {
 		"type" 			: "vulnerability",

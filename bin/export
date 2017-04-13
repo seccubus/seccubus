@@ -1,0 +1,343 @@
+#!/usr/bin/env perl
+# Copyright 2017 Frank Breedijk
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+# This program loads the findings from an IVIL file into the desired workspace 
+# and scan
+# ------------------------------------------------------------------------------
+# vim:et:sw=4:ts=4:ft=perl:
+
+use strict;
+
+$| = 1;
+
+use SeccubusV2;
+use SeccubusWorkspaces;
+use SeccubusScans;
+use SeccubusHostnames;
+use SeccubusNotifications;
+use SeccubusRuns;
+use SeccubusFindings;
+use SeccubusIssues;
+
+use Getopt::Long;
+use JSON;
+use Data::Dumper;
+
+my (
+	$workspace,
+	$out,
+	@scans,
+	$after,
+	$compress,
+	$verbose,
+	$quiet,
+);
+
+my $help = 0;
+
+GetOptions(	
+	'workspace|w=s'	=> \$workspace,
+	'out|o=s'		=> \$out,
+	'scan|s=s'		=> \@scans,
+	'compress|c'	=> \$compress,
+	'after|a=s'		=> \$after,
+	'verbose|v+'	=> \$verbose,
+	'help|h'		=> \$help,
+	'quiet|q'		=> \$quiet,
+);
+
+help() if $help;
+$verbose = 0 if $quiet;
+
+# Validate parameters
+help("Mandatory parameter workspace is missing") unless $workspace;
+if ( $after ) {
+	help("After should be in the format yyyymmddhhmmss") if $after !~ /^2\d\d\d[01]\d[0123]\d[012]\d[012345]\d[012345]\d$/;
+}
+
+my $workspace_id = get_workspace_id($workspace);
+help("Unable to find workspace '$workspace'") unless $workspace_id;
+
+my $scan_ids = {};
+foreach my $scan ( @scans ) {
+	my $scan_id = get_scan_id($workspace_id,$scan);
+	if ( $scan_id ) {
+		$scan_ids->{$scan_id} = $scan;
+	} else {
+		die "Scan '$scan' does not exist in workspace '$workspace'";
+	}
+}
+
+help("Mandatory parameter out is missing") unless $out;
+if ( -e $out ) {
+	help("A file or directory named '$out' already exists")
+} else {
+	mkdir $out, 0700;
+	help("Unable to create directory '$out'") if ( ! -d $out );
+}
+
+print "Exporting from workspace '$workspace'\n" unless $quiet;
+
+print "Exporting workspace details\n" if $verbose;
+my $workspace = {
+	name => $workspace
+};
+open WS, ">$out/workspace.json" or die("Unable to open '$out/workspace.json'");
+print WS to_json($workspace, { pretty => 1 });
+close WS;
+print to_json($workspace, { pretty => 1 }) if $verbose > 2;
+
+print "Exporting hostnames\n" if $verbose;
+my $hostnames_in = get_hostnames($workspace_id);
+my $hostnames = [];
+foreach my $h ( @$hostnames_in ) {
+	push @$hostnames, { ip => $$h[0], name => $$h[1] };
+}
+$hostnames_in = [];
+open JS, ">$out/hostnames.json" or die("Unable to open '$out/hostnames.json'");
+print JS to_json($hostnames, { pretty => 1 });
+close JS;
+print to_json($hostnames, { pretty => 1 }) if $verbose > 2;
+
+print "Exporting scan configurations\n" if $verbose;
+my $scans = [];
+foreach my $s ( @{ get_scans($workspace_id) } ) {
+	my $scan = {
+		id => $$s[0],
+		name => $$s[1],
+		scanner_name => $$s[2],
+		scanner_param => $$s[3],
+		password => $$s[6],
+		targets => $$s[7],
+	};
+	if ( ! @scans || ( @scans && exists $scan_ids->{$$s[0]} ) ) {
+			push @$scans, $scan;
+	}
+}
+open JS, ">$out/scans.json" or die("Unable to open '$out/scans.json'");
+print JS to_json($scans, { pretty => 1 });
+close JS;
+print to_json($scans, { pretty => 1 }) if $verbose > 2;
+
+foreach my $scan ( @$scans ) {
+	print "Processing scan '$scan->{name}'\n" unless $quiet;
+	my $scandir = "$out/scan_$scan->{id}";
+	mkdir $scandir, 0700;
+
+	print "Exporting notifications\n" if $verbose;
+	my $notifications = [];
+	foreach my $n ( @{ get_notifications($scan->{id}) } ) {
+		push @$notifications, {
+			subject => $$n[1],
+			recipients => $$n[2],
+			message => $$n[3],
+			trigger => $$n[4]
+		};
+	}
+	open JS, ">$scandir/notifications.json" or die("Unable to open '$scandir/notifications.json'");
+	print JS to_json($notifications, { pretty => 1 });
+	close JS;
+	print to_json($notifications, { pretty => 1 }) if $verbose > 2;
+
+	print "Exporting runs and attachments\n" if $verbose;
+	my $runs = [];
+	my $prev_run = -1;
+	foreach my $r ( @{ get_runs($workspace_id, $scan->{id}) } ) {
+		my $ts = $$r[1];
+		$ts =~ s/[^0123456789]//g;
+		if ( ( ! $after ) || $ts >= $after ) {
+			mkdir "$scandir/att_$$r[2]", 0700;
+			my $att = get_attachment($workspace_id,$scan->{id},$$r[0],$$r[2]);
+			#die Dumper $att;
+			open ATT, ">$scandir/att_$$r[2]/$$r[3]" or die "Unable to write attachments $$r[2] in scan '$scan->{name}'";
+			print ATT $$att[0][1];
+			close ATT;
+			print "Wrote " if $verbose > 1;
+			print length $$att[0][1] if $verbose > 1;
+			print " bytes to $scandir/att_$$r[2]/$$r[3]\n" if $verbose > 1;
+			if ( $compress && $$r[3] !~ /\.(gz|zip)$/ ) {
+				print "Compressing file...\n" if $verbose > 1;
+				my $out = `(cd $scandir/att_$$r[2];zip -9 $$r[3].zip $$r[3];rm $$r[3])`;
+				print $out if $verbose;
+				$$r[3] .= ".zip";
+			}
+
+			if ( $$r[0] != $prev_run ) {
+				# This is a new run
+				$prev_run = $$r[0];
+					push @$runs, {
+						timestamp => $ts,
+						attachments => [ {
+							id => $$r[2],
+							name => $$r[3],
+							description => $$r[4],
+						} ]
+					};
+			} else {
+				my $att = {
+						id => $$r[2],
+						name => $$r[3],
+						description => $$r[4],				
+				};
+				push @{$$runs[-1]->{attachments}}, $att;
+			}
+		} else {
+			print "Skipping data from run '$ts' because it is before '$after'\n" if $verbose > 1;
+		}
+	}
+	open JS, ">$scandir/runs.json" or die("Unable to open '$scandir/runs.json'");
+	print JS to_json($runs, { pretty => 1 });
+	close JS;
+	print to_json($runs, { pretty => 1 }) if $verbose > 2;
+
+	print "Exporting findings and history\n" if $verbose;
+	my $count = 0;
+	foreach my $f ( @{ get_findings($workspace_id,$scan->{id},undef,undef,-1) } ) {
+		my $ts = $$f[13];
+		$ts =~ s/[^0123456789]//g;
+		if ( ( ! $after ) || $ts >= $after ) {
+			my $finding = {
+				id => $$f[0],
+				host => $$f[1],
+				port => $$f[3],
+				plugin => $$f[4],
+				finding => $$f[5],
+				remark => $$f[6],
+				severity => $$f[7],
+				status => $$f[9],
+				run => $ts,
+				history => [],
+			};
+			foreach my $h ( @{ get_finding($workspace_id,$finding->{id} )} ) {
+				# (id, finding.id, host, hostname, port, plugin, finding, remark, 
+				# severity, severity_name, status, status_txt, user_id, username, time, runtime)
+				my $ts = $$h[14];
+				my $rt = $$h[15];
+				$ts =~ s/[^0123456789]//g;
+				$rt =~ s/[^0123456789]//g;
+				if ( ( ! $after ) || ( $ts >= $after && $rt >= $after ) ) {
+					my $hist = {
+						host => $$h[2],
+						port => $$h[4],
+						plugin => $$h[5],
+						finding => $$h[6],
+						remark => $$h[7],
+						severity => $$h[8],
+						status => $$h[10],
+						username => $$h[13],
+						time => $ts,
+						run => $rt,
+					};
+					push @{$finding->{history}}, $hist;
+				} # After
+			}
+			#print Dumper $finding;die;
+			open JS, ">$scandir/finding_$finding->{id}.json" or die("Unable to open '$scandir/finding_$finding->{id}.json'");
+			print JS to_json($finding, { pretty => 1 });
+			close JS;
+			print to_json($finding, { pretty => 1 }) if $verbose > 3;
+			print "." if ! $quiet && $verbose <= 3;
+			$count++;
+		} else {
+			print "x" if ! $quiet && $verbose <= 3;
+		}
+	} 
+	print "\n" if ! $quiet && $verbose <= 3;
+	print "$count findings written\n" unless $quiet;
+} # Scans
+
+print "Exporting issues\n" unless $quiet;
+my $issues = [];
+my $issue;
+my $prev_id;
+foreach my $i ( @{ get_issues($workspace_id,undef,1) } ) {
+	if ( $$i[0] != $prev_id ) {
+		$prev_id = $$i[0];
+		$issue = {
+			# i.id, i.name, i.ext_ref, i.description, i.severity, severity.name, i.status, 
+			# issue_status.name
+			id => $$i[0],
+			name => $$i[1],
+			ext_ref => $$i[2],
+			description => $$i[3],
+			severity => $$i[4],
+			status => $$i[6],
+			findings => [],
+			history => [],
+		};
+		foreach my $h ( @{ get_issue($workspace_id,$$i[0]) } ) {
+			# ic.id, ic.issue_id, ic.name, ic.ext_ref, ic.description, ic.severity, 
+			# s.name as serverity_name,	ic.status, st.name as status_name, ic.user_id, 
+			# u.username, ic.time as changetime 
+			my $ts = $$h[11];
+			$ts =~ s/[^1234567890]//g;
+			if ( ( ! $after ) || $ts >= $after ) {
+				my $hist = {
+					id => $$h[0],
+					name => $$h[2],
+					ext_ref => $$h[3],
+					description => $$h[4],
+					severity => $$h[5],
+					status => $$h[7],
+					user => $$h[10],
+					time => $ts,
+				};
+				push @{$issue->{history}}, $hist;
+			}
+		}
+		push @$issues, $issue;
+	}
+	push @{$issue->{findings}}, $$i[8];
+}
+open JS, ">$out/issues.json" or die("Unable to open '$out/issues.json'");
+print JS to_json($issues, { pretty => 1 });
+close JS;
+print to_json($issues, { pretty => 1 }) if $verbose > 2;
+
+print "\n*** Done ***\n" unless $quiet;
+
+exit;
+
+sub help(;$) {
+	my $message = shift;
+
+	print "
+Export exports an entire workspace or selected scans to a directory with json and attachment files.
+This directory can then be imported again using the import utility.
+
+Usage: bin/export --workspace <workspace_name> --out <output_directory> 
+       [--scan <scanname 1>] [--scan <scanname 2>] [--compress] [--verbose] 
+       [--quiet] [--help]
+
+--workspace (-w)    - Name of the workspace to export
+--out (-o)          - Directory into which to export the data 
+                      (must not exist, will be created)
+--scan (-s)         - Name of the scan to export (can be repeated with 
+                      multiple names to export more then one scan)
+--compress (-c)     - Compress attachments using zip
+--after (-a)        - Only export items created after or on 
+                      this time (Format: YYYYMMDDhhmmss)
+--verbose (-v)      - Be more verbose (repeat for extra verbosity)
+--quiet (-q)        - Be quiet (don't produce any output if not needed. 
+                      Takes precidense over --verbose)
+--help (-h)         - Show this message
+	\n";
+	
+	if ( $message)  {
+		die $message;
+	} else {
+		exit 1;
+	}
+}
