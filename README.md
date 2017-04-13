@@ -130,22 +130,12 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-13-4-2017 - v2.30 -  Improved delta engine and import and export tools
+xx-xx-2017 - v2.31 - Decelopment release
 ======================================================================
 
 
 Enhancements
 ------------
-* #126 - Delta engine improved: Beter recovery from GONE findings
-* #257 - Import/export tools added
-* #408 - Seccubus now refuses to load an ivil file with 0 findings
-* #412 - Disabled tofu to enhance Docker support
-* #419 - Enable crontab support in docker images
-* #423 - Show futureGrade in SSLlabs scan results
 
 Bug Fixes
 ---------
-* #403 - SSLlabs scanner help file was not up to date
-* #414 - Mkdir error will no longer appear if entrypoint.sh is run twice
-* #426 - Corrections to README.md from Karol Kozakowski merged
-* #432 - StaticPkpPolicy not recognized
