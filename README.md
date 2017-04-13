@@ -130,8 +130,8 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-xx-x-2017 - 2.29 - 
-=================================================================
+13-4-2017 - v2.30 -  Improved delta engine and import and export tools
+======================================================================
 
 
 Enhancements
