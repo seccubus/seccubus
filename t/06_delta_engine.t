@@ -112,6 +112,10 @@ ok($$json[4]->{statusName} eq 'New', "Status[5] ($$json[4]->{statusName}) is New
 ok($$json[5]->{statusName} eq 'New', "Status[6] ($$json[5]->{statusName}) is New, after load BBBBBBB");
 ok($$json[6]->{statusName} eq 'MASKED', "Status[7] ($$json[6]->{statusName}) is MASKED, after load BBBBBBB");
 
+#
+# Handling of Gone (Status before gone)
+#
+
 # Set to all possible statusses 47-53
 `perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=2 attrs[remark]= attrs[status]=2 attrs[workspaceId]=100`;
 `perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=3 attrs[remark]= attrs[status]=3 attrs[workspaceId]=100`;
@@ -127,6 +131,8 @@ ok($$json[3]->{statusName} eq 'No issue', "Status[4] ($$json[3]->{statusName}) i
 ok($$json[4]->{statusName} eq 'Gone', "Status[5] ($$json[4]->{statusName}) is Gone, after reset");
 ok($$json[5]->{statusName} eq 'Closed', "Status[6] ($$json[5]->{statusName}) is Closed, after reset");
 ok($$json[6]->{statusName} eq 'MASKED', "Status[7] ($$json[6]->{statusName}) is MASKED, after reset");
+
+sleep 1; # Make sure timestamp is different
 
 # Loading none - 53-59
 `perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010004 -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml --allowempty`;
@@ -160,6 +166,7 @@ ok($$json[5]->{statusName} eq 'Gone', "Status[6] ($$json[5]->{statusName}) is Go
 ok($$json[6]->{statusName} eq 'Gone', "Status[7] ($$json[6]->{statusName}) is Gone after setting it the hard way");
 ok($$json[7]->{statusName} eq 'Gone', "Status[8] ($$json[7]->{statusName}) is Gone after creating it the hard way");
 
+sleep 1; # Make sure timestamp is different
 
 # Load BBBBBBBB - 63-70
 `perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010005 -w test -s ab --scanner Nessus6 testdata/delta-BBBBBBBB.ivil.xml`;
@@ -173,6 +180,8 @@ is($$json[5]->{statusName}, 'New', "Status[6] ($$json[5]->{statusName}) is New, 
 is($$json[6]->{statusName}, 'MASKED', "Status[7] ($$json[6]->{statusName}) is MASKED, after load BBBBBBB");
 is($$json[7]->{statusName}, 'New', "Status[8] ($$json[7]->{statusName}) is New, there is no status before gone");
 
+sleep 1; # Make sure timestamp is different
+
 # Set to all possible statusses
 `perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=1 attrs[remark]= attrs[status]=1 attrs[workspaceId]=100`;
 `perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=2 attrs[remark]= attrs[status]=2 attrs[workspaceId]=100`;
@@ -182,6 +191,8 @@ is($$json[7]->{statusName}, 'New', "Status[8] ($$json[7]->{statusName}) is New, 
 `perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=6 attrs[remark]= attrs[status]=6 attrs[workspaceId]=100`;
 `perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=7 attrs[remark]= attrs[status]=99 attrs[workspaceId]=100`;
 `perl -MSeccubusV2 -I SeccubusV2 json/updateFindings.pl ids[]=8 attrs[remark]= attrs[status]=5 attrs[workspaceId]=100`;
+
+sleep 1; # Make sure timestamp is different
 
 # Loading none - 71 - 78
 `perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010006 -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml --allowempty`;
@@ -215,6 +226,8 @@ $json = decodeit(`perl -MSeccubusV2 -I SeccubusV2 json/getFindings.pl workspaceI
 ok($$json[5]->{statusName} eq 'Gone', "Status[6] ($$json[5]->{statusName}) is Gone after setting it the hard way");
 ok($$json[6]->{statusName} eq 'Gone', "Status[7] ($$json[6]->{statusName}) is Gone after setting it the hard way");
 ok($$json[8]->{statusName} eq 'Gone', "Status[9] ($$json[7]->{statusName}) is Gone after creating it the hard way");
+
+sleep 1; # Make sure timestamp is different
 
 # Load AAAAAAAAA 82 -
 `perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010007 -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAAAA.ivil.xml`;
