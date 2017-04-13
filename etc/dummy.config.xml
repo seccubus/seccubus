@@ -31,6 +31,14 @@
 		<configdir>/home/travis/build/schubergphilis/Seccubus/etc</configdir>
 		<dbdir>/home/travis/build/schubergphilis/Seccubus/db</dbdir>
 	</paths>
+	<smtp>
+		<server>localhost</server>
+		<from>seccubus@localhost</from>
+	</smtp>
+	<tickets>
+		<url_head>https://jira.atlassian.com/browse/</url_head>
+		<url_tail></url_tail>
+	</tickets>
 	<auth>
 		<http_auth_header></http_auth_header>
 	</auth>
