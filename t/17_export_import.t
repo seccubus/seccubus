@@ -360,7 +360,7 @@ is_deeply($json,
 	"Notifications exported ok"
 );
 
-my @ffiles = <"/tmp/export.$$/scan_1/finding_*">;
+my @ffiles = glob "/tmp/export.$$/scan_1/finding_*";
 is(@ffiles,97,"There are 97 findings in scan 1");
 
 $json = get_json("/tmp/export.$$/scan_1/finding_96.json");
@@ -495,7 +495,7 @@ is_deeply($json,
 	"Notifications exported ok"
 );
 
-my @ffiles = <"/tmp/export.$$/scan_2/finding_*">;
+my @ffiles = glob "/tmp/export.$$/scan_2/finding_*";
 is(@ffiles,185,"There are 185 findings in scan 2");
 
 
