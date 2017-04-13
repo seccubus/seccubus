@@ -107,7 +107,7 @@ pass("Importing ssllabs-schubergphilis scan");
 `bin/attach_file -w export -s schubergphilis -t 20170101000100 -f testdata/ssllabs-schubergphilis.ivil.xml -d "An IVIL file too"`;
 pass("Importing ssllabs-seccubus scan, again");
 `bin/load_ivil -w export -s seccubus -t 20170101000200 testdata/ssllabs-seccubus.ivil.xml`;
-`bin/attach_file -w export -s seccubus -t 20170101000200 -f testdata/ssllabs-seccubus.ivil.xml -d "IVIL file"`;
+#`bin/attach_file -w export -s seccubus -t 20170101000200 -f testdata/ssllabs-seccubus.ivil.xml -d "IVIL file"`;
 
 pass("Manipulating findings and issues");
 my $findings = get_findings(100,1,undef,{ plugin => "vulnBeast" });
@@ -307,14 +307,8 @@ $json = get_json("/tmp/export.$$/scan_1/runs.json");
 is_deeply($json, 
 	[
 	   {
-	      "attachments" => [
-	         {
-	            "id" => "4",
-	            "name" => "ssllabs-seccubus.ivil.xml",
-	            "description" => "IVIL file"
-	         }
-	      ],
-	      "timestamp" => "20170101000200"
+	      "timestamp" => "20170101000200",
+	      "attachments" => [],
 	   },
 	   {
 	      "timestamp" => "20170101000000",
@@ -335,7 +329,6 @@ is_deeply($json,
 	,
 	"Runs exported ok"
 );
-
 foreach my $att ( @{ $$json[0]->{attachments} } , @{ $$json[1]->{attachments} } ) {
 	ok(-e "/tmp/export.$$/scan_1/att_$att->{id}/$att->{name}", "Attachment $att->{name} exists");
 }
@@ -526,13 +519,7 @@ is_deeply($json,
 	[
 	   {
 	      "timestamp" => "20170101000200",
-	      "attachments" => [
-	         {
-	            "name" => "ssllabs-seccubus.ivil.xml",
-	            "id" => "4",
-	            "description" => "IVIL file"
-	         }
-	      ]
+	      "attachments" => []
 	   }
 	]
 	,

@@ -139,3 +139,4 @@ Enhancements
 
 Bug Fixes
 ---------
+#438 - Export failed when a scan did not have any attachments
