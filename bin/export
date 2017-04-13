@@ -158,38 +158,45 @@ foreach my $scan ( @$scans ) {
 		my $ts = $$r[1];
 		$ts =~ s/[^0123456789]//g;
 		if ( ( ! $after ) || $ts >= $after ) {
-			mkdir "$scandir/att_$$r[2]", 0700;
-			my $att = get_attachment($workspace_id,$scan->{id},$$r[0],$$r[2]);
-			#die Dumper $att;
-			open ATT, ">$scandir/att_$$r[2]/$$r[3]" or die "Unable to write attachments $$r[2] in scan '$scan->{name}'";
-			print ATT $$att[0][1];
-			close ATT;
-			print "Wrote " if $verbose > 1;
-			print length $$att[0][1] if $verbose > 1;
-			print " bytes to $scandir/att_$$r[2]/$$r[3]\n" if $verbose > 1;
-			if ( $compress && $$r[3] !~ /\.(gz|zip)$/ ) {
-				print "Compressing file...\n" if $verbose > 1;
-				my $out = `(cd $scandir/att_$$r[2];zip -9 $$r[3].zip $$r[3];rm $$r[3])`;
-				print $out if $verbose;
-				$$r[3] .= ".zip";
+			print "Exporting run $ts\n" if $verbose >1 && $$r[0] != $prev_run;
+			if ( $$r[2] ) {
+				mkdir "$scandir/att_$$r[2]", 0700;
+				my $att = get_attachment($workspace_id,$scan->{id},$$r[0],$$r[2]);
+				#die Dumper $att;
+				open ATT, ">$scandir/att_$$r[2]/$$r[3]" or die "Unable to write attachments $$r[2] in scan '$scan->{name}'";
+				print ATT $$att[0][1];
+				close ATT;
+				print "Wrote " if $verbose > 1;
+				print length $$att[0][1] if $verbose > 1;
+				print " bytes to $scandir/att_$$r[2]/$$r[3]\n" if $verbose > 1;
+				if ( $compress && $$r[3] !~ /\.(gz|zip)$/ ) {
+					print "Compressing file...\n" if $verbose > 1;
+					my $out = `(cd $scandir/att_$$r[2];zip -9 $$r[3].zip $$r[3];rm $$r[3])`;
+					print $out if $verbose;
+					$$r[3] .= ".zip";
+				}
 			}
 
 			if ( $$r[0] != $prev_run ) {
 				# This is a new run
 				$prev_run = $$r[0];
-					push @$runs, {
-						timestamp => $ts,
-						attachments => [ {
-							id => $$r[2],
-							name => $$r[3],
-							description => $$r[4],
-						} ]
-					};
-			} else {
-				my $att = {
+				my $run =  { 
+					timestamp => $ts,
+					attachments => []
+				};
+				if ( $$r[2] ) {
+					push @{$run->{attachments}}, {
 						id => $$r[2],
 						name => $$r[3],
-						description => $$r[4],				
+						description => $$r[4],
+					};
+				}
+				push @$runs, $run;
+			} else {
+				my $att = {
+					id => $$r[2],
+					name => $$r[3],
+					description => $$r[4],				
 				};
 				push @{$$runs[-1]->{attachments}}, $att;
 			}
