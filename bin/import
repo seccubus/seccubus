@@ -203,9 +203,9 @@ foreach my $s ( sort keys %$scans ) {
 						$h->{username} = "importer" if $nousers;
 						$h->{user_id} = create_or_get_user($h->{username});
 						$fmap->{$json->{id}} = update_finding(%$h);
-						print ".$h->{timestamp}\n" if $verbose >1;
+						print "." if $verbose >1;
 					} else {
-						print "x\n$h->{timestamp}\n" if $verbose >1;
+						print "x" if $verbose >1;
 					}
 				}
 			}
@@ -247,7 +247,7 @@ unless ( $noissues ) {
 		$i->{timestamp} = ${$i->{history}}[0]->{time};
 		my $finds = [];
 		foreach my $f ( @{ $i->{findings} } ) {
-			push @$finds, $fmap->{$f};
+			push @$finds, $fmap->{$f} if $fmap->{$f};
 		}
 		$i->{findings} = join("\0", @$finds);
 		update_issue(%$i);
