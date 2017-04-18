@@ -130,9 +130,11 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-xx-xx-2017 - v2.31 - Decelopment release
-======================================================================
+18-4-2017 - v2.32 - Added dist tag to RPM filename
+==================================================
 
+This release is a fixup release of version 2.30. It fixes two errors in import/export and provides
+specific RPMs for el5, el6 and el7 now.
 
 Enhancements
 ------------
@@ -141,3 +143,4 @@ Bug Fixes
 ---------
 #438 - Export failed when a scan did not have any attachments
 #440 - Import fails if issue it is linked is older then before
+#443 - Added dist tag to RPM filename

@@ -240,6 +240,8 @@ fi
 #
 
 %changelog
+* Tue Apr 18 2017 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Added the dist tag to the rpm filename
 * Mon May 2 2016 Frank Breedijk <fbreedijk@schubergphilis.com>
 - RPM now builds on RHEL5 and CentOS5 too. 
 - Removed RPM lint warnings
