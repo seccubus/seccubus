@@ -31,7 +31,7 @@
 
 Name:		Seccubus
 Version:	master
-Release:	0{?dist}
+Release:	0
 Summary:	Automated regular vulnerability scanning with delta reporting
 Group:		Applications/Internet
 License:	ASL 2.0
@@ -44,6 +44,10 @@ BuildArch:	noarch
 
 Source0:	%{name}-%{version}.tar.gz
 #Source0:	https://github.com/schubergphilis/%{name}_v2/tarball/%{version}
+
+%{?el5:Release: %{release}.el5}
+%{?el6:Release: %{release}.el6}
+%{?el7:Release: %{release}.el7}
 
 %if 0%{?is_rh5}
 BuildRequires:	java-1.6.0-openjdk
