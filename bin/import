@@ -315,6 +315,7 @@ sub create_or_get_user($) {
 	unless ( $user_id ) {
 		# User wasn't there need to create them
 		$user_id = add_user($user,"User created by import utility",0);
+		print "\n" if $verbose >1;
 		print "User '$user' ceated\n" if $verbose;
 	}
 	return $user_id;
