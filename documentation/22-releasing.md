@@ -70,7 +70,7 @@ Use the tag you have just created. If you committed after you created the tag yo
 
 Platform(s):
 
-* [RedHat based RPM](http://download.opensuse.org/repositories/home:/seccubus/CentOS_5/noarch/)
+* [RedHat based RPM](http://software.opensuse.org//download.html?project=home%3Aseccubus&package=Seccubus) - Make sure to download all versions (el5, el6 and el7)
 * [RedHat based SRPM](http://download.opensuse.org/repositories/home:/seccubus/CentOS_5/src/)
 * [Debian based deb amd64](http://download.opensuse.org/repositories/home:/seccubus/xUbuntu_15.10/amd64/)
 * [Debian based deb i386](http://download.opensuse.org/repositories/home:/seccubus/xUbuntu_15.10/i386/)
