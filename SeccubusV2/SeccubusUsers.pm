@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2015 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -77,7 +77,8 @@ sub get_user_id($) {
 	if ( $id ) {
 		return $id;
 	} else {
-		confess("Could not find a userid for user '$user'");
+		# Could not find a userid for user
+		return undef;
 	}
 }
 

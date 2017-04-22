@@ -299,6 +299,7 @@ while ( $active ) {
 	}
 	print "$active active scans\n" if $verbose;
 }
+#die Dumper $results;
 
 # Create output files
 open JSFILE, ">$tempfile.json" or die "Unable to open $tempfile.json for write";
@@ -351,7 +352,7 @@ foreach my $host ( @hosts ) {
 					foreach my $epkey ( sort keys %$ep ) {
 						if ( ! $keys->{$epkey}->{ignore} ) {
 							if ( $gradeonly ) {
-								if ( $keys->{$epkey}->{type} eq "grade" ||
+								if ( ($keys->{$epkey}->{type} eq "grade" || $epkey =~ /[gG]rade/ ) ||
 									 ( $epkey eq "statusMessage" && $ep->{$epkey} ne "Ready" )
 								   ) {
 									$finding->{id} = $epkey;
@@ -378,7 +379,7 @@ foreach my $host ( @hosts ) {
 				}
 			} elsif ( ! $keys->{$key}->{ignore} ) {
 				if ( $gradeonly  )  { 
-					if ( $keys->{$key}->{type} eq "grade" ) {
+					if ( $keys->{$key}->{type} eq "grade" || $key =~ /[gG]rade/ ) {
 						$finding->{hostname} = $host;
 						$finding->{ip} = $host;
 						$finding->{id} = $key;
@@ -490,33 +491,39 @@ sub parse_finding($$) {
 		if ( $meta->{type} eq "certificates" ) {
 			$txt .= parse_certs($finding);
 		} elsif ( $meta->{type} eq "boolean" ) {
-			 $txt .= ( $finding ? "True" : "False");
+			$txt .= ( $finding ? "True" : "False");
 		} elsif ( $meta->{type} eq "bitmap" ) {
 			$txt .= parse_bitmap($finding,@{$meta->{values}});
 		} elsif ( $meta->{type} eq "list" ) {
 			$txt .= parse_valuelist( $finding + $meta->{startsAt} , @{$meta->{values}});
 		} elsif ( $meta->{type} eq "grade" ) {
-			 $txt .= parse_grade($finding);
+			$txt .= parse_grade($finding);
 		} elsif ( $meta->{type} eq "timestamp" ) {
-			 $txt .= parse_ts($finding);
+			$txt .= parse_ts($finding);
 		} elsif ( $meta->{type} eq "milliseconds" ) {
-			 $txt .= ( $finding / 1000 ) . " seconds\n";
+			$txt .= ( $finding / 1000 ) . " seconds\n";
 		} elsif ( $meta->{type} eq "string" ) {
 			$txt .= $finding;
 		} elsif ( $meta->{type} eq "vulnerability" ) {
-			 $txt .= parse_vuln($finding,$meta);
+			$txt .= parse_vuln($finding,$meta);
 		} elsif ( $meta->{type} eq "hpkpPolicy" ) {
-			 $txt .= parse_hpkppolicy($finding);
+			$txt .= parse_hpkppolicy($finding);
 		} elsif ( $meta->{type} eq "hstsPolicy" ) {
-			 $txt .= parse_hstspolicy($finding);
+			$txt .= parse_hstspolicy($finding);
 		} elsif ( $meta->{type} eq "hstsPreloads" ) {
-			 $txt .= parse_hstspreloads($finding);
+			$txt .= parse_hstspreloads($finding);
 		} elsif ( $meta->{type} eq "array" ) {
-			 $txt .= parse_array($finding,$meta);
+			$txt .= parse_array($finding,$meta);
 		} elsif ( $meta->{type} eq "sims" ) {
-			 $txt .= parse_sims($finding);
+			$txt .= parse_sims($finding);
 		} elsif ( $meta->{type} eq "suites" ) {
-			 $txt .= parse_suites($finding);
+			if ( exists $meta->{key} ) {
+				$txt .= parse_suites($finding->{$meta->{key}});
+			} else {
+				$txt .= parse_suites($finding);
+			}
+		} elsif ( $meta->{type} eq "staticPkpPolicy" ) {
+			$txt .= parse_staticPkp($finding);
 		} elsif ( $meta->{type} eq "namedGroups") {
 			$txt .= parse_named_groups($finding);
 		} else {
@@ -613,7 +620,7 @@ sub parse_vuln($$) {
 	my $meta = shift;
 
 	if ( $finding ) {
-		return "VULNARABLE to $meta->{name}";
+		return "VULNERABLE to $meta->{name}";
 	} else {
 		return "Not vulnerable to $meta->{name}";
 	}
@@ -692,6 +699,13 @@ sub parse_hstspreloads($) {
 	foreach my $b ( @$finding ) {
 		$txt .= " * $b->{source} - $b->{status}\n";
 	}
+	return $txt;
+}
+
+sub parse_staticPkp($) {
+	my $finding = shift;
+	my $txt = Dumper $finding;
+
 	return $txt;
 }
 

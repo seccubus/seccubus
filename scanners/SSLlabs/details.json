@@ -1,4 +1,8 @@
 {
+	"alpnProtocols"		: {
+		"type"			: "string",
+		"description"	: "Supported SLPN protcols : "
+	},
 	"chaCha20Preference": {
 		"type"			: "boolean",
 		"description"	: "Server take client preferences into account when deciding if to use ChaCha20 suites : "
@@ -130,6 +134,11 @@
 		"type"			: "namedGroups",
 		"description"	: "List of (named) DH groups"
 	},
+	"noSniSuites" : {
+		"type"			: "suites",
+		"description"	: "List of ciphersuites that are offered when we do not send SNI",
+		"key"			: "list"
+	},
 	"npnProtocols" : {
 		"type"			: "string",
 		"description"	: "Supported NPN protocols : "
@@ -227,6 +236,15 @@
 	"supportsRc4" : {
 		"type"			: "boolean",
 		"description"	: "This endpoint supports RC4 : "
+	},
+	"staticPkpPolicy" : {
+		"type"			: "staticPkpPolicy",
+		"description"	: "Static Private Key Pinning meanse that the hpkpPolicy is statically embedded in the browser (See: https://community.qualys.com/thread/17152-what-is-static-public-key-pinning)"
+	},
+	"ticketbleed" : {
+		"type" 			: "vulnerability",
+		"name"			: "TicketBleed",
+		"note"			: "More information on Ticketbleed CVE-2016-9244 can be found here: https://filippo.io/Ticketbleed/"
 	},
 	"vulnBeast" : {
 		"type"			: "vulnerability",

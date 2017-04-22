@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk, Steve Launius, Artien Bel (Ar0xA), Petr
+# Copyright 2017	 Frank Breedijk, Steve Launius, Artien Bel (Ar0xA), Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ use Data::Dumper;
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 		get_scan_id
 		get_scans
 		create_scan
@@ -68,7 +68,7 @@ This function creates a scan with the name provided in the workspace
 
 =item targets - targets of this scan (Optional)
 
-=back 
+=back
 
 =item Checks
 
@@ -93,8 +93,8 @@ sub create_scan($$$$;$$) {
 	if ( may_write($workspace_id) ) {
 		return sql( "return"	=> "id",
 			    "query"	=> "INSERT INTO scans(
-			    			name, 
-						scannername, 
+			    			name,
+						scannername,
 						scannerparam,
 						password,
 						workspace_id,
@@ -122,7 +122,7 @@ This function returns the id of scan with a given name in a certain workspace
 
 =item scanname - name of the scan
 
-=back 
+=back
 
 =item Checks
 
@@ -144,7 +144,7 @@ sub get_scan_id($$;) {
 
 =head2 get_scans
 
-This function returns a reference to an array of arrays with scans (id, name, 
+This function returns a reference to an array of arrays with scans (id, name,
 scannername, scannerparam, lastrun, total_runs, total_findings, targets)
 
 =over 2
@@ -157,7 +157,7 @@ scannername, scannerparam, lastrun, total_runs, total_findings, targets)
 
 =item scan_id - optional id of the single scan to read back
 
-=back 
+=back
 
 =item Checks
 
@@ -222,7 +222,7 @@ This function updates a scan with the data provided
 
 =item targets - targets of this scan (Optional)
 
-=back 
+=back
 
 =item Checks
 
@@ -258,7 +258,7 @@ sub update_scan($$$$$;$$) {
 		if (length($password) > 0 ) {
 			return sql( "return"	=> "rows",
 				    "query"	=> "UPDATE scans
-				    		    SET name = ?, scannername = ?, 
+				    		    SET name = ?, scannername = ?,
 						    scannerparam = ?, password = ?, targets = ?
 						    WHERE id = ? AND workspace_id = ?;
 						   ",
@@ -267,13 +267,13 @@ sub update_scan($$$$$;$$) {
 		} else {
 			return sql( "return"	=> "rows",
 				    "query"	=> "UPDATE scans
-				    		    SET name = ?, scannername = ?, 
+				    		    SET name = ?, scannername = ?,
 						    scannerparam = ?, targets = ?
 						    WHERE id = ? AND workspace_id = ?;
 						   ",
 				    "values"	=> [$scanname, $scanner_name, $scanner_param, $targets, $scan_id, $workspace_id],
 				  );
-	
+
 		}
 	} else {
 		die "Permission denied";
@@ -318,13 +318,13 @@ sub run_scan($$;$$$) {
 	my $print = shift;
 	my $nodelete = shift;
 
-	# Bug #37 - @HOSTS gets expanded to /tmp/seccus.hosts.PID in stead of 
+	# Bug #37 - @HOSTS gets expanded to /tmp/seccus.hosts.PID in stead of
 	# /tmp/seccubus.hosts.PID
 	my $tempfile = "/tmp/seccubus.hosts.$$";
 	if ( may_write($workspace_id) ) {
 		my @scan = sql( "return"	=> "array",
 				"query"	=> "
-					SELECT scans.name, scannername, 
+					SELECT scans.name, scannername,
 					scannerparam, password, targets, workspaces.name
 					FROM scans, workspaces
 					WHERE scans.workspace_id = workspaces.id
@@ -336,7 +336,7 @@ sub run_scan($$;$$$) {
 			my ( $scanname, $scanner, $param, $password, $targets, $workspace ) = @scan;
 			my $config = SeccubusV2::get_config();
 			if ( ! -e $config->{paths}->{scanners} . "/$scanner/scan" ) {
-				die "Scan script for $scanner is not installed";
+				die "Scan script for $scanner is not installed at " . $config->{paths}->{scanners} . "/$scanner/scan";
 			}
 			if ($scanner =~ /^Nessus/ || $scanner eq "OpenVAS") {
 				$param = $param .' --pw \''. $password. '\' ';
@@ -358,7 +358,7 @@ sub run_scan($$;$$$) {
 				my $assets = join ' ', map { $_->[0]; } @{sql(
 					"query"=>"SELECT a.ip
 						from asset_hosts a, asset2scan b
-						where b.asset_id = a.asset_id and b.scan_id = ? 
+						where b.asset_id = a.asset_id and b.scan_id = ?
 						group by a.ip",
 					'values'=>[$scan_id]
 					)};
@@ -373,7 +373,7 @@ sub run_scan($$;$$$) {
 				my $assets = join ' ', map { $_->[0]; } @{sql(
 					"query"=>"SELECT a.ip
 						from asset_hosts a, asset2scan b
-						where b.asset_id = a.asset_id and b.scan_id = ? 
+						where b.asset_id = a.asset_id and b.scan_id = ?
 						group by a.ip",
 					'values'=>[$scan_id]
 					)};
@@ -388,16 +388,16 @@ sub run_scan($$;$$$) {
 				$param =~ s/\$PASSWORD/$password/g;
 				$printparam =~ s/\$PASSWORD/********/g;
 			}
-			# Bug #42 - Scan parameters --workspace and --scan 
+			# Bug #42 - Scan parameters --workspace and --scan
 			# should be added automatically
 			if ( $param !~ /(\-sc|\-\-scan)[\s=]/ ) {
-				# Bug #57 - Scan names with two words not 
+				# Bug #57 - Scan names with two words not
 				# handled correctly
 				$param = "--scan '$scanname' $param";
 				$printparam = "--scan '$scanname' $printparam";
 			}
 			if ( $param !~ /(\-ws|\-\-workspace)[\s=]/ ) {
-				# Bug #57 - Scan names with two words not 
+				# Bug #57 - Scan names with two words not
 				# handled correctly
 				$param = "--workspace '$workspace' $param";
 				$printparam = "--workspace '$workspace' $printparam";

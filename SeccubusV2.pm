@@ -16,15 +16,15 @@ package SeccubusV2;
 
 =head1 NAME $RCSfile: SeccubusV2.pm,v $
 
-This Pod documentation generated from the module SeccubusV2 gives a list of all 
+This Pod documentation generated from the module SeccubusV2 gives a list of all
 functions within the module.
 
 =cut
 
 @ISA = ('Exporter');
 
-@EXPORT = qw( 
-		VERSION 
+@EXPORT = qw(
+		VERSION
 		DBVERSION
 		get_config
 		check_param
@@ -34,7 +34,7 @@ use XML::Simple;
 use Data::Dumper;
 
 our $config = "config.xml";		# Change this value to match your setup
-					# if your configuration file cannot be 
+					# if your configuration file cannot be
 					# found
 $config = "/home/seccubus/etc/config.xml" unless -e $config;
 					# Bug #62 - /home/seccubus/etc missing
@@ -49,7 +49,7 @@ $config = "etc/dummy.config.xml" unless -e $config;
 use lib "/opt/seccubus/SeccubusV2";
 push (@main::INC, @INC);
 
-$VERSION = '2.29';
+$VERSION = '2.33';
 $DBVERSION = 9;
 
 use strict;
@@ -60,7 +60,7 @@ use SeccubusHelpers;
 push (@main::INC, @INC);
 if ( ! $ENV{REMOTE_USER} ) {
 	my $conf = get_config();
-	if ( $config->{auth}->{http_auth_header} && $ENV{"HTTP_" . $conf->{auth}->{http_auth_header}} ) {   
+	if ( $config->{auth}->{http_auth_header} && $ENV{"HTTP_" . $conf->{auth}->{http_auth_header}} ) {
 										# A REMOTE_USER header is sent
 		$ENV{REMOTE_USER} = $ENV{"HTTP_" . $conf->{auth}->{http_auth_header}};
 	} else {

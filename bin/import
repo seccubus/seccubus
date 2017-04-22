@@ -1,0 +1,322 @@
+#!/usr/bin/env perl
+# Copyright 2017 Frank Breedijk
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+# This program loads the findings from an IVIL file into the desired workspace 
+# and scan
+# ------------------------------------------------------------------------------
+# vim:et:sw=4:ts=4:ft=perl:
+
+use strict;
+
+$| = 1;
+
+use SeccubusV2;
+use SeccubusWorkspaces;
+use SeccubusScans;
+use SeccubusHostnames;
+use SeccubusNotifications;
+use SeccubusRuns;
+use SeccubusFindings;
+use SeccubusIssues;
+use SeccubusUsers;
+
+use Getopt::Long;
+use JSON;
+use Data::Dumper;
+
+my (
+	$workspace,
+	$in,
+	@scans,
+	$compress,
+	$after,
+	$nousers,
+	$noissues,
+	$nonotifications,
+	$nohistory,
+	$verbose,
+	$quiet,
+);
+
+my $help = 0;
+
+GetOptions(	
+	'workspace|w=s'	=> \$workspace,
+	'in|i=s'		=> \$in,
+	'scan|s=s'		=> \@scans,
+	'compress|c'	=> \$compress,
+	'after|a=s'		=> \$after,
+	'nousers'		=> \$nousers,
+	'noissues'		=> \$noissues,
+	'nonotifications'
+					=> \$nonotifications,
+	'nohistory'		=> \$nohistory,
+	'verbose|v+'	=> \$verbose,
+	'help|h'		=> \$help,
+	'quiet|q'		=> \$quiet,
+);
+
+help() if $help;
+$verbose = 0 if $quiet;
+
+# Validate parameters
+help("No input directory specified") unless $in;
+help("Input directory '$in' not found") unless -d $in;
+if ( $after ) {
+	help("After should be in the format yyyymmddhhmmss") if $after !~ /^2\d\d\d[01]\d[0123]\d[012]\d[012345]\d[012345]\d$/;
+}
+
+if ( ! $workspace ) {
+	my $json = get_json("$in/workspace.json");
+	$workspace = $json->{name};
+	print "Read workspace name '$workspace' for inout direcotry\n" if $verbose;
+}
+help("Workspace name not set via command line or in '$in'") unless $workspace;
+
+print "Importing from '$in' into workspace '$workspace'\n" unless $quiet;
+
+my $scans = {};
+my $json = get_json("$in/scans.json");
+foreach my $s ( @$json ) {
+	$scans->{$s->{name}} = $s;
+}
+# Prune scans
+if ( @scans ) {
+	foreach my $s ( @scans ) {
+		if ( defined $scans->{$s} ) {
+			$scans->{$s}->{keep} = 1;
+		} else {
+			help("Scan '$s' does not exists in export directory '$in'");
+		}
+	}
+	foreach my $s ( keys %$scans ) {
+		if ( $scans->{$s}->{keep} ) {
+			print "Found scan '$s'" if $verbose;
+			delete $scans->{$s}->{keep};
+		} else {
+			delete $scans->{$s};
+		}
+	}
+}
+
+my $workspace_id = get_workspace_id($workspace);
+unless ( $workspace_id ) {
+	$workspace_id = create_workspace($workspace);
+	print "Created workspace '$workspace'\n" if $verbose;
+}
+
+my $fmap = {};
+# Create scans
+foreach my $s ( sort keys %$scans ) {
+	my $scan = $scans->{$s};
+	my $scan_id = get_scan_id($workspace_id,$s);
+	if ( $scan_id ) {
+		help("Scan '$s' already exists in workspace '$workspace'");
+	} else {
+		#die Dumper $scans->{$s};
+		$scan_id = create_scan(
+			$workspace_id,
+			$s,
+			$scan->{scanner_name},
+			$scan->{scanner_param},
+			$scan->{password},
+			$scan->{targets},
+		);
+		print "Scan '$s' created\n" if $verbose;
+
+		if ( $nonotifications ) {
+			print "Skipping notifications\n" if $verbose;
+		} else {
+			my $c = 0;
+			$json = get_json("$in/scan_$scan->{id}/notifications.json");
+			#die Dumper $json;
+			foreach my $n ( @$json ) {
+				create_notification(
+					$workspace_id,
+					$scan_id,
+					$n->{trigger},
+					$n->{subject},
+					$n->{recipients},
+					$n->{message}
+				);
+				$c++;
+			}
+			print "Created $c notifications for scan '$s'\n" if $verbose;
+		}
+
+		my $runs = {};
+		$json = get_json("$in/scan_$scan->{id}/runs.json");
+		foreach my $r ( @$json ) {
+			if ( ( ! $after ) || $r->{timestamp} >= $after ) {
+				$runs->{$r->{timestamp}} = update_run(
+					$workspace_id,
+					$scan_id,
+					$r->{timestamp}
+				);
+				print "Created run '$r->{timestamp}\n" if $verbose;
+				foreach my $a ( @{$r->{attachments} } ) {
+					if ( -e "$in/scan_$scan->{id}/att_$a->{id}/$a->{name}") {
+						if ( $compress && $a->{name} !~ /\.zip$/ ) {
+							print "Compressing file...\n" if $verbose > 1;
+							my $out = `(cd $in/scan_$scan->{id}/att_$a->{id}/;rm -f $a->{name}.zip;zip -9 $a->{name}.zip $a->{name})`;
+							print $out if $verbose > 1;							
+							$a->{name} .= ".zip";
+						}
+						update_run(
+							$workspace_id,
+							$scan_id,
+							$r->{timestamp},
+							"$in/scan_$scan->{id}/att_$a->{id}/$a->{name}",
+							$a->{description}
+						);
+						print "Attached file '$in/scan_$scan->{id}/att_$a->{id}/$a->{name}' to run $r->{timestamp}\n" if $verbose;
+					} else {
+						help("Attachment '$in/scan_$scan->{id}/att_$a->{id}/$a->{name}' not found");
+					}
+				}
+			} else {
+				print "Skipping run $r->{timestamp} it is before $after\n" if $verbose > 1;
+			}
+		}
+		print "Importing findings into scan '$s'\n" if $verbose;
+		for my $f ( glob "$in/scan_$scan->{id}/finding_*" ) {
+			$json = get_json($f);
+			unless ( $nohistory ) {
+				foreach my $h ( reverse @{ $json->{history} } ) {
+					if ( ( ! $after ) || ( $h->{time} >= $after && $h->{run} >= $after ) ) {
+						$h->{workspace_id} = $workspace_id;
+						$h->{scan_id} = $scan_id;
+						$h->{run_id} = $runs->{$h->{run}};
+						$h->{timestamp} = $h->{time};
+						$h->{username} = "importer" if $nousers;
+						$h->{user_id} = create_or_get_user($h->{username});
+						$fmap->{$json->{id}} = update_finding(%$h);
+						print "." if $verbose >1;
+					} else {
+						print "x" if $verbose >1;
+					}
+				}
+			}
+			if ( ( ! $after ) || ( ${$json->{history}}[0]->{time} >= $after && $json->{run} >= $after ) ) {
+				$json->{workspace_id} = $workspace_id;
+				$json->{scan_id} = $scan_id;
+				$json->{run_id} = $runs->{$json->{run}};
+				$json->{timestamp} = ${$json->{history}}[0]->{time};
+				$json->{username} = "importer" if $nousers;
+				$json->{user_id} = create_or_get_user(${$json->{history}}[0]->{username});
+				$fmap->{$json->{id}} = update_finding(%$json);
+				print "." if $verbose >1;
+			} else {
+				print "x" if $verbose >1;
+			}
+		}
+		print "\n" if $verbose >1;
+	}
+}
+
+unless ( $noissues ) {
+	print "Importing issues\n" unless $quiet;
+	$json = get_json("$in/issues.json");
+	foreach my $i ( @$json ) {
+		unless ( $nohistory ) {
+			foreach my $h ( reverse @{ $i->{history} } ) {
+				$h->{workspace_id} = $workspace_id;
+				$h->{timestamp} = $h->{time};
+				if ( $i->{issue_id} ) {
+					$h->{issue_id} = $i->{issue_id};
+					update_issue(%$h);
+				} else {
+					$i->{issue_id} = update_issue(%$h);
+				}
+				print "." if $verbose > 1;
+			}
+		}
+		$i->{workspace_id} = $workspace_id;
+		$i->{timestamp} = ${$i->{history}}[0]->{time};
+		my $finds = [];
+		foreach my $f ( @{ $i->{findings} } ) {
+			push @$finds, $fmap->{$f} if $fmap->{$f};
+		}
+		$i->{findings} = join("\0", @$finds);
+		update_issue(%$i);
+		print "." if $verbose > 1;
+	}
+	print "\n" if $verbose > 1;
+}
+
+print "\n*** Done ***\n" unless $quiet;
+
+exit;
+
+sub help(;$) {
+	my $message = shift;
+
+	print "
+Import imports scans, runs, attachments, findings and issues from files 
+written by the bin/export utility into a new or existing workspace. You
+can control what is iumported via command line switches.
+
+Usage: bin/import --in <input directory> --workspace <workspace_name>  
+       [--scan <scanname 1>] [--scan <scanname 2>] [--compress] 
+       [--after YYMMDDhhmmss] [--noissues] [--nonotifications] 
+       [--hohistory] [--verbose] [--quiet] [--help]
+
+--in (-i)           - Directory containing the exported data 
+--workspace (-w)    - Name of the workspace to import in
+                      (If not given is will be ready from the directory)
+--scan (-s)         - Name of the scan to be imported (can be repeated 
+                      multiple times to import more then one scan)
+--compress (-c)     - Compress attachments using zip
+--after (-a)        - Only import items created after or on 
+                      this time (Format: YYYYMMDDhhmmss)
+--noissues          - Don't import issues
+--nonotifications   - Don't import notifications
+--nohistory         - Don't import the history of findings/issues/etc.
+--verbose (-v)      - Be more verbose (repeat for extra verbosity)
+--quiet (-q)        - Be quiet (don't produce any output if not needed. 
+                      Takes precidense over --verbose)
+--help (-h)         - Show this message
+	\n";
+	
+	if ( $message)  {
+		die $message;
+	} else {
+		exit 1;
+	}
+}
+
+sub get_json($) {
+	my $file = shift;
+
+	open JS, $file or die "Cannot open $file";
+	my $json = decode_json(join "", <JS>); 
+	close JS;
+
+	return $json;
+}
+
+sub create_or_get_user($) {
+	my $user = shift;
+
+	my $user_id = get_user_id($user);
+
+	unless ( $user_id ) {
+		# User wasn't there need to create them
+		$user_id = add_user($user,"User created by import utility",0);
+		print "\n" if $verbose >1;
+		print "User '$user' ceated\n" if $verbose;
+	}
+	return $user_id;
+}

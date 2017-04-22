@@ -25,6 +25,84 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+18-4-2017 - v2.32 - Added dist tag to RPM filename
+==================================================
+
+This release is a fixup release of version 2.30. It fixes two errors in import/export and provides
+specific RPMs for el5, el6 and el7 now.
+
+Enhancements
+------------
+
+Bug Fixes
+---------
+#438 - Export failed when a scan did not have any attachments
+#440 - Import fails if issue it is linked is older then before
+#443 - Added dist tag to RPM filename
+
+13-4-2017 - v2.30 -  Improved delta engine and import and export tools
+======================================================================
+
+One of the things that has been lacking for a while were proper workspace export and import tools. This release adds them and fixes another issue that has been on our whishlist for long, better handling of gone findings reappearing.
+
+Now when a finding that was previously marked as gone reappears in a scan the 'status before gone' is taken into account.
+
+When the 'status before gone' was:
+* New - The finding will reappear as new
+* Changed - The finding will reappear as changed
+* Open - The finding will reappear as open, unless the finding text has changed, then it will reappear as changed
+* No issue - The finding wil reappear as no issue, unless the finding text has changed, then it will reappear as changed
+* MASKED - The finding will stay MASKED
+
+Enhancements
+------------
+* #126 - Delta engine improved: Beter recovery from GONE findings
+* #257 - Import/export tools added
+* #408 - Seccubus now refuses to load an ivil file with 0 findings
+* #412 - Disabled tofu to enhance Docker support
+* #419 - Enable crontab support in docker images
+* #423 - Show futureGrade in SSLlabs scan results
+
+Bug Fixes
+---------
+* #403 - SSLlabs scanner help file was not up to date
+* #414 - Mkdir error will no longer appear if entrypoint.sh is run twice
+* #426 - Corrections to README.md from Karol Kozakowski merged
+* #432 - StaticPkpPolicy not recognized
+
+20-2-2017 - v2.28 - The Docker edition
+======================================
+
+For my work at [Schuberg Philis](https://www.schubergphilis.com) we wanted to run Seccubus in Docker 
+containers. This and inspiration from [Karl Newell](https://hub.docker.com/r/karlnewell/seccubus/) 
+caused me to add a Dockerfile (and some other files) to Seccubus so that Seccubus can now be 
+run in a docker container. 
+
+In addition I fixed a couple of bugs and changed the ssllabs scanner so it now uses the v3 API endpoint.
+
+## Enhancements
+- #361 - arkenoi created a netsparker2ivil tool that allows you to manually import Netsparker scans
+- #331 - Now using SSLLabs API v3
+- #386 - New SSL labs API output featues incorporporated
+- #389 - API endpoint URL has moved to a single function so it can be patched if deployed in a 
+       three tier architecture
+- #392 - Alternative handling of the updateFIndings.pl API
+- #397 - Allow seccubus to authenticate via an http request header
+- #399 - Create a Docker container for Seccubus
+
+## Bug Fixes
+- #364 - auto_gen column was missing from asset_host table
+- #358 - Could not get findings when an asset was used for the query
+- #360 - Not able to export report in PDF format - This breaks the scan
+- #336 - Non-critical RPM errors on CentOS 5
+- #376 - Removed 50 host limit in filters as it was counterproductive
+- #374 - Fixed Nikto path detection code
+- #377 - Hostname filter wasn't working correctly, typed Hostname iso HostName
+- #385 - SSLlabs failed because cypher preference order was split out per protocol by SSLlabs now.
+- #394 - SSLlabs scanner failed if all enpoints fail and --gradeonly was used
+
+Docker image at https://hub.docker.com/r/seccubus/seccubus/ 
+
 12-7-2016 - 2.26 - Speed improvements and a whole log of bugfixes
 =================================================================
 This release is especially interesting for those of you that are working with large result sets.

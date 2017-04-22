@@ -25,6 +25,15 @@ DBPORT=${DBPORT:-'3306'}
 DBNAME=${DBNAME:-'seccubus'}
 DBUSER=${DBUSER:-'seccubus'}
 DBPASS=${DBPASS:-'seccubus'}
+TZ=${TZ:-'UTC'}
+
+# Fix timezone
+if [[ -e "/usr/share/zoneinfo/$TZ" ]]; then
+    rm -f /etc/localtime
+    ln -s /usr/share/zoneinfo/$TZ /etc/localtime
+else
+    echo "*** Timezone '$TZ' does not exist, sticking to UTC"
+fi
 
 if [[ "$1" == "scan" ]]; then
     STACK="perl"
@@ -32,7 +41,7 @@ fi
 
 # Check sanity of parameters
 if [[ "$STACK" != "full" && "$STACK" != "front" && "$STACK" != "api" && "$STACK" != "web" && \
-    "$STACK" != "perl" ]]; then
+    "$STACK" != "perl" && "$STACK" != "cron" ]]; then
     cat <<EOM
 \$STACK is currently \'$STACK\', it should be one of the following
 * full - Run the full stack in a single container
@@ -40,6 +49,7 @@ if [[ "$STACK" != "full" && "$STACK" != "front" && "$STACK" != "api" && "$STACK"
 * api - Run a web server to serve just the JSON api
 * web - Run a web server to serve both the API and front end HTML, javascript etc
 * perl - Provide the Perl backend code, but not database or webserver
+* cron - Run a crontab scheduler with the perl backend
 EOM
 fi
 
@@ -72,7 +82,7 @@ if [[ "$STACK" == "full" || "$STACK" == "front" || "$STACK" == "api" || "$STACK"
     apachectl -DFOREGROUND &
 fi
 
-mkdir ~seccubus/.ssh
+mkdir -p ~seccubus/.ssh
 chmod 700 ~seccubus/.ssh
 echo "$SSHKEY1" > ~seccubus/.ssh/SSHKEY1
 export SSHKEY1=""
@@ -154,11 +164,32 @@ EOF
     fi        
 fi
 
+# Crontab
+if [[ "$STACK" == "cron" || "$STACK" == "full" ]]; then
+    /mkcron
+    if [[ "$1" != "" ]]; then
+        echo "Starting cron in background"
+        if [[ -e "/var/run/crond.pid" && $(ps -ef|grep `cat /var/run/crond.pid`|grep cron|wc -l) -gt 0 ]]; then
+            kill -9 `cat /var/run/crond.pid`
+        fi
+        /usr/sbin/crond -n &
+    fi
+fi
+
 
 case $1 in
 "")
-    touch /var/log/httpd/access_log /var/log/httpd/error_log
-    tail -f /var/log/httpd/*log
+    if [[ "$STACK" == "full" || "$STACK" == "front" || "$STACK" == "api" || "$STACK" == "web" ]]; then
+        touch /var/log/httpd/access_log /var/log/httpd/error_log
+        tail -f /var/log/httpd/*log
+    fi
+    if [[ "$STACK" == "cron" ]]; then
+        if [[ -e "/var/run/crond.pid" && $(ps -ef|grep `cat /var/run/crond.pid`|grep cron|wc -l) -gt 0 ]]; then
+            kill -9 `cat /var/run/crond.pid`
+            sleep 2
+        fi
+        /usr/sbin/crond -x sch -n
+    fi
     ;;
 "scan")
     cd /opt/seccubus
