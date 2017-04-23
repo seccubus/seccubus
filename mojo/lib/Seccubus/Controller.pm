@@ -29,14 +29,26 @@ sub new {
 
 	my $self = $class->SUPER::new(@_);
 
-	my $r = $self->res();
+    my $config = get_config();
 
-	# Set some default security an caching headers
-	$r->headers()->header('Server' => "Seccubus v$SeccubusV2::VERSION");
-	$r->headers()->header('X-Frame-Options' => 'DENY');
-	$r->headers()->header('X-XSS-Protection' => "1; 'mode=block'");
-	$r->headers()->header('Cache-Control' => 'no-store, no-cache, must-revalidate');
-	$r->headers()->header('X-Clacks-Overhead' => 'GNU Terry Pratchett');
+	my $res = $self->res();
+    my $req = $self->req();
+
+	# Set some default security and caching headers
+	$res->headers()->header('Server' => "Seccubus v$SeccubusV2::VERSION");
+	$res->headers()->header('X-Frame-Options' => 'DENY');
+	$res->headers()->header('X-XSS-Protection' => "1; 'mode=block'");
+	$res->headers()->header('Cache-Control' => 'no-store, no-cache, must-revalidate');
+	$res->headers()->header('X-Clacks-Overhead' => 'GNU Terry Pratchett');
+
+    if ( exists $config->{auth} && exists $config->{auth}->{http_auth_header} ) {
+        my $header = $config->{auth}->{http_auth_header};
+        my $user = $req->headers->header($header);
+        if ( $user ) {
+            $ENV{REMOTE_ADDR} = $self->tx->remote_address;
+            $ENV{REMOTE_USER} = $user;
+        }
+    }
 
 	return $self;
 }

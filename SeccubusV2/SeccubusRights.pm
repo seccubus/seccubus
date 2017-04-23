@@ -16,7 +16,7 @@ package SeccubusRights;
 
 =head1 NAME $RCSfile: SeccubusRights.pm,v $
 
-This Pod documentation generated from the module SeccubusRights gives a list of 
+This Pod documentation generated from the module SeccubusRights gives a list of
 all functions within the module.
 
 =cut
@@ -27,7 +27,7 @@ use SeccubusDB;
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 		is_admin
 		may_read
 		may_write
@@ -64,9 +64,9 @@ True is the user is an admin false if the user isn't an admin
 
 None
 
-=back 
+=back
 
-=back 
+=back
 
 =cut
 
@@ -77,11 +77,11 @@ sub is_admin() {
 		return 1;	# We are running this from the command line
 	} else {
 		$count = sql( "return"	=> "array",    # Group 0 is admin
-			      "query"	=> "SELECT count(*) 
+			      "query"	=> "SELECT count(*)
 			      		    FROM users, user2group
 					    WHERE (
 					    	users.id = user2group.user_id and
-						user2group.group_id = 2 and 
+						user2group.group_id = 1 and
 						users.username = ?
 					    );",
 			      "values"	=> [ $ENV{REMOTE_USER} ],

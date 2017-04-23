@@ -40,18 +40,18 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Create Workspace
-$t->post_ok('/workspaces', 
-	json => { 
+$t->post_ok('/workspaces',
+	json => {
 		'name' 			=> 'workspace1',
 	})
 	->status_is(200)
 	->json_is('/id',100)
 	->json_is('/name','workspace1')
 	;
-	
+
 # Create scan
-$t->post_ok('/workspace/100/scans', 
-	json => { 
+$t->post_ok('/workspace/100/scans',
+	json => {
 		'name' 			=> 'ssl',
 		'scanner'		=> 'SSLlabs',
 		'parameters'	=> '--hosts @HOSTS --from-cache --publish',
@@ -62,8 +62,8 @@ $t->post_ok('/workspace/100/scans',
 	;
 
 # Create scan
-$t->post_ok('/workspace/100/scans', 
-	json => { 
+$t->post_ok('/workspace/100/scans',
+	json => {
 		'name' 			=> 'ssl2',
 		'scanner'		=> 'SSLlabs',
 		'parameters'	=> '--hosts @HOSTS --from-cache --publish',
@@ -275,10 +275,10 @@ $t->get_ok('/workspace/100/scan/1/notifications')
 # Let's run a scan
 pass("Starting a scan");
 my $output = `(cd ..;perl -MSeccubusV2 -I SeccubusV2 bin/do-scan -w workspace1 -s ssl)`;
-pass("Scan finished");
+is($?,0,"Scan finished without error");
 
 like($output, qr/Sending notifications for scan start\.\.\.\r?\n?\-?1 notification\(s\) sent/, "Pre scan notifications sent");
-like($output, qr/Sending notifications for scan end\.\.\.\r?\n?\-?1 notification\(s\) sent/, "Post scan notifications sent"); 
+like($output, qr/Sending notifications for scan end\.\.\.\r?\n?\-?1 notification\(s\) sent/, "Post scan notifications sent");
 
 
 # No notifications for scan 2

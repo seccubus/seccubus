@@ -39,7 +39,7 @@ sub startup {
 
 		$status = 400 unless $status;
 		$message = "error" unless $message;
-		
+
 		$self->render(
 			json => {
 				status => "Error",
@@ -52,7 +52,7 @@ sub startup {
 	# Router
 	my $r = $self->routes;
 
-	# App Status 
+	# App Status
 	$r->get('appstatus')->to('app_status#read');
 	$r->get('appstatus/:errorcode')->to('app_status#read');
 
@@ -79,11 +79,14 @@ sub startup {
 	# Scanners
 	$r->get('scanners')->to('scanners#list');
 
+    # Session
+    $r->get('session')->to('sessions#read');
+
 	# Severities
 	$r->get('severities')->to('severities#list');
 
 	# Runs
-	$r->get   ('workspace/:workspace_id/scan/:scan_id/runs')->to('runs#list');
+	$r->get('workspace/:workspace_id/scan/:scan_id/runs')->to('runs#list');
 
 	# Version
 	$r->get('version')->to('version#read');
@@ -98,16 +101,16 @@ sub startup {
 
 	# Handle file requests
 	if ( $self->mode() eq 'production' ) {
-		$r->get('/')->to(cb => sub {  
-			my $c = shift;                                   
-			$c->redirect_to('seccubus/seccubus.html')                
-		}); 
+		$r->get('/')->to(cb => sub {
+			my $c = shift;
+			$c->redirect_to('seccubus/seccubus.html')
+		});
 	} else {
 		# Inspired by https://github.com/tempire/app-dirserve
-		$r->get('/')->to(cb => sub {  
-			my $c = shift;                                   
-			$c->redirect_to('seccubus')                
-		}); 
+		$r->get('/')->to(cb => sub {
+			my $c = shift;
+			$c->redirect_to('seccubus')
+		});
 		$r->get('/(*dir)')->to(cb => sub {
 			my $c = shift;
 
@@ -117,7 +120,7 @@ sub startup {
 				opendir DH, $fulldir;
 				my @items = map +{ name => $_, is_dir => -d "$fulldir/$_"}, readdir DH;
 				close DH;
-			
+
 				$c->stash(
 					dir     => $dir,
 					fulldir => $fulldir,
@@ -137,10 +140,10 @@ sub startup {
 
 	# Normal route to controller
 	#$r->get('/')->to('default#welcome');
-	#$r->get('/')->to(cb => sub {  
-	#	my $c = shift;                                   
-	#	$c->reply->static('seccubus.html')                
-	#}); 
+	#$r->get('/')->to(cb => sub {
+	#	my $c = shift;
+	#	$c->reply->static('seccubus.html')
+	#});
 }
 
 

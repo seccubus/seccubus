@@ -20,16 +20,16 @@ use SeccubusDB;
 
 =head1 NAME $RCSfile: SeccubusUsers.pm,v $
 
-This Pod documentation generated from the module Seccubus_Users gives a list of 
+This Pod documentation generated from the module Seccubus_Users gives a list of
 all functions within the module
 
 =cut
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 		get_user_id
-		add_user 
+		add_user
 		get_login
 	     );
 
@@ -43,7 +43,7 @@ sub get_login();
 =head1 User manipulation
 
 =head2 get_user_id
- 
+
 This function looks up the numeric user_id based on the username
 
 =over 2
@@ -61,9 +61,9 @@ p
 
 None
 
-=back 
+=back
 
-=cut 
+=cut
 
 sub get_user_id($) {
 	my $user = shift;
@@ -83,9 +83,9 @@ sub get_user_id($) {
 }
 
 =head2 add_user
- 
-This function adds a use to the users table and makes him member of the all 
-group. 
+
+This function adds a use to the users table and makes him member of the all
+group.
 
 =over 2
 
@@ -105,9 +105,9 @@ group.
 
 In order to run this function you must be an admin
 
-=back 
+=back
 
-=cut 
+=cut
 
 sub add_user($$$) {
 	my $user = shift;
@@ -139,7 +139,7 @@ sub add_user($$$) {
 	}
 }
 =head2 get_login
- 
+
 This function returns how a user is logged in
 
 =over 2
@@ -162,13 +162,13 @@ None
 
 =item Admin (0 or 1)
 
-=item Message 
+=item Message
 
-=back 
+=back
 
-=back 
+=back
 
-=cut 
+=cut
 
 sub get_login() {
 	if ( ! exists $ENV{REMOTE_ADDR} ) {
@@ -187,7 +187,7 @@ sub get_login() {
 			return($ENV{REMOTE_USER},1,is_admin(),"Valid user '$name' ($ENV{REMOTE_USER})");
 		} else {
 			# Invalid user
-			return("<undef>",0,0,"Undefined user '$ENV{REMOTE_USER}'");
+			return(undef,0,0,"Undefined user '$ENV{REMOTE_USER}'");
 		}
 	}
 }

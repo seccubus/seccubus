@@ -40,7 +40,7 @@
 		<url_tail></url_tail>
 	</tickets>
 	<auth>
-		<http_auth_header></http_auth_header>
+		<http_auth_header>REMOTEUSER</http_auth_header>
 	</auth>
 	<smtp>
 		<server>localhost</server>
