@@ -16,7 +16,7 @@ before_script:
 script:
 - pwd
 - #prove -I SeccubusV2
-- (cd mojo; prove -I lib -I .. -I ../SeccubusV2)
+- (cd mojo; prove -I lib)
 - #./build_jmvc
 sudo: false
 notifications:
