@@ -1,0 +1,54 @@
+## Customize the test machine
+machine:
+  timezone:
+    Europe/Amsterdam # Set the timezone
+
+  # Version of ruby to use
+  ruby:
+    version:
+      1.8.7-p358-falcon-perf
+
+  # Override /etc/hosts
+  hosts:
+    circlehost: 127.0.0.1
+
+  # Add some environment variables
+  environment:
+    CIRCLE_ENV: test
+
+## Customize checkout
+checkout:
+  post:
+
+## Customize dependencies
+dependencies:
+  pre:
+
+  override:
+
+  # we automatically cache and restore many dependencies between
+  # builds. If you need to, you can add custom paths to cache:
+  cache_directories:
+
+## Customize database setup
+database:
+  override:
+
+## Customize test commands
+test:
+  override:
+    - prove
+  post:
+
+## Customize deployment commands
+deployment:
+  staging:
+  #  branch: master
+  #  heroku:
+  #    appname: foo-bar-123
+
+## Custom notifications
+notify:
+  webhooks:
+    # A list of hashes representing hooks. Only the url field is supported.
+    # - url: https://someurl.com/hooks/circle
