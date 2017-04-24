@@ -14,7 +14,7 @@ machine:
 
   # Add some environment variables
   environment:
-    CIRCLE_ENV: test
+    PERL5LIB: /home/ubuntu/perl5/lib/perl5
 
 ## Customize checkout
 #checkout:
@@ -31,8 +31,8 @@ dependencies:
 
   # we automatically cache and restore many dependencies between
   # builds. If you need to, you can add custom paths to cache:
-  #cache_directories:
-  #  - "~/perl5"
+  cache_directories:
+    - "~/perl5"
 
 ## Customize database setup
 database:
@@ -44,7 +44,7 @@ test:
     - mysql -e "create database seccubus"
     - mysql -e "create database seccubus_create"
     - mysql -e "create database seccubus_upgrade"
-    - (cd mojo;prove -I ~/perl5/lib/perl5 -I lib)
+    - (cd mojo;prove -I lib -I SeccubusV2)
   post:
 
 ## Customize deployment commands
