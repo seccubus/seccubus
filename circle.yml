@@ -44,9 +44,7 @@ test:
     - mysql -e "create database seccubus"
     - mysql -e "create database seccubus_create"
     - mysql -e "create database seccubus_upgrade"
-    - prove -I ~/perl5/lib/perl5 -I lib
-      pwd:
-        - mojo
+    - (cd mojo;prove -I ~/perl5/lib/perl5 -I lib)
   post:
 
 ## Customize deployment commands
