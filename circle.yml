@@ -17,9 +17,9 @@ machine:
     CIRCLE_ENV: test
 
 ## Customize checkout
-checkout:
-  post:
-    #- git fetch --unshallow
+#checkout:
+#  post:
+#    - git fetch --unshallow
 
 ## Customize dependencies
 dependencies:
