@@ -53,14 +53,17 @@ sub startup {
 	my $r = $self->routes;
 
 	# App Status
-	$r->get('appstatus')->to('app_status#read');
-	$r->get('appstatus/:errorcode')->to('app_status#read');
+	$r->get   ('appstatus')->to('app_status#read');
+	$r->get   ('appstatus/:errorcode')->to('app_status#read');
 
 	# Attachments
 	$r->get   ('workspace/:workspace_id/scan/:scan_id/run/:run_id/attachment/:id')->to('attachments#read');
 
 	# Events
-	$r->get('events')->to('events#list');
+	$r->get   ('events')->to('events#list');
+
+    # Findings
+    $r->get   ('workspace/:workspace_id/findings')->to('findings#list');
 
 	# Notifications
 	$r->post  ('workspace/:workspace_id/scan/:scan_id/notifications')->to('notifications#create');
@@ -70,32 +73,32 @@ sub startup {
 	$r->delete('workspace/:workspace_id/scan/:scan_id/notification/:id')->to('notifications#delete');
 
 	# Scans
-	$r->post('workspace/:workspace_id/scans')->to('scans#create');
-	$r->get('workspace/:workspace_id/scans')->to('scans#list');
-	$r->get('workspace/:workspace_id/scan/:scan_id')->to('scans#read');
-	$r->put('workspace/:workspace_id/scan/:scan_id')->to('scans#update');
+	$r->post  ('workspace/:workspace_id/scans')->to('scans#create');
+	$r->get   ('workspace/:workspace_id/scans')->to('scans#list');
+	$r->get   ('workspace/:workspace_id/scan/:scan_id')->to('scans#read');
+	$r->put   ('workspace/:workspace_id/scan/:scan_id')->to('scans#update');
 	#$r->delete('workspace/:id/scan/:scan_id')->to('scans#delete');
 
 	# Scanners
-	$r->get('scanners')->to('scanners#list');
+	$r->get   ('scanners')->to('scanners#list');
 
     # Session
-    $r->get('session')->to('sessions#read');
+    $r->get   ('session')->to('sessions#read');
 
 	# Severities
-	$r->get('severities')->to('severities#list');
+	$r->get   ('severities')->to('severities#list');
 
 	# Runs
-	$r->get('workspace/:workspace_id/scan/:scan_id/runs')->to('runs#list');
+	$r->get   ('workspace/:workspace_id/scan/:scan_id/runs')->to('runs#list');
 
 	# Version
-	$r->get('version')->to('version#read');
+	$r->get   ('version')->to('version#read');
 
 	# Workspace
-	$r->post('workspaces')->to('workspaces#create');
-	$r->get('workspaces')->to('workspaces#list');
+	$r->post  ('workspaces')->to('workspaces#create');
+	$r->get   ('workspaces')->to('workspaces#list');
 	#$r->get('workspace/:id')->to('workspaces#read');
-	$r->put('workspace/:id')->to('workspaces#update');
+	$r->put   ('workspace/:id')->to('workspaces#update');
 	#$r->delete('workspace/:id')->to('workspaces#delete');
 
 

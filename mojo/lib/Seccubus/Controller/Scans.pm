@@ -30,7 +30,8 @@ sub create {
 	my $workspace_id = $self->param('workspace_id');
 
 	if ( ! $scan ) {
-			$self->error("No valid json body found"); return;		
+		$self->error("No valid json body found");
+        return;
 	}
 
 	eval {
@@ -68,7 +69,7 @@ sub read {
 	my $workspace_id = $self->param('workspace_id');
 	my $scan_id = $self->param('scan_id');
 	if ( ! $scan_id ) {
-		$self->error("Missing parameter scan_id"); 
+		$self->error("Missing parameter scan_id");
 		return;
 	}
 
@@ -77,7 +78,7 @@ sub read {
 
 	 	my $scans = get_scans($workspace_id,$scan_id);
 	 	if ( @$scans ) {
-		 	my $i = 0; 
+		 	my $i = 0;
 		 	foreach my $prop ( qw(id name scanner parameters lastScan runs findCount targets workspace notifications password) ) {
 		 		$scan->{$prop} = $$scans[0][$i];
 		 		$i++
@@ -137,7 +138,7 @@ sub update {
 	my $scan_id = $self->param('scan_id');
 
 	if ( ! $scan ) {
-			$self->error("No valid json body found"); return;		
+			$self->error("No valid json body found"); return;
 	}
 
 	eval {

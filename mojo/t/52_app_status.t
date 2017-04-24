@@ -27,11 +27,17 @@ foreach my $data_file (<../db/data_v*.mysql>) {
 
 ok($db_version > 0, "DB version = $db_version");
 `mysql -uroot -e "drop database seccubus"`;
+is($?,0,"Database dropped ok");
 `mysql -uroot -e "create database seccubus"`;
+is($?,0,"Database created ok");
 `mysql -uroot -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
+is($?,0,"Privileges granted ok");
 `mysql -uroot -e "flush privileges;"`;
+is($?,0,"Privileges flushed ok");
 `mysql -uroot seccubus < ../db/structure_v$db_version.mysql`;
+is($?,0,"Database structure created ok");
 `mysql -uroot seccubus < ../db/data_v$db_version.mysql`;
+is($?,0,"Database data imported ok");
 
 my $t = Test::Mojo->new('Seccubus');
 $t->get_ok('/appstatus')
@@ -111,7 +117,7 @@ $t->get_ok('/appstatus/500')
 	->json_hasnt("/8")
 	;
 
-# Error with non numeric code 
+# Error with non numeric code
 $t->get_ok('/appstatus/bla')
 	->status_is(200)
 	->json_is("/0/name","Configuration file")
