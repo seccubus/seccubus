@@ -19,7 +19,7 @@ machine:
 ## Customize checkout
 checkout:
   post:
-    - git fetch --unshallow
+    #- git fetch --unshallow
 
 ## Customize dependencies
 dependencies:
@@ -32,6 +32,7 @@ dependencies:
   # we automatically cache and restore many dependencies between
   # builds. If you need to, you can add custom paths to cache:
   cache_directories:
+    - perl5
 
 ## Customize database setup
 database:
@@ -43,7 +44,6 @@ test:
     - mysql -e "create database seccubus"
     - mysql -e "create database seccubus_create"
     - mysql -e "create database seccubus_upgrade"
-    #- prove -I ~/perl5/lib/perl5
     - prove -I ~/perl5/lib/perl5 -I lib
       pwd:
         - mojo
