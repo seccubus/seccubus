@@ -127,10 +127,7 @@ FIrst we need to setup cpanm, I do this via Homebrew
 
 Next install the missing CPAN modules:
 
-	sudo cpanm JSON
-	sudo cpanm DBI
-	sudo cpanm DBD::mysql
-	sudo cpanm REST::Client
+	sudo cpanm --installdeps .
 
 Setting up Seccubus
 -------------------
