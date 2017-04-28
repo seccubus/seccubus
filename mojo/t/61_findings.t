@@ -231,4 +231,15 @@ foreach my $s ( 2..6,99,1) {
     }
 }
 
+$t->put_ok('/workspace/100/findings' => json => { ids => $ids, status => 1, remark => "bla", append => 1 })
+    ->status_is(200)
+    ->json_is($ids)
+    ;
+$t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=3')
+    ->status_is(200)
+    ;
+foreach my $f ( @{$t->{tx}->res()->json()} ) {
+    is($f->{remark},"Testing status 1\nbla","Remark correctly set");
+}
+
 done_testing();
