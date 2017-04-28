@@ -26,13 +26,13 @@ $.Model('Seccubus.Models.Finding',
 {
 	/*
 	 * @function findAll
-	 * This funciton gets all findings, it is the interface to 
+	 * This funciton gets all findings, it is the interface to
 	 * json/getFndings.pl
 	 * @return {Deferred} Deferred with all findings in it
 	 */
-	//findAll: "POST json/getFindings.pl",
-	findAll: api("getFindings.pl"),
-  	//findOne : "/findings/{id}.json", 
+    findAll : api("workspace/{workspace}/findings"),
+
+  	//findOne : "/findings/{id}.json",
   	//create : "/findings.json",
 	/*
 	 * @function update
@@ -46,7 +46,7 @@ $.Model('Seccubus.Models.Finding',
 /* @Prototype */
 {
 	/*
-	 * This function returns true if the finding matches the criteria 
+	 * This function returns true if the finding matches the criteria
 	 * in the filter object
 	 * @param {Object} filter
 	 * Object containing the filter settings
@@ -102,7 +102,7 @@ $.Model('Seccubus.Models.Finding',
 		return match;
 	},
 	/*
-	 * This function returns an object property as HTML. It does the 
+	 * This function returns an object property as HTML. It does the
 	 * following conversions:
 	 * - \n to <br>
 	 * More will be added in the future, e.g.:
@@ -137,7 +137,7 @@ $.Model.List('Seccubus.Models.Finding.List', {
 /* @Static */
 	/*
 	 * @function update
-	 * This function deals with updating multiple findings in one go it 
+	 * This function deals with updating multiple findings in one go it
 	 * wraps the json.updateFindings.pl API
 	 */
 	update : "POST json/updateFindings.pl"

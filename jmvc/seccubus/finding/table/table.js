@@ -113,43 +113,43 @@ $.Controller('Seccubus.Finding.Table',
 		/*
 		 * @attribute options.columns
 		 * Array that holds pairs of column headers and attribute names
-		 * If the attribute is empty and the label is select this 
+		 * If the attribute is empty and the label is select this
 		 * represents the multiselect column, if the attribute is empty
 		 * but the label is 'Action' this is the action column
 		 */
 		columns		: [ 	"", "select",
-					"host", "IP", 
-					"hostName", "HostName", 
-					"port", "Port", 
-					"plugin", "Plugin", 
+					"host", "IP",
+					"hostName", "HostName",
+					"port", "Port",
+					"plugin", "Plugin",
 					"scanName","ScanName",
-					"severity", "Severity", 
+					"severity", "Severity",
 					"find", "Finding",
 					"remark", "Remark",
 					"issues", "Issues",
 					"", "Action"
 				  ],
 		/*
-		 * @attribute options.checked that holds the state of the 
+		 * @attribute options.checked that holds the state of the
 		 * master checkbox of the multiselect
 		 */
 		checked		: {
 					/*
 					 * @attribute options.checked.none
-					 * Boolean that indicates no findings 
+					 * Boolean that indicates no findings
 					 * are checked
 					 */
 					"none" : true,
 					/*
 					 * @attribute options.checked.all
-					 * Boolean that indicates if all 
+					 * Boolean that indicates if all
 					 * findings are checked
 					 */
 					"all" : false
 				  },
 		/*
 		 * @attribute options.onEdit
-		 * Function that is called when an attribute's edit link is 
+		 * Function that is called when an attribute's edit link is
 		 * clicked
 		 */
 		onEdit		:  function(find) {
@@ -158,7 +158,7 @@ $.Controller('Seccubus.Finding.Table',
 		},
 		/*
 		 * @attribute options.onLink
-		 * Function that is called when a finding's link button is 
+		 * Function that is called when a finding's link button is
 		 * clicked
 		 */
 		onLink		:  function(find) {
@@ -167,7 +167,7 @@ $.Controller('Seccubus.Finding.Table',
 		},
 		/*
 		 * @attribute options.onIssueEdit
-		 * Function that is called when an issue's edit button is 
+		 * Function that is called when an issue's edit button is
 		 * clicked
 		 */
 		onIssueEdit		:  function(issue) {
@@ -234,11 +234,10 @@ $.Controller('Seccubus.Finding.Table',
 				this.view(
 					'init',
 					Seccubus.Models.Finding.findAll({
-						workspaceId	: this.options.workspace,
+						workspace	: this.options.workspace,
 						scanIds		: this.options.scans,
 						assetIds	: this.options.assets,
 						Status		: this.options.status,
-						Scans		: this.options.scans,
 						Host		: this.options.host,
 						HostName	: this.options.hostName,
 						Port		: this.options.port,
@@ -248,7 +247,7 @@ $.Controller('Seccubus.Finding.Table',
 						Finding		: this.options.finding,
 						Remark		: this.options.remark,
 						Limit       : this.options.limit
-					}), 
+					}),
 					{
 						fStatus		: this.options.status,
 						fLimit      : this.options.limit,
@@ -259,9 +258,9 @@ $.Controller('Seccubus.Finding.Table',
 						checked		: this.options.checked,
 						noEdit		: this.options.noEdit,
 						noLink		: this.options.noLink,
-						noFindingUnlink	
+						noFindingUnlink
 									: this.options.noFindingUnlink,
-						noIssueUnlink	
+						noIssueUnlink
 									: this.options.noIssueUnlink
 					}
 				)
@@ -412,7 +411,7 @@ $.Controller('Seccubus.Finding.Table',
 						state	: this.options.status,
 						checked : this.options.checked.all
 
-					} 
+					}
 				)
 			);
 		} else {
@@ -435,9 +434,9 @@ $.Controller('Seccubus.Finding.Table',
 	},
 	/*
 	 * Returns the specific sort function for an attribute
-	 * This function can be passed to the sort function to sort arays of 
+	 * This function can be passed to the sort function to sort arays of
 	 * objects and handle things like IP and hostname sorting
-	 * @return {Function} Function that compares objects based on the 
+	 * @return {Function} Function that compares objects based on the
 	 * specified attribute and order
 	 * @param {String} at
 	 * Attribute to sort on
