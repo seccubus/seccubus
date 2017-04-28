@@ -31,7 +31,7 @@ sub create {
 	my $scan_id = $self->param('scan_id');
 
 	if ( ! $notification ) {
-			$self->error("No valid json body found"); return;		
+			$self->error("No valid json body found"); return;
 	}
 
 	#die Dumper $notification;
@@ -124,7 +124,7 @@ sub list {
 		my $notifications = get_notifications($scan_id);
 
 		foreach my $row ( @$notifications ) {
-		 	my $i = 0; 
+		 	my $i = 0;
 		 	# Check workspace id
 		 	if ( $$row[6] == $workspace_id ) {
 			 	my $not = {};
@@ -151,8 +151,8 @@ sub update {
 
 	my $notification = $self->req->json();
 	if ( ! $notification ) {
-			$self->error("No valid json body found"); 
-			return;		
+			$self->error("No valid json body found");
+			return;
 	}
 	if ( $notification->{id} != $id ) {
 		$self->error("Id in url ($id) is not equal to id in object ($notification->{id}");
@@ -203,12 +203,12 @@ sub delete {
 	eval {
 		my $sth = del_notification($id);
 		if ( $sth ) {
-			$self->render( json => 
+			$self->render( json =>
 				{
 					status => "OK",
 					message => "Notification deleted"
 				},
-				status => 200 
+				status => 200
 			);
 		} else {
 			$self->error("Delete failed");

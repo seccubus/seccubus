@@ -70,6 +70,11 @@ sub startup {
     # FindingHistory
     $r->get   ('workspace/:workspace_id/finding/:finding_id/history')->to('finding_history#list');
 
+    # Issues
+    $r->post  ('workspace/:workspace_id/issues')->to('issues#create');
+    $r->get   ('workspace/:workspace_id/issues')->to('issues#list');
+
+
 	# Notifications
 	$r->post  ('workspace/:workspace_id/scan/:scan_id/notifications')->to('notifications#create');
 	$r->get   ('workspace/:workspace_id/scan/:scan_id/notification/:id')->to('notifications#read');

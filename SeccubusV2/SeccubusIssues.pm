@@ -28,9 +28,9 @@ use Data::Dumper;
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 	update_issue
-	get_issues	
+	get_issues
 	get_issue
 	issue_finding_link
 );
@@ -48,7 +48,7 @@ sub issue_finding_link($$$;$);
 
 =head2 update_issue
 
-This function updates or creates a finding in the database. It takes a named 
+This function updates or creates a finding in the database. It takes a named
 parameter list with the following parameters:
 
 =over 2
@@ -156,16 +156,16 @@ sub update_issue(@) {
 	create_issue_change($arg{issue_id},$arg{timestamp});
 
 	# Link findings
-	if ( $arg{findings} ) {
-		foreach my $finding_id ( split( /\0/, $arg{findings}) ) {
+	if ( $arg{findings_add} ) {
+		foreach my $finding_id ( @{$arg{findings_add}} ) {
 			issue_finding_link($arg{workspace_id}, $arg{issue_id}, $finding_id, 0);
 		}
 	}
 
 	if ( $arg{findings_remove} ) {
-		foreach my $finding_id ( split( /\0/, $arg{findings_remove}) ) {
+		foreach my $finding_id ( @{$arg{findings_remove}} ) {
 			issue_finding_link($arg{workspace_id}, $arg{issue_id}, $finding_id, 1);
-		}		
+		}
 	}
 
 	return $return;
@@ -193,7 +193,7 @@ The inserted id.
 
 =item Checks
 
-None, this is a hidden function that will not be called through the API. All 
+None, this is a hidden function that will not be called through the API. All
 checking should have been doine a higher levels.
 
 =back
@@ -235,7 +235,7 @@ sub create_issue_change($;$) {
 		$query .= ")";
 		my @values = ($issue_id, @new_data, $user_id);
 		push @values, $timestamp if $timestamp;
-		$id = sql( 
+		$id = sql(
 			"return"	=> "id",
 			"query"		=> $query,
 		    "values"	=> \@values,
@@ -262,7 +262,7 @@ This function returns a reference to an array of issues
 
 =item finding_id (optional) - Only return results for this finding
 
-=back 
+=back
 
 =item Checks
 
@@ -282,7 +282,7 @@ sub get_issues($;$$$) {
 		my $params = [ $workspace_id ];
 
 		my $query = "
-			SELECT DISTINCT i.id, i.name, i.ext_ref, i.description, i.severity, severity.name, 
+			SELECT DISTINCT i.id, i.name, i.ext_ref, i.description, i.severity, severity.name,
 				i.status, issue_status.name";
 		$query .= ", i2f.finding_id" if $with_finding_ids;
 		$query .= "
@@ -332,7 +332,7 @@ This function returns a reference to an array of changes of issue
 
 =item issue_id - id of the issue
 
-=back 
+=back
 
 =item Checks
 
@@ -351,7 +351,7 @@ sub get_issue($$) {
 
 		my $query = "
 			SELECT 	ic.id, ic.issue_id, ic.name, ic.ext_ref, ic.description, ic.severity, s.name as serverity_name,
-				ic.status, st.name as status_name, ic.user_id, u.username, ic.time as changetime 
+				ic.status, st.name as status_name, ic.user_id, u.username, ic.time as changetime
 			FROM issues i
 			LEFT JOIN issue_changes ic ON (i.id = ic.issue_id)
 			LEFT JOIN users u ON (ic.user_id = u.id )
@@ -390,7 +390,7 @@ This function creates or deletes a link between a finding and an issue
 
 =item delete (optional) - If true the issue should be deleted
 
-=back 
+=back
 
 =item Checks
 
@@ -409,11 +409,11 @@ sub issue_finding_link($$$;$) {
 
 	if ( may_write($workspace_id) ) {
 		$query = "
-			SELECT  count(*) 
+			SELECT  count(*)
 			FROM	issues2findings
 			WHERE 	issue_id = ? AND finding_id = ?
 		";
-		my @row = sql( 
+		my @row = sql(
 			"return"	=> "array",
 			"query"		=> $query,
 			"values"	=> [ $issue_id, $finding_id ]
@@ -439,11 +439,11 @@ sub issue_finding_link($$$;$) {
 			unless ( $count ) { # A previous record does not exist
 				# Check if issues and finding exist in this workspace
 				$query = "
-					SELECT  count(*) 
+					SELECT  count(*)
 					FROM	issues
 					WHERE 	id = ? AND workspace_id = ?
 				";
-				@row = sql( 
+				@row = sql(
 					"return"	=> "array",
 					"query"		=> $query,
 					"values"	=> [ $issue_id, $workspace_id ]
@@ -454,7 +454,7 @@ sub issue_finding_link($$$;$) {
 					FROM 	findings
 					WHERE   id = ? AND workspace_id = ?
 				";
-				@row = sql( 
+				@row = sql(
 					"return"	=> "array",
 					"query"		=> $query,
 					"values"	=> [ $finding_id, $workspace_id ]
