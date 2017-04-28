@@ -1,0 +1,61 @@
+## Customize the test machine
+machine:
+  timezone:
+    Europe/Amsterdam # Set the timezone
+
+  # Version of ruby to use
+  #ruby:
+  #  version:
+  #    1.8.7-p358-falcon-perf
+
+  # Override /etc/hosts
+  hosts:
+    circlehost: 127.0.0.1
+
+  # Add some environment variables
+  environment:
+    PERL5LIB: /home/ubuntu/perl5/lib/perl5
+
+## Customize checkout
+#checkout:
+#  post:
+#    - git fetch --unshallow
+
+## Customize dependencies
+dependencies:
+  pre:
+    - sudo apt-get install cpanminus
+    - cpanm --installdeps --notest .
+
+  override:
+
+  # we automatically cache and restore many dependencies between
+  # builds. If you need to, you can add custom paths to cache:
+  cache_directories:
+    - "~/perl5"
+
+## Customize database setup
+database:
+  override:
+
+## Customize test commands
+test:
+  override:
+    - mysql -e "create database seccubus"
+    - mysql -e "create database seccubus_create"
+    - mysql -e "create database seccubus_upgrade"
+    - prove -I SeccubusV2
+  post:
+
+## Customize deployment commands
+deployment:
+  staging:
+  #  branch: master
+  #  heroku:
+  #    appname: foo-bar-123
+
+## Custom notifications
+notify:
+  webhooks:
+    # A list of hashes representing hooks. Only the url field is supported.
+    # - url: https://someurl.com/hooks/circle
