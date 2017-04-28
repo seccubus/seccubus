@@ -20,7 +20,7 @@ steal(	'jquery/controller',
 	'seccubus/models',
 	'seccubus/issue/table',
 	'seccubus/history/table'
-).then( './views/init.ejs', 
+).then( './views/init.ejs',
 function($){
 
 /**
@@ -31,7 +31,7 @@ function($){
  *
  * Story
  * -----
- *  As a user I would like to be able to have a detailed view and edit 
+ *  As a user I would like to be able to have a detailed view and edit
  *  posibility for findings
  */
 $.Controller('Seccubus.Finding.Edit',
@@ -105,8 +105,8 @@ $.Controller('Seccubus.Finding.Edit',
 		var f = this.options.findings[this.options.index];
 		f.attr("status",newState);
 		f.attr("remark",param.remark);
-		f.attr("overwrite",1);
-		f.attr("workspaceId",this.options.workspace);
+		f.attr("append",0);
+		f.attr("workspace",this.options.workspace);
 		f.save();
 	},
 	".move click" : function(el,ev) {
@@ -126,7 +126,7 @@ $.Controller('Seccubus.Finding.Edit',
 			this.updateView();
 		}
 	},
-	/* 
+	/*
 	 * Update, overloaded to reder the control after and update even
 	 */
 	update : function(options) {

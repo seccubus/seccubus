@@ -13,9 +13,8 @@
 <%# limitations under the License.                                           %>
 <label for='remark'>Remark:</label><textarea name='remark' cols=80 rows=1 />
 <br>
-<label for='overwrite'>Overwrite:</label><input type='checkbox' name='overwrite'></input>
+<label for='append'>Append:</label><input type='checkbox' name='append' checked></input>
 <input type=hidden name='status' id='bulkEditStatus' value='<%= status %>'/>
-<input type=hidden name='workspaceId' value='<%= workspace %>'/>
 <input type=button newStatus=<%= status %> value='Update' class='bulkSetStatus'/>
 <input type=button value='Link to isse' class='bulkLink'/>
 <% if ( status == 99) { %>

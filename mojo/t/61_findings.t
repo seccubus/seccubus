@@ -206,6 +206,29 @@ $t->put_ok('/workspace/100/finding/1' => json => { status => 1, remark => 'bla',
     ->json_is("/remark", "bla\nbla")
     ;
 
-
+# Bulk updating
+my $ids = [];
+foreach my $f ( @$scan3 ) {
+    push @$ids, $f->{id};
+}
+# Wrong status should fail
+$t->put_ok('/workspace/100/findings' => json => { ids => [1,2,3] , status => 7, remark => "bla" })
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+    ;
+foreach my $s ( 2..6,99,1) {
+    $t->put_ok('/workspace/100/findings' => json => { ids => $ids, status => $s, remark => "Testing status $s" })
+        ->status_is(200)
+        ->json_is($ids)
+        ;
+    $t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=3')
+        ->status_is(200)
+        ;
+    foreach my $f ( @{$t->{tx}->res()->json()} ) {
+        is($f->{status},$s,"Status correctly set to $s");
+        is($f->{remark},"Testing status $s","Remark correctly set");
+    }
+}
 
 done_testing();

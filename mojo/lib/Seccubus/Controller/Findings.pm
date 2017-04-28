@@ -45,7 +45,7 @@ use Data::Dumper;
 
 # List
 sub list {
-   my $self = shift;
+    my $self = shift;
 
     my $workspace_id = $self->param('workspace_id');
     my $scan_ids = $self->every_param("scanIds[]");
@@ -194,6 +194,43 @@ sub update {
 
             $self->render( json => $finding );
         }
+    } or do {
+        $self->error(join "\n", $@);
+    }
+}
+
+sub blukupdate {
+    my $self = shift;
+
+    my $workspace_id = $self->param('workspace_id');
+
+    if ( $workspace_id + 0 ne $workspace_id ) {
+       $self->error("WorkspaceId is not numeric");
+    };
+
+    my $finding = $self->req->json();
+
+    if ( $finding->{status} < 0 || ( $finding->{status} > 6 && $finding->{status} != 99 ) ) {
+        $self->error("Invalid status code");
+    }
+    my $overwrite = 1;
+    $overwrite = 0 if $finding->{append};
+
+    eval {
+        my $ids = [];
+        foreach my $id ( @{$finding->{ids}} ) {
+            update_finding( "finding_id"    => $id,
+                "workspace_id"  => $workspace_id,
+                "status"    => $finding->{status},
+                "remark"    => $finding->{remark},
+                "overwrite" => $overwrite,
+            );
+            push @$ids, $id;
+            if ( $finding->{status} eq '3' ) {
+               send_notification_from_finding($id);
+            }
+        }
+        $self->render( json => $ids );
     } or do {
         $self->error(join "\n", $@);
     }

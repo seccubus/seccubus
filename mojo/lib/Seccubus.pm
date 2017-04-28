@@ -63,9 +63,10 @@ sub startup {
 	$r->get   ('events')->to('events#list');
 
     # Findings
-    $r->get   ('workspace/:workspace_id/findings')->to('findings#list');
-    $r->put   ('workspace/:workspace_id/finding/:id')->to('findings#update');
-    #$r->put   ('workspace/:workspace_id/findings')->to('findings#blukupdate');
+    $r->get   ('workspace/:workspace_id/findings')->to('findings#list'); # List
+    $r->put   ('workspace/:workspace_id/finding/:id')->to('findings#update'); # Update
+    $r->put   ('workspace/:workspace_id/findings')->to('findings#blukupdate'); # Bluk update
+
 
 	# Notifications
 	$r->post  ('workspace/:workspace_id/scan/:scan_id/notifications')->to('notifications#create');

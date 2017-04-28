@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-steal(	
+steal(
 	'jquery/controller',
 	'jquery/view/ejs',
 	'jquery/controller/view',
 	'seccubus/models',
 	'seccubus/issuelink/table'
      )
-.then( './views/init.ejs', 
+.then( './views/init.ejs',
        './views/issue.ejs',
        function($){
 
@@ -99,7 +99,7 @@ $.Controller('Seccubus.Issue.Table',
 				issue,
 				{
 					finding : this.options.finding
-				} 
+				}
 			)
 		);
 	},
@@ -113,14 +113,14 @@ $.Controller('Seccubus.Issue.Table',
 					'init',
 					Seccubus.Models.Issue.findAll({
 						workspaceId	: this.options.workspace,
-						findingId 	: this.options.finding	
+						findingId 	: this.options.finding
 					}),
-					{ 
+					{
 						workspace	: this.options.workspace,
 						finding 	: this.options.finding
 					}
 				)
-			);		
+			);
 		} else {
 			this.element.html(
 					this.view(
@@ -128,11 +128,11 @@ $.Controller('Seccubus.Issue.Table',
 					Seccubus.Models.Issue.findAll({
 						workspaceId	: this.options.workspace
 					}),
-					{ 
+					{
 						workspace	: this.options.workspace,
 						finding 	: this.options.finding
 					}
-				) 
+				)
 			);
 		}
 	},
