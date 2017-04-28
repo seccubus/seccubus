@@ -1,3 +1,22 @@
+<<<<<<< HEAD
+=======
+#
+# Copyright 2017 Frank Breedijk
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+
+>>>>>>> master
 ## Customize the test machine
 machine:
   timezone:
@@ -45,6 +64,7 @@ test:
     - mysql -e "create database seccubus_create"
     - mysql -e "create database seccubus_upgrade"
     - (cd mojo;prove -I lib -I SeccubusV2)
+    - "#prove -I SeccubusV2"
   post:
 
 ## Customize deployment commands
@@ -58,4 +78,8 @@ deployment:
 notify:
   webhooks:
     # A list of hashes representing hooks. Only the url field is supported.
+<<<<<<< HEAD
     # - url: https://someurl.com/hooks/circle
+=======
+    # - url: https://someurl.com/hooks/circle
+>>>>>>> master

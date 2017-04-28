@@ -138,8 +138,8 @@ specific RPMs for el5, el6 and el7 now.
 
 Enhancements
 ------------
-*
+* #448 - Allow import and export utility to ready config from specific file
 
 Bug Fixes
 ---------
-* 
+* #430 - Set correct paths for perl and nikto so that do-scan and nikto can now be run by any user

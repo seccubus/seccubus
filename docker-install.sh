@@ -35,7 +35,7 @@ make clean
 perl Makefile.PL | tee makefile.log
 
 # Check if we have all perl dependancies
-if [[ `grep "Warning: prerequisite" makefile.log| wc -l` -gt 0 ]]; then
+if [[ $(grep "Warning: prerequisite" makefile.log| wc -l) -gt 0 ]]; then
 	echo *** ERROR: Not all perl dependancies installed ***
 	cat makefile.log
 	exit 255
@@ -65,8 +65,8 @@ sleep 3
 	grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus';
 	flush privileges;
 EOF
-/usr/bin/mysql -u seccubus -pseccubus seccubus < `ls /opt/seccubus/db/structure*.mysql|tail -1`
-/usr/bin/mysql -u seccubus -pseccubus seccubus < `ls /opt/seccubus/db/data*.mysql|tail -1`
+/usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/structure*.mysql|tail -1)
+/usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/data*.mysql|tail -1)
 
 # Set up some default content
 cat <<EOF >/opt/seccubus/etc/config.xml
@@ -105,9 +105,17 @@ json/createScan.pl workspaceId=100 name=ssllabs scanner=SSLlabs "password= " "pa
 json/createScan.pl workspaceId=100 name=nmap scanner=Nmap "password= " 'parameters=-o "" --hosts @HOSTS' targets=www.seccubus.com
 json/createScan.pl workspaceId=100 name=nikto scanner=Nikto "password= " 'parameters=-o "" --hosts @HOSTS' targets=www.seccubus.com
 
+# Setup default environment
+echo >/etc/profile.d/seccubus.sh "pathmunge /opt/seccubus/bin"
+echo >>/etc/profile.d/seccubus.sh 'export PERL5LIB="/opt/seccubus:/opt/seccubus/SeccubusV2"'
+chmod +x /etc/profile.d/seccubus.sh
+
 # Install Nikto
 cd /opt
 git clone https://github.com/sullo/nikto.git --depth 1
+echo 'pathmunge /opt/nikto/program' > /etc/profile.d/nikto.sh
+chmod +x /etc/profile.d/nikto.sh
+
 
 # Install testssl.sh
 cd /opt

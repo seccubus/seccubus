@@ -75,6 +75,14 @@ check_config();
 
 =over 2
 
+=item Parameters
+
+=over 4
+
+=item file  - File to read configuration from
+
+=back
+
 =item Returns
 
 Reference to a hash containing the config in XML
@@ -83,7 +91,13 @@ Reference to a hash containing the config in XML
 
 =cut
 
-sub get_config() {
+sub get_config(;$) {
+	my $cfg = shift;
+
+	if ( $cfg ) {
+		confess("Configuration file '$cfg' does not exist") if ( ! -e $cfg );
+		$config = $cfg;
+	}
 	if ( ! ref($config) ) {
 		$config = XMLin($config, ForceArray => [qw(monkey)], KeyAttr => [ qw(id) ], SuppressEmpty => '');
 	}

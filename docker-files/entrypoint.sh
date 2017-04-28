@@ -18,7 +18,6 @@
 # not exist yet ;)
 # ------------------------------------------------------------------------------
 #
-
 STACK=${STACK:-'full'}
 DBHOST=${DBHOST:-'127.0.0.1'}
 DBPORT=${DBPORT:-'3306'}
@@ -142,7 +141,8 @@ if [[ "$DBHOST" == "127.0.0.1" && "$DBPORT" == "3306" ]]; then
         # Assume that DB directory is unitialized
         /usr/bin/mysql_install_db --datadir="/var/lib/mysql" --user=mysql
     fi
-    mysqld_safe & 
+    mysqld_safe &
+
     sleep 3
     if [[ ! -d /var/lib/mysql/seccubus ]]; then
         /usr/bin/mysql -u root << EOF
@@ -150,9 +150,8 @@ if [[ "$DBHOST" == "127.0.0.1" && "$DBPORT" == "3306" ]]; then
             grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus';
             flush privileges;
 EOF
-        /usr/bin/mysql -u seccubus -pseccubus seccubus < `ls /opt/seccubus/db/structure*.mysql|tail -1`
-        /usr/bin/mysql -u seccubus -pseccubus seccubus < `ls /opt/seccubus/db/data*.mysql|tail -1`
-
+        /usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/structure*.mysql|tail -1)
+        /usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/data*.mysql|tail -1)
         # Add example data
         cd /opt/seccubus/www/seccubus
         # Workspace
@@ -161,22 +160,20 @@ EOF
         json/createScan.pl workspaceId=100 name=ssllabs scanner=SSLlabs "password= " "parameters=--hosts @HOSTS --from-cache" targets=www.seccubus.com
         json/createScan.pl workspaceId=100 name=nmap scanner=Nmap "password= " 'parameters=-o "" --hosts @HOSTS' targets=www.seccubus.com
         json/createScan.pl workspaceId=100 name=nikto scanner=Nikto "password= " 'parameters=-o "" --hosts @HOSTS' targets=www.seccubus.com
-    fi        
-fi
+    fi
 
+fi
 # Crontab
 if [[ "$STACK" == "cron" || "$STACK" == "full" ]]; then
     /mkcron
     if [[ "$1" != "" ]]; then
         echo "Starting cron in background"
-        if [[ -e "/var/run/crond.pid" && $(ps -ef|grep `cat /var/run/crond.pid`|grep cron|wc -l) -gt 0 ]]; then
-            kill -9 `cat /var/run/crond.pid`
+        if [[ -e "/var/run/crond.pid" && $(ps -ef|grep $(cat /var/run/crond.pid)|grep cron|wc -l) -gt 0 ]]; then
+            kill -9 $(cat /var/run/crond.pid)
         fi
         /usr/sbin/crond -n &
     fi
 fi
-
-
 case $1 in
 "")
     if [[ "$STACK" == "full" || "$STACK" == "front" || "$STACK" == "api" || "$STACK" == "web" ]]; then
@@ -184,8 +181,8 @@ case $1 in
         tail -f /var/log/httpd/*log
     fi
     if [[ "$STACK" == "cron" ]]; then
-        if [[ -e "/var/run/crond.pid" && $(ps -ef|grep `cat /var/run/crond.pid`|grep cron|wc -l) -gt 0 ]]; then
-            kill -9 `cat /var/run/crond.pid`
+        if [[ -e "/var/run/crond.pid" && $(ps -ef|grep $(cat /var/run/crond.pid)|grep cron|wc -l) -gt 0 ]]; then
+            kill -9 $(cat /var/run/crond.pid)
             sleep 2
         fi
         /usr/sbin/crond -x sch -n
