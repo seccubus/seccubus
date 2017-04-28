@@ -21,6 +21,7 @@ use lib "..";
 use SeccubusV2;
 use SeccubusFindings;
 use SeccubusIssues;
+use SeccubusNotifications;
 use Data::Dumper;
 
 # Create
@@ -66,11 +67,12 @@ sub list {
     eval {
         my @data;
         my %filter;
-        foreach my $key ( qw( Status Host HostName Port Plugin Severity Finding Remark Severity Issue ) ) {
+        foreach my $key ( qw( Status Host HostName Port Plugin Severity Finding Remark Issue ) ) {
             if (defined $self->param($key) && $self->param($key) !~ /^(all|null|\*)$/ ) {
                 $filter{lc($key)} = $self->param($key);
             }
         }
+        #die Dumper \%filter;
 
         my $issues = get_issues($workspace_id,undef,1); # Get list of issues with finding_id;
         my %i2f;
@@ -149,10 +151,52 @@ sub list {
     };
 }
 
-#sub update {
-#	my $self = shift;
-#
-#}
+sub update {
+	my $self = shift;
+
+    my $workspace_id = $self->param('workspace_id');
+    my $id = $self->param('id');
+    my $overwrite = $self->param('overwrite');
+
+    my $finding = $self->req->json();
+
+    if ( defined $overwrite && ( $overwrite eq "true" || $overwrite == 1 ) ) {
+        $overwrite = 1;
+    } else {
+        $overwrite = 0;
+    }
+
+    if ( $workspace_id + 0 ne $workspace_id ) {
+        $self->error("WorkspaceId is not numeric");
+    };
+
+    if ( $id + 0 ne $id ) {
+        $self->error("Id is not numeric");
+    };
+
+    if ( $finding->{status} < 0 || ( $finding->{status} > 6 && $finding->{status} != 99 ) ) {
+        $self->error("Invalid status code");
+    }
+
+    eval {
+        my $data = {};
+        update_finding( "finding_id"    => $id,
+            "workspace_id"  => $workspace_id,
+            "status"    => $finding->{status},
+            "remark"    => $finding->{remark},
+            "overwrite" => $overwrite,
+        );
+        if ( $finding->{status} eq '3' ) {
+            send_notification_from_finding($id);
+        }
+        my $f = get_findings($workspace_id,undef,undef,{ id => $id });
+        die Dumper $f;
+
+        die Dumper $f;
+    } or do {
+        $self->error(join "\n", $@);
+    }
+}
 
 #sub delete {
 #	my $self = shift;

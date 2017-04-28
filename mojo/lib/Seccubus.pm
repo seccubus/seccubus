@@ -64,6 +64,8 @@ sub startup {
 
     # Findings
     $r->get   ('workspace/:workspace_id/findings')->to('findings#list');
+    $r->put   ('workspace/:workspace_id/finding/:id')->to('findings#update');
+    #$r->put   ('workspace/:workspace_id/findings')->to('findings#blukupdate');
 
 	# Notifications
 	$r->post  ('workspace/:workspace_id/scan/:scan_id/notifications')->to('notifications#create');

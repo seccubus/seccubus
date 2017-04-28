@@ -16,6 +16,8 @@ use Mojo::Base -strict;
 
 use strict;
 
+use lib "lib";
+
 use Test::More;
 use Test::Mojo;
 use Data::Dumper;
@@ -75,18 +77,79 @@ $t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=54345')
 $t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=1')
     ->status_is(200)
     ;
-is(@{$t->{tx}->res()->json()},97,"97 Elements returned");
+my $scan1 = $t->{tx}->res()->json();
+is(@$scan1,97,"97 Elements returned");
 
 $t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=2')
     ->status_is(200)
     ;
-is(@{$t->{tx}->res()->json()},185,"185 Elements returned");
+my $scan2 = $t->{tx}->res()->json();
+is(@$scan2,185,"185 Elements returned");
 
 $t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=3')
     ->status_is(200)
     ;
-is(@{$t->{tx}->res()->json()},42,"42 Elements returned");
+my $scan3 = $t->{tx}->res()->json();
+is(@$scan3,42,"42 Elements returned");
 
-# TODO: test filters
+# Testing host filter
+my $count = {};
+foreach my $f ( @$scan3 ) {
+    $count->{Status}->{$f->{status}}++;
+    $count->{Host}->{$f->{host}}++;
+    $count->{HostName}->{$f->{hostname}}++;
+    $count->{Port}->{$f->{port}}++;
+    $count->{Plugin}->{$f->{plugin}}++;
+    $count->{Serverity}->{$f->{severity}}++;
+    $count->{Remark}->{$f->{remark}}++;
+}
+$count->{Status}->{98} = 0;
+$count->{Host}->{bla} = 0;
+$count->{HostName}->{bla} = 0;
+$count->{Port}->{bla} = 0;
+$count->{Plugin}->{bla} = 0;
+$count->{Finding}->{bla} = 0;
+$count->{Severity}->{98} = 0;
+$count->{Remark}->{bla} = 0;
+
+$count->{Status}->{'*'} = 42;
+$count->{Host}->{'*'} = 42;
+$count->{HostName}->{'*'} = 42;
+$count->{Port}->{'*'} = 42;
+$count->{Plugin}->{'*'} = 42;
+$count->{Severity}->{'*'} = 42;
+$count->{Finding}->{'*'} = 42;
+$count->{Remark}->{'*'} = 42;
+
+$count->{Status}->{'all'} = 42;
+$count->{Host}->{'all'} = 42;
+$count->{HostName}->{'all'} = 42;
+$count->{Port}->{'all'} = 42;
+$count->{Plugin}->{'all'} = 42;
+$count->{Severity}->{'all'} = 42;
+$count->{Finding}->{'all'} = 42;
+$count->{Remark}->{'all'} = 42;
+
+$count->{Status}->{'null'} = 42;
+$count->{Host}->{'null'} = 42;
+$count->{HostName}->{'null'} = 42;
+$count->{Port}->{'null'} = 42;
+$count->{Plugin}->{'null'} = 42;
+$count->{Severity}->{'null'} = 42;
+$count->{Finding}->{'null'} = 42;
+$count->{Remark}->{'null'} = 42;
+
+foreach my $k ( qw(Status Host HostName Port Plugin Finding Severity Remark) ) {
+    foreach my $h ( sort keys %{$count->{$k}} ) {
+        if ( $h ne "" ) {
+            $t->get_ok("/workspace/100/findings?Limit=-1&scanIds[]=3&$k=$h")
+                ->status_is(200)
+                ;
+            my $finds = $t->{tx}->res()->json();
+            is(@$finds,$count->{$k}->{$h},"$count->{$k}->{$h} findings for $k=$h");
+        }
+    }
+}
+
 
 done_testing();
