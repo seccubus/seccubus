@@ -1,0 +1,77 @@
+#
+# Copyright 2017 Frank Breedijk
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+
+## Customize the test machine
+machine:
+  timezone:
+    Europe/Amsterdam # Set the timezone
+
+  # Version of ruby to use
+  #ruby:
+  #  version:
+  #    1.8.7-p358-falcon-perf
+
+  # Override /etc/hosts
+  hosts:
+    circlehost: 127.0.0.1
+
+  # Add some environment variables
+  environment:
+    PERL5LIB: /home/ubuntu/perl5/lib/perl5
+
+## Customize checkout
+#checkout:
+#  post:
+#    - git fetch --unshallow
+
+## Customize dependencies
+dependencies:
+  pre:
+    - sudo apt-get install cpanminus
+    - cpanm --installdeps --notest .
+
+  override:
+
+  # we automatically cache and restore many dependencies between
+  # builds. If you need to, you can add custom paths to cache:
+  cache_directories:
+    - "~/perl5"
+
+## Customize database setup
+database:
+  override:
+
+## Customize test commands
+test:
+  override:
+    - mysql -e "create database seccubus"
+    - mysql -e "create database seccubus_create"
+    - mysql -e "create database seccubus_upgrade"
+    - prove -I SeccubusV2
+  post:
+
+## Customize deployment commands
+deployment:
+  staging:
+  #  branch: master
+  #  heroku:
+  #    appname: foo-bar-123
+
+## Custom notifications
+notify:
+  webhooks:
+    # A list of hashes representing hooks. Only the url field is supported.
+    # - url: https://someurl.com/hooks/circle

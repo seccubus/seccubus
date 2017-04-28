@@ -19,6 +19,7 @@
 # ------------------------------------------------------------------------------
 #
 FROM centos:7
+MAINTAINER fbreedijk@schubergphilis.com
 
 RUN yum install -y epel-release && \
 	yum update -y && \
