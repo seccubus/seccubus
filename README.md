@@ -138,7 +138,7 @@ specific RPMs for el5, el6 and el7 now.
 
 Enhancements
 ------------
-*
+* #448 - Allow import and export utility to ready config from specific file
 
 Bug Fixes
 ---------
