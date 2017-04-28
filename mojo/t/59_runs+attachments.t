@@ -24,6 +24,8 @@ use SeccubusV2;
 use SeccubusIVIL;
 use SeccubusRuns;
 
+use lib "lib";
+
 my $db_version = 0;
 foreach my $data_file (<../db/data_v*.mysql>) {
 	$data_file =~ /^\.\.\/db\/data_v(\d+)\.mysql$/;

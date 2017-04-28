@@ -17,7 +17,6 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use strict;
 
-use lib "..";
 use SeccubusV2;
 use SeccubusFindings;
 use SeccubusIssues;
@@ -156,15 +155,8 @@ sub update {
 
     my $workspace_id = $self->param('workspace_id');
     my $id = $self->param('id');
-    my $overwrite = $self->param('overwrite');
 
     my $finding = $self->req->json();
-
-    if ( defined $overwrite && ( $overwrite eq "true" || $overwrite == 1 ) ) {
-        $overwrite = 1;
-    } else {
-        $overwrite = 0;
-    }
 
     if ( $workspace_id + 0 ne $workspace_id ) {
         $self->error("WorkspaceId is not numeric");
@@ -177,6 +169,8 @@ sub update {
     if ( $finding->{status} < 0 || ( $finding->{status} > 6 && $finding->{status} != 99 ) ) {
         $self->error("Invalid status code");
     }
+    my $overwrite = 1;
+    $overwrite = 0 if $finding->{append};
 
     eval {
         my $data = {};
@@ -190,9 +184,16 @@ sub update {
             send_notification_from_finding($id);
         }
         my $f = get_findings($workspace_id,undef,undef,{ id => $id });
-        die Dumper $f;
+        if ( @$f == 0 ) {
+            $self->error("Finding with id '$id' does not exist in this workspace");
+        } else {
+            $finding->{remark} = $$f[0][6];
+            $finding->{status} = $$f[0][9];
+            $finding->{statusName} = $$f[0][10];
+            delete $finding->{append};
 
-        die Dumper $f;
+            $self->render( json => $finding );
+        }
     } or do {
         $self->error(join "\n", $@);
     }

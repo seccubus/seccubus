@@ -20,12 +20,14 @@ use Test::More;
 use Test::Mojo;
 use SeccubusV2;
 
+use lib "lib";
+
 my $t = Test::Mojo->new('Seccubus');
 
 my $config = get_config();
 
 # Get the scanners
-$t->get_ok('/scanners') 
+$t->get_ok('/scanners')
 	;
 
 # Compare with what is in the directories

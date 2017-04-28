@@ -23,6 +23,8 @@ use Data::Dumper;
 use SeccubusV2;
 use SeccubusUsers;
 
+use lib "lib";
+
 my $db_version = 0;
 foreach my $data_file (<../db/data_v*.mysql>) {
 	$data_file =~ /^\.\.\/db\/data_v(\d+)\.mysql$/;

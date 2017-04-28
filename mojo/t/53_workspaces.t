@@ -20,6 +20,8 @@ use Test::More;
 use Test::Mojo;
 use Data::Dumper;
 
+use lib "lib";
+
 my $db_version = 0;
 foreach my $data_file (<../db/data_v*.mysql>) {
 	$data_file =~ /^\.\.\/db\/data_v(\d+)\.mysql$/;
@@ -161,7 +163,7 @@ $t->put_ok('/workspace/101', json => { name => 'aap2' })
 	->json_is('/name','aap2')
 	->json_hasnt('/bla')
 	;
-	
+
 # List two
 $t->get_ok('/workspaces')
 	->status_is(200)

@@ -20,6 +20,8 @@ use Test::More;
 use Test::Mojo;
 use Data::Dumper;
 
+use lib "lib";
+
 use SeccubusV2;
 use SeccubusScans;
 

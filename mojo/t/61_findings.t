@@ -97,11 +97,11 @@ my $count = {};
 foreach my $f ( @$scan3 ) {
     $count->{Status}->{$f->{status}}++;
     $count->{Host}->{$f->{host}}++;
-    $count->{HostName}->{$f->{hostname}}++;
+    $count->{HostName}->{$f->{hostname}}++ if defined $f->{hostname};
     $count->{Port}->{$f->{port}}++;
     $count->{Plugin}->{$f->{plugin}}++;
     $count->{Serverity}->{$f->{severity}}++;
-    $count->{Remark}->{$f->{remark}}++;
+    $count->{Remark}->{$f->{remark}}++ if defined $f->{remark};
 }
 $count->{Status}->{98} = 0;
 $count->{Host}->{bla} = 0;
@@ -150,6 +150,62 @@ foreach my $k ( qw(Status Host HostName Port Plugin Finding Severity Remark) ) {
         }
     }
 }
+
+# Update a single finding
+
+# Non-existant finding should fail
+$t->put_ok('/workspace/100/finding/12345667890' => json => { status => 1 , remark => "test" })
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+    ;
+
+$t->put_ok('/workspace/101/finding/1' => json => { status => 1 , remark => "test" })
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+    ;
+
+# Cannot set to non-existant status
+$t->put_ok('/workspace/100/finding/1' => json => { status => 98 , remark => "test" })
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+    ;
+
+# Getting a single finding
+
+
+# Test all statusses
+foreach my $s ( 2..6,99,1 ) {
+    pass("Setting status to $s");
+    # Get first
+    $t->put_ok('/workspace/100/finding/1' => json => { status => $s } )
+        ->status_is(200)
+        ->json_is("/status", $s)
+        ->json_is("/remark", undef)
+        ;
+}
+
+# Test append and overwrite comment
+$t->put_ok('/workspace/100/finding/1' => json => { status => 1, remark => 'bla' } )
+    ->status_is(200)
+    ->json_is("/status", 1)
+    ->json_is("/remark", "bla")
+    ;
+
+$t->put_ok('/workspace/100/finding/1' => json => { status => 1, remark => 'bla' } )
+    ->status_is(200)
+    ->json_is("/status", 1)
+    ->json_is("/remark", "bla")
+    ;
+
+$t->put_ok('/workspace/100/finding/1' => json => { status => 1, remark => 'bla', append => 1 } )
+    ->status_is(200)
+    ->json_is("/status", 1)
+    ->json_is("/remark", "bla\nbla")
+    ;
+
 
 
 done_testing();

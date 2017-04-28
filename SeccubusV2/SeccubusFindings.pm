@@ -1168,7 +1168,8 @@ sub update_finding(@) {
         $query .= join " = ? , ", @fields;
         $query .= " = ?";
         if ( exists $arg{remark} ) {
-            if ( $arg{overwrite} ) {
+
+            if ( $arg{overwrite}  ) {
                 $query .= ", remark = ? ";
                 push @values, $arg{remark};
             } else {
