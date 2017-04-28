@@ -58,7 +58,8 @@ $t->post_ok('/workspace/100/scans',
 		'scanner'		=> 'SSLlabs',
 		'parameters'	=> '--hosts @HOSTS --from-cache --publish',
 		'password'		=> '',
-		'targets'		=> "www.seccubus.com\nwww.schubergphilis.com",
+        #'targets'       => "www.seccubus.com\nwww.schubergphilis.com",
+        'targets'       => "",
 	})
 	->status_is(200)
 	;
@@ -70,7 +71,8 @@ $t->post_ok('/workspace/100/scans',
 		'scanner'		=> 'SSLlabs',
 		'parameters'	=> '--hosts @HOSTS --from-cache --publish',
 		'password'		=> '',
-		'targets'		=> "www.seccubus.com\nwww.schubergphilis.com",
+        #'targets'       => "www.seccubus.com\nwww.schubergphilis.com",
+		'targets'		=> "",
 	})
 	->status_is(200)
 	;
