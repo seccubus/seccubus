@@ -134,10 +134,50 @@ sub list {
     };
 }
 
-#sub update {
-#	my $self = shift;
-#
-#}
+sub update {
+	my $self = shift;
+
+    if ( $self->param("workspace_id") + 0 ne $self->param("workspace_id") ) {
+        $self->error("WorkspaceId is not numeric");
+        return;
+    }
+
+    my $issue = $self->req->json();
+    if ( ! $issue->{name} ) {
+        $self->error("Issue needs to have a name");
+        return;
+    }
+    $issue->{severity} = 0 unless $issue->{severity};
+    $issue->{status} = 1 unless $issue->{status};
+
+    # A little translation
+    $issue->{workspace_id} = $self->param("workspace_id");
+    $issue->{issue_id} = $self->param("id");
+    $issue->{findings_add} = $issue->{findings};
+
+    eval {
+        my $data = {};
+        my $issues = update_issue(%$issue);
+
+        if ( $$issues[0][0] ) {
+            $data->{id}            = $$issues[0][0];
+            $data->{name}          = $$issues[0][1];
+            $data->{ext_ref}       = $$issues[0][2];
+            $data->{description}   = $$issues[0][3];
+            $data->{severity}      = $$issues[0][4];
+            $data->{severityName}  = $$issues[0][5];
+            $data->{status}        = $$issues[0][6];
+            $data->{statusName}    = $$issues[0][7];
+
+            $self->render( json => $data );
+        } else {
+            #$self->error("Issue " . $self->param("id") . " in workspace " . $self->param('workspace_id') . " not updated");
+            die("Issue " . $self->param("id") . " in workspace " . $self->param('workspace_id') . " not updated\n");
+        }
+    } or do {
+        $self->error(join "\n", $@);
+    };
+}
 
 #sub delete {
 #	my $self = shift;

@@ -73,6 +73,7 @@ sub startup {
     # Issues
     $r->post  ('workspace/:workspace_id/issues')->to('issues#create');
     $r->get   ('workspace/:workspace_id/issues')->to('issues#list');
+    $r->put   ('workspace/:workspace_id/issue/:id')->to('issues#update');
 
 
 	# Notifications

@@ -176,6 +176,282 @@ $t->get_ok('/workspace/100/issues')
     ])
     ;
 
+# TODO: Update testing
+# Cannot update invalid workspace
+$t->put_ok('/workspace/a/issue/2',
+    json => {
+        "id" => 2,
+        "description"=> "This is an updated test",
+        "ext_ref"=> "test-123-updated",
+        "name"=> "bla-updated",
+        "severity"=> "1",
+        "status"=> "2",
+    })
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+    ;
+
+$t->put_ok('/workspace/101/issue/2',
+    json => {
+        "id" => 2,
+        "description"=> "This is an updated test",
+        "ext_ref"=> "test-123-updated",
+        "name"=> "bla-updated",
+        "severity"=> "1",
+        "status"=> "2",
+    })
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+    ;
+
+$t->put_ok('/workspace/100/issue/2',
+    json => {
+        "id" => 3,
+        "description"=> "This is an updated test",
+        "ext_ref"=> "test-123-updated",
+        "name"=> "bla-updated",
+        "severity"=> "1",
+        "status"=> "2",
+    })
+    ->status_is(200)
+    ->json_is({
+        "id" => 2,
+        "description" => "This is an updated test",
+        "ext_ref" => "test-123-updated",
+        "name" => "bla-updated",
+        "severity" => "1",
+        "severityName" => "High",
+        "status" => "2",
+        "statusName" => "Closed",
+    })
+    ;
+
+$t->get_ok('/workspace/100/issues')
+    ->status_is(200)
+    ->json_is([
+        {
+            "id" => 2,
+            "description" => "This is an updated test",
+            "ext_ref" => "test-123-updated",
+            "findings" => [],
+            "name" => "bla-updated",
+            "severity" => "1",
+            "severityName" => "High",
+            "status" => "2",
+            "statusName" => "Closed",
+            "url" => "https://jira.atlassian.com/browse/test-123-updated"
+        }]
+    )
+    ;
+
+# Reset and create findings
+$t->put_ok('/workspace/100/issue/2',
+    json => {
+        "id" => 2,
+        "description" => "This is a test",
+        "ext_ref" => "test-123",
+        "name" => "bla",
+        "severity" => "0",
+        "status" => "1",
+        "findings" => [4,5,6]
+    })
+    ->status_is(200)
+    ->json_is({
+        "id" => 2,
+        "description" => "This is a test",
+        "ext_ref" => "test-123",
+        "name" => "bla",
+        "severity" => "0",
+        "severityName" => "Not set",
+        "status" => "1",
+        "statusName" => "Open",
+    })
+    ;
+
+$t->get_ok('/workspace/100/issues')
+    ->status_is(200)
+    ->json_is([
+        {
+            "id" => 2,
+            "description" => "This is a test",
+            "ext_ref" => "test-123",
+            "findings" =>
+                [
+                    {
+                        "find" => "Supported compression methods : \n\n",
+                        "host" => "www.seccubus.com/184.50.88.72",
+                        "hostName" => undef,
+                        "id" => "4",
+                        "plugin" => "compressionMethods",
+                        "port" => "443/tcp",
+                        "remark" => undef,
+                        "scanId" => "1",
+                        "scanName" => "seccubus",
+                        "severity" => "0",
+                        "severityName" => "Not set",
+                        "status" => "1",
+                        "statusName" => "New"
+                    },
+                    {
+                        "find" => "Errors in drown test : False\n\nTrue if errors occured while running drowntests",
+                        "host" => "www.seccubus.com/184.50.88.72",
+                        "hostName" => undef,
+                        "id" => "5",
+                        "plugin" => "drownErrors",
+                        "port" => "443/tcp",
+                        "remark" => undef,
+                        "scanId" => "1",
+                        "scanName" => "seccubus",
+                        "severity" => "0",
+                        "severityName" => "Not set",
+                        "status" => "1",
+                        "statusName" => "New"
+                    },
+                    {
+                        "find" => "Not vulnerable to Drown attack\n\nSee https://drownattack.com/",
+                        "host" => "www.seccubus.com/184.50.88.72",
+                        "hostName" => undef,
+                        "id" => "6",
+                        "plugin" => "drownVulnerable",
+                        "port" => "443/tcp",
+                        "remark" => undef,
+                        "scanId" => "1",
+                        "scanName" => "seccubus",
+                        "severity" => "0",
+                        "severityName" => "Not set",
+                        "status" => "1",
+                        "statusName" => "New"
+                    }
+                ],
+            "name" => "bla",
+            "severity" => "0",
+            "severityName" => "Not set",
+            "status" => "1",
+            "statusName" => "Open",
+            "url" => "https://jira.atlassian.com/browse/test-123"
+        }]
+    )
+    ;
+
+# Reset and remove one finding
+$t->put_ok('/workspace/100/issue/2',
+    json => {
+        "id" => 2,
+        "description" => "This is a test",
+        "ext_ref" => "test-123",
+        "name" => "bla",
+        "severity" => "0",
+        "status" => "1",
+        "findings_remove" => [4]
+    })
+    ->status_is(200)
+    ->json_is({
+        "id" => 2,
+        "description" => "This is a test",
+        "ext_ref" => "test-123",
+        "name" => "bla",
+        "severity" => "0",
+        "severityName" => "Not set",
+        "status" => "1",
+        "statusName" => "Open",
+    })
+    ;
+
+$t->get_ok('/workspace/100/issues')
+    ->status_is(200)
+    ->json_is([
+        {
+            "id" => 2,
+            "description" => "This is a test",
+            "ext_ref" => "test-123",
+            "findings" =>
+                [
+                    {
+                        "find" => "Errors in drown test : False\n\nTrue if errors occured while running drowntests",
+                        "host" => "www.seccubus.com/184.50.88.72",
+                        "hostName" => undef,
+                        "id" => "5",
+                        "plugin" => "drownErrors",
+                        "port" => "443/tcp",
+                        "remark" => undef,
+                        "scanId" => "1",
+                        "scanName" => "seccubus",
+                        "severity" => "0",
+                        "severityName" => "Not set",
+                        "status" => "1",
+                        "statusName" => "New"
+                    },
+                    {
+                        "find" => "Not vulnerable to Drown attack\n\nSee https://drownattack.com/",
+                        "host" => "www.seccubus.com/184.50.88.72",
+                        "hostName" => undef,
+                        "id" => "6",
+                        "plugin" => "drownVulnerable",
+                        "port" => "443/tcp",
+                        "remark" => undef,
+                        "scanId" => "1",
+                        "scanName" => "seccubus",
+                        "severity" => "0",
+                        "severityName" => "Not set",
+                        "status" => "1",
+                        "statusName" => "New"
+                    }
+                ],
+            "name" => "bla",
+            "severity" => "0",
+            "severityName" => "Not set",
+            "status" => "1",
+            "statusName" => "Open",
+            "url" => "https://jira.atlassian.com/browse/test-123"
+        }]
+    )
+    ;
+
+# Reset and remove all findings
+$t->put_ok('/workspace/100/issue/2',
+    json => {
+        "id" => 2,
+        "description" => "This is a test",
+        "ext_ref" => "test-123",
+        "name" => "bla",
+        "severity" => "0",
+        "status" => "1",
+        "findings_remove" => [5,6]
+    })
+    ->status_is(200)
+    ->json_is({
+        "id" => 2,
+        "description" => "This is a test",
+        "ext_ref" => "test-123",
+        "name" => "bla",
+        "severity" => "0",
+        "severityName" => "Not set",
+        "status" => "1",
+        "statusName" => "Open",
+    })
+    ;
+
+$t->get_ok('/workspace/100/issues')
+    ->status_is(200)
+    ->json_is([
+        {
+            "id" => 2,
+            "description" => "This is a test",
+            "ext_ref" => "test-123",
+            "findings" =>
+                [],
+            "name" => "bla",
+            "severity" => "0",
+            "severityName" => "Not set",
+            "status" => "1",
+            "statusName" => "Open",
+            "url" => "https://jira.atlassian.com/browse/test-123"
+        }]
+    )
+    ;
+
 # Created issue with findings
 $t->post_ok('/workspace/100/issues',
     json => {
@@ -274,6 +550,7 @@ $t->get_ok('/workspace/100/issues')
         }
     ])
     ;
+
 
 done_testing();
 exit;
