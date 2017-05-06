@@ -112,8 +112,8 @@ $.Controller('Seccubus.Issue.Table',
 				this.view(
 					'init',
 					Seccubus.Models.Issue.findAll({
-						workspaceId	: this.options.workspace,
-						findingId 	: this.options.finding
+						workspace	: this.options.workspace,
+						finding 	: this.options.finding
 					}),
 					{
 						workspace	: this.options.workspace,
@@ -126,7 +126,7 @@ $.Controller('Seccubus.Issue.Table',
 					this.view(
 					'init',
 					Seccubus.Models.Issue.findAll({
-						workspaceId	: this.options.workspace
+						workspace	: this.options.workspace
 					}),
 					{
 						workspace	: this.options.workspace,
@@ -175,8 +175,7 @@ $.Controller('Seccubus.Issue.Table',
 		var row = el.parent().parent();
 		row.removeClass(issue.statusName);
 		row.addClass(el.attr("newStatusName"));
-		issue.attr("workspaceId", this.options.workspace);
-		issue.attr("issueId", issue.id);
+		issue.attr("workspace", this.options.workspace);
 		issue.attr("status", el.attr("newStatus"));
 		issue.attr("statusName", el.attr("newStatusName"));
 		issue.save();
@@ -188,11 +187,12 @@ $.Controller('Seccubus.Issue.Table',
 
 	".unlink click" : function(el,ev) {
 		var issue = el.closest('.issue').model();
-		issue.attr("workspaceId",this.options.workspace);
-		issue.attr("findingIdsRemove[]",this.options.finding);
+		issue.attr("workspace",this.options.workspace);
+		issue.attr("findings_remove",[this.options.finding]);
 		// Don't confuse issues with findings
 		issue.removeAttr("findings");
 		issue.save();
+        this.updateView();
 	},
 
 	/*

@@ -19,7 +19,7 @@ steal(	'jquery/controller',
 	'jquery/dom/form_params',
 	'seccubus/models',
 	'seccubus/severity/select'
-).then( './views/init.ejs', 
+).then( './views/init.ejs',
 function($){
 
 /**
@@ -30,7 +30,7 @@ function($){
  *
  * Story
  * -----
- *  As a user I would like to be able to have a detailed view and create 
+ *  As a user I would like to be able to have a detailed view and create
  *  posibility for issues
  */
 $.Controller('Seccubus.Issue.Create',
@@ -52,7 +52,7 @@ $.Controller('Seccubus.Issue.Create',
 		findings : [],
 		/*
 		 * @attribute options.onClear
-		 * Funciton that is called when the form is cleared, e.g. to 
+		 * Funciton that is called when the form is cleared, e.g. to
 		 * disable a modal display
 		 */
 		onClear : function () { }
@@ -84,7 +84,7 @@ $.Controller('Seccubus.Issue.Create',
 
 		var newState = $(el).attr("newstatus");
 		var param = this.element.formParams();
-		
+
 		// Check form
 		var ok = true;
 		var elements = [];
@@ -101,7 +101,7 @@ $.Controller('Seccubus.Issue.Create',
 			console.log(this.options);
 			issue = new Seccubus.Models.Issue(param);
 			issue.attr("status", newState);
-			issue.attr("workspaceId", this.options.workspace);
+			issue.attr("workspace", this.options.workspace);
 			issue.attr("findingIds[]", []);
 			for ( i=0;i < this.options.findings.length;i++) {
 				issue.attr("findingIds[]").push(this.options.findings[i].id);
@@ -124,7 +124,7 @@ $.Controller('Seccubus.Issue.Create',
 		this.element.animate({left : '+=20'},100);
 		this.element.animate({left : '-=10'},100);
 		this.element.css({position : "relative"});
-	},	
+	},
 	".cancel click" : function() {
 		this.clearAll();
 	},
@@ -144,7 +144,7 @@ $.Controller('Seccubus.Issue.Create',
 	".nok change" : function(el) {
 		el.removeClass("nok");
 	},
-	/* 
+	/*
 	 * Update, overloaded to reder the control after and update even
 	 */
 	update : function(options) {

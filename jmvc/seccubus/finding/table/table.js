@@ -348,18 +348,18 @@ $.Controller('Seccubus.Finding.Table',
 		ev.preventDefault();
 		var find = el.closest('.finding').model();
 		var issue = new Seccubus.Models.Issue;
-		issue.attr("issueId",this.options.issue);
-		issue.attr("workspaceId",this.options.workspace);
-		issue.attr("findingIdsRemove",[find.id]);
+		//issue.attr("issue_id",this.options.issue);
+		issue.attr("workspace",this.options.workspace);
+		issue.attr("findings_remove",[find.id]);
 		issue.save();
 	},
 	".unlinkIssue click" : function(el,ev) {
 		ev.preventDefault();
 		var find = el.closest('.finding').model();
 		var issue = new Seccubus.Models.Issue;
-		issue.attr("issueId",el.attr('issueId'));
-		issue.attr("workspaceId",this.options.workspace);
-		issue.attr("findingIdsRemove",[find.id]);
+		issue.attr("issue_id",el.attr('issueId'));
+		issue.attr("workspace",this.options.workspace);
+		issue.attr("findings_remove",[find.id]);
 		issue.save();
 	},
 	// Handle issue edits

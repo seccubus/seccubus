@@ -40,11 +40,11 @@ limitations under the License.
 		<form id='create_issue'>Form will go here</form><br>
 		<table id='findings_tab' border=1></table><br>
 		<table id='issues' border=1></table>
-		<script type='text/javascript' 
+		<script type='text/javascript'
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
-			steal(	
+			steal(
 				'seccubus/issue/create',
 				'seccubus/issue/table',
 				'seccubus/workspace/select',
@@ -77,7 +77,7 @@ limitations under the License.
 					var findings = Seccubus.Models.Finding;
 					findings.findAll(
 						{
-							workspaceId : gui_state.attr("workspace")
+							workspace : gui_state.attr("workspace")
 						},
 						function(findings) {
 							console.log(findings);

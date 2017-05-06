@@ -29,8 +29,6 @@ sub create {
     my $workspace_id = $self->param('workspace_id');
 
     my $issue = $self->req->json();
-    delete $issue->{id};
-    delete $issue->{issue_id};
 
     unless ( $issue ) {
         $self->error("Invalid or empty request body");
@@ -42,16 +40,17 @@ sub create {
         $self->error("Workspace_id is not numeric");
         return;
     };
-    unless ( $issue->{name} ) {
-        $self->error("Issue needs to have a name");
-        return;
+    unless ( $issue->{issue_id} ) {
+        unless ( $issue->{name} ) {
+            $self->error("Issue needs to have a name");
+            return;
+        }
+        $issue->{severity} = 0 unless $issue->{severity};
+        $issue->{status} = 1 unless $issue->{status};
     }
-    $issue->{severity} = 0 unless $issue->{severity};
-    $issue->{status} = 1 unless $issue->{status};
 
     # A little translation
     $issue->{workspace_id} = $workspace_id;
-    $issue->{findings_add} = $issue->{'findings'};
 
     eval {
         $issue->{id} = update_issue(%$issue) + 0;
@@ -143,17 +142,10 @@ sub update {
     }
 
     my $issue = $self->req->json();
-    if ( ! $issue->{name} ) {
-        $self->error("Issue needs to have a name");
-        return;
-    }
-    $issue->{severity} = 0 unless $issue->{severity};
-    $issue->{status} = 1 unless $issue->{status};
 
     # A little translation
     $issue->{workspace_id} = $self->param("workspace_id");
     $issue->{issue_id} = $self->param("id");
-    $issue->{findings_add} = $issue->{findings};
 
     eval {
         my $data = {};

@@ -26,12 +26,12 @@ $.Model('Seccubus.Models.Issuelink',
 {
 	/*
 	 * @function findAll
-	 * This funciton gets all issues, it is the interface to 
+	 * This funciton gets all issues, it is the interface to
 	 * json/getFndings.pl
 	 * @return {Deferred} Deferred with all issues in it
 	 */
-	findAll: api("getFindings.pl"),
-  	//findOne : "/issues/{id}.json", 
+    findAll: api("workspace/{workspace}/findings"),
+  	//findOne : "/issues/{id}.json",
   	//create : "/issues.json",
 	/*
 	 * @function update
@@ -39,12 +39,12 @@ $.Model('Seccubus.Models.Issuelink',
 	 * json/updateIssue.pl
 	 * @return {Object} the updated object or an error
 	 */
- 	update : api("updateIssue.pl")
+    update  : update_api("workspace/{workspace}/issue/{id}"),
  	//destroy : "POST json/updateIssue.pl"
 },
 /* @Prototype */
 {
-	
+
 }); // Model
 
 

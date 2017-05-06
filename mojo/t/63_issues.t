@@ -255,7 +255,7 @@ $t->put_ok('/workspace/100/issue/2',
         "name" => "bla",
         "severity" => "0",
         "status" => "1",
-        "findings" => [4,5,6]
+        "findings_add" => [4,5,6]
     })
     ->status_is(200)
     ->json_is({
@@ -457,7 +457,7 @@ $t->post_ok('/workspace/100/issues',
     json => {
         "description"=> "This is a test with findings",
         "ext_ref"=> "test-456",
-        "findings" => [ 4, 5, 6 ],
+        "findings_add" => [ 4, 5, 6 ],
         "name"=> "bla",
         "severity"=> "0",
         "status"=> "1",
@@ -468,7 +468,6 @@ $t->post_ok('/workspace/100/issues',
         "workspace_id" => 100,
         "description" => "This is a test with findings",
         "ext_ref" => "test-456",
-        "findings" => [ 4, 5, 6 ],
         "name" => "bla",
         "severity" => "0",
         "status" => "1",
@@ -551,6 +550,101 @@ $t->get_ok('/workspace/100/issues')
     ])
     ;
 
+# Get findings for a specific issue
+$t->get_ok('/workspace/100/findings?Issue=3')
+    ->status_is(200)
+    ->json_is([
+        {
+            "find" => "Supported compression methods : \n\n",
+            "host" => "www.seccubus.com/184.50.88.72",
+            "hostName" => undef,
+            "id" => "4",
+            "plugin" => "compressionMethods",
+            "port" => "443/tcp",
+            "remark" => undef,
+            "scanId" => "1",
+            "scanName" => "seccubus",
+            "severity" => "0",
+            "severityName" => "Not set",
+            "status" => "1",
+            "statusName" => "New",
+            "issues" => [
+                {
+                    "description" => "This is a test with findings",
+                    "ext_ref" => "test-456",
+                    "id" => "3",
+                    "name" => "bla",
+                    "severity" => "0",
+                    "severityName" => "Not set",
+                    "status" => "1",
+                    "statusName" => "Open",
+                    "url" => "https://jira.atlassian.com/browse/test-456"
+                }
+            ]
+        },
+        {
+            "find" => "Errors in drown test : False\n\nTrue if errors occured while running drowntests",
+            "host" => "www.seccubus.com/184.50.88.72",
+            "hostName" => undef,
+            "id" => "5",
+            "plugin" => "drownErrors",
+            "port" => "443/tcp",
+            "remark" => undef,
+            "scanId" => "1",
+            "scanName" => "seccubus",
+            "severity" => "0",
+            "severityName" => "Not set",
+            "status" => "1",
+            "statusName" => "New",
+            "issues" => [
+                {
+                    "description" => "This is a test with findings",
+                    "ext_ref" => "test-456",
+                    "id" => "3",
+                    "name" => "bla",
+                    "severity" => "0",
+                    "severityName" => "Not set",
+                    "status" => "1",
+                    "statusName" => "Open",
+                    "url" => "https://jira.atlassian.com/browse/test-456"
+                }
+            ]
+        },
+        {
+            "find" => "Not vulnerable to Drown attack\n\nSee https://drownattack.com/",
+            "host" => "www.seccubus.com/184.50.88.72",
+            "hostName" => undef,
+            "id" => "6",
+            "plugin" => "drownVulnerable",
+            "port" => "443/tcp",
+            "remark" => undef,
+            "scanId" => "1",
+            "scanName" => "seccubus",
+            "severity" => "0",
+            "severityName" => "Not set",
+            "status" => "1",
+            "statusName" => "New",
+            "issues" => [
+                {
+                    "description" => "This is a test with findings",
+                    "ext_ref" => "test-456",
+                    "id" => "3",
+                    "name" => "bla",
+                    "severity" => "0",
+                    "severityName" => "Not set",
+                    "status" => "1",
+                    "statusName" => "Open",
+                    "url" => "https://jira.atlassian.com/browse/test-456"
+                }
+            ]
+        }
+    ])
+    ;
+
+$t->get_ok('/workspace/100/findings?Issue=2')
+    ->status_is(200)
+    ->json_is([])
+    ;
 
 done_testing();
 exit;
