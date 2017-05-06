@@ -176,7 +176,6 @@ $t->get_ok('/workspace/100/issues')
     ])
     ;
 
-# TODO: Update testing
 # Cannot update invalid workspace
 $t->put_ok('/workspace/a/issue/2',
     json => {
@@ -644,6 +643,83 @@ $t->get_ok('/workspace/100/findings?Issue=3')
 $t->get_ok('/workspace/100/findings?Issue=2')
     ->status_is(200)
     ->json_is([])
+    ;
+
+# Issue History
+# Invalid workspace
+$t->get_ok('/workspace/a/issue/2/history')
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+    ;
+
+# Invalid issue
+$t->get_ok('/workspace/100/issue/a/history')
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+    ;
+
+# Invalid combination
+$t->get_ok('/workspace/101/issue/2/history')
+    ->status_is(200)
+    ->json_is([])
+    ;
+
+# Invalid combination
+$t->get_ok('/workspace/100/issue/1/history')
+    ->status_is(200)
+    ->json_is([])
+    ;
+
+# OK
+$t->get_ok('/workspace/100/issue/2/history')
+    ->status_is(200)
+    ->json_has('/0')
+    ->json_has('/1')
+    ->json_hasnt('/2')
+    ->json_is('/0/description', "This is an updated test",)
+    ->json_is('/0/ext_ref', "test-123-updated",)
+    ->json_is('/0/id', "2",)
+    ->json_is('/0/issueId', "2",)
+    ->json_is('/0/name', "bla-updated",)
+    ->json_is('/0/severity', "1",)
+    ->json_is('/0/severityName', "High",)
+    ->json_is('/0/status', "2",)
+    ->json_is('/0/statusName', "Closed",)
+    ->json_is('/0/userId', "1",)
+    ->json_is('/0/userName', "admin")
+    ->json_has('/0/timestamp')
+    ->json_is('/1/description', "This is a test",)
+    ->json_is('/1/ext_ref', "test-123",)
+    ->json_is('/1/id', "1",)
+    ->json_is('/1/issueId', "2",)
+    ->json_is('/1/name', "bla",)
+    ->json_is('/1/severity', "0",)
+    ->json_is('/1/severityName', "Not set",)
+    ->json_is('/1/status', "1",)
+    ->json_is('/1/statusName', "Open",)
+    ->json_is('/1/userId', "1",)
+    ->json_is('/1/userName', "admin")
+    ->json_has('/1/timestamp')
+    ;
+
+$t->get_ok('/workspace/100/issue/3/history')
+    ->status_is(200)
+    ->json_has('/0')
+    ->json_hasnt('/1')
+    ->json_is('/0/description', "This is a test with findings",)
+    ->json_is('/0/ext_ref', "test-456",)
+    ->json_is('/0/id', "3",)
+    ->json_is('/0/issueId', "3",)
+    ->json_is('/0/name', "bla",)
+    ->json_is('/0/severity', "0",)
+    ->json_is('/0/severityName', "Not set",)
+    ->json_is('/0/status', "1",)
+    ->json_is('/0/statusName', "Open",)
+    ->json_is('/0/userId', "1",)
+    ->json_is('/0/userName', "admin")
+    ->json_has('/0/timestamp')
     ;
 
 done_testing();

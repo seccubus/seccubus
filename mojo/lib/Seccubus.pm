@@ -75,6 +75,8 @@ sub startup {
     $r->get   ('workspace/:workspace_id/issues')->to('issues#list');
     $r->put   ('workspace/:workspace_id/issue/:id')->to('issues#update');
 
+    # IssueHistory
+    $r->get   ('workspace/:workspace_id/issue/:issue_id/history')->to('issue_history#list');
 
 	# Notifications
 	$r->post  ('workspace/:workspace_id/scan/:scan_id/notifications')->to('notifications#create');
