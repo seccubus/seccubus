@@ -20,7 +20,8 @@ steal(
 	'seccubus/models'
      )
 .then( './views/init.ejs', 
-       './views/workspace.ejs', 
+       './views/workspace.ejs',
+       './views/no_workspace.ejs', 
        function($){
 
 /**
