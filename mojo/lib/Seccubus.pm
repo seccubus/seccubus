@@ -104,6 +104,12 @@ sub startup {
     # Severities
     $r->get   ('severities')->to('severities#list');
 
+    # SQL
+    $r->post  ('sql')->to('sql#create');
+    $r->get   ('sql')->to('sql#list');
+    $r->put   ('sql/:sql_id')->to('sql#update');
+    $r->post  ('sql/execute')->to('sql#execute');
+
     # Status
     $r->get   ('workspace/:workspace_id/status')->to('status#list');
 

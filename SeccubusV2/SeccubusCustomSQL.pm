@@ -17,7 +17,7 @@ package SeccubusCustomSQL;
 
 =head1 NAME $RCSfile: SeccubusCustomSQL.pm,v $
 
-This Pod documentation generated from the module SeccubusCustomSQL gives a 
+This Pod documentation generated from the module SeccubusCustomSQL gives a
 list of all functions within the module.
 
 =cut
@@ -27,7 +27,7 @@ use Exporter;
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 		get_customsql
 		get_savedsql
 		set_customsql
@@ -36,6 +36,7 @@ use Exporter;
 use strict;
 use SeccubusDB;
 use SeccubusRights;
+use Data::Dumper;
 use Carp;
 
 sub get_customsql($);
@@ -54,13 +55,13 @@ This function executes custom sql
 
 =item sql - custom sql
 
-=back 
+=back
 
 =back
 
 =item Checks
 
-User must be admin to execute custom SQL. 
+User must be admin to execute custom SQL.
 
 =back
 
@@ -69,10 +70,14 @@ User must be admin to execute custom SQL.
 sub get_customsql($){
 	my $sql = shift or confess "no sql provided";
 	confess "Permission denied" unless is_admin();
-	return sql ( 
-		"return"	=> "arrayref",
+	my $sth =  sql (
+		"return"	=> "handle",
 		"query" 	=> $sql
 	);
+    return {
+        fields => $sth->{NAME},
+        values => $sth->fetchall_arrayref()
+    };
 }
 
 
@@ -80,11 +85,11 @@ sub get_customsql($){
 
 This function returns all saved sqls
 
-=back 
+=back
 
 =item Checks
 
-User must be admin to execute custom SQL. 
+User must be admin to execute custom SQL.
 
 =back
 
@@ -92,9 +97,9 @@ User must be admin to execute custom SQL.
 
 sub get_savedsql() {
 	confess "Permission denied" unless is_admin();
-	return sql ( 
+	return sql (
 		"return"	=> "arrayref",
-		"query"		=> "SELECT * FROM `customsql` ORDER BY id"
+		"query"		=> "SELECT * FROM `customsql` ORDER BY name,id"
 		);
 }
 
@@ -112,28 +117,45 @@ This function saves custom sql
 
 =item sql - custom sql
 
-=back 
+=item id - id of sql statement if provided the statement will be updated
+
+=back
 
 =back
 
 =item Checks
 
-User must be admin to execute custom SQL. 
+User must be admin to execute custom SQL.
 
 =back
 
 =cut
 
-sub set_customsql($$;) {
+sub set_customsql($$;$) {
 	my $name = shift or confess "no name provided";
 	my $sql = shift or confess "no sql provided";
+    my $id = shift;
+
 	confess "Permission denied" unless is_admin();
-	my $id = sql ( 
-		"return"	=> "id",
-		"query" 	=> "insert into `customsql` set name=?, `sql`=?",
-		"values" 	=> [$name,$sql]
-	);
-	return [$id];
+    if ( $id ) {
+        my $ret = sql(
+            "return"    => "rows",
+            "query"     => "update `customsql` set name=?, `sql`=? where `id` = ?",
+            "values"    => [$name,$sql,$id]
+        );
+        if ( $ret == 0 ) {
+            die("Unable to update");
+        } else {
+            return { id => $id, name => $name, sql => $sql };
+        }
+    } else {
+    	my $id = sql (
+    		"return"	=> "id",
+    		"query" 	=> "insert into `customsql` set name=?, `sql`=?",
+    		"values" 	=> [$name,$sql]
+    	);
+    	return [$id];
+    }
 }
 
 1;
