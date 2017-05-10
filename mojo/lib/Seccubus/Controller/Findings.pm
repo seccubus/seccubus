@@ -71,7 +71,6 @@ sub list {
                 $filter{lc($key)} = $self->param($key);
             }
         }
-        #die Dumper \%filter;
 
         my $issues = get_issues($workspace_id,undef,1); # Get list of issues with finding_id;
         my %i2f;

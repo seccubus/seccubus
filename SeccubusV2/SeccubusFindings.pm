@@ -252,48 +252,51 @@ sub get_status($$$;$) {
     my $asset_ids = shift;
     my $filter = shift;
 
-    die "Must specify scanids or assetids for function get_status" unless (@$scan_ids or @$asset_ids);
-
     if ( may_read($workspace_id) ) {
         my $params;
         push @$params, $workspace_id;
 
         my $query = "
-            SELECT	finding_status.id, finding_status.name, count(findings.id)
+            SELECT	s.id, s.name, count(fi.id)
             FROM
-                finding_status
-            LEFT JOIN findings on ( findings.status =  finding_status.id AND findings.workspace_id = ? ";
+                finding_status s
+            LEFT JOIN (
+                SELECT DISTINCT f.id, f.status
+                FROM        findings f
+                LEFT JOIN   host_names h
+                ON          h.ip = f.host
+                WHERE       f.workspace_id = ?
+        ";
 
         if(@$asset_ids){
-            $query .= "AND findings.`host` in (";
-            $query .= "select ip from asset_hosts ho where asset_id in (";
+            $query .= "AND f.host in (";
+            $query .= "SELECT ip FROM asset_hosts ho WHERE asset_id IN (";
             $query .= join ",", map { push @$params,$_; '?'; } @$asset_ids;
-            $query .= " ) union ";
-            $query .= "select `host` from asset_hosts ho where asset_id in (";
+            $query .= " UNION ";
+            $query .= "SELECT host FROM asset_hosts ho WHERE asset_id IN (";
             $query .= join ",", map { push @$params,$_; '?'; } @$asset_ids;
-            $query .= ")";
-            $query .= ")";
-        } else{
-            $query .= " AND findings.scan_id in (  ";
+            $query .= ") \n";
+        } elsif ( @$scan_ids ) {
+            $query .= " AND f.scan_id IN (  ";
             $query .= join ",", map { push @$params,$_; '?'; } @$scan_ids if(@$scan_ids);
-            $query .= " ) ";
+            $query .= " ) \n";
         }
         if ( $filter ) {
             if ( $filter->{host} ) {
                 $filter->{host} =~ s/\*/\%/;
-                $query .= " AND host LIKE ? ";
+                $query .= " AND f.host LIKE ? ";
                 push @$params, $filter->{host};
             }
             if ( $filter->{port} ) {
-                $query .= " AND port = ? ";
+                $query .= " AND f.port = ? ";
                 push @$params, $filter->{port};
             }
             if ( $filter->{plugin} ) {
-                $query .= " AND plugin = ? ";
+                $query .= " AND f.plugin = ? ";
                 push @$params, $filter->{plugin};
             }
             if ( $filter->{severity} ) {
-                $query .= " AND findings.severity = ? ";
+                $query .= " AND f.severity = ? ";
                 push @$params, $filter->{severity};
             }
             if ( $filter->{finding} ) {
@@ -305,31 +308,21 @@ sub get_status($$$;$) {
                 push @$params, "%" . $filter->{remark} . "%";
             }
             if ( $filter->{issue} ) {
-                $query .= " AND findings.id IN ( SELECT finding_id from issues2findings WHERE issue_id = ? ) ";
+                $query .= " AND f.id IN ( SELECT finding_id FROM issues2findings WHERE issue_id = ? ) ";
                 push @$params, $filter->{issue};
             }
-
-        $query .= " ) ";
-
-
-
-        $query .= "
-            LEFT JOIN host_names on ( host_names.ip = host and host_names.workspace_id = ?";
-        push @$params, $workspace_id;
-
-        }
-        if ( $filter ) {
             if ( $filter->{hostname} ) {
                 $filter->{hostname} =~ s/\*/\%/;
                 $filter->{hostname} = "%$filter->{hostname}%";
-                $query .= " AND host_names.name LIKE ? ";
+                $query .= " AND h.name LIKE ? ";
                 push @$params, $filter->{hostname};
             }
         }
-        $query .= " ) ";
 
-
-        $query .= " GROUP BY finding_status.id";
+        $query .= "
+        ) fi ON ( fi.status = s.id )
+        GROUP BY s.id
+        ORDER BY s.id";
         #die $query;
         return sql( "return"	=> "ref",
                 "query"	=> $query,
@@ -444,7 +437,7 @@ sub get_filters($$$;$) {
                 $addr .= shift @subs;
                 $addr .= "/";
                 if ( ! exists $count{"$addr*"} ) {
-                    push @hosts, { name => "$addr*", count => 0 };
+                    push @hosts, { name => "$addr*", number => 0 };
                 }
                 $count{"$addr*"} += $$host[1];
             }
@@ -455,7 +448,7 @@ sub get_filters($$$;$) {
                 $addr .= shift @subs;
                 $addr .= ".";
                 if ( ! exists $count{"$addr*"} ) {
-                    push @hosts, { name => "$addr*", count => 0 };
+                    push @hosts, { name => "$addr*", number => 0 };
                 }
                 $count{"$addr*"} += $$host[1];
             }

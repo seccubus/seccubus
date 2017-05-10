@@ -25,42 +25,45 @@ use Cwd 'cwd';
 
 # This method will run once at server start
 sub startup {
-	my $self = shift;
+    my $self = shift;
 
-	# Set an alternative controller class to set some global headers
-	$self->controller_class('Seccubus::Controller');
+    # Set an alternative controller class to set some global headers
+    $self->controller_class('Seccubus::Controller');
 
-	# Security
-	$self->secrets(['SeccubusScanSmarterNotHarder']);
+    # Security
+    $self->secrets(['SeccubusScanSmarterNotHarder']);
 
-	# Set up error helper
-	$self->helper( error => sub {
-		my ($self, $message, $status ) = @_;
+    # Set up error helper
+    $self->helper( error => sub {
+        my ($self, $message, $status ) = @_;
 
-		$status = 400 unless $status;
-		$message = "error" unless $message;
+        $status = 400 unless $status;
+        $message = "error" unless $message;
 
-		$self->render(
-			json => {
-				status => "Error",
-				message => $message,
-			},
-			status => $status
-		);
-	});
+        $self->render(
+            json => {
+                status => "Error",
+                message => $message,
+            },
+            status => $status
+        );
+    });
 
-	# Router
-	my $r = $self->routes;
+    # Router
+    my $r = $self->routes;
 
-	# App Status
-	$r->get   ('appstatus')->to('app_status#read');
-	$r->get   ('appstatus/:errorcode')->to('app_status#read');
+    # App Status
+    $r->get   ('appstatus')->to('app_status#read');
+    $r->get   ('appstatus/:errorcode')->to('app_status#read');
 
-	# Attachments
-	$r->get   ('workspace/:workspace_id/scan/:scan_id/run/:run_id/attachment/:id')->to('attachments#read');
+    # Attachments
+    $r->get   ('workspace/:workspace_id/scan/:scan_id/run/:run_id/attachment/:id')->to('attachments#read');
 
-	# Events
-	$r->get   ('events')->to('events#list');
+    # Events
+    $r->get   ('events')->to('events#list');
+
+    # Filter
+    $r->get   ('workspace/:workspace_id/filters')->to('filter#list');
 
     # Findings
     $r->get   ('workspace/:workspace_id/findings')->to('findings#list');
@@ -78,88 +81,91 @@ sub startup {
     # IssueHistory
     $r->get   ('workspace/:workspace_id/issue/:issue_id/history')->to('issue_history#list');
 
-	# Notifications
-	$r->post  ('workspace/:workspace_id/scan/:scan_id/notifications')->to('notifications#create');
-	$r->get   ('workspace/:workspace_id/scan/:scan_id/notification/:id')->to('notifications#read');
-	$r->get   ('workspace/:workspace_id/scan/:scan_id/notifications')->to('notifications#list');
-	$r->put   ('workspace/:workspace_id/scan/:scan_id/notification/:id')->to('notifications#update');
-	$r->delete('workspace/:workspace_id/scan/:scan_id/notification/:id')->to('notifications#delete');
+    # Notifications
+    $r->post  ('workspace/:workspace_id/scan/:scan_id/notifications')->to('notifications#create');
+    $r->get   ('workspace/:workspace_id/scan/:scan_id/notification/:id')->to('notifications#read');
+    $r->get   ('workspace/:workspace_id/scan/:scan_id/notifications')->to('notifications#list');
+    $r->put   ('workspace/:workspace_id/scan/:scan_id/notification/:id')->to('notifications#update');
+    $r->delete('workspace/:workspace_id/scan/:scan_id/notification/:id')->to('notifications#delete');
 
-	# Scans
-	$r->post  ('workspace/:workspace_id/scans')->to('scans#create');
-	$r->get   ('workspace/:workspace_id/scans')->to('scans#list');
-	$r->get   ('workspace/:workspace_id/scan/:scan_id')->to('scans#read');
-	$r->put   ('workspace/:workspace_id/scan/:scan_id')->to('scans#update');
-	#$r->delete('workspace/:id/scan/:scan_id')->to('scans#delete');
+    # Scans
+    $r->post  ('workspace/:workspace_id/scans')->to('scans#create');
+    $r->get   ('workspace/:workspace_id/scans')->to('scans#list');
+    $r->get   ('workspace/:workspace_id/scan/:scan_id')->to('scans#read');
+    $r->put   ('workspace/:workspace_id/scan/:scan_id')->to('scans#update');
+    #$r->delete('workspace/:id/scan/:scan_id')->to('scans#delete');
 
-	# Scanners
-	$r->get   ('scanners')->to('scanners#list');
+    # Scanners
+    $r->get   ('scanners')->to('scanners#list');
 
     # Session
     $r->get   ('session')->to('sessions#read');
 
-	# Severities
-	$r->get   ('severities')->to('severities#list');
+    # Severities
+    $r->get   ('severities')->to('severities#list');
 
-	# Runs
-	$r->get   ('workspace/:workspace_id/scan/:scan_id/runs')->to('runs#list');
+    # Status
+    $r->get   ('workspace/:workspace_id/status')->to('status#list');
 
-	# Version
-	$r->get   ('version')->to('version#read');
+    # Runs
+    $r->get   ('workspace/:workspace_id/scan/:scan_id/runs')->to('runs#list');
 
-	# Workspace
-	$r->post  ('workspaces')->to('workspaces#create');
-	$r->get   ('workspaces')->to('workspaces#list');
-	#$r->get('workspace/:id')->to('workspaces#read');
-	$r->put   ('workspace/:id')->to('workspaces#update');
-	#$r->delete('workspace/:id')->to('workspaces#delete');
+    # Version
+    $r->get   ('version')->to('version#read');
 
-
-	# Handle file requests
-	if ( $self->mode() eq 'production' ) {
-		$r->get('/')->to(cb => sub {
-			my $c = shift;
-			$c->redirect_to('seccubus/seccubus.html')
-		});
-	} else {
-		# Inspired by https://github.com/tempire/app-dirserve
-		$r->get('/')->to(cb => sub {
-			my $c = shift;
-			$c->redirect_to('seccubus')
-		});
-		$r->get('/(*dir)')->to(cb => sub {
-			my $c = shift;
-
-			my $dir = $c->param('dir');
-			my $fulldir = cwd() . "/public/$dir";
-			if ( -e $fulldir ) {
-				opendir DH, $fulldir;
-				my @items = map +{ name => $_, is_dir => -d "$fulldir/$_"}, readdir DH;
-				close DH;
-
-				$c->stash(
-					dir     => $dir,
-					fulldir => $fulldir,
-					items   => \@items
-				);
-
-				$c->render('listing');
-			} else {
-				$c->render(
-					message => "File not found",
-					status => 404
-				);
-			}
-		});
-	}
+    # Workspace
+    $r->post  ('workspaces')->to('workspaces#create');
+    $r->get   ('workspaces')->to('workspaces#list');
+    #$r->get('workspace/:id')->to('workspaces#read');
+    $r->put   ('workspace/:id')->to('workspaces#update');
+    #$r->delete('workspace/:id')->to('workspaces#delete');
 
 
-	# Normal route to controller
-	#$r->get('/')->to('default#welcome');
-	#$r->get('/')->to(cb => sub {
-	#	my $c = shift;
-	#	$c->reply->static('seccubus.html')
-	#});
+    # Handle file requests
+    if ( $self->mode() eq 'production' ) {
+        $r->get('/')->to(cb => sub {
+            my $c = shift;
+            $c->redirect_to('seccubus/seccubus.html')
+        });
+    } else {
+        # Inspired by https://github.com/tempire/app-dirserve
+        $r->get('/')->to(cb => sub {
+            my $c = shift;
+            $c->redirect_to('seccubus')
+        });
+        $r->get('/(*dir)')->to(cb => sub {
+            my $c = shift;
+
+            my $dir = $c->param('dir');
+            my $fulldir = cwd() . "/public/$dir";
+            if ( -e $fulldir ) {
+                opendir DH, $fulldir;
+                my @items = map +{ name => $_, is_dir => -d "$fulldir/$_"}, readdir DH;
+                close DH;
+
+                $c->stash(
+                    dir     => $dir,
+                    fulldir => $fulldir,
+                    items   => \@items
+                );
+
+                $c->render('listing');
+            } else {
+                $c->render(
+                    message => "File not found",
+                    status => 404
+                );
+            }
+        });
+    }
+
+
+    # Normal route to controller
+    #$r->get('/')->to('default#welcome');
+    #$r->get('/')->to(cb => sub {
+    #   my $c = shift;
+    #   $c->reply->static('seccubus.html')
+    #});
 }
 
 
