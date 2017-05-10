@@ -26,12 +26,12 @@ $.Model('Seccubus.Models.Status',
 {
 	/*
 	 * @function findAll
-	 * This funciton gets all findings, it is the interface to 
+	 * This funciton gets all findings, it is the interface to
 	 * json/getFndings.pl
 	 * @return {Deferred} Deferred with all findings in it
 	 */
-	findAll: api("getStatus.pl")
-  	//findOne : api("/findings/{id}.json"), 
+	findAll: api("workspace/{workspace}/status")
+  	//findOne : api("/findings/{id}.json"),
   	//create : api("/findings.json"),
  	//update : api("updateStatus.pl")
   	//destroy : api("/findings/{id}.json")
