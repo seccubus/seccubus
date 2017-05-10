@@ -125,13 +125,13 @@ sub add_user($$$) {
 				"values"	=> [$user, $name],
 			    );
 		#Make sure member of the all group
-		sql("return"	=> "id",
+		sql("return"	=> "none",
 		    "query"	=> "INSERT into user2group values (?, ?)",
 		    "values"	=> [$id, 2],
 	 	   );
 		if ( $isadmin ) {
 			# Make user meber of the admins group
-			sql("return"	=> "id",
+			sql("return"	=> "none",
 			    "query"	=> "INSERT into user2group values (?, ?)",
 			    "values"	=> [$id, 1],
 			   );

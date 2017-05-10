@@ -83,7 +83,10 @@ sub update_run($$$;$$) {
 	my $attachment = shift;
 	my $description = shift;
 
-	if ( ! $timestamp =~ /^\d\d\d\d\-\d\d\-\d\d \d\d\:\d\d\:\d\d$/ ) {
+# DOP:  Weird.  IVIL is sending us timestamps in this format YYYYMMDDHHmmss, yet all the sudden we're checking for a different format.  This should have nothing to do with the Postgres changes.
+	if ($timestamp =~ /^(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/) {
+	    $timestamp = "$1-$2-$3 $4:$5:$6";
+	}elsif ( ! $timestamp =~ /^\d\d\d\d\-\d\d\-\d\d \d\d\:\d\d\:\d\d$/ ) {
 		confess "Timestamp '$timestamp' does not have the correct format";
 	}
 
