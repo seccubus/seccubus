@@ -16,76 +16,76 @@
 // steal model files
 
 function base_url() {
-	return "/";
-} 
+    return "/";
+}
 function api(url, method){
-	method = method || 'GET';
-	return method + " " + base_url() + url;
+    method = method || "GET";
+    return method + " " + base_url() + url;
 }
 
 function create_api(url){
-	return (function(attrs,success,failure) {
-  		var re = new RegExp('\{(.*?)\}');
-  		var m = re.exec(url);
-  		while ( m ) {
-  			url = url.replace(re,attrs[m[1]]);
-  			m = re.exec(url)
-  		}
+    return (function(attrs,success,failure) {
+        var re = new RegExp("\{(.*?)\}");
+        var m = re.exec(url);
+        while ( m ) {
+            url = url.replace(re,attrs[m[1]]);
+            m = re.exec(url)
+        }
 
-	    return $.ajax({
+        return $.ajax({
             url: base_url() + url,
-            type: 'POST',
+            type: "POST",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             data: JSON.stringify(attrs),
-            success : success,
-            failure : failure
-        })
-	});
+            success,
+            failure
+        });
+    });
 }
 
 function update_api(url){
-	return (function(id,attrs,success,failure) {
-  		var re = new RegExp('\{(.*?)\}');
-  		var m = re.exec(url);
-  		while ( m ) {
-  			url = url.replace(re,attrs[m[1]]);
-  			m = re.exec(url)
-  		}
+    return (function(id,attrs,success,failure) {
+          var re = new RegExp("\{(.*?)\}");
+          var m = re.exec(url);
+          while ( m ) {
+              url = url.replace(re,attrs[m[1]]);
+              m = re.exec(url)
+          }
 
-	    return $.ajax({
+        return $.ajax({
             url: base_url() + url,
-            type: 'PUT',
+            type: "PUT",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             data: JSON.stringify(attrs),
             success : success,
             failure : failure
         })
-	});
+    });
 }
 
 steal(
-	'jquery/model', 
-	'./up_to_date.js', 
-	'./config_item.js',
-	'./workspace.js',
-	'./scan.js', 
-	'./finding.js', 
-	'./filter.js',
-	'./status.js', 
-	'./gui_state.js', 
-	'./scanner.js', 
-	'./history.js', 
-	'./run.js',
-	'./event.js',
-	'./notification.js',
-	'./asset.js',
-	'./asset_host.js',
-	'./asset2scan.js',
-	'./custsql.js',
-	'./savedsql.js', 
-	'./issue.js',
-	'./issuelink.js',
-	'./severity.js'
+    "jquery/model",
+    "./up_to_date.js",
+    "./config_item.js",
+    "./workspace.js",
+    "./scan.js",
+    "./finding.js",
+    "./filter.js",
+    "./status.js",
+    "./gui_state.js",
+    "./scanner.js",
+    "./history.js",
+    "./run.js",
+    "./event.js",
+    "./notification.js",
+    "./asset.js",
+    "./asset_host.js",
+    "./asset2scan.js",
+    "./custsql.js",
+    "./savedsql.js",
+    "./issue.js",
+    "./issuelink.js",
+    "./severity.js"
 )

@@ -100,7 +100,7 @@ $.Controller('Seccubus.Finding.Bulkedit',
 		var params = this.element.formParams();
         params.ids = [];
 		// Set bulk to true to signal other components that this is a bulk update
-		for(i = 0;i < findings.length;i++) {
+		for(var i = 0;i < findings.length;i++) {
 			findings[i].bulk = true
             params.ids.push(findings[i].id);
 		}
