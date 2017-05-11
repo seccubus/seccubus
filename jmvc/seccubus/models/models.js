@@ -38,13 +38,8 @@ function create_api(url){
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             data: JSON.stringify(attrs),
-<<<<<<< HEAD
             success : success,
             failure : failure
-=======
-            success,
-            failure
->>>>>>> 5a0f1951a2b42ec3361cb4894d105516b48afb3f
         });
     });
 }
