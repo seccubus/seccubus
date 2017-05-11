@@ -17,7 +17,7 @@
 	'jquery/view/ejs',
 	'jquery/controller/view',
 	'seccubus/models',
-	'seccubus/custsql/select'
+	'seccubus/saved_sql/select'
 ).then( './views/init.ejs',
 	'./views/error.ejs',
 function($){
@@ -26,9 +26,9 @@ function($){
  * @parent custSQL
  * @inherits jQuery.Controller
  */
-$.Controller('Seccubus.Custsql.Table',
+$.Controller('Seccubus.SavedSql.Table',
 {
-	/* 
+	/*
 	 * @attribute options
 	 * Object holding all options
 	 */
@@ -42,7 +42,7 @@ $.Controller('Seccubus.Custsql.Table',
 		 * @attribute options.saveSQL
 		 * function which using when save button clicked
 		 */
-		 saveSQL:function(sql,updateView){ $.warn('no save sql function given'); }
+		 saveSQL:function(sql,updateView){ console.warn('no save sql function given'); }
 
 	}
 },
@@ -67,7 +67,7 @@ $.Controller('Seccubus.Custsql.Table',
 	},
 	updateView : function() {
 		this.options.sql = $('#custsql_input').val();
-		if ( this.options.sql == "" ) {
+		if ( typeof this.options.sql === 'undefined' || this.options.sql === "" ) {
 			this.element.html(
 				this.view(
 					'init',
@@ -75,12 +75,13 @@ $.Controller('Seccubus.Custsql.Table',
 				)
 			);
 		} else {
-			Seccubus.Models.custsql.findAll(
+            console.log(this);
+			Seccubus.Models.CustSql.findAll(
 				{ sql : this.options.sql },
 				this.callback('dataReady')
 			);
 		}
-		$("#sqls_selector").each(function(){ 
+		$("#sqls_selector").each(function(){
 			$(this).seccubus_custsql_select({
 				getItems:function(options){
 					$('#sqls_selector').change(function(){
@@ -94,8 +95,8 @@ $.Controller('Seccubus.Custsql.Table',
 
 	},
 	dataReady : function(items) {
+        console.log(items);
 		var error = "";
-		var head = [];
 		$.map(items,function(item){
 			if(item.error) error = item.error;
 		});
@@ -108,18 +109,12 @@ $.Controller('Seccubus.Custsql.Table',
 
 		this.element.html(this.view(
 			'init',
-			{sql : this.options.sql, 'items':items, 'error':error,'head':head }
+			{sql : this.options.sql, 'items':items, 'error':error }
 		));
-		if(head.length>-1){
-			head.map(function(atName){
-				items[0].removeAttr(atName);	
-			});
-			
-		}
 	},
 	update : function(options){
 		this._super(options);
-		this.updateView(); 
+		this.updateView();
 	}
 });
 

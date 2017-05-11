@@ -34,7 +34,7 @@ steal(	'jquery/controller',
  * -----
  * As a user I would like to be able tot save SQL from the GUI
  */
- $.Controller('Seccubus.Custsql.Create',
+ $.Controller('Seccubus.SavedSql.Create',
 /** @Static */
 {
 	/*
@@ -46,10 +46,10 @@ steal(	'jquery/controller',
 		 * @attribute options.sql
 		 * SQL which save
 		 */
-		sql : "",
+		sql : " ",
 		/*
 		 * @attribute options.onClear
-		 * Funciton that is called when the form is cleared, e.g. to 
+		 * Funciton that is called when the form is cleared, e.g. to
 		 * disable a modal display
 		 */
 		onClear : function () { },
@@ -58,7 +58,7 @@ steal(	'jquery/controller',
 		 * Funciton that is called save done
 		 * disable a modal display
 		 */
-		afterSave : function() { $.warn('afterSave not defined'); }
+		afterSave : function() { console.warn('afterSave not defined'); }
 	}
 },
 /** @Prototype */
@@ -78,7 +78,7 @@ steal(	'jquery/controller',
 		params.sql = this.options.sql;
 		if ( ok ) {
 			this.element.find('[type=submit]').val('Creating...')
-			new Seccubus.Models.savedsql(params).save(this.callback('saved'));
+			new Seccubus.Models.SavedSql(params).save(this.callback('saved'));
 		} else {
 			this.nok(elements);
 		}

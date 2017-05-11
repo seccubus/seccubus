@@ -13,7 +13,7 @@
 <%# limitations under the License.                                           %>
 Type your SQL:<BR>
 <textarea rows=10 cols=100 name='hosts' id='custsql_input'><%= sql %></textarea><BR><input type="button" id="custsql_button" value="exec"/> <input type="button" id="custsql_save" value="save SQL"><BR><BR>
-<% if(typeof items == "undefined" && typeof error != "") { %> no sql given 
+<% if(typeof items == "undefined" && typeof error != "") { %> no sql given
 <% } else { %>
 	<% if(error != "") { %>
 		<%== error %>
@@ -21,22 +21,20 @@ Type your SQL:<BR>
 		<table>
 			<thead>
 				<tr>
-				<% for(var num=0;num<head.length;num++){ %>
-				<th><%== head[num] %></th>
+				<% for(var num=0;num<items.fields.length;num++){ %>
+				    <th><%= items.fields[num] %></th>
 				<% } %>
 				</tr>
 			</thead>
 			<tbody>
-			<% count = 0  %>
-			<% for(var row=0;row<items.length; row++){ %>
-				<tr>
-				<% for ( var col=0; col<head.length; col++ ){ %>
-				<td><%== items[row][head[col]] %></td>
-				<% } %>
-				</tr>
-				<% count++ %>
-			<% } %>
-			</tbody>
+    			<% for(var row=0;row<items.values.length; row++){ %>
+    				<tr>
+    				<% for ( var col=0; col<items.fields.length; col++ ){ %>
+    				    <td><pre><%= items.values[row][col] %></pre></td>
+    				<% } %>
+    				</tr>
+    			<% } %>
+    			</tbody>
 		</table>
 	<% } %>
 <% } %>
