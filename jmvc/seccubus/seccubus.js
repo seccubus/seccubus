@@ -50,13 +50,13 @@ steal(
 	'seccubus/asset/host/create',
 	'seccubus/asset/host/edit',
 	'seccubus/asset/select',
-	'seccubus/custsql/table',
-	'seccubus/custsql/create',
+	'seccubus/saved_sql/table',
+	'seccubus/saved_sql/create',
 	function(){					// configure your application
 		/***********************************************************
 		 * Initialize gui state and hook into it
 		 **********************************************************/
-		
+
 		var gui_state=new Seccubus.GuiState({
 			workspace	: -1
 		});
@@ -134,7 +134,7 @@ steal(
 			function(ev,model) {
 				if ( ! model.bulk ) {
 					render_status();
-					render_filters();			
+					render_filters();
 				}
 			}
 		);
@@ -217,7 +217,7 @@ steal(
 				var val = $(this).val();
 				gui_state.attr("scans",'');
 				gui_state.attr("assets",val);
-				
+
 				$('.assetSelector').val(val);
 			});
 		});
@@ -434,7 +434,7 @@ steal(
 					$('#modalDialog').widgets_modal({
 						query : "#editIssueDialog",
 						close : true
-					});					
+					});
 				},
 				onLink		: function (finding) {
 					var findings = [];
@@ -459,14 +459,14 @@ steal(
 							$('#modalDialog').widgets_modal({
 								query : "#createIssueDialog",
 								close : true
-							});												
+							});
 						}
 
 					});
 					$('#modalDialog').widgets_modal({
 						query : "#createIssuelinkDialog",
 						close : true
-					});					
+					});
 				}
 
 			});
@@ -614,14 +614,14 @@ steal(
 							$('#modalDialog').widgets_modal({
 								query : "#createIssueDialog",
 								close : true
-							});												
+							});
 						}
 
 					});
 					$('#modalDialog').widgets_modal({
 						query : "#createIssuelinkDialog",
 						close : true
-					});					
+					});
 				}
 			});
 		};
@@ -657,7 +657,7 @@ steal(
 					$('#modalDialog').widgets_modal({
 						query : "#createIssueDialog",
 						close : true
-					});					
+					});
 				},
 				onIssueEdit	: function(issue) {
 					$('#editIssue').seccubus_issue_edit({
@@ -671,7 +671,7 @@ steal(
 					$('#modalDialog').widgets_modal({
 						query : "#editIssueDialog",
 						close : true
-					});					
+					});
 				}
 			})
 		}

@@ -75,6 +75,91 @@ $t->get_ok('/workspace/a/status')
     ->json_has('/message')
     ;
 
+$t->get_ok('/workspace/a/assets')
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+    ;
+
+# Testing asset creation
+
+# No parameters
+$t->post_ok('/workspace/100/assets')
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+    ;
+
+# Name missing
+$t->post_ok('/workspace/100/assets',
+    json => {
+        hosts => "localhost",
+        recipients => "root\@example.com"
+    })
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+    ;
+
+# Should get empty list
+$t->get_ok('/workspace/100/assets')
+    ->status_is(200)
+    ->json_is([])
+    ;
+
+# ok
+$t->post_ok('/workspace/100/assets',
+    json => {
+        name => "localhost",
+        hosts => "localhost",
+        recipients => "root\@example.com"
+    })
+    ->status_is(200)
+    ->json_is({
+        id => 1,
+        name => "localhost",
+        hosts => "localhost",
+        recipients => "root\@example.com"
+    })
+;
+
+# Should list with single item
+$t->get_ok('/workspace/100/assets')
+    ->status_is(200)
+    ->json_is([{
+        id => 1,
+        name => "localhost",
+        hosts => "localhost",
+        recipients => "root\@example.com",
+        recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>'
+    }])
+;
+
+# duplicate
+$t->post_ok('/workspace/100/assets',
+    json => {
+        name => "localhost",
+        hosts => "localhost",
+        recipients => "root\@example.com"
+    })
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+    ;
+
+# Should list with single item
+$t->get_ok('/workspace/100/assets')
+    ->status_is(200)
+    ->json_is([{
+        id => 1,
+        name => "localhost",
+        hosts => "localhost",
+        recipients => "root\@example.com",
+        recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>'
+    }])
+;
+die "fb";
+
 # Testing limit in findings
 $t->get_ok('/workspace/100/findings')
     ->status_is(200)
@@ -99,6 +184,7 @@ $t->get_ok('/workspace/100/filters?scanIds[]=54345')
         {"finding"=>"","host"=>[{"name"=>"*","number"=>0,"selected"=>JSON::false},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"hostname"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"issue"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"plugin"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"port"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"remark"=>"","severity"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}]}
     )
     ;
+
 # Same for status
 $t->get_ok('/workspace/100/status?scanIds[]=54345')
     ->status_is(200)
@@ -107,6 +193,7 @@ $t->get_ok('/workspace/100/status?scanIds[]=54345')
     )
     ;
 
+# Should fetch enough findings
 $t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=1')
     ->status_is(200)
     ;

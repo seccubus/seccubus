@@ -56,6 +56,13 @@ sub startup {
     $r->get   ('appstatus')->to('app_status#read');
     $r->get   ('appstatus/:errorcode')->to('app_status#read');
 
+    # Assets
+    $r->post  ('workspace/:workspace_id/assets')->to('assets#create');
+    $r->get   ('workspace/:workspace_id/asset/:id')->to('assets#read');
+    $r->get   ('workspace/:workspace_id/assets')->to('assets#list');
+    $r->put   ('workspace/:workspace_id/asset/:id')->to('assets#update');
+    $r->delete('workspace/:workspace_id/asset/:id')->to('assets#delete');
+
     # Attachments
     $r->get   ('workspace/:workspace_id/scan/:scan_id/run/:run_id/attachment/:id')->to('attachments#read');
 
