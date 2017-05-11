@@ -17,8 +17,8 @@ steal( 'jquery/controller',
        'jquery/view/ejs',
        'jquery/controller/view',
        'seccubus/models' )
-.then( './views/init.ejs', 
-       './views/custsql.ejs', 
+.then( './views/init.ejs',
+       './views/custsql.ejs',
        './views/error.ejs',
 function($){
 
@@ -30,7 +30,7 @@ function($){
  * @param {Object} options
  * Defines the options for this control
  */
-$.Controller('Seccubus.Custsql.Select',
+$.Controller('Seccubus.SavedSql.Select',
 /** @Static */
 {
 	/*
@@ -41,7 +41,7 @@ $.Controller('Seccubus.Custsql.Select',
 	defaults : {
 
 		/* attribute options.selected
-		 * Which options are selected now 
+		 * Which options are selected now
 		 * Obj: key: scan_id, val: asset_id
 		 */
 		items : [],
@@ -74,7 +74,7 @@ $.Controller('Seccubus.Custsql.Select',
 		      .html(this.view('asset', asset) );
 	},
 
-	// This controller fires on change 
+	// This controller fires on change
 	".SQLsSelector change" : function(el){
 		alert("onChange");
 	},
@@ -86,14 +86,14 @@ $.Controller('Seccubus.Custsql.Select',
 	 * will be displayed
 	 */
 	updateView : function() {
-			Seccubus.Models.savedsql.findAll( {},
+			Seccubus.Models.SavedSql.findAll( {},
 				this.callback('dataReady')
 			);
 	},
 	/*
 	 * @function dataReady
-	 * This is the callback functio that is used internally after the 
-	 * findAll call in updateView 
+	 * This is the callback functio that is used internally after the
+	 * findAll call in updateView
 	 * @param {Deferred} items
 	 * A deferred containing all scans
 	 */
@@ -112,7 +112,7 @@ $.Controller('Seccubus.Custsql.Select',
 	},
 	/*
 	 * @function update
-	 * This overloads the standard update funciton to allways excute 
+	 * This overloads the standard update funciton to allways excute
 	 *  updateView then the control is updated
 	 * @param {Object} options
 	 * The options object

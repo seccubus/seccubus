@@ -13,15 +13,15 @@
 <%# limitations under the License.                                           %>
 <% count = 0  %>
 <% if(typeof this[0] != "undefined" && typeof this[0].error != "undefined" ) { %>
-	 <%== $.View('//seccubus/custsql/select/views/error.ejs',{ message : this[0].error }) %>
+	 <%== $.View('//seccubus/saved_sql/select/views/error.ejs',{ message : this[0].error }) %>
 <% } else { %>
 	<%for ( var i = 0; i < this.length ; i++ ){%>
 			<option value='<%= this[i].id %>' >
-				<%== $.View('//seccubus/custsql/select/views/custsql.ejs', this[i] )%>
+				<%== $.View('//seccubus/saved_sql/select/views/custsql.ejs', this[i] )%>
 			</option>
 		<% count++ %>
 	<% } %>
 	<% if ( count == 0 ) { %>
-		<%== $.View('//seccubus/custsql/select/views/error.ejs',{ message : "No saved sql found"}) %>
+		<%== $.View('//seccubus/saved_sql/select/views/error.ejs',{ message : "No saved sql found"}) %>
 	<% } %>
 <% } %>
