@@ -24,26 +24,26 @@ use Data::Dumper;
 
 # Create
 sub create {
-	my $self = shift;
+    my $self = shift;
 
-	my $asset = $self->req->json();
-	my $workspace_id = $self->param('workspace_id');
+    my $asset = $self->req->json();
+    my $workspace_id = $self->param('workspace_id');
 
-	if ( ! $asset ) {
-			$self->error("No valid json body found"); return;
-	}
+    if ( ! $asset ) {
+            $self->error("No valid json body found"); return;
+    }
 
-	#die Dumper $notification;
+    #die Dumper $notification;
 
-	my $error = "";
-	$error = check_param("workspace", $workspace_id, 1);
-	$error = check_param("name", $asset->{name}, 0) unless $error;
-	if ( $error ) {
-		$self->error($error);
-		return;
-	}
+    my $error = "";
+    $error = check_param("workspace", $workspace_id, 1);
+    $error = check_param("name", $asset->{name}, 0) unless $error;
+    if ( $error ) {
+        $self->error($error);
+        return;
+    }
 
-	eval {
+    eval {
         my $newid = create_asset($workspace_id,$asset->{name},$asset->{hosts},$asset->{recipients});
         my $new = {
             id          => $newid,
@@ -52,52 +52,52 @@ sub create {
             recipients  => $asset->{recipients},
         };
 
-		$self->render( json=> $new );
-	} or do {
-		$self->error(join "\n", $@);
-	};
+        $self->render( json=> $new );
+    } or do {
+        $self->error(join "\n", $@);
+    };
 }
 
 # Read
 sub read {
-	my $self = shift;
+    my $self = shift;
     die;
 
-	my $workspace_id = $self->param('workspace_id');
-	my $scan_id = $self->param('scan_id');
-	my $id = $self->param('id');
+    my $workspace_id = $self->param('workspace_id');
+    my $scan_id = $self->param('scan_id');
+    my $id = $self->param('id');
 
-	eval {
-		my $notifications = get_notifications($scan_id, $id);
+    eval {
+        my $notifications = get_notifications($scan_id, $id);
 
-	 	if ( @$notifications ) {
-	 		# Check workspace id here
-	 		if ( $$notifications[0][6] == $workspace_id ) {
-				my $notification = {};
+        if ( @$notifications ) {
+            # Check workspace id here
+            if ( $$notifications[0][6] == $workspace_id ) {
+                my $notification = {};
 
-		 		my $i = 0;
-			 	foreach my $prop ( qw(id subject recipients message trigger triggerName) ) {
-			 		$notification->{$prop} = $$notifications[0][$i];
-			 		$i++;
-			 	}
-				$self->render( json => $notification );
-			} else {
-				$self->error("Notification not found");
-			}
-		} else {
-			$self->error("notification not found");
-			return;
-		}
-	} or do {
-		$self->error(join "\n", $@);
-	};
+                my $i = 0;
+                foreach my $prop ( qw(id subject recipients message trigger triggerName) ) {
+                    $notification->{$prop} = $$notifications[0][$i];
+                    $i++;
+                }
+                $self->render( json => $notification );
+            } else {
+                $self->error("Notification not found");
+            }
+        } else {
+            $self->error("notification not found");
+            return;
+        }
+    } or do {
+        $self->error(join "\n", $@);
+    };
 }
 
 # List
 sub list {
-	my $self = shift;
+    my $self = shift;
 
-	my $workspace_id = $self->param('workspace_id');
+    my $workspace_id = $self->param('workspace_id');
 
     my $error = check_param("workspace", $workspace_id, 1);
     if ( $error ) {
@@ -105,7 +105,7 @@ sub list {
         return;
     }
 
-	eval {
+    eval {
     my @data = map {
             my $recipientsHtml = $_->[3];
             $recipientsHtml =~ s/([-0-9a-zA-Z.+_]+\@[-0-9a-zA-Z.+_]+\.?[a-zA-Z]{0,4})/<a href="mailto:$1">$1<\/a>/g;
@@ -118,88 +118,77 @@ sub list {
             }
         } @{get_assets($workspace_id)};
 
-		$self->render( json => \@data );
-	} or do {
-		$self->error(join "\n", $@);
-	};
+        $self->render( json => \@data );
+    } or do {
+        $self->error(join "\n", $@);
+    };
 }
 
 sub update {
-	my $self = shift;
-    die;
+    my $self = shift;
 
-	my $workspace_id = $self->param('workspace_id');
-	my $scan_id = $self->param('scan_id');
-	my $id = $self->param('id');
+    my $asset = $self->req->json();
+    my $workspace_id = $self->param('workspace_id');
+    my $asset_id = $self->param('id');
 
-	my $notification = $self->req->json();
-	if ( ! $notification ) {
-			$self->error("No valid json body found");
-			return;
-	}
-	if ( $notification->{id} != $id ) {
-		$self->error("Id in url ($id) is not equal to id in object ($notification->{id}");
-	}
+    my $error = check_param("workspace", $workspace_id, 1);
+    $error = check_param("id", $asset_id, 1) unless $error;
+    $error = check_param("name", $asset->{name}, 0) unless $error;
 
-	my $oldnot = get_notifications($scan_id,$id);
-	if ( $$oldnot[0][6] != $workspace_id ) {
-		$self->error("Notification $id not found in scan $scan_id in workspace $workspace_id");
-		return;
-	}
+    if ( $error ) {
+        $self->error($error);
+        return;
+    }
 
-	eval {
-		my @data = ();
-		update_notification(
-			$notification->{id },
-			$notification->{trigger},
-			$notification->{subject},
-			$notification->{recipients},
-			$notification->{message},
-		);
-		my $newnot;
-	 	my $nots = get_notifications($scan_id,$id);
-	 	my $i = 0;
-	 	foreach my $prop ( qw(id subject recipients message trigger triggerName) ) {
-		 	$newnot->{$prop} = $$nots[0][$i];
-		 	$i++;
-		}
+    eval {
 
-		$self->render( json=> $newnot );
-	} or do {
-		$self->error(join "\n", $@);
-	};
+        my $rows = update_asset($workspace_id,$asset_id,$asset->{name},$asset->{hosts},$asset->{recipients});
+        if ( $rows ) {
+            my $new = {
+                id          => $asset_id,
+                name        => $asset->{name},
+                hosts       => $asset->{hosts},
+                recipients  => $asset->{recipients}
+            };
+            $self->render( json=> $new );
+        } else {
+            $self->error("No rows updated");
+        }
+    } or do {
+        $self->error(join "\n", $@);
+    };
 }
 
 sub delete {
-	my $self = shift;
+    my $self = shift;
     die;
 
-	my $workspace_id = $self->param('workspace_id');
-	my $scan_id = $self->param('scan_id');
-	my $id = $self->param('id');
+    my $workspace_id = $self->param('workspace_id');
+    my $scan_id = $self->param('scan_id');
+    my $id = $self->param('id');
 
-	my $oldnot = get_notifications($scan_id,$id);
-	if ( $$oldnot[0][6] != $workspace_id ) {
-		$self->error("Notification $id not found in scan $scan_id in workspace $workspace_id");
-		return;
-	}
+    my $oldnot = get_notifications($scan_id,$id);
+    if ( $$oldnot[0][6] != $workspace_id ) {
+        $self->error("Notification $id not found in scan $scan_id in workspace $workspace_id");
+        return;
+    }
 
-	eval {
-		my $sth = del_notification($id);
-		if ( $sth ) {
-			$self->render( json =>
-				{
-					status => "OK",
-					message => "Notification deleted"
-				},
-				status => 200
-			);
-		} else {
-			$self->error("Delete failed");
-		}
-	} or do {
-		$self->error(join "\n", $@);
-	};
+    eval {
+        my $sth = del_notification($id);
+        if ( $sth ) {
+            $self->render( json =>
+                {
+                    status => "OK",
+                    message => "Notification deleted"
+                },
+                status => 200
+            );
+        } else {
+            $self->error("Delete failed");
+        }
+    } or do {
+        $self->error(join "\n", $@);
+    };
 
 }
 

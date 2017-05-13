@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2016 Arkanoi, Frank Breedijk, Petr
+# Copyright 2017 Arkanoi, Frank Breedijk, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ package SeccubusAssets;
 
 =head1 NAME $RCSfile: SeccubusAssets.pm,v $
 
-This Pod documentation generated from the module SeccubusAssets gives a 
+This Pod documentation generated from the module SeccubusAssets gives a
 list of all functions within the module.
 
 =cut
@@ -25,7 +25,7 @@ use Exporter;
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 		create_asset
 		delete_asset
 		get_assets
@@ -77,11 +77,11 @@ This function returns the id of asset with a given name in a certain workspace
 
 =item asset_name - name of the asset
 
-=back 
+=back
 
 =item Checks
 
-User must be able to read workspace. 
+User must be able to read workspace.
 
 =back
 
@@ -93,11 +93,11 @@ sub get_asset_id($$;){
 		return sql( "return"	=> "array",
 			    "query"	=> "SELECT id from assets where name = ? and workspace_id = ?;",
 			    "values"	=> [$asset_name, $workspace_id],
-			  );	
+			  );
 	} else {
 		return undef;
 	}
-	
+
 }
 
 =head2 get_assets
@@ -112,7 +112,7 @@ This function returns a reference to an array of arrays with assets (id, name, h
 
 =item workspace_id - id of the workspace
 
-=back 
+=back
 
 =item Checks
 
@@ -148,7 +148,7 @@ This function returns a reference to an array of arrays with asset hosts (id, ip
 
 =item asset_id - id of the asset
 
-=back 
+=back
 
 =item Checks
 
@@ -163,9 +163,9 @@ sub get_asset_hosts($$;) {
 	my $asset_id = shift or confess "No asset_id provided";
 	return undef if(! may_read($workspace_id) );
 	return sql( "return" => "ref",
-	    "query"		=> "SELECT a.id, a.ip, a.host 
-	    				FROM asset_hosts a, assets b 
-	    				WHERE a.asset_id=b.id AND b.workspace_id = ? AND a.asset_id = ?  
+	    "query"		=> "SELECT a.id, a.ip, a.host
+	    				FROM asset_hosts a, assets b
+	    				WHERE a.asset_id=b.id AND b.workspace_id = ? AND a.asset_id = ?
 	    				ORDER BY a.id",
 	    "values"	=> [$workspace_id,$asset_id]
 	  );
@@ -189,7 +189,7 @@ This function creates a asset with the data provided
 
 =item recipients - recipients of this asset (Optional)
 
-=back 
+=back
 
 =item Checks
 
@@ -235,7 +235,7 @@ Function for internal use only
 
 =item hosts - hosts of this asset (Optional)
 
-=back 
+=back
 
 =back
 
@@ -260,10 +260,10 @@ sub _set_asset_host_auto_gen($;$){
 		my $ipObj = new Net::IP($_) or $error = 1;
 		if(!$error){
 			do {
-				sql("return"=>"id", 
+				sql("return"=>"id",
 					"query"=>"INSERT into asset_hosts set asset_id=?,ip=?, auto_gen=1",
 					"values"=>[$assetid,$ipObj->ip()]
-				);		
+				);
 			} while (++$ipObj);
 		} else {
 			my $qname = $_;
@@ -271,22 +271,22 @@ sub _set_asset_host_auto_gen($;$){
 			if(@addrs){
 				map {
 					my $ip = inet_ntoa($_);
-					sql("return"=>"id", 
+					sql("return"=>"id",
 						"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?, auto_gen=1",
 						"values"=>[$assetid,$name,$ip]
 						);
 					if ( $qname ne $name ) {
-						sql("return"=>"id", 
+						sql("return"=>"id",
 							"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?, auto_gen=1",
 							"values"=>[$assetid,$qname,$ip]
 							);
 					}
 				} @addrs;
-					
+
 			} else{
 				warn "Address [ ".$_." ] have no resolved IP and not added.";
 			}
-			
+
 		}
 	} split /[\s\n\r,]+/, $hosts;
 }
@@ -311,7 +311,7 @@ This function updates a asset with the data provided
 
 =item recipients - recipients of this asset (Optional)
 
-=back 
+=back
 
 =item Checks
 
@@ -332,6 +332,9 @@ sub update_asset($$$;$$) {
 	if ( may_write($workspace_id) ) {
 		my ($have) = sql("return" => "array", "query" => "select id, hosts from assets where id=? and workspace_id=?","values"=>[$asset_id,$workspace_id]);
 		confess "asset_id: ".$asset_id." not exists on workspace_id: ".$workspace_id." "  if(!$have);
+        my $qid = get_asset_id($workspace_id, $asset_name);
+        confess "An assets with that name already exists in the workspace" if ( $qid && $qid != $asset_id );
+
 		&_set_asset_host_auto_gen($asset_id,$hosts);
 		return sql( "return"	=> "rows",
 			    "query"	=> "UPDATE assets
@@ -357,7 +360,7 @@ This function deletes a asset host
 
 =item asset_host - id of the asset host
 
-=back 
+=back
 
 =back
 
@@ -367,7 +370,7 @@ sub delete_asset_host($;){
 	my $asset_host_id = shift or confess "no asset_host_id provided";
 	my ($workspace_id) = sql( "return"=> "array",
 		"query"	=> "SELECT	a.workspace_id
-			    	FROM assets a, asset_hosts b 
+			    	FROM assets a, asset_hosts b
 			    	WHERE b.asset_id = a.id AND b.id = ? ",
 		"values"	=> [ $asset_host_id ]
 	);
@@ -391,7 +394,7 @@ This function deletes a asset
 
 =item asset - id of the asset
 
-=back 
+=back
 
 =item Checks
 
@@ -436,7 +439,7 @@ This function creates asset host
 
 =item name - host name of the asset (optional)
 
-=back 
+=back
 
 =item Checks
 
@@ -457,17 +460,17 @@ sub create_asset_host($$;$$){
 		if(@addrs){ map { $ip = inet_ntoa($_); } @addrs; }
 	}
 	confess "Permission denied" if (! may_write($workspace_id) );
-	my ($checkWSId) = sql( 
+	my ($checkWSId) = sql(
 			"return"	=> "array",
-			"query"		=> "SELECT	a.workspace_id 
-							FROM assets a 
+			"query"		=> "SELECT	a.workspace_id
+							FROM assets a
 							WHERE a.id = ?",
-			"values"	=> [ $asset_id ] 
+			"values"	=> [ $asset_id ]
 		);
 	confess "Permission denied"  if( $checkWSId ne $workspace_id);
 	return sql (
-		"return"	=> "id", 
-		"query" 	=> "INSERT INTO asset_hosts 
+		"return"	=> "id",
+		"query" 	=> "INSERT INTO asset_hosts
 						SET ip=?, host=?, asset_id=?, auto_gen=0",
 		"values"	=> [$ip,$host,$asset_id]
 	);
@@ -489,7 +492,7 @@ This function edits asset host
 
 =item name - host name of the asset (optional)
 
-=back 
+=back
 
 =item Checks
 
@@ -508,18 +511,18 @@ sub update_asset_host($;$$){
 		my ($name, $aliases, $addrtype,$length,@addrs) = gethostbyname($host);
 		if(@addrs){ map { $ip = inet_ntoa($_); } @addrs; }
 	}
-	my ($workspace_id) = sql( 
+	my ($workspace_id) = sql(
 			"return"	=> "array",
 			"query"		=> "SELECT	a.workspace_id
-						    FROM assets a, asset_hosts b 
+						    FROM assets a, asset_hosts b
 						    WHERE b.asset_id = a.id AND b.id = ? ",
 			"values"	=> [ $host_id ]
 	);
 	confess "Permission denied" if (! may_write($workspace_id) );
 	return sql (
-		"return"	=> "rows", 
-		"query" 	=> "UPDATE asset_hosts 
-						SET ip=?, host=?, auto_gen=0 
+		"return"	=> "rows",
+		"query" 	=> "UPDATE asset_hosts
+						SET ip=?, host=?, auto_gen=0
 						WHERE id=?",
 		"values"	=> [$ip,$host,$host_id]
 	);
@@ -538,28 +541,28 @@ This function selects asset scans
 
 =item scan_id - id of the scan
 
-=back 
+=back
 
 =back
 
 =cut
 sub get_asset2scan($;){
 	my $scan_id = shift or confess "no scan_id provided";
-	my ($workspace_id) = sql( 
-		"return"	=> "array", 
+	my ($workspace_id) = sql(
+		"return"	=> "array",
 		"query" 	=> "SELECT	a.workspace_id FROM scans a where a.id = ? ",
 		"values" 	=> [ $scan_id ]
 	);
 	confess "Permission denied" if (! may_write($workspace_id) );
-	return sql ( 
+	return sql (
 		"return" 	=> "ref",
-		"query" 	=> "SELECT a.scan_id,a.asset_id 
-						FROM asset2scan a 
+		"query" 	=> "SELECT a.scan_id,a.asset_id
+						FROM asset2scan a
 						WHERE a.scan_id=?",
 		"values" => [$scan_id]);
 }
 
-=head2 get_asset2scan
+=head2 update_asset2scan
 
 This function edits asset scans
 
@@ -573,7 +576,7 @@ This function edits asset scans
 
 =item array selected assets - ids of assets
 
-=back 
+=back
 
 =back
 
@@ -581,22 +584,22 @@ This function edits asset scans
 sub update_asset2scan($@;){
 	my $scan_id = shift or confess "no scan_id provided";
 	my @assets = @_;
-	my ($workspace_id) = sql( 
-		"return"	=> "array", 
+	my ($workspace_id) = sql(
+		"return"	=> "array",
 		"query"		=> "SELECT	a.workspace_id FROM scans a where a.id = ? ",
 		"values"	=> [ $scan_id ]
 	);
 	confess "Permission denied" if (! may_write($workspace_id) );
 	sql("return" 	=> "rows",
-		"query" 	=> "DELETE FROM asset2scan 
+		"query" 	=> "DELETE FROM asset2scan
 						WHERE scan_id=?",
 		"values" => [$scan_id]
 	);
 	my @ids = ();
 	map {
-		my $id = sql ( 
-			"return"	=> "id", 
-			"query" 	=> "insert into asset2scan set scan_id=?, asset_id=?", 
+		my $id = sql (
+			"return"	=> "id",
+			"query" 	=> "insert into asset2scan set scan_id=?, asset_id=?",
 			"values" 	=> [$scan_id, $_]
 		);
 		push @ids,$id;

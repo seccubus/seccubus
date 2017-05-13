@@ -261,42 +261,47 @@ sub get_status($$$;$) {
             FROM
                 finding_status s
             LEFT JOIN (
-                SELECT DISTINCT f.id, f.status
-                FROM        findings f
+                SELECT DISTINCT findings.id, findings.status
+                FROM
+        ";
+        $query .= "asset_hosts,  " if @$asset_ids;
+        $query .= " findings
                 LEFT JOIN   host_names h
-                ON          h.ip = f.host
-                WHERE       f.workspace_id = ?
+                ON          ( h.ip = findings.host )
+                WHERE       findings.workspace_id = ?
         ";
 
-        if(@$asset_ids){
-            $query .= "AND f.host in (";
-            $query .= "SELECT ip FROM asset_hosts ho WHERE asset_id IN (";
+        if (@$asset_ids) {
+            $query .= "AND asset_hosts.asset_id IN (";
             $query .= join ",", map { push @$params,$_; '?'; } @$asset_ids;
-            $query .= " UNION ";
-            $query .= "SELECT host FROM asset_hosts ho WHERE asset_id IN (";
-            $query .= join ",", map { push @$params,$_; '?'; } @$asset_ids;
-            $query .= ") \n";
+            $query .= " ) AND (
+                    asset_hosts.ip = findings.`host` OR
+                    asset_hosts.`host` = findings.`host` OR
+                    findings.`host` LIKE CONCAT('%/',asset_hosts.ip) OR
+                    findings.`host` LIKE CONCAT(asset_hosts.host, '/%')
+                )
+            ";
         } elsif ( @$scan_ids ) {
-            $query .= " AND f.scan_id IN (  ";
+            $query .= " AND findings.scan_id IN (  ";
             $query .= join ",", map { push @$params,$_; '?'; } @$scan_ids if(@$scan_ids);
             $query .= " ) \n";
         }
         if ( $filter ) {
             if ( $filter->{host} ) {
                 $filter->{host} =~ s/\*/\%/;
-                $query .= " AND f.host LIKE ? ";
+                $query .= " AND findings.host LIKE ? ";
                 push @$params, $filter->{host};
             }
             if ( $filter->{port} ) {
-                $query .= " AND f.port = ? ";
+                $query .= " AND findings.port = ? ";
                 push @$params, $filter->{port};
             }
             if ( $filter->{plugin} ) {
-                $query .= " AND f.plugin = ? ";
+                $query .= " AND findings.plugin = ? ";
                 push @$params, $filter->{plugin};
             }
             if ( $filter->{severity} ) {
-                $query .= " AND f.severity = ? ";
+                $query .= " AND findings.severity = ? ";
                 push @$params, $filter->{severity};
             }
             if ( $filter->{finding} ) {
@@ -308,7 +313,7 @@ sub get_status($$$;$) {
                 push @$params, "%" . $filter->{remark} . "%";
             }
             if ( $filter->{issue} ) {
-                $query .= " AND f.id IN ( SELECT finding_id FROM issues2findings WHERE issue_id = ? ) ";
+                $query .= " AND finding.id IN ( SELECT finding_id FROM issues2findings WHERE issue_id = ? ) ";
                 push @$params, $filter->{issue};
             }
             if ( $filter->{hostname} ) {
@@ -387,12 +392,19 @@ sub get_filters($$$;$) {
             }
             $where =~ s/OR $/\) /;
         } elsif ( @$asset_ids ) {
-            $from .= ", asset2scan ";
-            $where .= " AND findings.scan_id = asset2scan.scan_id AND ( ";
+            $from = "FROM asset_hosts, findings ";
+            $where .= " AND asset_hosts.asset_id in ( ";
             foreach my $asset ( @$asset_ids ) {
-                $where .= " asset2scan.id = ? OR ";
+                $where .= " ? , ";
             }
-            $where =~ s/OR $/\) /;
+            $where =~ s/, $/\) /;
+            $where .= "AND (
+                    asset_hosts.ip = findings.`host` OR
+                    asset_hosts.`host` = findings.`host` OR
+                    findings.`host` LIKE CONCAT('%/',asset_hosts.ip) OR
+                    findings.`host` LIKE CONCAT(asset_hosts.host, '/%')
+                )
+            ";
         }
 
         # Hosts
@@ -402,27 +414,27 @@ sub get_filters($$$;$) {
         my $ffields = [];
         my $fwhere = construct_filter($filter,"host",$ffields,1);
         my $query = "
-            SELECT host, count(*)
+            SELECT findings.host, count(*)
             $from
             $join
             WHERE $where $fwhere
-            GROUP BY host
-            ORDER BY INET_ATON(host), host
+            GROUP BY findings.host
+            ORDER BY INET_ATON(findings.host), findings.host
         ";
         my $hosts_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
         # Get hosts outside filter.
         $query = "
-            SELECT host, count(*)
+            SELECT findings.host, count(*)
             $from
-            WHERE $where AND host NOT IN (
-                SELECT DISTINCT host
+            WHERE $where AND findings.host NOT IN (
+                SELECT DISTINCT findings.host
                 $from
                 $join
                 WHERE $where $fwhere
             )
-            GROUP BY host
-            ORDER BY INET_ATON(host), host
+            GROUP BY findings.host
+            ORDER BY INET_ATON(findings.host), findings.host
         ";
         my $hosts_out = sql(query => $query, values => [$workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
         my %count;
@@ -502,7 +514,7 @@ sub get_filters($$$;$) {
         $query .= " LEFT JOIN host_names on host_names.ip = findings.host AND host_names.workspace_id = findings.workspace_id " unless exists $filter->{hostname};
         $query .= "
             WHERE $where AND host_names.ip NOT IN (
-                SELECT DISTINCT host
+                SELECT DISTINCT findings.host
                 $from
                 $join
                 WHERE $where $fwhere
@@ -807,9 +819,9 @@ sub construct_filter($$$$) {
         my $host = lc($filter->{host});
         $host =~ s/\*/%/g;
         if ( $in ) {
-            $where .= "host like ? AND ";
+            $where .= "findings.host like ? AND ";
         } else {
-            $where .= "host not like ? OR ";
+            $where .= "findings.host not like ? OR ";
         }
         push @$args, $host;
     }

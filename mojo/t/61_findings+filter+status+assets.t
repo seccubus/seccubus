@@ -61,25 +61,25 @@ $t->get_ok('/workspace/a/findings')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
-    ;
+;
 
 $t->get_ok('/workspace/a/filters')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
-    ;
+;
 
 $t->get_ok('/workspace/a/status')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
-    ;
+;
 
 $t->get_ok('/workspace/a/assets')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
-    ;
+;
 
 # Testing asset creation
 
@@ -88,7 +88,7 @@ $t->post_ok('/workspace/100/assets')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
-    ;
+;
 
 # Name missing
 $t->post_ok('/workspace/100/assets',
@@ -99,13 +99,13 @@ $t->post_ok('/workspace/100/assets',
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
-    ;
+;
 
 # Should get empty list
 $t->get_ok('/workspace/100/assets')
     ->status_is(200)
     ->json_is([])
-    ;
+;
 
 # ok
 $t->post_ok('/workspace/100/assets',
@@ -158,24 +158,160 @@ $t->get_ok('/workspace/100/assets')
         recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>'
     }])
 ;
-die "fb";
+
+# add more
+$t->post_ok('/workspace/100/assets',
+    json => {
+        name => "v2",
+        hosts => "v2.seccubus.com",
+        recipients => "root\@example.com"
+    })
+    ->status_is(200)
+    ->json_is({
+        id => 2,
+        name => "v2",
+        hosts => "v2.seccubus.com",
+        recipients => "root\@example.com",
+    })
+;
+
+# Should list with two items
+$t->get_ok('/workspace/100/assets')
+    ->status_is(200)
+    ->json_is([
+        {
+            id => 1,
+            name => "localhost",
+            hosts => "localhost",
+            recipients => "root\@example.com",
+            recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>'
+        },
+        {
+            id => 2,
+            name => "v2",
+            hosts => "v2.seccubus.com",
+            recipients => "root\@example.com",
+            recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>'
+        }
+    ])
+;
+
+# Updating assets
+
+# Non numeric workspace
+$t->put_ok('/workspace/a/asset/2',
+    json => {
+        name => "v3",
+        hosts => "v3.seccubus.com",
+        recipients => "toor\@example.com"
+    })
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+;
+
+# Non numeric asset
+$t->put_ok('/workspace/100/asset/a',
+    json => {
+        name => "v3",
+        hosts => "v3.seccubus.com",
+        recipients => "toor\@example.com"
+    })
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+;
+
+# empty name
+$t->put_ok('/workspace/100/asset/2',
+    json => {
+        hosts => "v3.seccubus.com",
+        recipients => "toor\@example.com"
+    })
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+;
+
+# Duplicate name
+$t->put_ok('/workspace/100/asset/2',
+    json => {
+        name => "localhost",
+        hosts => "v3.seccubus.com",
+        recipients => "toor\@example.com"
+    })
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+;
+
+# Non-existant
+# Duplicate name
+$t->put_ok('/workspace/100/asset/3',
+    json => {
+        name => "v3",
+        hosts => "v3.seccubus.com",
+        recipients => "toor\@example.com"
+    })
+    ->status_is(400)
+    ->json_is('/status', 'Error')
+    ->json_has('/message')
+;
+
+
+# OK
+$t->put_ok('/workspace/100/asset/2',
+    json => {
+        name => "v3",
+        hosts => "v3.seccubus.com",
+        recipients => "toor\@example.com"
+    })
+    ->status_is(200)
+    ->json_is({
+        id => 2,
+        name => "v3",
+        hosts => "v3.seccubus.com",
+        recipients => "toor\@example.com"
+    })
+;
+
+# Should list with two items
+$t->get_ok('/workspace/100/assets')
+    ->status_is(200)
+    ->json_is([
+        {
+            id => 1,
+            name => "localhost",
+            hosts => "localhost",
+            recipients => "root\@example.com",
+            recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>'
+        },
+        {
+            id => 2,
+            name => "v3",
+            hosts => "v3.seccubus.com",
+            recipients => "toor\@example.com",
+            recipientsHtml => '<a href="mailto:toor@example.com">toor@example.com</a>'
+        }
+    ])
+;
 
 # Testing limit in findings
 $t->get_ok('/workspace/100/findings')
     ->status_is(200)
-    ;
+;
 is(@{$t->{tx}->res()->json()},200,"200 Elements returned");
 
 $t->get_ok('/workspace/100/findings?Limit=-1')
     ->status_is(200)
-    ;
+;
 is(@{$t->{tx}->res()->json()},324,"324 Elements returned");
 
 # Should get no findings if scanId doesn't exist
 $t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=54345')
     ->status_is(200)
     ->json_is([])
-    ;
+;
 
 # Should get empty filter too
 $t->get_ok('/workspace/100/filters?scanIds[]=54345')
@@ -183,15 +319,15 @@ $t->get_ok('/workspace/100/filters?scanIds[]=54345')
     ->json_is(
         {"finding"=>"","host"=>[{"name"=>"*","number"=>0,"selected"=>JSON::false},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"hostname"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"issue"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"plugin"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"port"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"remark"=>"","severity"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}]}
     )
-    ;
+;
 
 # Same for status
 $t->get_ok('/workspace/100/status?scanIds[]=54345')
     ->status_is(200)
     ->json_is(
-    [{"count"=>"0","id"=>"1","name"=>"New"},{"count"=>"0","id"=>"2","name"=>"Changed"},{"count"=>"0","id"=>"3","name"=>"Open"},{"count"=>"0","id"=>"4","name"=>"No issue"},{"count"=>"0","id"=>"5","name"=>"Gone"},{"count"=>"0","id"=>"6","name"=>"Closed"},{"count"=>"0","id"=>"99","name"=>"MASKED"}]
+        [{"count"=>"0","id"=>"1","name"=>"New"},{"count"=>"0","id"=>"2","name"=>"Changed"},{"count"=>"0","id"=>"3","name"=>"Open"},{"count"=>"0","id"=>"4","name"=>"No issue"},{"count"=>"0","id"=>"5","name"=>"Gone"},{"count"=>"0","id"=>"6","name"=>"Closed"},{"count"=>"0","id"=>"99","name"=>"MASKED"}]
     )
-    ;
+;
 
 # Should fetch enough findings
 $t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=1')
@@ -212,7 +348,25 @@ $t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=3')
 my $scan3 = $t->{tx}->res()->json();
 is(@$scan3,42,"42 Elements returned");
 
-# Testing filters
+# Test fetching with assetIds
+$t->get_ok('/workspace/100/findings?Limit=-1&assetIds[]=1')
+    ->status_is(200)
+    ;
+is(@{$t->{tx}->res()->json()},28,"28 Elements returned");
+my $asset1 = $t->{tx}->res()->json();
+
+$t->get_ok('/workspace/100/findings?Limit=-1&assetIds[]=2')
+    ->status_is(200)
+    ;
+is(@{$t->{tx}->res()->json()},0,"0 Elements returned");
+
+$t->get_ok('/workspace/100/findings?Limit=-1&assetIds[]=1&assetIds[]=2')
+    ->status_is(200)
+    ;
+is(@{$t->{tx}->res()->json()},28,"28 Elements returned");
+
+
+# Testing filters with scans
 my $count = {};
 foreach my $f ( @$scan3 ) {
     $count->{Status}->{$f->{status}}++;
@@ -227,6 +381,7 @@ foreach my $f ( @$scan3 ) {
     $count->{Severity}->{$f->{severity}}++;
     $count->{Remark}->{$f->{remark}}++ if defined $f->{remark};
 }
+
 
 $count->{Status}->{98} = 0;
 $count->{Host}->{bla} = 0;
@@ -264,7 +419,7 @@ $count->{Severity}->{'null'} = 42;
 $count->{Finding}->{'null'} = 42;
 $count->{Remark}->{'null'} = 42;
 
-foreach my $k ( qw(Status Host HostName Port Plugin Finding Severity Remark) ) {
+foreach my $k ( qw(Status Host HostName Port Plugin Finding Severity Remark assetIds[]) ) {
     foreach my $h ( sort keys %{$count->{$k}} ) {
         if ( $h ne "" && $h ne "(blank)") {
             $t->get_ok("/workspace/100/findings?Limit=-1&scanIds[]=3&$k=$h")
@@ -326,155 +481,263 @@ foreach my $k ( qw( Host HostName Port Plugin Severity ) ) {
     foreach my $f ( @{$t->{tx}->res()->json()->{lc($k)}} ) {
         if ( $f->{name} !~ /\*/ && $f->{number} != -1 ) {
             my $val = $f->{value};
-            $val = $f->{name} unless defined $val && $val ne "";
+            $val = $f->{name} unless defined $val and $val ne "";
             is($f->{number},$count->{$k}->{$val},"Value for $val in $k filter is correct");
-            #die Dumper $count->{$k} if $k eq "HostName";
+            #die Dumper $count->{$k} if $k eq "Host";
         }
     }
 }
+
+# Testing filters with assets
+$count = {};
+foreach my $f ( @$asset1 ) {
+    $count->{Status}->{$f->{status}}++;
+    $count->{Host}->{$f->{host}}++;
+    if ( defined $f->{hostName} ) {
+        $count->{HostName}->{$f->{hostName}}++;
+    } else {
+        $count->{HostName}->{"(blank)"}++;
+    }
+    $count->{Port}->{$f->{port}}++;
+    $count->{Plugin}->{$f->{plugin}}++;
+    $count->{Severity}->{$f->{severity}}++;
+    $count->{Remark}->{$f->{remark}}++ if defined $f->{remark};
+}
+
+
+$count->{Status}->{98} = 0;
+$count->{Host}->{bla} = 0;
+$count->{HostName}->{bla} = 0;
+$count->{Port}->{bla} = 0;
+$count->{Plugin}->{bla} = 0;
+$count->{Finding}->{bla} = 0;
+$count->{Severity}->{98} = 0;
+$count->{Remark}->{bla} = 0;
+
+$count->{Status}->{'*'} = 28;
+$count->{Host}->{'*'} = 28;
+$count->{HostName}->{'*'} = 28;
+$count->{Port}->{'*'} = 28;
+$count->{Plugin}->{'*'} = 28;
+$count->{Severity}->{'*'} = 28;
+$count->{Finding}->{'*'} = 28;
+$count->{Remark}->{'*'} = 28;
+
+$count->{Status}->{'all'} = 28;
+$count->{Host}->{'all'} = 28;
+$count->{HostName}->{'all'} = 28;
+$count->{Port}->{'all'} = 28;
+$count->{Plugin}->{'all'} = 28;
+$count->{Severity}->{'all'} = 28;
+$count->{Finding}->{'all'} = 28;
+$count->{Remark}->{'all'} = 28;
+
+$count->{Status}->{'null'} = 28;
+$count->{Host}->{'null'} = 28;
+$count->{HostName}->{'null'} = 28;
+$count->{Port}->{'null'} = 28;
+$count->{Plugin}->{'null'} = 28;
+$count->{Severity}->{'null'} = 28;
+$count->{Finding}->{'null'} = 28;
+$count->{Remark}->{'null'} = 28;
+
+foreach my $k ( qw(Status Host HostName Port Plugin Finding Severity Remark assetIds[]) ) {
+    foreach my $h ( sort keys %{$count->{$k}} ) {
+        if ( $h ne "" && $h ne "(blank)") {
+            $t->get_ok("/workspace/100/findings?Limit=-1&assetIds[]=1&$k=$h")
+                ->status_is(200)
+                ;
+            my $finds = $t->{tx}->res()->json();
+            is(@$finds,$count->{$k}->{$h},"$count->{$k}->{$h} findings for $k=$h");
+            $t->get_ok("/workspace/100/filters?assetIds[]=1&$k=$h")
+                ->status_is(200);
+            if ( $k ne "Host" ) {
+                $t->json_is("/host/0/number", $count->{$k}->{$h}, "$count->{$k}->{$h} findings in host filter");
+            } else {
+                $t->json_is("/host/0/number", 28, "28 findings in host filter");
+            }
+            if ( $k ne "HostName" ) {
+                $t->json_is("/hostname/0/number", $count->{$k}->{$h}, "$count->{$k}->{$h} findings in hostname filter");
+            } else {
+                $t->json_is("/hostname/0/number", 28, "28 findings in hostname filter");
+            }
+            if ( $k ne "Port" ) {
+                $t->json_is("/port/0/number", $count->{$k}->{$h}, "$count->{$k}->{$h} findings in port filter");
+            } else {
+                $t->json_is("/port/0/number", 28, "28 findings in port filter");
+            }
+            if ( $k ne "Plugin" ) {
+                $t->json_is("/plugin/0/number", $count->{$k}->{$h}, "$count->{$k}->{$h} findings in plugin filter");
+            } else {
+                $t->json_is("/plugin/0/number", 28, "28 findings in plugin filter");
+            }
+            if ( $k ne "Severity" ) {
+                $t->json_is("/severity/0/number", $count->{$k}->{$h}, "$count->{$k}->{$h} findings in severity filter");
+            } else {
+                $t->json_is("/severity/0/number", 28, "28 findings in severity filter");
+            }
+
+            # Status doesn't have a status filter
+            if ( $k ne "Status" ) {
+                $t->get_ok("/workspace/100/status?assetIds[]=1&$k=$h")
+                    ->status_is(200)
+                    ->json_is("/0/count",$count->{$k}->{$h})
+                    ->json_is("/1/count",0)
+                    ->json_is("/2/count",0)
+                    ->json_is("/3/count",0)
+                    ->json_is("/4/count",0)
+                    ->json_is("/5/count",0)
+                    ->json_is("/6/count",0)
+                ;
+            }
+        }
+    }
+}
+
+
 
 # Basic
 $t->get_ok("/workspace/101/filters")
     ->status_is(200)
     ->json_is(
         {
-          "finding" => "",
-          "host" => [
-            {
-              "name" => "*",
-              "number" => 8,
-              "selected" => JSON::false
-            },
-            {
-              "name" => "127.*",
-              "number" => 8,
-              "selected" => JSON::false
-            },
-            {
-              "name" => "127.0.*",
-              "number" => 8,
-              "selected" => JSON::false
-            },
-            {
-              "name" => "127.0.0.*",
-              "number" => 8,
-              "selected" => JSON::false
-            },
-            {
-              "name" => "127.0.0.1",
-              "number" => 4,
-              "selected" => JSON::false
-            },
-            {
-              "name" => "127.0.0.2",
-              "number" => 4,
-              "selected" => JSON::false
-            },
-            {
-              "name" => "---",
-              "number" => -1,
-              "selected" => JSON::false
-            }
-          ],
-          "hostname" => [
-            {
-              "name" => "*",
-              "number" => 8
-            },
-            {
-              "name" => "(blank)",
-              "number" => 4,
-              "selected" => JSON::true,
-              "value" => ""
-            },
-            {
-              "name" => "localhost",
-              "number" => 4,
-              "selected" => JSON::false
-            },
-            {
-              "name" => "---",
-              "number" => -1,
-              "selected" => JSON::false
-            }
-          ],
-          "issue" => [
-            {
-              "name" => "*",
-              "number" => 8
-            },
-            {
-              "name" => "---",
-              "number" => -1,
-              "selected" => JSON::false
-            }
-          ],
-          "plugin" => [
-            {
-              "name" => "*",
-              "number" => 8
-            },
-            {
-              "name" => "a",
-              "number" => 4,
-              "selected" => JSON::false
-            },
-            {
-              "name" => "b",
-              "number" => 4,
-              "selected" => JSON::false
-            },
-            {
-              "name" => "---",
-              "number" => -1,
-              "selected" => JSON::false
-            }
-          ],
-          "port" => [
-            {
-              "name" => "*",
-              "number" => 8
-            },
-            {
-              "name" => "a",
-              "number" => 4,
-              "selected" => JSON::false
-            },
-            {
-              "name" => "b",
-              "number" => 4,
-              "selected" => JSON::false
-            },
-            {
-              "name" => "---",
-              "number" => -1,
-              "selected" => JSON::false
-            }
-          ],
-          "remark" => "",
-          "severity" => [
-            {
-              "name" => "*",
-              "number" => 8
-            },
-            {
-              "name" => "High",
-              "number" => 4,
-              "selected" => JSON::false,
-              "value" => "1"
-            },
-            {
-              "name" => "Medium",
-              "number" => 4,
-              "selected" => JSON::false,
-              "value" => "2"
-            },
-            {
-              "name" => "---",
-              "number" => -1,
-              "selected" => JSON::false
-            }
-          ]
+            "finding" => "",
+            "host" => [
+                {
+                    "name" => "*",
+                    "number" => 8,
+                    "selected" => JSON::false
+                },
+                {
+                    "name" => "127.*",
+                    "number" => 8,
+                    "selected" => JSON::false
+                },
+                {
+                    "name" => "127.0.*",
+                    "number" => 8,
+                    "selected" => JSON::false
+                },
+                {
+                    "name" => "127.0.0.*",
+                    "number" => 8,
+                    "selected" => JSON::false
+                },
+                {
+                    "name" => "127.0.0.1",
+                    "number" => 4,
+                    "selected" => JSON::false
+                },
+                {
+                    "name" => "127.0.0.2",
+                    "number" => 4,
+                    "selected" => JSON::false
+                },
+                {
+                    "name" => "---",
+                    "number" => -1,
+                    "selected" => JSON::false
+                }
+            ],
+            "hostname" => [
+                {
+                    "name" => "*",
+                    "number" => 8
+                },
+                {
+                    "name" => "(blank)",
+                    "number" => 4,
+                    "selected" => JSON::true,
+                    "value" => ""
+                },
+                {
+                    "name" => "localhost",
+                    "number" => 4,
+                    "selected" => JSON::false
+                },
+                {
+                    "name" => "---",
+                    "number" => -1,
+                    "selected" => JSON::false
+                }
+            ],
+            "issue" => [
+                {
+                    "name" => "*",
+                    "number" => 8
+                },
+                {
+                    "name" => "---",
+                    "number" => -1,
+                    "selected" => JSON::false
+                }
+            ],
+            "plugin" => [
+                {
+                    "name" => "*",
+                    "number" => 8
+                },
+                {
+                    "name" => "a",
+                    "number" => 4,
+                    "selected" => JSON::false
+                },
+                {
+                    "name" => "b",
+                    "number" => 4,
+                    "selected" => JSON::false
+                },
+                {
+                    "name" => "---",
+                    "number" => -1,
+                    "selected" => JSON::false
+                }
+            ],
+            "port" => [
+                {
+                    "name" => "*",
+                    "number" => 8
+                },
+                {
+                    "name" => "a",
+                    "number" => 4,
+                    "selected" => JSON::false
+                },
+                {
+                    "name" => "b",
+                    "number" => 4,
+                    "selected" => JSON::false
+                },
+                {
+                    "name" => "---",
+                    "number" => -1,
+                    "selected" => JSON::false
+                }
+            ],
+            "remark" => "",
+            "severity" => [
+                {
+                    "name" => "*",
+                    "number" => 8
+                },
+                {
+                    "name" => "High",
+                    "number" => 4,
+                    "selected" => JSON::false,
+                    "value" => "1"
+                },
+                {
+                    "name" => "Medium",
+                    "number" => 4,
+                    "selected" => JSON::false,
+                    "value" => "2"
+                },
+                {
+                    "name" => "---",
+                    "number" => -1,
+                    "selected" => JSON::false
+                }
+            ]
         }
     );
 
