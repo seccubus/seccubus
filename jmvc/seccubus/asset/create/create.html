@@ -27,14 +27,16 @@ limitations under the License.
 	    <h1>Seccubus.Asset.Create Demo</h1>
 		<form id='create' action=''></form>
 		<div id='asset'></div>
-		<script type='text/javascript' 
+		<script type='text/javascript'
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
 			steal(	'seccubus/asset/create',
-					'seccubus/fixtures',
+					//'seccubus/fixtures',
 			function(){
-				$('#create').seccubus_asset_create();
+				$('#create').seccubus_asset_create({
+                    workspace : 100
+                });
 				Seccubus.Models.Asset.bind('created', function(ev, asset){
 					$('<div>').html("<h3>"+asset.name+"</h3><p>"+asset.id+"</p>")
 					        .appendTo( $('#asset') )

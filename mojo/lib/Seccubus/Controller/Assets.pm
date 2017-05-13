@@ -50,6 +50,7 @@ sub create {
             name        => $asset->{name},
             hosts       => $asset->{hosts},
             recipients  => $asset->{recipients},
+            workspace   => $workspace_id
         };
 
         $self->render( json=> $new );
@@ -115,6 +116,7 @@ sub list {
                 hosts           => $_->[2],
                 recipients      => $_->[3],
                 recipientsHtml  => $recipientsHtml,
+                workspace       => $workspace_id,
             }
         } @{get_assets($workspace_id)};
 
@@ -148,7 +150,8 @@ sub update {
                 id          => $asset_id,
                 name        => $asset->{name},
                 hosts       => $asset->{hosts},
-                recipients  => $asset->{recipients}
+                recipients  => $asset->{recipients},
+                workspace   => 100,
             };
             $self->render( json=> $new );
         } else {

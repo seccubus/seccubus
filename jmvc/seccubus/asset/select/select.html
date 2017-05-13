@@ -1,5 +1,5 @@
 <!--
-Copyright 2014 Petr, Frank Breedijk
+Copyright 2017 Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,38 +18,35 @@ limitations under the License.
             "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
 	<head>
-		<title>Seccubus.Asset.Table</title>
+		<title>Seccubus.Asset.Select Demo</title>
         <style type='text/css'>
             body {font-family: verdana}
         </style>
 	</head>
 	<body>
-	    <h1>Seccubus.Asset.Table Demo</h1>
-		<form id='editas'>Edit form is here</form>
-		<div id='assets'></div>
+	    <h1>Seccubus.Asset.Select Demo</h1>
+		<select id='assets'></select>
 		<a href='javascript://' id='create'>Create Asset</a>
 		<script type='text/javascript'
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
-			steal(	'seccubus/asset/table',
-					'seccubus/asset/edit',
-					'seccubus/seccubus.css',
-					//'seccubus/fixtures',
-			function(){
-				$('#assets').seccubus_asset_table({
-					workspace : 100,
-					onEdit : function(as){
-						$('#editas').seccubus_asset_edit({
-							asset : as
-						})
-					}
-				});
+			steal(
+				'seccubus/asset/select',
+				'seccubus/seccubus.css',
+			//	'seccubus/fixtures',
+				function(){
+
+				$('#assets').seccubus_asset_select({
+                    workspace : 100
+                });
+
 				$('#create').click(function(){
 					new Seccubus.Models.Asset({
-						name: 'Asset 2123',
-						hosts : '127.0.0.1',
-						recipients : "test@recipient.ru"
+                        name :      "example.com",
+                        hosts :      "example.com",
+                        recipients :      "example.com",
+                        workspace : 100
 					}).save();
 				})
 			})

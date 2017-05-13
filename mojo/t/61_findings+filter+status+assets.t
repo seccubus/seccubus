@@ -119,7 +119,8 @@ $t->post_ok('/workspace/100/assets',
         id => 1,
         name => "localhost",
         hosts => "localhost",
-        recipients => "root\@example.com"
+        recipients => "root\@example.com",
+        workspace => 100,
     })
 ;
 
@@ -131,7 +132,8 @@ $t->get_ok('/workspace/100/assets')
         name => "localhost",
         hosts => "localhost",
         recipients => "root\@example.com",
-        recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>'
+        recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
+        workspace => 100,
     }])
 ;
 
@@ -155,7 +157,8 @@ $t->get_ok('/workspace/100/assets')
         name => "localhost",
         hosts => "localhost",
         recipients => "root\@example.com",
-        recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>'
+        recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
+        workspace => 100,
     }])
 ;
 
@@ -172,6 +175,7 @@ $t->post_ok('/workspace/100/assets',
         name => "v2",
         hosts => "v2.seccubus.com",
         recipients => "root\@example.com",
+        workspace => 100,
     })
 ;
 
@@ -184,14 +188,16 @@ $t->get_ok('/workspace/100/assets')
             name => "localhost",
             hosts => "localhost",
             recipients => "root\@example.com",
-            recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>'
+            recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
+            workspace => 100,
         },
         {
             id => 2,
             name => "v2",
             hosts => "v2.seccubus.com",
             recipients => "root\@example.com",
-            recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>'
+            recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
+            workspace => 100,
         }
     ])
 ;
@@ -271,7 +277,8 @@ $t->put_ok('/workspace/100/asset/2',
         id => 2,
         name => "v3",
         hosts => "v3.seccubus.com",
-        recipients => "toor\@example.com"
+        recipients => "toor\@example.com",
+        workspace => 100,
     })
 ;
 
@@ -284,14 +291,16 @@ $t->get_ok('/workspace/100/assets')
             name => "localhost",
             hosts => "localhost",
             recipients => "root\@example.com",
-            recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>'
+            recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
+            workspace => 100,
         },
         {
             id => 2,
             name => "v3",
             hosts => "v3.seccubus.com",
             recipients => "toor\@example.com",
-            recipientsHtml => '<a href="mailto:toor@example.com">toor@example.com</a>'
+            recipientsHtml => '<a href="mailto:toor@example.com">toor@example.com</a>',
+            workspace => 100,
         }
     ])
 ;

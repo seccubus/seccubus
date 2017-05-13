@@ -28,14 +28,14 @@ function($){
  */
 $.Controller('Seccubus.Asset.Table',
 {
-	/* 
+	/*
 	 * @attribute options
 	 * Object holding all options
 	 */
 	defaults : {
 		/*
 		 * @attribute options.workspace
-		 * The selected workspace. -1 (default) means no workspace was 
+		 * The selected workspace. -1 (default) means no workspace was
 		 * selected
 		 */
 		workspace : -1,
@@ -83,7 +83,7 @@ $.Controller('Seccubus.Asset.Table',
 			);
 		} else {
 			Seccubus.Models.Asset.findAll(
-				{ workspaceId : this.options.workspace },
+				{ workspace : this.options.workspace },
 				this.callback('dataReady')
 			);
 		}
@@ -99,7 +99,7 @@ $.Controller('Seccubus.Asset.Table',
 	},
 	update : function(options){
 		this._super(options);
-		this.updateView(); 
+		this.updateView();
 	}
 });
 
