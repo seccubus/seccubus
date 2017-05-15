@@ -881,4 +881,115 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
     is($f->{remark},"Testing status 1\nbla","Remark correctly set");
 }
 
+# Deleting assets
+
+# INvalid params
+$t->delete_ok('/workspace/a/asset/2')
+    ->status_is(400)
+    ->json_is("/status", "Error")
+    ->json_has("/message")
+;
+
+# Should list with two items
+$t->get_ok('/workspace/100/assets')
+    ->status_is(200)
+    ->json_is([
+        {
+            id => 1,
+            name => "localhost",
+            hosts => "localhost",
+            recipients => "root\@example.com",
+            recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
+            workspace => 100,
+        },
+        {
+            id => 2,
+            name => "v3",
+            hosts => "v3.seccubus.com",
+            recipients => "toor\@example.com",
+            recipientsHtml => '<a href="mailto:toor@example.com">toor@example.com</a>',
+            workspace => 100,
+        }
+    ])
+;
+
+$t->delete_ok('/workspace/100/asset/a')
+    ->status_is(400)
+    ->json_is("/status", "Error")
+    ->json_has("/message")
+;
+
+# Should list with two items
+$t->get_ok('/workspace/100/assets')
+    ->status_is(200)
+    ->json_is([
+        {
+            id => 1,
+            name => "localhost",
+            hosts => "localhost",
+            recipients => "root\@example.com",
+            recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
+            workspace => 100,
+        },
+        {
+            id => 2,
+            name => "v3",
+            hosts => "v3.seccubus.com",
+            recipients => "toor\@example.com",
+            recipientsHtml => '<a href="mailto:toor@example.com">toor@example.com</a>',
+            workspace => 100,
+        }
+    ])
+;
+
+$t->delete_ok('/workspace/101/asset/2')
+    ->status_is(400)
+    ->json_is("/status", "Error")
+    ->json_has("/message")
+;
+
+# Should list with two items
+$t->get_ok('/workspace/100/assets')
+    ->status_is(200)
+    ->json_is([
+        {
+            id => 1,
+            name => "localhost",
+            hosts => "localhost",
+            recipients => "root\@example.com",
+            recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
+            workspace => 100,
+        },
+        {
+            id => 2,
+            name => "v3",
+            hosts => "v3.seccubus.com",
+            recipients => "toor\@example.com",
+            recipientsHtml => '<a href="mailto:toor@example.com">toor@example.com</a>',
+            workspace => 100,
+        }
+    ])
+;
+
+$t->delete_ok('/workspace/100/asset/2')
+    ->status_is(200)
+    ->json_is({ id => 2 })
+;
+
+
+# Should list with one item
+$t->get_ok('/workspace/100/assets')
+    ->status_is(200)
+    ->json_is([
+        {
+            id => 1,
+            name => "localhost",
+            hosts => "localhost",
+            recipients => "root\@example.com",
+            recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
+            workspace => 100,
+        }
+    ])
+;
+
 done_testing();

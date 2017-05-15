@@ -164,35 +164,43 @@ sub update {
 
 sub delete {
     my $self = shift;
-    die;
 
     my $workspace_id = $self->param('workspace_id');
-    my $scan_id = $self->param('scan_id');
-    my $id = $self->param('id');
+    my $asset_id = $self->param('id');
 
-    my $oldnot = get_notifications($scan_id,$id);
-    if ( $$oldnot[0][6] != $workspace_id ) {
-        $self->error("Notification $id not found in scan $scan_id in workspace $workspace_id");
+    my $error = check_param("workspace", $workspace_id, 1);
+    $error = check_param("id", $asset_id, 1) unless $error;
+
+    if ( $error ) {
+        $self->error($error);
         return;
     }
 
-    eval {
-        my $sth = del_notification($id);
-        if ( $sth ) {
-            $self->render( json =>
-                {
-                    status => "OK",
-                    message => "Notification deleted"
-                },
-                status => 200
-            );
-        } else {
-            $self->error("Delete failed");
+    my $assets = get_assets($workspace_id);
+    my $found = 0;
+    if ( @$assets ) {
+        foreach my $a ( @$assets ) {
+            if ( defined $$a[0] && $$a[0] == $asset_id ) {
+                $found = 1;
+                last;
+            }
         }
-    } or do {
-        $self->error(join "\n", $@);
-    };
+    }
 
+    if ( $found ) {
+        eval {
+            my $sth = delete_asset($asset_id);
+            if ( $sth->rows() == 1 ) {
+                $self->render( json => { id => $asset_id });
+            } else {
+                $self->error("Unable to delete asset");
+            }
+        } or do {
+            $self->error(join "\n", $@);
+        };
+    } else {
+        $self->error("Unable to delete asset");
+    }
 }
 
 1;

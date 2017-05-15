@@ -17,7 +17,7 @@ package SeccubusDB;
 
 =head1 NAME $RCSfile: SeccubusDB.pm,v $
 
-This Pod documentation generated from the module SeccubusDB gives a list of all 
+This Pod documentation generated from the module SeccubusDB gives a list of all
 functions within the module.
 
 =cut
@@ -29,7 +29,7 @@ use DBI;
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 		open_database
 		sql
 	);
@@ -80,14 +80,14 @@ Global variable $dbh to see it the database is allready open.
 sub open_database() {
 	my $dsn;
 
-	# This routine uses DBI->connect_cached to efficiently and safely use 
+	# This routine uses DBI->connect_cached to efficiently and safely use
 	# a single DB connection in stead on multiple
 
 	my $config = SeccubusV2::get_config();
 	if ( $config->{database}->{engine} == "mysql" ) {
-		$dsn = "DBI:" . $config->{database}->{engine} 
-			. ":database=" . $config->{database}->{database} 
-			. ";host=" . $config->{database}->{host} 
+		$dsn = "DBI:" . $config->{database}->{engine}
+			. ":database=" . $config->{database}->{database}
+			. ";host=" . $config->{database}->{host}
 			. ";port=" . $config->{database}->{port};
 	} elsif (  $config->{database}->{engine} == "SQLite" ) {
 		$dsn = "DBI:SQLite:dbname=$config->{database}->{database}";
@@ -100,7 +100,7 @@ sub open_database() {
 
 =head2 sql
 
-This is a wrapper function to execute SQL. This function add an abstrction to 
+This is a wrapper function to execute SQL. This function add an abstrction to
 the perl DBI calls so that support for multiple databases can be added more
 easily later
 
@@ -148,7 +148,7 @@ sub sql(@) {
 	$dbh = open_database();
 	confess("Unable to open database") unless $dbh;
 	my $sth = $dbh->prepare($arg{query}) or
-		confess "Problem with preparing sql statement $arg{query}\n" . $dbh->errstr; 
+		confess "Problem with preparing sql statement $arg{query}\n" . $dbh->errstr;
 	if ( exists $arg{values} ) {
 		my $count = 1;
 		foreach my $param ( @{$arg{values}} ) {
@@ -162,7 +162,7 @@ sub sql(@) {
 						# ID
 		return $sth->{mysql_insertid};  # This is MySQL specific
 	} elsif ($arg{return} eq "rows") {	# Return the number of rows changed by the last command
-		return $sth->rows();	
+		return $sth->rows();
 	} elsif ( $arg{return} eq "handle" ) {
 		return $sth;
 	} elsif ( $arg{return} eq "array" ) {
