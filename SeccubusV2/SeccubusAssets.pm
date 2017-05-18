@@ -454,6 +454,7 @@ sub create_asset_host($$;$$){
 	my $asset_id = shift or confess "no asset_id provided";
 	my $ip = shift;
 	my $host = shift;
+
 	confess "no IP or host provided" if(!$ip && ! $host );
 	if($host && ! $ip){
 		my ($name, $aliases, $addrtype,$length,@addrs) = gethostbyname($host);

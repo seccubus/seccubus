@@ -223,10 +223,10 @@ steal(
 		});
 
 		$('#custSQL_table').each(function(){
-			$(this).seccubus_custsql_table({
+			$(this).seccubus_saved_sql_table({
 				saveSQL: function(sql,updateView){
 					$("#widgetsModalMask").click();
-					$('#saveSQL').seccubus_custsql_create({
+					$('#saveSQL').seccubus_saved_sql_create({
 						'sql':sql,
 						afterSave:updateView,
 						onClear:function(){
@@ -502,10 +502,12 @@ steal(
 								});
 
 							},
-							onHostEdit : function(ash){
+							onHostEdit : function(ash,as){
 								$("#widgetsModalMask").click();
 								$('#editHostAsset').seccubus_asset_host_edit({
 									'host' : ash,
+                                    'asset' : as,
+                                    'workspace' : gui_state.workspace,
 									onClear:function(){
 										$("#widgetsModalMask").click();
 										$('#modalDialog').widgets_modal({

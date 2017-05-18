@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Petr, Frank Breedijk
+ * Copyright 2017 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,20 +23,20 @@
 function($){
 	$.Controller('Seccubus.Asset.Host.Table',
 {
-	/* 
+	/*
 	 * @attribute options
 	 * Object holding all options
 	 */
 	defaults : {
 		/*
 		 * @attribute options.workspace
-		 * The selected workspace. -1 (default) means no workspace was 
+		 * The selected workspace. -1 (default) means no workspace was
 		 * selected
 		 */
 		workspace : -1,
 		/*
 		 * @attribute options.asset
-		 * The selected asset. -1 (default) means no asset was 
+		 * The selected asset. -1 (default) means no asset was
 		 * selected
 		 */
 		asset : -1,
@@ -44,7 +44,7 @@ function($){
 		 * @attribute options.onEdit
 		 * This function is triggered with an edit link is clicked
 		 */
-		onEdit : function(ah) {
+		onEdit : function(ah,as) {
 			alert("No onEdit function set for Seccubus.Asset.Host.Table<BR> assethost.id = " + ah.id);
 		}
 	}
@@ -57,11 +57,14 @@ function($){
 	},
 	'.edit click': function( el ){
 		var ash = el.closest('.assethost').model();
-		this.options.onEdit(ash);
+		this.options.onEdit(ash,this.options.asset);
 	},
 	'.destroy click': function( el ){
 		if(confirm("Are you sure you want to destroy?")){
-			var ash = el.closest('.assethost').model().destroy();
+			var ash = el.closest('.assethost').model();
+            ash.workspace = this.options.workspace;
+            ash.asset = this.options.asset;
+            ash.destroy();
 		}
 	},
 	"{Seccubus.Models.Assethost} destroyed" : function(Asset, ev, assethost) {
@@ -94,8 +97,8 @@ function($){
 		} else {
 
 			Seccubus.Models.Assethost.findAll(
-				{ workspaceId : this.options.workspace,
-				  assetId : this.options.asset },
+				{ workspace : this.options.workspace,
+				  asset : this.options.asset },
 				this.callback('dataReady')
 			);
 		}
@@ -109,7 +112,7 @@ function($){
 	},
 	update : function(options){
 		this._super(options);
-		this.updateView(); 
+		this.updateView();
 	}
 });
 

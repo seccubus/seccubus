@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Petr, Frank Breedijk
+ * Copyright 2017 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ $.Controller('Seccubus.SavedSql.Table',
 			);
 		}
 		$("#sqls_selector").each(function(){
-			$(this).seccubus_custsql_select({
+			$(this).seccubus_saved_sql_select({
 				getItems:function(options){
 					$('#sqls_selector').change(function(){
 						if($(this).val() == "") return;

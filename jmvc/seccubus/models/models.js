@@ -65,6 +65,29 @@ function update_api(url){
     });
 }
 
+function delete_api(url){
+    return (function(id,attrs,success,failure) {
+        console.log(id)
+        var re = new RegExp("\{(.*?)\}");
+        var m = re.exec(url);
+        while ( m ) {
+            url = url.replace(re,attrs[m[1]]);
+            m = re.exec(url)
+        }
+
+        return $.ajax({
+            url: base_url() + url,
+            type: "DELETE",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(attrs),
+            success : success,
+            failure : failure
+        })
+    });
+}
+
+
 steal(
     "jquery/model",
     "./up_to_date.js",

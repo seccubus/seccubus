@@ -19,7 +19,7 @@ steal('jquery/model', function(){
  * @class Seccubus.Models.Assethost
  * @parent Asset
  * @inherits jQuery.Model
- * Wraps backend assets services.  
+ * Wraps backend assets services.
  */
 $.Model('Seccubus.Models.Assethost',
 /* @Static */
@@ -34,12 +34,12 @@ $.Model('Seccubus.Models.Assethost',
 	 * Callback function in case of error
 	 * @return {Deferred} A deferred Assets (Asset.Table)
 	 */
-	findAll : api("getAssetHosts.pl"),
+	findAll : api("workspace/{workspace}/asset/{asset}/hosts"),
   	// Not implemented
-	//findOne	: "/scans/{id}.json", 
-	create : api("createAssetHost.pl"),
-	update : api("updateAssetHost.pl"),
-	destroy : api("deleteAssetHost.pl")
+	//findOne	: "/scans/{id}.json",
+	create : create_api("workspace/{workspace}/asset/{asset}/hosts"),
+	update : update_api("workspace/{workspace}/asset/{asset}/host/{id}"),
+	destroy : api("workspace/-999/asset/-999/host/{id}", "DELETE")
   	// Not implemented yet
 	//destroy	: "/scans/{id}.json"
 },

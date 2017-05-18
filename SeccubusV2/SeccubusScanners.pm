@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2013 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ use Exporter;
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 		get_scanners
 	);
 
@@ -37,7 +37,7 @@ sub get_scanners(;);
 
 =head2 get_scanners
 
-Returns a reference to a list of workspaces the user has installed on their 
+Returns a reference to a list of workspaces the user has installed on their
 system:
 (name, description, help)
 

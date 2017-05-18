@@ -60,39 +60,10 @@ sub create {
 }
 
 # Read
-sub read {
-    my $self = shift;
-    die;
-
-    my $workspace_id = $self->param('workspace_id');
-    my $scan_id = $self->param('scan_id');
-    my $id = $self->param('id');
-
-    eval {
-        my $notifications = get_notifications($scan_id, $id);
-
-        if ( @$notifications ) {
-            # Check workspace id here
-            if ( $$notifications[0][6] == $workspace_id ) {
-                my $notification = {};
-
-                my $i = 0;
-                foreach my $prop ( qw(id subject recipients message trigger triggerName) ) {
-                    $notification->{$prop} = $$notifications[0][$i];
-                    $i++;
-                }
-                $self->render( json => $notification );
-            } else {
-                $self->error("Notification not found");
-            }
-        } else {
-            $self->error("notification not found");
-            return;
-        }
-    } or do {
-        $self->error(join "\n", $@);
-    };
-}
+#sub read {
+#    my $self = shift;
+#
+#}
 
 # List
 sub list {

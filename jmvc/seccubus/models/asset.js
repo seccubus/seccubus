@@ -39,7 +39,7 @@ $.Model('Seccubus.Models.Asset',
   	// Not implemented
 	//findOne	: "/scans/{id}.json",
 	update	: update_api("workspace/{workspace}/asset/{id}"),
-	destroy	: api("workspace/{workspace}/asset/{id}", "DELETE")
+	destroy	: api("workspace/-999/asset/{id}", "DELETE")
   	// Not implemented yet
 	//destroy	: "/scans/{id}.json"
 },

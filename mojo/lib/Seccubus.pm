@@ -62,6 +62,12 @@ sub startup {
     $r->put   ('workspace/:workspace_id/asset/:id')->to('assets#update');
     $r->delete('workspace/:workspace_id/asset/:id')->to('assets#delete');
 
+    # AssetHosts
+    $r->post  ('workspace/:workspace_id/asset/:asset_id/hosts')->to('asset_hosts#create');
+    $r->get   ('workspace/:workspace_id/asset/:asset_id/hosts')->to('asset_hosts#list');
+    $r->put   ('workspace/:workspace_id/asset/:asset_id/host/:id')->to('asset_hosts#update');
+    $r->delete('workspace/:workspace_id/asset/:asset_id/host/:id')->to('asset_hosts#delete');
+
     # Attachments
     $r->get   ('workspace/:workspace_id/scan/:scan_id/run/:run_id/attachment/:id')->to('attachments#read');
 
