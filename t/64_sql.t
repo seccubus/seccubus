@@ -23,8 +23,8 @@ use Data::Dumper;
 use lib "lib";
 
 my $db_version = 0;
-foreach my $data_file (<../db/data_v*.mysql>) {
-	$data_file =~ /^\.\.\/db\/data_v(\d+)\.mysql$/;
+foreach my $data_file (<db/data_v*.mysql>) {
+	$data_file =~ /^db\/data_v(\d+)\.mysql$/;
 	$db_version = $1 if $1 > $db_version;
 }
 
@@ -33,8 +33,8 @@ ok($db_version > 0, "DB version = $db_version");
 `mysql -uroot -e "create database seccubus"`;
 `mysql -uroot -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
 `mysql -uroot -e "flush privileges;"`;
-`mysql -uroot seccubus < ../db/structure_v$db_version.mysql`;
-`mysql -uroot seccubus < ../db/data_v$db_version.mysql`;
+`mysql -uroot seccubus < db/structure_v$db_version.mysql`;
+`mysql -uroot seccubus < db/data_v$db_version.mysql`;
 
 my $t = Test::Mojo->new('Seccubus');
 # List empty

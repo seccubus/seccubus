@@ -256,7 +256,7 @@ unless ( $noissues ) {
         foreach my $f ( @{ $i->{findings} } ) {
             push @$finds, $fmap->{$f} if $fmap->{$f};
         }
-        $i->{findings} = join("\0", @$finds);
+        $i->{findings_add} = $finds;
         update_issue(%$i);
         print "." if $verbose > 1;
     }

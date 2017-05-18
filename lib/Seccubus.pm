@@ -17,9 +17,8 @@ use Mojo::Base 'Mojolicious';
 
 use strict;
 
-use Seccubus::Controller;
-use lib "..";
 use SeccubusV2;
+use Seccubus::Controller;
 use Data::Dumper;
 use Cwd 'cwd';
 

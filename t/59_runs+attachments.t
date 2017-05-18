@@ -27,8 +27,8 @@ use SeccubusRuns;
 use lib "lib";
 
 my $db_version = 0;
-foreach my $data_file (<../db/data_v*.mysql>) {
-	$data_file =~ /^\.\.\/db\/data_v(\d+)\.mysql$/;
+foreach my $data_file (<db/data_v*.mysql>) {
+	$data_file =~ /^db\/data_v(\d+)\.mysql$/;
 	$db_version = $1 if $1 > $db_version;
 }
 
@@ -37,32 +37,32 @@ ok($db_version > 0, "DB version = $db_version");
 `mysql -uroot -e "create database seccubus"`;
 `mysql -uroot -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
 `mysql -uroot -e "flush privileges;"`;
-`mysql -uroot seccubus < ../db/structure_v$db_version.mysql`;
-`mysql -uroot seccubus < ../db/data_v$db_version.mysql`;
+`mysql -uroot seccubus < db/structure_v$db_version.mysql`;
+`mysql -uroot seccubus < db/data_v$db_version.mysql`;
 
 my $t = Test::Mojo->new('Seccubus');
 
 # Let's set things up
 pass("Setting up");
-my ( $workspace_id, $scan_id, $run_id) = load_ivil("../testdata/delta-AAAAAAA.ivil.xml","Nessus6",6,"20170101000001","workspace1","scan1");
+my ( $workspace_id, $scan_id, $run_id) = load_ivil("testdata/delta-AAAAAAA.ivil.xml","Nessus6",6,"20170101000001","workspace1","scan1");
 is($workspace_id,100,"Workspace id is ok");
 is($scan_id,1,"Scan id is ok");
 is($run_id,1,"Run id is ok");
-my $run_id2 = update_run($workspace_id,$scan_id,"20170101000001","../testdata/delta-AAAAAAA.ivil.xml","XML");
+my $run_id2 = update_run($workspace_id,$scan_id,"20170101000001","testdata/delta-AAAAAAA.ivil.xml","XML");
 is($run_id2,$run_id,"Run id ok");
-($workspace_id, $scan_id, $run_id) = load_ivil("../testdata/delta-AAAAAAA.ivil.xml","Nessus6",6,"20170101000002","workspace1","scan1");
+($workspace_id, $scan_id, $run_id) = load_ivil("testdata/delta-AAAAAAA.ivil.xml","Nessus6",6,"20170101000002","workspace1","scan1");
 is($workspace_id,100,"Workspace id is ok");
 is($scan_id,1,"Scan id is ok");
 is($run_id,2,"Run id is ok");
-($workspace_id, $scan_id, $run_id) = load_ivil("../testdata/delta-AAAAAAA.ivil.xml","Nessus6",6,"20170101000002","workspace1","scan2");
+($workspace_id, $scan_id, $run_id) = load_ivil("testdata/delta-AAAAAAA.ivil.xml","Nessus6",6,"20170101000002","workspace1","scan2");
 is($workspace_id,100,"Workspace id is ok");
 is($scan_id,2,"Scan id is ok");
 is($run_id,3,"Run id is ok");
-$run_id2 = update_run($workspace_id,$scan_id,"20170101000002","../testdata/delta-AAAAAAA.ivil.xml","XML");
+$run_id2 = update_run($workspace_id,$scan_id,"20170101000002","testdata/delta-AAAAAAA.ivil.xml","XML");
 is($run_id2,$run_id,"Run id ok");
-$run_id2 = update_run($workspace_id,$scan_id,"20170101000002","../testdata/delta-AAAAAAA.nbe","NBE");
+$run_id2 = update_run($workspace_id,$scan_id,"20170101000002","testdata/delta-AAAAAAA.nbe","NBE");
 is($run_id2,$run_id,"Run id ok");
-($workspace_id, $scan_id, $run_id) = load_ivil("../testdata/delta-AAAAAAA.ivil.xml","Nessus6",6,"20170101000003","workspace1","scan3");
+($workspace_id, $scan_id, $run_id) = load_ivil("testdata/delta-AAAAAAA.ivil.xml","Nessus6",6,"20170101000003","workspace1","scan3");
 is($workspace_id,100,"Workspace id is ok");
 is($scan_id,3,"Scan id is ok");
 is($run_id,4,"Run id is ok");
@@ -140,8 +140,8 @@ $t->get_ok('/workspace/100/scan/4/runs')
 	->json_is([])
 	;
 
-my $xml = `cat ../testdata/delta-AAAAAAA.ivil.xml`;
-my $nbe = `cat ../testdata/delta-AAAAAAA.nbe`;
+my $xml = `cat testdata/delta-AAAAAAA.ivil.xml`;
+my $nbe = `cat testdata/delta-AAAAAAA.nbe`;
 
 $t->get_ok('/workspace/100/scan/2/run/3/attachment/2')
 	->status_is(200)

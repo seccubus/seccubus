@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk, Steve Launius, Alex Smirnoff
+# Copyright 2017 Frank Breedijk, Steve Launius, Alex Smirnoff
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 # ------------------------------------------------------------------------------
 
 use strict;
+use SeccubusV2;
 use IVIL;
 
 use Getopt::Long;
@@ -35,7 +36,7 @@ my (
 	@findings,
    );
 
-my %sev = ( 
+my %sev = (
 		"Weak Password"		=> 1
 	  );
 $help = 0;
@@ -127,20 +128,20 @@ Arguments:
 			Default value: Medusa
 --scannerversion- Optional: the version of the scanner used to create the .medusa
 		  file
---timestamp	- Timestamp of when the file was created in the format 
+--timestamp	- Timestamp of when the file was created in the format
 		  YYYYMMDDhhmmss or YYYYMMDDhhmm so 11 december 2011 1:14:00 pm
 		  is 20111211131400 or 201112111314
---workspace	- Optional: Which Seccubus workspace do you want to load this 
-		  in, this informaiton is used to create the addressee block. 
-		  If not value is given for workspace no addressee block is 
+--workspace	- Optional: Which Seccubus workspace do you want to load this
+		  in, this informaiton is used to create the addressee block.
+		  If not value is given for workspace no addressee block is
 		  generated
---scan		- Optional: Which Seccubus scan do you want to load this in, 
-		  this informaiton is used to create the addressee block. If 
+--scan		- Optional: Which Seccubus scan do you want to load this in,
+		  this informaiton is used to create the addressee block. If
 		  scan is not specified then the value for workspace is used.
 --infile	- This defines the .medusa file that will be converted to IVIL
---outfile	- Optional: This defines the name of the file used to output 
-		  IVIL. If no filename is given, the infile value is used, 
-		  a trailing .nbe is removed (if it exists) and .ivil.xml is 
+--outfile	- Optional: This defines the name of the file used to output
+		  IVIL. If no filename is given, the infile value is used,
+		  a trailing .nbe is removed (if it exists) and .ivil.xml is
 		  appended
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message

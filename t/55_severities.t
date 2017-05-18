@@ -23,8 +23,8 @@ use Data::Dumper;
 use lib "lib";
 
 my $db_version = 0;
-foreach my $data_file (<../db/data_v*.mysql>) {
-	$data_file =~ /^\.\.\/db\/data_v(\d+)\.mysql$/;
+foreach my $data_file (<db/data_v*.mysql>) {
+	$data_file =~ /^db\/data_v(\d+)\.mysql$/;
 	$db_version = $1 if $1 > $db_version;
 }
 
@@ -33,30 +33,40 @@ ok($db_version > 0, "DB version = $db_version");
 `mysql -uroot -e "create database seccubus"`;
 `mysql -uroot -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
 `mysql -uroot -e "flush privileges;"`;
-`mysql -uroot seccubus < ../db/structure_v$db_version.mysql`;
-`mysql -uroot seccubus < ../db/data_v$db_version.mysql`;
+`mysql -uroot seccubus < db/structure_v$db_version.mysql`;
+`mysql -uroot seccubus < db/data_v$db_version.mysql`;
 
 my $t = Test::Mojo->new('Seccubus');
-
-# Read events
-$t->get_ok('/events')
+# List empty
+$t->get_ok('/severities')
 	->status_is(200)
-	->json_is(
-	    [
-	        {
-	            "id" => "1",
-	            "name" => "Before scan"
-	        },
-	        {
-	            "id" => "2",
-	            "name" => "After scan"
-	        },
-	        {
-	            "id" => "3",
-	            "name" => "On Open"
-	        }
-	    ]
-	);
-
+	->json_is([
+	    {
+	        "description" => "No severity has been set",
+	        "id" => "0",
+	        "name" => "Not set"
+	    },
+	    {
+	        "description" => "Direct compromise of Confidentiality, Integrity or Availbility or policy violation",
+	        "id" => "1",
+	        "name" => "High"
+	    },
+	    {
+	        "description" => "Could compromise of Confidentiality, Integrity or Availbility in combination with other issue. Disclosure of sensitive information",
+	        "id" => "2",
+	        "name" => "Medium"
+	    },
+	    {
+	        "description" => "Weakens security posture",
+	        "id" => "3",
+	        "name" => "Low"
+	    },
+	    {
+	        "description" => "Not a security issue, but deemed noteworthy",
+	        "id" => "4",
+	        "name" => "Note"
+	    }
+	])
+	;
 
 done_testing();

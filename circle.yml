@@ -60,8 +60,7 @@ test:
     - mysql -e "create database seccubus"
     - mysql -e "create database seccubus_create"
     - mysql -e "create database seccubus_upgrade"
-    - (cd mojo;prove -I lib -I SeccubusV2)
-    - "#prove -I SeccubusV2"
+    - prove -I lib
   post:
 
 ## Customize deployment commands

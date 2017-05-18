@@ -13,14 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# This little script checks all files te see if they are perl files and if so 
+# This little script checks all files te see if they are perl files and if so
 # ------------------------------------------------------------------------------
 
 use strict;
 use Algorithm::Diff qw( diff );
+use Mojo::Base -strict;
 use JSON;
-use Data::Dumper;
+
+
 use Test::More;
+use Test::Mojo;
+use Data::Dumper;
+
 use SeccubusV2;
 use SeccubusWorkspaces;
 use SeccubusScans;
@@ -32,13 +37,10 @@ use SeccubusNotifications;
 use SeccubusUsers;
 use SeccubusRuns;
 
-sub webcall(@);
-
-
 my $db_version = 0;
 foreach my $data_file (<db/data_v*.mysql>) {
-	$data_file =~ /^db\/data_v(\d+)\.mysql$/;
-	$db_version = $1 if $1 > $db_version;
+    $data_file =~ /^db\/data_v(\d+)\.mysql$/;
+    $db_version = $1 if $1 > $db_version;
 }
 
 ok($db_version > 0, "DB version = $db_version");
@@ -49,65 +51,51 @@ ok($db_version > 0, "DB version = $db_version");
 `mysql -uroot seccubus < db/structure_v$db_version.mysql`;
 `mysql -uroot seccubus < db/data_v$db_version.mysql`;
 
-my $json = webcall("ConfigTest.pl");
-foreach my $t ( @$json ) {
-	if ( $t->{name} ne "Configuration file" ) { # Skip in container
-		is($t->{result}, "OK", "$t->{name} ($t->{result}) eq OK?");
-	}
-}
+my $t = Test::Mojo->new('Seccubus');
 
-# Create a workspace
-$json = webcall("createWorkspace.pl", "name=export");
-is($$json[0]->{id},100,"Workspace created");
+# Create
+$t->post_ok('/workspaces', json => { 'name' => 'export'})
+    ->status_is(200)
+;
+
 # Create a scan
-$json = webcall("createScan.pl", "workspaceId=100", "name=seccubus", "scanner=SSLlabs", "parameters=--hosts+\@HOSTS+--from-cache+--publish", "targets=www.seccubus.com");
-is(@$json, 1, "Correct number of records returned");
-is($$json[0]->{id}, 1, "Correct ID returned");
-is($$json[0]->{name}, "seccubus", "Correct name returned");
-is($$json[0]->{scanner}, "SSLlabs", "Correct scanner returned");
-is($$json[0]->{parameters}, '--hosts @HOSTS --from-cache --publish', "Correct parameters returned");
-is($$json[0]->{targets}, "www.seccubus.com", "Correct targets returned");
-is($$json[0]->{workspace}, 100, "Correct workspace returned");
-is($$json[0]->{password}, undef, "Correct password returned");
-$json = webcall("createScan.pl", "workspaceId=100", "name=schubergphilis", "scanner=SSLlabs", "parameters=--hosts+\@HOSTS+--from-cache+--publish", "targets=www.schubergphilis.com");
-is(@$json, 1, "Correct number of records returned");
-is($$json[0]->{id}, 2, "Correct ID returned");
-is($$json[0]->{name}, "schubergphilis", "Correct name returned");
-is($$json[0]->{scanner}, "SSLlabs", "Correct scanner returned");
-is($$json[0]->{parameters}, '--hosts @HOSTS --from-cache --publish', "Correct parameters returned");
-is($$json[0]->{targets}, "www.schubergphilis.com", "Correct targets returned");
-is($$json[0]->{workspace}, 100, "Correct workspace returned");
-is($$json[0]->{password}, undef, "Correct password returned");
+$t->post_ok('/workspace/100/scans',
+    json => {
+        name        => "seccubus",
+        scanner     => "SSLlabs",
+        parameters  => '--hosts @HOSTS --from-cache --publish',
+        targets     => "www.seccubus.com"
+    })
+    ->status_is(200)
+;
 
-# Read scans back
-$json = webcall("getScans.pl", "workspaceId=100");
-is(@$json, 2, "Correct number of records returned");
-is($$json[0]->{id}, 2, "Correct ID returned");
-is($$json[0]->{name}, "schubergphilis", "Correct name returned");
-is($$json[0]->{scanner}, "SSLlabs", "Correct scanner returned");
-is($$json[0]->{parameters}, '--hosts @HOSTS --from-cache --publish', "Correct parameters returned");
-is($$json[0]->{targets}, "www.schubergphilis.com", "Correct targets returned");
-is($$json[0]->{workspace}, 100, "Correct workspace returned");
-is($$json[0]->{password}, undef, "Correct password returned");
-is($$json[1]->{id}, 1, "Correct ID returned");
-is($$json[1]->{name}, "seccubus", "Correct name returned");
-is($$json[1]->{scanner}, "SSLlabs", "Correct scanner returned");
-is($$json[1]->{parameters}, '--hosts @HOSTS --from-cache --publish', "Correct parameters returned");
-is($$json[1]->{targets}, "www.seccubus.com", "Correct targets returned");
-is($$json[1]->{workspace}, 100, "Correct workspace returned");
-is($$json[1]->{password}, undef, "Correct password returned");
+# Create another scan
+$t->post_ok('/workspace/100/scans',
+    json => {
+        name        => "schubergphilis",
+        scanner     => "SSLlabs",
+        parameters  => '--hosts @HOSTS --from-cache --publish',
+        targets     => "www.schubergphilis.com"
+    })
+    ->status_is(200)
+;
 
 # Import data
 pass("Importing ssllabs-seccubus scan");
 `bin/load_ivil -w export -s seccubus -t 20170101000000 testdata/ssllabs-seccubus.ivil.xml`;
+is($?,0,"Command executed ok");
 `bin/attach_file -w export -s seccubus -t 20170101000000 -f testdata/ssllabs-seccubus.ivil.xml -d "IVIL file"`;
+is($?,0,"Command executed ok");
 `bin/attach_file -w export -s seccubus -t 20170101000000 -f testdata/ssllabs-schubergphilis.ivil.xml -d "The wrong IVIL file"`;
+is($?,0,"Command executed ok");
 pass("Importing ssllabs-schubergphilis scan");
 `bin/load_ivil -w export -s schubergphilis -t 20170101000100 testdata/ssllabs-schubergphilis.ivil.xml`;
+is($?,0,"Command executed ok");
 `bin/attach_file -w export -s schubergphilis -t 20170101000100 -f testdata/ssllabs-schubergphilis.ivil.xml -d "An IVIL file too"`;
+is($?,0,"Command executed ok");
 pass("Importing ssllabs-seccubus scan, again");
 `bin/load_ivil -w export -s seccubus -t 20170101000200 testdata/ssllabs-seccubus.ivil.xml`;
-#`bin/attach_file -w export -s seccubus -t 20170101000200 -f testdata/ssllabs-seccubus.ivil.xml -d "IVIL file"`;
+is($?,0,"Command executed ok");
 
 pass("Manipulating findings and issues");
 my $findings = get_findings(100,1,undef,{ plugin => "vulnBeast" });
@@ -128,7 +116,7 @@ update_issue(
 	ext_ref => "666",
 	description => "Beast issue",
 	status => 1,
-	findings => join("\0", @finds),
+	findings_add => \@finds,
 	timestamp => "20170101000300",
 );
 
@@ -152,7 +140,7 @@ update_issue(
 	ext_ref => "rc4_ref",
 	description => "rc4 issue",
 	status => 1,
-	findings => join("\0", @finds),
+	findings_add => \@finds,
 	timestamp => "20170101000400",
 );
 sleep 1;
@@ -163,7 +151,7 @@ update_issue(
 	ext_ref => "rc4 ref",
 	description => "rc4 issue",
 	status => 2,
-	findings_remove => $last_id,
+	findings_remove => [ $last_id ],
 	timestamp => "20170101000500",
 );
 pass("Adding hostsnames");
@@ -214,7 +202,7 @@ $json = get_json("/tmp/export.$$/hostnames.json");
 is_deeply($json, [ { name => "home", ip => "127.0.0.1" } ], "Hostnames exported ok");
 
 $json = get_json("/tmp/export.$$/scans.json");
-is_deeply($json, 
+is_deeply($json,
 	[
 	   {
 	      "id" => "2",
@@ -237,7 +225,7 @@ is_deeply($json,
 );
 
 $json = get_json("/tmp/export.$$/issues.json");
-is_deeply($json, 
+is_deeply($json,
 	[
 	   {
 	      "ext_ref" => "666",
@@ -304,7 +292,7 @@ is_deeply($json,
 
 pass("Checking scan 1");
 $json = get_json("/tmp/export.$$/scan_1/runs.json");
-is_deeply($json, 
+is_deeply($json,
 	[
 	   {
 	      "timestamp" => "20170101000200",
@@ -334,7 +322,7 @@ foreach my $att ( @{ $$json[0]->{attachments} } , @{ $$json[1]->{attachments} } 
 }
 
 $json = get_json("/tmp/export.$$/scan_1/notifications.json");
-is_deeply($json, 
+is_deeply($json,
 	[
 	   {
 	      "subject" => "Before",
@@ -357,7 +345,7 @@ my @ffiles = glob "/tmp/export.$$/scan_1/finding_*";
 is(@ffiles,97,"There are 97 findings in scan 1");
 
 $json = get_json("/tmp/export.$$/scan_1/finding_96.json");
-is_deeply($json, 
+is_deeply($json,
 	{
 	   "finding" => "Public : True\n\nDetermines if this assessment is (publicly) visible on www.ssllabls.com website",
 	   "plugin" => "isPublic",
@@ -399,7 +387,7 @@ is_deeply($json,
 );
 
 $json = get_json("/tmp/export.$$/scan_1/finding_41.json");
-is_deeply($json, 
+is_deeply($json,
 	{
 	   "plugin" => "vulnBeast",
 	   "remark" => "Don't be so vulnerable, please",
@@ -454,7 +442,7 @@ is_deeply($json,
 
 pass("Checking scan 2");
 $json = get_json("/tmp/export.$$/scan_2/runs.json");
-is_deeply($json, 
+is_deeply($json,
 	[
 	   {
 	      "timestamp" => "20170101000100",
@@ -475,7 +463,7 @@ foreach my $att ( @{ $$json[0]->{attachments} } , @{ $$json[1]->{attachments} } 
 }
 
 $json = get_json("/tmp/export.$$/scan_2/notifications.json");
-is_deeply($json, 
+is_deeply($json,
 	[
 	   {
 	      "trigger" => "2",
@@ -488,7 +476,7 @@ is_deeply($json,
 	"Notifications exported ok"
 );
 
-my @ffiles = glob "/tmp/export.$$/scan_2/finding_*";
+@ffiles = glob "/tmp/export.$$/scan_2/finding_*";
 is(@ffiles,185,"There are 185 findings in scan 2");
 
 
@@ -496,7 +484,7 @@ is(@ffiles,185,"There are 185 findings in scan 2");
 is($?,0,"export command ran ok only exporting scan 2");
 
 $json = get_json("/tmp/export.$$.2/scans.json");
-is_deeply($json, 
+is_deeply($json,
 	[
 	   {
 	      "id" => "2",
@@ -515,7 +503,7 @@ ok(! -e "/tmp/export.$$.2/scan_1", "There is no scan_1 directory");
 is($?,0,"export command ran ok exporting only after 2017010100100");
 
 $json = get_json("/tmp/export.$$.3/scan_1/runs.json");
-is_deeply($json, 
+is_deeply($json,
 	[
 	   {
 	      "timestamp" => "20170101000200",
@@ -537,7 +525,6 @@ is(@fs,0,"Scan 2 should have 0 findings");
 
 $json = get_json("/tmp/export.$$.4/scan_2/runs.json");
 is_deeply($json, [], "Scan 2 has no associated runs" );
-
 #
 # Import
 #
@@ -571,6 +558,7 @@ is($user_id,100,"User 'seccubus' was created");
 
 # Compare a normal import $$ vs export
 cmp_scan(get_workspace_id("exported"),get_workspace_id("export"),{ nousers => 1 });
+#done_testing();die;
 
 # Compressed $$.1 vs compressed import
 `bin/import -w compressed_in -i /tmp/export.$$ --compress`;
@@ -609,7 +597,7 @@ sub get_json($) {
 	my $file = shift;
 
 	open JS, $file or die "Cannot open $file";
-	my $json = decode_json(join "", <JS>); 
+	my $json = decode_json(join "", <JS>);
 	close JS;
 
 	return $json;
@@ -675,7 +663,7 @@ sub cmp_scan($$;$) {
 		foreach my $f (0..$in_count-1) {
 			pass("Comparing finding $f in scan $x");
 			# findings.id, findings.host, host_names.name as hostname, 	port, plugin, finding, remark,
-			# findings.severity as severity_id, severity.name as severity_name, 
+			# findings.severity as severity_id, severity.name as severity_name,
 			# findings.status as status_id, finding_status.name as status, findings.scan_id as scan_id,
 			# scans.name as scan_name, runs.time as run_time
 			foreach my $field (1..10 , 12..13 ) {
@@ -686,9 +674,9 @@ sub cmp_scan($$;$) {
 			my $fh_out = get_finding($out,$$f_out[$f][0]);
 			$in_count = @$fh_in;
 			$out_count = @$fh_out;
-			# finding_changes.id, findings.id, host, host_names.name, port, plugin, 
+			# finding_changes.id, findings.id, host, host_names.name, port, plugin,
 			# finding_changes.finding, finding_changes.remark, finding_changes.severity, severity.name,
-			# finding_changes.status, finding_status.name, user_id, username, 
+			# finding_changes.status, finding_status.name, user_id, username,
 			# finding_changes.time as changetime, runs.time as runtime
 			foreach my $fh ( 0..$in_count-1 ) {
 				pass("Comparting history record $fh of finding $f in scan $x");
@@ -730,14 +718,14 @@ sub cmp_scan($$;$) {
 	my $i_out= get_issues($out,undef,1,undef);
 	$in_count = @$i_in;
 	$out_count = @$i_out;
-	is($in_count,$out_count,"Smae number of issue records");
+	is($in_count,$out_count,"Same number of issue records");
 	foreach my $i (0..$in_count-1) {
 		pass("Comparing issue record $i");
-		# i.id, i.name, i.ext_ref, i.description, i.severity, severity.name, i.status, 
+		# i.id, i.name, i.ext_ref, i.description, i.severity, severity.name, i.status,
 		# issue_status.name, i2f.finding_id
 		foreach my $f (1..7) {
 			is($$i_in[$i][$f],$$i_out[$i][$f],"Field $f is the same");
-		} 
+		}
 		if ( defined $$i_in[$i][8] && defined $$i_out[$i][8] ) {
 			is($fin->{$$i_in[$i][8]},$fout->{$$i_out[$i][8]},"Record $i refers to the same finding");
 		} elsif ( ! defined $$i_in[$i][8] && ! defined $$i_out[$i][8] ) {

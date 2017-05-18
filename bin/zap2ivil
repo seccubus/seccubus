@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Glenn ten Cate, Frank Breedijk
+# Copyright 2017 Glenn ten Cate, Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 # ------------------------------------------------------------------------------
 
 use strict;
+use SeccubusV2;
 use IVIL;
 
 use Getopt::Long;
@@ -107,7 +108,7 @@ print "Iterating over findings\n" if $verbose;
 my $j = 0;
 
 foreach my $item ( @{$zap->{site}->{alerts}->{alertitem}} ) {
-	
+
 	$finding = {};
 	$finding->{port} = $zap->{site}->{port};
 	$finding->{hostname} = $zap->{site}->{name};
@@ -144,9 +145,9 @@ foreach my $item ( @{$zap->{site}->{alerts}->{alertitem}} ) {
 	if($item->{riskcode} == 0){
 	   $finding->{severity} = 2;
 	}else{
-	   $finding->{severity} = $item->{riskcode}; 
+	   $finding->{severity} = $item->{riskcode};
 	}
-	
+
 	foreach my $obj ( $item->{desc}->{p} ) {
 	      if(ref($obj) eq 'ARRAY'){
                       $finding->{finding} .= "Description Finding:\r\n";
@@ -155,13 +156,13 @@ foreach my $item ( @{$zap->{site}->{alerts}->{alertitem}} ) {
                        $finding->{finding} .= $obj->[1]."\r\n";
 		       $finding->{finding} .= $obj->[3]."\r\n";
 		       $finding->{finding} .= $obj->[4]."\r\n";
-		   } 
+		   }
    	       }else{
 	           my $desc = $obj;
     		   $finding->{finding} .= "Description Finding:\r\n";
                    if(ref($desc) ne "HASH"){
                        $finding->{finding} .= $desc."\r\n";
-                   } 
+                   }
 
 	    }
 	}
@@ -173,7 +174,7 @@ foreach my $item ( @{$zap->{site}->{alerts}->{alertitem}} ) {
                        $finding->{finding} .= $obj->[0]."\r\n";
                        $finding->{finding} .= $obj->[1]."\r\n";
                        $finding->{finding} .= $obj->[2]."\r\n";
-                   } 
+                   }
                }else{
                    my $sol = $obj;
 		   $finding->{finding} .= "Solution for Finding:\r\n";
@@ -190,7 +191,7 @@ foreach my $item ( @{$zap->{site}->{alerts}->{alertitem}} ) {
                        $finding->{finding} .= $obj->[0]."\r\n";
                        $finding->{finding} .= $obj->[1]."\r\n";
                        $finding->{finding} .= $obj->[2]."\r\n";
-                   } 
+                   }
                }else{
                    my $ref = $obj;
                    $finding->{finding} .= "Reference for Finding:\r\n";
@@ -220,25 +221,25 @@ Usage: zap2ivil --scanner <scanner> [--scannerversion <versionstring>] \\
 		[--outfile <filename output>] [--verbose] [--help]
 
 Arguments:
---scanner	- Optional: The name of the scanner used to create the zap 
+--scanner	- Optional: The name of the scanner used to create the zap
 		  .xml report file. Defaults to 'ZAP'
 --scannerversion- Optional: the version of the scanner used to create the zap
 		  .xml report file
---timestamp	- Optional: Timestamp of when the file was created in the 
-		  format YYYYMMDDhhmmss or YYYYMMDDhhmm so 
+--timestamp	- Optional: Timestamp of when the file was created in the
+		  format YYYYMMDDhhmmss or YYYYMMDDhhmm so
 		  11 december 2011 1:14:00 pm is 20111211131400 or 201112111314
 		  Defaults to the current date and time
---workspace	- Optional: Which Seccubus workspace do you want to load this 
-		  in, this informaiton is used to create the addressee block. 
-		  If no value is given for workspace no addressee block is 
+--workspace	- Optional: Which Seccubus workspace do you want to load this
+		  in, this informaiton is used to create the addressee block.
+		  If no value is given for workspace no addressee block is
 		  generated
---scan		- Optional: Which Seccubus scan do you want to load this in, 
-		  this informaiton is used to create the addressee block. If 
+--scan		- Optional: Which Seccubus scan do you want to load this in,
+		  this informaiton is used to create the addressee block. If
 		  scan is not specified then the value for workspace is used.
 --infile	- This defines the .nbe file that will be converted to IVIL
---outfile	- Optional: This defines the name of the file used to output 
-		  IVIL. If no filename is given, the infile value is used, 
-		  a trailing .nbe is removed (if it exists) and .ivil.xml is 
+--outfile	- Optional: This defines the name of the file used to output
+		  IVIL. If no filename is given, the infile value is used,
+		  a trailing .nbe is removed (if it exists) and .ivil.xml is
 		  appended
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message
@@ -254,7 +255,7 @@ sub make_timestamp() {
 	$hour = "0". $hour if $hour < 10;
 	$day = "0". $day if $day <10;
 	$month = "0" . $month if $month <10;
-	$year += 1900; 
-	
+	$year += 1900;
+
 	"$year$month$day$hour$minute$second";
 }

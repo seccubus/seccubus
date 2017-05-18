@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-#Copyright 2014 Frank Breedijk, Glenn ten Cate
+#Copyright 2017 Frank Breedijk, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 # ------------------------------------------------------------------------------
 
 use strict;
+use SeccubusV2;
 use IVIL;
 use XML::Simple;
 use Data::Dumper;
@@ -156,7 +157,7 @@ sub issuesInfo($$){
       		  my $issue = &grep_pattern($record->{type});
 
                   my $finding = {};
-                  
+
   		  if($severity >= 3 ){
                   	$finding->{severity} = 1;
                   }elsif($severity > 0 ){
@@ -164,16 +165,16 @@ sub issuesInfo($$){
                   }else{
                   	$finding->{severity} = $severity;
                  }
-	
+
                   $finding->{id} = $type;
-                  $finding->{finding} = 
+                  $finding->{finding} =
                   "Security item:\n
                   ".$issue;
 		  my $countSamp = 0;
 
        		  for my $sample (@$samples){
 			$countSamp++;
-	
+
 			my $url = $sample->{url};
 			my ($domain) = $url =~ m!(https?://[^:/]+)!;
                         $finding->{ip} = $domain;
@@ -199,7 +200,7 @@ sub issuesInfo($$){
         	  }
     	       }
 	}
-       
+
 
 }
 
@@ -266,20 +267,20 @@ Usage: skipfish2ivil [--scanner <scanner>] --timestamp <timestamp> \\
 
 Arguments:
 --scanner (--sc)- Default value: Skipfish
---timestamp	- Timestamp of when the file was created in the format 
+--timestamp	- Timestamp of when the file was created in the format
 		  YYYYMMDDhhmmss or YYYYMMDDhhmm so 11 december 2011 1:14:00 pm
 		  is 20111211131400 or 201112111314
---workspace (-w)- Optional: Which Seccubus workspace do you want to load this 
-		  in, this informaiton is used to create the addressee block. 
-		  If not value is given for workspace no addressee block is 
+--workspace (-w)- Optional: Which Seccubus workspace do you want to load this
+		  in, this informaiton is used to create the addressee block.
+		  If not value is given for workspace no addressee block is
 		  generated
---scan(-s)	- Optional: Which Seccubus scan do you want to load this in, 
-		  this informaiton is used to create the addressee block. If 
+--scan(-s)	- Optional: Which Seccubus scan do you want to load this in,
+		  this informaiton is used to create the addressee block. If
 		  scan is not specified then the value for workspace is used.
 --infile	- This defines the dir that will be converted to IVIL
---outfile	- Optional: This defines the name of the file used to output 
-		  IVIL. If no filename is given, the infile value is used, 
-		  a trailing .xml is removed (if it exists) and .ivil.xml is 
+--outfile	- Optional: This defines the name of the file used to output
+		  IVIL. If no filename is given, the infile value is used,
+		  a trailing .xml is removed (if it exists) and .ivil.xml is
 		  appended
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message

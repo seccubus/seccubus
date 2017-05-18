@@ -22,8 +22,8 @@ use Test::Mojo;
 use lib "lib";
 
 my $db_version = 0;
-foreach my $data_file (<../db/data_v*.mysql>) {
-	$data_file =~ /^\.\.\/db\/data_v(\d+)\.mysql$/;
+foreach my $data_file (<db/data_v*.mysql>) {
+	$data_file =~ /^db\/data_v(\d+)\.mysql$/;
 	$db_version = $1 if $1 > $db_version;
 }
 
@@ -36,9 +36,9 @@ is($?,0,"Database created ok");
 is($?,0,"Privileges granted ok");
 `mysql -uroot -e "flush privileges;"`;
 is($?,0,"Privileges flushed ok");
-`mysql -uroot seccubus < ../db/structure_v$db_version.mysql`;
+`mysql -uroot seccubus < db/structure_v$db_version.mysql`;
 is($?,0,"Database structure created ok");
-`mysql -uroot seccubus < ../db/data_v$db_version.mysql`;
+`mysql -uroot seccubus < db/data_v$db_version.mysql`;
 is($?,0,"Database data imported ok");
 
 my $t = Test::Mojo->new('Seccubus');
@@ -143,8 +143,8 @@ $t->get_ok('/appstatus/bla')
 
 pass("Creating outdated database");
 $db_version--;
-`mysql -uroot seccubus < ../db/structure_v$db_version.mysql`;
-`mysql -uroot seccubus < ../db/data_v$db_version.mysql`;
+`mysql -uroot seccubus < db/structure_v$db_version.mysql`;
+`mysql -uroot seccubus < db/data_v$db_version.mysql`;
 
 $t->get_ok('/appstatus/500')
 	->status_is(500)

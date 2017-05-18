@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk, Glenn ten Cate, Artien Bel 
+# Copyright 2017 Frank Breedijk, Glenn ten Cate, Artien Bel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +16,11 @@
 # This program converts an NBE file to the IVIL format
 # ------------------------------------------------------------------------------
 #
-# You can blame @Ar0xA for burp2ivil 
+# You can blame @Ar0xA for burp2ivil
 #
 
 use strict;
+use SeccubusV2;
 use IVIL;
 
 use Getopt::Long;
@@ -106,7 +107,7 @@ foreach my $issue ( @{$burp->{issue}}) {
 	#get the IP and the Hostname from the burp export
         my $ip = $issue->{host}->{ip};
         my $hostname = $issue->{host}->{content};
-        
+
         #convert severity
         my $severity = $issue->{severity};
         if ($severity eq 'Information' ) {
@@ -120,7 +121,7 @@ foreach my $issue ( @{$burp->{issue}}) {
         } else {
         	print Dumper($issue);
                 die "Unknown severity";
-        } 
+        }
 
         #find the port
         my $port;
@@ -139,9 +140,9 @@ foreach my $issue ( @{$burp->{issue}}) {
 		}
 	}
 
-	#now we fill the finding_txt 
-	my $txt ="";	
-	
+	#now we fill the finding_txt
+	my $txt ="";
+
 	$txt = join ("", $txt, "Name: ", $issue -> {name}, "\n\nPath: $hostname", $issue ->{path}, "\nLocation: $hostname", $issue->{location}, "\n\nConfidence: ", $issue->{confidence});
         $txt = join ("", $txt,"\n\nIssue Background: ", $issue->{issueBackground}, "\n\nRemediation: ", $issue->{remediationBackground});
 
@@ -157,14 +158,14 @@ foreach my $issue ( @{$burp->{issue}}) {
 	$finding->{port} = $port;
 	#add finding_txt to finding
 	$finding->{finding} = $txt;
-        
+
 	#debug: dump the $finding
         #print "\n";
 	#print Dumper($finding);
-	
+
 	#write to ivil
 	print OUT ivil_finding($finding);
-} 
+}
 
 print OUT "</findings>\n";
 
@@ -189,22 +190,22 @@ Usage: burp2ivil --scanner <scanner> [--scannerversion <versionstring>] \\
 Arguments:
 --scanner	- The name of the scanner used to create the .burp file
 			Logical options are Burp Suite, OpenVAS or Nikto
---scannerversion- Optional: the version of the scanner used to create the 
+--scannerversion- Optional: the version of the scanner used to create the
 		  .burp file
---timestamp	- Timestamp of when the file was created in the format 
+--timestamp	- Timestamp of when the file was created in the format
 		  YYYYMMDDhhmmss or YYYYMMDDhhmm so 11 december 2011 1:14:00 pm
 		  is 20111211131400 or 201112111314
---workspace	- Optional: Which Seccubus workspace do you want to load this 
-		  in, this informaiton is used to create the addressee block. 
-		  If not value is given for workspace no addressee block is 
+--workspace	- Optional: Which Seccubus workspace do you want to load this
+		  in, this informaiton is used to create the addressee block.
+		  If not value is given for workspace no addressee block is
 		  generated
---scan		- Optional: Which Seccubus scan do you want to load this in, 
-		  this informaiton is used to create the addressee block. If 
+--scan		- Optional: Which Seccubus scan do you want to load this in,
+		  this informaiton is used to create the addressee block. If
 		  scan is not specified then the value for workspace is used.
 --infile	- This defines the .burp file that will be converted to IVIL
---outfile	- Optional: This defines the name of the file used to output 
-		  IVIL. If no filename is given, the infile value is used, 
-		  a trailing .burp is removed (if it exists) and .ivil.xml is 
+--outfile	- Optional: This defines the name of the file used to output
+		  IVIL. If no filename is given, the infile value is used,
+		  a trailing .burp is removed (if it exists) and .ivil.xml is
 		  appended
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message
