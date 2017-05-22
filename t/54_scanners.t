@@ -24,6 +24,12 @@ use lib "lib";
 
 my $t = Test::Mojo->new('Seccubus');
 
+# Log in
+$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200,"Login ok")
+;
+
+
 my $config = get_config();
 
 # Get the scanners

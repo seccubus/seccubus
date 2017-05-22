@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-package SeccubusFindings;
+package Seccubus::Findings;
 
 =head1 NAME $RCSfile: SeccubusFindings.pm,v $
 
@@ -21,10 +21,11 @@ of all functions within the module.
 
 =cut
 
-use SeccubusDB;
-use SeccubusRights;
-use SeccubusUsers;
-use SeccubusIssues;
+use SeccubusV2;
+use Seccubus::DB;
+use Seccubus::Rights;
+use Seccubus::Users;
+use Seccubus::Issues;
 use Algorithm::Diff qw( diff );
 use JSON;
 use Data::Dumper;
@@ -1250,7 +1251,7 @@ sub create_finding_change($;$$) {
     my $timestamp = shift;
     my $user_id = shift;
 
-    my $user_id = get_user_id($ENV{REMOTE_USER}) unless $user_id;
+    my $user_id = get_user_id($ENV{SECCUBUS_USER}) unless $user_id;
 
     my @new_data = sql( "return"	=> "array",
             "query"		=> "select status, finding, remark, severity, run_id from findings where id = ?",

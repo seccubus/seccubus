@@ -23,14 +23,14 @@ use strict;
 $| = 1;
 
 use SeccubusV2;
-use SeccubusWorkspaces;
-use SeccubusScans;
-use SeccubusHostnames;
-use SeccubusNotifications;
-use SeccubusRuns;
-use SeccubusFindings;
-use SeccubusIssues;
-use SeccubusUsers;
+use Seccubus::Workspaces;
+use Seccubus::Scans;
+use Seccubus::Hostnames;
+use Seccubus::Notifications;
+use Seccubus::Runs;
+use Seccubus::Findings;
+use Seccubus::Issues;
+use Seccubus::Users;
 
 use Getopt::Long;
 use JSON;

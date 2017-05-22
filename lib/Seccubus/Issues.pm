@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-package SeccubusIssues;
+package Seccubus::Issues;
 
 =head1 NAME $RCSfile: SeccubusFindings.pm,v $
 
@@ -21,9 +21,10 @@ of all functions within the module.
 
 =cut
 
-use SeccubusDB;
-use SeccubusRights;
-use SeccubusUsers;
+use SeccubusV2;
+use Seccubus::DB;
+use Seccubus::Rights;
+use Seccubus::Users;
 use Data::Dumper;
 
 @ISA = ('Exporter');
@@ -204,7 +205,7 @@ sub create_issue_change($;$) {
 	my $issue_id = shift or die "No issue_id given";
 	my $timestamp = shift;
 
-	my $user_id = get_user_id($ENV{REMOTE_USER});
+	my $user_id = get_user_id($ENV{SECCUBUS_USER});
 
 	my @new_data = sql( "return"	=> "array",
 		"query"		=> "select name, ext_ref, description,severity, status from issues where id = ?",
@@ -427,7 +428,7 @@ sub issue_finding_link($$$;$) {
 					"query"		=> $query,
 					"values"	=> [ $issue_id, $finding_id ]
 				);
-				my $user_id = get_user_id($ENV{REMOTE_USER});
+				my $user_id = get_user_id($ENV{SECCUBUS_USER});
 				$query = "INSERT INTO issue2finding_changes ( issue_id, finding_id, user_id, deleted ) VALUES ( ?, ?, ?, true )";
 				sql(
 					"return"	=> "handle",
@@ -467,7 +468,7 @@ sub issue_finding_link($$$;$) {
 						"query"		=> $query,
 						"values"	=> [ $issue_id, $finding_id ]
 					);
-					my $user_id = get_user_id($ENV{REMOTE_USER});
+					my $user_id = get_user_id($ENV{SECCUBUS_USER});
 					$query = "INSERT INTO issue2finding_changes ( issue_id, finding_id, user_id, deleted ) VALUES ( ?, ?, ?, false )";
 					sql(
 						"return"	=> "handle",

@@ -19,7 +19,7 @@ use strict;
 
 use lib "..";
 use SeccubusV2;
-use SeccubusCustomSQL;
+use Seccubus::CustomSQL;
 use Data::Dumper;
 
 # Create

@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-package SeccubusHelpers;
+package Seccubus::Helpers;
 
 =head1 NAME $RCSfile: SeccubusHelpers.pm,v $
 
@@ -25,8 +25,7 @@ of all functions within the module.
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
-		check_config
+@EXPORT = qw (
 		dirlist
 		api_error
 		api_result
@@ -37,7 +36,8 @@ of all functions within the module.
 use strict;
 use Carp;
 use HTML::Entities;
-use SeccubusDB;
+use SeccubusV2;
+use Seccubus::DB;
 use Data::Dumper;
 
 sub check_config();
@@ -46,47 +46,10 @@ sub api_error($$);
 sub api_result($;$$$);
 sub run_cmd($;$$$$);
 
-=head2 check_config
-
-This function checks the configuration file for obvious errors
-
-=over 2
-
-=item Parameters
-
-=over 4
-
-=item None
-
-=back
-
-=item Returns
-
-True if the config is not obviously invalid
-
-=item Checks
-
-None
-
-=back
-
-=back
-
-=cut
-
-sub check_config() {
-	my $ok = 1;
-	my $config = SeccubusV2::get_config();
-	if ( ! $config->{database}->{database} ) {
-		confess "No DB configuration in config.xml";
-		$ok = undef;
-	}
-	return $ok;
-}
 
 =head2 dirlist
 
-This routine is stolen verbatim from Nikto. It lists the files in a directory 
+This routine is stolen verbatim from Nikto. It lists the files in a directory
 that match a certain pattern.
 
 =over 2
@@ -242,12 +205,12 @@ Runs a command and returns stdout
 
 =over 4
 
-=item cmd	- The command that should be run 
+=item cmd	- The command that should be run
 
 =item print	- Optional Print cmd output to STDOUT is set to a true value.
 		  A value greater then 1 also echo's commands
 
-=item remote    - Optional Comma separated list of host,username,key used to 
+=item remote    - Optional Comma separated list of host,username,key used to
 		  connect to a remote host and run the command
 
 =item fetch	- Optional arrayref of files to fetch to /tmp
@@ -334,7 +297,7 @@ sub run_cmd($;$$$$) {
 
 =head2 get_severity
 
-This function returns a reference to an array of severities (id, name, 
+This function returns a reference to an array of severities (id, name,
 description)
 
 =over 2
@@ -345,7 +308,7 @@ description)
 
 =item None
 
-=back 
+=back
 
 =item Checks
 

@@ -19,8 +19,8 @@ use strict;
 
 use lib "..";
 use SeccubusV2;
-use SeccubusWorkspaces;
-use SeccubusEvents;
+use Seccubus::Workspaces;
+use Seccubus::Events;
 
 # Create
 #sub create {

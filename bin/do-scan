@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk, Floris Kraak
+# Copyright 2017 Frank Breedijk, Floris Kraak
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@
 
 use strict;
 use SeccubusV2;
-use SeccubusWorkspaces;
-use SeccubusScans;
+use Seccubus::Workspaces;
+use Seccubus::Scans;
 use Getopt::Long;
 
 my (
@@ -72,7 +72,7 @@ sub help() {
 	my $message = shift;
 	if( $message ) { print "Error: $message\n" };
 	print "
-Usage: do-scan --workspace <workspace name> --scan <scan name> [--verbose] 
+Usage: do-scan --workspace <workspace name> --scan <scan name> [--verbose]
                [--quiet] [--help]
 
 Executes a scan

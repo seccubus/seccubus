@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk, Dan McGinn-Combs
+# Copyright 2017 Frank Breedijk, Dan McGinn-Combs
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@
 
 use strict;
 use SeccubusV2;
-use SeccubusIVIL;
-use SeccubusHelpers;
+use Seccubus::IVIL;
+use Seccubus::Helpers;
 
 use Getopt::Long;
 use Carp;
@@ -43,7 +43,7 @@ $help = 0;
 
 # Create default values
 
-GetOptions(	
+GetOptions(
 		'nmap_path|p=s'		=> \$nmap_path,
 		'nmap_options|o=s'	=> \$nmap_options,
 		'hosts=s'		=> \$hosts_file,
@@ -158,15 +158,15 @@ sub help() {
 	print "
 Usage: scan 	[--nmap_path|p <path to nmap>] \\
 		[--nmap_options <additional Nmap options>]] \\
-		--hosts <hosts file> [--remote|r <host,user,keyfile>] 
+		--hosts <hosts file> [--remote|r <host,user,keyfile>]
 		[--verbose|v] [--quiet|q] [--help|h]
 
 Arguments:
 --nmap_path	- You can use this optional parameter to provide the script with
-(-p)		  the path to nmap. If you do not provide this the 
-		  script tries to find the files itself and fail if it cannot 
+(-p)		  the path to nmap. If you do not provide this the
+		  script tries to find the files itself and fail if it cannot
 		  find them.
---nmap_options	- Additional command line options to provide to Nmap see 
+--nmap_options	- Additional command line options to provide to Nmap see
 (-o)		  'nmap -Help' for more information. Please quote the options so that they are
                   passed to Nikto as a single block. E.g. -o '-sS -Pn'
 --hosts		- The file containing the 'hosts' to scan

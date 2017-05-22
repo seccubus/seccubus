@@ -12,11 +12,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-package SeccubusWorkspaces;
+package Seccubus::Workspaces;
 
 =head1 NAME $RCSfile: SeccubusWorkspaces.pm,v $
 
-This Pod documentation generated from the module SeccubusWorkspaces gives a 
+This Pod documentation generated from the module SeccubusWorkspaces gives a
 list of all functions within the module.
 
 =cut
@@ -25,7 +25,7 @@ use Exporter;
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 		create_workspace
 		delete_workspace
 		edit_workspace
@@ -36,8 +36,9 @@ use Exporter;
 use strict;
 use Carp;
 
-use SeccubusDB;
-use SeccubusRights;
+use SeccubusV2;
+use Seccubus::DB;
+use Seccubus::Rights;
 
 sub create_workspace($;);
 sub delete_workspace($;$);
@@ -59,15 +60,15 @@ Creates a new workspace in the database or return 0 if workspace allready exists
 
 =item name - Workspace name
 
-=back 
+=back
 
 =item Checks
 
 User must be an admin. A workspace with this name musn't exist.
 
-=back 
+=back
 
-=cut 
+=cut
 
 sub create_workspace($;) {
 	my $name = shift;
@@ -80,12 +81,12 @@ sub create_workspace($;) {
 	if (get_workspace_id($name)) {
 		die "The $name Workspace name already exists.";
 	}
-	
+
 	# Verify user is admin
 	if ( !is_admin() ) {
 		die "Permission denied";
 	}
-	
+
 	return sql( "return"	=> "id",
 		   "query"	=> "INSERT into workspaces(name) values (?)",
 		   "values"	=> [ $name ]
@@ -108,55 +109,55 @@ Deletes a workspace from the database
 
 =item verbose (optional) - If verbose is set, progress will be printed to STDOUT
 
-=back 
+=back
 
 =item Checks
 
 User must be an admin. The workspace name must exist in the database.
 
-=back 
+=back
 
-=cut 
+=cut
 
 sub delete_workspace($;$) {
 	my $name = shift;
 	my $verbose = shift;
-	
+
 	my $result;
 
 	die "No workspace name provided" unless $name;
 	die "You need to be an administrator to use this function" unless is_admin();
-	
+
 	# Verify the named passed is a valid workspace name
 	my $workspace_id = get_workspace_id($name);
-	
+
 	# if the workspace_id is not found exit
 	if ($workspace_id == 0) {
 		die "The workspace $name was not found in the database";
 	}
-	
+
 	# Verify user is admin
 	if ( !is_admin() ) {
 		die "Permission denied";
 	}
-	
+
 	# delete all records in host_names that matches workspace id
 	my $rows = sql( "return"	=> "rows",
 			 "query"	=> "DELETE FROM host_names where workspace_id = ?",
 			 "values"	=> [ $workspace_id ]
 			 );
 	$result .= "Deleted $rows from host_names table.\n" if $verbose;
-	
+
 	# delete all records in rights that matches workspace id
 	$rows = sql( "return"	=> "rows",
 		 		"query"	=> "DELETE FROM rights WHERE workspace_id = ?",
 		 		"values"	=> [ $workspace_id ]
 		 		);
 	$result .= "Deleted $rows from rights table.\n" if $verbose;
-	
+
 	# For each id in scans that matches workspace id
-	my $scans = sql( "return"	=> "ref", 
-					"query"	=> "SELECT id FROM scans WHERE workspace_id = ?", 
+	my $scans = sql( "return"	=> "ref",
+					"query"	=> "SELECT id FROM scans WHERE workspace_id = ?",
 					"values"	=> [ $workspace_id ],
 	       			);
 	my $total_runs_rows_del = 0;
@@ -169,7 +170,7 @@ sub delete_workspace($;$) {
 		$total_runs_rows_del += $rows;
 	}
 	$result .= "Deleted $total_runs_rows_del from runs table.\n" if $verbose;
-	
+
 	#	delete all records in scans that matches workspace id
 	$rows = sql( "return"	=> "rows",
 		 "query"	=> "DELETE FROM scans WHERE workspace_id = ?",
@@ -178,8 +179,8 @@ sub delete_workspace($;$) {
 	$result .= "Deleted $rows from scans table.\n" if $verbose;
 
 	# For each id in findings that matches workspace id
-	my $findings = sql( "return"	=> "ref", 
-					   "query"	=> "SELECT id FROM findings WHERE workspace_id = ?", 
+	my $findings = sql( "return"	=> "ref",
+					   "query"	=> "SELECT id FROM findings WHERE workspace_id = ?",
 					   "values"	=> [ $workspace_id ],
 	       			 );
 	my $total_finding_changes_rows_del = 0;
@@ -194,10 +195,10 @@ sub delete_workspace($;$) {
 			 		"values"	=> [ $$finding_id[0] ]
 			 		);
 		$total_finding_changes_rows_del += $rows;
-		
+
 		# for each unique issue_id in issues2findings that matches finding_id
-		my $issues2findings = sql( "return"	=> "ref", 
-									"query"	=> "SELECT DISTINCT issue_id FROM issues2findings WHERE finding_id = ?", 
+		my $issues2findings = sql( "return"	=> "ref",
+									"query"	=> "SELECT DISTINCT issue_id FROM issues2findings WHERE finding_id = ?",
 									"values"	=> [ $$finding_id[0] ],
 									);
 	    foreach my $issue_id (@$issues2findings) {
@@ -207,14 +208,14 @@ sub delete_workspace($;$) {
 			 			"values"	=> [ $$issue_id[0] ]
 			 			);
 			$total_issue_changes_rows_del += $rows;
-			
+
 			# delete all records in issue2finding_changes that matches issue_id
 			$rows = sql( "return"	=> "rows",
 			 			"query"	=> "DELETE FROM issue2finding_changes where issue_id = ?",
 			 			"values"	=> [ $$issue_id[0] ]
 			 			);
 			$total_issue2findings_changes_rows_del += $rows;
-			
+
 			# delete the record in issues that matches issue_id
 			$rows = sql( "return"	=> "rows",
 			 			"query"	=> "DELETE FROM issue where id = ?",
@@ -223,8 +224,8 @@ sub delete_workspace($;$) {
 			$total_issues_rows_del += $rows;
 	    }
 		# delete all issues2findings records that matches finding_id
-		$rows = sql( "return"	=> "rows", 
-					"query"	=> "DELETE FROM issues2findings WHERE finding_id = ?", 
+		$rows = sql( "return"	=> "rows",
+					"query"	=> "DELETE FROM issues2findings WHERE finding_id = ?",
 					"values"	=> [ @$finding_id ],
 	       			);
 	    $total_issue2findings_rows_del += $rows;
@@ -234,21 +235,21 @@ sub delete_workspace($;$) {
 	$result .= "Deleted $total_issue2findings_changes_rows_del from issue2finding_changes table.\n" if $verbose;
 	$result .= "Deleted $total_issue2findings_rows_del from issues2findings table.\n" if $verbose;
 	$result .= "Deleted $total_issues_rows_del from issues table.\n" if $verbose;
-	
+
 	#	delete all findings records that matches workspace id
-	$rows = sql( "return"	=> "rows", 
-				"query"	=> "DELETE FROM findings WHERE workspace_id = ?", 
+	$rows = sql( "return"	=> "rows",
+				"query"	=> "DELETE FROM findings WHERE workspace_id = ?",
 				"values"	=> [ $workspace_id ],
 				);
 	$result .= "Deleted $rows from findings table.\n" if $verbose;
-	
+
 	# Delete the record from the workspaces table that matches workspace id
-	$rows = sql( "return"	=> "rows", 
-				"query"	=> "DELETE FROM workspaces WHERE id = ?", 
+	$rows = sql( "return"	=> "rows",
+				"query"	=> "DELETE FROM workspaces WHERE id = ?",
 				"values"	=> [ $workspace_id ],
 				);
 	$result .= "Deleted $rows from workspaces table.\n" if $verbose;
-	
+
 	# Return success
 	$result .= "The $name Workspace has been deleted from the database.";
 	return $result
@@ -270,15 +271,15 @@ Edits a workspace name in the database or return 0 if workspace already exists
 
 =item name - New workspace name
 
-=back 
+=back
 
 =item Checks
 
 User must be an admin. A workspace with this name musn't exist.
 
-=back 
+=back
 
-=cut 
+=cut
 
 sub edit_workspace($$;) {
 	my $id = shift;
@@ -293,7 +294,7 @@ sub edit_workspace($$;) {
 	if ( $wid && $wid != $id ) {
 		die "The $newname Workspace name already exists.";
 	}
-	
+
 	my $rows = sql( "return"	=> "rows",
 			"query"	=> "UPDATE workspaces SET name = ? WHERE id = ?",
 			"values"	=> [ $newname, $id ]
@@ -313,20 +314,20 @@ Returns the id of a workspace for a given name
 
 name - name of the workspace to get the id for
 
-=back 
+=back
 
 =item Checks
 
 If the workspace exists the workspace ID is returned, else 0 is returned
 
-=back 
+=back
 
-=cut 
+=cut
 
 sub get_workspace_id($;) {
-	my $name = shift; 
+	my $name = shift;
 
-	my $id = 
+	my $id =
 		sql( "return"	=> "array",
 		     "query"	=> "SELECT id
 		 		    FROM workspaces
@@ -334,7 +335,7 @@ sub get_workspace_id($;) {
 				    ",
 		     "values"	=> [ $name ],
 		);
-		
+
 	return $id?$id:0;
 }
 
@@ -351,40 +352,40 @@ Returns a reference to a list of workspaces the user can read and/or write
 
 None
 
-=back 
+=back
 
 =item Checks
 
 Only workspaces the user can read and/or write are returned
 
-=back 
+=back
 
-=cut 
+=cut
 
 sub get_workspaces(;) {
-	my $workspaces; 
-	
+	my $workspaces;
+
 	my $user_is_admin = is_admin();
 
-	$workspaces = 
+	$workspaces =
 		sql( "return"	=> "ref",
 		     "query"	=> "
-				   SELECT DISTINCT 
+				   SELECT DISTINCT
 				   	workspaces.id, workspaces.name,
 				   	( SELECT MAX(time) FROM scans LEFT JOIN runs ON scans.id = runs.scan_id WHERE scans.workspace_id = workspaces.id) as lastrun,
 				   	'' as findings,
 				   	( SELECT COUNT(*) FROM scans WHERE workspace_id = workspaces.id) as scans
-				   FROM workspaces 
-				   LEFT JOIN rights ON workspaces.id = rights.workspace_id 
-				   LEFT JOIN groups ON rights.group_id = groups.id 
-				   LEFT JOIN user2group ON groups.id = user2group.group_id 
+				   FROM workspaces
+				   LEFT JOIN rights ON workspaces.id = rights.workspace_id
+				   LEFT JOIN groups ON rights.group_id = groups.id
+				   LEFT JOIN user2group ON groups.id = user2group.group_id
 				   LEFT JOIN users ON user2group.user_id = users.id
-				   WHERE 
-				   	(users.username= ? and rights.allow_read=1 or rights.allow_write=1) 
+				   WHERE
+				   	(users.username= ? and rights.allow_read=1 or rights.allow_write=1)
 				   OR (1=?)
 				   ORDER BY workspaces.name;
 				   ",
-		    "values"	=> [ $ENV{REMOTE_USER}, $user_is_admin ],
+		    "values"	=> [ $ENV{SECCUBUS_USER}, $user_is_admin ],
 	       );
 	return $workspaces;
 }

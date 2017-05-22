@@ -39,6 +39,11 @@ ok($db_version > 0, "DB version = $db_version");
 
 my $t = Test::Mojo->new('Seccubus');
 
+# Log in
+$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200,"Login ok")
+;
+
 pass("Importing ssllabs-seccubus scan");
 `bin/load_ivil -w findings -s seccubus -t 20170101000000 --scanner SSLlabs testdata/ssllabs-seccubus.ivil.xml`;
 is($?,0,"Import ran ok");

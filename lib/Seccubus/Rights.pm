@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-package SeccubusRights;
+package Seccubus::Rights;
 
 =head1 NAME $RCSfile: SeccubusRights.pm,v $
 
@@ -23,7 +23,8 @@ all functions within the module.
 
 
 use Exporter;
-use SeccubusDB;
+use SeccubusV2;
+use Seccubus::DB;
 
 @ISA = ('Exporter');
 
@@ -52,7 +53,7 @@ This function checks if a user is part of the administrator group
 
 =over 4
 
-=item None, user_id is determined based on $ENV{REMOTE_USER}
+=item None, user_id is determined based on $ENV{SECCUBUS_USER}
 
 =back
 
@@ -73,21 +74,19 @@ None
 sub is_admin() {
 	my $count;
 
-	if ( ! exists $ENV{REMOTE_ADDR} ) {
-		return 1;	# We are running this from the command line
-	} else {
-		$count = sql( "return"	=> "array",    # Group 0 is admin
-			      "query"	=> "SELECT count(*)
-			      		    FROM users, user2group
-					    WHERE (
-					    	users.id = user2group.user_id and
-						user2group.group_id = 1 and
-						users.username = ?
-					    );",
-			      "values"	=> [ $ENV{REMOTE_USER} ],
-			    );
-		return $count;
-	}
+	$count = sql(
+        "return"    => "array",    # Group 0 is admin
+		"query"     => "SELECT count(*)
+		      		    FROM users, user2group
+				        WHERE (
+				            users.id = user2group.user_id AND
+					        user2group.group_id = 1 AND
+					        users.username = ?
+				        );
+                       ",
+		"values"    => [ $ENV{SECCUBUS_USER} ],
+	);
+	return $count;
 }
 
 =head2 may_write
@@ -103,7 +102,7 @@ to a certain workspace id.
 
 =item workspace_id - Id of the workspace you wan tot test the rights for
 
-User is determined by $ENV{REMOTE_USER}
+User is determined by $ENV{SECCUBUS_USER}
 
 =back
 
@@ -136,7 +135,7 @@ sub may_write($) {
 						user2group.user_id = user.id and
 						user.username = ?
 					    ",
-			 "values"	=> [ $id, $ENV{REMOTE_USER} ],
+			 "values"	=> [ $id, $ENV{SECCUBUS_USER} ],
 		       );
 	return $count;
 }
@@ -154,7 +153,7 @@ to a certain workspace id.
 
 =item workspace_id - Id of the workspace you wan tot test the rights for
 
-User is determined by $ENV{REMOTE_USER}
+User is determined by $ENV{SECCUBUS_USER}
 
 =back
 
@@ -187,7 +186,7 @@ sub may_read($) {
 						user2group.user_id = user.id and
 						user.username = ?
 					    ",
-			 "values"	=> [ $id, $ENV{REMOTE_USER} ],
+			 "values"	=> [ $id, $ENV{SECCUBUS_USER} ],
 		       );
 	return $count;
 }

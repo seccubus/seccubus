@@ -38,6 +38,11 @@ ok($db_version > 0, "DB version = $db_version");
 
 my $t = Test::Mojo->new('Seccubus');
 
+# Log in
+$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200,"Login ok")
+;
+
 # Read events
 $t->get_ok('/events')
 	->status_is(200)

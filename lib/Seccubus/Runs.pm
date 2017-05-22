@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-package SeccubusRuns;
+package Seccubus::Runs;
 
 =head1 NAME $RCSfile: SeccubusRuns.pm,v $
 
@@ -21,13 +21,14 @@ all functions within the module.
 
 =cut
 
-use SeccubusDB;
-use SeccubusRights;
+use SeccubusV2;
+use Seccubus::DB;
+use Seccubus::Rights;
 use File::Basename;
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 		update_run
 		get_runs
 		get_attachment
@@ -69,7 +70,7 @@ run_id
 
 =item Checks
 
-Must be a reader to get the run_id, must be a writer to create or alter a run 
+Must be a reader to get the run_id, must be a writer to create or alter a run
 Attachment must be a file that exists
 
 =back
@@ -125,7 +126,7 @@ sub update_run($$$;$$) {
 
 =head2 get_runs
 
-This function gets all data from runs 
+This function gets all data from runs
 
 =over 2
 
@@ -159,11 +160,11 @@ sub get_runs($$) {
 	if ( may_read($workspace_id) ) {
 		my $data = sql ( return	=> "ref",
 				 query	=> "
-				 	SELECT	runs.id, time, attachments.id, 
+				 	SELECT	runs.id, time, attachments.id,
 						attachments.name, description
 					FROM	runs
 					LEFT JOIN attachments
-					ON	runs.id = attachments.run_id 
+					ON	runs.id = attachments.run_id
 					LEFT JOIN scans
 					on	runs.scan_id = scans.id
 					WHERE	runs.scan_id = scans.id AND

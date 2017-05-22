@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-#Copyright 2015 Glenn ten Cate, Frank Breedijk
+#Copyright 2017 Glenn ten Cate, Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@
 
 use strict;
 use SeccubusV2;
-use SeccubusIVIL;
-use SeccubusHelpers;
+use Seccubus::IVIL;
+use Seccubus::Helpers;
 
 use Getopt::Long;
 use Carp;
@@ -43,7 +43,7 @@ $help = 0;
 
 # Create default values
 
-GetOptions(	
+GetOptions(
 		'zap_path|p=s'		=> \$zap_path,
 		'zap_options|o=s'	=> \$zap_options,
 		'hosts=s'		=> \$host_url,
@@ -137,15 +137,15 @@ sub help() {
 	print "
 Usage: scan 	[--zap_path|p <path to ZAP jar>] \\
 		[--zap_options <additional ZAP CMD options>]] \\
-		--hosts <host url> [--remote|r <host,user,keyfile>] 
+		--hosts <host url> [--remote|r <host,user,keyfile>]
 		[--verbose|v] [--quiet|q] [--help|h]
 
 Arguments:
 --zap_path	- You can use this optional parameter to provide the script with
-(-p)		  the path to the ZAP jar file. If you do not provide this the 
-		  script tries to find the files itself and fail if it cannot 
+(-p)		  the path to the ZAP jar file. If you do not provide this the
+		  script tries to find the files itself and fail if it cannot
 		  find them.
---zap_options	- Additional command line options to provide to ZAP see 
+--zap_options	- Additional command line options to provide to ZAP see
 (-o)		  'ZAP WIKI' for more information.
 --hosts		- The url to scan
 --workspace	- Name of the workspace to load the findings into

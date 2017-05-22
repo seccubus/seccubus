@@ -27,15 +27,18 @@ use Test::Mojo;
 use Data::Dumper;
 
 use SeccubusV2;
-use SeccubusWorkspaces;
-use SeccubusScans;
-use SeccubusFindings;
-use SeccubusIssues;
-use SeccubusHostnames;
-use SeccubusAssets;
-use SeccubusNotifications;
-use SeccubusUsers;
-use SeccubusRuns;
+use Seccubus::Workspaces;
+use Seccubus::Scans;
+use Seccubus::Findings;
+use Seccubus::Issues;
+use Seccubus::Hostnames;
+use Seccubus::Assets;
+use Seccubus::Notifications;
+use Seccubus::Users;
+use Seccubus::Runs;
+
+sub get_json($);
+sub cmp_scan($$;$);
 
 my $db_version = 0;
 foreach my $data_file (<db/data_v*.mysql>) {
@@ -601,16 +604,6 @@ sub get_json($) {
 	close JS;
 
 	return $json;
-}
-
-sub webcall(@) {
-	my $call = shift;
-
-	my $cmd = "perl -MSeccubusV2 -I SeccubusV2 json/$call ";
-	$cmd .= join " ", @_;
-	my @result = split /\r?\n/, `$cmd`;
-	while ( shift @result ) {};
-	return decode_json(join "\n", @result);
 }
 
 sub cmp_scan($$;$) {

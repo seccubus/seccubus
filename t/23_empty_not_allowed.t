@@ -22,10 +22,10 @@ use JSON;
 use Data::Dumper;
 use Test::More;
 use SeccubusV2;
-use SeccubusWorkspaces;
-use SeccubusScans;
-use SeccubusRuns;
-use SeccubusFindings;
+use Seccubus::Workspaces;
+use Seccubus::Scans;
+use Seccubus::Runs;
+use Seccubus::Findings;
 
 sub decodeit(@);
 

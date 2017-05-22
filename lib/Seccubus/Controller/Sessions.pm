@@ -19,18 +19,71 @@ use strict;
 
 use lib "..";
 use SeccubusV2;
-use SeccubusUsers;
+use Seccubus::Users;
+use Seccubus::DB;
 use Data::Dumper;
 
 # Create
-#sub create {
-#	my $self = shift;
-#
-#}
+sub create {
+	my $self = shift;
+
+    my $config = get_config;
+
+    my $header_name = $config->{auth}->{http_auth_header};
+    my $header_value = $self->req->headers->header($header_name);
+    my $user = $self->req->json();
+
+
+    if ( ( $self->app->mode() eq "production" && $header_name ) || ( $self->app->mode() eq "development" && $header_value ) ) {
+        # Ignore password and log in with the username in the header
+        #my ( $dbuser ) = get_login($user->{username});
+        my ( $dbuser, $valid, $isadmin, $message ) = get_login($header_value);
+        $user->{username} = $dbuser;
+        if ( ! $valid ) {
+            $self->error("Login failed: $message", 401);
+            return;
+        }
+    } else {
+        # Log in with username and password
+        if ( $user && $user->{username} && $user->{password} ) {
+            unless ( check_password($user->{username}, $user->{password},undef) ) {
+                $self->error("Login failed: ", 401);
+                return;
+            }
+        } else {
+            $self->error("Invalid user object");
+            return;
+        }
+    }
+    $self->session->{user}->{name} = $user->{username};
+    my ( $hash ) = sql (
+        return  => "array",
+        query   => "select sha2(password,256) from `users` where username = ?",
+        values  => [ $user->{username} ]
+    );
+    $self->session->{user}->{hash} = $hash;
+    $self->render( json => {
+        status  => "Success",
+        message => "You are now logged in as $user->{username}"
+    });
+}
 
 # Read
 sub read {
     my $self = shift;
+
+    my $config = get_config();
+    my $header_name = $config->{auth}->{http_auth_header};
+    my $header_value = $self->req->headers->header($header_name);
+    my $u = $self->session->{user};
+
+    if ( ( $self->app->mode() eq "production" && $header_name ) || ( $self->app->mode() eq "development" && $header_value ) ) {
+        $ENV{SECCUBUS_USER} = $header_value;
+    } elsif ( $u && check_password($u->{name},undef,$u->{hash}) ) {
+        $ENV{SECCUBUS_USER} = $u->{name};
+    } else {
+        $ENV{SECCUBUS_USER} = "Not logged in";
+    }
 
     eval {
         my $data;
@@ -53,9 +106,13 @@ sub read {
 #
 #}
 
-#sub delete {
-#	my $self = shift;
-#
-#}
+sub delete {
+	my $self = shift;
+
+    $self->session(expires => 1); # Expire session
+    delete $self->session->{user};
+
+    $self->error("You are logged out", 401);
+}
 
 1;

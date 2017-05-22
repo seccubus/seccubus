@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-package SeccubusAssets;
+package Seccubus::Assets;
 
 =head1 NAME $RCSfile: SeccubusAssets.pm,v $
 
@@ -39,8 +39,9 @@ use Exporter;
 		update_asset2scan
 	);
 
-use SeccubusDB;
-use SeccubusRights;
+use SeccubusV2;
+use Seccubus::DB;
+use Seccubus::Rights;
 
 sub get_asset_id($$;);
 sub get_assets($;);

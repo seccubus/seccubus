@@ -22,6 +22,11 @@ use Test::Mojo;
 use lib "lib";
 
 my $t = Test::Mojo->new('Seccubus');
+
+$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200,"Login ok")
+;
+
 $t->get_ok('/version')
 	->status_is(200)
 	->json_is("/link","")

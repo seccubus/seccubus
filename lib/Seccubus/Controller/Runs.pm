@@ -19,7 +19,7 @@ use strict;
 
 use lib "..";
 use SeccubusV2;
-use SeccubusRuns;
+use Seccubus::Runs;
 use Data::Dumper;
 
 # Create

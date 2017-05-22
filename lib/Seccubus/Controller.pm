@@ -29,6 +29,9 @@ sub new {
 
 	my $self = $class->SUPER::new(@_);
 
+    # Set up cookiers
+    $self->session(expiration => 900);
+
     my $config = get_config();
 
 	my $res = $self->res();
@@ -40,15 +43,6 @@ sub new {
 	$res->headers()->header('X-XSS-Protection' => "1; 'mode=block'");
 	$res->headers()->header('Cache-Control' => 'no-store, no-cache, must-revalidate');
 	$res->headers()->header('X-Clacks-Overhead' => 'GNU Terry Pratchett');
-
-    if ( exists $config->{auth} && exists $config->{auth}->{http_auth_header} ) {
-        my $header = $config->{auth}->{http_auth_header};
-        my $user = $req->headers->header($header);
-        if ( $user ) {
-            $ENV{REMOTE_ADDR} = $self->tx->remote_address;
-            $ENV{REMOTE_USER} = $user;
-        }
-    }
 
 	return $self;
 }

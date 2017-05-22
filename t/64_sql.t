@@ -37,6 +37,12 @@ ok($db_version > 0, "DB version = $db_version");
 `mysql -uroot seccubus < db/data_v$db_version.mysql`;
 
 my $t = Test::Mojo->new('Seccubus');
+
+# Log in
+$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200,"Login ok")
+;
+
 # List empty
 $t->get_ok('/sql')
 	->status_is(200)

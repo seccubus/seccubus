@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-package SeccubusScans;
+package Seccubus::Scans;
 
 =head1 NAME $RCSfile: SeccubusScans.pm,v $
 
@@ -20,9 +20,10 @@ This Pod documentation generated from the module SeccubusScans gives a list of
 all functions within the module.
 
 =cut
-use SeccubusDB;
-use SeccubusRights;
-use SeccubusNotifications;
+use SeccubusV2;
+use Seccubus::DB;
+use Seccubus::Rights;
+use Seccubus::Notifications;
 use Data::Dumper;
 
 @ISA = ('Exporter');

@@ -46,29 +46,23 @@ $config = "/opt/seccubus/etc/config.xml" unless -e $config;
 $config = "etc/dummy.config.xml" unless -e $config;
 
 # Module directory
-use lib "/opt/seccubus/SeccubusV2";
+use lib "/opt/seccubus/lib";
 use lib "lib";
 push (@main::INC, @INC);
 
 $VERSION = '2.33';
-$DBVERSION = 9;
+$DBVERSION = 10;
+$USER = '';
 
 use strict;
 use Carp;
 #use SeccubusConfig;
-use SeccubusHelpers;
+use Seccubus::Helpers;
+use Seccubus::Users;
 
-push (@main::INC, @INC);
-if ( ! $ENV{REMOTE_USER} ) {
-	my $conf = get_config();
-	if ( $config->{auth}->{http_auth_header} && $ENV{"HTTP_" . $conf->{auth}->{http_auth_header}} ) {
-										# A REMOTE_USER header is sent
-		$ENV{REMOTE_USER} = $ENV{"HTTP_" . $conf->{auth}->{http_auth_header}};
-	} else {
-		$ENV{REMOTE_USER} = "admin"		# Run as admin user if the web server auth is not setup
-	}
+if ( ! $ENV{SECCUBUS_USER} ) {
+	$ENV{SECCUBUS_USER} = "admin"		# Run as admin user if we are not running via mojo
 }
-check_config();
 
 =head1 Utility functions
 

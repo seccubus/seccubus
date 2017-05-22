@@ -25,7 +25,7 @@
 		<password>seccubus</password>
 	</database>
 	<paths>
-		<modules>/opt/seccubus/SeccubusV2</modules>
+		<modules>/opt/seccubus/lib</modules>
 		<scanners>/opt/seccubus/scanners</scanners>
 		<bindir>/opt/seccubus/bin</bindir>
 		<configdir>/opt/seccubus/etc</configdir>
@@ -41,5 +41,6 @@
 	</tickets>
 	<auth>
 		<http_auth_header></http_auth_header>
+        <session_key>SeccubusScanSmarterNotHarder</session_key>
 	</auth>
 </seccubus>

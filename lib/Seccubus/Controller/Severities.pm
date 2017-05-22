@@ -20,7 +20,7 @@ use strict;
 
 use lib "..";
 use SeccubusV2;
-use SeccubusHelpers;
+use Seccubus::Helpers;
 
 # List
 sub list {

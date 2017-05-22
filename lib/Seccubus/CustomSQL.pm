@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package SeccubusCustomSQL;
+package Seccubus::CustomSQL;
 
 =head1 NAME $RCSfile: SeccubusCustomSQL.pm,v $
 
@@ -34,8 +34,9 @@ use Exporter;
 	);
 
 use strict;
-use SeccubusDB;
-use SeccubusRights;
+use SeccubusV2;
+use Seccubus::DB;
+use Seccubus::Rights;
 use Data::Dumper;
 use Carp;
 

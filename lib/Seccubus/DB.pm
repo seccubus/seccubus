@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package SeccubusDB;
+package Seccubus::DB;
 
-=head1 NAME $RCSfile: SeccubusDB.pm,v $
+=head1 NAME Seccubus::DB
 
 This Pod documentation generated from the module SeccubusDB gives a list of all
 functions within the module.

@@ -19,7 +19,7 @@ use strict;
 
 use lib "..";
 use SeccubusV2;
-use SeccubusNotifications;
+use Seccubus::Notifications;
 use Data::Dumper;
 
 # Create

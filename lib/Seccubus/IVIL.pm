@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-package SeccubusIVIL;
+package Seccubus::IVIL;
 
 =head1 NAME $RCSfile: SeccubusIVIL.pm,v $
 
@@ -23,16 +23,16 @@ of all functions within the module.
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 		load_ivil
 	);
 
 use SeccubusV2;
-use SeccubusWorkspaces;
-use SeccubusScans;
-use SeccubusRuns;
-use SeccubusFindings;
-use SeccubusHostnames;
+use Seccubus::Workspaces;
+use Seccubus::Scans;
+use Seccubus::Runs;
+use Seccubus::Findings;
+use Seccubus::Hostnames;
 
 use strict;
 use Carp;
@@ -42,7 +42,7 @@ use IVIL;
 
 =head2 load_ivil
 
-This function will parse valid IVIL content and load the findings from it in 
+This function will parse valid IVIL content and load the findings from it in
 the Seccubus database.
 
 =over 2
@@ -51,11 +51,11 @@ the Seccubus database.
 
 =over 4
 
-=item ivil		- the IVIL content, this can either be a variable 
+=item ivil		- the IVIL content, this can either be a variable
 			  containing the IVIL text itself or the path to a file
 			  containing the IVIL text
 
-=item scanner		- (Optional) The name of the scanner to be used, if not value is given the value will be read from IVIL 
+=item scanner		- (Optional) The name of the scanner to be used, if not value is given the value will be read from IVIL
 
 =item scanner_ver	- (Optional) Version of the scanner, if no value is given the value will be read from IVIL
 
@@ -107,7 +107,7 @@ sub load_ivil($;$$$$$$$) {
 	}
 	confess "Unable to determine workspace" unless $workspace;
 	$scan = $workspace unless $scan;
-	
+
 	$scanner = $ivil->{sender}->{scanner_type} unless $scanner;
 	$scanner_ver = $ivil->{sender}->{version} unless $scanner_ver;
 
@@ -116,7 +116,7 @@ sub load_ivil($;$$$$$$$) {
 
 	$timestamp .= "00" if  $timestamp =~ /^\d{12}$/;
 	confess "Timestamp: '$timestamp' is invalid" unless $timestamp =~ /^\d{14}$/;
-	
+
 	my $count = 0;
 	if ( exists $ivil->{findings}->{finding} ) {
 		$count = @{$ivil->{findings}->{finding}};
@@ -140,7 +140,7 @@ sub load_ivil($;$$$$$$$) {
 		foreach my $finding ( @{$ivil->{findings}->{finding}} ) {
 			$finding->{severity} = 0 unless defined $finding->{severity};
 			$finding->{severity} = 0 if $finding->{severity} eq "";
-			# TODO: Seccubus currently does not handle the 
+			# TODO: Seccubus currently does not handle the
 			# references as specified in the IVIL format
 			update_finding(
 				      	workspace_id	=> $workspace_id,

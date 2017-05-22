@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk, Alex Smirnoff, Glenn ten Cate
+# Copyright 2017 Frank Breedijk, Alex Smirnoff, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# This script will call Zate Berg's Nessis-IVIL-Wrapper (see 
+# This script will call Zate Berg's Nessis-IVIL-Wrapper (see
 # https://github.com/Zate/Nessus-IVIL-Wrapper ) to connect to a Nessus instance,
 # initiate a scan, save the results as an IVIL file and import it
 # ------------------------------------------------------------------------------
@@ -21,7 +21,7 @@
 use strict;
 use warnings;
 use SeccubusV2;
-use SeccubusIVIL;
+use Seccubus::IVIL;
 
 use Getopt::Long;
 use Carp;
@@ -74,7 +74,7 @@ $verbose = 0;
 $nosslcheck = 0;
 $retries = 3;
 
-GetOptions(	
+GetOptions(
 		'user|u=s'		=> \$user,
 		'password|p=s'	=> \$password,
 		'pw=s'			=> \$password2,
@@ -181,7 +181,7 @@ if (!$tuuid) {
 			$tuuid = $pol->{template_uuid} if $pol->{template_uuid};
 			$pid = $pol->{id};
 			last;
-		} 
+		}
 	}
 }
 
@@ -205,7 +205,7 @@ if ( $pid != -1 ) {
 }
 
 if ( -e $hosts_file ) {			# Assume its a host spect rather then a
-					# hosts file if there is no file 
+					# hosts file if there is no file
 	open(FILE,$hosts_file) or die "Cannot read hosts file";
 	local $/;
 	$scandata->{settings}{text_targets} = <FILE>;
@@ -216,19 +216,19 @@ if ( -e $hosts_file ) {			# Assume its a host spect rather then a
 
 print "Imported scan targets: $scandata->{settings}{text_targets} \n" if $verbose;
 $json = rest_post('/scans',encode_json($scandata),\$r);
-die "Cannot create scan" if ($r->code() != 200); 
+die "Cannot create scan" if ($r->code() != 200);
 
 my $sid = $json->{scan}{id};
 print "Created scan $sid\n" if $verbose;
 
 $json = rest_post("/scans/$sid/launch",{},\$r);
-die "Cannot launch scan" if ($r->code() != 200); 
+die "Cannot launch scan" if ($r->code() != 200);
 
 my $launched = $json->{scan_uuid};
 print "Launched scan $launched\n" if $verbose;
 
 $json = rest_get("/scans/$sid", {}, \$r);
-die "Cannot get scan history" if ($r->code() != 200); 
+die "Cannot get scan history" if ($r->code() != 200);
 my $hid;
 
 for my $history (@{$json->{history}} ) {
@@ -252,7 +252,7 @@ do {
 		print "Scan status: $json->{info}->{status}. $vulncount findings on $json->{info}->{hostcount} host(s).\n" if $verbose;
 	} else {
 		die "Scan status request returned " . $r->code();
-	} 
+	}
 } until ($json->{info}->{status} eq "completed" || $json->{info}->{status} eq "canceled" || $json->{info}->{status} eq "aborted" );
 
 foreach my $format ( @formats ) {
@@ -281,27 +281,27 @@ foreach my $format ( @formats ) {
 
 		rest_get("/scans/$sid/export/$filehandle/download", {}, \$r,1 ); # This call doesn't return json, but a file
 
-		die "Cannot download report" if ($r->code() != 200); 
+		die "Cannot download report" if ($r->code() != 200);
 		print "Report downloaded, saving $filehandle to $tempfile.$format\n" if $verbose;
 		open FILE, ">". "$tempfile.$format" or die "Cannot save report";
 		print FILE $r->decoded_content();
 		close FILE;
 
 	} else {
-		print "Could not initiate export in $format format, skipping.\n" if ($r->code() != 200 && ! $quiet); 
+		print "Could not initiate export in $format format, skipping.\n" if ($r->code() != 200 && ! $quiet);
 	}
 }
 
 rest_delete("/scans/$sid/history/$hid",{},\$r);
-die "Cannot delete report" if ($r->code() != 200); 
+die "Cannot delete report" if ($r->code() != 200);
 print "Report deleted from server\n" if $verbose;
 
 rest_delete("/scans/$sid" , {}, \$r);
-die "Cannot delete scan" if ($r->code() != 200); 
+die "Cannot delete scan" if ($r->code() != 200);
 print "Scan deleted from server\n" if $verbose;
 
 rest_delete("/session", {}, \$r);
-die "Cannot log out" if ($r->code() != 200); 
+die "Cannot log out" if ($r->code() != 200);
 print "Logged off server\n" if $verbose;
 
 print "Converting $tempfile.nessus to $tempfile.ivil.xml\n" unless $quiet;
@@ -357,8 +357,8 @@ Usage: scan       --user=<username> --password=<password> --server=<server> \\
 --server (-s)     - Nessus server (ip or name)
 --port            - Nessus server portnumber (default=8834)
 --policy          - Name of Nessus policy
---hosts           - Specification of hosts to scan. Follows the Nessus rules 
-                    for specifying hosts, or path to a file containing such 
+--hosts           - Specification of hosts to scan. Follows the Nessus rules
+                    for specifying hosts, or path to a file containing such
                     specification
 --workspace (-ws) - Seccubus workspace the scan in in
 --scan (-sc)      - Seccubus scan the data should be saved in
@@ -369,7 +369,7 @@ Usage: scan       --user=<username> --password=<password> --server=<server> \\
                     (default: false when port is 8834 true when port is 443)
 --retries         - How many times should rest calls be retried before aborting
                     the scan (default=3)
---sleep           - Seconds to sleep between polls of the Nessus engine 
+--sleep           - Seconds to sleep between polls of the Nessus engine
                     (default=10)
 --verbose (-v)    - Be verbose during execution
 --quiet (-q)      - Don't print output
@@ -492,9 +492,9 @@ sub rest_call($$$;$$$){
 		print "Authentication failed, attempting to re-login\n" if $verbose;
 		# Login and retry if failed
 		login();
-		return(rest_call($method,$uri,$param,$response,$nojson,$retries-1)); 
+		return(rest_call($method,$uri,$param,$response,$nojson,$retries-1));
 	}
-	# Export cvalls can actually return a 404 if an export has failed for some internal Nessus reason, we should not 
+	# Export cvalls can actually return a 404 if an export has failed for some internal Nessus reason, we should not
 	# retry in this case
 	unless ( $r->is_success || ( $uri =~ qr#/scans/\d+/export/\d+\/status# && $r->code() == 404 ) ) {
 		unless ( $quiet ) {

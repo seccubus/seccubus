@@ -30,7 +30,7 @@ sub read {
 	if ( $data && exists $data->{errorstatus} ) {
 		$errorstatus = $data->{errorstatus};
 	}
-	
+
 	my $json = [];
 	my $status = 200;
 
@@ -38,6 +38,7 @@ sub read {
 		/home/seccubus/etc/config.xml
 		/etc/seccubus/config.xml
 		/opt/seccubus/etc/config.xml
+        etc/config.xml
 		etc/dummy.config.xml
    	);
 
@@ -80,8 +81,8 @@ sub read {
 	}
 
 	##### Test database login
-	require SeccubusDB;
-	my $dbh = SeccubusDB::open_database();
+	require Seccubus::DB;
+	my $dbh = Seccubus::DB::open_database();
 
 	if ( ! $dbh ) {
 		push @$json, { name => "Database login", message => "Unable to log into the the database. Either the definitions in '$config_file' are incorrect or you need to create '$config->{database}->{engine}' database '$config->{database}->{database}' on host '$config->{database}->{host}' and grant user '$config->{database}->{user}' the rights to login in with the specified password.\nFor mysql execute the following command: create database $config->{database}->{database};grant all privileges on $config->{database}->{database}.* to $config->{database}->{user} identified by '<password>';exit", result => "Error"};
@@ -95,7 +96,7 @@ sub read {
 	my $current_db_version = $SeccubusV2::DBVERSION;
 
 	# Make sure login to the database was successful
-	my $tables = SeccubusDB::sql( return	=> "ref",
+	my $tables = Seccubus::DB::sql( return	=> "ref",
 			  	      query	=> "show tables",
 				    );
 
@@ -111,60 +112,59 @@ sub read {
 	}
 
 	##### Test the default DB data version
+    my $version;
 	eval {
-		local $SIG{__DIE__}; # No sigdie handler
 
-		my @version = SeccubusDB::sql( return	=> "array",
-			   	       query	=> "SELECT value FROM config 
-				                    WHERE name = ?",
-		   	    	   values	=> [ "version" ],
-		 	     	);
+		( $version ) = Seccubus::DB::sql(
+            return	=> "array",
+			query	=> "SELECT value FROM config
+			            WHERE name = 'version'",
+		);
 
-		if ( $version[0] != $current_db_version ) {
-			my $file = $config->{paths}->{dbdir} . "/";
-			if ( $version[0] eq "" ) {
-				$file .= "data_v$current_db_version." . $config->{database}->{engine};
-			} elsif ( $version[0] < $current_db_version ) {
-				$file .= "upgrade_v$version[0]_v" . ($version[0]+1) . "." . $config->{database}->{engine};
-			} else {
-				push @$json, { name => "Database version error", message => "Your database returned version number '$version[0]', the developers for Seccubus do not know what to do with this", result => "Error"};
-				$status = $errorstatus;
-				goto EXIT;
-			}
-			push @$json,{ name => "Database version", message => "Your database is not current, please execute the sql statements in '$file' to update the database to the next version and rerun this test", result => 'Error'};
-			$status = $errorstatus;
-			goto EXIT;
+    } or do {
+        my $file = $config->{paths}->{dbdir} . "/data_v$current_db_version" . "\." . $config->{database}->{engine};
+        push @$json, { name => "Database data", message => "Your database is missing data, please execute the sql statements in '$file' to insert the base data into the database", result => 'OK'};
+        $status = $errorstatus;
+        goto EXIT;
+        # TODO: Direct user to a helpfull screen
+        # my $api = "api/updateDB.pl?toVersion=&action=data";
+        # $message = "$msg. API Call: '$api'";
+    };
+	if ( $version != $current_db_version ) {
+		my $file = $config->{paths}->{dbdir} . "/";
+		if ( $version eq "" ) {
+			$file .= "data_v$current_db_version." . $config->{database}->{engine};
+		} elsif ( $version < $current_db_version ) {
+			$file .= "upgrade_v" . $version . "_v" . ($version+1) . "." . $config->{database}->{engine};
 		} else {
-			push @$json,{ name => "Database version", message => "Your database has the base data and is the current version.", result => 'OK'};
-		}		 	     
-	} or do {
-		my $file = $config->{paths}->{dbdir} . "/data_v$current_db_version" . "\." . $config->{database}->{engine};
-		push @$json, { name => "Database data", message => "Your database is missing data, please execute the sql statements in '$file' to insert the base data into the database", result => 'OK'};
-		$status = $errorstatus;
-		goto EXIT;
-		# TODO: Direct user to a helpfull screen
-		# my $api = "api/updateDB.pl?toVersion=&action=data";
-		# $message = "$msg. API Call: '$api'";
-	};
-
-	##### Test if the user exists in the database
-	if ( $ENV{REMOTE_USER} ) {
-		my @user = SeccubusDB::sql( return   => "array",
-					    query	=> 'SELECT 	username
-					    		    FROM	users
-							    WHERE	username = ?',
-					    values	=> [ $ENV{REMOTE_USER} ],
-			   );
-		if ( $user[0] eq $ENV{REMOTE_USER} ) {
-			push @$json, {name => "HTTP authentication", message => "Authentication is set up on your HTTP server, and user '$ENV{REMOTE_USER}' exists in the database", result => 'OK'};
-		} else {
-			push @$json, {name => "HTTP authentication", message => "Authentication is set up on your HTTP server, but '$ENV{REMOTE_USER}' does not exist in the database, run the bin/add_user util", result => 'Error'};
+			push @$json, { name => "Database version error", message => "Your database returned version number '$version', the developers for Seccubus do not know what to do with this", result => "Error"};
 			$status = $errorstatus;
 			goto EXIT;
 		}
+		push @$json,{ name => "Database version", message => "Your database is not current, please execute the sql statements in '$file' to update the database to the next version and rerun this test", result => 'Error'};
+		$status = $errorstatus;
+		goto EXIT;
 	} else {
-		push @$json, {name => "HTTP authentication", message => "Authentication is not set up on your HTTP server, emulating user 'admin'", result => 'OK'};
+		push @$json,{ name => "Database version", message => "Your database has the base data and is the current version.", result => 'OK'};
 	}
+
+	##### Test if the user is logged in
+    my $header_name = $config->{auth}->{http_auth_header};
+    my $header_value = $self->req->headers->header($header_name);
+    my $u = $self->session->{user};
+    if ( ( $self->app->mode() eq "production" && $header_name ) || ( $self->app->mode() eq "development" && $header_value ) ) {
+        $ENV{SECCUBUS_USER} = $header_value;
+    } elsif ( $u && Seccubus::Users::check_password($u->{name},undef,$u->{hash}) ) {
+        $ENV{SECCUBUS_USER} = $u->{name};
+    } else {
+        $ENV{SECCUBUS_USER} = "Not logged in";
+    }
+    my ( $userid, $valid, $isadmin, $message ) = Seccubus::Users::get_login();
+    if ( $valid ) {
+        push @$json, {name => "Authentication", message => "You are logged in: $message", result => 'OK'};
+    } else {
+        push @$json, {name => "Authentication", message => "You are not in: $message", result => 'Error'};
+    }
 
 	##### Test SMTP config
 	if ( ! exists $config->{smtp} ) {
@@ -181,8 +181,8 @@ sub read {
 		push @$json, {name => "SMTP configuration", message => "SMTP configuration OK", result => "OK"};
 	}
 
-	
-EXIT:	
+
+EXIT:
 	$self->render(
 		json => $json,
 		status => $status,

@@ -19,7 +19,7 @@ use strict;
 
 use lib "..";
 use SeccubusV2;
-use SeccubusRuns;
+use Seccubus::Runs;
 
 # Create
 #sub create {
@@ -36,7 +36,7 @@ sub read {
 	my $run_id = $self->param("run_id");
 	my $id = $self->param("id");
 
-	# Return an error if the required parameters were not passed 
+	# Return an error if the required parameters were not passed
 	my $error = "";
 	if ( $workspace_id + 0 ne $workspace_id ) {
 		$error = "WorkspaceId is not numeric";

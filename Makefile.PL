@@ -42,8 +42,7 @@ WriteMakefile (
 				'Net::SMTP'				=> 0.1,
 				'Net::IP'				=> 1.0,
 				'Mojolicious' 			=> '7.26',
-#				'Mojolicious::Plugin::Directory'
-#										=> '0.12',
+                'Crypt::PBKDF2'         => '0.16',
 			},
 	PM		=> {
 				'SeccubusV2/IVIL.pm'					=> '$(INST_LIBDIR)/IVIL.pm',

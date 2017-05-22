@@ -12,11 +12,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-package SeccubusEvents;
+package Seccubus::Events;
 
 =head1 NAME $RCSfile: SeccubusEvents.pm,v $
 
-This Pod documentation generated from the module SeccubusEvents gives a 
+This Pod documentation generated from the module SeccubusEvents gives a
 list of all functions within the module.
 
 =cut
@@ -25,14 +25,15 @@ use Exporter;
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 		get_events
 	);
 
 use strict;
 use Carp;
 
-use SeccubusDB;
+use SeccubusV2;
+use Seccubus::DB;
 
 sub get_events(;);
 
@@ -50,24 +51,24 @@ Returns a reference to a list of events (id, name)
 
 None
 
-=back 
+=back
 
 =item Checks
 
 Only events the user can read and/or write are returned
 
-=back 
+=back
 
-=cut 
+=cut
 
 sub get_events(;) {
-	my $events; 
-	
-	$events = 
+	my $events;
+
+	$events =
 		sql( "return"	=> "ref",
 		     "query"	=> "
 				   SELECT id, name
-				   FROM events 
+				   FROM events
 				   ORDER BY id
 				   ",
 	       );

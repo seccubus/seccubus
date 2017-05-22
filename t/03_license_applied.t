@@ -23,7 +23,7 @@ my $travis = 1 if ( `pwd` =~ /\/travis\// );
 
 my %exclude = (
 	"./lib/IVIL.pm" 	=> "MIT Licensed project",
-	"./SeccubusV2/OpenVAS/OMP.pm" 	=> "Artistic License 2.0",
+	"./lib/OpenVAS/OMP.pm" 	=> "Artistic License 2.0",
 	"./bin/dump_ivil" 	=> "MIT Licensed project",
 	"./AUTHORS.txt"		=> "Part of the license",
 	"./NOTICE.txt"		=> "Part of the license",

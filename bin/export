@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# This program loads the findings from an IVIL file into the desired workspace 
+# This program loads the findings from an IVIL file into the desired workspace
 # and scan
 # ------------------------------------------------------------------------------
 # vim:et:sw=4:ts=4:ft=perl:
@@ -23,13 +23,13 @@ use strict;
 $| = 1;
 
 use SeccubusV2;
-use SeccubusWorkspaces;
-use SeccubusScans;
-use SeccubusHostnames;
-use SeccubusNotifications;
-use SeccubusRuns;
-use SeccubusFindings;
-use SeccubusIssues;
+use Seccubus::Workspaces;
+use Seccubus::Scans;
+use Seccubus::Hostnames;
+use Seccubus::Notifications;
+use Seccubus::Runs;
+use Seccubus::Findings;
+use Seccubus::Issues;
 
 use Getopt::Long;
 use JSON;
@@ -48,7 +48,7 @@ my (
 
 my $help = 0;
 
-GetOptions(	
+GetOptions(
     'workspace|w=s'	=> \$workspace,
     'out|o=s'		=> \$out,
     'scan|s=s'		=> \@scans,
@@ -187,7 +187,7 @@ foreach my $scan ( @$scans ) {
     		if ( $$r[0] != $prev_run ) {
     			# This is a new run
     			$prev_run = $$r[0];
-    			my $run =  { 
+    			my $run =  {
     				timestamp => $ts,
     				attachments => []
     			};
@@ -203,7 +203,7 @@ foreach my $scan ( @$scans ) {
     			my $att = {
     				id => $$r[2],
     				name => $$r[3],
-    				description => $$r[4],				
+    				description => $$r[4],
     			};
     			push @{$$runs[-1]->{attachments}}, $att;
     		}
@@ -235,7 +235,7 @@ foreach my $scan ( @$scans ) {
     			history => [],
     		};
     		foreach my $h ( @{ get_finding($workspace_id,$finding->{id} )} ) {
-    			# (id, finding.id, host, hostname, port, plugin, finding, remark, 
+    			# (id, finding.id, host, hostname, port, plugin, finding, remark,
     			# severity, severity_name, status, status_txt, user_id, username, time, runtime)
     			my $ts = $$h[14];
     			my $rt = $$h[15];
@@ -267,7 +267,7 @@ foreach my $scan ( @$scans ) {
     	} else {
     		print "x" if ! $quiet && $verbose <= 3;
     	}
-    } 
+    }
     print "\n" if ! $quiet && $verbose <= 3;
     print "$count findings written\n" unless $quiet;
 } # Scans
@@ -280,7 +280,7 @@ foreach my $i ( @{ get_issues($workspace_id,undef,1) } ) {
     if ( $$i[0] != $prev_id ) {
     	$prev_id = $$i[0];
     	$issue = {
-    		# i.id, i.name, i.ext_ref, i.description, i.severity, severity.name, i.status, 
+    		# i.id, i.name, i.ext_ref, i.description, i.severity, severity.name, i.status,
     		# issue_status.name
     		id => $$i[0],
     		name => $$i[1],
@@ -292,9 +292,9 @@ foreach my $i ( @{ get_issues($workspace_id,undef,1) } ) {
     		history => [],
     	};
     	foreach my $h ( @{ get_issue($workspace_id,$$i[0]) } ) {
-    		# ic.id, ic.issue_id, ic.name, ic.ext_ref, ic.description, ic.severity, 
-    		# s.name as serverity_name,	ic.status, st.name as status_name, ic.user_id, 
-    		# u.username, ic.time as changetime 
+    		# ic.id, ic.issue_id, ic.name, ic.ext_ref, ic.description, ic.severity,
+    		# s.name as serverity_name,	ic.status, st.name as status_name, ic.user_id,
+    		# u.username, ic.time as changetime
     		my $ts = $$h[11];
     		$ts =~ s/[^1234567890]//g;
     		if ( ( ! $after ) || $ts >= $after ) {
@@ -331,25 +331,25 @@ sub help(;$) {
 Export exports an entire workspace or selected scans to a directory with json and attachment files.
 This directory can then be imported again using the import utility.
 
-Usage: bin/export --workspace <workspace_name> --out <output_directory> 
-       [--scan <scanname 1>] [--scan <scanname 2>] [--compress] [--verbose] 
+Usage: bin/export --workspace <workspace_name> --out <output_directory>
+       [--scan <scanname 1>] [--scan <scanname 2>] [--compress] [--verbose]
        [--quiet] [--help]
 
 --workspace (-w)    - Name of the workspace to export
---out (-o)          - Directory into which to export the data 
+--out (-o)          - Directory into which to export the data
                       (must not exist, will be created)
---scan (-s)         - Name of the scan to export (can be repeated with 
+--scan (-s)         - Name of the scan to export (can be repeated with
                       multiple names to export more then one scan)
 --compress (-c)     - Compress attachments using zip
---after (-a)        - Only export items created after or on 
+--after (-a)        - Only export items created after or on
                       this time (Format: YYYYMMDDhhmmss)
 --config 			- Optional configuration file to load
 --verbose (-v)      - Be more verbose (repeat for extra verbosity)
---quiet (-q)        - Be quiet (don't produce any output if not needed. 
+--quiet (-q)        - Be quiet (don't produce any output if not needed.
                       Takes precidense over --verbose)
 --help (-h)         - Show this message
     \n";
-    
+
     if ( $message)  {
     	die $message;
     } else {

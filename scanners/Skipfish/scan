@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk, Dan McGinn-Combs, Glenn ten Cate (blabla1337)
+# Copyright 2017 Frank Breedijk, Dan McGinn-Combs, Glenn ten Cate (blabla1337)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@
 
 use strict;
 use SeccubusV2;
-use SeccubusIVIL;
-use SeccubusHelpers;
+use Seccubus::IVIL;
+use Seccubus::Helpers;
 
 use Getopt::Long;
 use Carp;
@@ -42,7 +42,7 @@ $nodelete = undef;
 
 # Create default values
 
-GetOptions(	
+GetOptions(
 		'skipfish_path|p=s'	=> \$skipfish_path,
 		'skipfish_options|o=s'	=> \$skipfish_options,
 		'hosts=s'		=> \$hosts_file,
@@ -152,10 +152,10 @@ Usage: scan 	[--skipfish_path|p <path to skipfish>] \\
 
 Arguments:
 --skipfish_path	- You can use this optional parameter to provide the script with
-(-p)		  the path to skipfish. If you do not provide this the 
-		  script tries to find the files itself and fails if it cannot 
+(-p)		  the path to skipfish. If you do not provide this the
+		  script tries to find the files itself and fails if it cannot
 		  fidn them.
---skipfish_options	- Additional command line options to provide to nikto see 
+--skipfish_options	- Additional command line options to provide to nikto see
 (-o)		  'skipfish -h' for more information. Please quote the options so that they are
                   passed as a single block. E.g. -o '-option1 -option2'
 --hosts		- The file containing the 'hosts' to scan

@@ -19,7 +19,7 @@
 use strict;
 use SeccubusV2;
 use IVIL;
-use SeccubusHostnames;
+use Seccubus::Hostnames;
 
 use Getopt::Long;
 use Carp;

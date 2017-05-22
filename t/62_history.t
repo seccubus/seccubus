@@ -42,6 +42,11 @@ ok($db_version > 0, "DB version = $db_version");
 
 my $t = Test::Mojo->new('Seccubus');
 
+# Log in
+$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200,"Login ok")
+;
+
 pass("Importing ssllabs-seccubus scan");
 `bin/load_ivil -w findings -s seccubus -t 20170101000000 --scanner SSLlabs testdata/ssllabs-seccubus.ivil.xml`;
 
@@ -94,52 +99,3 @@ done_testing();
 
 exit;
 
-my $json = {};
-{
-
-
-	# TODO: Need to test this with assets too
-
-	# Let's try to create an asset
-
-	# Should not work without workspaceID
-	$json = webcall("createAsset.pl");
-	isnt($$json[0]->{error}, undef, "Got error");
-	like($$json[0]->{error}, qr/workspace is missing/i, "Should complain about workspace");
-
-	# Should not work without name
-	$json = webcall("createAsset.pl", "workspace=100");
-	isnt($$json[0]->{error}, undef, "Got error");
-	like($$json[0]->{error}, qr/name is missing/i, "Should complain about name");
-
-	# Should be ok
-	$json = webcall("createAsset.pl", "workspace=100", "name=seccubus", "hosts=www.seccubus.com");
-	is($$json[0]->{workspace},100,"Correct workspace");
-	is($$json[0]->{id},1,"Correct ID");
-	is($$json[0]->{hosts},"www.seccubus.com","Correct hosts");
-	is($$json[0]->{recipient},undef,"Correct recipient");
-	is($$json[0]->{name},"seccubus","Correct name");
-
-	# We should have a lot of findings
-	$json = webcall("getFindings.pl", "workspaceId=100", "assetIds[]=1");
-	is($$json[0]->{error},undef,"Should not error");
-	my $count = @$json;
-	cmp_ok(@$json, ">", 25, "Should have at least 25 findings ($count)");
-
-	foreach my $find ( @$json ) {
-		like($find->{host}, qr/www\.seccubus\.com/,"Finding $find->{id} is about www.seccubus.com");
-	}
-
-	#die Dumper $json;
-}
-
-
-sub webcall(@) {
-	my $call = shift;
-
-	my $cmd = "perl -MSeccubusV2 -I SeccubusV2 json/$call ";
-	$cmd .= join " ", @_;
-	my @result = split /\r?\n/, `$cmd`;
-	while ( shift @result ) {};
-	return decode_json(join "\n", @result);
-}

@@ -25,7 +25,7 @@
 		<password>seccubus</password>
 	</database>
 	<paths>
-		<modules>/home/ubuntu/Seccubus/SeccubusV2</modules>
+		<modules>/home/ubuntu/Seccubus/lib</modules>
 		<scanners>/home/ubuntu/Seccubus/scanners</scanners>
 		<bindir>/home/ubuntu/Seccubus/bin</bindir>
 		<configdir>/home/ubuntu/Seccubus/etc</configdir>

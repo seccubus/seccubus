@@ -18,7 +18,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use strict;
 
 use SeccubusV2;
-use SeccubusFindings;
+use Seccubus::Findings;
 use Data::Dumper;
 
 # Create

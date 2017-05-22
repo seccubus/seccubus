@@ -18,157 +18,248 @@ use strict;
 
 use Test::More;
 use Test::Mojo;
-use Data::Dumper;
-
-use SeccubusV2;
-use SeccubusUsers;
 
 use lib "lib";
 
 my $db_version = 0;
 foreach my $data_file (<db/data_v*.mysql>) {
-	$data_file =~ /^db\/data_v(\d+)\.mysql$/;
-	$db_version = $1 if $1 > $db_version;
+    $data_file =~ /^db\/data_v(\d+)\.mysql$/;
+    $db_version = $1 if $1 > $db_version;
 }
 
 ok($db_version > 0, "DB version = $db_version");
 `mysql -uroot -e "drop database seccubus"`;
+is($?,0,"Database dropped ok");
 `mysql -uroot -e "create database seccubus"`;
+is($?,0,"Database created ok");
 `mysql -uroot -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
+is($?,0,"Privileges granted ok");
 `mysql -uroot -e "flush privileges;"`;
+is($?,0,"Privileges flushed ok");
 `mysql -uroot seccubus < db/structure_v$db_version.mysql`;
+is($?,0,"Database structure created ok");
 `mysql -uroot seccubus < db/data_v$db_version.mysql`;
+is($?,0,"Database data imported ok");
 
 my $t = Test::Mojo->new('Seccubus');
 
-# Let's set things up
-pass("Setting up");
-add_user("test", "Test user", 0);
-add_user("testadm", "Test admin", 1);
+# Should be able to get these without authentication
+$t->get_ok('/appstatus')
+    ->status_is(200)
+;
 
-# Can get session without auth
-$t->get_ok('/session')
-	->status_is(200)
-	->json_is(
-        {
-
-            "isadmin" =>  1,
-            "message" =>  "Running from command line as admin",
-            "username" =>  "admin",
-            "valid" =>  1
-
-        }
-	)
-	;
-
-$ENV{REMOTE_ADDR} = "127.0.0.1";
-$ENV{REMOTE_USER} = "admin";
 $t->get_ok('/session')
     ->status_is(200)
-    ->json_is(
-        {
+    ->json_is({
+        isadmin     => 0,
+        message     => "Undefined user 'Not logged in'",
+        username    => undef,
+        valid       => 0
+    })
+;
+# Results in 500 because of auth failure
+$t->get_ok('/appstatus/500')
+    ->status_is(200)
+;
 
-            "isadmin" =>  1,
-            "message" =>  "Valid user 'Builtin administrator account' (admin)",
-            "username" =>  "admin",
-            "valid" =>  1
+$t->get_ok('/logout')
+    ->status_is(401)
+;
 
-        }
-    )
-    ;
+$t->delete_ok('/session')
+    ->status_is(401)
+;
 
-$ENV{REMOTE_USER} = "test";
+$t->delete_ok('/session/1')
+    ->status_is(401)
+;
+
+$t->get_ok('/workspaces')
+    ->status_is(403)
+;
+
+$t->get_ok('/events')
+    ->status_is(403)
+;
+
+$t->get_ok('/Seccubus')
+    ->status_is(302)
+;
+
+# Logging in with user and invalid password
+$t->post_ok('/session', json => { username => "admin", password => "admin" })
+    ->status_is(401)
+    ->json_is("/status", "Error")
+    ->json_has("/message")
+;
+
+$t->get_ok('/workspaces')
+    ->status_is(403)
+;
+
+$t->get_ok('/events')
+    ->status_is(403)
+;
+
+$t->get_ok('/Seccubus')
+    ->status_is(302)
+    ->header_is(location => "seccubus/login.html")
+;
+
+# Logging in with user and valid password
+$t->post_ok('/session', json => { username => "admin", password => "GiveMeVulns!" })
+    ->status_is(200)
+    ->json_is("/status", "Success")
+    ->json_has("/message")
+;
+
 $t->get_ok('/session')
     ->status_is(200)
-    ->json_is(
-        {
+    ->json_is({
+        isadmin     => 1,
+        message     => "Valid user 'Builtin administrator account' (admin)",
+        username    => "admin",
+        valid       => 1
+    })
+;
 
-            "isadmin" =>  0,
-            "message" =>  "Valid user 'Test user' (test)",
-            "username" =>  "test",
-            "valid" =>  1
+$t->get_ok('/workspaces')
+    ->status_is(200)
+;
 
-        }
-    )
-    ;
+$t->get_ok('/events')
+    ->status_is(200)
+;
 
-$ENV{REMOTE_USER} = "testadm";
+$t->get_ok('/Seccubus')
+    ->status_is(302)
+    ->header_is(location => "seccubus/seccubus.html")
+;
+
+# logging out via get request
+$t->get_ok('/logout')
+    ->status_is(401)
+;
+
+$t->get_ok('/workspaces')
+    ->status_is(403)
+;
+
+$t->get_ok('/events')
+    ->status_is(403)
+;
+
+$t->get_ok('/Seccubus')
+    ->status_is(302)
+    ->header_is(location => "seccubus/login.html")
+;
+
+# Logging in with a header
+$t->post_ok('/session', { 'REMOTEUSER' => 'importer' } => json => {})
+    ->status_is(200)
+    ->json_is("/status", "Success")
+    ->json_has("/message")
+;
+
 $t->get_ok('/session')
     ->status_is(200)
-    ->json_is(
-        {
+    ->json_is({
+        isadmin     => 1,
+        message     => "Valid user 'Builtin importer utility account' (importer)",
+        username    => "importer",
+        valid       => 1
+    })
+;
 
-            "isadmin" =>  1,
-            "message" =>  "Valid user 'Test admin' (testadm)",
-            "username" =>  "testadm",
-            "valid" =>  1
+$t->get_ok('/workspaces')
+    ->status_is(200)
+;
 
-        }
-    )
-    ;
+$t->get_ok('/events')
+    ->status_is(200)
+;
 
-$ENV{REMOTE_USER} = "invalid";
+$t->get_ok('/Seccubus')
+    ->status_is(302)
+    ->header_is(location => "seccubus/seccubus.html")
+;
+
+# logging out via delete request
+$t->delete_ok('/session')
+    ->status_is(401)
+;
+
+$t->get_ok('/workspaces')
+    ->status_is(403)
+;
+
+$t->get_ok('/events')
+    ->status_is(403)
+;
+
+$t->get_ok('/Seccubus')
+    ->status_is(302)
+    ->header_is(location => "seccubus/login.html")
+;
+
 $t->get_ok('/session')
     ->status_is(200)
-    ->json_is(
-        {
+    ->json_is({
+        isadmin     => 0,
+        message     => "Undefined user 'Not logged in'",
+        username    => undef,
+        valid       => 0
+    })
+;
 
-            "isadmin" =>  0,
-            "message" =>  "Undefined user 'invalid'",
-            "username" =>  undef,
-            "valid" =>  0
-
-        }
-    )
-    ;
-
-delete $ENV{REMOTE_ADDR};
-delete $ENV{REMOTE_USER};
-
-$t->get_ok('/session' => { RemoteUser => "test" } )
+# No login, just a header
+$t->get_ok('/session' => { 'REMOTEUSER' => 'system' })
     ->status_is(200)
-    ->json_is(
-        {
+    ->json_is({
+        isadmin     => 1,
+        message     => "Valid user 'Builtin system user' (system)",
+        username    => "system",
+        valid       => 1
+    })
+;
 
-            "isadmin" =>  0,
-            "message" =>  "Valid user 'Test user' (test)",
-            "username" =>  "test",
-            "valid" =>  1
 
-        }
-    )
-    ;
-
-$t->get_ok('/session' => { "REMOTEUSER" => "testadm" } )
+$t->get_ok('/workspaces' => { 'REMOTEUSER' => 'system' })
     ->status_is(200)
-    ->json_is(
-        {
+;
 
-            "isadmin" =>  1,
-            "message" =>  "Valid user 'Test admin' (testadm)",
-            "username" =>  "testadm",
-            "valid" =>  1
-
-        }
-    )
-    ;
-
-$t->get_ok('/session' => { "REMOTEUSER" => "invalid" } )
+$t->get_ok('/events', { 'REMOTEUSER' => 'system' })
     ->status_is(200)
-    ->json_is(
-        {
+;
 
-            "isadmin" =>  0,
-            "message" =>  "Undefined user 'invalid'",
-            "username" =>  undef,
-            "valid" =>  0
+$t->get_ok('/Seccubus', { 'REMOTEUSER' => 'system' })
+    ->status_is(302)
+    ->header_is(location => "seccubus/seccubus.html")
+;
 
-        }
-    )
-    ;
+# No header no access
 
+$t->get_ok('/workspaces')
+    ->status_is(403)
+;
 
+$t->get_ok('/events')
+    ->status_is(403)
+;
+
+$t->get_ok('/Seccubus')
+    ->status_is(302)
+    ->header_is(location => "seccubus/login.html")
+;
+
+$t->get_ok('/session')
+    ->status_is(200)
+    ->json_is({
+        isadmin     => 0,
+        message     => "Undefined user 'Not logged in'",
+        username    => undef,
+        valid       => 0
+    })
+;
 
 done_testing();
-exit;
-

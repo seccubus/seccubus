@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-package SeccubusHostnames;
+package Seccubus::Hostnames;
 
 =head1 NAME $RCSfile: SeccubusHostnames.pm,v $
 
@@ -21,13 +21,14 @@ of all functions within the module.
 
 =cut
 
-use SeccubusDB;
-use SeccubusRights;
+use SeccubusV2;
+use Seccubus::DB;
+use Seccubus::Rights;
 use Socket;
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 		update_hostname
 		get_hostnames
 	);
@@ -88,8 +89,8 @@ sub update_hostname($$$;) {
 			   );
 		} else {
 #			sql( "return"	=> "id",
-#			     "query"	=> "UPDATE host_names 
-#			     		    SET name = ? 
+#			     "query"	=> "UPDATE host_names
+#			     		    SET name = ?
 #					    WHERE workspace_id = ? AND ip = ?",
 #			     "values"	=> [ $name, $workspace_id, $ip ],
 #			   );

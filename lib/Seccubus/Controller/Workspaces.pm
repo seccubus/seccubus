@@ -20,7 +20,7 @@ use strict;
 
 use lib "..";
 use SeccubusV2;
-use SeccubusWorkspaces;
+use Seccubus::Workspaces;
 
 # Create
 sub create {
@@ -29,10 +29,10 @@ sub create {
 	my $workspace = $self->req->json();
 
 	if ( ! $workspace ) {
-			$self->error("No json body found"); return;		
+			$self->error("No json body found"); return;
 	}
 	if ( ! $workspace->{name} ) {
-			$self->error("No name provided"); return;				
+			$self->error("No name provided"); return;
 	}
 	my $id = get_workspace_id($workspace->{name});
 	if ( $id ) {
@@ -62,7 +62,7 @@ sub create {
 # List
 sub list {
 	my $self = shift;
-	
+
 	my $data = [];
 	my $workspaces = get_workspaces;
 	foreach my $row ( @$workspaces ) {
@@ -90,10 +90,10 @@ sub update {
 	my $workspace = $self->req->json();
 
 	if ( ! $workspace ) {
-			$self->error("No json body found"); return;		
+			$self->error("No json body found"); return;
 	}
 	if ( ! $workspace->{name} ) {
-			$self->error("No name provided"); return;				
+			$self->error("No name provided"); return;
 	}
 	my $dubid = get_workspace_id($workspace->{name});
 

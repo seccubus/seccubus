@@ -12,24 +12,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-package SeccubusNotifications;
+package Seccubus::Notifications;
 
 =head1 NAME $RCSfile: SeccubusNotifications.pm,v $
 
-This Pod documentation generated from the module SeccubusNotifications gives a 
+This Pod documentation generated from the module SeccubusNotifications gives a
 list of all functions within the module.
 
 =cut
 
-use SeccubusDB;
-use SeccubusRights;
-use SeccubusRuns;
+use SeccubusV2;
+use Seccubus::DB;
+use Seccubus::Rights;
+use Seccubus::Runs;
 use Net::SMTP;
 use MIME::Base64;
 
 @ISA = ('Exporter');
 
-@EXPORT = qw ( 
+@EXPORT = qw (
 		get_notifications
 		create_notification
 		update_notification
@@ -62,11 +63,11 @@ Get all notification for a certain scan from the database
 
 =item scan_id - id of the scan
 
-=back 
+=back
 
 =item Checks
 
-User must be able to read workspace. 
+User must be able to read workspace.
 
 =back
 
@@ -76,7 +77,7 @@ sub get_notifications($;$) {
 	my $scan_id = shift or die "No scan_id provided";
 	my $id = shift;
 
-	my ($workspace_id) = 
+	my ($workspace_id) =
 		sql( 	return	=> "array",
 			query	=> "
 				SELECT	workspace_id
@@ -86,7 +87,7 @@ sub get_notifications($;$) {
 	);
 	if ( $workspace_id && may_read($workspace_id)) {
 		my $sql = "
-			SELECT	notifications.id, subject, recipients, message, event_id, events.name, 
+			SELECT	notifications.id, subject, recipients, message, event_id, events.name,
 					scans.workspace_id
 			FROM	notifications, events, scans
 			WHERE	scans.workspace_id = ? AND
@@ -130,11 +131,11 @@ Creates a notification
 
 =item message
 
-=back 
+=back
 
 =item Checks
 
-User must be able to write workspace. 
+User must be able to write workspace.
 
 Scan must exist in workspace
 
@@ -161,7 +162,7 @@ sub create_notification($$$$$$;) {
 				query	=> "
 					SELECT	scans.id
 					FROM	scans
-					WHERE	scans.id = ? AND 
+					WHERE	scans.id = ? AND
 					workspace_id = ?",
 				values	=> [ $scan_id, $workspace_id ]
 		);
@@ -182,18 +183,18 @@ sub create_notification($$$$$$;) {
 		};
 		$id = sql(	return	=> "id",
 				query	=> "
-					INSERT INTO notifications (scan_id, 
-						event_id, subject, recipients, 
+					INSERT INTO notifications (scan_id,
+						event_id, subject, recipients,
 						message)
 					VALUES	(?,?,?,?,?)",
-				values	=> [ $scan_id, $event_id, $subject, 
+				values	=> [ $scan_id, $event_id, $subject,
 					$recipients, $message ]
 		);
 		return( ($id,$event_name) );
 
 
 
-					
+
 	} else {
 		return undef;
 	}
@@ -221,11 +222,11 @@ Updates a notification
 
 =item message
 
-=back 
+=back
 
 =item Checks
 
-User must be able to write workspace. 
+User must be able to write workspace.
 
 Scan must exist in workspace
 
@@ -245,12 +246,12 @@ sub update_notification($$$$$;) {
 	my $recipients = shift or die "Recipients empty";
 	my $message = shift or die "Message empty";
 
-	my ($workspace_id, $scan_id) = 
+	my ($workspace_id, $scan_id) =
 		sql( 	return	=> "array",
 			query	=> "
 				SELECT	workspace_id, scans.id
 				FROM	scans, notifications
-				WHERE	notifications.id = ? AND 
+				WHERE	notifications.id = ? AND
 					scans.id = notifications.scan_id",
 			values	=> [ $notification_id ]
 	);
@@ -268,11 +269,11 @@ sub update_notification($$$$$;) {
 		};
 		my $id = sql(	return	=> "id",
 				query	=> "
-					UPDATE notifications 
-					SET	event_id = ?, subject = ?, 
-						recipients = ?,	message =? 
+					UPDATE notifications
+					SET	event_id = ?, subject = ?,
+						recipients = ?,	message =?
 					WHERE	id = ?",
-				values	=> [ $event_id, $subject, 
+				values	=> [ $event_id, $subject,
 					$recipients, $message, $notification_id
 					]
 		);
@@ -295,11 +296,11 @@ Delete a notification
 =item notification - id of the notification
 
 
-=back 
+=back
 
 =item Checks
 
-User must be able to write workspace. 
+User must be able to write workspace.
 
 =back
 
@@ -345,11 +346,11 @@ Send out notifications
 
 =item event_id - What event triggers this notification
 
-=back 
+=back
 
 =item Checks
 
-User must be able to read workspace. 
+User must be able to read workspace.
 
 =item Returns
 
@@ -387,8 +388,8 @@ sub do_notifications($$$;$) {
 		my ( $workspace, $scan, $scanner, $param, $targets, $time) = sql(
 			"return"	=> "array",
 			"query"		=> "
-				SELECT	workspaces.name, scans.name, 
-					scannername, scannerparam, targets, 
+				SELECT	workspaces.name, scans.name,
+					scannername, scannerparam, targets,
 					max(runs.time)
 				FROM	workspaces, scans, runs
 				WHERE	workspaces.id = scans.workspace_id AND
@@ -462,7 +463,7 @@ sub do_notifications($$$;$) {
 			"values"	=> [ $scan_id ]
 		);
 		my $att = $new + $changed + $open + $gone;
-		my $summary = 
+		my $summary =
 qq/$att finding(s) need your attention:
 NEW findings:     $new
 CHANGED findings: $changed
@@ -572,7 +573,7 @@ Content-Type: text/plain\n\n" . $$notification[2];
 				#$smtp->datasend("\n");
 				$smtp->datasend($$notification[2]);
 				$smtp->dataend();
-				$count++;				
+				$count++;
 			} else {
 				$count--;
 			}
@@ -587,16 +588,16 @@ Content-Type: text/plain\n\n" . $$notification[2];
 sub send_notification_from_finding($;){
 	my $findingId = shift;
 	my ($email,$workspace_id,$scan_id) = sql(
-		query => "SELECT 
+		query => "SELECT
 				a.recipients,
 				f.workspace_id,
 				f.scan_id
-				
-			FROM 
+
+			FROM
 				findings f,
 				assets a,
 				asset_hosts h
-			where 
+			where
 				a.id = h.asset_id and
 				(f.host = h.host or f.host = h.ip)
 				and f.id = ?
@@ -635,8 +636,8 @@ sub send_notification_from_finding($;){
 		my ( $workspace, $scan, $scanner, $param, $targets, $time) = sql(
 			"return"	=> "array",
 			"query"		=> "
-				SELECT	workspaces.name, scans.name, 
-					scannername, scannerparam, targets, 
+				SELECT	workspaces.name, scans.name,
+					scannername, scannerparam, targets,
 					max(runs.time)
 				FROM	workspaces, scans, runs
 				WHERE	workspaces.id = scans.workspace_id AND
@@ -710,7 +711,7 @@ sub send_notification_from_finding($;){
 			"values"	=> [ $scan_id ]
 		);
 		my $att = $new + $changed + $open + $gone;
-		my $summary = 
+		my $summary =
 qq/$att finding(s) need your attention:
 NEW findings:     $new
 CHANGED findings: $changed

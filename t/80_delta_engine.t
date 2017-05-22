@@ -29,7 +29,7 @@ use Data::Dumper;
 use lib "lib";
 
 use SeccubusV2;
-use SeccubusFindings;
+use Seccubus::Findings;
 
 my $db_version = 0;
 foreach my $data_file (<db/data_v*.mysql>) {
@@ -46,6 +46,11 @@ ok($db_version > 0, "DB version = $db_version");
 `mysql -uroot seccubus < db/data_v$db_version.mysql`;
 
 my $t = Test::Mojo->new('Seccubus');
+
+# Log in
+$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200,"Login ok")
+;
 
 # Loading AAAAAAA - 12-18
 `bin/load_ivil -t 201701010001 -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAA.ivil.xml`;
