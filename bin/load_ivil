@@ -25,6 +25,8 @@ use IVIL;
 use SeccubusFindings;
 use Getopt::Long;
 use Carp;
+use XML::SAX::ParserFactory;
+use XML::Validator::Schema;
 
 my (
 	$help,
@@ -65,6 +67,13 @@ help() if $help;
 
 $ENV{REMOTE_USER} = "importer";			# This utility runs under its 
 						# Own account
+
+print "Validating $filename against schema\n" if $verbose;
+my $validator = XML::Validator::Schema->new(file => '../SeccubusV2/seccubus.xsd');
+my $parser = XML::SAX::ParserFactory->parser(Handler => $validator);
+my $test =eval { $parser->parse_uri($filename) };
+die "File failed validation: $@" if $@;
+print "File $filename validated OK against schema.\n" if $verbose;
 
 print "Reading file $filename into memory\n" if $verbose;
 open(IVIL, $filename) or die "Unable to open file $filename for read";
@@ -119,4 +128,5 @@ sub make_timestamp() {
 
         return "$year$month$day$hour$minute$second";
 }
+
 
