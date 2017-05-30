@@ -7,6 +7,7 @@
 # Temp files
 .*.swp
 tmp/
+log/
 
 # MojoExample app
 mojo_example

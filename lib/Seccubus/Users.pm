@@ -199,7 +199,7 @@ sub get_login(;$) {
 	);
 	if ( $name ) {
 		# Valid user
-		return($username,1,is_admin(),"Valid user '$name' ($username)");
+		return($username,1,is_admin($username),"Valid user '$name' ($username)");
 	} else {
 		# Invalid user
 		return(undef,0,0,"Undefined user '$username'");
@@ -301,7 +301,11 @@ sub check_password($$$) {
             query   => "select password from `users` where username = ?",
             values  => [ $user ],
         );
-        return $pbkdf2->validate($dbhash, $password);
+        if ( $dbhash ) {
+            return $pbkdf2->validate($dbhash, $password);
+        } else {
+            return undef;
+        }
     } elsif ( $hash ) {
         my ( $count ) = sql(
             return  => "array",

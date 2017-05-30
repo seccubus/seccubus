@@ -22,6 +22,7 @@ use SeccubusV2;
 use Seccubus::Users;
 use Seccubus::DB;
 use Data::Dumper;
+use JSON;
 
 # Create
 sub create {
@@ -40,6 +41,8 @@ sub create {
         my ( $dbuser, $valid, $isadmin, $message ) = get_login($header_value);
         $user->{username} = $dbuser;
         if ( ! $valid ) {
+            $self->session(expires => 1); # Expire session
+            delete $self->session->{user};
             $self->error("Login failed: $message", 401);
             return;
         }
@@ -47,10 +50,14 @@ sub create {
         # Log in with username and password
         if ( $user && $user->{username} && $user->{password} ) {
             unless ( check_password($user->{username}, $user->{password},undef) ) {
-                $self->error("Login failed: ", 401);
+                $self->session(expires => 1); # Expire session
+                delete $self->session->{user};
+                $self->error("Login failed", 401);
                 return;
             }
         } else {
+            $self->session(expires => 1); # Expire session
+            delete $self->session->{user};
             $self->error("Invalid user object");
             return;
         }
@@ -62,9 +69,18 @@ sub create {
         values  => [ $user->{username} ]
     );
     $self->session->{user}->{hash} = $hash;
+    my ( $username, $valid, $isadmin, $message ) = get_login($user->{username});
+    if ( $isadmin ) {
+        $isadmin = JSON::true;
+    } else {
+        $isadmin = JSON::false;
+    }
+
     $self->render( json => {
         status  => "Success",
-        message => "You are now logged in as $user->{username}"
+        message => "You are now logged in as $user->{username}",
+        password => "",
+        isAdmin => $isadmin,
     });
 }
 
@@ -87,7 +103,14 @@ sub read {
 
     eval {
         my $data;
-        ($data->{username}, $data->{valid}, $data->{isadmin}, $data->{message}) = get_login();
+        ($data->{username}, $data->{valid}, $data->{isAdmin}, $data->{message}) = get_login();
+
+        if ( $data->{isAdmin} ) {
+            $data->{isAdmin} = JSON::true;
+        } else {
+            $data->{isAdmin} = JSON::false;
+        }
+        $data->{username} = "" unless $data->{username};
 
         $self->render( json => $data );
     } or do {
@@ -109,10 +132,9 @@ sub read {
 sub delete {
 	my $self = shift;
 
-    $self->session(expires => 1); # Expire session
     delete $self->session->{user};
 
-    $self->error("You are logged out", 401);
+    $self->error("You are logged out", 200);
 }
 
 1;

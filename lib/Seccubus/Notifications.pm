@@ -606,9 +606,9 @@ sub send_notification_from_finding($;){
 		'return'=>'array'
 		);
 	if(!$workspace_id || !$email || !$scan_id){
-		warn "no Workspace_id found for $findingId" if(!$workspace_id);
-		warn "no any e-mail found for $findingId" if(!$email);
-		warn "no any scan_id found for $findingId" if(!$scan_id);
+		warn "WARNING: no Workspace_id found for $findingId" if(!$workspace_id);
+		warn "WARNING: no any e-mail found for $findingId" if(!$email);
+		warn "WARNING: no any scan_id found for $findingId" if(!$scan_id);
 		return 0;
 	}
 	my $event_id = 3;

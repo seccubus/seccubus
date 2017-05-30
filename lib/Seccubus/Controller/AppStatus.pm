@@ -50,6 +50,12 @@ sub read {
 		dbdir
 	);
 
+    #my $env;
+    #foreach my $k ( sort keys %ENV ) {
+    #    $env .= "$k - $ENV{$k}\n";
+    #}
+    #push @$json, { name => "Environment " , result => "OK", message => $env };
+
 	my $config_found = 0;
 	my $config_file = "";
 	foreach my $config ( @configs ) {

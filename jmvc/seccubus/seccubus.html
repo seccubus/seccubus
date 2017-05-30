@@ -1,5 +1,5 @@
 <!--
-Copyright 2015 Frank Breedijk, Steve Launius, Petr
+Copyright 2017 Frank Breedijk, Steve Launius, Petr
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ limitations under the License.
           <h1><a href="#">Seccubus</a></h1>
           <h2>Automated vulnerability scanning and reporting</h2>
           <nav id="top-nav">
+            <a id="logout">Logout</a>
             <!-- Ticket 67 - Links in top right of UI do nothing -->
             <!-- <a href="#">Settings</a> <span> | </span> <ahref="#">Help</a> -->
           </nav>
@@ -35,6 +36,7 @@ limitations under the License.
         <div id="header-bottom">
           <nav id="main-nav">
             <ul id='navTab'>
+              <li><a href="#login">Login</a></li>
               <li><a href="#up2date">Status</a></li>
               <li><a href="#runs">Runs</a></li>
               <li><a href="#findings">Findings</a></li>
@@ -50,6 +52,12 @@ limitations under the License.
       </div>
     </header>
     <div class="shell">
+
+    <div id='login' class='tab'>
+      <div class='full'>
+        <form id='login_form'>Login form goes here</form>
+      </div>
+    </div>
 
     <div id='up2date' class='tab'>
       <div class='full'>
@@ -211,7 +219,7 @@ limitations under the License.
         Room for modal creatWorkspace
       </form>
     </div>
-    
+
     <div id="editWorkspaceDialog" class='hidden'>
       <h1>Please update the name of your scan</h1>
       <form id="editWorkspace">
@@ -239,14 +247,14 @@ limitations under the License.
         Room for modal Edit Notification
       </form>
     </div>
-    
+
     <div id="createNotificationDialog" class='hidden'>
       <h1>Enter data</h1>
       <form id="createNotification">
         Room for modal create Notification
       </form>
     </div>
-    
+
     <div id="editFindingDialog" class='hidden wide'>
       <form id="editFinding">
         Room for modal editFinding
@@ -257,7 +265,7 @@ limitations under the License.
       </td></tr>
       </table>
     </div>
-   
+
     <div id="createIssueDialog" class='hidden wide'>
       <form id="createIssue">
         Room for modal createIssue
@@ -269,49 +277,49 @@ limitations under the License.
         Room for modal createIssuelink
       </form>
     </div>
-   
+
     <div id="editIssueDialog" class='hidden wide'>
       <form id="editIssue">
         Room for modal editIssue
       </form>
       <table id='issueFindingTable'></table>
     </div>
-   
+
     <div id="editAssetDialog" class='hidden'>
       <h1>Update your Asset</h1>
       <form id="editAsset">
         Room for modal Edit Asset
       </form>
     </div>
-    
+
     <div id="createAssetDialog" class='hidden'>
       <h1>Create your Asset</h1>
       <form id="createAsset">
         Room for modal Create Asset
       </form>
     </div>
-    
+
     <div id="editAssetHostDialog" class='hidden'>
       <h1>Update your Asset</h1>
       <form id="editHostAsset">
         Room for modal Edit Asset
       </form>
     </div>
-    
+
     <div id="createAssetHostDialog" class='hidden'>
       <h1>Create your Asset Host</h1>
       <form id="createHostAsset">
         Room for modal Create Asset Host
       </form>
     </div>
-    
+
     <div id="saveSQLDialog" class='hidden'>
       <h1>Save your SQL</h1>
       <form id="saveSQL">
         Room for modal Save SQL
       </form>
     </div>
-    
+
     <div id="modalDialog">
     </div>
 

@@ -20,6 +20,16 @@ use lib 'lib';
 use lib '..';
 use lib '../SeccubusV2';
 use Mojolicious::Commands;
+use SeccubusV2;
+use Data::Dumper;
 
 # Start command line interface for application
+
+my $config = get_config();
+
+my $listen = "http://*:" . $config->{http}->{port};
+if ( $config->{http}->{cert} && $config->{http}->{key} && -e $config->{http}->{cert} && -e $config->{http}->{key}) {
+    $listen = "https://*:" . $config->{http}->{port} . "?cert=" . $config->{http}->{cert} . "&key=" . $config->{http}->{key};
+}
+
 Mojolicious::Commands->start_app('Seccubus');

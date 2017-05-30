@@ -40,6 +40,7 @@ use Seccubus::Runs;
 sub get_json($);
 sub cmp_scan($$;$);
 
+$ENV{SECCUBUS_USER} = "admin";
 my $db_version = 0;
 foreach my $data_file (<db/data_v*.mysql>) {
     $data_file =~ /^db\/data_v(\d+)\.mysql$/;
@@ -55,6 +56,11 @@ ok($db_version > 0, "DB version = $db_version");
 `mysql -uroot seccubus < db/data_v$db_version.mysql`;
 
 my $t = Test::Mojo->new('Seccubus');
+
+# Log in
+$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200,"Login ok")
+;
 
 # Create
 $t->post_ok('/workspaces', json => { 'name' => 'export'})
@@ -85,19 +91,19 @@ $t->post_ok('/workspace/100/scans',
 
 # Import data
 pass("Importing ssllabs-seccubus scan");
-`bin/load_ivil -w export -s seccubus -t 20170101000000 testdata/ssllabs-seccubus.ivil.xml`;
+`bin/load_ivil -w export -s seccubus -t 20170101000000 testdata/ssllabs-seccubus.ivil.xml --scanner SSLlabs`;
 is($?,0,"Command executed ok");
 `bin/attach_file -w export -s seccubus -t 20170101000000 -f testdata/ssllabs-seccubus.ivil.xml -d "IVIL file"`;
 is($?,0,"Command executed ok");
 `bin/attach_file -w export -s seccubus -t 20170101000000 -f testdata/ssllabs-schubergphilis.ivil.xml -d "The wrong IVIL file"`;
 is($?,0,"Command executed ok");
 pass("Importing ssllabs-schubergphilis scan");
-`bin/load_ivil -w export -s schubergphilis -t 20170101000100 testdata/ssllabs-schubergphilis.ivil.xml`;
+`bin/load_ivil -w export -s schubergphilis -t 20170101000100 testdata/ssllabs-schubergphilis.ivil.xml --scanner SSLlabs`;
 is($?,0,"Command executed ok");
 `bin/attach_file -w export -s schubergphilis -t 20170101000100 -f testdata/ssllabs-schubergphilis.ivil.xml -d "An IVIL file too"`;
 is($?,0,"Command executed ok");
 pass("Importing ssllabs-seccubus scan, again");
-`bin/load_ivil -w export -s seccubus -t 20170101000200 testdata/ssllabs-seccubus.ivil.xml`;
+`bin/load_ivil -w export -s seccubus -t 20170101000200 testdata/ssllabs-seccubus.ivil.xml --scanner SSLlabs`;
 is($?,0,"Command executed ok");
 
 pass("Manipulating findings and issues");

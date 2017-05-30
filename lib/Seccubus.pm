@@ -28,8 +28,21 @@ use Cwd 'cwd';
 # This method will run once at server start
 sub startup {
     my $self = shift;
-
     my $config = shift;
+
+    my $cfg = get_config();
+
+    my $listen = "http://*:" . $cfg->{http}->{port};
+    if ( $cfg->{http}->{cert} && $cfg->{http}->{key} && -e $cfg->{http}->{cert} && -e $cfg->{http}->{key}) {
+        $listen = "https://*:" . $cfg->{http}->{port} . "?cert=" . $cfg->{http}->{cert} . "&key=" . $cfg->{http}->{key};
+    }
+
+    # Setup listeing
+    $self->app->config(
+        hypnotoad => {
+            listen => [ $listen ]
+        }
+    );
 
     # Set an alternative controller class to set some global headers
     $self->controller_class('Seccubus::Controller');
@@ -195,9 +208,13 @@ sub startup {
 
     # Handle file requests
     if ( $self->mode() eq 'production' ) {
-        $auth_gui->get('/')->to(cb => sub {
+        $auth_gui->get('/seccubus')->to(cb => sub {
             my $c = shift;
             $c->redirect_to('seccubus/seccubus.html')
+        });
+        $auth_gui->get('/')->to(cb => sub {
+            my $c = shift;
+            $c->redirect_to('seccubus')
         });
     } else {
         # Inspired by https://github.com/tempire/app-dirserve

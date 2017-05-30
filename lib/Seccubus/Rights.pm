@@ -37,7 +37,7 @@ use Seccubus::DB;
 use strict;
 use Carp;
 
-sub is_admin();
+sub is_admin(;$);
 sub may_write($);
 sub may_read($);
 
@@ -53,7 +53,8 @@ This function checks if a user is part of the administrator group
 
 =over 4
 
-=item None, user_id is determined based on $ENV{SECCUBUS_USER}
+=item username, (optional) username to determine if this user is an admin
+                by default the value of $ENV{SECCUBUS_USER} is checked
 
 =back
 
@@ -71,7 +72,10 @@ None
 
 =cut
 
-sub is_admin() {
+sub is_admin(;$) {
+    my $username = shift;
+    $username = $ENV{SECCUBUS_USER} unless $username;
+
 	my $count;
 
 	$count = sql(
@@ -84,7 +88,7 @@ sub is_admin() {
 					        users.username = ?
 				        );
                        ",
-		"values"    => [ $ENV{SECCUBUS_USER} ],
+		"values"    => [ $username ],
 	);
 	return $count;
 }
@@ -178,13 +182,13 @@ sub may_read($) {
 
 	my $count = sql( "return"	=> "array",
 			 "query"	=> "SELECT count(*)
-			 		    FROM rights, user2group, user
+			 		    FROM rights, user2group, users
 					    WHERE
 					    	rights.workspace_id = ? and
 						rights.allow_read > 0 and
 						rights.group_id = user2group.group_id and
-						user2group.user_id = user.id and
-						user.username = ?
+						user2group.user_id = users.id and
+						users.username = ?
 					    ",
 			 "values"	=> [ $id, $ENV{SECCUBUS_USER} ],
 		       );

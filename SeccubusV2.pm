@@ -60,7 +60,7 @@ use Carp;
 use Seccubus::Helpers;
 use Seccubus::Users;
 
-if ( ! $ENV{SECCUBUS_USER} ) {
+if ( ! $ENV{SECCUBUS_USER} && ! exists $ENV{MOJO_MODE} && ! exists $ENV{MOJO_HOME} ) {
 	$ENV{SECCUBUS_USER} = "admin"		# Run as admin user if we are not running via mojo
 }
 

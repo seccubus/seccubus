@@ -39,7 +39,7 @@ function create_api(url){
             dataType: "json",
             data: JSON.stringify(attrs),
             success : success,
-            failure : failure
+            error : failure
         });
     });
 }
@@ -60,7 +60,7 @@ function update_api(url){
             dataType: "json",
             data: JSON.stringify(attrs),
             success : success,
-            failure : failure
+            error : failure
         })
     });
 }
@@ -82,7 +82,7 @@ function delete_api(url){
             dataType: "json",
             data: JSON.stringify(attrs),
             success : success,
-            failure : failure
+            error : failure
         })
     });
 }
@@ -110,5 +110,6 @@ steal(
     "./savedsql.js",
     "./issue.js",
     "./issuelink.js",
-    "./severity.js"
+    "./severity.js",
+    "./session"
 )

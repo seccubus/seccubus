@@ -18,6 +18,7 @@ use strict;
 
 use Test::More;
 use Test::Mojo;
+use JSON;
 
 use lib "lib";
 
@@ -51,9 +52,9 @@ $t->get_ok('/appstatus')
 $t->get_ok('/session')
     ->status_is(200)
     ->json_is({
-        isadmin     => 0,
+        isAdmin     => JSON::false,
         message     => "Undefined user 'Not logged in'",
-        username    => undef,
+        username    => "",
         valid       => 0
     })
 ;
@@ -63,15 +64,15 @@ $t->get_ok('/appstatus/500')
 ;
 
 $t->get_ok('/logout')
-    ->status_is(401)
+    ->status_is(200)
 ;
 
 $t->delete_ok('/session')
-    ->status_is(401)
+    ->status_is(200)
 ;
 
 $t->delete_ok('/session/1')
-    ->status_is(401)
+    ->status_is(200)
 ;
 
 $t->get_ok('/workspaces')
@@ -116,7 +117,7 @@ $t->post_ok('/session', json => { username => "admin", password => "GiveMeVulns!
 $t->get_ok('/session')
     ->status_is(200)
     ->json_is({
-        isadmin     => 1,
+        isAdmin     => JSON::true,
         message     => "Valid user 'Builtin administrator account' (admin)",
         username    => "admin",
         valid       => 1
@@ -138,7 +139,7 @@ $t->get_ok('/Seccubus')
 
 # logging out via get request
 $t->get_ok('/logout')
-    ->status_is(401)
+    ->status_is(200)
 ;
 
 $t->get_ok('/workspaces')
@@ -164,7 +165,7 @@ $t->post_ok('/session', { 'REMOTEUSER' => 'importer' } => json => {})
 $t->get_ok('/session')
     ->status_is(200)
     ->json_is({
-        isadmin     => 1,
+        isAdmin     => JSON::true,
         message     => "Valid user 'Builtin importer utility account' (importer)",
         username    => "importer",
         valid       => 1
@@ -186,7 +187,7 @@ $t->get_ok('/Seccubus')
 
 # logging out via delete request
 $t->delete_ok('/session')
-    ->status_is(401)
+    ->status_is(200)
 ;
 
 $t->get_ok('/workspaces')
@@ -205,9 +206,9 @@ $t->get_ok('/Seccubus')
 $t->get_ok('/session')
     ->status_is(200)
     ->json_is({
-        isadmin     => 0,
+        isAdmin     => JSON::false,
         message     => "Undefined user 'Not logged in'",
-        username    => undef,
+        username    => "",
         valid       => 0
     })
 ;
@@ -216,7 +217,7 @@ $t->get_ok('/session')
 $t->get_ok('/session' => { 'REMOTEUSER' => 'system' })
     ->status_is(200)
     ->json_is({
-        isadmin     => 1,
+        isAdmin     => JSON::true,
         message     => "Valid user 'Builtin system user' (system)",
         username    => "system",
         valid       => 1
@@ -255,9 +256,9 @@ $t->get_ok('/Seccubus')
 $t->get_ok('/session')
     ->status_is(200)
     ->json_is({
-        isadmin     => 0,
+        isAdmin     => JSON::false,
         message     => "Undefined user 'Not logged in'",
-        username    => undef,
+        username    => "",
         valid       => 0
     })
 ;
