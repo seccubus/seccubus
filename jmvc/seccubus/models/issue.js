@@ -32,7 +32,7 @@ $.Model('Seccubus.Models.Issue',
 	 */
     findAll: api("workspace/{workspace}/issues"),
   	//findOne: api("workspace/{workspace}/issue/{id}"),
-    create  : create_api("workspace/{workspace}/issues"),
+    create  : createApi("workspace/{workspace}/issues"),
 
 	/*
 	 * @function update
@@ -40,7 +40,7 @@ $.Model('Seccubus.Models.Issue',
 	 * json/updateIssue.pl
 	 * @return {Object} the updated object or an error
 	 */
-    update  : update_api("workspace/{workspace}/issue/{id}"),
+    update  : updateApi("workspace/{workspace}/issue/{id}"),
 //destroy : "/issues/{id}.json"
 },
 /* @Prototype */

@@ -20,14 +20,14 @@ steal('jquery/model', function(){
      * @inherits jQuery.Model
      * Wraps backend workspace services.
      */
-    $.Model('Seccubus.Models.Session',
+    $.Model("Seccubus.Models.Session",
         /* @Static */
         {
             //create: "/session",
-            create: create_api("session"),
+            create: createApi("session"),
             //findAll: api("workspaces"),
             findOne: api("session"),
-            //update : update_api("workspace/{id}")
+            //update : updateApi("workspace/{id}")
             destroy : api("session", "DELETE")
 
         },

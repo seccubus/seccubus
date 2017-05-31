@@ -40,7 +40,7 @@ $.Model('Seccubus.Models.Finding',
 	 * json/updateFinding.pl
 	 * @return {Object} the updated object or an error
 	 */
-    update  : update_api("workspace/{workspace}/finding/{id}"),
+    update  : updateApi("workspace/{workspace}/finding/{id}"),
   	//destroy : "/findings/{id}.json"
 },
 /* @Prototype */
@@ -141,7 +141,7 @@ $.Model.List('Seccubus.Models.Finding.List', {
 	 * wraps the json.updateFindings.pl API
 	 */
 	//update : "POST json/updateFindings.pl"
-    update  : update_api("workspace/{workspace}/findings"),
+    update  : updateApi("workspace/{workspace}/findings"),
 
 },{
 /* @Prototype */

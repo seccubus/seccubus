@@ -87,7 +87,7 @@ steal(	'jquery/controller',
 			this.element.find('[type=submit]').val('Creating...');
 			params.workspace = this.options.workspace;
 			params.asset = this.options.asset;
-            params.name = params.host
+            params.name = params.host;
 			console.log(params);
 			new Seccubus.Models.Assethost(params).save(this.callback('saved'));
 		} else {

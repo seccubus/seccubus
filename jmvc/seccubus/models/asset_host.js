@@ -37,8 +37,8 @@ $.Model('Seccubus.Models.Assethost',
 	findAll : api("workspace/{workspace}/asset/{asset}/hosts"),
   	// Not implemented
 	//findOne	: "/scans/{id}.json",
-	create : create_api("workspace/{workspace}/asset/{asset}/hosts"),
-	update : update_api("workspace/{workspace}/asset/{asset}/host/{id}"),
+	create : createApi("workspace/{workspace}/asset/{asset}/hosts"),
+	update : updateApi("workspace/{workspace}/asset/{asset}/host/{id}"),
 	destroy : api("workspace/-999/asset/-999/host/{id}", "DELETE")
   	// Not implemented yet
 	//destroy	: "/scans/{id}.json"

@@ -34,7 +34,7 @@ $.Model('Seccubus.Models.CustSql',
      * Callback function in case of error
      * @return {Deferred} A deferred Assets (Asset.Table)
      */
-     findAll    : create_api("sql/execute")
+     findAll    : createApi("sql/execute")
     // Not implemented
     //findOne   : "/scans/{id}.json",
     // create   : "POST json/createAsset.pl",

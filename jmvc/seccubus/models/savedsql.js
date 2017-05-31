@@ -34,11 +34,11 @@ $.Model('Seccubus.Models.SavedSql',
      * Callback function in case of error
      * @return {Deferred} A deferred Assets (Asset.Table)
      */
-    create      : create_api("sql"),
+    create      : createApi("sql"),
     // Not implemented
     //findOne   : "/scans/{id}.json",
     findAll     : api("sql")
-    //update        : update_api("sql/{sql_id}")
+    //update        : updateApi("sql/{sql_id}")
     // destroy  : "POST json/deleteAsset.pl"
     // Not implemented yet
     //destroy   : "/scans/{id}.json"

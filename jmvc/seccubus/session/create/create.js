@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 steal(
-    'jquery/controller',
-    'jquery/view/ejs',
-    'jquery/dom/form_params',
-    'jquery/controller/view',
-    'seccubus/models'
+    "jquery/controller",
+    "jquery/view/ejs",
+    "jquery/dom/form_params",
+    "jquery/controller/view",
+    "seccubus/models"
 ).then(
-    './views/init.ejs',
+    "./views/init.ejs",
 	function($){
     /**
      * @class Seccubus.Session.Create
@@ -28,14 +28,14 @@ steal(
      * @inherits jQuery.Controller
      * Renders the content of a form to create a session and handles creation (login)
      */
-    $.Controller('Seccubus.Session.Create',
+    $.Controller("Seccubus.Session.Create",
     /** @Static */
     {
-    	/*
-    	 * @attribute options
-    	 * Object that contains all options
-    	 */
-    	defaults : {
+        /*
+         * @attribute options
+         * Object that contains all options
+         */
+        defaults : {
             /*
              * @attribute options.onSuccess
              * Function that is called when the user logged in successfully
@@ -50,42 +50,42 @@ steal(
             onFailure   : function() {
                 alert("Login fail");
             }
-    	}
+        }
     },
     /** @Prototype */
     {
-    	/*
-    	 * Redeners the form
-    	 */
-    	init : function(){
-    		this.element.html(this.view());
-    	},
-    	/*
-    	 * This function is triggered when a form is submitted. It prevents the
-    	 * default event, and uses the form parameters to create a new Session
-    	 * @param {Object} el
-    	 * The element that is submitted
-    	 * @param {Object} ev
-    	 * The submit event itself
-    	 */
-    	submit : function(el, ev){
-    		ev.preventDefault();
-    		this.element.find('[type=submit]').val('Checking...')
-    		var param = el.formParams();
-    		new Seccubus.Models.Session(param).save(this.callback('saved'), this.callback('error'));
-    	},
-    	".cancel click" : function() {
-    		this.clearAll();
-    	},
-    	/*
-    	 * This function is the callback for the submit function. It is called
-    	 * when the object was successfully created through the model
-    	 * It calls clearAll to clear the form
-    	 */
-    	saved : function(m){
-    		this.clearAll();
+        /*
+         * Redeners the form
+         */
+        init : function(){
+            this.element.html(this.view());
+        },
+        /*
+         * This function is triggered when a form is submitted. It prevents the
+         * default event, and uses the form parameters to create a new Session
+         * @param {Object} el
+         * The element that is submitted
+         * @param {Object} ev
+         * The submit event itself
+         */
+        submit : function(el, ev){
+            ev.preventDefault();
+            this.element.find("[type=submit]").val("Checking...");
+            var param = el.formParams();
+            new Seccubus.Models.Session(param).save(this.callback("saved"), this.callback("error"));
+        },
+        ".cancel click" : function() {
+            this.clearAll();
+        },
+        /*
+         * This function is the callback for the submit function. It is called
+         * when the object was successfully created through the model
+         * It calls clearAll to clear the form
+         */
+        saved : function(m){
+            this.clearAll();
             this.options.onSuccess(m);
-    	},
+        },
         /*
          * This function is the error callback for the submit function. It is
          * called when the object was not successfully created through the model
@@ -95,15 +95,15 @@ steal(
             this.clearAll();
             this.options.onFailure(x);
         },
-    	/*
-    	 * This function clears the form and calls the onClear function defined
-    	 * in options.onClear
-    	 */
-    	clearAll : function() {
-    		this.element.find('[type=submit]').val('Create');
-    		this.element[0].reset()
-            this.element.find('[id=login_username]').focus();
-    	}
-    })
+        /*
+         * This function clears the form and calls the onClear function defined
+         * in options.onClear
+         */
+        clearAll : function() {
+            this.element.find("[type=submit]").val("Create");
+            this.element[0].reset()
+            this.element.find("[id=login_username]").focus();
+        }
+    });
 
 });

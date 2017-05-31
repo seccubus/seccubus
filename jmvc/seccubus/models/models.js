@@ -15,7 +15,7 @@
  */
 // steal model files
 
-function base_url() {
+function baseUrl() {
     return "/";
 }
 function api(url, method){
@@ -23,13 +23,13 @@ function api(url, method){
     return method + " " + base_url() + url;
 }
 
-function create_api(url){
+function createApi(url){
     return (function(attrs,success,failure) {
         var re = new RegExp("\{(.*?)\}");
         var m = re.exec(url);
         while ( m ) {
             url = url.replace(re,attrs[m[1]]);
-            m = re.exec(url)
+            m = re.exec(url);
         }
 
         return $.ajax({
@@ -44,7 +44,7 @@ function create_api(url){
     });
 }
 
-function update_api(url){
+function updateApi(url){
     return (function(id,attrs,success,failure) {
           var re = new RegExp("\{(.*?)\}");
           var m = re.exec(url);
@@ -61,13 +61,12 @@ function update_api(url){
             data: JSON.stringify(attrs),
             success : success,
             error : failure
-        })
+        });
     });
 }
 
-function delete_api(url){
+function deleteApi(url){
     return (function(id,attrs,success,failure) {
-        console.log(id)
         var re = new RegExp("\{(.*?)\}");
         var m = re.exec(url);
         while ( m ) {

@@ -138,7 +138,7 @@ steal('jquery/controller', 'jquery/event/default','./tabs.css').then(function() 
          * @param {Object} The element index value to enable
          */
         clickOn: function( index ) {
-            this.activate(this.element.children(":eq("+index+")"))
+            this.activate(this.element.children(":eq("+index+")"));
         }
 	});
 

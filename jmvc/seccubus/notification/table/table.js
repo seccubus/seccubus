@@ -17,7 +17,7 @@ steal(	'jquery/controller',
 	'jquery/view/ejs',
 	'jquery/controller/view',
 	'seccubus/models'
-).then(	
+).then(
 	'./views/init.ejs',
 	'./views/error.ejs',
 	'./views/notification.ejs',
@@ -64,7 +64,7 @@ $.Controller('Seccubus.Notification.Table',
 	 * This function renders the control
 	 */
 	updateView : function() {
-		if ( this.options.scan  == -1 ) {
+		if ( this.options.scan === -1 ) {
 			console.warn("Seccubus.Notification.Table: scan is not set");
 			this.element.html(
 				this.view(
@@ -119,8 +119,8 @@ $.Controller('Seccubus.Notification.Table',
 	"{Seccubus.Models.Notification} updated" : function(Notification, ev, notification){
 		notification.elements(this.element).html(this.view('notification', notification) );
 	},
-	/* 
-	 * Update is overloaded to render the control on each update to the 
+	/*
+	 * Update is overloaded to render the control on each update to the
 	 * control
 	 */
 	update : function(options) {

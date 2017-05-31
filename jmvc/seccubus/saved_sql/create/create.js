@@ -34,7 +34,7 @@ steal(	'jquery/controller',
  * -----
  * As a user I would like to be able tot save SQL from the GUI
  */
- $.Controller('Seccubus.SavedSql.Create',
+ $.Controller("Seccubus.SavedSql.Create",
 /** @Static */
 {
 	/*
@@ -58,7 +58,7 @@ steal(	'jquery/controller',
 		 * Funciton that is called save done
 		 * disable a modal display
 		 */
-		afterSave : function() { console.warn('afterSave not defined'); }
+		afterSave : function() { console.warn("afterSave not defined"); }
 	}
 },
 /** @Prototype */

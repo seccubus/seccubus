@@ -34,11 +34,11 @@ $.Model('Seccubus.Models.Asset',
 	 * Callback function in case of error
 	 * @return {Deferred} A deferred Assets (Asset.Table)
 	 */
-  	create	: create_api("workspace/{workspace}/assets"),
+  	create	: createApi("workspace/{workspace}/assets"),
 	findAll : api("workspace/{workspace}/assets"),
   	// Not implemented
 	//findOne	: "/scans/{id}.json",
-	update	: update_api("workspace/{workspace}/asset/{id}"),
+	update	: updateApi("workspace/{workspace}/asset/{id}"),
 	destroy	: api("workspace/-999/asset/{id}", "DELETE")
   	// Not implemented yet
 	//destroy	: "/scans/{id}.json"
