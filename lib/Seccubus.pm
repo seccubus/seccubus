@@ -14,7 +14,6 @@
 # limitations under the License.
 package Seccubus;
 use Mojo::Base 'Mojolicious';
-use Mojolicious::Plugin::Authentication;
 
 use strict;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Petr, Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 steal('funcunit',function(){
 
-module("Seccubus.Workspace.Create", { 
+module("Seccubus.Workspace.Create", {
 	setup: function(){
 		S.open("//seccubus/workspace/create/create.html");
 	}

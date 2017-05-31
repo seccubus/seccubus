@@ -55,8 +55,6 @@ my %exclude = (
 	"./junit_output.xml"
 						=> "Build file",
 	"./etc/config.xml"	=> "Local config file",
-	"./etc/v2.seccubus.com.bundle"
-						=> "Certificate bundle"
 );
 my $tests = 0;
 
@@ -77,7 +75,9 @@ foreach my $file ( @files ) {
 	     $file !~ /^\.\/www\// &&		# Skip complied JMVC code
 	     $file !~ /^\.\/obs\/home:seccubus/ &&
 	     								# OpenSuse Build services files
-	     $file !~ /\.(bak|old|log)$/	# Skip backups and logs
+	     $file !~ /\.(bak|old|log)$/ &&	# Skip backups and logs
+         $file !~ /\.(pem|crt|bundle|key)$/
+                                        # Certificates and keys
 	) { #skip certain files
 		my $type = `file '$file'`;
 		chomp($type);
