@@ -39,7 +39,7 @@ $.Model('Seccubus.Models.Issuelink',
 	 * json/updateIssue.pl
 	 * @return {Object} the updated object or an error
 	 */
-    update  : updateApi("workspace/{workspace}/issue/{id}"),
+    update  : updateApi("workspace/{workspace}/issue/{id}")
  	//destroy : "POST json/updateIssue.pl"
 },
 /* @Prototype */

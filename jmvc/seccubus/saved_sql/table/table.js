@@ -44,7 +44,9 @@
              * @attribute options.saveSQL
              * function which using when save button clicked
              */
-             saveSQL:function(sql,updateView){ console.warn("no save sql function given"; }
+             saveSQL : function(sql,updateView){
+                console.warn("no save sql function given");
+            }
 
         }
     },

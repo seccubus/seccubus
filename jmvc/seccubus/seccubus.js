@@ -53,6 +53,7 @@ steal(
     'seccubus/saved_sql/table',
     'seccubus/saved_sql/create',
     'seccubus/session/create',
+    'seccubus/session/display',
     function(){                 // configure your application
         /***********************************************************
          * Initialize gui state and hook into it
@@ -139,16 +140,16 @@ steal(
         /***********************************************************
          * Let's see how we are logged in
          **********************************************************/
-        Seccubus.Models.Session.findOne(
-            {},
-            function(s){
-                console.log("This is our current session");
-                console.log(s);
-                gui_state.attr("username",s.username);
-                gui_state.attr("isAdmin",s.isAdmin);
-                gui_state.attr("session",s);
-            }
-        )
+//bla        Seccubus.Models.Session.findOne(
+//bla            {},
+//bla            function(s){
+//bla                console.log("This is our current session");
+//bla                console.log(s);
+//bla                gui_state.attr("username",s.username);
+//bla                gui_state.attr("isAdmin",s.isAdmin);
+//bla                gui_state.attr("session",s);
+//bla            }
+//bla        );
 
 
         /***********************************************************
@@ -174,18 +175,27 @@ steal(
         // Tabs
         $('#navTab').seccubus_tabs();
 
+        // Session display
+        $('#session_info').seccubus_session_display({
+            onChange : function(s){
+                gui_state.attr("username",s.username);
+                gui_state.attr("isAdmin",s.isAdmin);
+            }
+        });
+
         // Login screen
         $('#login_form').seccubus_session_create({
             onSuccess: function(s){
                 console.log(s);
                 gui_state.attr("username",s.attr("username"));
                 gui_state.attr("isAdmin",s.attr("isAdmin"));
-                gui_state.attr("session",s);
+                $('#session_info').seccubus_session_display("init");
             },
             onFailure: function(x){
                 //alert("Login failed");
                 gui_state.attr("username","");
                 gui_state.attr("isAdmin",false);
+                $('#session_info').seccubus_session_display("init");
             }
         });
 

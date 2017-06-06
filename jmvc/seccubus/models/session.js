@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-steal('jquery/model', function(){
+steal("jquery/model", function(){
     /**
      * @class Seccubus.Models.Workspace
      * @parent Workspace
@@ -23,13 +23,9 @@ steal('jquery/model', function(){
     $.Model("Seccubus.Models.Session",
         /* @Static */
         {
-            //create: "/session",
             create: createApi("session"),
-            //findAll: api("workspaces"),
             findOne: api("session"),
-            //update : updateApi("workspace/{id}")
             destroy : api("session", "DELETE")
-
         },
         /* @Prototype */
         {}

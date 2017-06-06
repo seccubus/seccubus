@@ -18,6 +18,8 @@
 # not exist yet ;)
 # ------------------------------------------------------------------------------
 #
+set -x
+
 STACK=${STACK:-'full'}
 DBHOST=${DBHOST:-'127.0.0.1'}
 DBPORT=${DBPORT:-'3306'}
@@ -52,130 +54,175 @@ if [[ "$STACK" != "full" && "$STACK" != "front" && "$STACK" != "api" && "$STACK"
 EOM
 fi
 
-# Set up web stack
-if [[ "$STACK" == "full" || "$STACK" == "web" ]] ; then
-    cp /full.conf /etc/httpd/conf.d/seccubus.conf
+# Handle TLS certificates
+if [[ -e "/opt/seccubus/data/seccubus.pem" && -e "/opt/seccubus/data/seccubus.key" ]]; then
+    TLSCERT="/opt/seccubus/data/seccubus.pem"
+    TLSKEY="/opt/seccubus/data/seccubus.key"
+else
+    if [[ ! -z "$TLSCERT" && ! -z "$TLSKEY" ]]; then
+        echo "$TLSCERT" > "/opt/seccubus/data/seccubus.pem"
+        TLSCERT="/opt/seccubus/data/seccubus.pem"
+        echo "$TLSKEY" > "/opt/seccubus/data/seccubus.key"
+        TLSKEY="/opt/seccubus/data/seccubus.key"
+    else
+        TLSCERT=""
+        TLSKEY=""
+    fi
 fi
 
 if [[ "$STACK" == "front" ]] ; then
-    cp /front.conf /etc/httpd/conf.d/seccubus.conf
+    # Frontend server, just serve HTML via nginx
     if [[ -z $APIURL ]]; then
         echo "\$STACK is set to '$STACK', but \$APIURL is empty, this won't work"
         exit
     else
+        # Sanitize urls
+        [[ ! "$APIURL" = */ ]] && APIURL="$APIURL/"
+        [[ ! -z "$BASEURL" ]] && [[ ! "$BASEURL" = /* ]] && BASEURL="/$BASEURL"
+
+        rm /etc/nginx/sites-enabled/*
+        if [[ -z "$TLSKEY" ]]; then
+            cp /front.conf /etc/nginx/sites-available/seccubus
+        else
+            cp /front-tls.conf /etc/nginx/sites-available/seccubus
+        fi
+        ln -s /etc/nginx/sites-available/seccubus /etc/nginx/sites-enabled/seccubus
+        # Patch BASEURL
+        sed -i.bak "s#%BASEURL%#$BASEURL#g" /etc/nginx/sites-available/seccubus
+
         # Patch javascript to access remote URL
-        sed -i.bak "s#\\\"json\\/\\\"#\"$APIURL\"#" /opt/seccubus/www/seccubus/production.js
+        sed -i.bak "s#baseUrl(){return\"/\"}#baseUrl(){return\"$APIURL\"}#" /opt/seccubus/public/seccubus/production.js
+
+
+
+        service nginx start
     fi
 fi
 
 if [[ "$STACK" == "api" ]] ; then
-    cp /api.conf /etc/httpd/conf.d/seccubus.conf
+    # No need to have a public directory in API mode
+    rm -rf /opt/seccubus/public
 fi
 
-if [[ "$STACK" == "full" || "$STACK" == "front" || "$STACK" == "api" || "$STACK" == "web" ]]; then
-    # Do we need to listen on a specific URI
-    if [[ ! -z $BASEURI ]]; then
-        sed -i.bak "s#^Alias /#Alias $BASEURI#" /etc/httpd/conf.d/seccubus.conf
-    fi
-    # Need to start apache
-    apachectl -DFOREGROUND &
+if [[ "$STACK" == "full" ||  "$STACK" == "api" || "$STACK" == "web" ]] ; then
+    # We need to start mojolicious
+    cd /opt/seccubus
+    hypnotoad seccubus.pl
 fi
 
-mkdir -p ~seccubus/.ssh
-chmod 700 ~seccubus/.ssh
-echo "$SSHKEY1" > ~seccubus/.ssh/SSHKEY1
-export SSHKEY1=""
-echo "$SSHKEY2" > ~seccubus/.ssh/SSHKEY2
-export SSHKEY2=""
-echo "$SSHKEY3" > ~seccubus/.ssh/SSHKEY3
-export SSHKEY3=""
-echo "$SSHKEY4" > ~seccubus/.ssh/SSHKEY4
-export SSHKEY4=""
-echo "$SSHKEY5" > ~seccubus/.ssh/SSHKEY5
-export SSHKEY5=""
-echo "$SSHKEY6" > ~seccubus/.ssh/SSHKEY6
-export SSHKEY6=""
-echo "$SSHKEY7" > ~seccubus/.ssh/SSHKEY7
-export SSHKEY7=""
-echo "$SSHKEY8" > ~seccubus/.ssh/SSHKEY8
-export SSHKEY8=""
-echo "$SSHKEY9" > ~seccubus/.ssh/SSHKEY9
-export SSHKEY9=""
-chown -R seccubus:seccubus ~seccubus/.ssh
-chmod 600 ~seccubus/.ssh/SSHKEY*
-
-cat <<EOF >/opt/seccubus/etc/config.xml
-<seccubus>
-    <database>
-        <engine>mysql</engine>
-        <database>$DBNAME</database>
-        <host>$DBHOST</host>
-        <port>$DBPORT</port>
-        <user>$DBUSER</user>
-        <password>$DBPASS</password>
-    </database>
-    <paths>
-        <modules>/opt/seccubus/SeccubusV2</modules>
-        <scanners>/opt/seccubus/scanners</scanners>
-        <bindir>/opt/seccubus/bin</bindir>
-        <configdir>/opt/seccubus/etc</configdir>
-        <dbdir>/opt/seccubus/db</dbdir>
-    </paths>
-    <smtp>
-        <server>$SMTPSERVER</server>
-        <from>$SMTPFROM</from>
-    </smtp>
-    <tickets>
-        <url_head>$TICKETURL_HEAD</url_head>
-        <url_tail>$TICKETURL_TAIL</url_tail>
-    </tickets>
-    <auth>
-        <http_auth_header>$HTTP_AUTH_HEADER</http_auth_header>
-    </auth>
-</seccubus>
-EOF
-
-# Let's figure out if we need a database...
-if [[ "$DBHOST" == "127.0.0.1" && "$DBPORT" == "3306" ]]; then
-    if [[ ! -e /var/lib/mysql/ibdata1 ]]; then
-        # Assume that DB directory is unitialized
-        /usr/bin/mysql_install_db --datadir="/var/lib/mysql" --user=mysql
-    fi
-    mysqld_safe &
-
-    sleep 3
-    if [[ ! -d /var/lib/mysql/seccubus ]]; then
-        /usr/bin/mysql -u root << EOF
-            create database seccubus;
-            grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus';
-            flush privileges;
-EOF
-        /usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/structure*.mysql|tail -1)
-        /usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/data*.mysql|tail -1)
-        # Add example data
-        cd /opt/seccubus/www/seccubus
-        # Workspace
-        json/createWorkspace.pl name=Example
-        # Three scans
-        json/createScan.pl workspaceId=100 name=ssllabs scanner=SSLlabs "password= " "parameters=--hosts @HOSTS --from-cache" targets=www.seccubus.com
-        json/createScan.pl workspaceId=100 name=nmap scanner=Nmap "password= " 'parameters=-o "" --hosts @HOSTS' targets=www.seccubus.com
-        json/createScan.pl workspaceId=100 name=nikto scanner=Nikto "password= " 'parameters=-o "" --hosts @HOSTS' targets=www.seccubus.com
-    fi
-
-fi
-# Crontab
-if [[ "$STACK" == "cron" || "$STACK" == "full" ]]; then
-    /mkcron
-    if [[ "$1" != "" ]]; then
-        echo "Starting cron in background"
-        if [[ -e "/var/run/crond.pid" && $(ps -ef|grep $(cat /var/run/crond.pid)|grep cron|wc -l) -gt 0 ]]; then
-            kill -9 $(cat /var/run/crond.pid)
-        fi
-        /usr/sbin/crond -n &
-    fi
-fi
+### # Set up web stack
+###
+### if [[ "$STACK" == "api" ]] ; then
+###     cp /api.conf /etc/httpd/conf.d/seccubus.conf
+### fi
+###
+### if [[ "$STACK" == "full" || "$STACK" == "front" || "$STACK" == "api" || "$STACK" == "web" ]]; then
+###     # Do we need to listen on a specific URI
+###     if [[ ! -z $BASEURI ]]; then
+###         sed -i.bak "s#^Alias /#Alias $BASEURI#" /etc/httpd/conf.d/seccubus.conf
+###     fi
+###     # Need to start apache
+###     apachectl -DFOREGROUND &
+### fi
+###
+### mkdir -p ~seccubus/.ssh
+### chmod 700 ~seccubus/.ssh
+### echo "$SSHKEY1" > ~seccubus/.ssh/SSHKEY1
+### export SSHKEY1=""
+### echo "$SSHKEY2" > ~seccubus/.ssh/SSHKEY2
+### export SSHKEY2=""
+### echo "$SSHKEY3" > ~seccubus/.ssh/SSHKEY3
+### export SSHKEY3=""
+### echo "$SSHKEY4" > ~seccubus/.ssh/SSHKEY4
+### export SSHKEY4=""
+### echo "$SSHKEY5" > ~seccubus/.ssh/SSHKEY5
+### export SSHKEY5=""
+### echo "$SSHKEY6" > ~seccubus/.ssh/SSHKEY6
+### export SSHKEY6=""
+### echo "$SSHKEY7" > ~seccubus/.ssh/SSHKEY7
+### export SSHKEY7=""
+### echo "$SSHKEY8" > ~seccubus/.ssh/SSHKEY8
+### export SSHKEY8=""
+### echo "$SSHKEY9" > ~seccubus/.ssh/SSHKEY9
+### export SSHKEY9=""
+### chown -R seccubus:seccubus ~seccubus/.ssh
+### chmod 600 ~seccubus/.ssh/SSHKEY*
+###
+### cat <<EOF >/opt/seccubus/etc/config.xml
+### <seccubus>
+###     <database>
+###         <engine>mysql</engine>
+###         <database>$DBNAME</database>
+###         <host>$DBHOST</host>
+###         <port>$DBPORT</port>
+###         <user>$DBUSER</user>
+###         <password>$DBPASS</password>
+###     </database>
+###     <paths>
+###         <modules>/opt/seccubus/SeccubusV2</modules>
+###         <scanners>/opt/seccubus/scanners</scanners>
+###         <bindir>/opt/seccubus/bin</bindir>
+###         <configdir>/opt/seccubus/etc</configdir>
+###         <dbdir>/opt/seccubus/db</dbdir>
+###     </paths>
+###     <smtp>
+###         <server>$SMTPSERVER</server>
+###         <from>$SMTPFROM</from>
+###     </smtp>
+###     <tickets>
+###         <url_head>$TICKETURL_HEAD</url_head>
+###         <url_tail>$TICKETURL_TAIL</url_tail>
+###     </tickets>
+###     <auth>
+###         <http_auth_header>$HTTP_AUTH_HEADER</http_auth_header>
+###     </auth>
+### </seccubus>
+### EOF
+###
+### # Let's figure out if we need a database...
+### if [[ "$DBHOST" == "127.0.0.1" && "$DBPORT" == "3306" ]]; then
+###     if [[ ! -e /var/lib/mysql/ibdata1 ]]; then
+###         # Assume that DB directory is unitialized
+###         /usr/bin/mysql_install_db --datadir="/var/lib/mysql" --user=mysql
+###     fi
+###     mysqld_safe &
+###
+###     sleep 3
+###     if [[ ! -d /var/lib/mysql/seccubus ]]; then
+###         /usr/bin/mysql -u root << EOF
+###             create database seccubus;
+###             grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus';
+###             flush privileges;
+### EOF
+###         /usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/structure*.mysql|tail -1)
+###         /usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/data*.mysql|tail -1)
+###         # Add example data
+###         cd /opt/seccubus/www/seccubus
+###         # Workspace
+###         json/createWorkspace.pl name=Example
+###         # Three scans
+###         json/createScan.pl workspaceId=100 name=ssllabs scanner=SSLlabs "password= " "parameters=--hosts @HOSTS --from-cache" targets=www.seccubus.com
+###         json/createScan.pl workspaceId=100 name=nmap scanner=Nmap "password= " 'parameters=-o "" --hosts @HOSTS' targets=www.seccubus.com
+###         json/createScan.pl workspaceId=100 name=nikto scanner=Nikto "password= " 'parameters=-o "" --hosts @HOSTS' targets=www.seccubus.com
+###     fi
+###
+### fi
+### # Crontab
+### if [[ "$STACK" == "cron" || "$STACK" == "full" ]]; then
+###     /mkcron
+###     if [[ "$1" != "" ]]; then
+###         echo "Starting cron in background"
+###         if [[ -e "/var/run/crond.pid" && $(ps -ef|grep $(cat /var/run/crond.pid)|grep cron|wc -l) -gt 0 ]]; then
+###             kill -9 $(cat /var/run/crond.pid)
+###         fi
+###         /usr/sbin/crond -n &
+###     fi
+### fi
 case $1 in
 "")
+    if [[ "$STACK" == "front" ]]; then
+        tail -f /var/log/nginx/* 2>&1|grep -v '0x794c7630'
+    fi
     if [[ "$STACK" == "full" || "$STACK" == "front" || "$STACK" == "api" || "$STACK" == "web" ]]; then
         touch /var/log/httpd/access_log /var/log/httpd/error_log
         tail -f /var/log/httpd/*log

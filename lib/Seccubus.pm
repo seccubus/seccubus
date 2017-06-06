@@ -93,27 +93,6 @@ sub startup {
         }
     });
 
-    my $auth_gui = $r->under( sub {
-        my $c = shift;
-
-        my $config = get_config;
-        my $header_name = $config->{auth}->{http_auth_header};
-        my $header_value = $c->req->headers->header($header_name);
-        my $u = $c->session->{user};
-
-        if ( ( $self->app->mode() eq "production" && $header_name ) || ( $self->app->mode() eq "development" && $header_value ) ) {
-            ( $ENV{SECCUBUS_USER} ) = get_login($header_value);
-            return 1;
-        } elsif ( $u && check_password($u->{name},undef,$u->{hash}) ) {
-            $ENV{SECCUBUS_USER} = $u->{name};
-            return 1;
-        } else {
-            $ENV{SECCUBUS_USER} = "";
-            $c->redirect_to("seccubus/login.html");
-            return 0;
-        }
-    });
-
     # App Status
     $r->get   ('appstatus')->to('app_status#read');
     $r->get   ('appstatus/:errorcode')->to('app_status#read');
@@ -207,21 +186,13 @@ sub startup {
 
     # Handle file requests
     if ( $self->mode() eq 'production' ) {
-        $auth_gui->get('/seccubus')->to(cb => sub {
+        $r->get('/')->to(cb => sub {
             my $c = shift;
             $c->redirect_to('seccubus/seccubus.html')
         });
-        $auth_gui->get('/')->to(cb => sub {
-            my $c = shift;
-            $c->redirect_to('seccubus')
-        });
     } else {
         # Inspired by https://github.com/tempire/app-dirserve
-        $auth_gui->get('/')->to(cb => sub {
-            my $c = shift;
-            $c->redirect_to('seccubus')
-        });
-        $auth_gui->get('/Seccubus')->to(cb => sub {
+        $r->get('/')->to(cb => sub {
             my $c = shift;
             $c->redirect_to('seccubus/seccubus.html')
         });
@@ -229,7 +200,7 @@ sub startup {
             my $c = shift;
 
             my $dir = $c->param('dir');
-            my $fulldir = cwd() . "/jmvc/$dir";
+            my $fulldir = cwd() . "/public/$dir";
             if ( -d $fulldir ) {
                 opendir DH, $fulldir;
                 my @items = map +{ name => $_, is_dir => -d "$fulldir/$_"}, readdir DH;

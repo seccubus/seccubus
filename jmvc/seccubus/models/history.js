@@ -24,7 +24,7 @@ steal('jquery/model', function(){
 $.Model('Seccubus.Models.History',
 /* @Static */
 {
-	findAll : api("workspace/{workspace}/finding/{id}/history"),
+	findAll : api("workspace/{workspace}/finding/{id}/history")
   	//findOne : "/histories/{id}.json",
   	//create : "/histories.json",
  	//update : "/histories/{id}.json",

@@ -31,8 +31,9 @@ cmp_ok($max_version, ">", 0, "Highest DB version = $max_version");
 
 my $version = 2;
 while ( $version <= $max_version) {
-	my $p_version = $version -1;
-	my $u_version = "v$p_version" . "_v$version";
+    $version = sprintf("%02d",$version);
+	my $p_version = sprintf('%02d',$version -1);
+	my $u_version = sprintf("v%02d_v%02d",$p_version,$version);
 
 	`mysql -uroot -e "drop database seccubus_create"`;
     is($?,0,"Create DB dropped ok");

@@ -1,31 +1,35 @@
 #!/bin/bash
 # Copyright 2017 Frank Breedijk
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# This shell script make the distribution tarball
-# ------------------------------------------------------------------------------
+rm -rf build/*
+echo '*************************************************************************'
+echo Building JMVC
+echo '*************************************************************************'
+
+./build_jmvc
 
 echo '*************************************************************************'
-echo "Building tarball"
+echo Copying files
 echo '*************************************************************************'
+cp -r bin db docs lib scanners t testdata ChangeLog.md install.pl LICENSE.txt build
+cp Makefile.PL NOTICE.txt README.md seccubus.pl SeccubusV2.pm build
+
+mkdir -p build/etc
+cp etc/config.xml.mysql.example etc/v2.seccubus.com.bundle build/etc
+
+cd build
 perl Makefile.PL
-make clean
-perl Makefile.PL
-rm MANIFEST
 make manifest
-perl Makefile.PL
-make
-rm Seccubus-*.tar.gz
 make dist
-

@@ -20,7 +20,7 @@ function baseUrl() {
 }
 function api(url, method){
     method = method || "GET";
-    return method + " " + base_url() + url;
+    return method + " " + baseUrl() + url;
 }
 
 function createApi(url){
@@ -33,7 +33,7 @@ function createApi(url){
         }
 
         return $.ajax({
-            url: base_url() + url,
+            url: baseUrl() + url,
             type: "POST",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -54,7 +54,7 @@ function updateApi(url){
           }
 
         return $.ajax({
-            url: base_url() + url,
+            url: baseUrl() + url,
             type: "PUT",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -75,7 +75,7 @@ function deleteApi(url){
         }
 
         return $.ajax({
-            url: base_url() + url,
+            url: baseUrl() + url,
             type: "DELETE",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -110,5 +110,5 @@ steal(
     "./issue.js",
     "./issuelink.js",
     "./severity.js",
-    "./session"
+    "./session.js"
 )

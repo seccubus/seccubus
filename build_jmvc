@@ -1,12 +1,12 @@
 #!/bin/bash
 # Copyright 2013 Frank Breedijk
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,23 +49,20 @@ echo '*************************************************************************'
 echo Copying files
 echo '*************************************************************************'
 cd ..
-rm -rf www/seccubus/*
-cp -r jmvc/seccubus/img www/seccubus
-cp -r json www/seccubus
-cp jmvc/seccubus/production.* www/seccubus
-cp jmvc/seccubus/seccubus.html www/seccubus
-rm -rf www/steal/*
-if [ ! -d www/steal ]
-then
-	mkdir www/steal
-	chmod 755 www/steal
-fi
-cp jmvc/steal/steal.production.js www/steal/
-(cd www/seccubus;ln -s ../../SeccubusV2.pm)
+rm -rf build/public
+mkdir -p build/public/img
+mkdir -p build/public/steal
+mkdir -p build/public/seccubus
+cp -r jmvc/seccubus/img build/public/seccubus
+cp jmvc/seccubus/production.* build/public/seccubus
+cp jmvc/seccubus/seccubus.html build/public/seccubus
+cp jmvc/steal/steal.production.js build/public/steal
 
 echo '*************************************************************************'
 echo Patching files
 echo '*************************************************************************'
-mv www/seccubus/seccubus.html www/seccubus/seccubus.html.bak
-sed s:steal\.js:steal.production.js: www/seccubus/seccubus.html.bak >www/seccubus/seccubus.html
+mv build/public/seccubus/seccubus.html build/public/seccubus/seccubus.html.bak
+sed s:steal\.js:steal.production.js: build/public/seccubus/seccubus.html.bak >build/public/seccubus/seccubus.html
+rm build/public/seccubus/seccubus.html.bak
 echo end
+exit

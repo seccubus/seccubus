@@ -18,58 +18,69 @@
 # not exist yet ;)
 # ------------------------------------------------------------------------------
 #
- 
-cd /build/seccubus 
-rm -rf *.tar.gz
+
+# Exit on error
+set -e
+
+cd /build/seccubus
+
+cpanm --installdeps --notest .
 
 # Build
-./make_dist
+./build_all
 # Extract tarbal
 cd ..
-tar -xvzf seccubus/Seccubus*.tar.gz
+tar -xvzf seccubus/build/Seccubus*.tar.gz
 cd Seccubus-*
 
 # Make sure perl is set to the correct path
 perl Makefile.PL
 make clean
-perl Makefile.PL | tee makefile.log
+perl Makefile.PL 2>&1| tee makefile.log
 
 # Check if we have all perl dependancies
 if [[ $(grep "Warning: prerequisite" makefile.log| wc -l) -gt 0 ]]; then
-	echo *** ERROR: Not all perl dependancies installed ***
+	echo '*** ERROR: Not all perl dependancies installed ***'
 	cat makefile.log
 	exit 255
 fi
-
 # create users
-useradd -c "Seccubus system user" -d /opt/seccubus -G "apache" -m seccubus
-groupmems -g seccubus -a apache
+useradd -c "Seccubus system user" -d /opt/seccubus -m seccubus -s /bin/bash
 
 # Install the software
-./install.pl --basedir /opt/seccubus --wwwdir /opt/seccubus/www --stage_dir /build/stage --createdirs
+./install.pl --basedir /opt/seccubus /opt/seccubus/www --stage_dir /build/stage --createdirs --owner seccubus -v -v
 
 # Create mountpoint for data directory
 mkdir /opt/seccubus/data
 chmod 755 /opt/seccubus/data
-
-# Fix permissions
-chown -R seccubus:seccubus /opt/seccubus
+chown seccubus:seccubus /opt/seccubus/data
 chmod 755 /opt/seccubus
 
 # Build up the database
 /usr/bin/mysql_install_db --datadir="/var/lib/mysql" --user=mysql
-/usr/bin/mysqld_safe --datadir="/var/lib/mysql" --socket="/var/lib/mysql/mysql.sock" --user=mysql  >/dev/null 2>&1 &
+(cd /usr ; /usr/bin/mysqld_safe --datadir="/var/lib/mysql" --socket="/var/lib/mysql/mysql.sock" --user=mysql  >/dev/null 2>&1 &)
 sleep 3
-/usr/bin/mysql -u root << EOF
+/usr/bin/mysql -h 127.0.0.1 -u root --password='dwofMVR8&E^#3owHA0!Y'<<EOF
 	create database seccubus;
 	grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus';
 	flush privileges;
 EOF
-/usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/structure*.mysql|tail -1)
-/usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/data*.mysql|tail -1)
+/usr/bin/mysql -h 127.0.0.1 -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/structure*.mysql|tail -1)
+/usr/bin/mysql -h 127.0.0.1 -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/data*.mysql|tail -1)
+
+/usr/bin/mysql -h 127.0.0.1 -u seccubus -pseccubus seccubus <<EOF1
+    INSERT INTO workspaces VALUES (1,'Example');
+    INSERT INTO scans VALUES
+        (1,'ssllabs','SSLlabs','--hosts @HOSTS --from-cache','','www.seccubus.com',1),
+        (2,'nmap','Nmap','-o \"\" --hosts @HOSTS','','www.seccubus.com',1),
+        (3,'nikto','Nikto','-o \"\" --hosts @HOSTS','','www.seccubus.com',1);
+EOF1
+
 
 # Set up some default content
-cat <<EOF >/opt/seccubus/etc/config.xml
+SESSION_KEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+echo $SESSION_KEY > /opt/seccubus/etc/SESSION_KEY
+cat <<EOF2 >/opt/seccubus/etc/config.xml
 <seccubus>
     <database>
         <engine>mysql</engine>
@@ -80,7 +91,7 @@ cat <<EOF >/opt/seccubus/etc/config.xml
         <password>seccubus</password>
     </database>
     <paths>
-        <modules>/opt/seccubus/SeccubusV2</modules>
+        <modules>/opt/seccubus/lib</modules>
         <scanners>/opt/seccubus/scanners</scanners>
         <bindir>/opt/seccubus/bin</bindir>
         <configdir>/opt/seccubus/etc</configdir>
@@ -94,39 +105,43 @@ cat <<EOF >/opt/seccubus/etc/config.xml
         <url_head></url_head>
         <url_tail></url_tail>
     </tickets>
+    <auth>
+        <http_auth_header></http_auth_header>
+        <session_key>$SESSION_KEY</session_key>
+    </auth>
+    <http>
+        <port>443</port>
+        <cert>testdata/seccubus.crt</cert>
+        <key>testdata/seccubus.key</key>
+    </http>
 </seccubus>
-EOF
+EOF2
 
-cd /opt/seccubus/www/seccubus
-# Workspace
-json/createWorkspace.pl name=Example
-# Three scans
-json/createScan.pl workspaceId=100 name=ssllabs scanner=SSLlabs "password= " "parameters=--hosts @HOSTS --from-cache" targets=www.seccubus.com
-json/createScan.pl workspaceId=100 name=nmap scanner=Nmap "password= " 'parameters=-o "" --hosts @HOSTS' targets=www.seccubus.com
-json/createScan.pl workspaceId=100 name=nikto scanner=Nikto "password= " 'parameters=-o "" --hosts @HOSTS' targets=www.seccubus.com
+cd /opt/seccubus/
+bin/seccubus_passwd -u admin -p 'GiveMeVulns!'
 
 # Setup default environment
-echo >/etc/profile.d/seccubus.sh "pathmunge /opt/seccubus/bin"
-echo >>/etc/profile.d/seccubus.sh 'export PERL5LIB="/opt/seccubus:/opt/seccubus/SeccubusV2"'
+echo >/etc/profile.d/seccubus.sh 'export PATH="$PATH:/opt/seccubus/bin"'
+echo >>/etc/profile.d/seccubus.sh 'export PERL5LIB="/opt/seccubus:/opt/seccubus/lib"'
 chmod +x /etc/profile.d/seccubus.sh
+echo >/root/.bashrc 'export PATH="$PATH:/opt/seccubus/bin"'
+echo >>/root/.bashrc 'export PERL5LIB="/opt/seccubus:/opt/seccubus/lib"'
+
 
 # Install Nikto
 cd /opt
 git clone https://github.com/sullo/nikto.git --depth 1
-echo 'pathmunge /opt/nikto/program' > /etc/profile.d/nikto.sh
+echo 'export PATH="$PATH:/opt/nikto/program"' > /etc/profile.d/nikto.sh
+echo 'export PATH="$PATH:/opt/nikto/program"' > /root/.bashrc
 chmod +x /etc/profile.d/nikto.sh
 
 
 # Install testssl.sh
 cd /opt
 git clone https://github.com/drwetter/testssl.sh.git --depth 1
-ln -s /opt/nikto
-
-# Cleanup default OS stuff
-rm -f /etc/httpd/conf.d/welcome.conf
 
 # Cleanup build stuff
 rm -rf /build
 
-yum -y erase java-1.7.0-openjdk "perl(ExtUtils::MakeMaker)" 
-yum -y autoremove
+apt-get autoremove default-jre-headless -y
+
