@@ -31,9 +31,9 @@ sub create {
     my $config = get_config;
 
     my $header_name = $config->{auth}->{http_auth_header};
-    my $header_value = $self->req->headers->header($header_name);
+    my $header_value = "";
+    $header_value = $self->req->headers->header($header_name) if $header_name;
     my $user = $self->req->json();
-
 
     if ( ( $self->app->mode() eq "production" && $header_name ) || ( $self->app->mode() eq "development" && $header_value ) ) {
         # Ignore password and log in with the username in the header
@@ -90,10 +90,13 @@ sub read {
 
     my $config = get_config();
     my $header_name = $config->{auth}->{http_auth_header};
-    my $header_value = $self->req->headers->header($header_name);
+    my $header_value = "";
+    $header_value = $self->req->headers->header($header_name) if $header_name;
+
     my $u = $self->session->{user};
 
-    if ( ( $self->app->mode() eq "production" && $header_name ) || ( $self->app->mode() eq "development" && $header_value ) ) {
+
+    if ( ( $header_name && $self->app->mode() eq "production" ) || ( $self->app->mode() eq "development" && $header_value ) ) {
         $ENV{SECCUBUS_USER} = $header_value;
     } elsif ( $u && check_password($u->{name},undef,$u->{hash}) ) {
         $ENV{SECCUBUS_USER} = $u->{name};
@@ -103,6 +106,7 @@ sub read {
 
     eval {
         my $data;
+
         ($data->{username}, $data->{valid}, $data->{isAdmin}, $data->{message}) = get_login();
 
         if ( $data->{isAdmin} ) {

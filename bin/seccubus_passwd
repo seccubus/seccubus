@@ -46,7 +46,7 @@ if ( ! $username ) {
 }
 
 if ( ! $password ) {
-    my $rpassword = "bla";
+    my $rpassword = "ueytvaiw7tabiezluguykvgzsebuyatwbo74avty7aowyt7 878otw4vo7tarwuyetvsuy";
     while ( $password ne $rpassword ) {
         print "Password : ";
         ReadMode(2);
@@ -57,6 +57,7 @@ if ( ! $password ) {
         print "\n";
         print "Passwords don't match\n" if ( $password ne $rpassword );
     }
+    chomp $password;
 }
 
 if ( set_password($username, $password) ) { # Set password in database

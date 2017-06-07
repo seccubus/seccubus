@@ -43,6 +43,8 @@ WriteMakefile (
                 'Crypt::PBKDF2'         => '0.15',
                 'DBD::mysql'            => '4.0',
                 'Term::ReadKey'         => 0.1,
+                'Mojolicious::Plugin::AccessLog'
+                                        => '0.01',
 			},
 	NO_MYMETA	=> 1
 );

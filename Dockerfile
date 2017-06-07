@@ -26,7 +26,7 @@ RUN apt-get update && apt-get upgrade -y
 RUN \
     (echo 'mysql-server mysql-server/root_password password dwofMVR8&E^#3owHA0!Y' | debconf-set-selections ) && \
     (echo 'mysql-server mysql-server/root_password_again password dwofMVR8&E^#3owHA0!Y' | debconf-set-selections )
-RUN apt-get install default-jre-headless mysql-server dnsutils nmap nginx -y
+RUN apt-get install default-jre-headless mysql-server dnsutils nmap nginx cron rsyslog -y
 RUN cpanm --notest DBD::mysql Mojolicious Net::IP JSON DBI HTML::Entities Crypt::PBKDF2 \
     Algorithm::Diff XML::Simple LWP::Simple LWP::Protocol::https LWP::UserAgent\
     Date::Format Term::ReadKey
@@ -45,7 +45,7 @@ COPY scanners /build/seccubus/scanners
 COPY build_all build_jmvc install.pl Makefile.PL seccubus.pl SeccubusV2.pm /build/seccubus/
 
 COPY docker-install.sh /tmp/install.sh
-RUN bash -x /tmp/install.sh && rm /tmp/install.sh
+RUN bash /tmp/install.sh && rm /tmp/install.sh
 
 COPY docker-files /
 COPY README.md /

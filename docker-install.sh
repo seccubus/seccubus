@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 # Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,19 +56,24 @@ chmod 755 /opt/seccubus/data
 chown seccubus:seccubus /opt/seccubus/data
 chmod 755 /opt/seccubus
 
+mkdir /var/log/seccubus
+chmod 755 /var/log/seccubus
+chown seccubus:seccubus /var/log/seccubus
+
 # Build up the database
 /usr/bin/mysql_install_db --datadir="/var/lib/mysql" --user=mysql
-(cd /usr ; /usr/bin/mysqld_safe --datadir="/var/lib/mysql" --socket="/var/lib/mysql/mysql.sock" --user=mysql  >/dev/null 2>&1 &)
-sleep 3
-/usr/bin/mysql -h 127.0.0.1 -u root --password='dwofMVR8&E^#3owHA0!Y'<<EOF
+#(cd /usr ; /usr/bin/mysqld_safe --datadir="/var/lib/mysql" --socket="/var/lib/mysql/mysql.sock" --user=mysql  >/dev/null 2>&1 &)
+#sleep 3
+/etc/init.d/mysql start
+/usr/bin/mysql -u root --password='dwofMVR8&E^#3owHA0!Y'<<EOF
 	create database seccubus;
 	grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus';
 	flush privileges;
 EOF
-/usr/bin/mysql -h 127.0.0.1 -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/structure*.mysql|tail -1)
-/usr/bin/mysql -h 127.0.0.1 -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/data*.mysql|tail -1)
+/usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/structure*.mysql|tail -1)
+/usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/data*.mysql|tail -1)
 
-/usr/bin/mysql -h 127.0.0.1 -u seccubus -pseccubus seccubus <<EOF1
+/usr/bin/mysql -u seccubus -pseccubus seccubus <<EOF1
     INSERT INTO workspaces VALUES (1,'Example');
     INSERT INTO scans VALUES
         (1,'ssllabs','SSLlabs','--hosts @HOSTS --from-cache','','www.seccubus.com',1),
@@ -107,7 +112,7 @@ cat <<EOF2 >/opt/seccubus/etc/config.xml
     </tickets>
     <auth>
         <http_auth_header></http_auth_header>
-        <session_key>$SESSION_KEY</session_key>
+        <sessionkey>$SESSION_KEY</sessionkey>
     </auth>
     <http>
         <port>443</port>

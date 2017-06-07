@@ -156,7 +156,8 @@ sub read {
 
 	##### Test if the user is logged in
     my $header_name = $config->{auth}->{http_auth_header};
-    my $header_value = $self->req->headers->header($header_name);
+    my $header_value = "";
+    $header_value = $self->req->headers->header($header_name) if $header_name;
     my $u = $self->session->{user};
     if ( ( $self->app->mode() eq "production" && $header_name ) || ( $self->app->mode() eq "development" && $header_value ) ) {
         $ENV{SECCUBUS_USER} = $header_value;
@@ -176,11 +177,11 @@ sub read {
 	if ( ! exists $config->{smtp} ) {
 		push @$json, {name => "SMTP configuration", message => "No smtp configuration specified in you config file, notification will NOT be sent", result => 'Warn'};
 	} elsif(  ! exists $config->{smtp}->{server} ) {
-		push @$json, {name => "SMTP configuration", message => "No smtp server specified", result => "Warning"};
+		push @$json, {name => "SMTP configuration", message => "No smtp server specified", result => "Warn"};
 	} elsif( ! gethostbyname($config->{smtp}->{server}) ) {
-		push @$json, {name => "SMTP configuration", message => "Cannot resolve smtp server $config->{smtp}->{server}", result => "Warning"};
+		push @$json, {name => "SMTP configuration", message => "Cannot resolve smtp server $config->{smtp}->{server}", result => "Warn"};
 	} elsif( ! exists $config->{smtp}->{from} ) {
-		push @$json, {name => "SMTP configuration", message => "No from address specified", result => "Warning"};
+		push @$json, {name => "SMTP configuration", message => "No from address specified", result => "Warn"};
 	} elsif ( $config->{smtp}->{from} !~ /^[\w\.\+]+\@[\w\d\.]+$/ ) {
 		push @$json, {name => "SMTP configuration", message => "$config->{smtp}->{from} doesn't apear to be a valid email address", result => "Error"};
 	} else {

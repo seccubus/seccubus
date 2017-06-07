@@ -16,7 +16,7 @@
 // steal model files
 
 function baseUrl() {
-    return "/";
+    return "/api/";
 }
 function api(url, method){
     method = method || "GET";

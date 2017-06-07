@@ -21,9 +21,9 @@
 use strict;
 
 if ( -e "/opt/seccubus/data/crontab" ) {
-	system("ln -s /opt/seccubus/data/crontab /var/spool/cron/seccubus")
+	system("ln -s /opt/seccubus/data/crontab /var/spool/cron/crontabs/seccubus")
 } else {
-	open CRON, ">/var/spool/cron/seccubus" or die "Unable to open crontab for write";
+	open CRON, ">/var/spool/cron/crontabs/seccubus" or die "Unable to open crontab for write";
 	foreach my $key ( sort keys %ENV ) {
 		if ( $key =~ /^CRON_/ ) {
 			my $line = $ENV{$key};
@@ -34,3 +34,4 @@ if ( -e "/opt/seccubus/data/crontab" ) {
 	}
 	close CRON;
 }
+system("chmod 0600 /var/spool/cron/crontabs/seccubus");

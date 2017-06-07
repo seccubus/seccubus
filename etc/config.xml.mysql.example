@@ -30,6 +30,7 @@
 		<bindir>/opt/seccubus/bin</bindir>
 		<configdir>/opt/seccubus/etc</configdir>
 		<dbdir>/opt/seccubus/db</dbdir>
+        <logdir>/opt/seccubus/log</logdir>
 	</paths>
 	<smtp>
 		<server>localhost</server>
@@ -41,6 +42,7 @@
 	</tickets>
 	<auth>
 		<http_auth_header></http_auth_header>
-        <session_key>SeccubusScanSmarterNotHarder</session_key>
+        <sessionkey>SeccubusScanSmarterNotHarder</sessionkey>
+        <baseurl></baseurl>
 	</auth>
 </seccubus>
