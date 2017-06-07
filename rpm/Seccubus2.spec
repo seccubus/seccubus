@@ -75,7 +75,6 @@ Requires:	perl(Net::SMTP)
 Requires:   perl(Crypt::PBKDF2)
 Requires:   perl(Term::ReadKey)
 Requires:   perl(Mojolicious)
-Requires:   perl(Mojolicious::Plugin::AccessLog)
 
 Requires:	mysql
 %{?el6:Requires: mysql-server}
@@ -87,7 +86,6 @@ Nikto or Nmap.
 Compare results of the current scan with the previous scan and report on the
 delta in a web interface. Main objective of the tool is to make repeated scans
 more efficient.
-Nessus scanning needs Ruby
 Nmap scanning needs the Nmap scanner
 Nikto scanning needs the Nikto scanner
 

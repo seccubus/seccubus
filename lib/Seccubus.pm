@@ -14,7 +14,6 @@
 # limitations under the License.
 package Seccubus;
 use Mojo::Base 'Mojolicious';
-use Mojolicious::Plugin::AccessLog;
 
 use strict;
 
@@ -46,7 +45,6 @@ sub startup {
 
     # Setup logging
     if ( $self->app->mode() eq "production" ) {
-        $self->plugin(AccessLog => {log => $cfg->{paths}->{logdir} . '/access.log'});
         $self->app->log( Mojo::Log->new(  path => $cfg->{paths}->{logdir} . "/production.log", level => 'info' ) );
     } else {
         $self->app->log( Mojo::Log->new(  path => $cfg->{paths}->{logdir} . "/development.log", level => 'debug' ) );

@@ -43,8 +43,6 @@ WriteMakefile (
                 'Carp'                  => 1.04,
                 'ExtUtils::MakeMaker'   => 6.30,
                 'Mojolicious'           => '7.26',
-                'Mojolicious::Plugin::AccessLog'
-                                        => '0.01',
 			},
 	NO_MYMETA	=> 1
 );
