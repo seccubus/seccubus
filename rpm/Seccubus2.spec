@@ -53,6 +53,7 @@ BuildRequires:	java-1.6.0-openjdk
 %else
 BuildRequires:	java-1.7.0-openjdk
 %endif
+BuildRequires:  perl(ExtUtils::MakeMaker)
 
 Requires:	perl(Algorithm::Diff)
 Requires:	perl(DBI)
