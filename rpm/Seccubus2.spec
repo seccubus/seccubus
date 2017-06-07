@@ -77,7 +77,6 @@ Requires:   perl(Term::ReadKey)
 Requires:   perl(Mojolicious)
 Requires:   perl(Mojolicious::Plugin::AccessLog)
 
-Requires:	httpd
 Requires:	mysql
 %{?el6:Requires: mysql-server}
 %{?el7:Requires: mariadb-server}
@@ -101,35 +100,16 @@ See http://www.seccubus.com for more information
 %setup -q -n %{name}-%{version}
 
 %build
-./build_jmvc
+./build_all
 
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}%{homedir}
+cd build
 ./install.pl --buildroot=%{buildroot} --confdir=%{confdir} --bindir=%{bindir} --dbdir=%{vardir} --wwwdir=%{webdir} --basedir=%{homedir} --docdir=%{docsdir}
 rm -f %{buildroot}/%{webdir}/dev
 
-cp ChangeLog.md LICENSE.txt NOTICE.txt README.md AUTHORS.txt %{buildroot}/%{docsdir}
-
-mkdir -p %{buildroot}/etc/httpd/conf.d
-cat > %{buildroot}/etc/httpd/conf.d/%{name}.conf <<-EOF
-#
-# This configuration file maps the Seccubus logs
-# into the URL space. By default these results are
-# only accessible from the local host.
-#
-Alias /seccubus %{webdir}
-
-<Location /seccubus>
-    Order deny,allow
-    Deny from all
-    Allow from 127.0.0.1
-    Allow from ::1
-    # Allow from .example.com
-    AddHandler cgi-script .pl
-    Options ExecCGI
-</Location>
-EOF
+cp ChangeLog.md LICENSE.txt NOTICE.txt README.md %{buildroot}/%{docsdir}
 
 cat > %{buildroot}/%{confdir}/config.xml <<- EOF
 <?xml version="1.0" standalone='yes'?>
@@ -153,6 +133,21 @@ cat > %{buildroot}/%{confdir}/config.xml <<- EOF
 		<server>localhost</server>
 		<from>seccubus@localhost</from>
 	</smtp>
+    <tickets>
+        <url_head></url_head>
+        <url_tail></url_tail>
+    </tickets>
+    <auth>
+        <http_auth_header></http_auth_header>
+        <sessionkey>SeccubusScanSmarterNotHarder</sessionkey>
+        <baseurl></baseurl>
+    </auth>
+    <http>
+        <port>8443</port>
+        <cert>%{confdir}/seccubus.crt</cert>
+        <key>%{confdir}/seccubus.key</key>
+        <baseurl></baseurl>
+    </http>
 </seccubus>
 
 EOF
@@ -180,37 +175,22 @@ scripts:
   flush privileges;
   EOF
 
-  # mysql -u seccubus -pseccubus seccubus < %{vardir}/structure_v6.mysql
-  # mysql -u seccubus -pseccubus seccubus < %{vardir}/data_v6.mysql
+  # mysql -u seccubus -pseccubus seccubus < %{vardir}/structure_v10.mysql
+  # mysql -u seccubus -pseccubus seccubus < %{vardir}/data_v10.mysql
 
 You can change the db name and username/password, make sure you update
 %{confdir}/config.xml accordingly
 
-Look for more information on http://www.seccubus.com/documentation/seccubus-v2
+Look for more information on http://www.seccubus.com/documentation/
 
-Apache on this host now has a configfile /etc/httpd/conf.d/%{name}.conf
-The default config makes Seccubus available on http://localhost/seccubus
-(Note: you may have to restart Apache)
+Seccubus is listening on https://localhost:8443/
 
 ################################################################################
 OEF
-if [[ -d /var/www/htdocs ]]; then
-	chcon -R --reference=/var/www/htdocs %{webdir}
-fi
-if [[ -d /var/www/html ]]; then
-	chcon -R --reference=/var/www/html %{webdir}
-fi
-chcon -R --reference=/var/www/cgi-bin %{webdir}/seccubus/json/
-if [[ -e %{_sbindir}/service ]]; then
-	%{_sbindir}/service httpd reload
-else
-	/etc/init.d/httpd reload
-fi
+
 ## %post
 
 %postun
-%{_sbindir}/usermod -G $(id -nG apache|sed -e 's/%{seccuser}//' -e 's/ +$//g' -e 's/ +/,/g') apache
-%{_sbindir}/service httpd reload
 ## %postun
 
 ################################################################################
