@@ -74,6 +74,7 @@ Requires:	perl(Socket)
 Requires:	perl(Net::SMTP)
 Requires:   perl(Crypt::PBKDF2)
 Requires:   perl(Term::ReadKey)
+Requires:   perl(Time::HiRes)
 Requires:   perl(Mojolicious)
 
 Requires:	mysql
@@ -125,6 +126,7 @@ cat > %{buildroot}/%{confdir}/config.xml <<- EOF
 		<bindir>%{bindir}</bindir>
 		<configdir>%{confdir}</configdir>
 		<dbdir>%{vardir}</dbdir>
+        <logdir>/var/log/seccubus</logdir>
 	</paths>
 	<smtp>
 		<server>localhost</server>
@@ -159,6 +161,19 @@ fi
 
 ## %preun
 %post
+
+if [[ ! -e /etc/seccubus/seccubus.key && ! -e /etc/seccubus/seccubus.crt ]] ; then
+    openssl genrsa -des3 -passout pass:x -out /etc/seccubus/seccubus.pass.key 4096
+    openssl rsa -passin pass:x -in /etc/seccubus/seccubus.pass.key -out /etc/seccubus/seccubus.key
+    rm -f /etc/seccubus/seccubus.pass.key
+    openssl req -new -key /etc/seccubus/seccubus.key -out /etc/seccubus/seccubus.csr \
+        -subj "/CN=Seccubus"
+    openssl x509 -req -days 365 -in /etc/seccubus/seccubus.csr \
+        -signkey /etc/seccubus/seccubus.key -out /etc/seccubus/seccubus.crt
+    rm -f /etc/seccubus/seccubus.csr
+
+fi
+
 /bin/cat << OEF
 ################################################################################
 
