@@ -24,6 +24,7 @@
 %define vardir		%{installdir}/var
 %define seccuser	seccubus
 %define docsdir		%{installdir}/doc/
+%define logdir      /var/log/seccubus
 
 %define moddir		%{installdir}/lib
 %define scandir		%{installdir}/scanners
@@ -46,6 +47,7 @@ Source0:	%{name}-%{version}.tar.gz
 
 %{?el6:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.el6.rpm}
 %{?el7:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.el7.rpm}
+%{?fedora:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.%%{dist}.rpm}
 
 %if 0%{?is_rh5}
 BuildRequires:	java-1.6.0-openjdk
@@ -82,6 +84,7 @@ Requires:   perl(Mojolicious) >= 7.0
 Requires:	mysql
 %{?el6:Requires: mysql-server}
 %{?el7:Requires: mariadb-server}
+%{?fedora:Requires: mariadb-server}
 
 %description
 Tool to automatically fire regular vulnerability scans with Nessus, OpenVAS,
@@ -201,9 +204,99 @@ Seccubus is listening on https://localhost:8443/
 ################################################################################
 OEF
 
+cat >/etc/init.d/seccubus <<EOF
+#!/bin/bash
+#
+# Init file for Seccubus server daemon
+#
+# chkconfig: 2345 55 25
+# description: Seccubus server daemon
+#
+# processname: ping
+# pidfile: /var/run/ping.pid
+
+# Source function library
+if [ -f /etc/init.d/functions ] ; then
+    . /etc/init.d/functions
+elif [ -f /etc/rc.d/init.d/functions ] ; then
+    . /etc/rc.d/init.d/functions
+else
+    exit 1
+fi
+
+unset TMPDIR
+RETVAL=0
+
+SECCUBUS_DIR="/opt/seccubus/"
+SECCUBUS="/usr/bin/hypnotoad"
+export MOJO_MODE=production
+export HYPNOTOAD_APP="/opt/seccubus/seccubus.pl"
+
+[ -f $APPLICATION_CONF ] || exit 3
+
+start()
+{
+    echo -n $"Starting seccubus service: "
+    (cd $SECCUBUS_DIR;$SECCUBUS ) 2>/dev/null
+    RETVAL=$?
+    echo
+        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/seccubus || RETVAL=1
+    return $RETVAL
+}
+
+stop()
+{
+    echo -n $"Shutting down seccubus service: "
+    (cd $SECCUBUS_DIR;$SECCUBUS -s ) 2>/dev/null
+    RETVAL=$?
+    [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/seccubus
+    echo
+    return $RETVAL
+}
+
+reload()
+{
+    echo -n $"Reloading ping service: "
+    (cd $SECCUBUS_DIR;$SECCUBUS ) 2>/dev/null
+    RETVAL=$?
+    echo
+    return $RETVAL
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    reload)
+        reload
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    status)
+        status seccubus
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|reload|restart|status}"
+        exit 2
+esac
+exit $?
+EOF
+
+chmod 700 /etc/init.d/seccubus
+chkconfig --add seccubus
+chkconfig --level 2345 myscript on
+/etc/init.d/seccubus start
+
 ## %post
 
 %postun
+chkconfig --remove seccubus
+rm /etc/init.d/seccubus
 ## %postun
 
 ################################################################################
@@ -226,6 +319,7 @@ OEF
 #
 %attr(750,%{seccuser},%{seccuser}) %{vardir}/create*
 #
+%attr(750,%{seccuser},%{seccuser}) %{logdir}
 
 %changelog
 * Wed Jun  7 2017 Frank Breedijk <fbreedijk@schubergphilis.com>
