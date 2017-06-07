@@ -111,6 +111,8 @@ mkdir -p %{buildroot}%{homedir}
 cd build
 ./install.pl --buildroot=%{buildroot} --confdir=%{confdir} --bindir=%{bindir} --dbdir=%{vardir} --basedir=%{homedir} --docdir=%{docsdir}
 
+mkdir %{buildroot}%{logdir}
+
 cp ChangeLog.md LICENSE.txt NOTICE.txt README.md %{buildroot}/%{docsdir}
 
 cat > %{buildroot}/%{confdir}/config.xml <<- EOF
@@ -155,7 +157,6 @@ cat > %{buildroot}/%{confdir}/config.xml <<- EOF
 
 EOF
 
-mkdir %{buildroot}%{logdir}
 
 ################################################################################
 %pre
@@ -165,7 +166,7 @@ if [ $? -ne 0 ]; then
 	%{_sbindir}/useradd -d %{installdir} -g %{seccuser} -r %{seccuser}
 fi
 
-## %preun
+## %pre
 %post
 
 if [[ ! -e /etc/seccubus/seccubus.key && ! -e /etc/seccubus/seccubus.crt ]] ; then
