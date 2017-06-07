@@ -50,7 +50,8 @@ Source0:	%{name}-%{version}.tar.gz
 %if 0%{?is_rh5}
 BuildRequires:	java-1.6.0-openjdk
 %else
-BuildRequires:	java-1.7.0-openjdk
+%{?el6:BuildRequires:   java-1.7.0-openjdk}
+%{?el7:BuildRequires:	java-1.7.0-openjdk}
 %endif
 %{?fc25:BuildRequires:  java-1.8.0-openjdk}
 BuildRequires:  perl(ExtUtils::MakeMaker)
