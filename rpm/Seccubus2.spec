@@ -111,6 +111,8 @@ mkdir -p %{buildroot}%{homedir}
 cd build
 ./install.pl --buildroot=%{buildroot} --confdir=%{confdir} --bindir=%{bindir} --dbdir=%{vardir} --basedir=%{homedir} --docdir=%{docsdir}
 
+mkdir -p %{buildroot}%{logdir}
+
 cp ChangeLog.md LICENSE.txt NOTICE.txt README.md %{buildroot}/%{docsdir}
 
 cat > %{buildroot}/%{confdir}/config.xml <<- EOF
