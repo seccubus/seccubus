@@ -52,6 +52,7 @@ BuildRequires:	java-1.6.0-openjdk
 %else
 BuildRequires:	java-1.7.0-openjdk
 %endif
+%{?fc25:BuildRequires:  java-1.8.0-openjdk}
 BuildRequires:  perl(ExtUtils::MakeMaker)
 
 Requires:	perl(Algorithm::Diff)

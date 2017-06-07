@@ -44,10 +44,9 @@ sub startup {
     );
 
     # Setup logging
+    $cfg->{paths}->{logdir} = "log" unless $cfg->{paths}->{logdir};
     if ( $self->app->mode() eq "production" ) {
         $self->app->log( Mojo::Log->new(  path => $cfg->{paths}->{logdir} . "/production.log", level => 'info' ) );
-    } else {
-        $self->app->log( Mojo::Log->new(  path => $cfg->{paths}->{logdir} . "/development.log", level => 'debug' ) );
     }
 
     # Rewrite baseurl if we need it...
