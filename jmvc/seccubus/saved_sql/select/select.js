@@ -73,7 +73,7 @@ steal(
         // A the option is rerendered if a Custsql object is altered
         "{Seccubus.Models.Custsql} updated" : function(Custsql, ev, asset){
             asset.elements(this.element)
-                  .html(this.view('asset', asset) );
+                  .html(this.view("asset", asset) );
         },
 
         // This controller fires on change
@@ -88,9 +88,9 @@ steal(
         * will be displayed
         */
         updateView : function() {
-         	Seccubus.Models.SavedSql.findAll( {},
-        		this.callback('dataReady')
-        	);
+            Seccubus.Models.SavedSql.findAll( {},
+                this.callback("dataReady")
+            );
         },
         /*
         * @function dataReady
@@ -101,15 +101,15 @@ steal(
         */
         dataReady : function(items) {
             var options = {};
-            items.unshift({id:'',name:'--select sql--'});
+            items.unshift({id:"",name:"--select sql--"});
             $.map(items,function(item){
-            	options[item.id] = item.sql;
+                options[item.id] = item.sql;
             });
             this.options.items = options;
             this.options.getItems(options);
             this.element.html(this.view(
-            	'init',
-            	items
+                "init",
+                items
             ));
         },
         /*

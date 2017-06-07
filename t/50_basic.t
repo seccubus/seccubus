@@ -24,7 +24,7 @@ use lib "lib";
 my $t = Test::Mojo->new('Seccubus');
 $t->get_ok('/')
 	->status_is(302)
-	->header_is("location" => 'seccubus/seccubus.html')
+	->header_is("location" => '/seccubus/seccubus.html')
 	->header_is("X-Clacks-Overhead" => 'GNU Terry Pratchett')
 	->header_is("X-Frame-Options" => "DENY")
 	->header_is("x-xss-protection" => "1; 'mode=block'")
@@ -32,9 +32,9 @@ $t->get_ok('/')
 	->header_unlike("Server", qr/mojo/i)
 	;
 
-$t->get_ok('/seccubus')
+$t->get_ok('/seccubus/seccubus.html')
 	->status_is(200)
-	->content_like(qr/Copyright 2\d+ Frank Breedijk/i)
+	->content_like(qr/Copyright 2011-20\d+ Frank Breedijk/i)
 	->header_is("X-Clacks-Overhead" => 'GNU Terry Pratchett')
 	->header_is("X-Frame-Options" => "DENY")
 	->header_is("x-xss-protection" => "1; 'mode=block'")

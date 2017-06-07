@@ -50,7 +50,7 @@ function updateApi(url){
           var m = re.exec(url);
           while ( m ) {
               url = url.replace(re,attrs[m[1]]);
-              m = re.exec(url)
+              m = re.exec(url);
           }
 
         return $.ajax({
@@ -82,7 +82,7 @@ function deleteApi(url){
             data: JSON.stringify(attrs),
             success : success,
             error : failure
-        })
+        });
     });
 }
 

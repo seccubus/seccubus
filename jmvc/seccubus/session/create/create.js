@@ -101,7 +101,7 @@ steal(
          */
         clearAll : function() {
             this.element.find("[type=submit]").val("Create");
-            this.element[0].reset()
+            this.element[0].reset();
             this.element.find("[id=login_username]").focus();
         }
     });

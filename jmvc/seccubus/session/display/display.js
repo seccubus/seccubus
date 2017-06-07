@@ -64,7 +64,7 @@ steal(
         updateView : function() {
             var s = Seccubus.Models.Session.findOne({},this.options.onChange);
             this.options.session = s;
-            this.element.html(this.view('init', s,{ } ));
+            this.element.html(this.view("init", s,{ } ));
         },
 
         /*
@@ -112,7 +112,7 @@ steal(
          */
         clearAll : function() {
             this.element.find("[type=submit]").val("Create");
-            this.element[0].reset()
+            this.element[0].reset();
             this.element.find("[id=login_username]").focus();
         }
     });

@@ -46,7 +46,7 @@ $.Controller('Seccubus.Scan.Create',
 	defaults : {
 		/*
 		 * @attribute options.onClear
-		 * Funciton that is called when the form is cleared, e.g. to 
+		 * Funciton that is called when the form is cleared, e.g. to
 		 * disable a modal display
 		 */
 		onClear : function () { },
@@ -108,7 +108,6 @@ $.Controller('Seccubus.Scan.Create',
 		if ( ok ) {
 			this.element.find('[type=submit]').val('Creating...')
 			params.workspace = this.options.workspace;
-			console.log(params);
 			new Seccubus.Models.Scan(params).save(this.callback('saved'));
 		} else {
 			this.nok(elements);

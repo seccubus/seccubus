@@ -73,13 +73,13 @@ steal(
 			var params = el.formParams();
 			var elements = [];
 			var ok = true;
-			if(params.name == ""){
+			if(params.name === ""){
 				ok = false;
 				elements.push("#newSQLName");
 			}
 			params.sql = this.options.sql;
 			if ( ok ) {
-				this.element.find("[type=submit]").val("Creating...")
+				this.element.find("[type=submit]").val("Creating...");
 				new Seccubus.Models.SavedSql(params).save(this.callback("saved"));
 			} else {
 				this.nok(elements);
@@ -87,7 +87,7 @@ steal(
 		},
 		nok : function(elements) {
 			this.element.children(".nok").removeClass("nok");
-			for(i=0;i<elements.length;i++) {
+			for(var i=0;i<elements.length;i++) {
 				$(elements[i]).addClass("nok");
 			}
 			this.element.css({position : "absolute"});
@@ -108,12 +108,12 @@ steal(
 		},
 		clearAll : function() {
 			this.element.find("[type=submit]").val("save SQL");
-			this.element[0].reset()
+			this.element[0].reset();
 			$(".nok").removeClass("nok");
 			this.options.onClear();
 		},
 		".nok change" : function(el) {
 			el.removeClass("nok");
 		}
-    })
+    });
 });

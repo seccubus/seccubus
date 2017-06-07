@@ -15,13 +15,13 @@
  */
  steal(
     "jquery/controller",
-	"jquery/view/ejs",
-	"jquery/controller/view",
-	"seccubus/models",
-	"seccubus/saved_sql/select"
+    "jquery/view/ejs",
+    "jquery/controller/view",
+    "seccubus/models",
+    "seccubus/saved_sql/select"
 ).then(
     "./views/init.ejs",
-	"./views/error.ejs",
+    "./views/error.ejs",
     function($){
     /**
      * @class Seccubus.custSQL.Table
@@ -45,7 +45,7 @@
              * function which using when save button clicked
              */
              saveSQL : function(sql,updateView){
-                console.warn("no save sql function given");
+                console.warn("Seccubus.SavedSql.Table: no save sql function given");
             }
 
         }
@@ -87,10 +87,12 @@
                 $(this).seccubus_saved_sql_select({
                     getItems:function(options){
                         $("#sqls_selector").change(function(){
-                            if($(this).val() == "") return;
+                            if($(this).val() === "") {
+                                return;
+                            }
                             var val = options[$(this).val()];
                             $("#custsql_input").html(val);
-                        })
+                        });
                     }
                 });
             });
@@ -99,7 +101,9 @@
         dataReady : function(items) {
             var error = "";
             $.map(items,function(item){
-                if(item.error) error = item.error;
+                if(item.error) {
+                    error = item.error;
+                }
             });
 
             if(!error && items.length>-1){
