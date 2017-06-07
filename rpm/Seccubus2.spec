@@ -156,7 +156,6 @@ grep \^%{seccuser} /etc/passwd >/dev/null
 if [ $? -ne 0 ]; then
 	%{_sbindir}/useradd -d %{installdir} -g %{seccuser} -r %{seccuser}
 fi
-%{_sbindir}/usermod -G $(id -nG apache|sed -e 's/  *$//g' -e 's/  */,/g'),%{seccuser} apache
 
 ## %preun
 %post
