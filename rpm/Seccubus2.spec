@@ -1,5 +1,5 @@
 #
-# Copyright 2017 Peter Slootweg, Frank Breedijk, Glenn ten Cate
+# Copyright 2011-2017 Peter Slootweg, Frank Breedijk, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,7 +45,6 @@ BuildArch:	noarch
 Source0:	%{name}-%{version}.tar.gz
 #Source0:	https://github.com/schubergphilis/%{name}_v2/tarball/%{version}
 
-%{?el5:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.el5.rpm}
 %{?el6:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.el6.rpm}
 %{?el7:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.el7.rpm}
 
@@ -61,25 +60,25 @@ Requires:	perl(DBD::mysql)
 Requires:	perl(JSON)
 Requires:	perl(XML::Simple)
 Requires:	perl-libwww-perl
+Requires:   perl(LWP::Simple)
+Requires:   perl(LWP::Protocol::https)
 Requires:	perl(Net::IP)
-Requires:	perl(CGI)
-Requires:	perl(CGI::Carp)
 Requires:	perl(Date::Format)
 Requires:	perl(Exporter)
 Requires:	perl(Getopt::Long)
 Requires:	perl(Data::Dumper)
 Requires:	perl(HTML::Entities)
-Requires:	perl(LWP::Simple)
-Requires:   perl(LWP::Protocol::https)
 Requires:	perl(MIME::Base64)
 Requires:	perl(File::Basename)
 Requires:	perl(Socket)
 Requires:	perl(Net::SMTP)
-Requires:	perl(Net::IP)
+Requires:   perl(Crypt::PBKDF2)
+Requires:   perl(Term::ReadKey)
+Requires:   perl(Mojolicious)
+Requires:   perl(Mojolicious::Plugin::AccessLog)
 
 Requires:	httpd
 Requires:	mysql
-%{?el5:Requires: mysql-server}
 %{?el6:Requires: mysql-server}
 %{?el7:Requires: mariadb-server}
 
@@ -240,10 +239,13 @@ fi
 #
 
 %changelog
+* Wed Jun  7 2017 Frank Breedijk <fbreedijk@schubergphilis.com>
+- New Mojolicious backend
+- Dropped suport of Centos5 and RedHat5
 * Tue Apr 18 2017 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Added the dist tag to the rpm filename
 * Mon May 2 2016 Frank Breedijk <fbreedijk@schubergphilis.com>
-- RPM now builds on RHEL5 and CentOS5 too. 
+- RPM now builds on RHEL5 and CentOS5 too.
 - Removed RPM lint warnings
 - Removed old scanners
 * Fri Mar 25 2016 Frank Breedijk <fbreedijk@schubergphilis.com>
