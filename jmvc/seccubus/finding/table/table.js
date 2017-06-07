@@ -449,7 +449,7 @@ steal(
          */
         sortFunc : function(at, rev) {
             var fn;
-            if ( at == "host" ) {
+            if ( at === "host" ) {
                 var funcStr = this.hostSort.toString();
                 fn = funcStr.substring(funcStr.indexOf("{") + 1, funcStr.lastIndexOf("}"));
             } else {
@@ -499,6 +499,6 @@ steal(
             this._super(options);
             this.updateView();
         }
-    }) // Controller
+    }); // Controller
 
 }); // Steal

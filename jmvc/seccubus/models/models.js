@@ -71,7 +71,7 @@ function deleteApi(url){
         var m = re.exec(url);
         while ( m ) {
             url = url.replace(re,attrs[m[1]]);
-            m = re.exec(url)
+            m = re.exec(url);
         }
 
         return $.ajax({

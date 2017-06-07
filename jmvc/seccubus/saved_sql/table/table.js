@@ -107,7 +107,7 @@
             });
 
             if(!error && items.length>-1){
-                head = items[0].attrs();
+                var head = items[0].attrs();
                 delete head.error;
                 head = $.map(head,function(val,key){ return key; }).reverse();
             }
