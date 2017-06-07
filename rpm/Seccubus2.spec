@@ -47,7 +47,6 @@ Source0:	%{name}-%{version}.tar.gz
 
 %{?el6:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.el6.rpm}
 %{?el7:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.el7.rpm}
-%{?fedora:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.%%{dist}.rpm}
 
 %if 0%{?is_rh5}
 BuildRequires:	java-1.6.0-openjdk
