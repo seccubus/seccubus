@@ -155,7 +155,7 @@ cat > %{buildroot}/%{confdir}/config.xml <<- EOF
 
 EOF
 
-mkdir %{buildroot}{%logdir}
+mkdir %{buildroot}%{logdir}
 
 ################################################################################
 %pre
