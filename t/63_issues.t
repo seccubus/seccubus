@@ -209,7 +209,7 @@ $t->put_ok('/api/workspace/101/issue/2',
     ->json_is('/status', 'Error')
     ->json_has('/message')
     ;
-
+sleep 1;
 $t->put_ok('/api/workspace/100/issue/2',
     json => {
         "id" => 3,
@@ -251,6 +251,7 @@ $t->get_ok('/api/workspace/100/issues')
     ;
 
 # Reset and create findings
+sleep 1;
 $t->put_ok('/api/workspace/100/issue/2',
     json => {
         "id" => 2,
@@ -340,6 +341,7 @@ $t->get_ok('/api/workspace/100/issues')
     ;
 
 # Reset and remove one finding
+sleep 1;
 $t->put_ok('/api/workspace/100/issue/2',
     json => {
         "id" => 2,
@@ -414,6 +416,7 @@ $t->get_ok('/api/workspace/100/issues')
     ;
 
 # Reset and remove all findings
+sleep 1;
 $t->put_ok('/api/workspace/100/issue/2',
     json => {
         "id" => 2,
@@ -682,31 +685,44 @@ $t->get_ok('/api/workspace/100/issue/2/history')
     ->status_is(200)
     ->json_has('/0')
     ->json_has('/1')
-    ->json_hasnt('/2')
-    ->json_is('/0/description', "This is an updated test",)
-    ->json_is('/0/ext_ref', "test-123-updated",)
-    ->json_is('/0/id', "2",)
+    ->json_has('/2')
+    ->json_hasnt('/3')
+    ->json_is('/0/description', "This is a test",)
+    ->json_is('/0/ext_ref', "test-123",)
+    ->json_is('/0/id', "3",)
     ->json_is('/0/issueId', "2",)
-    ->json_is('/0/name', "bla-updated",)
-    ->json_is('/0/severity', "1",)
-    ->json_is('/0/severityName', "High",)
-    ->json_is('/0/status', "2",)
-    ->json_is('/0/statusName', "Closed",)
+    ->json_is('/0/name', "bla",)
+    ->json_is('/0/severity', "0",)
+    ->json_is('/0/severityName', "Not set",)
+    ->json_is('/0/status', "1",)
+    ->json_is('/0/statusName', "Open",)
     ->json_is('/0/userId', "1",)
     ->json_is('/0/userName', "admin")
     ->json_has('/0/timestamp')
-    ->json_is('/1/description', "This is a test",)
-    ->json_is('/1/ext_ref', "test-123",)
-    ->json_is('/1/id', "1",)
+    ->json_is('/1/description', "This is an updated test",)
+    ->json_is('/1/ext_ref', "test-123-updated",)
+    ->json_is('/1/id', "2",)
     ->json_is('/1/issueId', "2",)
-    ->json_is('/1/name', "bla",)
-    ->json_is('/1/severity', "0",)
-    ->json_is('/1/severityName', "Not set",)
-    ->json_is('/1/status', "1",)
-    ->json_is('/1/statusName', "Open",)
+    ->json_is('/1/name', "bla-updated",)
+    ->json_is('/1/severity', "1",)
+    ->json_is('/1/severityName', "High",)
+    ->json_is('/1/status', "2",)
+    ->json_is('/1/statusName', "Closed",)
     ->json_is('/1/userId', "1",)
     ->json_is('/1/userName', "admin")
     ->json_has('/1/timestamp')
+    ->json_is('/2/description', "This is a test",)
+    ->json_is('/2/ext_ref', "test-123",)
+    ->json_is('/2/id', "1",)
+    ->json_is('/2/issueId', "2",)
+    ->json_is('/2/name', "bla",)
+    ->json_is('/2/severity', "0",)
+    ->json_is('/2/severityName', "Not set",)
+    ->json_is('/2/status', "1",)
+    ->json_is('/2/statusName', "Open",)
+    ->json_is('/2/userId', "1",)
+    ->json_is('/2/userName', "admin")
+    ->json_has('/2/timestamp')
     ;
 
 $t->get_ok('/api/workspace/100/issue/3/history')
@@ -715,7 +731,7 @@ $t->get_ok('/api/workspace/100/issue/3/history')
     ->json_hasnt('/1')
     ->json_is('/0/description', "This is a test with findings",)
     ->json_is('/0/ext_ref', "test-456",)
-    ->json_is('/0/id', "3",)
+    ->json_is('/0/id', "4",)
     ->json_is('/0/issueId', "3",)
     ->json_is('/0/name', "bla",)
     ->json_is('/0/severity', "0",)
