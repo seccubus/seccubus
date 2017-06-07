@@ -53,7 +53,7 @@ BuildRequires:	java-1.6.0-openjdk
 %{?el6:BuildRequires:   java-1.7.0-openjdk}
 %{?el7:BuildRequires:	java-1.7.0-openjdk}
 %endif
-%{?fc25:BuildRequires:  java-1.8.0-openjdk}
+%{?fedora:BuildRequires:  java-1.8.0-openjdk}
 BuildRequires:  perl(ExtUtils::MakeMaker)
 
 Requires:	perl(Algorithm::Diff)
@@ -77,7 +77,7 @@ Requires:	perl(Net::SMTP)
 Requires:   perl(Crypt::PBKDF2)
 Requires:   perl(Term::ReadKey)
 Requires:   perl(Time::HiRes)
-Requires:   perl(Mojolicious)
+Requires:   perl(Mojolicious) >= 7.0
 
 Requires:	mysql
 %{?el6:Requires: mysql-server}
