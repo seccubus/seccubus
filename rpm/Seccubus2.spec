@@ -21,7 +21,6 @@
 %define homedir		%{installdir}
 %define bindir		%{installdir}/bin
 %define confdir		/etc/seccubus
-%define webdir		%{installdir}/www
 %define vardir		%{installdir}/var
 %define seccuser	seccubus
 %define docsdir		%{installdir}/doc/
@@ -107,8 +106,7 @@ See http://www.seccubus.com for more information
 rm -rf %{buildroot}
 mkdir -p %{buildroot}%{homedir}
 cd build
-./install.pl --buildroot=%{buildroot} --confdir=%{confdir} --bindir=%{bindir} --dbdir=%{vardir} --wwwdir=%{webdir} --basedir=%{homedir} --docdir=%{docsdir}
-rm -f %{buildroot}/%{webdir}/dev
+./install.pl --buildroot=%{buildroot} --confdir=%{confdir} --bindir=%{bindir} --dbdir=%{vardir} --basedir=%{homedir} --docdir=%{docsdir}
 
 cp ChangeLog.md LICENSE.txt NOTICE.txt README.md %{buildroot}/%{docsdir}
 
@@ -198,8 +196,6 @@ OEF
 %files
 %defattr(640,%{seccuser},%{seccuser},750)
 #
-%attr(-, root, root) %config(noreplace) /etc/httpd/conf.d/%{name}.conf
-#
 %config(noreplace) %{confdir}
 #
 %{installdir}
@@ -213,8 +209,6 @@ OEF
 #
 %{scandir}
 %attr(750,%{seccuser},%{seccuser}) %{scandir}/*/scan
-#
-%attr(750,%{seccuser},%{seccuser}) %{webdir}/seccubus/json/*
 #
 %attr(750,%{seccuser},%{seccuser}) %{vardir}/create*
 #
