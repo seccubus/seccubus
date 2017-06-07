@@ -60,11 +60,11 @@ test:
     - mysql -e "create database seccubus"
     - mysql -e "create database seccubus_create"
     - mysql -e "create database seccubus_upgrade"
-    - prove -I lib -I SeccubusV2
+    - prove -I lib
     - ./build_all
   post:
     - mkdir $CIRCLE_ARTIFACTS/tarball
-    - mv build/*.tgz $CIRCLE_ARTIFACTS/tarball
+    - mv build/*.tar.gz $CIRCLE_ARTIFACTS/tarball
 
 ## Customize deployment commands
 deployment:
