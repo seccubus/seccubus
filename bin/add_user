@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@
 
 use strict;
 use SeccubusV2;
-use SeccubusHelpers;
-use SeccubusUsers;
+use Seccubus::Helpers;
+use Seccubus::Users;
 use Getopt::Long;
 
 my (
@@ -60,12 +60,12 @@ sub help() {
 Usage: add_user --username <name> --name <Real name> [--isadmin]
 
 Arguments:
---username (-u)	- the username as provided to htpasswd or htdigest
---name (-n)	- the real name of the user
---(no)isadmin 	- makes the user a member of the administrators group 
-		  Option, default: --noisadmin
---help		- Print this message
-		  Option
+--username (-u)	- the username
+--name (-n)	    - the real name of the user
+--(no)isadmin 	- makes the user a member of the administrators group
+		          Option, default: --noisadmin
+--help		    - Print this message
+		          Option
 ";
 	exit();
 }

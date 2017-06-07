@@ -1,5 +1,5 @@
 <!--
-Copyright 2016 Frank Breedijk
+Copyright 2017 Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ limitations under the License.
 		<a href='javascript://' class='setStatus' value=6>6</a>
 		<a href='javascript://' class='setStatus' value=99>99</a><br>
 		<table id='findings' border=1></table>
-		<script type='text/javascript' 
+		<script type='text/javascript'
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
@@ -75,6 +75,7 @@ limitations under the License.
 				});
 				$('#scans').change( function() {
 					gui_state.attr("scans", $(this).val());
+                    console.log(gui_state.attr("scans"));
 				});
 
 				$('#workspace').seccubus_workspace_select();

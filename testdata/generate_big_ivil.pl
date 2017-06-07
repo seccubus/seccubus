@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# This little script checks all files te see if they are perl files and if so 
+# This little script checks all files te see if they are perl files and if so
 # ------------------------------------------------------------------------------
 use strict;
 
-use lib "SeccubusV2";
+use SeccubusV2;
 use IVIL;
 
 open(OUT, ">testdata/big.ivil.xml") or die "Unable to open output file testdata/big.ivil.xml";

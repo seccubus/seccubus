@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,14 @@ steal(	'jquery/controller',
 	'jquery/view/ejs',
 	'jquery/dom/form_params',
 	'seccubus/models'
-).then( './views/init.ejs', 
+).then( './views/init.ejs',
 	function($){
 
 /**
  * @class Seccubus.Finding.Bulkedit
  * @parent Finding
  * @inherits jQuery.Controller
- * Controller that renders a form to edit multiple findings in one go and 
+ * Controller that renders a form to edit multiple findings in one go and
  * updates the findings via Seccubus.Models.Finding.List
  */
 $.Controller('Seccubus.Finding.Bulkedit',
@@ -44,13 +44,13 @@ $.Controller('Seccubus.Finding.Bulkedit',
 		status	: 1,
 		/*
 		 * @attribute: options.workspace
-		 * The currently selected workspace. Need to be provides to the 
+		 * The currently selected workspace. Need to be provides to the
 		 * model for a correct update
 		 * - Default value: -1
 		 * - Special value: -1 - No workspace selected
 		 */
 		workspace : -1,
-		/* 
+		/*
 		 * @attribute: options.onDone
 		 * function to ber called when bulk editing is done
 		 */
@@ -98,11 +98,13 @@ $.Controller('Seccubus.Finding.Bulkedit',
 	bulkUpdate : function() {
 		var findings = $(".selectFinding[checked=checked]").closest(".finding").models();
 		var params = this.element.formParams();
+        params.ids = [];
 		// Set bulk to true to signal other components that this is a bulk update
-		for(i = 0;i < findings.length;i++) {
+		for(var i = 0;i < findings.length;i++) {
 			findings[i].bulk = true
+            params.ids.push(findings[i].id);
 		}
-		params.workspaceId = this.options.workspace;
+		params.workspace= this.options.workspace;
 		findings.update(params,this.callback('saved'));
 	},
 	/*
@@ -114,7 +116,7 @@ $.Controller('Seccubus.Finding.Bulkedit',
 
 		var findings = $(".selectFinding[checked=checked]").closest(".finding").models();
 		if ( findings.length > 0 ) {
-			this.options.onLink(findings);			
+			this.options.onLink(findings);
 		}
 	},
 	/*
@@ -133,12 +135,11 @@ $.Controller('Seccubus.Finding.Bulkedit',
 	 */
 	updateView : function() {
 		this.element.html(this.view('init',{
-			workspace 	: this.options.workspace,
 			status		: this.options.status
 		}));
 	},
 	/*
-	 * The update funciton is overloaded to allways call updateView on a 
+	 * The update funciton is overloaded to allways call updateView on a
 	 * controller update
 	 */
 	update : function(options) {

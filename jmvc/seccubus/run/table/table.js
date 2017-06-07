@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,8 +95,8 @@ $.Controller('Seccubus.Run.Table',
 				this.view(
 					'init',
 					Seccubus.Models.Run.findAll({
-						workspaceId	: this.options.workspace,
-						scanId		: this.options.scan
+						workspace	: this.options.workspace,
+						scan		: this.options.scan
 					}),
 					{
 						download	: this.options.download

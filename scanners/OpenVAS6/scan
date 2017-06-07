@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Fabien Guillaume, Frank Breedijk, Andrey Danin, Floris Kraak
+# Copyright 2017 Fabien Guillaume, Frank Breedijk, Andrey Danin, Floris Kraak
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@
 use strict;
 
 use SeccubusV2;
+use Seccubus::IVIL;
+use Seccubus::Runs;
+use Seccubus::Findings;
 use OpenVAS::OMP;
-use SeccubusIVIL;
-use SeccubusRuns;
-use SeccubusFindings;
 use Getopt::Long;
 use Carp;
 use MIME::Base64;
@@ -36,7 +36,7 @@ my (
 	$server,
 	$user,
 	$password,
-	$port,	
+	$port,
 	$policy,
 	$targetip,
 	$targetname,
@@ -54,7 +54,7 @@ my (
 	$nodelete,
 );
 
-# default values for command line values : 
+# default values for command line values :
 
 $help = 0;
 $quiet = 0;
@@ -78,7 +78,7 @@ GetOptions (
 	'sleep=s'			=> \$sleep,
 	'timeout=s' 		=> \$timeout,
 	'nodelete'			=> \$nodelete,
-	'verbose|v+'		=> \$verbose,	
+	'verbose|v+'		=> \$verbose,
 	'quiet|q!'			=> \$quiet,
 	'help'				=> \$help,
 );
@@ -125,7 +125,7 @@ my $omp = OpenVAS::OMP->new(
 $xml = omp_request("<get_configs/>");
 my $pol_id = $xml->{config}->{$policy}->{id};
 
-if ( $pol_id ) { 
+if ( $pol_id ) {
 	print "Policy ID is $pol_id\n" if $verbose >1;
 } else {
 	die "Could not find policy id for policy $policy";
@@ -141,7 +141,7 @@ if ( $portlistname ) {
 	$xml = omp_request("<get_port_lists/>");
 	if ( exists $xml->{port_list}->{$portlistname} ) {
 		$portlist_id = $xml->{port_list}->{$portlistname}->{id};
-	} else { 
+	} else {
 		# We need to create it
 		$xml = omp_request("
 			<create_port_list>
@@ -158,7 +158,7 @@ if ( $portlistname ) {
 	}
 }
 
-print "Portlist ID is $portlist_id\n" if $verbose >1 && $portlist_id;     
+print "Portlist ID is $portlist_id\n" if $verbose >1 && $portlist_id;
 
 my $target_id = "";
 # Get target id
@@ -172,7 +172,7 @@ if ( exists $xml->{target}->{$targetname} ) {
 		if ( $xml->{target}->{$targetname}->{hosts} ne $targetip ) {
 			die "Target '$targetname' found, but it doesn't match target ip '$targetip', please omit target IP specification or edit the target manualy in OpenVAS to correct the problem";
 		}
-	} 
+	}
 	if ( $portlist_id ) {
 		if ( $xml->{target}->{$targetname}->{port_list}->{id} ne $portlist_id ) {
 			die "Target '$targetname' found, but it doesn't match the specified port list, please omit port list specification or edit the target manualy in OpenVAS to correct the problem";
@@ -185,7 +185,7 @@ if ( exists $xml->{target}->{$targetname} ) {
 		die "Need to create a new target '$targetname', but there was no target IP range specified.";
 	}
 	if ( ! $portlist_id ) {
-		print "Need to create a new target '$targetname', but there was no port list specified.\nPort list will default to OpenVAS Default\n" if $verbose;		
+		print "Need to create a new target '$targetname', but there was no port list specified.\nPort list will default to OpenVAS Default\n" if $verbose;
 	}
 	$xml = omp_request("
 		<create_target>
@@ -203,7 +203,7 @@ if ( exists $xml->{target}->{$targetname} ) {
 #die Dumper($xml);
 print "Target ID : $target_id \n" if $verbose >1;
 
-# Create scan task 
+# Create scan task
 
 my $task_id = "";
 $xml = omp_request("
@@ -363,30 +363,30 @@ Usage: scan     --workspace=<seccubus workspace> --scan=<seccubus scan>
 --workspace (-ws) - Seccubus workspace the scan should be in
 --scan (-sc)	  - Seccubus scan the data should be saved in
 --server          - IP address or hostname of OpenVAS scanner
---port            - TCP port the OpenVAS scanner is listening on (optional, 
+--port            - TCP port the OpenVAS scanner is listening on (optional,
                     defaults=9390)
 --user            - OpenVAS user name
 --password        - OpenVAS password
 --policy          - OpenVAS policy (aka Scan Config) to use for scanning
---target          - Name of the OpenVAS target to use when scanning (if the 
+--target          - Name of the OpenVAS target to use when scanning (if the
 	                target doesn't exist, it will be created using this name.
 	                optional, default=<targetip)
---targetip        - Definition of the IPs to scan. (optional if target is 
+--targetip        - Definition of the IPs to scan. (optional if target is
 	                specified and exists)
---portlist        - Name of the OpenVAS portlist to use when scanning (if 
+--portlist        - Name of the OpenVAS portlist to use when scanning (if
 	                the portlist doesn't existm it will be created using this
-	                name. optional, default=use the portlist from the target 
+	                name. optional, default=use the portlist from the target
 	                copy the name from portrange)
 --portrange       - OpenVAS port range to scan (optional if a target or portlist
 	                is specified and it exists)
---sleep           - Seconds to sleep between polls of the API  (optional, 
-	                default=10) 
---timeout         - # Seconds after which to abort a scan (optional, 
+--sleep           - Seconds to sleep between polls of the API  (optional,
+	                default=10)
+--timeout         - # Seconds after which to abort a scan (optional,
 	                default=14400 (4 hours))
 --nodelete        - Don't erase temporary files
 --verbose (-v)    - Be verbose during execution (repeat to increase verbosity)
 --quiet (-q)      - Don't print output
---help (-h)       - Print this message	
+--help (-h)       - Print this message
 	";
 
 	exit(1);

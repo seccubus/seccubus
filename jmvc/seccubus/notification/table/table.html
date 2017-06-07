@@ -1,5 +1,5 @@
 <!--
-Copyright 2013 Frank Breedijk
+Copyright 2017 Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ limitations under the License.
 				});
 				gui_state.bind("workspace", function(ev, ws){
 					$('#scans').seccubus_scan_select({
-						workspace	: gui_state.attr("workspace"),
+						workspace	: gui_state.attr("workspace")
 					});
 					update_notifications();
 				});
@@ -68,6 +68,7 @@ limitations under the License.
 				});
 				$('#scans').change( function() {
 					gui_state.attr("scans", $(this).val());
+					update_notifications();
 				});
 
 				$('#workspace').seccubus_workspace_select();

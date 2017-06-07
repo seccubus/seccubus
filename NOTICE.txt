@@ -18,10 +18,3 @@ OpenVAS-OMP
 http://search.cpan.org/~wneessen/OpenVAS-OMP_0.04/lib/OpenVAS/OMP.pm
 Copyright (C) 2013 by Winfried Neessen <wn@neessen.net>. Published under the
 terms of the Artistic License 2.0.
-
-update-nessusrc
-http://www.tifaware.com/perl/update-nessusrc/
-Written by George A. Theall, theall@tifaware.com
-Copyright (c) 2003-2010, George A. Theall. All rights reserved.
-This module is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.

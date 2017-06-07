@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Petr, Frank Breedijk
+ * Copyright 2017 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ $.Controller('Seccubus.Asset.Edit',
 	defaults : {
 		/*
 		 * @attribute options.onClear
-		 * Funciton that is called when the form is cleared, e.g. to 
+		 * Funciton that is called when the form is cleared, e.g. to
 		 * disable a modal display
 		 */
 		onClear : function () { },
@@ -51,21 +51,21 @@ $.Controller('Seccubus.Asset.Edit',
 		 */
 		asset : null,
 		/* attribute options.onHostEdit
-		 * Function that is called when the edit link is click in the 
+		 * Function that is called when the edit link is click in the
 		 * hosts screen
 		 */
-		onHostEdit : function(ash) {
-			alert("Seccubus.Asset.Edit: no edit function specified for asset id: " + ash.id );
+		onHostEdit : function(ash,as) {
+			alert("Seccubus.Asset.Edit: no edit function specified for assethost id: " + ash.id );
 		},
 		/* attribute options.onHostDelete
-		 * Function that is called when the delete link is click in the 
+		 * Function that is called when the delete link is click in the
 		 * hosts screen
 		 */
 		// onHostDelete : function(as){
 		// 	alert("Seccubus.Asset.Edit: no delete function specified for asset id: " + as.id );
 		// },
 		/* attribute options.onHostCreate
-		 * Function that is called when the create button is click in the 
+		 * Function that is called when the create button is click in the
 		 * hosts screen
 		 */
 		onHostCreate : function(ws,as) {

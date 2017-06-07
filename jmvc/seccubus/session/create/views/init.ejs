@@ -1,0 +1,33 @@
+<%# Copyright 2017 Frank Breedijk                                            %>
+<%#                                                                          %>
+<%# Licensed under the Apache License, Version 2.0 (the "License");          %>
+<%# you may not use this file except in compliance with the License.         %>
+<%# You may obtain a copy of the License at                                  %>
+<%#                                                                          %>
+<%# http://www.apache.org/licenses/LICENSE-2.0                               %>
+<%#                                                                          %>
+<%# Unless required by applicable law or agreed to in writing, software      %>
+<%# distributed under the License is distributed on an "AS IS" BASIS,        %>
+<%# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. %>
+<%# See the License for the specific language governing permissions and      %>
+<%# limitations under the License.                                           %>
+<table class='noborder'>
+    <tr><td colspan=2 align=center class='noborder'>
+        <h1>Enter username and password to log in</h1>
+        <br>
+    </td></tr>
+    <tr><td class='noborder'>
+        <label id='login_username' for='username'>Username:</label>
+    </td><td class='noborder'>
+        <input type='input' name='username' id='username'/>
+    </td></tr>
+    <tr><td class='noborder'>
+        <label for='password'>Password:</label>
+    </td><td class='noborder'>
+        <input type='password' name='password' id='password' autocomplete='off'/><br>
+    </td></tr>
+    <tr><td colspan=2 align=center class='noborder'>
+        <input type='submit' value='Login'/>
+        <input type='button' class="cancel" value='Cancel'/>
+    </td></tr>
+</table>

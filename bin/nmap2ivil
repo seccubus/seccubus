@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk, Andrey Danin, blabla1337, Glenn ten Cate
+# Copyright 2017 Frank Breedijk, Andrey Danin, blabla1337, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 # ------------------------------------------------------------------------------
 
 use strict;
+use SeccubusV2;
 use IVIL;
 
 use Getopt::Long;
@@ -68,10 +69,10 @@ print "Reading in nmap xml file\n" if $verbose;
 # Ticket #74 - Minor bugs in nmap2ivil when using nmap 5.21
 # https://sourceforge.net/apps/trac/seccubus/ticket/74
 my $nmap = XMLin($infile,
-			     forceArray	=> [ 'host', 
-			   					 'osclass', 
-			   					 'osmatch', 
-			   					 'port', 
+			     forceArray	=> [ 'host',
+			   					 'osclass',
+			   					 'osmatch',
+			   					 'port',
 			   					 'extrareasons',
 			   					 'address',
 			   					 'hostname',
@@ -209,7 +210,7 @@ foreach my $host ( @{$nmap->{host}} ) {
 				$finding->{finding} .= "Hostname     : $port->{service}->{hostname}\n" if $port->{service}->{hostname};
 				$finding->{finding} .= "Extra info   : $port->{service}->{extrainfo}\n" if $port->{service}->{extrainfo};
 				$finding->{finding} .= "Fingerprint  : $port->{service}->{servicefp}\nPlease submit fingerprint to http://insecure.org/cgi-bin/submit.cgi" if $port->{service}->{servicefp};
-				$finding->{finding} .= "Confidence   : $port->{service}->{conf}"; 
+				$finding->{finding} .= "Confidence   : $port->{service}->{conf}";
 				print OUT ivil_finding($finding) if $finding;
 				if (exists $port->{script} ) {
 					foreach my $script ( @{$port->{script}} ) {
@@ -219,7 +220,7 @@ foreach my $host ( @{$nmap->{host}} ) {
 					}
 				} #script
 			} #port
-			
+
 			$finding->{id} = "ports";
 			$finding->{port} = "other";
 			$finding->{finding} = "";
@@ -268,25 +269,25 @@ Usage: nmap2ivil --scanner <scanner> [--scannerversion <versionstring>] \\
 		[--outfile <filename output>] [--verbose] [--help]
 
 Arguments:
---scanner	- Optional: The name of the scanner used to create the nmap 
+--scanner	- Optional: The name of the scanner used to create the nmap
 		  .xml file. Defaults to 'Nmap'
 --scannerversion- Optional: the version of the scanner used to create the nmap
 		  .xml file
---timestamp	- Optional: Timestamp of when the file was created in the 
-		  format YYYYMMDDhhmmss or YYYYMMDDhhmm so 
+--timestamp	- Optional: Timestamp of when the file was created in the
+		  format YYYYMMDDhhmmss or YYYYMMDDhhmm so
 		  11 december 2011 1:14:00 pm is 20111211131400 or 201112111314
 		  Defaults to the current date and time
---workspace	- Optional: Which Seccubus workspace do you want to load this 
-		  in, this informaiton is used to create the addressee block. 
-		  If no value is given for workspace no addressee block is 
+--workspace	- Optional: Which Seccubus workspace do you want to load this
+		  in, this informaiton is used to create the addressee block.
+		  If no value is given for workspace no addressee block is
 		  generated
---scan		- Optional: Which Seccubus scan do you want to load this in, 
-		  this informaiton is used to create the addressee block. If 
+--scan		- Optional: Which Seccubus scan do you want to load this in,
+		  this informaiton is used to create the addressee block. If
 		  scan is not specified then the value for workspace is used.
 --infile	- This defines the .xml file that will be converted to IVIL
---outfile	- Optional: This defines the name of the file used to output 
-		  IVIL. If no filename is given, the infile value is used, 
-		  a trailing .xml is removed (if it exists) and .ivil.xml is 
+--outfile	- Optional: This defines the name of the file used to output
+		  IVIL. If no filename is given, the infile value is used,
+		  a trailing .xml is removed (if it exists) and .ivil.xml is
 		  appended
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message
@@ -302,7 +303,7 @@ sub make_timestamp() {
 	$hour = "0". $hour if $hour < 10;
 	$day = "0". $day if $day <10;
 	$month = "0" . $month if $month <10;
-	$year += 1900; 
-	
+	$year += 1900;
+
 	"$year$month$day$hour$minute$second";
 }

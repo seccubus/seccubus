@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 use strict;
 use SeccubusV2;
-use SeccubusIVIL;
+use Seccubus::IVIL;
 
 use Getopt::Long;
 use Carp;
@@ -40,7 +40,7 @@ $help = 0;
 $sslyze_options = "--regular";
 
 
-GetOptions(	
+GetOptions(
 		'sslyze_path|p=s'	=> \$sslyze_path,
 		'sslyze_options|o=s'	=> \$sslyze_options,
 		'hosts=s'		=> \$hosts_file,
@@ -153,11 +153,11 @@ Usage: scan 	[--sslyze_path|p <path to sslyze>] \\
 
 Arguments:
 --sslyze_path	- You can use this optional parameter to provide the script with
-(-p)		  the path to sslyze.py or sslyze. If you do not provide this the 
-		  script tries to find the files itself and fails if it cannot 
+(-p)		  the path to sslyze.py or sslyze. If you do not provide this the
+		  script tries to find the files itself and fails if it cannot
 		  fidn them.
---sslyze_options	- Additional command line options to provide to sslyze see 
-(-o)		  'sslyze -Help' for more information. Please quote the options so that they 
+--sslyze_options	- Additional command line options to provide to sslyze see
+(-o)		  'sslyze -Help' for more information. Please quote the options so that they
 		  are passed as a single block. E.g. -o '-option1 -option2'
 
 --hosts		- The file containing the 'hosts' to scan
@@ -202,7 +202,7 @@ sub check_sslyze_version() {
 	my $version = shift;
 	$version =~ /(\d+)\.(\d+)\.(\d+)/;
 	if ( ( $1 > 2 ) ||
-	     ( $1 == 2 && $2 > 1 ) || 
+	     ( $1 == 2 && $2 > 1 ) ||
 	     ($1 == 2 && $2 == 1 && $3 >= 2 )
 	   ) {
 		return 1;

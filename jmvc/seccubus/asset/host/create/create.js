@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Petr, Frank Breedijk
+ * Copyright 2017 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ steal(	'jquery/controller',
 	defaults : {
 		/*
 		 * @attribute options.onClear
-		 * Funciton that is called when the form is cleared, e.g. to 
+		 * Funciton that is called when the form is cleared, e.g. to
 		 * disable a modal display
 		 */
 		onClear : function () { },
@@ -87,6 +87,7 @@ steal(	'jquery/controller',
 			this.element.find('[type=submit]').val('Creating...');
 			params.workspace = this.options.workspace;
 			params.asset = this.options.asset;
+            params.name = params.host;
 			console.log(params);
 			new Seccubus.Models.Assethost(params).save(this.callback('saved'));
 		} else {

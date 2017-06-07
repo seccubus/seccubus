@@ -25,21 +25,21 @@
 		<password>seccubus</password>
 	</database>
 	<paths>
-		<modules>/home/ubuntu/Seccubus/SeccubusV2</modules>
+		<modules>/home/ubuntu/Seccubus/lib</modules>
 		<scanners>/home/ubuntu/Seccubus/scanners</scanners>
 		<bindir>/home/ubuntu/Seccubus/bin</bindir>
 		<configdir>/home/ubuntu/Seccubus/etc</configdir>
 		<dbdir>/home/ubuntu/Seccubus/db</dbdir>
 	</paths>
-	<smtp>
-		<server>localhost</server>
-		<from>seccubus@localhost</from>
-	</smtp>
 	<tickets>
 		<url_head>https://jira.atlassian.com/browse/</url_head>
 		<url_tail></url_tail>
 	</tickets>
 	<auth>
-		<http_auth_header></http_auth_header>
+		<http_auth_header>REMOTEUSER</http_auth_header>
 	</auth>
+	<smtp>
+		<server>localhost</server>
+		<from>seccubus@localhost</from>
+	</smtp>
 </seccubus>

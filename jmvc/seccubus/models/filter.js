@@ -26,12 +26,12 @@ $.Model('Seccubus.Models.Filter',
 {
 	/*
 	 * @function findAll
-	 * This funciton gets all filters, it is the interface to 
+	 * This funciton gets all filters, it is the interface to
 	 * json/getFilters.pl
 	 * @return {Deferred} Deferred with all findings in it
 	 */
-	findAll: api("getFilters.pl")
-  	//findOne : "/findings/{id}.json", 
+	findAll: api("workspace/{workspace}/filters")
+  	//findOne : "/findings/{id}.json",
   	//create : "/findings.json",
  	//update : "POST json/updateStatus.pl"
   	//destroy : "/findings/{id}.json"

@@ -1,9 +1,0 @@
-Contributors:
-Frank Breedijk
-Steve Launius
-Zate Berg
-Peter Slootweg
-Jasper Nugteren
-Trelor (http://github.com/trelor)
-Artien Bel (http://github.com/Ar0xA)
-Fabien Guillaume (http://github.com/FGuillaume)

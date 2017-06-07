@@ -19,13 +19,13 @@ steal('jquery/model', function(){
  * @class Seccubus.Models.History
  * @parent History
  * @inherits jQuery.Model
- * Wraps backend history services.  
+ * Wraps backend history services.
  */
 $.Model('Seccubus.Models.History',
 /* @Static */
 {
-	findAll: api("getFindingHistory.pl")
-  	//findOne : "/histories/{id}.json", 
+	findAll : api("workspace/{workspace}/finding/{id}/history")
+  	//findOne : "/histories/{id}.json",
   	//create : "/histories.json",
  	//update : "/histories/{id}.json",
   	//destroy : "/histories/{id}.json"

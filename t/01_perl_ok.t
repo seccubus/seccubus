@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2015 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# This little script checks all files te see if they are perl files and if so 
+# This little script checks all files te see if they are perl files and if so
 # ------------------------------------------------------------------------------
 
 use strict;
@@ -36,11 +36,6 @@ foreach my $file ( @files ) {
 			if ( $file !~ qr|^./www/| ) { # Exclude www directory
 				isnt(`grep 'use strict;' '$file'`, '', "$file contains 'use strict'");
 				$tests++;
-
-				if ( $file ne "./t/01_perl_ok.t" ) {
-					is(`grep '\$query->param' '$file'|grep '\@'`, '', "\$query->param not used in list context in $file");
-					$tests++;
-				}
 
 				like(`perl -ISeccubusV2 -It -c '$file' 2>&1`, qr/OK/, "Perl compile test: $file");
 				$tests++;

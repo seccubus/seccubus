@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ steal(	'jquery/controller',
 	'jquery/dom/form_params',
 	'seccubus/models',
 	'seccubus/issue/select'
-).then( './views/init.ejs', 
+).then( './views/init.ejs',
 function($){
 
 /**
@@ -30,7 +30,7 @@ function($){
  *
  * Story
  * -----
- *  As a user I would like to be able to have a detailed view and create 
+ *  As a user I would like to be able to have a detailed view and create
  *  posibility for issues
  */
 $.Controller('Seccubus.Issuelink.Create',
@@ -52,14 +52,14 @@ $.Controller('Seccubus.Issuelink.Create',
 		findings : [],
 		/*
 		 * @attribute options.onClear
-		 * Funciton that is called when the form is cleared, e.g. to 
+		 * Funciton that is called when the form is cleared, e.g. to
 		 * disable a modal display
 		 */
-		onClear : function () { 
+		onClear : function () {
 		},
 		/*
 		 * @attribute options.onClear
-		 * Funciton that is called when the form is cleared, e.g. to 
+		 * Funciton that is called when the form is cleared, e.g. to
 		 * disable a modal display
 		 */
 		onNewIssue : function (findings) {
@@ -95,7 +95,7 @@ $.Controller('Seccubus.Issuelink.Create',
 				{
 					workspace 	: this.options.workspace,
 					includeNew	: true,
-					openOnly	: true				
+					openOnly	: true
 				}
 			);
 		}
@@ -128,11 +128,11 @@ $.Controller('Seccubus.Issuelink.Create',
 		} else {
 			if ( ok ) {
 				issue = new Seccubus.Models.Issue(param);
-				issue.attr("workspaceId", this.options.workspace);
-				issue.attr("issueId", param.issueId);
-				issue.attr("findingIds[]", []);
+				issue.attr("workspace", this.options.workspace);
+                issue.attr("issue_id", param.issueId);
+				issue.attr("findings_add", []);
 				for ( i=0;i < this.options.findings.length;i++) {
-					issue.attr("findingIds[]").push(this.options.findings[i].id);
+					issue.attr("findings_add").push(this.options.findings[i].id);
 				}
 				issue.save(this.callback('saved'));
 			} else {
@@ -153,7 +153,7 @@ $.Controller('Seccubus.Issuelink.Create',
 		this.element.animate({left : '+=20'},100);
 		this.element.animate({left : '-=10'},100);
 		this.element.css({position : "relative"});
-	},	
+	},
 	".cancel click" : function() {
 		this.clearAll();
 	},
@@ -174,7 +174,7 @@ $.Controller('Seccubus.Issuelink.Create',
 	".nok change" : function(el) {
 		el.removeClass("nok");
 	},
-	/* 
+	/*
 	 * Update, overloaded to reder the control after and update even
 	 */
 	update : function(options) {

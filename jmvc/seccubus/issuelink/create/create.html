@@ -1,5 +1,5 @@
 <!--
-Copyright 2015 Frank Breedijk
+Copyright 2017 Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,16 +34,16 @@ limitations under the License.
         </style>
 	</head>
 	<body>
-	    <h1>Seccubus.Issue.Create Demo</h1>
+	    <h1>Seccubus.IssueLink.Create Demo</h1>
 		Workspace: <select id='workspace'></select><br>
 		<a href=javascript:// id='with_findings'>With findings...</a><br>
 		<form id='create_issue'>Form will go here</form><br>
 		<table id='issues' border=1></table>
-		<script type='text/javascript' 
+		<script type='text/javascript'
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
-			steal(	
+			steal(
 				'seccubus/issuelink/create',
 				'seccubus/issue/table',
 				'seccubus/workspace/select',
@@ -76,7 +76,7 @@ limitations under the License.
 					var findings = Seccubus.Models.Finding;
 					findings.findAll(
 						{
-							workspaceId : gui_state.attr("workspace")
+							workspace : gui_state.attr("workspace")
 						},
 						function(findings) {
 							$('#create_issue').seccubus_issuelink_create({

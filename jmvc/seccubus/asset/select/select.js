@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Petr, Frank Breedijk
+ * Copyright 2017 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ steal( 'jquery/controller',
        'jquery/view/ejs',
        'jquery/controller/view',
        'seccubus/models' )
-.then( './views/init.ejs', 
-       './views/asset.ejs', 
+.then( './views/init.ejs',
+       './views/asset.ejs',
        './views/error.ejs',
 function($){
 
@@ -44,7 +44,7 @@ $.Controller('Seccubus.Asset.Select',
 		 */
 		workspace : -1,
 		/* attribute options.selected
-		 * Which options are selected now 
+		 * Which options are selected now
 		 * Obj: key: scan_id, val: asset_id
 		 */
 		selected : []
@@ -87,23 +87,23 @@ $.Controller('Seccubus.Asset.Select',
 				)
 			);
 		} else {
-			Seccubus.Models.Asset.findAll( 
-				{ workspaceId : this.options.workspace },
+			Seccubus.Models.Asset.findAll(
+				{ workspace : this.options.workspace },
 				this.callback('dataReady')
 			);
 		}
 	},
 	/*
 	 * @function dataReady
-	 * This is the callback functio that is used internally after the 
-	 * findAll call in updateView 
+	 * This is the callback functio that is used internally after the
+	 * findAll call in updateView
 	 * @param {Deferred} items
 	 * A deferred containing all scans
 	 */
 	dataReady : function(items) {
 		if(this.options.selected.length != false){
 			var sel = this.options.selected;
-			$.map(items,function(item){ 
+			$.map(items,function(item){
 				if(item.id in sel){
 					item.selected = true;
 				}
@@ -117,7 +117,7 @@ $.Controller('Seccubus.Asset.Select',
 	},
 	/*
 	 * @function update
-	 * This overloads the standard update funciton to allways excute 
+	 * This overloads the standard update funciton to allways excute
 	 *  updateView then the control is updated
 	 * @param {Object} options
 	 * The options object

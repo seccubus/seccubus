@@ -13,16 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# This program loads the findings from an IVIL file into the desired workspace 
+# This program loads the findings from an IVIL file into the desired workspace
 # and scan
 # ------------------------------------------------------------------------------
 # vim:et:sw=4:ts=4:ft=perl:
 
 use strict;
 use SeccubusV2;
-use SeccubusIVIL;
+use Seccubus::IVIL;
 use IVIL;
-use SeccubusFindings;
+use Seccubus::Findings;
 use Getopt::Long;
 use Carp;
 
@@ -63,7 +63,7 @@ if ( ! -e $filename ) {
 
 help() if $help;
 
-$ENV{REMOTE_USER} = "importer";			# This utility runs under its 
+$ENV{SECCUBUS_USER} = "importer";			# This utility runs under its
 						# Own account
 
 print "Reading file $filename into memory\n" if $verbose;
@@ -82,13 +82,13 @@ exit;
 
 sub help() {
 	print "
-Usage: load_ivil --workspace <workspace name> --scan <scan name> 
+Usage: load_ivil --workspace <workspace name> --scan <scan name>
                  [--scanner <scanner name>] [--scannerversion <scanner version>]
-		 		  --timestamp <YYYYMMDDHHmm[ss]> [--help] [--verbose] <filename> 
+		 		  --timestamp <YYYYMMDDHHmm[ss]> [--help] [--verbose] <filename>
 
 Arguments:
 --workspace (-w) - The name of the workspace the file should be loaded into
---scan (-s)		 - The name of the scan 
+--scan (-s)		 - The name of the scan
 --scanner		 - Optional: name of the scanner used. If not provided it will be
 		  		   read from the IVIL file
 --scannerversion - Optional: Verison of the scanner used. If not provided it will
@@ -97,7 +97,7 @@ Arguments:
                    Defaults to the current date and time
 --noprocess		 - Just load the file into Seccubus, but don't process the status
                    This is handy for importing older data or data out of sequence
-		           into Seccubus. Findings that have not been seen before will 
+		           into Seccubus. Findings that have not been seen before will
 		           get the status NEW
 --allowempty	 - Allow an empty ivil file to be imported (not allowed by default)
 --verbose (-v)	 - Be verbose

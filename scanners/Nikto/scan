@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Frank Breedijk, Dan McGinn-Combs, Glenn ten Cate (blabla1337)
+# Copyright 2017 Frank Breedijk, Dan McGinn-Combs, Glenn ten Cate (blabla1337)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@
 
 use strict;
 use SeccubusV2;
-use SeccubusIVIL;
-use SeccubusHelpers;
+use Seccubus::IVIL;
+use Seccubus::Helpers;
 
 use Getopt::Long;
 use Carp;
@@ -42,7 +42,7 @@ $nodelete = undef;
 
 # Create default values
 
-GetOptions(	
+GetOptions(
 		'nikto_path|p=s'	=> \$nikto_path,
 		'nikto_options|o=s'	=> \$nikto_options,
 		'hosts=s'		=> \$hosts_file,
@@ -156,10 +156,10 @@ Usage: scan 	[--nikto_path|p <path to nikto>] \\
 
 Arguments:
 --nikto_path	- You can use this optional parameter to provide the script with
-(-p)		  the path to nikto.pl or nikto. If you do not provide this the 
-		  script tries to find the files itself and fails if it cannot 
+(-p)		  the path to nikto.pl or nikto. If you do not provide this the
+		  script tries to find the files itself and fails if it cannot
 		  fidn them.
---nikto_options	- Additional command line options to provide to nikto see 
+--nikto_options	- Additional command line options to provide to nikto see
 (-o)		  'nikto -Help' for more information. Please quote the options so that they are
 		  passed to Nikto as a single block. E.g. -o '--port 80,443 --ssl'
 --hosts		- The file containing the 'hosts' to scan
@@ -209,7 +209,7 @@ sub check_nikto_version() {
 	my $version = shift;
 	$version =~ /(\d+)\.(\d+)\.(\d+)/;
 	if ( ( $1 > 2 ) ||
-	     ( $1 == 2 && $2 > 1 ) || 
+	     ( $1 == 2 && $2 > 1 ) ||
 	     ($1 == 2 && $2 == 1 && $3 >= 2 )
 	   ) {
 		return 1;

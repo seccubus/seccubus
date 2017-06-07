@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Frank Breedijk, Petr
+ * Copyright 2017 Frank Breedijk, Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,12 +90,12 @@ $.Controller('Seccubus.Filter.Filter',
 		 * @attribute options.remark
 		 * Value of the remark filter
 		 */
-		remark		: "",		
+		remark		: "",
 		/*
 		 * @attribute options.issue
 		 * Value of the issue filter
 		 */
-		issue		: "*",		
+		issue		: "*",
 		/* @attribute options.limit
 		 * Value of the limit filter
 		 */
@@ -107,7 +107,7 @@ $.Controller('Seccubus.Filter.Filter',
 		onChange 	: function(filter) { },
 		/*
 		 * @attribute options.updateOnChange
-		 * Boolean that indicates is the control should update itself 
+		 * Boolean that indicates is the control should update itself
 		 * when its value changes.
 		 */
 		updateOnChange	: true
@@ -177,7 +177,7 @@ $.Controller('Seccubus.Filter.Filter',
 				this.view(
 					'init',
 					Seccubus.Models.Filter.findAll({
-						workspaceId	: this.options.workspace,
+						workspace	: this.options.workspace,
 						scanIds		: this.options.scans,
 						assetIds	: this.options.assets,
 						Status		: this.options.status,
@@ -189,7 +189,7 @@ $.Controller('Seccubus.Filter.Filter',
 						Finding		: this.options.finding,
 						Remark		: this.options.remark,
 						Issue 		: this.options.issue
-					}), 
+					}),
 					{
 						fScans 		: this.options.scans,
 						fStatus 	: this.options.status,

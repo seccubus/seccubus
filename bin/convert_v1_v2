@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,18 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# This program imports an Seccubus v1 scan from the filesystem and places it 
-# in the Seccubus V2 database 
+# This program imports an Seccubus v1 scan from the filesystem and places it
+# in the Seccubus V2 database
 # ------------------------------------------------------------------------------
 
 use strict;
 use SeccubusV2;
-use SeccubusHelpers;
-use SeccubusScans;
-use SeccubusRuns;
-use SeccubusWorkspaces;
-use SeccubusFindings;
-use SeccubusHostnames;
+use Seccubus::Helpers;
+use Seccubus::Scans;
+use Seccubus::Runs;
+use Seccubus::Workspaces;
+use Seccubus::Findings;
+use Seccubus::Hostnames;
 use Getopt::Long;
 use Carp;
 
@@ -41,7 +41,7 @@ my (
 	$targets,
    );
 
-%stati = ( 
+%stati = (
 		"NEW" 		=> 1,
 		"CHANGED"	=> 2,
 		"OPEN"		=> 3,
@@ -50,7 +50,7 @@ my (
 		"FIXED"		=> 6,
 		"HARD MASKED"	=> 99
 	 );
-my %sev = ( 
+my %sev = (
 		"Security Note" 	=> 3,
 		"Open port" 		=> 4,
 		"Security Warning"	=> 2,
@@ -87,7 +87,7 @@ if ( ! -e "$basedir/$scanname" ) {
 	help();
 }
 
-$ENV{REMOTE_USER} = "importer";			# This utility runs under its 
+$ENV{SECCUBUS_USER} = "importer";			# This utility runs under its
 						# Own account
 
 $newname = $scanname unless $newname;
@@ -100,7 +100,7 @@ print "Creating Seccubus2 scan '$newname' in workspace '$workspace' from Seccubu
 	$workspace_id = create_workspace($workspace);
 	print "Workspace '$workspace' with id $workspace_id created.\n" if $verbose; } else {
 	print "Workspace '$workspace' with id $workspace_id selected.\n" if $verbose; }
-	
+
 my $scan_id = get_scan_id($workspace_id, $newname); if ( $scan_id ) {
 	 confess "Scan $newname allready exists in workspace $workspace, you can specify a new scanname with the --newname parameter"; } else {
 	print "\nLoading targets\n" if $verbose;
@@ -197,13 +197,13 @@ Arguments:
 --basedir (-b) 	- the Seccubus V1 base directory
 		  Option, default: /home/seccubus
 --scan (-s)	- the name of the scan in Seccubus V1
---scanner (-c)	- Name of the scanner should be either one of: 
+--scanner (-c)	- Name of the scanner should be either one of:
 		  * NessusLegacy
 		  * OpenVAS
 		  * Nikto
 --newname (-n)	- New name to use when importing into the database
-		  Option, default: use the value given for scan 
---workspace (-w)- The name of the SeccubusV2 workspace this scan will be 
+		  Option, default: use the value given for scan
+--workspace (-w)- The name of the SeccubusV2 workspace this scan will be
 		  imported to, defaults to the value of scanname
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message

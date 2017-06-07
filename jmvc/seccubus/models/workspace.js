@@ -19,16 +19,16 @@ steal('jquery/model', function(){
  * @class Seccubus.Models.Workspace
  * @parent Workspace
  * @inherits jQuery.Model
- * Wraps backend workspace services.  
+ * Wraps backend workspace services.
  */
 $.Model('Seccubus.Models.Workspace',
 /* @Static */
 {
-  	create : api("createWorkspace.pl"),
-	findAll: api("getWorkspaces.pl"),
-	//findOne: api("getWorkspace.pl"),
-	update : api("updateWorkspace.pl")
-	//destroy : api("/workspaces/{id}.json")
+    create: createApi("workspaces"),
+    //    api("/workspaces", "POST"),
+    findAll: api("workspaces"),
+    findOne: api("workspace/{id}"),
+    update : updateApi("workspace/{id}")
 },
 /* @Prototype */
 {});

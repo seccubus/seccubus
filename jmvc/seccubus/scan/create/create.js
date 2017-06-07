@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Frank Breedijk, Artien Bel
+ * Copyright 2017 Frank Breedijk, Artien Bel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ $.Controller('Seccubus.Scan.Create',
 	defaults : {
 		/*
 		 * @attribute options.onClear
-		 * Funciton that is called when the form is cleared, e.g. to 
+		 * Funciton that is called when the form is cleared, e.g. to
 		 * disable a modal display
 		 */
 		onClear : function () { },
@@ -107,7 +107,7 @@ $.Controller('Seccubus.Scan.Create',
 		}
 		if ( ok ) {
 			this.element.find('[type=submit]').val('Creating...')
-			params.workspaceId = this.options.workspace;
+			params.workspace = this.options.workspace;
 			new Seccubus.Models.Scan(params).save(this.callback('saved'));
 		} else {
 			this.nok(elements);

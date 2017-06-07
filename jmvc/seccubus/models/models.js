@@ -15,35 +15,100 @@
  */
 // steal model files
 
-function base_url() {
-	return "json/";
-} 
+function baseUrl() {
+    return "/api/";
+}
 function api(url, method){
-	method = method || 'POST';
-	return method + " " + base_url() + url;
+    method = method || "GET";
+    return method + " " + baseUrl() + url;
 }
 
+function createApi(url){
+    return (function(attrs,success,failure) {
+        var re = new RegExp("\{(.*?)\}");
+        var m = re.exec(url);
+        while ( m ) {
+            url = url.replace(re,attrs[m[1]]);
+            m = re.exec(url);
+        }
+
+        return $.ajax({
+            url: baseUrl() + url,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(attrs),
+            success : success,
+            error : failure
+        });
+    });
+}
+
+function updateApi(url){
+    return (function(id,attrs,success,failure) {
+          var re = new RegExp("\{(.*?)\}");
+          var m = re.exec(url);
+          while ( m ) {
+              url = url.replace(re,attrs[m[1]]);
+              m = re.exec(url);
+          }
+
+        return $.ajax({
+            url: baseUrl() + url,
+            type: "PUT",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(attrs),
+            success : success,
+            error : failure
+        });
+    });
+}
+
+function deleteApi(url){
+    return (function(id,attrs,success,failure) {
+        var re = new RegExp("\{(.*?)\}");
+        var m = re.exec(url);
+        while ( m ) {
+            url = url.replace(re,attrs[m[1]]);
+            m = re.exec(url);
+        }
+
+        return $.ajax({
+            url: baseUrl() + url,
+            type: "DELETE",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(attrs),
+            success : success,
+            error : failure
+        });
+    });
+}
+
+
 steal(
-	'jquery/model', 
-	'./up_to_date.js', 
-	'./config_item.js',
-	'./workspace.js',
-	'./scan.js', 
-	'./finding.js', 
-	'./filter.js',
-	'./status.js', 
-	'./gui_state.js', 
-	'./scanner.js', 
-	'./history.js', 
-	'./run.js',
-	'./event.js',
-	'./notification.js',
-	'./asset.js',
-	'./asset_host.js',
-	'./asset2scan.js',
-	'./custsql.js',
-	'./savedsql.js', 
-	'./issue.js',
-	'./issuelink.js',
-	'./severity.js'
+    "jquery/model",
+    "./up_to_date.js",
+    "./config_item.js",
+    "./workspace.js",
+    "./scan.js",
+    "./finding.js",
+    "./filter.js",
+    "./status.js",
+    "./gui_state.js",
+    "./scanner.js",
+    "./history.js",
+    "./run.js",
+    "./event.js",
+    "./notification.js",
+    "./asset.js",
+    "./asset_host.js",
+    "./asset2scan.js",
+    "./custsql.js",
+    "./savedsql.js",
+    "./issue.js",
+    "./issuelink.js",
+    "./severity.js",
+    "./session.js"
 )

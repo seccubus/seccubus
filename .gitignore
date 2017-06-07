@@ -1,12 +1,10 @@
-# Databases
-*.sqlite
-
 # Mac Stuff
 *.DS_Store
 
 # Temp files
 .*.swp
 tmp/
+log/
 
 # Config
 etc/config.xml
@@ -28,10 +26,14 @@ blib/
 jmvc/seccubus/production.css
 jmvc/seccubus/production.js
 pm_to_blib
-www/seccubus/*
-www/steal
 junit_output.xml
 etc/config.xml
 logs
 jmvc/testresults.xml
 .kitchen.yml
+
+# Build directory
+build/
+
+# Docker data dir
+data/

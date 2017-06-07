@@ -1,5 +1,5 @@
 <!--
-Copyright 2014 Petr, Frank Breedijk
+Copyright 2017 Petr, Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,17 +28,17 @@ limitations under the License.
 		<form id='editas'>Edit form is here</form>
 		<div id='assets'></div>
 		<a href='javascript://' id='create'>Create Asset</a>
-		<script type='text/javascript' 
+		<script type='text/javascript'
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
 			steal(	'seccubus/asset/table',
 					'seccubus/asset/edit',
 					'seccubus/seccubus.css',
-					'seccubus/fixtures',
+					//'seccubus/fixtures',
 			function(){
 				$('#assets').seccubus_asset_table({
-					workspace : 1,
+					workspace : 100,
 					onEdit : function(as){
 						$('#editas').seccubus_asset_edit({
 							asset : as

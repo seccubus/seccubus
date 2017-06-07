@@ -19,29 +19,29 @@ steal('jquery/model', function(){
  * @class Seccubus.Models.Asset
  * @parent Asset
  * @inherits jQuery.Model
- * Wraps backend assets services.  
+ * Wraps backend assets services.
  */
-$.Model('Seccubus.Models.custsql',
+$.Model('Seccubus.Models.CustSql',
 /* @Static */
 {
-	/*
-	 * @function findAll
-	 * @param {Object} params
-	 * Parameters of the API call
-	 * @param {Function} success
-	 * Callback funciton in case of success
-	 * @param {Function} error
-	 * Callback function in case of error
-	 * @return {Deferred} A deferred Assets (Asset.Table)
-	 */
-	 findAll 	: api("getCustSQL.pl")
-  	// Not implemented
-	//findOne	: "/scans/{id}.json", 
- 	// create	: "POST json/createAsset.pl",
-	// update	: "POST json/updateAsset.pl",
-	// destroy	: "POST json/deleteAsset.pl"
-  	// Not implemented yet
-	//destroy	: "/scans/{id}.json"
+    /*
+     * @function findAll
+     * @param {Object} params
+     * Parameters of the API call
+     * @param {Function} success
+     * Callback funciton in case of success
+     * @param {Function} error
+     * Callback function in case of error
+     * @return {Deferred} A deferred Assets (Asset.Table)
+     */
+     findAll    : createApi("sql/execute")
+    // Not implemented
+    //findOne   : "/scans/{id}.json",
+    // create   : "POST json/createAsset.pl",
+    // update   : "POST json/updateAsset.pl",
+    // destroy  : "POST json/deleteAsset.pl"
+    // Not implemented yet
+    //destroy   : "/scans/{id}.json"
 },
 /* @Prototype */
 {});

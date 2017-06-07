@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016 Alex Smirnoff, Frank Breedijk, Glenn ten Cate, Artien Bel 
+# Copyright 2017 Alex Smirnoff, Frank Breedijk, Glenn ten Cate, Artien Bel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +16,11 @@
 # This program converts a Netsparker XML file to the IVIL format
 # ------------------------------------------------------------------------------
 #
-# You can blame @arkenoi for netsparker2ivil 
+# You can blame @arkenoi for netsparker2ivil
 #
 
 use strict;
+use SeccubusV2;
 use IVIL;
 
 use Getopt::Long;
@@ -71,7 +72,7 @@ if ( ! $infile || ! -e $infile ) {
 
 print "Reading in Netsparker report file\n" if $verbose;
 my $netsparker = XMLin($infile,
-		   forceArray	=> [ 'target' , 'vulnerability' , 'info', 'knownvulnerability'], 
+		   forceArray	=> [ 'target' , 'vulnerability' , 'info', 'knownvulnerability'],
 		   KeyAttr	=> undef,
 	          );
 
@@ -110,7 +111,7 @@ foreach my $issue ( @{$netsparker->{vulnerability}}) {
 	#get the IP and the Hostname from the netsparker export
         my $uri = URI->new($issue->{url});
 	my $hostname = $uri->host;
-        
+
         #convert severity
         my $severity = $issue->{severity};
         if ($severity eq 'Information' ) {
@@ -124,13 +125,13 @@ foreach my $issue ( @{$netsparker->{vulnerability}}) {
         } else {
         	print Dumper($issue);
                 die "Unknown severity";
-        } 
+        }
 
 	my $port = $uri->port;
 
-	#now we fill the finding_txt 
-	my $txt ="";	
-	
+	#now we fill the finding_txt
+	my $txt ="";
+
 	$txt = join ("", $txt, "Type: ", $issue -> {type}, "\nURL: ", $issue ->{url});
 	if ($issue->{vulnerableparametertype}) {
 		$txt .=  "\nParameter type: " . $issue->{vulnerableparametertype};
@@ -174,14 +175,14 @@ foreach my $issue ( @{$netsparker->{vulnerability}}) {
 	$finding->{port} = $port;
 	#add finding_txt to finding
 	$finding->{finding} = $txt;
-        
+
 	#debug: dump the $finding
         print "\n";
 	print Dumper($finding);
-	
+
 	#write to ivil
 	print OUT ivil_finding($finding);
-} 
+}
 
 print OUT "</findings>\n";
 
@@ -206,22 +207,22 @@ Usage: netsparker2ivil --scanner <scanner> [--scannerversion <versionstring>] \\
 Arguments:
 --scanner	- The name of the scanner used to create the report file
 			Logical option is Netsparker
---scannerversion- Optional: the version of the scanner used to create the 
+--scannerversion- Optional: the version of the scanner used to create the
 		  Netsparker file
---timestamp	- Timestamp of when the file was created in the format 
+--timestamp	- Timestamp of when the file was created in the format
 		  YYYYMMDDhhmmss or YYYYMMDDhhmm so 11 december 2011 1:14:00 pm
 		  is 20111211131400 or 201112111314
---workspace	- Optional: Which Seccubus workspace do you want to load this 
-		  in, this informaiton is used to create the addressee block. 
-		  If not value is given for workspace no addressee block is 
+--workspace	- Optional: Which Seccubus workspace do you want to load this
+		  in, this informaiton is used to create the addressee block.
+		  If not value is given for workspace no addressee block is
 		  generated
---scan		- Optional: Which Seccubus scan do you want to load this in, 
-		  this informaiton is used to create the addressee block. If 
+--scan		- Optional: Which Seccubus scan do you want to load this in,
+		  this informaiton is used to create the addressee block. If
 		  scan is not specified then the value for workspace is used.
 --infile	- This defines the XML file that will be converted to IVIL
---outfile	- Optional: This defines the name of the file used to output 
-		  IVIL. If no filename is given, the infile value is used, 
-		  a trailing .xml is removed (if it exists) and .ivil.xml is 
+--outfile	- Optional: This defines the name of the file used to output
+		  IVIL. If no filename is given, the infile value is used,
+		  a trailing .xml is removed (if it exists) and .ivil.xml is
 		  appended
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message

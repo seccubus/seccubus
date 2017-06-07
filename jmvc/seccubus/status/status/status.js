@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Petr, Frank Breedijk
+ * Copyright 2017 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ $.Controller('Seccubus.Status.Status',
 		onClick 	: function(value) { },
 		/*
 	 	 * @attribute options.updateOnClick
-		 * Boolean that determines if the control should update itself 
+		 * Boolean that determines if the control should update itself
 		 * when one of the buttons is clicked
 	 	 */
 		updateOnClick	: true
@@ -136,7 +136,7 @@ $.Controller('Seccubus.Status.Status',
 				this.view(
 					'init',
 					Seccubus.Models.Status.findAll({
-						workspaceId	: this.options.workspace,
+						workspace	: this.options.workspace,
 						scanIds		: this.options.scans,
 						assetIds	: this.options.assets,
 						Host		: this.options.host,

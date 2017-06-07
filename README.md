@@ -1,17 +1,17 @@
 About Seccubus
 ==============
-Seccubus automates regular vulnerability scans with various tools and aids 
-security people in the fast analysis of its output, both on the first scan and 
+Seccubus automates regular vulnerability scans with various tools and aids
+security people in the fast analysis of its output, both on the first scan and
 on repeated scans.
 
-On repeated scan delta reporting ensures that findings only need to be judged 
+On repeated scan delta reporting ensures that findings only need to be judged
 when they first appear in the scan results or when their output changes.
 
-Seccubus 2.x is the only actively developed and maintained branch and all support 
-for Seccubus V1 has officially been dropped. 
+Seccubus 2.x is the only actively developed and maintained branch and all support
+for Seccubus V1 has officially been dropped.
 
 Seccubus V2 works with the following scanners:
-* Nessus 
+* Nessus
 * OpenVAS
 * Skipfish
 * Medusa (local and remote)
@@ -37,16 +37,9 @@ Running a full stack (db/app/frontend) in a single container. And get an interac
 docker run -it seccubus/seccubus /bin/bash
 ```
 
-By default the container holds a MariaDB server that runs and stores data locally. If you want data persistency there are two options:
+By default the container holds a mysql server that runs and stores data locally. If you want data persistency there are two options:
 
-Mount a local filesystem to `/var/lib/mysql`
-```
-docker run -it seccubus/seccubus -v /some/local/dir:/var/lib/mysql /bin/bash
-```
-
-Please be aware that you can only run one container at a time if you mount a local directory on /var/lib/mysql.
-
-Alternativly you cloud connect the container to a remote mysql/MariaDB database with environment viariables:
+Connect the container to a remote mysql/MariaDB database with environment viariables:
 ```
 docker run -ti seccubus/seccubus -e DBHOST=dns.name.of.db.host \
 -e DBPOSRT=3306 \
@@ -55,6 +48,15 @@ docker run -ti seccubus/seccubus -e DBHOST=dns.name.of.db.host \
 -e DBPASS=password \
 /bin/bash
 ```
+
+Or, mount a data volume with a db directory on it
+```
+mkdir data
+mmdir data/db
+docker run -it seccubus/seccubus -v ($pwd)/data:/opt/seccubus/data /bin/bash
+```
+
+Please be aware that you can only run one container at a time if you mount a local directory on /var/lib/mysql.
 
 
 Running a scan
@@ -79,6 +81,15 @@ This will spin up a container that executes scan ssllabs from workspace Example 
 
 You can set the TZ vairable to control the timezone.
 
+Controlling TLS certificates
+---
+The Seccubus container is TLS enabled by default. The environment variable TLS controls this behaviour. Of it is set to anything other then `yes`, TLS is turned off.
+
+There are three ways to control the certificate:
+* Do nothing : Self signed certificates will be generated for you
+* Populate the variables TLSCERT and TLSKEY :  The contents will be placed in /opt/seccubus/data/seccubus.pem and /opt/seccubus/data/seccubus.key and used
+* Put the certificates in the files seccubus.pem and seccubus.key on a data volume and mount it on /opt/seccubus/data
+
 Show this help message
 ---
 ```
@@ -91,7 +102,7 @@ If you don't specify a command to docker run
 ```
 docker run seccubus/seccubus
 ```
-The apache access log and error log will be tailed to the screen.
+The web server access log and error log will be tailed to the screen.
 
 
 Other options
@@ -122,6 +133,7 @@ You can set the following environment variables:
 * HTTP_AUTH_HEADER - Set the http authentication header
   - If you are using something like OpenAM to authenticate your users, this allows you to set which http request header contains the user that OpenAM detected
 * TZ - Set the timezone of the container
+* TLS - Controls TLS behaviour `yes` means TLS is on, otherwise TLS is off. TLS is on by default.
 
 
 Change log
@@ -138,7 +150,8 @@ specific RPMs for el5, el6 and el7 now.
 
 Enhancements
 ------------
-* #448 - Allow import and export utility to ready config from specific file
+*
+* #448 - Allow import and export utility to read config from specific file
 
 Bug Fixes
 ---------

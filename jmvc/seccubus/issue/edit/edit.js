@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-steal(	
+steal(
 	'jquery/controller',
 	'jquery/view/ejs',
 	'jquery/controller/view',
@@ -21,7 +21,7 @@ steal(
 	'seccubus/models',
 	'seccubus/finding/table',
 	'seccubus/severity/select'
-).then( './views/init.ejs', 
+).then( './views/init.ejs',
 function($){
 
 /**
@@ -32,7 +32,7 @@ function($){
  *
  * Story
  * -----
- *  As a user I would like to be able to have a detailed view and edit 
+ *  As a user I would like to be able to have a detailed view and edit
  *  posibility for issues
  */
 $.Controller('Seccubus.Issue.Edit',
@@ -96,12 +96,12 @@ $.Controller('Seccubus.Issue.Edit',
 				noLink 		: true,
 				status 		: "*",
 				columns		: [
-					"host", "IP", 
-					"hostName", "HostName", 
-					"port", "Port", 
-					"plugin", "Plugin", 
+					"host", "IP",
+					"hostName", "HostName",
+					"port", "Port",
+					"plugin", "Plugin",
 					"scanName","ScanName",
-					"severity", "Severity", 
+					"severity", "Severity",
 					"find", "Finding",
 					"remark", "Remark",
 					"status", "Status",
@@ -109,9 +109,9 @@ $.Controller('Seccubus.Issue.Edit',
 				],
 				noEdit		: true,
 				noLink		: true,
-				noFindingUnlink	
+				noFindingUnlink
 							: false,
-				noIssueUnlink	
+				noIssueUnlink
 							: true
 			});
 		}
@@ -122,7 +122,7 @@ $.Controller('Seccubus.Issue.Edit',
 		var newState = $(el).attr("newstatus");
 		var param = this.element.formParams();
 		var issue = this.options.issue;
-		
+
 		// Check form
 		var ok = true;
 		var elements = [];
@@ -136,7 +136,7 @@ $.Controller('Seccubus.Issue.Edit',
 			issue.attr("description",param.description);
 			issue.attr("ext_ref",param.ext_ref);
 			issue.attr("status",newState)
-			issue.attr("workspaceId",this.options.workspace);
+			issue.attr("workspace",this.options.workspace);
 			issue.attr("issueId",issue.id);
 			issue.attr("severity",param.severity);
 			issue.save();
@@ -158,7 +158,7 @@ $.Controller('Seccubus.Issue.Edit',
 		this.element.animate({left : '+=20'},100);
 		this.element.animate({left : '-=10'},100);
 		this.element.css({position : "relative"});
-	},	
+	},
 	/*
 	".move click" : function(el,ev) {
 		ev.preventDefault();
@@ -169,7 +169,7 @@ $.Controller('Seccubus.Issue.Edit',
 	"{Seccubus.Models.Issue} updated" : function(Issue, ev, issue) {
 		this.updateView();
 	},
-	/* 
+	/*
 	 * Update, overloaded to reder the control after and update even
 	 */
 	// Autoclear nok status

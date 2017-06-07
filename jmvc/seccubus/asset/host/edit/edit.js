@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Petr, Frank Breedijk
+ * Copyright 2017 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ steal(	'jquery/controller',
 	defaults : {
 		/*
 		 * @attribute options.onClear
-		 * Funciton that is called when the form is cleared, e.g. to 
+		 * Funciton that is called when the form is cleared, e.g. to
 		 * disable a modal display
 		 */
 		onClear : function () { },
@@ -56,7 +56,25 @@ steal(	'jquery/controller',
 		 * Default value: null
 		 *
 		 */
-		host : null
+		host : null,
+        /*
+         * @attribute options.workspace
+         * Indicates which workspace the host needs to be created in
+         *
+         * Default value: -1
+         *
+         * Special value: -1 - No workspace selected
+         */
+        workspace : -1,
+        /*
+         * @attribute options.asset
+         * Indicates which asset the host needs to be created in
+         *
+         * Default value: -1
+         *
+         * Special value: -1 - No asset selected
+         */
+        asset : -1
 	}
 },
 /** @Prototype */
@@ -84,6 +102,9 @@ steal(	'jquery/controller',
 		if ( ok ) {
 			this.element.find('[type=submit]').val('Updating...');
 			params.id = this.options.host.id;
+            params.name = params.host;
+            params.workspace = this.options.workspace;
+            params.asset = this.options.asset;
 			new Seccubus.Models.Assethost(params).save(this.callback('saved'));
 		} else {
 			this.nok(elements);

@@ -1,0 +1,85 @@
+#!/usr/bin/env perl
+# Copyright 2017 Frank Breedijk
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+# This program creates users from the command line, usefull if you have not set
+# up any users in the web gui, or if you are writing Seccubus and the GUI does
+# not exist yet ;)
+# ------------------------------------------------------------------------------
+
+use strict;
+use SeccubusV2;
+use Seccubus::Users;
+use Getopt::Long;
+use Term::ReadKey;
+
+
+my (
+	$username,
+	$name,
+    $password,
+    $help,
+   );
+
+$help = 0;
+
+GetOptions(
+    'username|u=s'  => \$username,
+    'password|p=s'  => \$password,
+	'help|h'        => \$help,
+);
+help() if $help;
+if ( ! $username ) {
+	print "You must specify a username";
+	help();
+}
+
+if ( ! $password ) {
+    my $rpassword = "ueytvaiw7tabiezluguykvgzsebuyatwbo74avty7aowyt7 878otw4vo7tarwuyetvsuy";
+    while ( $password ne $rpassword ) {
+        print "Password : ";
+        ReadMode(2);
+        $password = <STDIN>;
+        print "\nRepeat   : ";
+        $rpassword = <STDIN>;
+        ReadMode(0);
+        print "\n";
+        print "Passwords don't match\n" if ( $password ne $rpassword );
+    }
+    chomp $password;
+}
+
+if ( set_password($username, $password) ) { # Set password in database
+    print "Password set succesfully\n";
+    exit();
+} else {
+    print "Couldn't set password for user $username\n";
+    exit(255);
+}
+
+exit(255);
+
+sub help() {
+	print "
+Usage: seccubus_passwd --username <name> [--password <password>]
+
+Arguments:
+--username (-u) - the username to set the password for
+--password (-p) - the password. If omitted you will be asked to type it
+--help		- Print this message
+";
+	exit();
+}
+
+

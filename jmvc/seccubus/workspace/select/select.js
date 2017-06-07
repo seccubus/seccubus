@@ -21,6 +21,7 @@ steal(
 ).then(
     "./views/init.ejs",
     "./views/workspace.ejs",
+    "./views/no_workspaces.ejs",
     function($){
 
         /**

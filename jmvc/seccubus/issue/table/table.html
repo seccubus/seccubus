@@ -1,5 +1,5 @@
 <!--
-Copyright 2015 Frank Breedijk
+Copyright 2017 Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -36,17 +36,17 @@ limitations under the License.
 	    <h1>Seccubus.Issue.Table Demo</h1>
 		<div id='issues'></div><br>
 		<a href='javascript://' id='select' workspace='100'>Select workspace 100</a><br>
-		<a href='javascript://' id='finding' finding='3'>Set finding=3</a><br>
-		<script type='text/javascript' 
+		<a href='javascript://' id='finding' finding='4'>Set finding=4</a><br>
+		<script type='text/javascript'
                 src='../../../steal/steal.js'>
         </script>
 		<script type='text/javascript'>
-			steal(	
+			steal(
 				'seccubus/issue/table',
 				'seccubus/seccubus.css',
 				//'seccubus/fixtures',
 				function(){
-				
+
 				$('#issues').seccubus_issue_table();
 
 				$('#select').click(function(el, ev) {

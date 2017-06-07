@@ -25,11 +25,12 @@
 		<password>seccubus</password>
 	</database>
 	<paths>
-		<modules>/opt/seccubus/SeccubusV2</modules>
+		<modules>/opt/seccubus/lib</modules>
 		<scanners>/opt/seccubus/scanners</scanners>
 		<bindir>/opt/seccubus/bin</bindir>
 		<configdir>/opt/seccubus/etc</configdir>
 		<dbdir>/opt/seccubus/db</dbdir>
+        <logdir>/opt/seccubus/log</logdir>
 	</paths>
 	<smtp>
 		<server>localhost</server>
@@ -41,5 +42,7 @@
 	</tickets>
 	<auth>
 		<http_auth_header></http_auth_header>
+        <sessionkey>SeccubusScanSmarterNotHarder</sessionkey>
+        <baseurl></baseurl>
 	</auth>
 </seccubus>

@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@
 
 use strict;
 use SeccubusV2;
-use SeccubusWorkspaces;
-use SeccubusScans;
-use SeccubusRuns;
+use Seccubus::Workspaces;
+use Seccubus::Scans;
+use Seccubus::Runs;
 use Getopt::Long;
 use Carp;
 
@@ -81,17 +81,17 @@ exit;
 sub help(;$) {
 	my $msg = shift;
 	print "$msg\n
-Usage: attach_file --workspace <workspace name> --scan <scan name> 
+Usage: attach_file --workspace <workspace name> --scan <scan name>
 		 --timestamp <YYYY-MM-DD HH:mm:ss> --file <path of file>
 		 --description <description of file>
-		 [--help] [--verbose]  
+		 [--help] [--verbose]
 
 Arguments:
 --workspace (-w)- The name of the workspace the file should be loaded into
---scan (-s)	- The name of the scan 
+--scan (-s)	- The name of the scan
 --timestamp (-t)- Optional : Time the scan ran in the format YYYY-MM-DD HH:mm:ss
 --file (-f)	- Path of the file to attach
---description (-d) 
+--description (-d)
                 - Discription of the attachment
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message

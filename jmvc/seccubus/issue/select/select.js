@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-steal(	
+steal(
 	'jquery/controller',
 	'jquery/view/ejs',
 	'jquery/controller/view',
 	'seccubus/models'
      )
-.then( './views/init.ejs', 
-       './views/issue.ejs', 
+.then( './views/init.ejs',
+       './views/issue.ejs',
        function($){
 
 /**
@@ -82,14 +82,14 @@ $.Controller('Seccubus.Issue.Select',
 				this.view(
 					'init',
 					Seccubus.Models.Issue.findAll({
-							workspaceId	: this.options.workspace	
+							workspace	: this.options.workspace
 					}),
 					{
 						includeNew 	: this.options.includeNew,
 						openOnly	: this.options.openOnly
 					}
-				) 
-			);		
+				)
+			);
 		}
 	},
 

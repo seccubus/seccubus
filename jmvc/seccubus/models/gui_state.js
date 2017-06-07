@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Petr, Frank Breedijk
+ * Copyright 2017 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ steal(	'jquery/model',
  * @class Seccubus.GuiState
  * @parent GuiState
  * @inherits jQuery.Model
- * This model tracks the generic state of the GUI. Since the GUI only lives in 
+ * This model tracks the generic state of the GUI. Since the GUI only lives in
  * the users browser, there is no need to wrap any backend services.
  */
 $.Model('Seccubus.GuiState',
@@ -29,48 +29,48 @@ $.Model('Seccubus.GuiState',
 	defaults : {
 	/*
 	 * @attribute findStatus
-	 * The Gui looks at all findings of a certain status. findStatus 
+	 * The Gui looks at all findings of a certain status. findStatus
 	 * determines which status this is.
 	 */
 		findStatus	: 1,
 	/*
-	 * @attribute workspace 
-	 * Determines which workspace is 
+	 * @attribute workspace
+	 * Determines which workspace is
 	 * selected.
 	 * - Default value: -1
 	 * - Special value: -1 - No workspace is selected
 	 */
 		workspace	: -1,
 	/*
-	 * @attribute scans 
+	 * @attribute scans
 	 * Determines which scans are selected
 	 * - Default value: null
 	 * - Special value: null - No scans are selected
 	 */
 		scans		: null,
 	/*
-	 * @attribute host 
+	 * @attribute host
 	 * Determines which host is filtered on
 	 * - Default value: *
 	 * - Special value: * - No host filtering
 	 */
 		host		: "*",
 	/*
-	 * @attribute hostName 
+	 * @attribute hostName
 	 * Determines which hostName is filtered on
 	 * - Default value: *
 	 * - Special value: * - No hostName filtering
 	 */
 		hostName	: "*",
 	/*
-	 * @attribute port 
+	 * @attribute port
 	 * Determines which port is filtered on
 	 * - Default value: *
 	 * - Special value: * - No port filtering
 	 */
 		port		: "*",
 	/*
-	 * @attribute plugin 
+	 * @attribute plugin
 	 * Determines which plugin is filtered on
 	 * - Default value: *
 	 * - Special value: * - No plugin filtering
@@ -106,14 +106,24 @@ $.Model('Seccubus.GuiState',
 	/* @attribute limit
 	 * Determines how much findings are fetched from the backend
 	 */
-	    limit       : 200
-	}
+	    limit       : 200,
+    /* @attribute username
+     * How is the user logged in
+     */
+        username    : "",
+    /* @attribute isAdmin
+     * Determines if the user sees admin level functions in the gui
+     * actual permissions are still checked in the backend
+     */
+        isAdmin     : false
+    }
+
 },
 /* @Prototype */
 {
 	/*
 	 * @function setFindStatus
-	 * This function guards the findStatus property and ensures it is 
+	 * This function guards the findStatus property and ensures it is
 	 * set to a correct status
 	 * @param {Integer} status
 	 * New potential status
@@ -126,12 +136,12 @@ $.Model('Seccubus.GuiState',
 		} else {
 			if ( ! this.findStatus ) {
 				return 1;
-			} 
+			}
 		}
 	},
 	/*
 	 * @function setWorkspace
-	 * This function guards the workSpace property, it clears other 
+	 * This function guards the workSpace property, it clears other
 	 * attributes if a new scan is seleced
 	 * @param {Integer} ws
 	 * The new workspace value

@@ -19,16 +19,17 @@ steal('jquery/model', function(){
  * @class Seccubus.Models.Notification
  * @parent index
  * @inherits jQuery.Model
- * Wraps backend notification services.  
+ * Wraps backend notification services.
  */
 $.Model('Seccubus.Models.Notification',
 /* @Static */
 {
-	findAll: api("getNotifications.pl"),
-  	//findOne : "/notifications/{id}.json", 
-  	create : api("createNotification.pl"),
- 	update : api("updateNotification.pl"),
-  	destroy : api("deleteNotification.pl")
+    findAll : api("workspace/{workspace}/scan/{scan}/notifications"),
+    findOne : api("workspace/{workspace}/scan/{scan}/notification/{id}"),
+    create  : createApi("workspace/{workspace}/scan/{scan}/notifications"),
+    update  : updateApi("workspace/{workspace}/scan/{scan}/notification/{id}"),
+    destroy : api("workspace/{workspace}/scan/{scan}/notification/{id}", "DELETE")
+    //deleteApi("workspace/{workspace}/scan/{scan}/notification/{id}")
 },
 /* @Prototype */
 {});

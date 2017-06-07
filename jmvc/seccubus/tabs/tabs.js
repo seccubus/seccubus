@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ steal('jquery/controller', 'jquery/event/default','./tabs.css').then(function() 
          * @class Seccubus.Tabs
          * @parent Tabs
          * @inherits jQuery.Controller
-	 * 
+	 *
 	 * A basic tabs controller for showing and hiding content.
 	 *
 	 * @codestart
@@ -28,18 +28,18 @@ steal('jquery/controller', 'jquery/event/default','./tabs.css').then(function() 
 	 &lt;li&gt;&lt;a href='#scans'&gt;Scans&lt;/a&gt;&lt;/li&gt;
 	 &lt;li&gt;&lt;a href='#findings'&gt;Finidings&lt;/a&gt;&lt;/li&gt;
 	 &lt;/ul&gt;
-	 
+
 	 &lt;div id='workspaces'&gt;&lt;/div&gt;
 	 &lt;div id='scans'&gt;&lt;/div&gt;
 	 &lt;div id='findings'&gt;&lt;/div&gt;
 	 @codeend
-	 * 
+	 *
 	 * @codestart
 	 $("#navTabs").seccubus_tabs();
 	 * @codeend
-	 * 
+	 *
 	 * <code>#navTabs</code> Will be transformed into working tabs that the user can click to use.  The <code>href</code>s must correspond the to the jQuery selector of the content element it represents.
-	 * 
+	 *
 	 * @tag controllers, home
 	 */
 	$.Controller("Seccubus.Tabs",
@@ -75,7 +75,7 @@ steal('jquery/controller', 'jquery/event/default','./tabs.css').then(function() 
 			return $(li.find("a").attr("href"));
 		},
 
-		// on an li click, activates new tab 
+		// on an li click, activates new tab
 		/**
 		 * Binds on an LI to trigger "activate" on a new tab.
 		 * @param {Object} el The element to trigger "activate" on.
@@ -126,13 +126,20 @@ steal('jquery/controller', 'jquery/event/default','./tabs.css').then(function() 
 		hide: function( index ) {
 			this.element.children(":eq("+index+")").hide();
 		},
-		/**
-		 * Shows a hidden tab
-		 * @param {Object} The element index value to enable
-		 */
-		show: function( index ) {
-			this.element.children(":eq("+index+")").show();
-		}
+        /**
+         * Shows a hidden tab
+         * @param {Object} The element index value to enable
+         */
+        show: function( index ) {
+            this.element.children(":eq("+index+")").show();
+        },
+        /**
+         * Clicks on a tab tab
+         * @param {Object} The element index value to enable
+         */
+        clickOn: function( index ) {
+            this.activate(this.element.children(":eq("+index+")"));
+        }
 	});
 
 });

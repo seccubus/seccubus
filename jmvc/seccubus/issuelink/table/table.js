@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Frank Breedijk
+ * Copyright 2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-steal(	
+steal(
 	'jquery/controller',
 	'jquery/view/ejs',
 	'jquery/controller/view',
 	'seccubus/models'
      )
-.then( 
-	'./views/init.ejs', 
-    './views/link.ejs', 
-    './views/error.ejs', 
+.then(
+	'./views/init.ejs',
+    './views/link.ejs',
+    './views/error.ejs',
     function($){
 
 /**
@@ -103,12 +103,12 @@ $.Controller('Seccubus.Issuelink.Table',
 				this.view(
 					'init',
 					Seccubus.Models.Issuelink.findAll({
-							workspaceId	: this.options.workspace,
-							findingId   : this.options.finding,
+							workspace	: this.options.workspace,
+							Finding     : this.options.finding,
 							Issue 		: this.options.issue
 					})
-				) 
-			);		
+				)
+			);
 		}
 	},
 
@@ -121,9 +121,9 @@ $.Controller('Seccubus.Issuelink.Table',
 	// Handle unlink event
 	".unlink click": function(el,ev) {
 		var issuelink = el.closest('.issuelink').model();
-		issuelink.attr("workspaceId",this.options.workspace);
-		issuelink.attr("findingIdsRemove[]",issuelink.id);
-		issuelink.attr("issueId",this.options.issue);
+		issuelink.attr("workspace",this.options.workspace);
+		issuelink.attr("findings_remove",[issuelink.id]);
+		issuelink.attr("id",this.options.issue);
 		// Don't confuse issues with findings
 		issuelink.removeAttr("severity");
 		issuelink.removeAttr("status");

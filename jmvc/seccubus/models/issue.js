@@ -26,25 +26,26 @@ $.Model('Seccubus.Models.Issue',
 {
 	/*
 	 * @function findAll
-	 * This funciton gets all issues, it is the interface to 
+	 * This funciton gets all issues, it is the interface to
 	 * json/getFndings.pl
 	 * @return {Deferred} Deferred with all issues in it
 	 */
-	findAll: api("getIssues.pl"),
-  	findOne: api("getIssues.pl"), 
-  	create : api("updateIssue.pl"),
+    findAll: api("workspace/{workspace}/issues"),
+  	//findOne: api("workspace/{workspace}/issue/{id}"),
+    create  : createApi("workspace/{workspace}/issues"),
+
 	/*
 	 * @function update
 	 * This function updates a single issue, it is the interface to
 	 * json/updateIssue.pl
 	 * @return {Object} the updated object or an error
 	 */
- 	update : api("updateIssue.pl")
- 	//destroy : "/issues/{id}.json"
+    update  : updateApi("workspace/{workspace}/issue/{id}")
+    //destroy : "/issues/{id}.json"
 },
 /* @Prototype */
 {
-	
+
 }); // Model
 
 

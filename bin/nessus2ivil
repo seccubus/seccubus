@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014 Frank Breedijk, Glenn ten Cate (blabla1337), Alex Smirnoff
+# Copyright 2017 Frank Breedijk, Glenn ten Cate (blabla1337), Alex Smirnoff
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,9 @@
 # ------------------------------------------------------------------------------
 
 use strict;
+use SeccubusV2;
 use IVIL;
-use SeccubusHostnames;
+use Seccubus::Hostnames;
 
 use Getopt::Long;
 use Carp;
@@ -103,7 +104,7 @@ foreach my $host ( @{$nessus->{Report}->{ReportHost}} ) {
 		if ($tag->{name} eq 'host-fqdn') {
 			$hostname = $tag->{content};
 		} elsif ($tag->{name} eq 'host-ip') {
-			$ip = $tag->{content}; 
+			$ip = $tag->{content};
 		} elsif ($tag->{name} eq 'netbios-name') {
 			$hostname = $tag->{content} unless $hostname;
 		}
@@ -114,12 +115,12 @@ foreach my $host ( @{$nessus->{Report}->{ReportHost}} ) {
 		my $finding = {};
 		$finding->{ip} = $ip;
 		$finding->{hostname} = $hostname;
-		if ( $item->{pluginID} eq '0' && $item->{pluginName} eq '' && $item->{pluginFamily} eq '' ) { 
+		if ( $item->{pluginID} eq '0' && $item->{pluginName} eq '' && $item->{pluginFamily} eq '' ) {
 			# We are dealing with portscanner output
 			$item->{pluginID} = 'portscanner';
 			$item->{synopsis} = "Port $item->{port}/$item->{protocol} is open.\nService was identified as $item->{svc_name}";
 		} elsif ( $item->{pluginFamily} eq 'Policy Compliance' ) {
-			# Compliance plugins behave funny. More findings per 
+			# Compliance plugins behave funny. More findings per
 			# PluginID
 			$item->{description} =~ /^\"?([^\"\:]+)/;
 			$item->{pluginID} .= "_$1";
@@ -168,7 +169,7 @@ foreach my $host ( @{$nessus->{Report}->{ReportHost}} ) {
 				#die "Unknown attribute $key";
 			}
 		}
-		$item->{port} = 'generic' if ( $item->{port} eq '0' ); 
+		$item->{port} = 'generic' if ( $item->{port} eq '0' );
 		$finding->{port} = "$item->{port}/$item->{protocol}";
 
 		my $txt = "";
@@ -257,22 +258,22 @@ Usage: nessus2ivil --scanner <scanner> [--scannerversion <versionstring>] \\
 Arguments:
 --scanner	- The name of the scanner used to create the .nessus file
 			Logical options are Nessus, OpenVAS or Nikto
---scannerversion- Optional: the version of the scanner used to create the 
+--scannerversion- Optional: the version of the scanner used to create the
 		  .nessus file
---timestamp	- Timestamp of when the file was created in the format 
+--timestamp	- Timestamp of when the file was created in the format
 		  YYYYMMDDhhmmss or YYYYMMDDhhmm so 11 december 2011 1:14:00 pm
 		  is 20111211131400 or 201112111314
---workspace	- Optional: Which Seccubus workspace do you want to load this 
-		  in, this informaiton is used to create the addressee block. 
-		  If not value is given for workspace no addressee block is 
+--workspace	- Optional: Which Seccubus workspace do you want to load this
+		  in, this informaiton is used to create the addressee block.
+		  If not value is given for workspace no addressee block is
 		  generated
---scan		- Optional: Which Seccubus scan do you want to load this in, 
-		  this informaiton is used to create the addressee block. If 
+--scan		- Optional: Which Seccubus scan do you want to load this in,
+		  this informaiton is used to create the addressee block. If
 		  scan is not specified then the value for workspace is used.
 --infile	- This defines the .nessus file that will be converted to IVIL
---outfile	- Optional: This defines the name of the file used to output 
-		  IVIL. If no filename is given, the infile value is used, 
-		  a trailing .nessus is removed (if it exists) and .ivil.xml is 
+--outfile	- Optional: This defines the name of the file used to output
+		  IVIL. If no filename is given, the infile value is used,
+		  a trailing .nessus is removed (if it exists) and .ivil.xml is
 		  appended
 --verbose (-v)	- Be verbose
 --help (-h)	- Print this message
