@@ -25,7 +25,7 @@
 %define seccuser	seccubus
 %define docsdir		%{installdir}/doc/
 
-%define moddir		%{installdir}/SeccubusV2
+%define moddir		%{installdir}/lib
 %define scandir		%{installdir}/scanners
 
 Name:		Seccubus
@@ -122,7 +122,7 @@ cat > %{buildroot}/%{confdir}/config.xml <<- EOF
 		<password>%{seccuser}</password>
 	</database>
 	<paths>
-		<modules>%{installdir}/SeccubusV2</modules>
+		<modules>%{installdir}/lib</modules>
 		<scanners>%{scandir}</scanners>
 		<bindir>%{bindir}</bindir>
 		<configdir>%{confdir}</configdir>
