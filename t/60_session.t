@@ -45,11 +45,11 @@ is($?,0,"Database data imported ok");
 my $t = Test::Mojo->new('Seccubus');
 
 # Should be able to get these without authentication
-$t->get_ok('/appstatus')
+$t->get_ok('/api/appstatus')
     ->status_is(200)
 ;
 
-$t->get_ok('/session')
+$t->get_ok('/api/session')
     ->status_is(200)
     ->json_is({
         isAdmin     => JSON::false,
@@ -59,62 +59,53 @@ $t->get_ok('/session')
     })
 ;
 # Results in 500 because of auth failure
-$t->get_ok('/appstatus/500')
+$t->get_ok('/api/appstatus/500')
     ->status_is(200)
 ;
 
-$t->get_ok('/logout')
+$t->get_ok('/api/logout')
     ->status_is(200)
 ;
 
-$t->delete_ok('/session')
+$t->delete_ok('/api/session')
     ->status_is(200)
 ;
 
-$t->delete_ok('/session/1')
+$t->delete_ok('/api/session/1')
     ->status_is(200)
 ;
 
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
     ->status_is(403)
 ;
 
-$t->get_ok('/events')
+$t->get_ok('/api/events')
     ->status_is(403)
-;
-
-$t->get_ok('/Seccubus')
-    ->status_is(302)
 ;
 
 # Logging in with user and invalid password
-$t->post_ok('/session', json => { username => "admin", password => "admin" })
+$t->post_ok('/api/session', json => { username => "admin", password => "admin" })
     ->status_is(401)
     ->json_is("/status", "Error")
     ->json_has("/message")
 ;
 
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
     ->status_is(403)
 ;
 
-$t->get_ok('/events')
+$t->get_ok('/api/events')
     ->status_is(403)
-;
-
-$t->get_ok('/Seccubus')
-    ->status_is(302)
-    ->header_is(location => "seccubus/login.html")
 ;
 
 # Logging in with user and valid password
-$t->post_ok('/session', json => { username => "admin", password => "GiveMeVulns!" })
+$t->post_ok('/api/session', json => { username => "admin", password => "GiveMeVulns!" })
     ->status_is(200)
     ->json_is("/status", "Success")
     ->json_has("/message")
 ;
 
-$t->get_ok('/session')
+$t->get_ok('/api/session')
     ->status_is(200)
     ->json_is({
         isAdmin     => JSON::true,
@@ -124,45 +115,35 @@ $t->get_ok('/session')
     })
 ;
 
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
     ->status_is(200)
 ;
 
-$t->get_ok('/events')
+$t->get_ok('/api/events')
     ->status_is(200)
-;
-
-$t->get_ok('/Seccubus')
-    ->status_is(302)
-    ->header_is(location => "seccubus/seccubus.html")
 ;
 
 # logging out via get request
-$t->get_ok('/logout')
+$t->get_ok('/api/logout')
     ->status_is(200)
 ;
 
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
     ->status_is(403)
 ;
 
-$t->get_ok('/events')
+$t->get_ok('/api/events')
     ->status_is(403)
-;
-
-$t->get_ok('/Seccubus')
-    ->status_is(302)
-    ->header_is(location => "seccubus/login.html")
 ;
 
 # Logging in with a header
-$t->post_ok('/session', { 'REMOTEUSER' => 'importer' } => json => {})
+$t->post_ok('/api/session', { 'REMOTEUSER' => 'importer' } => json => {})
     ->status_is(200)
     ->json_is("/status", "Success")
     ->json_has("/message")
 ;
 
-$t->get_ok('/session')
+$t->get_ok('/api/session')
     ->status_is(200)
     ->json_is({
         isAdmin     => JSON::true,
@@ -172,38 +153,28 @@ $t->get_ok('/session')
     })
 ;
 
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
     ->status_is(200)
 ;
 
-$t->get_ok('/events')
+$t->get_ok('/api/events')
     ->status_is(200)
-;
-
-$t->get_ok('/Seccubus')
-    ->status_is(302)
-    ->header_is(location => "seccubus/seccubus.html")
 ;
 
 # logging out via delete request
-$t->delete_ok('/session')
+$t->delete_ok('/api/session')
     ->status_is(200)
 ;
 
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
     ->status_is(403)
 ;
 
-$t->get_ok('/events')
+$t->get_ok('/api/events')
     ->status_is(403)
 ;
 
-$t->get_ok('/Seccubus')
-    ->status_is(302)
-    ->header_is(location => "seccubus/login.html")
-;
-
-$t->get_ok('/session')
+$t->get_ok('/api/session')
     ->status_is(200)
     ->json_is({
         isAdmin     => JSON::false,
@@ -214,7 +185,7 @@ $t->get_ok('/session')
 ;
 
 # No login, just a header
-$t->get_ok('/session' => { 'REMOTEUSER' => 'system' })
+$t->get_ok('/api/session' => { 'REMOTEUSER' => 'system' })
     ->status_is(200)
     ->json_is({
         isAdmin     => JSON::true,
@@ -225,35 +196,25 @@ $t->get_ok('/session' => { 'REMOTEUSER' => 'system' })
 ;
 
 
-$t->get_ok('/workspaces' => { 'REMOTEUSER' => 'system' })
+$t->get_ok('/api/workspaces' => { 'REMOTEUSER' => 'system' })
     ->status_is(200)
 ;
 
-$t->get_ok('/events', { 'REMOTEUSER' => 'system' })
+$t->get_ok('/api/events', { 'REMOTEUSER' => 'system' })
     ->status_is(200)
-;
-
-$t->get_ok('/Seccubus', { 'REMOTEUSER' => 'system' })
-    ->status_is(302)
-    ->header_is(location => "seccubus/seccubus.html")
 ;
 
 # No header no access
 
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
     ->status_is(403)
 ;
 
-$t->get_ok('/events')
+$t->get_ok('/api/events')
     ->status_is(403)
 ;
 
-$t->get_ok('/Seccubus')
-    ->status_is(302)
-    ->header_is(location => "seccubus/login.html")
-;
-
-$t->get_ok('/session')
+$t->get_ok('/api/session')
     ->status_is(200)
     ->json_is({
         isAdmin     => JSON::false,

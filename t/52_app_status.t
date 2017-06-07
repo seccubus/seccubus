@@ -42,7 +42,7 @@ is($?,0,"Database structure created ok");
 is($?,0,"Database data imported ok");
 
 my $t = Test::Mojo->new('Seccubus');
-$t->get_ok('/appstatus')
+$t->get_ok('/api/appstatus')
 	->status_is(200)
 	->json_is("/0/name","Configuration file")
 	->json_is("/0/result","OK")
@@ -76,7 +76,7 @@ pass("Creating empty database");
 `mysql -uroot -e "flush privileges;"`;
 
 # Error without code
-$t->get_ok('/appstatus')
+$t->get_ok('/api/appstatus')
 	->status_is(200)
 	->json_is("/0/name","Configuration file")
 	->json_is("/0/result","OK")
@@ -98,7 +98,7 @@ $t->get_ok('/appstatus')
 	;
 
 # Error with code 500
-$t->get_ok('/appstatus/500')
+$t->get_ok('/api/appstatus/500')
 	->status_is(500)
 	->json_is("/0/name","Configuration file")
 	->json_is("/0/result","OK")
@@ -120,7 +120,7 @@ $t->get_ok('/appstatus/500')
 	;
 
 # Error with non numeric code
-$t->get_ok('/appstatus/bla')
+$t->get_ok('/api/appstatus/bla')
 	->status_is(200)
 	->json_is("/0/name","Configuration file")
 	->json_is("/0/result","OK")
@@ -142,11 +142,11 @@ $t->get_ok('/appstatus/bla')
 	;
 
 pass("Creating outdated database");
-$db_version--;
+$db_version = sprintf("%02d", $db_version-1);
 `mysql -uroot seccubus < db/structure_v$db_version.mysql`;
 `mysql -uroot seccubus < db/data_v$db_version.mysql`;
 
-$t->get_ok('/appstatus/500')
+$t->get_ok('/api/appstatus/500')
 	->status_is(500)
 	->json_is("/0/name","Configuration file")
 	->json_is("/0/result","OK")

@@ -42,12 +42,12 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
 # Create Workspace
-$t->post_ok('/workspaces',
+$t->post_ok('/api/workspaces',
 	json => {
 		'name' 			=> 'workspace100',
 	})
@@ -57,7 +57,7 @@ $t->post_ok('/workspaces',
 	;
 
 # Create asset
-$t->post_ok('/workspace/100/assets',
+$t->post_ok('/api/workspace/100/assets',
     json => {
         name => "test",
         hosts => "localhost",
@@ -75,7 +75,7 @@ $t->post_ok('/workspace/100/assets',
 pass("Setup complete");
 
 # Invalid workspace
-$t->post_ok('/workspace/a/asset/1/hosts',
+$t->post_ok('/api/workspace/a/asset/1/hosts',
     json => {
         name => "google-public-dns-a.google.com",
         ip => "8.8.8.8",
@@ -85,7 +85,7 @@ $t->post_ok('/workspace/a/asset/1/hosts',
     ->json_has("/message")
 ;
 
-$t->post_ok('/workspace/101/asset/1/hosts',
+$t->post_ok('/api/workspace/101/asset/1/hosts',
     json => {
         name => "google-public-dns-a.google.com",
         ip => "8.8.8.8",
@@ -96,7 +96,7 @@ $t->post_ok('/workspace/101/asset/1/hosts',
 ;
 
 # Invalid scan
-$t->post_ok('/workspace/100/asset/a/hosts',
+$t->post_ok('/api/workspace/100/asset/a/hosts',
     json => {
         name => "google-public-dns-a.google.com",
         ip => "8.8.8.8",
@@ -106,7 +106,7 @@ $t->post_ok('/workspace/100/asset/a/hosts',
     ->json_has("/message")
 ;
 
-$t->post_ok('/workspace/100/asset/2/hosts',
+$t->post_ok('/api/workspace/100/asset/2/hosts',
     json => {
         name => "google-public-dns-a.google.com",
         ip => "8.8.8.8",
@@ -120,7 +120,7 @@ $t->post_ok('/workspace/100/asset/2/hosts',
 
 
 # Create asset host with ip
-$t->post_ok('/workspace/100/asset/1/hosts',
+$t->post_ok('/api/workspace/100/asset/1/hosts',
     json => {
         host => "google-public-dns-a.google.com",
         ip => "8.8.8.8",
@@ -134,7 +134,7 @@ $t->post_ok('/workspace/100/asset/1/hosts',
 ;
 
 # Create asset host without ip
-$t->post_ok('/workspace/100/asset/1/hosts',
+$t->post_ok('/api/workspace/100/asset/1/hosts',
     json => {
         host => "google-public-dns-b.google.com",
     })
@@ -147,7 +147,7 @@ $t->post_ok('/workspace/100/asset/1/hosts',
  ;
 
 # Create asset host with multiple ips
-$t->post_ok('/workspace/100/asset/1/hosts',
+$t->post_ok('/api/workspace/100/asset/1/hosts',
     json => {
         host => "www.seccubus.com",
     })
@@ -160,30 +160,30 @@ $t->post_ok('/workspace/100/asset/1/hosts',
 
 # Get asset hosts...
 # Incorrect workspace
-$t->get_ok('/workspace/101/asset/1/hosts')
+$t->get_ok('/api/workspace/101/asset/1/hosts')
     ->status_is(200)
     ->json_is([])
 ;
 
-$t->get_ok('/workspace/a/asset/1/hosts')
+$t->get_ok('/api/workspace/a/asset/1/hosts')
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
 
-$t->get_ok('/workspace/100/asset/101/hosts')
+$t->get_ok('/api/workspace/100/asset/101/hosts')
     ->status_is(200)
     ->status_is(200)
 ;
 
-$t->get_ok('/workspace/100/asset/a/hosts')
+$t->get_ok('/api/workspace/100/asset/a/hosts')
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
 
 # Correct
-$t->get_ok('/workspace/100/asset/1/hosts')
+$t->get_ok('/api/workspace/100/asset/1/hosts')
     ->status_is(200)
     ->json_is("/0",{
         "host"=> "localhost",
@@ -208,47 +208,47 @@ $t->get_ok('/workspace/100/asset/1/hosts')
 
 # Updating
 # Invalid workspace
-$t->put_ok('/workspace/101/asset/1/host/4', json => { host => "seccubus.com", ip => "1.2.3.4" } )
+$t->put_ok('/api/workspace/101/asset/1/host/4', json => { host => "seccubus.com", ip => "1.2.3.4" } )
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
-$t->put_ok('/workspace/a/asset/1/host/4', json => { host => "seccubus.com", ip => "1.2.3.4" } )
+$t->put_ok('/api/workspace/a/asset/1/host/4', json => { host => "seccubus.com", ip => "1.2.3.4" } )
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
 # INvalid asset
-$t->put_ok('/workspace/100/asset/101/host/4', json => { host => "seccubus.com", ip => "1.2.3.4" } )
+$t->put_ok('/api/workspace/100/asset/101/host/4', json => { host => "seccubus.com", ip => "1.2.3.4" } )
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
-$t->put_ok('/workspace/100/asset/a/host/4', json => { host => "seccubus.com", ip => "1.2.3.4" } )
+$t->put_ok('/api/workspace/100/asset/a/host/4', json => { host => "seccubus.com", ip => "1.2.3.4" } )
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
 # Invalid ID
-$t->put_ok('/workspace/100/asset/1/host/401', json => { host => "seccubus.com", ip => "1.2.3.4" } )
+$t->put_ok('/api/workspace/100/asset/1/host/401', json => { host => "seccubus.com", ip => "1.2.3.4" } )
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
-$t->put_ok('/workspace/100/asset/1/host/a', json => { host => "seccubus.com", ip => "1.2.3.4" } )
+$t->put_ok('/api/workspace/100/asset/1/host/a', json => { host => "seccubus.com", ip => "1.2.3.4" } )
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
 # No ip and host
-$t->put_ok('/workspace/100/asset/1/host/4', json => { host => "", ip => "" } )
+$t->put_ok('/api/workspace/100/asset/1/host/4', json => { host => "", ip => "" } )
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
 
 # Valid
-$t->put_ok('/workspace/100/asset/1/host/4', json => { host => "seccubus.com", ip => "1.2.3.4" } )
+$t->put_ok('/api/workspace/100/asset/1/host/4', json => { host => "seccubus.com", ip => "1.2.3.4" } )
     ->status_is(200)
     ->json_is({
         id => 4,
@@ -257,7 +257,7 @@ $t->put_ok('/workspace/100/asset/1/host/4', json => { host => "seccubus.com", ip
     })
 ;
 
-$t->get_ok('/workspace/100/asset/1/hosts')
+$t->get_ok('/api/workspace/100/asset/1/hosts')
     ->status_is(200)
     ->json_is("/0",{
         "host"=> "localhost",
@@ -281,14 +281,14 @@ $t->get_ok('/workspace/100/asset/1/hosts')
 ;
 
 # Host only
-$t->put_ok('/workspace/100/asset/1/host/4', json => { host => "seccubus.com", ip => "" } )
+$t->put_ok('/api/workspace/100/asset/1/host/4', json => { host => "seccubus.com", ip => "" } )
     ->status_is(200)
     ->json_is("/id", 4)
     ->json_is("/host","seccubus.com")
     ->json_has("/ip")
 ;
 
-$t->get_ok('/workspace/100/asset/1/hosts')
+$t->get_ok('/api/workspace/100/asset/1/hosts')
     ->status_is(200)
     ->json_is("/0",{
         "host"=> "localhost",
@@ -312,14 +312,14 @@ $t->get_ok('/workspace/100/asset/1/hosts')
 ;
 
 # IP only
-$t->put_ok('/workspace/100/asset/1/host/4', json => { host => "", ip => "1.2.3.4" } )
+$t->put_ok('/api/workspace/100/asset/1/host/4', json => { host => "", ip => "1.2.3.4" } )
     ->status_is(200)
     ->json_is("/id", 4)
     ->json_is("/host","")
     ->json_is("/ip","1.2.3.4")
 ;
 
-$t->get_ok('/workspace/100/asset/1/hosts')
+$t->get_ok('/api/workspace/100/asset/1/hosts')
     ->status_is(200)
     ->json_is("/0",{
         "host"=> "localhost",
@@ -344,46 +344,46 @@ $t->get_ok('/workspace/100/asset/1/hosts')
 
 # Delete
 # Invalid workspace
-$t->delete_ok("/workspace/101/asset/1/host/4")
+$t->delete_ok("/api/workspace/101/asset/1/host/4")
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
-$t->delete_ok("/workspace/a/asset/1/host/4")
+$t->delete_ok("/api/workspace/a/asset/1/host/4")
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
 # Invalid asset
-$t->delete_ok("/workspace/100/asset/101/host/4")
+$t->delete_ok("/api/workspace/100/asset/101/host/4")
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
-$t->delete_ok("/workspace/100/asset/a/host/4")
+$t->delete_ok("/api/workspace/100/asset/a/host/4")
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
 # Invalid host
-$t->delete_ok("/workspace/100/asset/1/host/401")
+$t->delete_ok("/api/workspace/100/asset/1/host/401")
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
-$t->delete_ok("/workspace/100/asset/1/host/a")
+$t->delete_ok("/api/workspace/100/asset/1/host/a")
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
 
 # OK
-$t->delete_ok("/workspace/100/asset/1/host/4")
+$t->delete_ok("/api/workspace/100/asset/1/host/4")
     ->status_is(200)
     ->json_is({id=>4})
 ;
 
-$t->get_ok('/workspace/100/asset/1/hosts')
+$t->get_ok('/api/workspace/100/asset/1/hosts')
     ->status_is(200)
     ->json_is("/0",{
         "host"=> "localhost",

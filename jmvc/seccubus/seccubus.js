@@ -693,7 +693,7 @@ steal(
                 download    : true,
                 onDownload  : function(wId,sId,rId,aId) {
                     //var url = "json/getAttachment.pl?workspaceId=" + wId.toString() + "&scanId=" + sId.toString() + "&runId=" + rId.toString() + "&attachmentId=" + aId.toString();
-                    var url = base_url + "workspace/" + wId.toString() + "/scan/" + sId.toString() + "/run/" + rId.toString() + "/attachment/" + aId.toString();
+                    var url = baseUrl() + "workspace/" + wId.toString() + "/scan/" + sId.toString() + "/run/" + rId.toString() + "/attachment/" + aId.toString();
                     window.open(url);
                 }
             });

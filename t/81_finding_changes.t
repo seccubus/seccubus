@@ -48,7 +48,7 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
@@ -56,7 +56,7 @@ $t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
 is($?,0,"Command executed ok");
 
 foreach my $id ( 1..7 ) {
-    $t->get_ok("/workspace/100/finding/$id/history")
+    $t->get_ok("/api/workspace/100/finding/$id/history")
         ->status_is(200)
         ->json_hasnt("/1","Finding $id only has one history record")
         ->json_is("/0/user", "importer", "Change is made by user importer")
@@ -69,13 +69,13 @@ sleep 1;
 # Loading AAAAAAA-changes
 `bin/load_ivil -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAA-changes.ivil.xml`;
 is($?,0,"Command executed ok");
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_has("/6")
     ->json_hasnt("/7")
 ;
 foreach my $id ( (1..3) ) {
-    $t->get_ok("/workspace/100/finding/$id/history")
+    $t->get_ok("/api/workspace/100/finding/$id/history")
         ->status_is(200)
     ;
     if ( $id == 1 ) {
@@ -100,7 +100,7 @@ foreach my $id ( (1..3) ) {
 }
 
 foreach my $id ( 4..7 ) {
-    $t->get_ok("/workspace/100/finding/$id/history")
+    $t->get_ok("/api/workspace/100/finding/$id/history")
         ->status_is(200)
         ->json_is("/0/user","importer","Change 1 is made by importer")
         ->json_is("/1/user","importer","Change 2 is made by importer")
@@ -111,20 +111,20 @@ foreach my $id ( 4..7 ) {
     ;
 }
 
-$t->put_ok('/workspace/100/finding/4', json => { status => 1 })->status_is(200);
-$t->put_ok('/workspace/100/finding/5', json => { status => 2 })->status_is(200);
-$t->put_ok('/workspace/100/finding/6', json => { status => 1, remark => "test" })->status_is(200);
-$t->put_ok('/workspace/100/finding/7', json => { status => 2, remark => "test" })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/4', json => { status => 1 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/5', json => { status => 2 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/6', json => { status => 1, remark => "test" })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/7', json => { status => 2, remark => "test" })->status_is(200);
 
 foreach my $id ( 1..4 ) {
-    $t->get_ok("/workspace/100/finding/$id/history")
+    $t->get_ok("/api/workspace/100/finding/$id/history")
         ->status_is(200)
         ->json_has("/1")
         ->json_hasnt("/2")
     ;
 }
 foreach my $id ( 5..7 ) {
-    $t->get_ok("/workspace/100/finding/$id/history")
+    $t->get_ok("/api/workspace/100/finding/$id/history")
         ->status_is(200)
         ->json_has("/2")
         ->json_hasnt("/3")
@@ -161,11 +161,11 @@ foreach my $id ( 5..7 ) {
     }
 }
 
-$t->get_ok("/workspace/100/findings")
+$t->get_ok("/api/workspace/100/findings")
     ->status_is(200)
 ;
 foreach my $f ( @{$t->{tx}->res()->json()} ) {
-    $t->get_ok("/workspace/100/finding/$f->{id}/history")
+    $t->get_ok("/api/workspace/100/finding/$f->{id}/history")
         ->status_is(200)
     ;
     foreach my $key ( qw(finding severity status remark run) ) {

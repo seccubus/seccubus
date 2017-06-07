@@ -24,7 +24,7 @@ use lib "lib";
 my $t = Test::Mojo->new('Seccubus');
 $t->get_ok('/')
 	->status_is(302)
-	->header_is("location" => 'seccubus/login.html')
+	->header_is("location" => 'seccubus/seccubus.html')
 	->header_is("X-Clacks-Overhead" => 'GNU Terry Pratchett')
 	->header_is("X-Frame-Options" => "DENY")
 	->header_is("x-xss-protection" => "1; 'mode=block'")

@@ -74,7 +74,7 @@ $.Controller('Seccubus.Notification.Table',
 					}
 				)
 			);
-		} else if ( this.options.workspace  == -1 ) {
+		} else if ( this.options.workspace === -1 ) {
 			console.warn("Seccubus.Notification.Table: workspace is not set");
 			this.element.html(
 				this.view(

@@ -39,24 +39,24 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
 # List empty
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
 	->status_is(200)
 	->json_hasnt("/0")
 	;
 
 # Create
-$t->post_ok('/workspaces', json => { 'name' => 'workspace1'})
+$t->post_ok('/api/workspaces', json => { 'name' => 'workspace1'})
 	->status_is(200)
 	->json_is('/name','workspace1')
 	->json_is('/id',100)
 	;
 # List one
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
 	->status_is(200)
 	->json_has("/0")
 	->json_is('/0/id',100)
@@ -65,12 +65,12 @@ $t->get_ok('/workspaces')
 	;
 
 # Create duplicate
-$t->post_ok('/workspaces', json => { 'name' => 'workspace1'})
+$t->post_ok('/api/workspaces', json => { 'name' => 'workspace1'})
 	->status_is(400)
 	;
 
 # List one
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
 	->status_is(200)
 	->json_has("/0")
 	->json_is('/0/id',100)
@@ -79,12 +79,12 @@ $t->get_ok('/workspaces')
 	;
 
 # Create without name
-$t->post_ok('/workspaces', json => { 'names' => 'workspace2'})
+$t->post_ok('/api/workspaces', json => { 'names' => 'workspace2'})
 	->status_is(400)
 	;
 
 # List one
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
 	->status_is(200)
 	->json_has("/0")
 	->json_is('/0/id',100)
@@ -93,7 +93,7 @@ $t->get_ok('/workspaces')
 	;
 
 # Create with additional attributes
-$t->post_ok('/workspaces', json => { 'name' => 'workspace2', 'bla' => 'hottentottententententoonstelling'})
+$t->post_ok('/api/workspaces', json => { 'name' => 'workspace2', 'bla' => 'hottentottententententoonstelling'})
 	->status_is(200)
 	->json_is('/id',101)
 	->json_is('/name','workspace2')
@@ -101,7 +101,7 @@ $t->post_ok('/workspaces', json => { 'name' => 'workspace2', 'bla' => 'hottentot
 	;
 
 # List two
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
 	->status_is(200)
 	->json_has("/0")
 	->json_is('/0/id',100)
@@ -113,17 +113,17 @@ $t->get_ok('/workspaces')
 	;
 
 # Rename non-existent workspace
-$t->put_ok('/workspace/102', json => { name => 'aap'})
+$t->put_ok('/api/workspace/102', json => { name => 'aap'})
 	->status_is(400)
 	;
 
 # Rename to duplibate name
-$t->put_ok('/workspace/101', json => { name => 'workspace1'})
+$t->put_ok('/api/workspace/101', json => { name => 'workspace1'})
 	->status_is(400)
 	;
 
 # Rename ok
-$t->put_ok('/workspace/101', json => { name => 'aap'})
+$t->put_ok('/api/workspace/101', json => { name => 'aap'})
 	->status_is(200)
 	->json_is('/id',101)
 	->json_is('/name','aap')
@@ -131,7 +131,7 @@ $t->put_ok('/workspace/101', json => { name => 'aap'})
 	;
 
 # List two
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
 	->status_is(200)
 	->json_has("/0")
 	->json_is('/0/id',101)
@@ -143,7 +143,7 @@ $t->get_ok('/workspaces')
 	;
 
 # Rename additional attributes
-$t->put_ok('/workspace/101', json => { name => 'aap2', "bla" => "hottentottententententoonstelling"})
+$t->put_ok('/api/workspace/101', json => { name => 'aap2', "bla" => "hottentottententententoonstelling"})
 	->status_is(200)
 	->json_is('/id',101)
 	->json_is('/name','aap2')
@@ -151,7 +151,7 @@ $t->put_ok('/workspace/101', json => { name => 'aap2', "bla" => "hottentottenten
 	;
 
 # List two
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
 	->status_is(200)
 	->json_has("/0")
 	->json_is('/0/id',101)
@@ -163,7 +163,7 @@ $t->get_ok('/workspaces')
 	;
 
 # Rename to current name
-$t->put_ok('/workspace/101', json => { name => 'aap2' })
+$t->put_ok('/api/workspace/101', json => { name => 'aap2' })
 	->status_is(200)
 	->json_is('/id',101)
 	->json_is('/name','aap2')
@@ -171,7 +171,7 @@ $t->put_ok('/workspace/101', json => { name => 'aap2' })
 	;
 
 # List two
-$t->get_ok('/workspaces')
+$t->get_ok('/api/workspaces')
 	->status_is(200)
 	->json_has("/0")
 	->json_is('/0/id',101)

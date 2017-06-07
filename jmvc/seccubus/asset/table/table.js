@@ -14,21 +14,21 @@
  * limitations under the License.
  */
  steal(
-    'jquery/controller',
-    'jquery/view/ejs',
-    'jquery/controller/view',
-    'seccubus/models'
+    "jquery/controller",
+    "jquery/view/ejs",
+    "jquery/controller/view",
+    "seccubus/models"
 ).then(
-    './views/init.ejs',
-    './views/error.ejs',
-    './views/asset.ejs',
+    "./views/init.ejs",
+    "./views/error.ejs",
+    "./views/asset.ejs",
     function($){
         /**
          * @class Seccubus.Asset.Table
          * @parent Asset
          * @inherits jQuery.Controller
          */
-        $.Controller('Seccubus.Asset.Table',
+        $.Controller("Seccubus.Asset.Table",
         {
             /*
              * @attribute options
@@ -56,13 +56,13 @@
             init : function(){
                 this.updateView();
             },
-            '.edit click': function( el ){
-                var as = el.closest('.asset').model();
+            ".edit click": function( el ){
+                var as = el.closest(".asset").model();
                 this.options.onEdit(as);
             },
-            '.destroy click': function( el ){
+            ".destroy click": function( el ){
                 if(confirm("Are you sure you want to destroy?")){
-                    el.closest('.asset').model().destroy();
+                    el.closest(".asset").model().destroy();
                 }
             },
             "{Seccubus.Models.Asset} destroyed" : function(Asset, ev, asset) {
@@ -73,20 +73,20 @@
             },
             "{Seccubus.Models.Asset} updated" : function(Asset, ev, asset){
                 asset.elements(this.element)
-                    .html(this.view('asset', asset) );
+                    .html(this.view("asset", asset) );
             },
             updateView : function() {
                 if ( this.options.workspace == -1 ) {
                     this.element.html(
                         this.view(
-                            'error',
+                            "error",
                             {message : "No workspace selected" }
                         )
                     );
                 } else {
                     Seccubus.Models.Asset.findAll(
                         { workspace : this.options.workspace },
-                        this.callback('dataReady')
+                        this.callback("dataReady")
                     );
                 }
             },
@@ -94,7 +94,7 @@
                 $.map(items,function(item){
                 });
                 this.element.html(this.view(
-                    'init',
+                    "init",
                     items,
                     {selectedWorkspace : this.options.workspace }
                 ));

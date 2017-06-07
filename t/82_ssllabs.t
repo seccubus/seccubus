@@ -48,17 +48,17 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
 # Create
-$t->post_ok('/workspaces', json => { 'name' => 'test1'})
+$t->post_ok('/api/workspaces', json => { 'name' => 'test1'})
     ->status_is(200)
 ;
 
 # Create a scan
-$t->post_ok('/workspace/100/scans',
+$t->post_ok('/api/workspace/100/scans',
     json => {
         name          => 'ssl',
         scanner       => 'SSLlabs',
@@ -69,7 +69,7 @@ $t->post_ok('/workspace/100/scans',
 ;
 
 # Create gradeonly scan
-$t->post_ok('/workspace/100/scans',
+$t->post_ok('/api/workspace/100/scans',
     json => {
         name          => "gradeonly",
         scanner       => "SSLlabs",
@@ -80,7 +80,7 @@ $t->post_ok('/workspace/100/scans',
 ;
 
 # Create gradeonly scan that will fail
-$t->post_ok('/workspace/100/scans',
+$t->post_ok('/api/workspace/100/scans',
     json => {
         "name"          => "gradeonly_error",
         "scanner"       => "SSLlabs",
@@ -107,12 +107,12 @@ is($?,0,"Command executed ok");
 $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
 # We should have a lot of findings in scan 1
-$t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=1')
+$t->get_ok('/api/workspace/100/findings?Limit=-1&scanIds[]=1')
     ->status_is(200)
     ->json_has("/50", "Should have at least 50 findings in normal scan")
 ;
@@ -121,7 +121,7 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
 }
 
 # We should only have grade or gradeTrustIgnored plugins
-$t->get_ok('/workspace/100/findings?scanIds[]=2')
+$t->get_ok('/api/workspace/100/findings?scanIds[]=2')
     ->status_is(200)
 ;
 foreach my $f ( @{$t->{tx}->res()->json()} ) {
@@ -130,7 +130,7 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
 
 
 # We should only have ERROR or statusMessage plugins
-$t->get_ok('/workspace/100/findings?scanIds[]=3')
+$t->get_ok('/api/workspace/100/findings?scanIds[]=3')
     ->status_is(200)
 ;
 foreach my $f ( @{$t->{tx}->res()->json()} ) {

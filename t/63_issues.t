@@ -41,7 +41,7 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
@@ -50,7 +50,7 @@ pass("Importing ssllabs-seccubus scan");
 is($?,0,"Import ran ok");
 
 # Invalid workspace
-$t->post_ok('/workspace/a/issues',
+$t->post_ok('/api/workspace/a/issues',
     json => {
         "description"=> "This is a test",
         "ext_ref"=> "test-123",
@@ -63,12 +63,12 @@ $t->post_ok('/workspace/a/issues',
     ->json_is('/status', 'Error')
     ->json_has('/message')
     ;
-$t->get_ok('/workspace/100/issues')
+$t->get_ok('/api/workspace/100/issues')
     ->status_is(200)
     ->json_is([])
     ;
 
-$t->post_ok('/workspace/1000/issues',
+$t->post_ok('/api/workspace/1000/issues',
     json => {
         "description"=> "This is a test",
         "ext_ref"=> "test-123",
@@ -81,13 +81,13 @@ $t->post_ok('/workspace/1000/issues',
     ->json_is('/status', 'Error')
     ->json_has('/message')
     ;
-$t->get_ok('/workspace/100/issues')
+$t->get_ok('/api/workspace/100/issues')
     ->status_is(200)
     ->json_is([])
     ;
 
 # Missing name
-$t->post_ok('/workspace/100/issues',
+$t->post_ok('/api/workspace/100/issues',
     json => {
         "description"=> "This is a test",
         "ext_ref"=> "test-123",
@@ -100,13 +100,13 @@ $t->post_ok('/workspace/100/issues',
     ->json_is('/status', 'Error')
     ->json_has('/message')
     ;
-$t->get_ok('/workspace/100/issues')
+$t->get_ok('/api/workspace/100/issues')
     ->status_is(200)
     ->json_is([])
     ;
 
 # Invaid status
-$t->post_ok('/workspace/100/issues',
+$t->post_ok('/api/workspace/100/issues',
     json => {
         "description"=> "This is a test",
         "ext_ref"=> "test-123",
@@ -119,13 +119,13 @@ $t->post_ok('/workspace/100/issues',
     ->json_is('/status', 'Error')
     ->json_has('/message')
     ;
-$t->get_ok('/workspace/100/issues')
+$t->get_ok('/api/workspace/100/issues')
     ->status_is(200)
     ->json_is([])
     ;
 
 # Invalid severity
-$t->post_ok('/workspace/100/issues',
+$t->post_ok('/api/workspace/100/issues',
     json => {
         "description"=> "This is a test",
         "ext_ref"=> "test-123",
@@ -138,13 +138,13 @@ $t->post_ok('/workspace/100/issues',
     ->json_is('/status', 'Error')
     ->json_has('/message')
     ;
-$t->get_ok('/workspace/100/issues')
+$t->get_ok('/api/workspace/100/issues')
     ->status_is(200)
     ->json_is([])
     ;
 
 # Created issue without findings
-$t->post_ok('/workspace/100/issues',
+$t->post_ok('/api/workspace/100/issues',
     json => {
         "description"=> "This is a test",
         "ext_ref"=> "test-123",
@@ -163,7 +163,7 @@ $t->post_ok('/workspace/100/issues',
         "status" => "1",
     })
     ;
-$t->get_ok('/workspace/100/issues')
+$t->get_ok('/api/workspace/100/issues')
     ->status_is(200)
     ->json_is([
         {
@@ -182,7 +182,7 @@ $t->get_ok('/workspace/100/issues')
     ;
 
 # Cannot update invalid workspace
-$t->put_ok('/workspace/a/issue/2',
+$t->put_ok('/api/workspace/a/issue/2',
     json => {
         "id" => 2,
         "description"=> "This is an updated test",
@@ -196,7 +196,7 @@ $t->put_ok('/workspace/a/issue/2',
     ->json_has('/message')
     ;
 
-$t->put_ok('/workspace/101/issue/2',
+$t->put_ok('/api/workspace/101/issue/2',
     json => {
         "id" => 2,
         "description"=> "This is an updated test",
@@ -210,7 +210,7 @@ $t->put_ok('/workspace/101/issue/2',
     ->json_has('/message')
     ;
 
-$t->put_ok('/workspace/100/issue/2',
+$t->put_ok('/api/workspace/100/issue/2',
     json => {
         "id" => 3,
         "description"=> "This is an updated test",
@@ -232,7 +232,7 @@ $t->put_ok('/workspace/100/issue/2',
     })
     ;
 
-$t->get_ok('/workspace/100/issues')
+$t->get_ok('/api/workspace/100/issues')
     ->status_is(200)
     ->json_is([
         {
@@ -251,7 +251,7 @@ $t->get_ok('/workspace/100/issues')
     ;
 
 # Reset and create findings
-$t->put_ok('/workspace/100/issue/2',
+$t->put_ok('/api/workspace/100/issue/2',
     json => {
         "id" => 2,
         "description" => "This is a test",
@@ -274,7 +274,7 @@ $t->put_ok('/workspace/100/issue/2',
     })
     ;
 
-$t->get_ok('/workspace/100/issues')
+$t->get_ok('/api/workspace/100/issues')
     ->status_is(200)
     ->json_is([
         {
@@ -340,7 +340,7 @@ $t->get_ok('/workspace/100/issues')
     ;
 
 # Reset and remove one finding
-$t->put_ok('/workspace/100/issue/2',
+$t->put_ok('/api/workspace/100/issue/2',
     json => {
         "id" => 2,
         "description" => "This is a test",
@@ -363,7 +363,7 @@ $t->put_ok('/workspace/100/issue/2',
     })
     ;
 
-$t->get_ok('/workspace/100/issues')
+$t->get_ok('/api/workspace/100/issues')
     ->status_is(200)
     ->json_is([
         {
@@ -414,7 +414,7 @@ $t->get_ok('/workspace/100/issues')
     ;
 
 # Reset and remove all findings
-$t->put_ok('/workspace/100/issue/2',
+$t->put_ok('/api/workspace/100/issue/2',
     json => {
         "id" => 2,
         "description" => "This is a test",
@@ -437,7 +437,7 @@ $t->put_ok('/workspace/100/issue/2',
     })
     ;
 
-$t->get_ok('/workspace/100/issues')
+$t->get_ok('/api/workspace/100/issues')
     ->status_is(200)
     ->json_is([
         {
@@ -457,7 +457,7 @@ $t->get_ok('/workspace/100/issues')
     ;
 
 # Created issue with findings
-$t->post_ok('/workspace/100/issues',
+$t->post_ok('/api/workspace/100/issues',
     json => {
         "description"=> "This is a test with findings",
         "ext_ref"=> "test-456",
@@ -477,7 +477,7 @@ $t->post_ok('/workspace/100/issues',
         "status" => "1",
     })
     ;
-$t->get_ok('/workspace/100/issues')
+$t->get_ok('/api/workspace/100/issues')
     ->status_is(200)
     ->json_is([
         {
@@ -555,7 +555,7 @@ $t->get_ok('/workspace/100/issues')
     ;
 
 # Get findings for a specific issue
-$t->get_ok('/workspace/100/findings?Issue=3')
+$t->get_ok('/api/workspace/100/findings?Issue=3')
     ->status_is(200)
     ->json_is([
         {
@@ -645,40 +645,40 @@ $t->get_ok('/workspace/100/findings?Issue=3')
     ])
     ;
 
-$t->get_ok('/workspace/100/findings?Issue=2')
+$t->get_ok('/api/workspace/100/findings?Issue=2')
     ->status_is(200)
     ->json_is([])
     ;
 
 # Issue History
 # Invalid workspace
-$t->get_ok('/workspace/a/issue/2/history')
+$t->get_ok('/api/workspace/a/issue/2/history')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
     ;
 
 # Invalid issue
-$t->get_ok('/workspace/100/issue/a/history')
+$t->get_ok('/api/workspace/100/issue/a/history')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
     ;
 
 # Invalid combination
-$t->get_ok('/workspace/101/issue/2/history')
+$t->get_ok('/api/workspace/101/issue/2/history')
     ->status_is(200)
     ->json_is([])
     ;
 
 # Invalid combination
-$t->get_ok('/workspace/100/issue/1/history')
+$t->get_ok('/api/workspace/100/issue/1/history')
     ->status_is(200)
     ->json_is([])
     ;
 
 # OK
-$t->get_ok('/workspace/100/issue/2/history')
+$t->get_ok('/api/workspace/100/issue/2/history')
     ->status_is(200)
     ->json_has('/0')
     ->json_has('/1')
@@ -709,7 +709,7 @@ $t->get_ok('/workspace/100/issue/2/history')
     ->json_has('/1/timestamp')
     ;
 
-$t->get_ok('/workspace/100/issue/3/history')
+$t->get_ok('/api/workspace/100/issue/3/history')
     ->status_is(200)
     ->json_has('/0')
     ->json_hasnt('/1')

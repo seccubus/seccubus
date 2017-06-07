@@ -97,8 +97,10 @@ function($){
 		} else {
 
 			Seccubus.Models.Assethost.findAll(
-				{ workspace : this.options.workspace,
-				  asset : this.options.asset },
+				{
+                    workspace : this.options.workspace,
+                    asset : this.options.asset
+                },
 				this.callback('dataReady')
 			);
 		}

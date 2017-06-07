@@ -39,31 +39,31 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
 # List empty
-$t->get_ok('/sql')
+$t->get_ok('/api/sql')
 	->status_is(200)
 	->json_hasnt("/0")
 	;
 
 # Create failed
-$t->post_ok('/sql', json => { 'name' => 'name'})
+$t->post_ok('/api/sql', json => { 'name' => 'name'})
 	->status_is(400)
     ->json_is('/status','Error')
 	->json_has('/message')
 ;
 
-$t->post_ok('/sql', json => { 'sql' => 'sql'})
+$t->post_ok('/api/sql', json => { 'sql' => 'sql'})
     ->status_is(400)
     ->json_is('/status','Error')
     ->json_has('/message')
 ;
 
 # Create ok
-$t->post_ok('/sql', json => { name => 'name', sql => 'sql'})
+$t->post_ok('/api/sql', json => { name => 'name', sql => 'sql'})
     ->status_is(200)
     ->json_is({
         id => 1,
@@ -73,7 +73,7 @@ $t->post_ok('/sql', json => { name => 'name', sql => 'sql'})
 ;
 
 # List one
-$t->get_ok('/sql')
+$t->get_ok('/api/sql')
 	->status_is(200)
 	->json_has("/0")
 	->json_is([
@@ -87,7 +87,7 @@ $t->get_ok('/sql')
 ;
 
 # Create with additional attributes
-$t->post_ok('/sql', json => { 'name' => 'name', sql => "sql", 'bla' => 'hottentottententententoonstelling'})
+$t->post_ok('/api/sql', json => { 'name' => 'name', sql => "sql", 'bla' => 'hottentottententententoonstelling'})
 	->status_is(200)
     ->json_is({
         id => 2,
@@ -97,7 +97,7 @@ $t->post_ok('/sql', json => { 'name' => 'name', sql => "sql", 'bla' => 'hottento
 ;
 
 # List two
-$t->get_ok('/sql')
+$t->get_ok('/api/sql')
 	->status_is(200)
     ->json_is([
         {
@@ -115,14 +115,14 @@ $t->get_ok('/sql')
 ;
 
 # Rename non-existent
-$t->put_ok('/sql/3', json => { name => 'aap', sql => 'aap'})
+$t->put_ok('/api/sql/3', json => { name => 'aap', sql => 'aap'})
 	->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
 
 # Rename ok
-$t->put_ok('/sql/2', json => { name => 'aap', sql => 'aap'})
+$t->put_ok('/api/sql/2', json => { name => 'aap', sql => 'aap'})
     ->status_is(200)
     ->json_is(
         {
@@ -134,7 +134,7 @@ $t->put_ok('/sql/2', json => { name => 'aap', sql => 'aap'})
 ;
 
 # List two
-$t->get_ok('/sql')
+$t->get_ok('/api/sql')
     ->status_is(200)
     ->json_is([
         {

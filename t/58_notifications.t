@@ -42,12 +42,12 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
 # Create Workspace
-$t->post_ok('/workspaces',
+$t->post_ok('/api/workspaces',
 	json => {
 		'name' 			=> 'workspace1',
 	})
@@ -57,7 +57,7 @@ $t->post_ok('/workspaces',
 	;
 
 # Create scan
-$t->post_ok('/workspace/100/scans',
+$t->post_ok('/api/workspace/100/scans',
 	json => {
 		'name' 			=> 'ssl',
 		'scanner'		=> 'SSLlabs',
@@ -70,7 +70,7 @@ $t->post_ok('/workspace/100/scans',
 	;
 
 # Create scan
-$t->post_ok('/workspace/100/scans',
+$t->post_ok('/api/workspace/100/scans',
 	json => {
 		'name' 			=> 'ssl2',
 		'scanner'		=> 'SSLlabs',
@@ -83,7 +83,7 @@ $t->post_ok('/workspace/100/scans',
 	;
 
 # Cannot create notification for non-existing workspace
-$t->post_ok('/workspace/101/scan/1/notifications',
+$t->post_ok('/api/workspace/101/scan/1/notifications',
 	json => {
 		trigger => 1,
 		subject => "test1",
@@ -96,7 +96,7 @@ $t->post_ok('/workspace/101/scan/1/notifications',
 	;
 
 # Cannot create notification for non-existing workspace
-$t->post_ok('/workspace/100/scan/3/notifications',
+$t->post_ok('/api/workspace/100/scan/3/notifications',
 	json => {
 		trigger => 1,
 		subject => "test1",
@@ -109,7 +109,7 @@ $t->post_ok('/workspace/100/scan/3/notifications',
 	;
 
 # Cannot create notification for non-existing trigger
-$t->post_ok('/workspace/100/scan/1/notifications',
+$t->post_ok('/api/workspace/100/scan/1/notifications',
 	json => {
 		trigger => 0,
 		subject => "test1",
@@ -121,7 +121,7 @@ $t->post_ok('/workspace/100/scan/1/notifications',
 	->json_has('/message')
 	;
 
-$t->post_ok('/workspace/100/scan/4/notifications',
+$t->post_ok('/api/workspace/100/scan/4/notifications',
 	json => {
 		trigger => 0,
 		subject => "test1",
@@ -133,7 +133,7 @@ $t->post_ok('/workspace/100/scan/4/notifications',
 	->json_has('/message')
 	;
 
-$t->post_ok('/workspace/100/scan/a/notifications',
+$t->post_ok('/api/workspace/100/scan/a/notifications',
 	json => {
 		trigger => 0,
 		subject => "test1",
@@ -146,7 +146,7 @@ $t->post_ok('/workspace/100/scan/a/notifications',
 	;
 
 # Cannot create without subject
-$t->post_ok('/workspace/100/scan/1/notifications',
+$t->post_ok('/api/workspace/100/scan/1/notifications',
 	json => {
 		trigger => 0,
 		recipients => 'root@example.com',
@@ -158,7 +158,7 @@ $t->post_ok('/workspace/100/scan/1/notifications',
 	;
 
 # Cannot create without recipient
-$t->post_ok('/workspace/100/scan/1/notifications',
+$t->post_ok('/api/workspace/100/scan/1/notifications',
 	json => {
 		trigger => 0,
 		subject => "test1",
@@ -170,7 +170,7 @@ $t->post_ok('/workspace/100/scan/1/notifications',
 	;
 
 # Cannot create without message
-$t->post_ok('/workspace/100/scan/1/notifications',
+$t->post_ok('/api/workspace/100/scan/1/notifications',
 	json => {
 		trigger => 0,
 		subject => "test1",
@@ -182,7 +182,7 @@ $t->post_ok('/workspace/100/scan/1/notifications',
 	;
 
 # Cannot create without trigger
-$t->post_ok('/workspace/100/scan/1/notifications',
+$t->post_ok('/api/workspace/100/scan/1/notifications',
 	json => {
 		subject => "test1",
 		recipients => 'root@example.com',
@@ -194,7 +194,7 @@ $t->post_ok('/workspace/100/scan/1/notifications',
 	;
 
 # Create one tigger 1
-$t->post_ok('/workspace/100/scan/1/notifications',
+$t->post_ok('/api/workspace/100/scan/1/notifications',
 	json => {
 		subject => "test1",
 		recipients => 'root@example.com',
@@ -213,7 +213,7 @@ $t->post_ok('/workspace/100/scan/1/notifications',
 	;
 
 # Create one tigger 2
-$t->post_ok('/workspace/100/scan/1/notifications',
+$t->post_ok('/api/workspace/100/scan/1/notifications',
 	json => {
 		subject => "test2",
 		recipients => 'root@example.com',
@@ -231,7 +231,7 @@ $t->post_ok('/workspace/100/scan/1/notifications',
 	})
 	;
 # Create one tigger 3
-$t->post_ok('/workspace/100/scan/1/notifications',
+$t->post_ok('/api/workspace/100/scan/1/notifications',
 	json => {
 		subject => "test3",
 		recipients => 'root@example.com',
@@ -250,7 +250,7 @@ $t->post_ok('/workspace/100/scan/1/notifications',
 	;
 
 # Three notifications for scan 1
-$t->get_ok('/workspace/100/scan/1/notifications')
+$t->get_ok('/api/workspace/100/scan/1/notifications')
 	->status_is(200)
 	->json_has("/2")
 	->json_is([
@@ -291,19 +291,19 @@ like($output, qr/Sending notifications for scan end\.\.\.\r?\n?\-?1 notification
 
 
 # No notifications for scan 2
-$t->get_ok('/workspace/100/scan/2/notifications')
+$t->get_ok('/api/workspace/100/scan/2/notifications')
 	->status_is(200)
 	->json_is([])
 	;
 
 # No notifications for scan 1 in wrong workspace
-$t->get_ok('/workspace/101/scan/1/notifications')
+$t->get_ok('/api/workspace/101/scan/1/notifications')
 	->status_is(200)
 	->json_is([])
 	;
 
 # Can read individual notifications
-$t->get_ok('/workspace/100/scan/1/notification/1')
+$t->get_ok('/api/workspace/100/scan/1/notification/1')
 	->status_is(200)
 	->json_is(
 		{
@@ -317,7 +317,7 @@ $t->get_ok('/workspace/100/scan/1/notification/1')
 	)
 	;
 
-$t->get_ok('/workspace/100/scan/1/notification/2')
+$t->get_ok('/api/workspace/100/scan/1/notification/2')
 	->status_is(200)
 	->json_is(
 		{
@@ -331,7 +331,7 @@ $t->get_ok('/workspace/100/scan/1/notification/2')
 	)
 	;
 
-$t->get_ok('/workspace/100/scan/1/notification/3')
+$t->get_ok('/api/workspace/100/scan/1/notification/3')
 	->status_is(200)
 	->json_is(
 		{
@@ -346,7 +346,7 @@ $t->get_ok('/workspace/100/scan/1/notification/3')
 	;
 
 # Update
-$t->put_ok('/workspace/100/scan/1/notification/1',
+$t->put_ok('/api/workspace/100/scan/1/notification/1',
 	json => {
 			id => 1,
 			subject => "test4",
@@ -368,7 +368,7 @@ $t->put_ok('/workspace/100/scan/1/notification/1',
 	;
 
 # Can read individual notifications
-$t->get_ok('/workspace/100/scan/1/notification/1')
+$t->get_ok('/api/workspace/100/scan/1/notification/1')
 	->status_is(200)
 	->json_is(
 		{
@@ -383,7 +383,7 @@ $t->get_ok('/workspace/100/scan/1/notification/1')
 	;
 
 # Three notifications for scan 1
-$t->get_ok('/workspace/100/scan/1/notifications')
+$t->get_ok('/api/workspace/100/scan/1/notifications')
 	->status_is(200)
 	->json_has("/2")
 	->json_is([
@@ -415,7 +415,7 @@ $t->get_ok('/workspace/100/scan/1/notifications')
 	;
 
 # Cannot update to empty subject
-$t->put_ok('/workspace/100/scan/1/notification/1',
+$t->put_ok('/api/workspace/100/scan/1/notification/1',
 	json => {
 			id => 1,
 			recipients => 'toor@example.com',
@@ -428,7 +428,7 @@ $t->put_ok('/workspace/100/scan/1/notification/1',
 	;
 
 # Cannot update to empty recipients
-$t->put_ok('/workspace/100/scan/1/notification/1',
+$t->put_ok('/api/workspace/100/scan/1/notification/1',
 	json => {
 			id => 1,
 			subject => "test4",
@@ -441,7 +441,7 @@ $t->put_ok('/workspace/100/scan/1/notification/1',
 	;
 
 # Cannot update to empty message
-$t->put_ok('/workspace/100/scan/1/notification/1',
+$t->put_ok('/api/workspace/100/scan/1/notification/1',
 	json => {
 			id => 1,
 			subject => "test4",
@@ -454,7 +454,7 @@ $t->put_ok('/workspace/100/scan/1/notification/1',
 	;
 
 # Cannot update to non existing trigger
-$t->put_ok('/workspace/100/scan/1/notification/1',
+$t->put_ok('/api/workspace/100/scan/1/notification/1',
 	json => {
 			id => 1,
 			subject => "test4",
@@ -467,7 +467,7 @@ $t->put_ok('/workspace/100/scan/1/notification/1',
 	->json_has("/message")
 	;
 
-$t->put_ok('/workspace/100/scan/1/notification/1',
+$t->put_ok('/api/workspace/100/scan/1/notification/1',
 	json => {
 			id => 1,
 			subject => "test4",
@@ -480,7 +480,7 @@ $t->put_ok('/workspace/100/scan/1/notification/1',
 	->json_has("/message")
 	;
 
-$t->put_ok('/workspace/100/scan/1/notification/1',
+$t->put_ok('/api/workspace/100/scan/1/notification/1',
 	json => {
 			id => 1,
 			subject => "test4",
@@ -494,7 +494,7 @@ $t->put_ok('/workspace/100/scan/1/notification/1',
 	;
 
 # Cannot update non-existing notification
-$t->put_ok('/workspace/100/scan/5/notification/5',
+$t->put_ok('/api/workspace/100/scan/5/notification/5',
 	json => {
 			id => 1,
 			subject => "test4",
@@ -508,14 +508,14 @@ $t->put_ok('/workspace/100/scan/5/notification/5',
 	;
 
 # Can delete a notification
-$t->delete_ok('/workspace/100/scan/1/notification/1')
+$t->delete_ok('/api/workspace/100/scan/1/notification/1')
 	->status_is(200)
 	->json_is("/status", "OK")
 	->json_has("/message")
 	;
 
 # Two notifications for scan 1
-$t->get_ok('/workspace/100/scan/1/notifications')
+$t->get_ok('/api/workspace/100/scan/1/notifications')
 	->status_is(200)
 	->json_is([
 		{
@@ -537,13 +537,13 @@ $t->get_ok('/workspace/100/scan/1/notifications')
 	])
 	;
 
-$t->get_ok('/workspace/100/scan/1/notification/1')
+$t->get_ok('/api/workspace/100/scan/1/notification/1')
 	->status_is(400)
 	->json_is("/status", "Error")
 	->json_has("/message")
 	;
 
-$t->delete_ok('/workspace/100/scan/1/notification/1')
+$t->delete_ok('/api/workspace/100/scan/1/notification/1')
 	->status_is(400)
 	->json_is("/status", "Error")
 	->json_has("/message")

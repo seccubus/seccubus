@@ -43,14 +43,14 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
 pass("Importing ssllabs-seccubus scan");
 `bin/load_ivil -w findings -s seccubus -t 20170101000000 --scanner SSLlabs testdata/ssllabs-seccubus.ivil.xml`;
 
-$t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=1')
+$t->get_ok('/api/workspace/100/findings?Limit=-1&scanIds[]=1')
     ->status_is(200)
     ;
 my $scan1 = $t->{tx}->res()->json();
@@ -58,19 +58,19 @@ is(@$scan1,97,"97 Elements returned");
 
 # Update first 25 findings
 my @ids = ( 1..25 );
-$t->put_ok('/workspace/100/findings' => json => { ids => \@ids, status => 4, remark => "Setting to open" })
+$t->put_ok('/api/workspace/100/findings' => json => { ids => \@ids, status => 4, remark => "Setting to open" })
     ->status_is(200)
     ->json_is(\@ids)
     ;
 
 # Check parameter checking
-$t->get_ok('/workspace/a/finding/1/history')
+$t->get_ok('/api/workspace/a/finding/1/history')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
     ;
 
-$t->get_ok('/workspace/100/finding/a/history')
+$t->get_ok('/api/workspace/100/finding/a/history')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
@@ -78,7 +78,7 @@ $t->get_ok('/workspace/100/finding/a/history')
 
 # First 25 findings should have 2 history records
 for my $x (1..25) {
-    $t->get_ok("/workspace/100/finding/$x/history")
+    $t->get_ok("/api/workspace/100/finding/$x/history")
         ->status_is(200)
         ->json_is('/0/status',4)
         ->json_is('/1/status',1)
@@ -88,7 +88,7 @@ for my $x (1..25) {
 
 # Other findings should have 1 history records
 for my $x (26..97) {
-   $t->get_ok("/workspace/100/finding/$x/history")
+   $t->get_ok("/api/workspace/100/finding/$x/history")
         ->status_is(200)
         ->json_is('/0/status',1)
         ->json_hasnt('/1')

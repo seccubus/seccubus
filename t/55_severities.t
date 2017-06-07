@@ -39,12 +39,12 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
 # List empty
-$t->get_ok('/severities')
+$t->get_ok('/api/severities')
 	->status_is(200)
 	->json_is([
 	    {

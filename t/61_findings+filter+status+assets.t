@@ -40,7 +40,7 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
@@ -62,25 +62,25 @@ is($?,0,"Import ran ok");
 
 
 # Should fail with non numeric workspace
-$t->get_ok('/workspace/a/findings')
+$t->get_ok('/api/workspace/a/findings')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
 ;
 
-$t->get_ok('/workspace/a/filters')
+$t->get_ok('/api/workspace/a/filters')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
 ;
 
-$t->get_ok('/workspace/a/status')
+$t->get_ok('/api/workspace/a/status')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
 ;
 
-$t->get_ok('/workspace/a/assets')
+$t->get_ok('/api/workspace/a/assets')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
@@ -89,14 +89,14 @@ $t->get_ok('/workspace/a/assets')
 # Testing asset creation
 
 # No parameters
-$t->post_ok('/workspace/100/assets')
+$t->post_ok('/api/workspace/100/assets')
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
 ;
 
 # Name missing
-$t->post_ok('/workspace/100/assets',
+$t->post_ok('/api/workspace/100/assets',
     json => {
         hosts => "localhost",
         recipients => "root\@example.com"
@@ -107,13 +107,13 @@ $t->post_ok('/workspace/100/assets',
 ;
 
 # Should get empty list
-$t->get_ok('/workspace/100/assets')
+$t->get_ok('/api/workspace/100/assets')
     ->status_is(200)
     ->json_is([])
 ;
 
 # ok
-$t->post_ok('/workspace/100/assets',
+$t->post_ok('/api/workspace/100/assets',
     json => {
         name => "localhost",
         hosts => "localhost",
@@ -130,7 +130,7 @@ $t->post_ok('/workspace/100/assets',
 ;
 
 # Should list with single item
-$t->get_ok('/workspace/100/assets')
+$t->get_ok('/api/workspace/100/assets')
     ->status_is(200)
     ->json_is([{
         id => 1,
@@ -143,7 +143,7 @@ $t->get_ok('/workspace/100/assets')
 ;
 
 # duplicate
-$t->post_ok('/workspace/100/assets',
+$t->post_ok('/api/workspace/100/assets',
     json => {
         name => "localhost",
         hosts => "localhost",
@@ -155,7 +155,7 @@ $t->post_ok('/workspace/100/assets',
     ;
 
 # Should list with single item
-$t->get_ok('/workspace/100/assets')
+$t->get_ok('/api/workspace/100/assets')
     ->status_is(200)
     ->json_is([{
         id => 1,
@@ -168,7 +168,7 @@ $t->get_ok('/workspace/100/assets')
 ;
 
 # add more
-$t->post_ok('/workspace/100/assets',
+$t->post_ok('/api/workspace/100/assets',
     json => {
         name => "v2",
         hosts => "v2.seccubus.com",
@@ -185,7 +185,7 @@ $t->post_ok('/workspace/100/assets',
 ;
 
 # Should list with two items
-$t->get_ok('/workspace/100/assets')
+$t->get_ok('/api/workspace/100/assets')
     ->status_is(200)
     ->json_is([
         {
@@ -210,7 +210,7 @@ $t->get_ok('/workspace/100/assets')
 # Updating assets
 
 # Non numeric workspace
-$t->put_ok('/workspace/a/asset/2',
+$t->put_ok('/api/workspace/a/asset/2',
     json => {
         name => "v3",
         hosts => "v3.seccubus.com",
@@ -222,7 +222,7 @@ $t->put_ok('/workspace/a/asset/2',
 ;
 
 # Non numeric asset
-$t->put_ok('/workspace/100/asset/a',
+$t->put_ok('/api/workspace/100/asset/a',
     json => {
         name => "v3",
         hosts => "v3.seccubus.com",
@@ -234,7 +234,7 @@ $t->put_ok('/workspace/100/asset/a',
 ;
 
 # empty name
-$t->put_ok('/workspace/100/asset/2',
+$t->put_ok('/api/workspace/100/asset/2',
     json => {
         hosts => "v3.seccubus.com",
         recipients => "toor\@example.com"
@@ -245,7 +245,7 @@ $t->put_ok('/workspace/100/asset/2',
 ;
 
 # Duplicate name
-$t->put_ok('/workspace/100/asset/2',
+$t->put_ok('/api/workspace/100/asset/2',
     json => {
         name => "localhost",
         hosts => "v3.seccubus.com",
@@ -258,7 +258,7 @@ $t->put_ok('/workspace/100/asset/2',
 
 # Non-existant
 # Duplicate name
-$t->put_ok('/workspace/100/asset/3',
+$t->put_ok('/api/workspace/100/asset/3',
     json => {
         name => "v3",
         hosts => "v3.seccubus.com",
@@ -271,7 +271,7 @@ $t->put_ok('/workspace/100/asset/3',
 
 
 # OK
-$t->put_ok('/workspace/100/asset/2',
+$t->put_ok('/api/workspace/100/asset/2',
     json => {
         name => "v3",
         hosts => "v3.seccubus.com",
@@ -288,7 +288,7 @@ $t->put_ok('/workspace/100/asset/2',
 ;
 
 # Should list with two items
-$t->get_ok('/workspace/100/assets')
+$t->get_ok('/api/workspace/100/assets')
     ->status_is(200)
     ->json_is([
         {
@@ -311,24 +311,24 @@ $t->get_ok('/workspace/100/assets')
 ;
 
 # Testing limit in findings
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
 ;
 is(@{$t->{tx}->res()->json()},200,"200 Elements returned");
 
-$t->get_ok('/workspace/100/findings?Limit=-1')
+$t->get_ok('/api/workspace/100/findings?Limit=-1')
     ->status_is(200)
 ;
 is(@{$t->{tx}->res()->json()},324,"324 Elements returned");
 
 # Should get no findings if scanId doesn't exist
-$t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=54345')
+$t->get_ok('/api/workspace/100/findings?Limit=-1&scanIds[]=54345')
     ->status_is(200)
     ->json_is([])
 ;
 
 # Should get empty filter too
-$t->get_ok('/workspace/100/filters?scanIds[]=54345')
+$t->get_ok('/api/workspace/100/filters?scanIds[]=54345')
     ->status_is(200)
     ->json_is(
         {"finding"=>"","host"=>[{"name"=>"*","number"=>0,"selected"=>JSON::false},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"hostname"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"issue"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"plugin"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"port"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"remark"=>"","severity"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}]}
@@ -336,7 +336,7 @@ $t->get_ok('/workspace/100/filters?scanIds[]=54345')
 ;
 
 # Same for status
-$t->get_ok('/workspace/100/status?scanIds[]=54345')
+$t->get_ok('/api/workspace/100/status?scanIds[]=54345')
     ->status_is(200)
     ->json_is(
         [{"count"=>"0","id"=>"1","name"=>"New"},{"count"=>"0","id"=>"2","name"=>"Changed"},{"count"=>"0","id"=>"3","name"=>"Open"},{"count"=>"0","id"=>"4","name"=>"No issue"},{"count"=>"0","id"=>"5","name"=>"Gone"},{"count"=>"0","id"=>"6","name"=>"Closed"},{"count"=>"0","id"=>"99","name"=>"MASKED"}]
@@ -344,37 +344,37 @@ $t->get_ok('/workspace/100/status?scanIds[]=54345')
 ;
 
 # Should fetch enough findings
-$t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=1')
+$t->get_ok('/api/workspace/100/findings?Limit=-1&scanIds[]=1')
     ->status_is(200)
     ;
 my $scan1 = $t->{tx}->res()->json();
 is(@$scan1,97,"97 Elements returned");
 
-$t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=2')
+$t->get_ok('/api/workspace/100/findings?Limit=-1&scanIds[]=2')
     ->status_is(200)
     ;
 my $scan2 = $t->{tx}->res()->json();
 is(@$scan2,185,"185 Elements returned");
 
-$t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=3')
+$t->get_ok('/api/workspace/100/findings?Limit=-1&scanIds[]=3')
     ->status_is(200)
     ;
 my $scan3 = $t->{tx}->res()->json();
 is(@$scan3,42,"42 Elements returned");
 
 # Test fetching with assetIds
-$t->get_ok('/workspace/100/findings?Limit=-1&assetIds[]=1')
+$t->get_ok('/api/workspace/100/findings?Limit=-1&assetIds[]=1')
     ->status_is(200)
     ;
 is(@{$t->{tx}->res()->json()},28,"28 Elements returned");
 my $asset1 = $t->{tx}->res()->json();
 
-$t->get_ok('/workspace/100/findings?Limit=-1&assetIds[]=2')
+$t->get_ok('/api/workspace/100/findings?Limit=-1&assetIds[]=2')
     ->status_is(200)
     ;
 is(@{$t->{tx}->res()->json()},0,"0 Elements returned");
 
-$t->get_ok('/workspace/100/findings?Limit=-1&assetIds[]=1&assetIds[]=2')
+$t->get_ok('/api/workspace/100/findings?Limit=-1&assetIds[]=1&assetIds[]=2')
     ->status_is(200)
     ;
 is(@{$t->{tx}->res()->json()},28,"28 Elements returned");
@@ -436,12 +436,12 @@ $count->{Remark}->{'null'} = 42;
 foreach my $k ( qw(Status Host HostName Port Plugin Finding Severity Remark assetIds[]) ) {
     foreach my $h ( sort keys %{$count->{$k}} ) {
         if ( $h ne "" && $h ne "(blank)") {
-            $t->get_ok("/workspace/100/findings?Limit=-1&scanIds[]=3&$k=$h")
+            $t->get_ok("/api/workspace/100/findings?Limit=-1&scanIds[]=3&$k=$h")
                 ->status_is(200)
                 ;
             my $finds = $t->{tx}->res()->json();
             is(@$finds,$count->{$k}->{$h},"$count->{$k}->{$h} findings for $k=$h");
-            $t->get_ok("/workspace/100/filters?scanIds[]=3&$k=$h")
+            $t->get_ok("/api/workspace/100/filters?scanIds[]=3&$k=$h")
                 ->status_is(200);
             if ( $k ne "Host" ) {
                 $t->json_is("/host/0/number", $count->{$k}->{$h}, "$count->{$k}->{$h} findings in host filter");
@@ -471,7 +471,7 @@ foreach my $k ( qw(Status Host HostName Port Plugin Finding Severity Remark asse
 
             # Status doesn't have a status filter
             if ( $k ne "Status" ) {
-                $t->get_ok("/workspace/100/status?scanIds[]=3&$k=$h")
+                $t->get_ok("/api/workspace/100/status?scanIds[]=3&$k=$h")
                     ->status_is(200)
                     ->json_is("/0/count",$count->{$k}->{$h})
                     ->json_is("/1/count",0)
@@ -488,7 +488,7 @@ foreach my $k ( qw(Status Host HostName Port Plugin Finding Severity Remark asse
 
 # Other filter test
 
-$t->get_ok("/workspace/100/filters?scanIds[]=3")
+$t->get_ok("/api/workspace/100/filters?scanIds[]=3")
     ->status_is(200);
 
 foreach my $k ( qw( Host HostName Port Plugin Severity ) ) {
@@ -558,12 +558,12 @@ $count->{Remark}->{'null'} = 28;
 foreach my $k ( qw(Status Host HostName Port Plugin Finding Severity Remark assetIds[]) ) {
     foreach my $h ( sort keys %{$count->{$k}} ) {
         if ( $h ne "" && $h ne "(blank)") {
-            $t->get_ok("/workspace/100/findings?Limit=-1&assetIds[]=1&$k=$h")
+            $t->get_ok("/api/workspace/100/findings?Limit=-1&assetIds[]=1&$k=$h")
                 ->status_is(200)
                 ;
             my $finds = $t->{tx}->res()->json();
             is(@$finds,$count->{$k}->{$h},"$count->{$k}->{$h} findings for $k=$h");
-            $t->get_ok("/workspace/100/filters?assetIds[]=1&$k=$h")
+            $t->get_ok("/api/workspace/100/filters?assetIds[]=1&$k=$h")
                 ->status_is(200);
             if ( $k ne "Host" ) {
                 $t->json_is("/host/0/number", $count->{$k}->{$h}, "$count->{$k}->{$h} findings in host filter");
@@ -593,7 +593,7 @@ foreach my $k ( qw(Status Host HostName Port Plugin Finding Severity Remark asse
 
             # Status doesn't have a status filter
             if ( $k ne "Status" ) {
-                $t->get_ok("/workspace/100/status?assetIds[]=1&$k=$h")
+                $t->get_ok("/api/workspace/100/status?assetIds[]=1&$k=$h")
                     ->status_is(200)
                     ->json_is("/0/count",$count->{$k}->{$h})
                     ->json_is("/1/count",0)
@@ -611,7 +611,7 @@ foreach my $k ( qw(Status Host HostName Port Plugin Finding Severity Remark asse
 
 
 # Basic
-$t->get_ok("/workspace/101/filters")
+$t->get_ok("/api/workspace/101/filters")
     ->status_is(200)
     ->json_is(
         {
@@ -760,20 +760,20 @@ $t->get_ok("/workspace/101/filters")
 # Update a single finding
 
 # Non-existant finding should fail
-$t->put_ok('/workspace/100/finding/12345667890' => json => { status => 1 , remark => "test" })
+$t->put_ok('/api/workspace/100/finding/12345667890' => json => { status => 1 , remark => "test" })
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
     ;
 
-$t->put_ok('/workspace/101/finding/1' => json => { status => 1 , remark => "test" })
+$t->put_ok('/api/workspace/101/finding/1' => json => { status => 1 , remark => "test" })
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
     ;
 
 # Cannot set to non-existant status
-$t->put_ok('/workspace/100/finding/1' => json => { status => 98 , remark => "test" })
+$t->put_ok('/api/workspace/100/finding/1' => json => { status => 98 , remark => "test" })
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
@@ -786,12 +786,12 @@ $t->put_ok('/workspace/100/finding/1' => json => { status => 98 , remark => "tes
 foreach my $s ( 2..6,99,1 ) {
     pass("Setting status to $s");
     # Get first
-    $t->put_ok('/workspace/100/finding/1' => json => { status => $s } )
+    $t->put_ok('/api/workspace/100/finding/1' => json => { status => $s } )
         ->status_is(200)
         ->json_is("/status", $s)
         ->json_is("/remark", undef)
     ;
-    $t->get_ok("/workspace/100/status?scanIds[]=1")
+    $t->get_ok("/api/workspace/100/status?scanIds[]=1")
         ->status_is(200)
     ;
     if ( $s == 1) {
@@ -817,19 +817,19 @@ foreach my $s ( 2..6,99,1 ) {
 }
 
 # Test append and overwrite comment
-$t->put_ok('/workspace/100/finding/1' => json => { status => 1, remark => 'bla' } )
+$t->put_ok('/api/workspace/100/finding/1' => json => { status => 1, remark => 'bla' } )
     ->status_is(200)
     ->json_is("/status", 1)
     ->json_is("/remark", "bla")
     ;
 
-$t->put_ok('/workspace/100/finding/1' => json => { status => 1, remark => 'bla' } )
+$t->put_ok('/api/workspace/100/finding/1' => json => { status => 1, remark => 'bla' } )
     ->status_is(200)
     ->json_is("/status", 1)
     ->json_is("/remark", "bla")
     ;
 
-$t->put_ok('/workspace/100/finding/1' => json => { status => 1, remark => 'bla', append => 1 } )
+$t->put_ok('/api/workspace/100/finding/1' => json => { status => 1, remark => 'bla', append => 1 } )
     ->status_is(200)
     ->json_is("/status", 1)
     ->json_is("/remark", "bla\nbla")
@@ -841,7 +841,7 @@ foreach my $f ( @$scan3 ) {
     push @$ids, $f->{id};
 }
 # Wrong status should fail
-$t->put_ok('/workspace/100/findings' => json => { ids => [1,2,3] , status => 7, remark => "bla" })
+$t->put_ok('/api/workspace/100/findings' => json => { ids => [1,2,3] , status => 7, remark => "bla" })
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
@@ -849,18 +849,18 @@ $t->put_ok('/workspace/100/findings' => json => { ids => [1,2,3] , status => 7, 
 
 # Go through all statusses
 foreach my $s ( 2..6,99,1) {
-    $t->put_ok('/workspace/100/findings' => json => { ids => $ids, status => $s, remark => "Testing status $s" })
+    $t->put_ok('/api/workspace/100/findings' => json => { ids => $ids, status => $s, remark => "Testing status $s" })
         ->status_is(200)
         ->json_is($ids)
         ;
-    $t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=3')
+    $t->get_ok('/api/workspace/100/findings?Limit=-1&scanIds[]=3')
         ->status_is(200)
         ;
     foreach my $f ( @{$t->{tx}->res()->json()} ) {
         is($f->{status},$s,"Status correctly set to $s");
         is($f->{remark},"Testing status $s","Remark correctly set");
     }
-    $t->get_ok("/workspace/100/status?scanIds[]=3")
+    $t->get_ok("/api/workspace/100/status?scanIds[]=3")
         ->status_is(200)
     ;
     my $i = $s-1;
@@ -875,11 +875,11 @@ foreach my $s ( 2..6,99,1) {
 
 }
 
-$t->put_ok('/workspace/100/findings' => json => { ids => $ids, status => 1, remark => "bla", append => 1 })
+$t->put_ok('/api/workspace/100/findings' => json => { ids => $ids, status => 1, remark => "bla", append => 1 })
     ->status_is(200)
     ->json_is($ids)
     ;
-$t->get_ok('/workspace/100/findings?Limit=-1&scanIds[]=3')
+$t->get_ok('/api/workspace/100/findings?Limit=-1&scanIds[]=3')
     ->status_is(200)
     ;
 foreach my $f ( @{$t->{tx}->res()->json()} ) {
@@ -889,14 +889,14 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
 # Deleting assets
 
 # INvalid params
-$t->delete_ok('/workspace/a/asset/2')
+$t->delete_ok('/api/workspace/a/asset/2')
     ->status_is(400)
     ->json_is("/status", "Error")
     ->json_has("/message")
 ;
 
 # Should list with two items
-$t->get_ok('/workspace/100/assets')
+$t->get_ok('/api/workspace/100/assets')
     ->status_is(200)
     ->json_is([
         {
@@ -918,14 +918,14 @@ $t->get_ok('/workspace/100/assets')
     ])
 ;
 
-$t->delete_ok('/workspace/100/asset/a')
+$t->delete_ok('/api/workspace/100/asset/a')
     ->status_is(400)
     ->json_is("/status", "Error")
     ->json_has("/message")
 ;
 
 # Should list with two items
-$t->get_ok('/workspace/100/assets')
+$t->get_ok('/api/workspace/100/assets')
     ->status_is(200)
     ->json_is([
         {
@@ -947,14 +947,14 @@ $t->get_ok('/workspace/100/assets')
     ])
 ;
 
-$t->delete_ok('/workspace/101/asset/2')
+$t->delete_ok('/api/workspace/101/asset/2')
     ->status_is(400)
     ->json_is("/status", "Error")
     ->json_has("/message")
 ;
 
 # Should list with two items
-$t->get_ok('/workspace/100/assets')
+$t->get_ok('/api/workspace/100/assets')
     ->status_is(200)
     ->json_is([
         {
@@ -976,14 +976,14 @@ $t->get_ok('/workspace/100/assets')
     ])
 ;
 
-$t->delete_ok('/workspace/100/asset/2')
+$t->delete_ok('/api/workspace/100/asset/2')
     ->status_is(200)
     ->json_is({ id => 2 })
 ;
 
 
 # Should list with one item
-$t->get_ok('/workspace/100/assets')
+$t->get_ok('/api/workspace/100/assets')
     ->status_is(200)
     ->json_is([
         {

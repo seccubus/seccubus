@@ -39,12 +39,12 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
 # Create Workspace
-$t->post_ok('/workspaces',
+$t->post_ok('/api/workspaces',
 	json => {
 		'name' 			=> 'workspace1',
 	})
@@ -53,7 +53,7 @@ $t->post_ok('/workspaces',
 	->json_is('/name','workspace1')
 	;
 
-$t->post_ok('/workspaces',
+$t->post_ok('/api/workspaces',
 	json => {
 		'name' 			=> 'workspace2',
 	})
@@ -63,7 +63,7 @@ $t->post_ok('/workspaces',
 	;
 
 # Simple create
-$t->post_ok('/workspace/100/scans',
+$t->post_ok('/api/workspace/100/scans',
 	json => {
 		'name' 			=> 'nessus1',
 		'scanner'		=> 'Nessus6',
@@ -88,7 +88,7 @@ $t->post_ok('/workspace/100/scans',
 	;
 
 # Read scan back
-$t->get_ok('/workspace/100/scan/1')
+$t->get_ok('/api/workspace/100/scan/1')
 	->status_is(200)
 	->json_is(
 		{
@@ -108,7 +108,7 @@ $t->get_ok('/workspace/100/scan/1')
 
 
 # workspace 100 should have our scan
-$t->get_ok('/workspace/100/scans')
+$t->get_ok('/api/workspace/100/scans')
 	->status_is(200)
 	->json_is([
 		{
@@ -128,12 +128,12 @@ $t->get_ok('/workspace/100/scans')
 
 
 # Workspace 101 should be empty
-$t->get_ok('/workspace/101/scans')
+$t->get_ok('/api/workspace/101/scans')
 	->status_is(200)
 	->json_is([]);
 
 # Cannot create duplicate in same workspace
-$t->post_ok('/workspace/100/scans',
+$t->post_ok('/api/workspace/100/scans',
 	json => {
 		'name' 			=> 'nessus1',
 		'scanner'		=> 'Nessus6',
@@ -147,7 +147,7 @@ $t->post_ok('/workspace/100/scans',
 	;
 
 # Can create duplicate scan in other workspace
-$t->post_ok('/workspace/101/scans',
+$t->post_ok('/api/workspace/101/scans',
 	json => {
 		'name' 			=> 'nessus1',
 		'scanner'		=> 'Nessus6',
@@ -174,7 +174,7 @@ $t->post_ok('/workspace/101/scans',
 	;
 
 # Can create second scan
-$t->post_ok('/workspace/100/scans',
+$t->post_ok('/api/workspace/100/scans',
 	json => {
 		'name' 			=> 'nessus3',
 		'scanner'		=> 'Nessus6',
@@ -199,7 +199,7 @@ $t->post_ok('/workspace/100/scans',
 	;
 
 # Read scan back
-$t->get_ok('/workspace/100/scan/3')
+$t->get_ok('/api/workspace/100/scan/3')
 	->status_is(200)
 	->json_is(
 		{
@@ -219,7 +219,7 @@ $t->get_ok('/workspace/100/scan/3')
 
 
 # Workspace1 has 2 scans
-$t->get_ok('/workspace/100/scans')
+$t->get_ok('/api/workspace/100/scans')
 	->status_is(200)
 	->json_is([
 		{
@@ -251,53 +251,53 @@ $t->get_ok('/workspace/100/scans')
 	]);
 
 # Cannot read scans from workspace that doesn't exist
-$t->get_ok('/workspace/103/scans')
+$t->get_ok('/api/workspace/103/scans')
 	->status_is(200)
 	->json_is([])
 	;
 
-$t->get_ok('/workspace/aap/scans')
+$t->get_ok('/api/workspace/aap/scans')
 	->status_is(200)
 	->json_is([])
 	;
 
 # Cannot read scans without scan id (Covered by framework)
-$t->get_ok('/workspace//scans')
+$t->get_ok('/api/workspace//scans')
 	->status_is(404)
 	;
 
 # Cannot read non-existant scan
-$t->get_ok('/workspace/100/scan/4')
+$t->get_ok('/api/workspace/100/scan/4')
 	->status_is(400)
 	->json_is('/status', 'Error')
 	->json_has('/message', '')
 	;
 
-$t->get_ok('/workspace/100/scan/aap')
+$t->get_ok('/api/workspace/100/scan/aap')
 	->status_is(400)
 	->json_is('/status', 'Error')
 	->json_has('/message', '')
 	;
 
 # Cannot read scan from workspace1 that was created in workspace2
-$t->get_ok('/workspace/100/scan/2')
+$t->get_ok('/api/workspace/100/scan/2')
 	->status_is(400)
 	->json_is('/status', 'Error')
 	->json_has('/message', '')
 	;
 
 # Cannot read scan without specifying the workspace id (COvered by mojo)
-$t->get_ok('/workspace//scan/2')
+$t->get_ok('/api/workspace//scan/2')
 	->status_is(404)
 	;
 
 # Cannot read scan without specifying the scan_id (Covered by mojo)
-$t->get_ok('/workspace/100/scan/')
+$t->get_ok('/api/workspace/100/scan/')
 	->status_is(404)
 	;
 
 # Cannot create scan without specifying workspace (Covered by mojo)
-$t->post_ok('/workspace//scans',
+$t->post_ok('/api/workspace//scans',
 	json => {
 		'name' 			=> 'nessus3',
 		'scanner'		=> 'Nessus6',
@@ -309,7 +309,7 @@ $t->post_ok('/workspace//scans',
 	;
 
 # Cannot create scan in non-existant workspace
-$t->post_ok('/workspace/103/scans',
+$t->post_ok('/api/workspace/103/scans',
 	json => {
 		'name' 			=> 'nessus4',
 		'scanner'		=> 'Nessus6',
@@ -323,7 +323,7 @@ $t->post_ok('/workspace/103/scans',
 	;
 
 # Cannot create scan with missing name
-$t->post_ok('/workspace/100/scans',
+$t->post_ok('/api/workspace/100/scans',
 	json => {
 #		'name' 			=> 'nessus4',
 		'scanner'		=> 'Nessus6',
@@ -337,7 +337,7 @@ $t->post_ok('/workspace/100/scans',
 	;
 
 # Cannot create scan wiht missing scanner
-$t->post_ok('/workspace/100/scans',
+$t->post_ok('/api/workspace/100/scans',
 	json => {
 		'name' 			=> 'nessus4',
 		'parameters'	=> 'params',
@@ -349,7 +349,7 @@ $t->post_ok('/workspace/100/scans',
 	->json_has('/message', '')
 	;
 # Cannot create scan with missing parameters
-$t->post_ok('/workspace/100/scans',
+$t->post_ok('/api/workspace/100/scans',
 	json => {
 		'name' 			=> 'nessus4',
 		'scanner'		=> 'Nessus6',
@@ -362,7 +362,7 @@ $t->post_ok('/workspace/100/scans',
 	;
 
 # Can update name, scanner, parameters, targets
-$t->put_ok('/workspace/100/scan/1',
+$t->put_ok('/api/workspace/100/scan/1',
 	json => {
 		'name' 			=> 'nessusZ',
 		'scanner'		=> 'Nessus6Z',
@@ -387,7 +387,7 @@ $t->put_ok('/workspace/100/scan/1',
 	)
 	;
 
-$t->get_ok('/workspace/100/scans')
+$t->get_ok('/api/workspace/100/scans')
 	->status_is(200)
 	->json_is([
 		{
@@ -419,7 +419,7 @@ $t->get_ok('/workspace/100/scans')
 	]);
 
 # Cannot update runs, notifications, findCount, lastScan
-$t->put_ok('/workspace/100/scan/1',
+$t->put_ok('/api/workspace/100/scan/1',
 	json => {
 		'name' 			=> 'nessusZ',
 		'scanner'		=> 'Nessus6Z',
@@ -448,7 +448,7 @@ $t->put_ok('/workspace/100/scan/1',
 	)
 	;
 
-$t->get_ok('/workspace/100/scans')
+$t->get_ok('/api/workspace/100/scans')
 	->status_is(200)
 	->json_is([
 		{
@@ -480,7 +480,7 @@ $t->get_ok('/workspace/100/scans')
 	]);
 
 # Cannot update id
-$t->put_ok('/workspace/100/scan/1',
+$t->put_ok('/api/workspace/100/scan/1',
 	json => {
 		'id'			=> 99,
 		'name' 			=> 'nessusZ',
@@ -510,7 +510,7 @@ $t->put_ok('/workspace/100/scan/1',
 	)
 	;
 
-$t->get_ok('/workspace/100/scans')
+$t->get_ok('/api/workspace/100/scans')
 	->status_is(200)
 	->json_is([
 		{
@@ -542,14 +542,14 @@ $t->get_ok('/workspace/100/scans')
 	])
 	;
 
-$t->get_ok('/workspace/100/scan/99')
+$t->get_ok('/api/workspace/100/scan/99')
 	->status_is(400)
 	->json_is('/status', 'Error')
 	->json_has('/message', '')
 	;
 
 # Cannot update workspace
-$t->put_ok('/workspace/100/scan/1',
+$t->put_ok('/api/workspace/100/scan/1',
 	json => {
 		'workspace'		=> 101,
 		'name' 			=> 'nessusZ',
@@ -579,7 +579,7 @@ $t->put_ok('/workspace/100/scan/1',
 	)
 	;
 
-$t->get_ok('/workspace/100/scans')
+$t->get_ok('/api/workspace/100/scans')
 	->status_is(200)
 	->json_is([
 		{
@@ -610,14 +610,14 @@ $t->get_ok('/workspace/100/scans')
 		},
 	]);
 
-$t->get_ok('/workspace/101/scan/1')
+$t->get_ok('/api/workspace/101/scan/1')
 	->status_is(400)
 	->json_is('/status', 'Error')
 	->json_has('/message', '')
 	;
 
 # Cannot rename scan to an existing name
-$t->put_ok('/workspace/100/scan/1',
+$t->put_ok('/api/workspace/100/scan/1',
 	json => {
 		'name' 			=> 'nessus3',
 		'scanner'		=> 'Nessus6Z',
@@ -634,7 +634,7 @@ $t->put_ok('/workspace/100/scan/1',
 	->json_has('/message', '')
 	;
 
-$t->get_ok('/workspace/100/scans')
+$t->get_ok('/api/workspace/100/scans')
 	->status_is(200)
 	->json_is([
 		{

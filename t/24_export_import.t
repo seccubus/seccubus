@@ -58,17 +58,17 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
 # Create
-$t->post_ok('/workspaces', json => { 'name' => 'export'})
+$t->post_ok('/api/workspaces', json => { 'name' => 'export'})
     ->status_is(200)
 ;
 
 # Create a scan
-$t->post_ok('/workspace/100/scans',
+$t->post_ok('/api/workspace/100/scans',
     json => {
         name        => "seccubus",
         scanner     => "SSLlabs",
@@ -79,7 +79,7 @@ $t->post_ok('/workspace/100/scans',
 ;
 
 # Create another scan
-$t->post_ok('/workspace/100/scans',
+$t->post_ok('/api/workspace/100/scans',
     json => {
         name        => "schubergphilis",
         scanner     => "SSLlabs",

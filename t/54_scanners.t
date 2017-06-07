@@ -25,7 +25,7 @@ use lib "lib";
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
@@ -33,7 +33,7 @@ $t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
 my $config = get_config();
 
 # Get the scanners
-$t->get_ok('/scanners')
+$t->get_ok('/api/scanners')
 	;
 
 # Compare with what is in the directories

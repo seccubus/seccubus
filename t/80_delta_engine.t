@@ -48,14 +48,14 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200,"Login ok")
 ;
 
 # Loading AAAAAAA - 12-18
 `bin/load_ivil -t 201701010001 -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAA.ivil.xml`;
 is($?,0,"Command executed ok");
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, after load AAAAAAA")
     ->json_is("/1/statusName", 'New', "Status[2] is New, after load AAAAAAA")
@@ -67,14 +67,14 @@ $t->get_ok('/workspace/100/findings')
 ;
 
 # Set to all possible statusses 12-32
-$t->put_ok('/workspace/100/finding/2', json => { status => 2 })->status_is(200);
-$t->put_ok('/workspace/100/finding/3', json => { status => 3 })->status_is(200);
-$t->put_ok('/workspace/100/finding/4', json => { status => 4 })->status_is(200);
-$t->put_ok('/workspace/100/finding/5', json => { status => 5 })->status_is(200);
-$t->put_ok('/workspace/100/finding/6', json => { status => 6 })->status_is(200);
-$t->put_ok('/workspace/100/finding/7', json => { status => 99 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/2', json => { status => 2 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/3', json => { status => 3 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/4', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/5', json => { status => 5 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/6', json => { status => 6 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/7', json => { status => 99 })->status_is(200);
 
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, after reset")
     ->json_is("/1/statusName", 'Changed', "Status[2] is Changed, after reset")
@@ -88,7 +88,7 @@ $t->get_ok('/workspace/100/findings')
 # Loading AAAAAAA 30-42
 `bin/load_ivil -t 201701010002 -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAA.ivil.xml`;
 is($?,0,"Command executed ok");
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, after load AAAAAAA")
     ->json_is("/1/statusName", 'Changed', "Status[2] is Changed, after load AAAAAAA")
@@ -100,14 +100,14 @@ $t->get_ok('/workspace/100/findings')
 ;
 
 # Set to all possible statusses 43-63
-$t->put_ok('/workspace/100/finding/2', json => { status => 2 })->status_is(200);
-$t->put_ok('/workspace/100/finding/3', json => { status => 3 })->status_is(200);
-$t->put_ok('/workspace/100/finding/4', json => { status => 4 })->status_is(200);
-$t->put_ok('/workspace/100/finding/5', json => { status => 5 })->status_is(200);
-$t->put_ok('/workspace/100/finding/6', json => { status => 6 })->status_is(200);
-$t->put_ok('/workspace/100/finding/7', json => { status => 99 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/2', json => { status => 2 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/3', json => { status => 3 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/4', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/5', json => { status => 5 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/6', json => { status => 6 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/7', json => { status => 99 })->status_is(200);
 
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, after reset")
     ->json_is("/1/statusName", 'Changed', "Status[2] is Changed, after reset")
@@ -121,7 +121,7 @@ $t->get_ok('/workspace/100/findings')
 # Loading BBBBBBB - 64-73
 `bin/load_ivil -t 201701010003 -w test -s ab --scanner Nessus6 testdata/delta-BBBBBBB.ivil.xml`;
 is($?,0,"Command executed ok");
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, after load BBBBBBB")
     ->json_is("/1/statusName", 'Changed', "Status[2] is Changed, after load BBBBBBB")
@@ -139,14 +139,14 @@ $t->get_ok('/workspace/100/findings')
 sleep 1; # Make sure timestamp is different
 
 # Set to all possible statusses 74-94
-$t->put_ok('/workspace/100/finding/2', json => { status => 2 })->status_is(200);
-$t->put_ok('/workspace/100/finding/3', json => { status => 3 })->status_is(200);
-$t->put_ok('/workspace/100/finding/4', json => { status => 4 })->status_is(200);
-$t->put_ok('/workspace/100/finding/5', json => { status => 5 })->status_is(200);
-$t->put_ok('/workspace/100/finding/6', json => { status => 6 })->status_is(200);
-$t->put_ok('/workspace/100/finding/7', json => { status => 99 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/2', json => { status => 2 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/3', json => { status => 3 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/4', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/5', json => { status => 5 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/6', json => { status => 6 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/7', json => { status => 99 })->status_is(200);
 
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, after reset")
     ->json_is("/1/statusName", 'Changed', "Status[2] is Changed, after reset")
@@ -162,7 +162,7 @@ sleep 1; # Make sure timestamp is different
 # Loading none - 95-104
 `bin/load_ivil -t 201701010004 -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml --allowempty`;
 is($?,0,"Command executed ok");
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'Gone', "Status[1] is Gone, after load none")
     ->json_is("/1/statusName", 'Gone', "Status[2] is Gone, after load none")
@@ -173,8 +173,8 @@ $t->get_ok('/workspace/100/findings')
     ->json_is("/6/statusName", 'MASKED', "Status[7] is MASKED, after load none")
 ;
 # Hard set 6 and 7 to Gone too
-$t->put_ok('/workspace/100/finding/6', json => { status => 5 })->status_is(200);
-$t->put_ok('/workspace/100/finding/7', json => { status => 5 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/6', json => { status => 5 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/7', json => { status => 5 })->status_is(200);
 
 # Create a new Gone finding
 update_finding(
@@ -189,7 +189,7 @@ update_finding(
     status => 5
 );
 # Validate
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/5/statusName", 'Gone', "Status[6] is Gone after setting it the hard way")
     ->json_is("/6/statusName", 'Gone', "Status[7] is Gone after setting it the hard way")
@@ -201,7 +201,7 @@ sleep 1; # Make sure timestamp is different
 # Load BBBBBBBB - 114-124
 `bin/load_ivil -t 201701010005 -w test -s ab --scanner Nessus6 testdata/delta-BBBBBBBB.ivil.xml`;
 is($?,0,"Command executed ok");
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, Status before gone is new, after load BBBBBBB")
     ->json_is("/1/statusName", 'Changed', "Status[2] is Changed, Status before gone is changed, after load BBBBBBB")
@@ -216,21 +216,21 @@ $t->get_ok('/workspace/100/findings')
 sleep 1; # Make sure timestamp is different
 
 # Set to all possible statusses 125-140
-$t->put_ok('/workspace/100/finding/1', json => { status => 1 })->status_is(200);
-$t->put_ok('/workspace/100/finding/2', json => { status => 2 })->status_is(200);
-$t->put_ok('/workspace/100/finding/3', json => { status => 3 })->status_is(200);
-$t->put_ok('/workspace/100/finding/4', json => { status => 4 })->status_is(200);
-$t->put_ok('/workspace/100/finding/5', json => { status => 5 })->status_is(200);
-$t->put_ok('/workspace/100/finding/6', json => { status => 6 })->status_is(200);
-$t->put_ok('/workspace/100/finding/7', json => { status => 99 })->status_is(200);
-$t->put_ok('/workspace/100/finding/8', json => { status => 5 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/1', json => { status => 1 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/2', json => { status => 2 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/3', json => { status => 3 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/4', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/5', json => { status => 5 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/6', json => { status => 6 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/7', json => { status => 99 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/8', json => { status => 5 })->status_is(200);
 
 sleep 1; # Make sure timestamp is different
 
 # Loading none - 141 - 155
 `bin/load_ivil -t 201701010006 -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml --allowempty`;
 is($?,0,"Command executed ok");
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'Gone', "Status[1] is Gone, after load none")
     ->json_is("/1/statusName", 'Gone', "Status[2] is Gone, after load none")
@@ -242,8 +242,8 @@ $t->get_ok('/workspace/100/findings')
     ->json_is("/7/statusName", 'Gone', "Status[8] is Gone, after load none")
 ;
 # Hard set 6 and 7 to Gone too
-$t->put_ok('/workspace/100/finding/6', json => { status => 5 })->status_is(200);
-$t->put_ok('/workspace/100/finding/7', json => { status => 5 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/6', json => { status => 5 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/7', json => { status => 5 })->status_is(200);
 # Create a new Gone finding
 update_finding(
     workspace_id => 100,
@@ -258,7 +258,7 @@ update_finding(
 );
 
 # Validate 155 - 160
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/5/statusName", 'Gone', "Status[6] is Gone after setting it the hard way")
     ->json_is("/6/statusName", 'Gone', "Status[7] is Gone after setting it the hard way")
@@ -270,7 +270,7 @@ sleep 1;
 # Load AAAAAAAAA 161 -
 `bin/load_ivil -t 201701010007 -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAAAA.ivil.xml`;
 is($?,0,"Command executed ok");
-$t->get_ok('/workspace/100/findings')
+$t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, Status before gone is new, after load BBBBBBB again")
     ->json_is("/1/statusName", 'Changed', "Status[2]) is Changed, Status before gone is changed, after load BBBBBBB again")
