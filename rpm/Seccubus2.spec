@@ -156,6 +156,8 @@ cat > %{buildroot}/%{confdir}/config.xml <<- EOF
 
 EOF
 
+mkdir %{buildroot}{%logdir}
+
 ################################################################################
 %pre
 %{_sbindir}/groupadd -r -f %{seccuser}
@@ -317,9 +319,11 @@ rm /etc/init.d/seccubus
 %{scandir}
 %attr(750,%{seccuser},%{seccuser}) %{scandir}/*/scan
 #
+%{logdir}
+%attr(750,%{seccuser},%{seccuser}) %{logdir}
+#
 %attr(750,%{seccuser},%{seccuser}) %{vardir}/create*
 #
-%attr(750,%{seccuser},%{seccuser}) %{logdir}
 
 %changelog
 * Wed Jun  7 2017 Frank Breedijk <fbreedijk@schubergphilis.com>
