@@ -206,87 +206,22 @@ Seccubus is listening on https://localhost:8443/
 ################################################################################
 OEF
 
-cat >/etc/init.d/seccubus <<EOF
-#!/bin/bash
-#
-# Init file for Seccubus server daemon
-#
-# chkconfig: 2345 55 25
-# description: Seccubus server daemon
-#
-# processname: ping
-# pidfile: /var/run/ping.pid
+cat >/lib/systemd/system/seccubus.service <<EOF
+[Unit]
+Description=Seccubus - Scan Smarter not Harder
+After=network.target
 
-# Source function library
-if [ -f /etc/init.d/functions ] ; then
-    . /etc/init.d/functions
-elif [ -f /etc/rc.d/init.d/functions ] ; then
-    . /etc/rc.d/init.d/functions
-else
-    exit 1
-fi
+[Service]
+Type=simple
+Restart=always
+SyslogIdentifier=seccubus
+PIDFile=/opt/seccubus/hypnotaod.pid
+ExecStart=/usr/bin/hypnotoad /opt/seccubus/seccubus.pl -f
+ExecStop=/usr/bin/hypnotoad -s /opt/seccubus/seccubus.pl
+ExecReload=/usr/bin/hypnotoad /opt/seccubus/seccubus.pl
 
-unset TMPDIR
-RETVAL=0
-
-SECCUBUS_DIR="/opt/seccubus/"
-SECCUBUS="/usr/bin/hypnotoad"
-export MOJO_MODE=production
-export HYPNOTOAD_APP="/opt/seccubus/seccubus.pl"
-
-[ -f $APPLICATION_CONF ] || exit 3
-
-start()
-{
-    echo -n $"Starting seccubus service: "
-    (cd $SECCUBUS_DIR;$SECCUBUS ) 2>/dev/null
-    RETVAL=$?
-    echo
-        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/seccubus || RETVAL=1
-    return $RETVAL
-}
-
-stop()
-{
-    echo -n $"Shutting down seccubus service: "
-    (cd $SECCUBUS_DIR;$SECCUBUS -s ) 2>/dev/null
-    RETVAL=$?
-    [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/seccubus
-    echo
-    return $RETVAL
-}
-
-reload()
-{
-    echo -n $"Reloading ping service: "
-    (cd $SECCUBUS_DIR;$SECCUBUS ) 2>/dev/null
-    RETVAL=$?
-    echo
-    return $RETVAL
-}
-
-case "$1" in
-    start)
-        start
-        ;;
-    stop)
-        stop
-        ;;
-    reload)
-        reload
-        ;;
-    restart)
-        stop
-        start
-        ;;
-    status)
-        status seccubus
-        ;;
-    *)
-        echo $"Usage: $0 {start|stop|reload|restart|status}"
-        exit 2
-esac
-exit $?
+[Install]
+WantedBy=multi-user.target
 EOF
 
 chmod 700 /etc/init.d/seccubus
