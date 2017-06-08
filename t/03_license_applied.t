@@ -49,8 +49,10 @@ my %exclude = (
 	"./deb/debian.control"
 						=> "No comments supported",
 	"./deb/debian.docs"	=> "No comments supported",
-	"./deb/seccubus.dsc"
-						=> "No comments supported",
+    "./deb/seccubus.dsc"
+                        => "No comments supported",
+    "./deb/seccubus.compat"
+                        => "No comments supported",
 	"./Makefile"		=> "Generated",
 	"./junit_output.xml"
 						=> "Build file",
