@@ -214,20 +214,19 @@ After=network.target
 [Service]
 Type=simple
 Restart=always
-SyslogIdentifier=seccubus
 PIDFile=/opt/seccubus/hypnotaod.pid
-ExecStart=/usr/bin/hypnotoad /opt/seccubus/seccubus.pl -f
-ExecStop=/usr/bin/hypnotoad -s /opt/seccubus/seccubus.pl
-ExecReload=/usr/bin/hypnotoad /opt/seccubus/seccubus.pl
+ExecStart=/bin/hypnotoad /opt/seccubus/seccubus.pl -f
+ExecStop=/bin/hypnotoad -s /opt/seccubus/seccubus.pl
+ExecReload=/bin/hypnotoad /opt/seccubus/seccubus.pl
+WorkingDirectory=/opt/seccubus
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-chmod 700 /etc/init.d/seccubus
-chkconfig --add seccubus
-chkconfig --level 2345 myscript on
-/etc/init.d/seccubus start
+systemctl --system daemon-reload
+/bin/systemctl enable seccubus.service
+/bin/systemctl start  seccubus.service
 
 ## %post
 

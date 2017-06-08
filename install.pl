@@ -121,7 +121,7 @@ foreach my $dir ( @dirs ) {
 print "Patching file paths\n" if $verbose;
 foreach my $file ( @patches ) {
 	$file = "$stage_dir/$file";
-	syst("sed -i 's:/opt/seccubus/SeccubusV2:$mod_dir:' $file");
+	syst("sed -i 's:/opt/seccubus/lib:$mod_dir:' $file");
 	syst("sed -i 's:/opt/seccubus/scanners:$scan_dir:' $file");
 	syst("sed -i 's:/opt/seccubus/bin:$bin_dir:' $file");
 	syst("sed -i 's:/opt/seccubus/etc:$conf_dir:' $file");
