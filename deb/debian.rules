@@ -21,6 +21,7 @@ BASEDIR=/opt/${NAME}
 HOMEDIR=${BASEDIR}
 BINDIR=${BASEDIR}/bin
 CONFDIR=/etc/${NAME}
+WEBDIR=${BASEDIR}/www
 VARDIR=/var/lib/${NAME}
 USER=${NAME}
 DOCDIR=/usr/share/doc/${NAME}
@@ -36,7 +37,7 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 	perl Makefile.PL
-	./build_all
+	./build_jmvc
 	touch $@
 
 install:
@@ -45,16 +46,14 @@ install:
 	dh_clean -k
 	dh_installdirs
 
-    cd build
-	mkdir -p $(CURDIR)/../debian/tmp/${BASEDIR}
-	mkdir -p $(CURDIR)/../debian/tmp/${DOCDIR}/db
-	mkdir -p $(CURDIR)/../debian/tmp/${DOCDIR}/GUI
-	mkdir -p $(CURDIR)/../debian/tmp/etc/apache2/conf.d
+	mkdir -p $(CURDIR)/debian/tmp/${BASEDIR}
+	mkdir -p $(CURDIR)/debian/tmp/${DOCDIR}/db
+	mkdir -p $(CURDIR)/debian/tmp/${DOCDIR}/GUI
+	mkdir -p $(CURDIR)/debian/tmp/etc/apache2/conf.d
 
-    ./install.pl -v --buildroot=$(CURDIR)/../debian/tmp \
+	./install.pl -v --buildroot=$(CURDIR)/debian/tmp \
 	    --confdir=${CONFDIR} --bindir=${BINDIR} --dbdir=${VARDIR} \
-	    --basedir=${HOMEDIR} --docdir=${DOCDIR}
-    cd ..
+	    --wwwdir=${WEBDIR} --basedir=${HOMEDIR} --docdir=${DOCDIR}
 
 binary: build install
 	dh_testdir
