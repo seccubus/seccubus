@@ -78,7 +78,7 @@ Requires:	perl(Net::SMTP)
 Requires:   perl(Crypt::PBKDF2)
 Requires:   perl(Term::ReadKey)
 Requires:   perl(Time::HiRes)
-Requires:   perl(Mojolicious) >= 7.0
+Requires:   perl(Mojolicious) >= 6.0
 
 Requires:	mysql
 %{?el6:Requires: mysql-server}
