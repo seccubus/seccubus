@@ -6,6 +6,6 @@ Maintainer: Frank Breedijk <fbreedijk@schubergphilis.com>
 Architecture: any
 Build-Depends: debhelper (>= 4.1.16)
 Build-Depends-Indep: default-jre
-Files: 
+Files:
  0 0 seccubus.tar.gz
- 
+
