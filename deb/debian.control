@@ -7,6 +7,6 @@ Build-Depends-Indep: default-jre
 
 Package: seccubus
 Architecture: any
-Depends: ${shlibs:Depends}, perl, mysql-server, libalgorithm-diff-perl, libdbi-perl, libdbd-mysql-perl, libjson-perl, libxml-simple-perl, libwww-perl, liblwp-protocol-https-perl, libenet-ip-perl, libtimedate-perl, libhtml-parser-perl, libcrypt-pbkdf2-perl, libterm-readkey-perl, libmojolicious-perl
+Depends: ${shlibs:Depends}, perl, mysql-server, libalgorithm-diff-perl, libdbi-perl, libdbd-mysql-perl, libjson-perl, libxml-simple-perl, libwww-perl, liblwp-protocol-https-perl, libnet-ip-perl, libtimedate-perl, libhtml-parser-perl, libcrypt-pbkdf2-perl, libterm-readkey-perl, libmojolicious-perl
 Description: Automated regular vulnerability scanning with delta reporting
  For more informztion see http://www.seccubus.com
