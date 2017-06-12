@@ -15,6 +15,7 @@
 
 set -e
 
+
 if [ "$1" = "configure" ]; then
 
     # Set up the user
@@ -22,8 +23,13 @@ if [ "$1" = "configure" ]; then
     if ! getent passwd seccubus >/dev/null; then
 	adduser --system --quiet --group --home /opt/seccubus --no-create-home \
 	    --disabled-password seccubus || :
-	addgroup www-data seccubus
     fi
+
+    # Directories
+    mkdir -f /etc/seccubus
+    mkdir /var/log/seccubus
+
+    chown -r seccubus:seccubus /etc/seccubus /var/log/seccubus /var/lib/seccubus /opt/seccubus
 
     # Startup Script
 
@@ -120,8 +126,8 @@ EOF
 
     # Config file
 
+
     if [ ! -e "/etc/seccubus/config.xml" ]; then
-        mkdir /var/log/seccubus
         cat >> /etc/seccubus/config.xml <<EOF
 <?xml version="1.0" standalone='yes'?>
 <seccubus>
