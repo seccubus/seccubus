@@ -1,12 +1,12 @@
-#!/bin/sh 
-# Copyright 2015 Frank Breedijk, Scott Pack
-# 
+#!/bin/sh
+# Copyright 2017 Frank Breedijk, Scott Pack
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,68 +16,168 @@
 set -e
 
 if [ "$1" = "configure" ]; then
+
+    # Set up the user
+
     if ! getent passwd seccubus >/dev/null; then
 	adduser --system --quiet --group --home /opt/seccubus --no-create-home \
 	    --disabled-password seccubus || :
 	addgroup www-data seccubus
     fi
 
-    if [ ! -e "/etc/apache2/sites-available/seccubus.conf" ] ; then
+    # Startup Script
 
-        cat >> /etc/apache2/sites-available/seccubus.conf <<EOF
-<VirtualHost *:80>
+    cat >/etc/init.d/seccubus <<EOF
+#!/bin/bash
+#
+# Init file for Seccubus server daemon
+#
+# chkconfig: 2345 55 25
+# description: Seccubus server daemon
+#
+# processname: seccubus
+# pidfile: /var/run/seccubus.pid
+set -x
 
-  ServerAdmin webmaster@localhost
-  DocumentRoot /opt/seccubus/www/
+# Source function library
+if [ -f /etc/init.d/functions ] ; then
+    . /etc/init.d/functions
+elif [ -f /etc/rc.d/init.d/functions ] ; then
+    . /etc/rc.d/init.d/functions
+elif [ -f /lib/lsb/init-functions ] ; then
+    . /lib/lsb/init-functions
+else
+    exit 1
+fi
 
-  LogLevel info
+unset TMPDIR
+RETVAL=0
 
-  ErrorLog ${APACHE_LOG_DIR}/error.log
-  CustomLog ${APACHE_LOG_DIR}/access.log combined
+SECCUBUS="/usr/bin/hypnotoad"
+export MOJO_MODE=production
+export HYPNOTOAD_APP="/opt/seccubus/seccubus.pl"
 
 
-  <Location />
-    Require host 127.0.0.1
-    Require host ::1
-    
-    AddHandler cgi-script .pl
-    Options ExecCGI
-  </Location>
+start()
+{
+    echo -n $"Starting Seccubus service: "
+    daemon $SECCUBUS 2>/dev/null
+    RETVAL=$?
+    echo
+        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/seccubus || RETVAL=1
+    return $RETVAL
+}
 
-</VirtualHost>
+stop()
+{
+    echo -n $"Shutting down Seccubus service: "
+    killproc seccubus
+    RETVAL=$?
+    [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/seccubus
+    echo
+    return $RETVAL
+}
 
-# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+reload()
+{
+    echo -n $"Reloading Seccubus service: "
+    killproc seccubus -SIGUSR2
+    RETVAL=$?
+    echo
+    return $RETVAL
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    reload)
+        reload
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    status)
+        status seccubus
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|reload|restart|status}"
+        exit 2
+esac
+exit $?
 EOF
+    (cd /etc/rc0.d;ln -s ../seccubus K99seccubus)
+    (cd /etc/rc1.d;ln -s ../seccubus K99seccubus)
+    (cd /etc/rc2.d;ln -s ../seccubus S99seccubus)
+    (cd /etc/rc3.d;ln -s ../seccubus S99seccubus)
+    (cd /etc/rc4.d;ln -s ../seccubus S99seccubus)
+    (cd /etc/rc5.d;ln -s ../seccubus S99seccubus)
+    (cd /etc/rc6.d;ln -s ../seccubus K99seccubus)
 
-        a2ensite seccubus
-        service apache2 reload
-
-    fi
+    # Config file
 
     if [ ! -e "/etc/seccubus/config.xml" ]; then
-
+        mkdir /var/log/seccubus
         cat >> /etc/seccubus/config.xml <<EOF
 <?xml version="1.0" standalone='yes'?>
 <seccubus>
-        <database>
-          <engine>mysql</engine>
-          <database>seccubus</database>
-          <host>localhost</host>
-          <port>3306</port>
-          <user>seccubus</user>
-          <password>seccubus</password>
-        </database>
-        <paths>
-          <modules>/opt/seccubus/SeccubusV2</modules>
-          <scanners>/opt/seccubus/scanners</scanners>
-          <bindir>/opt/seccubus/bin</bindir>
-          <configdir>/etc/seccubus</configdir>
-          <dbdir>/var/lib/seccubus</dbdir>
-        </paths>
+    <database>
+        <engine>mysql</engine>
+        <database>seccubus</database>
+        <host>localhost</host>
+        <port>3306</port>
+        <user>seccubus</user>
+        <password>seccubus</password>
+    </database>
+    <paths>
+        <modules>/opt/seccbus/lib</modules>
+        <scanners>/opt/seccubus/scanners</scanners>
+        <bindir>/opt/seccubus/bin</bindir>
+        <configdir>/etc/seccubus</configdir>
+        <dbdir>/var/lib/seccubus</dbdir>
+        <logdir>/var/log/seccubus</logdir>
+    </paths>
+    <smtp>
+        <server>localhost</server>
+        <from>seccubus@localhost</from>
+    </smtp>
+    <tickets>
+        <url_head></url_head>
+        <url_tail></url_tail>
+    </tickets>
+    <auth>
+        <http_auth_header></http_auth_header>
+        <sessionkey>SeccubusScanSmarterNotHarder</sessionkey>
+        <baseurl></baseurl>
+    </auth>
+    <http>
+        <port>8443</port>
+        <cert>/etc/seccubus/seccubus.crt</cert>
+        <key>/etc/seccubus/seccubus.key</key>
+        <baseurl></baseurl>
+    </http>
 </seccubus>
 EOF
 
     fi
+
+    # Certificates
+    if [[ ! -e /etc/seccubus/seccubus.key && ! -e /etc/seccubus/seccubus.crt ]] ; then
+        openssl genrsa -des3 -passout pass:x -out /etc/seccubus/seccubus.pass.key 4096
+        openssl rsa -passin pass:x -in /etc/seccubus/seccubus.pass.key -out /etc/seccubus/seccubus.key
+        rm -f /etc/seccubus/seccubus.pass.key
+        openssl req -new -key /etc/seccubus/seccubus.key -out /etc/seccubus/seccubus.csr \
+            -subj "/CN=Seccubus"
+        openssl x509 -req -days 365 -in /etc/seccubus/seccubus.csr \
+            -signkey /etc/seccubus/seccubus.key -out /etc/seccubus/seccubus.crt
+        rm -f /etc/seccubus/seccubus.csr
+
+    fi
+
 fi
 
 #DEBHELPER#
