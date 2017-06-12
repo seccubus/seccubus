@@ -28,8 +28,10 @@ if [ "$1" = "configure" ]; then
     # Directories
     mkdir -p /etc/seccubus
     mkdir -p /var/log/seccubus
+    mkdir -p /var/lib/seccubus
+    mkdir -p /opt/seccubus
 
-    chown -r seccubus:seccubus /etc/seccubus /var/log/seccubus /var/lib/seccubus /opt/seccubus
+    chown -R seccubus:seccubus /etc/seccubus /var/log/seccubus /var/lib/seccubus /opt/seccubus
 
     # Startup Script
 
