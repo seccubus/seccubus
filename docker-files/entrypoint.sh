@@ -250,9 +250,9 @@ fi
 
 if [[ "$STACK" != "front" ]]; then
     cd /opt/nikto
-    git pull
+    git pull --depth=1
     cd /opt/testssl.sh
-    git pull
+    git pull --depth=1
 fi
 
 # Return to home
