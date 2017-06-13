@@ -183,7 +183,7 @@ EOF
     fi
 
     # Start the services
-    service mysqld start
+    service mysql start
     service seccubus start
 
 fi
