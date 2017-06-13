@@ -109,11 +109,11 @@ sub read {
 
         ($data->{username}, $data->{valid}, $data->{isAdmin}, $data->{message}) = get_login();
 
-        if ( $data->{isAdmin} ) {
-            $data->{isAdmin} = JSON::true;
-        } else {
-            $data->{isAdmin} = JSON::false;
-        }
+        #if ( $data->{isAdmin} ) {
+        #    $data->{isAdmin} = JSON::true;
+        #} else {
+        #    $data->{isAdmin} = JSON::false;
+        #}
         $data->{username} = "" unless $data->{username};
 
         $self->render( json => $data );

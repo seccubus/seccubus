@@ -138,7 +138,7 @@ EOF
         <password>seccubus</password>
     </database>
     <paths>
-        <modules>/opt/seccbus/lib</modules>
+        <modules>/opt/seccubus/lib</modules>
         <scanners>/opt/seccubus/scanners</scanners>
         <bindir>/opt/seccubus/bin</bindir>
         <configdir>/etc/seccubus</configdir>
