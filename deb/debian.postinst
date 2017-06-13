@@ -119,13 +119,13 @@ esac
 exit $?
 EOF
 
-    [ ! -e "/etc/rc0.d/K99seccubus" ] && cd /etc/rc0.d;ln -s ../init.d/seccubus K99seccubus)
-    [ ! -e "/etc/rc1.d/K99seccubus" ] && cd /etc/rc1.d;ln -s ../init.d/seccubus K99seccubus)
-    [ ! -e "/etc/rc2.d/S99seccubus" ] && cd /etc/rc2.d;ln -s ../init.d/seccubus S99seccubus)
-    [ ! -e "/etc/rc3.d/S99seccubus" ] && cd /etc/rc3.d;ln -s ../init.d/seccubus S99seccubus)
-    [ ! -e "/etc/rc4.d/S99seccubus" ] && cd /etc/rc4.d;ln -s ../init.d/seccubus S99seccubus)
-    [ ! -e "/etc/rc5.d/S99seccubus" ] && cd /etc/rc5.d;ln -s ../init.d/seccubus S99seccubus)
-    [ ! -e "/etc/rc6.d/K99seccubus" ] && cd /etc/rc6.d;ln -s ../init.d/seccubus K99seccubus)
+    [ ! -e "/etc/rc0.d/K99seccubus" ] && ( cd /etc/rc0.d;ln -s ../init.d/seccubus K99seccubus )
+    [ ! -e "/etc/rc1.d/K99seccubus" ] && ( cd /etc/rc1.d;ln -s ../init.d/seccubus K99seccubus )
+    [ ! -e "/etc/rc2.d/S99seccubus" ] && ( cd /etc/rc2.d;ln -s ../init.d/seccubus S99seccubus )
+    [ ! -e "/etc/rc3.d/S99seccubus" ] && ( cd /etc/rc3.d;ln -s ../init.d/seccubus S99seccubus )
+    [ ! -e "/etc/rc4.d/S99seccubus" ] && ( cd /etc/rc4.d;ln -s ../init.d/seccubus S99seccubus )
+    [ ! -e "/etc/rc5.d/S99seccubus" ] && ( cd /etc/rc5.d;ln -s ../init.d/seccubus S99seccubus )
+    [ ! -e "/etc/rc6.d/K99seccubus" ] && ( cd /etc/rc6.d;ln -s ../init.d/seccubus K99seccubus )
 
     # Config file
 
