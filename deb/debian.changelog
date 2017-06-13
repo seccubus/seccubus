@@ -3,7 +3,7 @@ seccubus (2.1.0-1) unstable; urgency=low
  -- Frank Breedijk <fbreedijk@schubergphilis.com>  Thu, 8 Jun 2017 11:08:00 +0200
 
 seccubus (2.0.0-1) unstable; urgency=low
-  * Current release based on perl and CGI.
+  * Release based on perl and CGI.
  -- Frank Breedijk <fbreedijk@schubergphilis.com>  Thu, 11 Oct 2012 23:08:00 +0100
 
 seccubus (2.21.1-1) unstable; urgency=low

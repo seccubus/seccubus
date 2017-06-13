@@ -79,7 +79,7 @@ stop() {
 reload() {
   if [ -f \$PIDFILE ] && kill -0 \$(cat \$PIDFILE); then
     echo 'Reloading service' >&2
-    local CMD="\$SCRIPT 1>&2 & echo \\$!"
+    local CMD="\$SCRIPT 1>&2 & echo \\\$!"
     \$CMD
     echo 'Service reloaded' >&2
   else
