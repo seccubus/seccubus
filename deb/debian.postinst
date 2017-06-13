@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e
+set -ex
 
 
 if [ "$1" = "configure" ]; then
@@ -175,7 +175,7 @@ EOF
     fi
 
     # Certificates
-    if [ ! -e /etc/seccubus/seccubus.key && ! -e /etc/seccubus/seccubus.crt ] ; then
+    if [ ! -e "/etc/seccubus/seccubus.key" ] && [ ! -e "/etc/seccubus/seccubus.crt" ] ; then
         openssl genrsa -des3 -passout pass:x -out /etc/seccubus/seccubus.pass.key 4096
         openssl rsa -passin pass:x -in /etc/seccubus/seccubus.pass.key -out /etc/seccubus/seccubus.key
         rm -f /etc/seccubus/seccubus.pass.key
