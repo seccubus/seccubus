@@ -26,50 +26,50 @@ USER=${NAME}
 DOCDIR=/usr/share/doc/${NAME}
 
 clean:
-    dh_testdir
-    dh_testroot
-    rm -f build-stamp
-    dh_clean
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+	dh_clean
 
 build: build-stamp
 
 build-stamp:
-    dh_testdir
-    perl Makefile.PL
-    ./build_all
-    touch $@
+	dh_testdir
+	perl Makefile.PL
+	./build_all
+	touch $@
 
 install:
-    dh_testdir
-    dh_testroot
-    dh_prep
-    dh_installdirs
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
 
-    mkdir -p $(CURDIR)/debian/seccubus/${BASEDIR}
-    mkdir -p $(CURDIR)/debian/seccubus/${DOCDIR}/db
-    mkdir -p $(CURDIR)/debian/seccubus/${DOCDIR}/GUI
-    mkdir -p $(CURDIR)/debian/seccubus/etc/apache2/conf.d
+	mkdir -p $(CURDIR)/debian/seccubus/${BASEDIR}
+	mkdir -p $(CURDIR)/debian/seccubus/${DOCDIR}/db
+	mkdir -p $(CURDIR)/debian/seccubus/${DOCDIR}/GUI
+	mkdir -p $(CURDIR)/debian/seccubus/etc/apache2/conf.d
 
-    (cd build;./install.pl -v --buildroot=$(CURDIR)/debian/seccubus \
-        --confdir=${CONFDIR} --bindir=${BINDIR} --dbdir=${VARDIR} \
-        --basedir=${HOMEDIR} --docdir=${DOCDIR} \
+	(cd build;./install.pl -v --buildroot=$(CURDIR)/debian/seccubus \
+	    --confdir=${CONFDIR} --bindir=${BINDIR} --dbdir=${VARDIR} \
+	    --basedir=${HOMEDIR} --docdir=${DOCDIR} \
     )
 
 binary: build install
-    dh_testdir
-    dh_testroot
-    dh_installchangelogs
-    dh_installdocs
-    dh_installexamples
-    dh_installinit
-    dh_installman
-    dh_link
-    dh_strip
-    dh_compress
-    dh_fixperms
-    dh_installdeb
-    dh_shlibdeps
-    dh_gencontrol
-    dh_md5sums
-    dh_builddeb
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+	dh_installdocs
+	dh_installexamples
+	dh_installinit
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
 
