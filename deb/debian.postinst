@@ -36,97 +36,92 @@ if [ "$1" = "configure" ]; then
     # Startup Script
 
     cat >/etc/init.d/seccubus <<EOF
-#!/bin/bash
-#
-# Init file for Seccubus server daemon
-#
-# chkconfig: 2345 55 25
-# description: Seccubus server daemon
-#
-# processname: seccubus
-# pidfile: /var/run/seccubus.pid
-set -x
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          seccubus
+# Required-Start:    \$local_fs \$network \$mysql
+# Required-Stop:     \$local_fs \$network \$mysql
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Description:       Seccubus vulnerability management. Scan smarter, not harder
+### END INIT INFO
 
-# Source function library
-if [ -f /etc/init.d/functions ] ; then
-    . /etc/init.d/functions
-elif [ -f /etc/rc.d/init.d/functions ] ; then
-    . /etc/rc.d/init.d/functions
-elif [ -f /lib/lsb/init-functions ] ; then
-    . /lib/lsb/init-functions
-else
-    exit 1
-fi
+SCRIPT=/usr/bin/hypnotoad
+RUNAS=root
 
-unset TMPDIR
-RETVAL=0
-
-SECCUBUS="/usr/bin/hypnotoad"
+PIDFILE=/opt/seccubus/hypnotoad.pid
 export MOJO_MODE=production
+export PERL5LIB=/opt/seccubus:/opt/seccubus/lib
 export HYPNOTOAD_APP="/opt/seccubus/seccubus.pl"
 
 
-start()
-{
-    echo -n \$"Starting Seccubus service: "
-    daemon \$SECCUBUS 2>/dev/null
-    RETVAL=\$?
-    echo
-        [ \$RETVAL -eq 0 ] && touch /var/lock/subsys/seccubus || RETVAL=1
-    return \$RETVAL
+start() {
+  if [ -f \$PIDFILE ] && kill -0 \$(cat \$PIDFILE); then
+    echo 'Service already running' >&2
+    return 1
+  fi
+  echo 'Starting service' >&2
+  local CMD="\$SCRIPT 1>&2 & echo \\\$!"
+  \$CMD
+  echo 'Service started' >&2
 }
 
-stop()
-{
-    echo -n \$"Shutting down Seccubus service: "
-    killproc seccubus
-    RETVAL=\$?
-    [ \$RETVAL -eq 0 ] && rm -f /var/lock/subsys/seccubus
-    echo
-    return \$RETVAL
+stop() {
+  if [ ! -f "\$PIDFILE" ] || ! kill -0 \$(cat "\$PIDFILE"); then
+    echo 'Service not running' >&2
+    return 1
+  fi
+  echo 'Stopping service?' >&2
+  kill -15 \$(cat "\$PIDFILE") && rm -f "\$PIDFILE"
+  echo 'Service stopped' >&2
 }
 
-reload()
-{
-    echo -n \$"Reloading Seccubus service: "
-    killproc seccubus -SIGUSR2
-    RETVAL=\$?
-    echo
-    return \$RETVAL
+reload() {
+  if [ -f \$PIDFILE ] && kill -0 \$(cat \$PIDFILE); then
+    echo 'Reloading service' >&2
+    local CMD="\$SCRIPT 1>&2 & echo \\$!"
+    \$CMD
+    echo 'Service reloaded' >&2
+  else
+    echo 'Service seccubus is NOT running' >&2
+    return 1
+  fi
+}
+
+status() {
+  if [ -f \$PIDFILE ] && kill -0 \$(cat \$PIDFILE); then
+    echo "Seccubus is running on \$(cat \$PIDFILE)" >&2
+  else
+    echo "Seccubus is NOT running" >&2
+  fi
 }
 
 case "\$1" in
-    start)
-        start
-        ;;
-    stop)
-        stop
-        ;;
-    reload)
-        reload
-        ;;
-    restart)
-        stop
-        start
-        ;;
-    status)
-        status seccubus
-        ;;
-    *)
-        echo \$"Usage: \$0 {start|stop|reload|restart|status}"
-        exit 2
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  reload)
+    reload
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  status)
+    status
+    ;;
+  *)
+    echo "Usage: \$0 {start|stop|reload|restart}"
 esac
 exit \$?
 EOF
 
     chmod 755 /etc/init.d/seccubus
-    [ ! -e "/etc/rc0.d/K99seccubus" ] && ( cd /etc/rc0.d;ln -s ../init.d/seccubus K99seccubus )
-    [ ! -e "/etc/rc1.d/K99seccubus" ] && ( cd /etc/rc1.d;ln -s ../init.d/seccubus K99seccubus )
-    [ ! -e "/etc/rc2.d/S99seccubus" ] && ( cd /etc/rc2.d;ln -s ../init.d/seccubus S99seccubus )
-    [ ! -e "/etc/rc3.d/S99seccubus" ] && ( cd /etc/rc3.d;ln -s ../init.d/seccubus S99seccubus )
-    [ ! -e "/etc/rc4.d/S99seccubus" ] && ( cd /etc/rc4.d;ln -s ../init.d/seccubus S99seccubus )
-    [ ! -e "/etc/rc5.d/S99seccubus" ] && ( cd /etc/rc5.d;ln -s ../init.d/seccubus S99seccubus )
-    [ ! -e "/etc/rc6.d/K99seccubus" ] && ( cd /etc/rc6.d;ln -s ../init.d/seccubus K99seccubus )
+    update-rc.d seccubus defaults
+    service seccubus start
 
     # Config file
 
