@@ -121,7 +121,6 @@ EOF
 
     chmod 755 /etc/init.d/seccubus
     update-rc.d seccubus defaults
-    service seccubus start
 
     # Config file
 
@@ -182,6 +181,10 @@ EOF
         rm -f /etc/seccubus/seccubus.csr
 
     fi
+
+    # Start the service
+
+    service seccubus start
 
 fi
 
