@@ -182,8 +182,8 @@ EOF
 
     fi
 
-    # Start the service
-
+    # Start the services
+    service mysqld start
     service seccubus start
 
 fi
