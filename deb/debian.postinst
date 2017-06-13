@@ -68,34 +68,34 @@ export HYPNOTOAD_APP="/opt/seccubus/seccubus.pl"
 
 start()
 {
-    echo -n $"Starting Seccubus service: "
-    daemon $SECCUBUS 2>/dev/null
-    RETVAL=$?
+    echo -n \$"Starting Seccubus service: "
+    daemon \$SECCUBUS 2>/dev/null
+    RETVAL=\$?
     echo
-        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/seccubus || RETVAL=1
-    return $RETVAL
+        [ \$RETVAL -eq 0 ] && touch /var/lock/subsys/seccubus || RETVAL=1
+    return \$RETVAL
 }
 
 stop()
 {
-    echo -n $"Shutting down Seccubus service: "
+    echo -n \$"Shutting down Seccubus service: "
     killproc seccubus
-    RETVAL=$?
-    [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/seccubus
+    RETVAL=\$?
+    [ \$RETVAL -eq 0 ] && rm -f /var/lock/subsys/seccubus
     echo
-    return $RETVAL
+    return \$RETVAL
 }
 
 reload()
 {
-    echo -n $"Reloading Seccubus service: "
+    echo -n \$"Reloading Seccubus service: "
     killproc seccubus -SIGUSR2
-    RETVAL=$?
+    RETVAL=\$?
     echo
-    return $RETVAL
+    return \$RETVAL
 }
 
-case "$1" in
+case "\$1" in
     start)
         start
         ;;
@@ -113,12 +113,13 @@ case "$1" in
         status seccubus
         ;;
     *)
-        echo $"Usage: $0 {start|stop|reload|restart|status}"
+        echo \$"Usage: \$0 {start|stop|reload|restart|status}"
         exit 2
 esac
-exit $?
+exit \$?
 EOF
 
+    chmod 755 /etc/init.d/seccubus
     [ ! -e "/etc/rc0.d/K99seccubus" ] && ( cd /etc/rc0.d;ln -s ../init.d/seccubus K99seccubus )
     [ ! -e "/etc/rc1.d/K99seccubus" ] && ( cd /etc/rc1.d;ln -s ../init.d/seccubus K99seccubus )
     [ ! -e "/etc/rc2.d/S99seccubus" ] && ( cd /etc/rc2.d;ln -s ../init.d/seccubus S99seccubus )
