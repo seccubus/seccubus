@@ -150,10 +150,11 @@ specific RPMs for el5, el6 and el7 now.
 
 Enhancements
 ------------
-*
+* #411 - Ported the backend to Mojolicious and pure REST
 * #448 - Allow import and export utility to read config from specific file
 
 Bug Fixes
 ---------
 * #430 - Set correct paths for perl and nikto so that do-scan and nikto can now be run by any user
 * Fixed a weird sorting bug when using Chrome
+* #465 - JSON::false returns "false" on certain platforms

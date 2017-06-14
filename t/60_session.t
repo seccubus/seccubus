@@ -18,7 +18,6 @@ use strict;
 
 use Test::More;
 use Test::Mojo;
-use JSON;
 
 use lib "lib";
 
@@ -52,7 +51,7 @@ $t->get_ok('/api/appstatus')
 $t->get_ok('/api/session')
     ->status_is(200)
     ->json_is({
-        isAdmin     => JSON::false,
+        isAdmin     => 0,
         message     => "Undefined user 'Not logged in'",
         username    => "",
         valid       => 0
@@ -108,7 +107,7 @@ $t->post_ok('/api/session', json => { username => "admin", password => "GiveMeVu
 $t->get_ok('/api/session')
     ->status_is(200)
     ->json_is({
-        isAdmin     => JSON::true,
+        isAdmin     => 1,
         message     => "Valid user 'Builtin administrator account' (admin)",
         username    => "admin",
         valid       => 1
@@ -146,7 +145,7 @@ $t->post_ok('/api/session', { 'REMOTEUSER' => 'importer' } => json => {})
 $t->get_ok('/api/session')
     ->status_is(200)
     ->json_is({
-        isAdmin     => JSON::true,
+        isAdmin     => 1,
         message     => "Valid user 'Builtin importer utility account' (importer)",
         username    => "importer",
         valid       => 1
@@ -177,7 +176,7 @@ $t->get_ok('/api/events')
 $t->get_ok('/api/session')
     ->status_is(200)
     ->json_is({
-        isAdmin     => JSON::false,
+        isAdmin     => 0,
         message     => "Undefined user 'Not logged in'",
         username    => "",
         valid       => 0
@@ -188,7 +187,7 @@ $t->get_ok('/api/session')
 $t->get_ok('/api/session' => { 'REMOTEUSER' => 'system' })
     ->status_is(200)
     ->json_is({
-        isAdmin     => JSON::true,
+        isAdmin     => 1,
         message     => "Valid user 'Builtin system user' (system)",
         username    => "system",
         valid       => 1
@@ -217,7 +216,7 @@ $t->get_ok('/api/events')
 $t->get_ok('/api/session')
     ->status_is(200)
     ->json_is({
-        isAdmin     => JSON::false,
+        isAdmin     => 0,
         message     => "Undefined user 'Not logged in'",
         username    => "",
         valid       => 0

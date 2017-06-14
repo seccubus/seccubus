@@ -27,7 +27,6 @@ use Seccubus::Rights;
 use Seccubus::Users;
 use Seccubus::Issues;
 use Algorithm::Diff qw( diff );
-use JSON;
 use Data::Dumper;
 
 @ISA = ('Exporter');
@@ -473,17 +472,17 @@ sub get_filters($$$;$) {
                 $host->{number} = $count{$host->{name}};
             }
             if ( $host->{name} eq $filter->{host} ) {
-                $host->{selected} = JSON::true;
+                $host->{selected} = 1;
             } else {
-                $host->{selected} = JSON::false;
+                $host->{selected} = 0;
             }
         }
-        push @hosts, { "name" => "---", "number" => -1, selected => JSON::false };
+        push @hosts, { "name" => "---", "number" => -1, selected => 0 };
         foreach my $host ( @$hosts_out ) {
             if ( $$host[0] eq $filter->{host} ) {
-                push @hosts, { name => $$host[0], number => $$host[1], selected => JSON::true };
+                push @hosts, { name => $$host[0], number => $$host[1], selected => 1 };
             } else {
-                push @hosts, { name => $$host[0], number => $$host[1], selected => JSON::false };
+                push @hosts, { name => $$host[0], number => $$host[1], selected => 0 };
             }
         }
         $hosts_out = undef;
@@ -529,9 +528,9 @@ sub get_filters($$$;$) {
         foreach my $host ( @$hostnames_in ) {
             $count+=$$host[1];
             if ( $$host[0] eq $filter->{hostname} ) {
-                push @hostnames, { name => $$host[0], number => $$host[1], selected => JSON::true };
+                push @hostnames, { name => $$host[0], number => $$host[1], selected => 1 };
             } else {
-                push @hostnames, { name => $$host[0], number => $$host[1], selected => JSON::false };
+                push @hostnames, { name => $$host[0], number => $$host[1], selected => 0 };
             }
             if ( $hostnames[-1]->{name} eq "" ) {
                 $hostnames[-1]->{name} = "(blank)";
@@ -539,13 +538,13 @@ sub get_filters($$$;$) {
             }
         }
         $hostnames_in = undef;
-        push @hostnames, { "name" => "---", "number" => -1, selected => JSON::false };
+        push @hostnames, { "name" => "---", "number" => -1, selected => 0 };
         foreach my $host ( @$hostnames_out ) {
             $$host[0] = "" unless defined $$host[0];
             if ( $$host[0] eq $filter->{hostname} ) {
-                push @hostnames, { name => $$host[0], number => $$host[1], selected => JSON::true };
+                push @hostnames, { name => $$host[0], number => $$host[1], selected => 1 };
             } else {
-                push @hostnames, { name => $$host[0], number => $$host[1], selected => JSON::false };
+                push @hostnames, { name => $$host[0], number => $$host[1], selected => 0 };
             }
         }
         $hostnames_out = undef;
@@ -588,19 +587,19 @@ sub get_filters($$$;$) {
             $count+=$$port[1];
             $$port[0] = "" unless defined $$port[0];
             if ( $$port[0] eq $filter->{port} ) {
-                push @ports, { name => $$port[0], number => $$port[1], selected => JSON::true };
+                push @ports, { name => $$port[0], number => $$port[1], selected => 1 };
             } else {
-                push @ports, { name => $$port[0], number => $$port[1], selected => JSON::false };
+                push @ports, { name => $$port[0], number => $$port[1], selected => 0 };
             }
         }
         $ports_in = undef;
-        push @ports, { "name" => "---", "number" => -1, selected => JSON::false };
+        push @ports, { "name" => "---", "number" => -1, selected => 0 };
         foreach my $port ( @$ports_out ) {
             $$port[0] = "" unless defined $$port[0];
             if ( $$port[0] eq $filter->{port} ) {
-                push @ports, { name => $$port[0], number => $$port[1], selected => JSON::true };
+                push @ports, { name => $$port[0], number => $$port[1], selected => 1 };
             } else {
-                push @ports, { name => $$port[0], number => $$port[1], selected => JSON::false };
+                push @ports, { name => $$port[0], number => $$port[1], selected => 0 };
             }
         }
         $ports_out = undef;
@@ -647,20 +646,20 @@ sub get_filters($$$;$) {
             $count+=$$plugin[1];
             $$plugin[0] = "" unless defined $$plugin[0];
             if ( $$plugin[0] eq $filter->{plugin} ) {
-                push @plugins, { name => $$plugin[0], number => $$plugin[1], selected => JSON::true };
+                push @plugins, { name => $$plugin[0], number => $$plugin[1], selected => 1 };
             } else {
-                push @plugins, { name => $$plugin[0], number => $$plugin[1], selected => JSON::false };
+                push @plugins, { name => $$plugin[0], number => $$plugin[1], selected => 0 };
             }
         }
 
         $plugins_in = undef;
-        push @plugins, { "name" => "---", "number" => -1, selected => JSON::false };
+        push @plugins, { "name" => "---", "number" => -1, selected => 0 };
         foreach my $plugin ( @$plugins_out ) {
             $$plugin[0] = "" unless defined $$plugin[0];
             if ( $$plugin[0] eq $filter->{plugin} ) {
-                push @plugins, { name => $$plugin[0], number => $$plugin[1], selected => JSON::true };
+                push @plugins, { name => $$plugin[0], number => $$plugin[1], selected => 1 };
             } else {
-                push @plugins, { name => $$plugin[0], number => $$plugin[1], selected => JSON::false };
+                push @plugins, { name => $$plugin[0], number => $$plugin[1], selected => 0 };
             }
         }
         $plugins_out = undef;
@@ -705,18 +704,18 @@ sub get_filters($$$;$) {
         foreach my $severity ( @$severitys_in ) {
             $count+=$$severity[2];
             if ( $$severity[0] eq $filter->{severity} ) {
-                push @severitys, { value => $$severity[0], name=>$$severity[1], number => $$severity[2], selected => JSON::true };
+                push @severitys, { value => $$severity[0], name=>$$severity[1], number => $$severity[2], selected => 1 };
             } else {
-                push @severitys, { value => $$severity[0], name=>$$severity[1], number => $$severity[2], selected => JSON::false };
+                push @severitys, { value => $$severity[0], name=>$$severity[1], number => $$severity[2], selected => 0 };
             }
         }
         $severitys_in = undef;
-        push @severitys, { "name" => "---", "number" => -1, selected => JSON::false };
+        push @severitys, { "name" => "---", "number" => -1, selected => 0 };
         foreach my $severity ( @$severitys_out ) {
             if ( $$severity[0] eq $filter->{severity} ) {
-                push @severitys, { value => $$severity[0], name=>$$severity[1], number => $$severity[2], selected => JSON::true };
+                push @severitys, { value => $$severity[0], name=>$$severity[1], number => $$severity[2], selected => 1 };
             } else {
-                push @severitys, { value => $$severity[0], name=>$$severity[1], number => $$severity[2], selected => JSON::false };
+                push @severitys, { value => $$severity[0], name=>$$severity[1], number => $$severity[2], selected => 0 };
             }
         }
         $severitys_out = undef;
@@ -768,21 +767,21 @@ sub get_filters($$$;$) {
                 $issue_name = "$$issue[1] ($$issue[2])";
                 $issue_value = $$issue[0];
                 if ( $$issue[0] eq $filter->{issue} ) {
-                    push @issues, { value => $$issue[0], name=>$issue_name, number => $$issue[3], selected => JSON::true };
+                    push @issues, { value => $$issue[0], name=>$issue_name, number => $$issue[3], selected => 1 };
                 } else {
-                    push @issues, { value => $$issue[0], name=>$issue_name, number => $$issue[3], selected => JSON::false };
+                    push @issues, { value => $$issue[0], name=>$issue_name, number => $$issue[3], selected => 0 };
                 }
             }
         }
         $issues_in = undef;
-        push @issues, { "name" => "---", "number" => -1, selected => JSON::false };
+        push @issues, { "name" => "---", "number" => -1, selected => 0 };
         foreach my $issue ( @$issues_out ) {
             my $issue_name = "$$issue[1] ($$issue[2])";
             if ( defined $$issue[1] ) {
                 if ( $$issue[0] eq $filter->{issue} ) {
-                    push @issues, { value => $$issue[0], name=>$issue_name, number => $$issue[3], selected => JSON::true };
+                    push @issues, { value => $$issue[0], name=>$issue_name, number => $$issue[3], selected => 1 };
                 } else {
-                    push @issues, { value => $$issue[0], name=>$issue_name, number => $$issue[3], selected => JSON::false };
+                    push @issues, { value => $$issue[0], name=>$issue_name, number => $$issue[3], selected => 0 };
                 }
             }
         }

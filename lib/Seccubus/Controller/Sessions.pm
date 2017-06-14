@@ -22,7 +22,6 @@ use SeccubusV2;
 use Seccubus::Users;
 use Seccubus::DB;
 use Data::Dumper;
-use JSON;
 
 # Create
 sub create {
@@ -70,11 +69,6 @@ sub create {
     );
     $self->session->{user}->{hash} = $hash;
     my ( $username, $valid, $isadmin, $message ) = get_login($user->{username});
-    if ( $isadmin ) {
-        $isadmin = JSON::true;
-    } else {
-        $isadmin = JSON::false;
-    }
 
     $self->render( json => {
         status  => "Success",
@@ -109,11 +103,6 @@ sub read {
 
         ($data->{username}, $data->{valid}, $data->{isAdmin}, $data->{message}) = get_login();
 
-        #if ( $data->{isAdmin} ) {
-        #    $data->{isAdmin} = JSON::true;
-        #} else {
-        #    $data->{isAdmin} = JSON::false;
-        #}
         $data->{username} = "" unless $data->{username};
 
         $self->render( json => $data );
