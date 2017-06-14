@@ -156,6 +156,7 @@ Enhancements
 Bug Fixes
 ---------
 * Fixed a weird sorting bug when using Chrome
+* #396 - ConfigTest should return non 200 if config is not ok
 * #417 - Docker container is not https-enabled by default
 * #418 - Docker images lacks proper data management
 * #430 - Set correct paths for perl and nikto so that do-scan and nikto can now be run by any user
