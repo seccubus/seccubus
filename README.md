@@ -156,6 +156,7 @@ Enhancements
 Bug Fixes
 ---------
 * Fixed a weird sorting bug when using Chrome
+* #363 - API calls for asset use workspace iso of workspaceId which is the standard
 * #384 - Missing SMTP server config should be warning, not error
 * #396 - ConfigTest should return non 200 if config is not ok
 * #417 - Docker container is not https-enabled by default
