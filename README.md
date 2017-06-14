@@ -159,6 +159,7 @@ Bug Fixes
 * #417 - Docker container is not https-enabled by default
 * #418 - Docker images lacks proper data management
 * #430 - Set correct paths for perl and nikto so that do-scan and nikto can now be run by any user
+* #445 - RPM errors
 * #457 - Mine attachment not sent correctly
 * #465 - JSON::false returns "false" on certain platforms
 * #466 - /api/version should not be an authenticated call
