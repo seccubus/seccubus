@@ -158,3 +158,4 @@ Bug Fixes
 * #430 - Set correct paths for perl and nikto so that do-scan and nikto can now be run by any user
 * Fixed a weird sorting bug when using Chrome
 * #465 - JSON::false returns "false" on certain platforms
+* #466 - /api/version should not be an authenticated call
