@@ -57,8 +57,9 @@ export HYPNOTOAD_APP="/opt/seccubus/seccubus.pl"
 
 start() {
   if [ -f \$PIDFILE ] && kill -0 \$(cat \$PIDFILE); then
-    echo 'Service already running' >&2
-    return 1
+    echo 'Service already running, reloading...' >&2
+    reload
+    return \$?
   fi
   echo 'Starting service' >&2
   local CMD="\$SCRIPT 1>&2 & echo \\\$!"
