@@ -29,7 +29,7 @@ Make sure that README.md reflects all changes since the last released version, M
 
 # Make sure that all unit tests pass
 
-Check [![Travis build status](https://travis-ci.org/schubergphilis/Seccubus.svg?branch=master)](https://travis-ci.org/schubergphilis/Seccubus/)
+Check [![Circle-CI build status](https://circleci.com/gh/schubergphilis/Seccubus.svg?style=shield&circle-token=63e8efd7e0bff0b1e9578ff312b4b0c47963709a)](https://circleci.com/gh/schubergphilis/Seccubus)
 
 # Make sure the package builds on all platforms
 
@@ -54,7 +54,7 @@ To git@github.com:schubergphilis/Seccubus
 
 # Make sure that all unit tests pass (AGAIN!)
 
-Check [![Travis build status](https://travis-ci.org/schubergphilis/Seccubus.svg?branch=master)](https://travis-ci.org/schubergphilis/Seccubus/)
+Check [![Circle-CI build status](https://circleci.com/gh/schubergphilis/Seccubus.svg?style=shield&circle-token=63e8efd7e0bff0b1e9578ff312b4b0c47963709a)](https://circleci.com/gh/schubergphilis/Seccubus)
 
 # Make sure the package builds on all platforms (AGAIN!)
 
@@ -70,11 +70,11 @@ Use the tag you have just created. If you committed after you created the tag yo
 
 Platform(s):
 
-* [RedHat based RPM](http://software.opensuse.org//download.html?project=home%3Aseccubus&package=Seccubus) - Make sure to download all versions (el5, el6 and el7)
+* [Fedore 25 based RPM](http://software.opensuse.org//download.html?project=home%3Aseccubus&package=Seccubus) - Make sure to download all versions (el5, el6 and el7)
 * [RedHat based SRPM](http://download.opensuse.org/repositories/home:/seccubus/CentOS_5/src/)
-* [Debian based deb amd64](http://download.opensuse.org/repositories/home:/seccubus/xUbuntu_15.10/amd64/)
-* [Debian based deb i386](http://download.opensuse.org/repositories/home:/seccubus/xUbuntu_15.10/i386/)
-* [Debian based deb all](http://download.opensuse.org/repositories/home:/seccubus/xUbuntu_15.10/all/) (Might be empty)
+* [Debian based deb amd64](http://download.opensuse.org/repositories/home:/seccubus/Debian_9.0/amd64/)
+* [Debian based deb i386](http://download.opensuse.org/repositories/home:/seccubus/Debian_9.0/i386/)
+
 
 # Attach them to the build
 
