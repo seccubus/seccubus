@@ -93,7 +93,7 @@ if [[ "$STACK" == "front" ]] ; then
     else
         # Sanitize urls
         [[ ! "$APIURL" = */ ]] && APIURL="$APIURL/"
-        [[ ! -z "$BASEURL" ]] && [[ ! "$BASEURL" = /* ]] && BASEURL="/$BASEURL"
+        [[ ! -z "$BASEURI" ]] && [[ ! "$BASEURI" = /* ]] && BASEURI="/$BASEURI"
 
         rm /etc/nginx/sites-enabled/*
         if [[ "$TLS" == "yes" ]]; then
@@ -102,8 +102,8 @@ if [[ "$STACK" == "front" ]] ; then
             cp /front.conf /etc/nginx/sites-available/seccubus
         fi
         ln -s /etc/nginx/sites-available/seccubus /etc/nginx/sites-enabled/seccubus
-        # Patch BASEURL
-        sed -i.bak "s#%BASEURL%#$BASEURL#g" /etc/nginx/sites-available/seccubus
+        # Patch BASEURI
+        sed -i.bak "s#%BASEURI%#$BASEURI#g" /etc/nginx/sites-available/seccubus
 
         # Patch javascript to access remote URL
         sed -i.bak "s#baseUrl(){return\"/api\"}#baseUrl(){return\"$APIURL\"}#" /opt/seccubus/public/seccubus/production.js
@@ -185,17 +185,17 @@ cat <<EOF >/opt/seccubus/etc/config.xml
             <port>$PORT</port>
             <cert>$TLSCERT</cert>
             <key>$TLSKEY</key>
-            <baseurl>$BASEURL</baseurl>
+            <baseurl>$BASEURI</baseurl>
         </http>
     </seccubus>
 EOF
 
 if [[ "$STACK" == "full" ||  "$STACK" == "api" || "$STACK" == "web" ]] ; then
-    if [[ ! -z "$BASEURL" ]]; then
+    if [[ ! -z "$BASEURI" ]]; then
         # Patch javascript for baseurl
-        [[ ! "$BASEURL" = /* ]] && BASEURL="/$BASEURL"
-        [[ ! "$BASEURL" = */ ]] && BASEURL="$BASEURL/"
-        sed -i.bak "s#baseUrl(){return\"/\"}#baseUrl(){return\"$BASEURL\/api/\"}#" /opt/seccubus/public/seccubus/production.js
+        [[ ! "$BASEURI" = /* ]] && BASEURI="/$BASEURI"
+        [[ ! "$BASEURI" = */ ]] && BASEURI="$BASEURI/"
+        sed -i.bak "s#baseUrl(){return\"/\"}#baseUrl(){return\"$BASEURI\/api/\"}#" /opt/seccubus/public/seccubus/production.js
     fi
 
     # We need to start mojolicious
