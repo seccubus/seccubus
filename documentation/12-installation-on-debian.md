@@ -5,26 +5,30 @@ layout: page
 title: Installation on Debian
 ---
 # DEB based install
-By: [Scott Pack](https://twitter.com/packscott)  
+By: [Scott Pack](https://twitter.com/packscott) and Frank Breedijk
 Based on [this article](http://secopsmonkey.com/seccubus-on-ubuntu-the-missing-manual.html)
 
 ## Software Installation
-Install the pre-requisites
 
-```bash
-aptitude install apache2 mysql-server ruby libalgorithm-diff-perl libjson-perl libxml-simple-perl libhtml-tree-perl libapache2-mod-perl2
-```
-
-Download and install the Seccubus application
+Download and installing the Seccubus application
 
 ```bash
 wget https://github.com/schubergphilis/Seccubus_v2/releases/download/x/seccubus_x.Bx_all.deb
-dpkg -i seccubus_2.x.Bx_all.deb
+sudo apt-get update
+sudo dpkg -i seccubus_2.32.143-0_amd64.deb     # This will fail
+sudo apt-get -f install                        # This will install failed dependancies
 ```
 
 Update the configuration file in `/etc/seccubus/config.xml`
 
+Reload the seccubus service if you changed the config.
+
+```bash
+service seccubus reload
+```
+
 ## Configure the Database
+
 Now create the database and populate the database with the following commands:
 
 ```bash
@@ -39,17 +43,11 @@ mysql -u seccubus -pseccubus seccubus < /var/lib/seccubus/data_vx.mysql
 
 Replace `structure_vx.mysql` and `data_vx.mysql` with the highest versioned file in the directory.
 
-## Web Server Setup
-Make any necessary changes to `/etc/apache2/conf.d/seccubus.conf`. Once completed run the following
-commands to properly load the necessary Apache modules.:
+The applicaiton will be listening on port 8443 by default.
+
+Default admin password is `GiveMeVulns!`. You can change it on the command line:
 
 ```bash
-a2enmod perl
-a2enmod cgi
-```
-
-Restart the webserver and surf to http://localhost/seccubus/ to start using seccubus
-
-```bash
-service httpd restart
+sudo su - seccubus
+bin/seccubus_passwd -u root
 ```
