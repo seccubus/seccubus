@@ -31,7 +31,7 @@
 
 Name:		Seccubus
 Version:	master
-Release:	0
+Release:	0%{?dist}
 Summary:	Automated regular vulnerability scanning with delta reporting
 Group:		Applications/Internet
 License:	ASL 2.0
