@@ -156,6 +156,7 @@ Enhancements
 Bug Fixes
 ---------
 * Fixed a weird sorting bug when using Chrome
+* #171 - column formatting in custom SQL is off
 * #190 - XSS in custom SQL query
 * #193 - RFE: please add a logout button for additional security
 * #263 - SeccubusHelpers.pm contains two unused functions
