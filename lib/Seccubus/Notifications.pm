@@ -549,9 +549,9 @@ Content-Type: multipart/mixed; boundary=\"seccubus-message-part\"
 This is a message with multiple parts in MIME format.
 --seccubus-message-part
 Content-Type: text/plain\n\n" . $$notification[2];
-				$$notification[2] .= "--seccubus-message-part\n";
-				$$notification[2] .= join "--seccubus-message-part\n", @attachments;
-				$$notification[2] .= "--seccubus-message-part\n";
+				$$notification[2] .= "\n\n--seccubus-message-part\n";
+				$$notification[2] .= join "\n\n--seccubus-message-part\n", @attachments;
+				$$notification[2] .= "\n\n--seccubus-message-part\n";
 			} else {
 				$$notification[2] = "\n$$notification[2]";
 			}

@@ -21,7 +21,6 @@ use lib "lib";
 use Test::More;
 use Test::Mojo;
 use Data::Dumper;
-use JSON;
 
 my $db_version = 0;
 foreach my $data_file (<db/data_v*.mysql>) {
@@ -331,7 +330,7 @@ $t->get_ok('/api/workspace/100/findings?Limit=-1&scanIds[]=54345')
 $t->get_ok('/api/workspace/100/filters?scanIds[]=54345')
     ->status_is(200)
     ->json_is(
-        {"finding"=>"","host"=>[{"name"=>"*","number"=>0,"selected"=>JSON::false},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"hostname"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"issue"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"plugin"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"port"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}],"remark"=>"","severity"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>JSON::false}]}
+        {"finding"=>"","host"=>[{"name"=>"*","number"=>0,"selected"=>0},{"name"=>"---","number"=>-1,"selected"=>0}],"hostname"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>0}],"issue"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>0}],"plugin"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>0}],"port"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>0}],"remark"=>"","severity"=>[{"name"=>"*","number"=>0},{"name"=>"---","number"=>-1,"selected"=>0}]}
     )
 ;
 
@@ -620,37 +619,37 @@ $t->get_ok("/api/workspace/101/filters")
                 {
                     "name" => "*",
                     "number" => 8,
-                    "selected" => JSON::false
+                    "selected" => 0
                 },
                 {
                     "name" => "127.*",
                     "number" => 8,
-                    "selected" => JSON::false
+                    "selected" => 0
                 },
                 {
                     "name" => "127.0.*",
                     "number" => 8,
-                    "selected" => JSON::false
+                    "selected" => 0
                 },
                 {
                     "name" => "127.0.0.*",
                     "number" => 8,
-                    "selected" => JSON::false
+                    "selected" => 0
                 },
                 {
                     "name" => "127.0.0.1",
                     "number" => 4,
-                    "selected" => JSON::false
+                    "selected" => 0
                 },
                 {
                     "name" => "127.0.0.2",
                     "number" => 4,
-                    "selected" => JSON::false
+                    "selected" => 0
                 },
                 {
                     "name" => "---",
                     "number" => -1,
-                    "selected" => JSON::false
+                    "selected" => 0
                 }
             ],
             "hostname" => [
@@ -661,18 +660,18 @@ $t->get_ok("/api/workspace/101/filters")
                 {
                     "name" => "(blank)",
                     "number" => 4,
-                    "selected" => JSON::true,
+                    "selected" => 1,
                     "value" => ""
                 },
                 {
                     "name" => "localhost",
                     "number" => 4,
-                    "selected" => JSON::false
+                    "selected" => 0
                 },
                 {
                     "name" => "---",
                     "number" => -1,
-                    "selected" => JSON::false
+                    "selected" => 0
                 }
             ],
             "issue" => [
@@ -683,7 +682,7 @@ $t->get_ok("/api/workspace/101/filters")
                 {
                     "name" => "---",
                     "number" => -1,
-                    "selected" => JSON::false
+                    "selected" => 0
                 }
             ],
             "plugin" => [
@@ -694,17 +693,17 @@ $t->get_ok("/api/workspace/101/filters")
                 {
                     "name" => "a",
                     "number" => 4,
-                    "selected" => JSON::false
+                    "selected" => 0
                 },
                 {
                     "name" => "b",
                     "number" => 4,
-                    "selected" => JSON::false
+                    "selected" => 0
                 },
                 {
                     "name" => "---",
                     "number" => -1,
-                    "selected" => JSON::false
+                    "selected" => 0
                 }
             ],
             "port" => [
@@ -715,17 +714,17 @@ $t->get_ok("/api/workspace/101/filters")
                 {
                     "name" => "a",
                     "number" => 4,
-                    "selected" => JSON::false
+                    "selected" => 0
                 },
                 {
                     "name" => "b",
                     "number" => 4,
-                    "selected" => JSON::false
+                    "selected" => 0
                 },
                 {
                     "name" => "---",
                     "number" => -1,
-                    "selected" => JSON::false
+                    "selected" => 0
                 }
             ],
             "remark" => "",
@@ -737,19 +736,19 @@ $t->get_ok("/api/workspace/101/filters")
                 {
                     "name" => "High",
                     "number" => 4,
-                    "selected" => JSON::false,
+                    "selected" => 0,
                     "value" => "1"
                 },
                 {
                     "name" => "Medium",
                     "number" => 4,
-                    "selected" => JSON::false,
+                    "selected" => 0,
                     "value" => "2"
                 },
                 {
                     "name" => "---",
                     "number" => -1,
-                    "selected" => JSON::false
+                    "selected" => 0
                 }
             ]
         }

@@ -5,6 +5,7 @@
 .*.swp
 tmp/
 log/
+.vagrant/
 
 # Config
 etc/config.xml

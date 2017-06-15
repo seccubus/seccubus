@@ -42,8 +42,6 @@ use Data::Dumper;
 
 sub check_config();
 sub dirlist($;$);
-sub api_error($$);
-sub api_result($;$$$);
 sub run_cmd($;$$$$);
 
 
@@ -96,104 +94,6 @@ sub dirlist($;$) {
     return @FILES_TMP;
 }
 
-=head2 api_error
-
-This function prints a standard Seccubus API error message and exits the program
-
-=over 2
-
-=item Parameters
-
-=over 4
-
-=item api_name - Name of the api that returns the error
-
-=item message  - Error message in the error output
-
-=back
-
-=item Returns
-
-None
-
-=item Checks
-
-None
-
-=back
-
-=back
-
-=cut
-
-sub api_error($$) {
-	my $api_name = shift;
-	my $error_msg = shift;
-
-	print "<seccubusAPI name='$api_name'>\n";
-	print "<result>NOK</result>\n";
-	print "<message>" . encode_entities($error_msg) . "</message>\n";
-	print "</seccubusAPI>\n";
-	exit;
-}
-
-=head2 api_result
-
-This function prints a standard Seccubus API output message.
-
-=over 2
-
-=item Parameters
-
-=over 4
-
-=item api_name - Name of the api that returns the output
-
-=item message  - Optional message in the output
-
-=item data     - Optional data segment in the output
-
-=item iserror  - Optional, indicates that the output is an error message, negative by default
-
-=back
-
-=item Returns
-
-None
-
-=item Checks
-
-None
-
-=back
-
-=back
-
-=cut
-
-sub api_result($;$$$) {
-	my $api_name = shift;
-	my $msg = shift;
-	my $data = shift;
-	my $iserror = shift;
-
-	if ( $iserror ) {
-		$iserror = "OK";
-	} else {
-		$iserror = "NOK";
-	}
-
-	print "<seccubusAPI name='$api_name'>\n";
-	print "<result>$iserror</result>\n";
-	if ( $msg ) {
-		print "<message>" . encode_entities($msg) . "</message>\n";
-	}
-	if ( $data ) {
-		print "<data>\n$data\n</data>";
-	}
-	print "</seccubusAPI>\n";
-	exit;
-}
 
 =head2 run_cmd
 

@@ -25,6 +25,48 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+15-6-2017 - v2.34 - Backemnd rewritten in Mojolicious
+=====================================================
+
+The Seccubusd backend has been REST-ish ever since release v2.0. This web backend was implemented
+via Perl CGI scripts (yes, using CGI.pm). Needless to say something needed to change.
+
+This backend rewrite has been in the making for some time now and we are finally ready to release
+it into the wild.
+
+What are the major changes?
+* Backend rewritten in [Mojolicious](http://mojolicious.org/)
+* Backend API is now REST compliant and located at /api
+* There is no need to run an external webserver for Seccubus, it is built into Mojolicious
+* Seccubus now has built in user authentication (Defaqult admin password is 'GiveMeVulns!')
+* Fixed a lot off old issues
+* Unfortunately there is no solid Mojolicious v6/v7 rpms for RedHat/Centos, so we can no longer provide RPMs for those operating systems
+
+Enhancements
+------------
+* #411 - Ported the backend to Mojolicious and pure REST
+* #448 - Allow import and export utility to read config from specific file
+
+Bug Fixes
+---------
+* Fixed a weird sorting bug when using Chrome
+* #138 - Can't locate SeccubusV2.pm in @INC (you may need to install the SeccubusV2 module)
+* #143 - Make RPM so that nginx is supported too
+* #171 - column formatting in custom SQL is off
+* #190 - XSS in custom SQL query
+* #193 - RFE: please add a logout button for additional security
+* #263 - SeccubusHelpers.pm contains two unused functions
+* #363 - API calls for asset use workspace iso of workspaceId which is the standard
+* #384 - Missing SMTP server config should be warning, not error
+* #396 - ConfigTest should return non 200 if config is not ok
+* #417 - Docker container is not https-enabled by default
+* #418 - Docker images lacks proper data management
+* #430 - Set correct paths for perl and nikto so that do-scan and nikto can now be run by any user
+* #445 - RPM errors
+* #457 - Mine attachment not sent correctly
+* #465 - JSON::false returns "false" on certain platforms
+* #466 - /api/version should not be an authenticated call
+
 18-4-2017 - v2.32 - Added dist tag to RPM filename
 ==================================================
 
@@ -73,10 +115,10 @@ Bug Fixes
 20-2-2017 - v2.28 - The Docker edition
 ======================================
 
-For my work at [Schuberg Philis](https://www.schubergphilis.com) we wanted to run Seccubus in Docker 
-containers. This and inspiration from [Karl Newell](https://hub.docker.com/r/karlnewell/seccubus/) 
-caused me to add a Dockerfile (and some other files) to Seccubus so that Seccubus can now be 
-run in a docker container. 
+For my work at [Schuberg Philis](https://www.schubergphilis.com) we wanted to run Seccubus in Docker
+containers. This and inspiration from [Karl Newell](https://hub.docker.com/r/karlnewell/seccubus/)
+caused me to add a Dockerfile (and some other files) to Seccubus so that Seccubus can now be
+run in a docker container.
 
 In addition I fixed a couple of bugs and changed the ssllabs scanner so it now uses the v3 API endpoint.
 
@@ -84,7 +126,7 @@ In addition I fixed a couple of bugs and changed the ssllabs scanner so it now u
 - #361 - arkenoi created a netsparker2ivil tool that allows you to manually import Netsparker scans
 - #331 - Now using SSLLabs API v3
 - #386 - New SSL labs API output featues incorporporated
-- #389 - API endpoint URL has moved to a single function so it can be patched if deployed in a 
+- #389 - API endpoint URL has moved to a single function so it can be patched if deployed in a
        three tier architecture
 - #392 - Alternative handling of the updateFIndings.pl API
 - #397 - Allow seccubus to authenticate via an http request header
@@ -101,26 +143,26 @@ In addition I fixed a couple of bugs and changed the ssllabs scanner so it now u
 - #385 - SSLlabs failed because cypher preference order was split out per protocol by SSLlabs now.
 - #394 - SSLlabs scanner failed if all enpoints fail and --gradeonly was used
 
-Docker image at https://hub.docker.com/r/seccubus/seccubus/ 
+Docker image at https://hub.docker.com/r/seccubus/seccubus/
 
 12-7-2016 - 2.26 - Speed improvements and a whole log of bugfixes
 =================================================================
 This release is especially interesting for those of you that are working with large result sets.
 The number of findigns that is returned is now limited to 200 results by default and can be adjusted
 up or down.
-A lot of the filter logic has been moved from the Perl backend to more intelligent database queries 
+A lot of the filter logic has been moved from the Perl backend to more intelligent database queries
 where caching and other optimalisations techniques prevent timeouts when working with larger result
 sets.
 
 Additional improvements are done the rpm packaging and the Nessus6 scanner wich now no longer depends
 on certain excotic perl modules.
 
-The number of change records that is created and displayed has been reduced and some other more minor 
+The number of change records that is created and displayed has been reduced and some other more minor
 have been fixed too.
 
 Enhancements
 ------------
-* #128 - Limit the amount of findings that is returned from the back end 
+* #128 - Limit the amount of findings that is returned from the back end
 * #312 - SSLLabs and Nessus6 scanner no longer depend on perl-REST-Client
 * #319 - RPM now builds and installs under CentOs/RHEL 5 too
 * #320 - Nessus6 scanner now downloads PDF and HTML version of report too
@@ -157,7 +199,7 @@ Bug Fixes
 * #311 - RPM: Config could not be found after version upgrade to 2.22
 * #313 - RPM: Seccubus.conf not placed in correct directory (v2.22)
 * #314 - RPM: v2.22 /opt/seccubus/www/dev should not exist
-* #315 - RPM: v2.22 dependancy mysql-server is not installed 
+* #315 - RPM: v2.22 dependancy mysql-server is not installed
 
 08-04-2016 - 2.22 - OpenVAS intergration fixed
 ==============================================
@@ -176,7 +218,7 @@ Bug Fixes
 ---------
 * #289 - Online version test needs a unit test
 * #269 - Correct handling of multiple address nodes in NMap XML
-* #298 - OpenVAS6: fix scan and import to ivil 
+* #298 - OpenVAS6: fix scan and import to ivil
 * #297 - Port field abused to store port state
 * #307 - OpenVAS integration was broken
 
@@ -249,7 +291,7 @@ Bug Fixes
 * #236 - Database upgrades inconsistent
 * #243 - do-scan -q is not very quiet
 * #247 - SSLLabs: certain values for PoodleTLS not handled
-* #248 - SSLLabs Reneg finding empty is reneg is not supported 
+* #248 - SSLLabs Reneg finding empty is reneg is not supported
 * Copyright related unit tests now work on Travis CI too
 * #252 - scannerparam column in scans table too small
 * #255 - Incorrect use of CGI.pm may cause parameter injection vulnerability
@@ -260,7 +302,7 @@ Using the quiet(er) time after summer to get some bug fixes in.
 
 Enhancements
 ------------
-* #211 - Host filter now splits on / as well as . 
+* #211 - Host filter now splits on / as well as .
 
 Bug Fixes
 ---------
@@ -291,7 +333,7 @@ Seccubus OWASP ZAP Proxy release
 
 The OWASP Zed Attack Proxy (ZAP) is an easy to use integrated penetration testing tool for finding vulnerabilities in web applications.
 
-It is designed to be used by people with a wide range of security experience and as such is ideal for developers and functional testers who are new to penetration testing as well as being a useful addition to an experienced pen testers toolbox. 
+It is designed to be used by people with a wide range of security experience and as such is ideal for developers and functional testers who are new to penetration testing as well as being a useful addition to an experienced pen testers toolbox.
 
 The intergration with Seccubus will make you able to launch the ZAP proxy scanner from the commandline and proccess the results into Seccubus. The default policy will be applicable when the scanner is launched. This can be altered by running the program "normally" with ./zap.sh and adjust the policy in the ZAP Gui
 
@@ -355,7 +397,7 @@ Bug Fixes
 01-08-2014 - 2.8 - New scanner and Burp parser
 ============================================
 Medusa is added to scanner tools thnx to @Arkanoi
-Added burp parser to ivil thnx to @SphaZ 
+Added burp parser to ivil thnx to @SphaZ
 
 Bug Fixes
 ============================================
@@ -498,7 +540,7 @@ New features / Issues resolved
 * Build is now automated using a Jenkins server at Schuberg Philis including
   the creation of RPMs and Debian packages via OpenSuse build services
 * Fixed a few bugs
-    
+
 Bigs fixed (tickets closed):
 ----------------------------
 * #7  - Import error on scan results from OpenVAS 3.0.1
@@ -512,8 +554,8 @@ Bigs fixed (tickets closed):
 * #23 - Nessus xmlRPC port can now be selected
 * #25 - Fixed tarball installation error
 * #29 - JMVC framework updated to version 3.2.2
-    
-15-8-2012 - 2.0.beta5 
+
+15-8-2012 - 2.0.beta5
 =====================
 This is basically version 2.0.beta4 with a nasty critical error removed.
 
@@ -525,7 +567,7 @@ Bigs fixed (tickets closed):
 ----------------------------
 91 - Scan_ids is a mandatory parameter
 
-10-6-2012 - 2.0.beta4 
+10-6-2012 - 2.0.beta4
 =====================
 
 New features / Issues resolved
@@ -623,7 +665,7 @@ Bigs fixed (tickets closed):
 ----------------------------
 49 - Incorrect status selection possible in GUI for Gone findings
 https://sourceforge.net/apps/trac/seccubus/ticket/49
-58 - Cannot give GONE findings the status CLOSED 
+58 - Cannot give GONE findings the status CLOSED
 https://sourceforge.net/apps/trac/seccubus/ticket/58
 
 
@@ -688,11 +730,11 @@ https://sourceforge.net/apps/trac/seccubus/ticket/12
 #42 - Scan parameters --workspace and --scan should be added automatically
 https://sourceforge.net/apps/trac/seccubus/ticket/42
 
-17-03-2011 - 2.0.alpha2 
+17-03-2011 - 2.0.alpha2
 =======================
 New features / Issues resolved
 ------------------------------
-Fixed slow speed of updates to multiple findings  
+Fixed slow speed of updates to multiple findings
 Scanning with Nessus should work a lot better in this version
 
 Bug fixed:

@@ -192,7 +192,7 @@ sub startup {
     $auth_api->get   ('api/workspace/:workspace_id/scan/:scan_id/runs')->to('runs#list');
 
     # Version
-    $auth_api->get   ('api/version')->to('version#read');
+    $r->get          ('api/version')->to('version#read');
 
     # Workspace
     $auth_api->post  ('api/workspaces')->to('workspaces#create');
