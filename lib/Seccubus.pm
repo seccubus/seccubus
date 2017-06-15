@@ -55,7 +55,7 @@ sub startup {
         $self->app->hook(before_dispatch => sub {
             my $c = shift;
             my $path = $c->req->url->path;
-            $path->{path} =~ s/^\/?$baseurl\/?/\//;
+            $path->{path} =~ s/^\/?$baseurl\/*//;
             $c->req->url->path($path);
         });
     }

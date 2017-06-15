@@ -106,7 +106,7 @@ if [[ "$STACK" == "front" ]] ; then
         sed -i.bak "s#%BASEURI%#$BASEURI#g" /etc/nginx/sites-available/seccubus
 
         # Patch javascript to access remote URL
-        sed -i.bak "s#baseUrl(){return\"/api\"}#baseUrl(){return\"$APIURL\"}#" /opt/seccubus/public/seccubus/production.js
+        sed -i.bak "s#baseUrl(){return\"/api/\"}#baseUrl(){return\"$APIURL\"}#" /opt/seccubus/public/seccubus/production.js
 
         service nginx start
     fi
@@ -191,11 +191,11 @@ cat <<EOF >/opt/seccubus/etc/config.xml
 EOF
 
 if [[ "$STACK" == "full" ||  "$STACK" == "api" || "$STACK" == "web" ]] ; then
-    if [[ ! -z "$BASEURI" ]]; then
-        # Patch javascript for baseurl
-        [[ ! "$BASEURI" = /* ]] && BASEURI="/$BASEURI"
-        [[ ! "$BASEURI" = */ ]] && BASEURI="$BASEURI/"
-        sed -i.bak "s#baseUrl(){return\"/\"}#baseUrl(){return\"$BASEURI\/api/\"}#" /opt/seccubus/public/seccubus/production.js
+    # Patch javascript for baseurl or APIURL
+    if [[ ! -z "$APIURL" ]]; then
+        sed -i.bak "s#baseUrl(){return\"/api/\"}#baseUrl(){return\"$APIURL\"}#" /opt/seccubus/public/seccubus/production.js
+    else
+        sed -i.bak "s#baseUrl(){return\"/api/\"}#baseUrl(){return\"..\/api/\"}#" /opt/seccubus/public/seccubus/production.js
     fi
 
     # We need to start mojolicious
