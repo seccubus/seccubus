@@ -142,11 +142,22 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-x-x-2017 - v2.33 - Development release
-==================================================
+15-6-2017 - v2.34 - Backemnd rewritten in Mojolicious
+=====================================================
 
-This release is a fixup release of version 2.30. It fixes two errors in import/export and provides
-specific RPMs for el5, el6 and el7 now.
+The Seccubusd backend has been REST-ish ever since release v2.0. This web backend was implemented
+via Perl CGI scripts (yes, using CGI.pm). Needless to say something needed to change.
+
+This backend rewrite has been in the making for some time now and we are finally ready to release
+it into the wild.
+
+What are the major changes?
+* Backend rewritten in [Mojolicious](http://mojolicious.org/)
+* Backend API is now REST compliant and located at /api
+* There is no need to run an external webserver for Seccubus, it is built into Mojolicious
+* Seccubus now has built in user authentication (Defaqult admin password is 'GiveMeVulns!')
+* Fixed a lot off old issues
+* Unfortunately there is no solid Mojolicious v6/v7 rpms for RedHat/Centos, so we can no longer provide RPMs for those operating systems
 
 Enhancements
 ------------
