@@ -156,6 +156,7 @@ Enhancements
 Bug Fixes
 ---------
 * Fixed a weird sorting bug when using Chrome
+* #190 - XSS in custom SQL query
 * #193 - RFE: please add a logout button for additional security
 * #263 - SeccubusHelpers.pm contains two unused functions
 * #363 - API calls for asset use workspace iso of workspaceId which is the standard
