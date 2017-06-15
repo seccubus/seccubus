@@ -156,6 +156,7 @@ Enhancements
 Bug Fixes
 ---------
 * Fixed a weird sorting bug when using Chrome
+* #138 - Can't locate SeccubusV2.pm in @INC (you may need to install the SeccubusV2 module)
 * #143 - Make RPM so that nginx is supported too
 * #171 - column formatting in custom SQL is off
 * #190 - XSS in custom SQL query
