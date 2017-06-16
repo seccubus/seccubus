@@ -142,44 +142,12 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-15-6-2017 - v2.34 - Backemnd rewritten in Mojolicious
-=====================================================
+x-x-2017 - v2.35 - Development release
+======================================
 
-The Seccubusd backend has been REST-ish ever since release v2.0. This web backend was implemented
-via Perl CGI scripts (yes, using CGI.pm). Needless to say something needed to change.
-
-This backend rewrite has been in the making for some time now and we are finally ready to release
-it into the wild.
-
-What are the major changes?
-* Backend rewritten in [Mojolicious](http://mojolicious.org/)
-* Backend API is now REST compliant and located at /api
-* There is no need to run an external webserver for Seccubus, it is built into Mojolicious
-* Seccubus now has built in user authentication (Defaqult admin password is 'GiveMeVulns!')
-* Fixed a lot off old issues
-* Unfortunately there is no solid Mojolicious v6/v7 rpms for RedHat/Centos, so we can no longer provide RPMs for those operating systems
 
 Enhancements
 ------------
-* #411 - Ported the backend to Mojolicious and pure REST
-* #448 - Allow import and export utility to read config from specific file
 
 Bug Fixes
 ---------
-* Fixed a weird sorting bug when using Chrome
-* #138 - Can't locate SeccubusV2.pm in @INC (you may need to install the SeccubusV2 module)
-* #143 - Make RPM so that nginx is supported too
-* #171 - column formatting in custom SQL is off
-* #190 - XSS in custom SQL query
-* #193 - RFE: please add a logout button for additional security
-* #263 - SeccubusHelpers.pm contains two unused functions
-* #363 - API calls for asset use workspace iso of workspaceId which is the standard
-* #384 - Missing SMTP server config should be warning, not error
-* #396 - ConfigTest should return non 200 if config is not ok
-* #417 - Docker container is not https-enabled by default
-* #418 - Docker images lacks proper data management
-* #430 - Set correct paths for perl and nikto so that do-scan and nikto can now be run by any user
-* #445 - RPM errors
-* #457 - Mine attachment not sent correctly
-* #465 - JSON::false returns "false" on certain platforms
-* #466 - /api/version should not be an authenticated call
