@@ -70,7 +70,7 @@ Use the tag you have just created. If you committed after you created the tag yo
 
 Platform(s):
 
-* [Fedore 25 based RPM](http://software.opensuse.org//download.html?project=home%3Aseccubus&package=Seccubus) - Make sure to download all versions (el5, el6 and el7)
+* [Fedore 25 based RPM](http://software.opensuse.org//download.html?project=home%3Aseccubus&package=Seccubus) - Make sure to download all versions (fc24, fc25 and fc26) as well as the source RPM.
 * [RedHat based SRPM](http://download.opensuse.org/repositories/home:/seccubus/CentOS_5/src/)
 * [Debian based deb amd64](http://download.opensuse.org/repositories/home:/seccubus/Debian_9.0/amd64/)
 * [Debian based deb i386](http://download.opensuse.org/repositories/home:/seccubus/Debian_9.0/i386/)
