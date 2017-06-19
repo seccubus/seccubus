@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk, Alex Smirnoff, Glenn ten Cate
+# Copyright 2014-2017 Frank Breedijk, Alex Smirnoff, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,29 +28,31 @@ use LWP::UserAgent;
 use Data::Dumper;
 use Date::Format;
 use MIME::Base64;
+use XML::Simple;
 
 sub help();
 sub make_timestamp();
 
 my (
-	$workspace,
-	$scan,
-	$gradeonly,
-	$api,
-	$hosts,
-	$sleep,
-	$nosslcheck,
-	@hosts,
-	$userAgent,
-	$clearCache,
-	$noClearCache,
-	$fromCache,
-	$publish,
-	$all,
-	$nodelete,
-	$help,
-	$verbose,
-	$quiet,
+    $workspace,
+    $scan,
+    $gradeonly,
+    $api,
+    $hosts,
+    $sleep,
+    $nosslcheck,
+    @hosts,
+    $userAgent,
+    $clearCache,
+    $noClearCache,
+    $fromCache,
+    $publish,
+    $cdn,
+    $all,
+    $nodelete,
+    $help,
+    $verbose,
+    $quiet,
    );
 
 sub help();
@@ -68,22 +70,23 @@ $userAgent = "seccubus-ssllabs v1.01";
 $noClearCache = 0;
 
 GetOptions(
-	    'hosts|h=s'			=> \$hosts,
-	    'workspace|ws=s'	=> \$workspace,
-	    'scan|sc=s'			=> \$scan,
-	    'gradeonly!'		=> \$gradeonly,
-		'api|a=s'			=> \$api,
-		'sleep|s=s'			=> \$sleep,
-		'nosslcheck!'		=> \$nosslcheck,
-		'useragent=s'		=> \$userAgent,
-		'no-clear-cache!'	=> \$noClearCache,
-		'from-cache!'		=> \$fromCache,
-		'nodelete!'			=> \$nodelete,
-		'publish'			=> \$publish,
-		'verbose|v+'		=> \$verbose,
-		'quiet|q!'			=> \$quiet,
-		'help'				=> \$help,
-	  );
+    'hosts|h=s'         => \$hosts,
+    'workspace|ws=s'    => \$workspace,
+    'scan|sc=s'         => \$scan,
+    'gradeonly!'        => \$gradeonly,
+    'api|a=s'           => \$api,
+    'sleep|s=s'         => \$sleep,
+    'nosslcheck!'       => \$nosslcheck,
+    'useragent=s'       => \$userAgent,
+    'no-clear-cache!'   => \$noClearCache,
+    'from-cache!'       => \$fromCache,
+    'nodelete!'         => \$nodelete,
+    'publish'           => \$publish,
+    'cdn'               => \$cdn,
+    'verbose|v+'        => \$verbose,
+    'quiet|q!'          => \$quiet,
+    'help'              => \$help,
+);
 
 help() if $help;
 $verbose = 0 if $quiet;
@@ -91,18 +94,21 @@ $verbose = 0 if $quiet;
 # Disable SSL checking if needed
 $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0 unless $nosslcheck;
 
+# Make sure Dumer sorts
+$Data::Dumper::Sortkeys = 1;
+
 # Check params
 if ( ! $hosts ) {
-	print "You must specify a valid hosts spec";
-	help();
+    print "You must specify a valid hosts spec";
+    help();
 }
 if ( ! $workspace ) {
-	print "You must specify a workspace";
-	help();
+    print "You must specify a workspace";
+    help();
 }
 if ( ! $scan ) {
-	print "You must specify a scan";
-	help();
+    print "You must specify a scan";
+    help();
 }
 
 # Output files
@@ -113,26 +119,26 @@ my $config = SeccubusV2::get_config();
 
 # Expand hosts
 if ( -e $hosts ) {
-	open HOSTS, $hosts or die "Unable to open file '$hosts'";
-	while (<HOSTS>) {
-		chomp;
-		s/\#.*$//; # Remove comments
-		s/\s+$//; # Remove trailing spaces
-		if ( $_ ) { # Ignore blank lines
-			push @hosts, $_;
-			print "Scanning hosts $_\n" if $verbose > 1;
-		}
-	}
-	close HOSTS;
+    open HOSTS, $hosts or die "Unable to open file '$hosts'";
+    while (<HOSTS>) {
+        chomp;
+        s/\#.*$//; # Remove comments
+        s/\s+$//; # Remove trailing spaces
+        if ( $_ ) { # Ignore blank lines
+            push @hosts, $_;
+            print "Scanning hosts $_\n" if $verbose > 1;
+        }
+    }
+    close HOSTS;
 } else {
-	@hosts = split /\s+/, $hosts #split it
+    @hosts = split /\s+/, $hosts #split it
 }
 
 # Fix param values
 if ( $noClearCache || $fromCache ) {
-	$clearCache = 0;
+    $clearCache = 0;
 } else {
-	$clearCache = 1;
+    $clearCache = 1;
 }
 
 # Get parsing hints files
@@ -163,14 +169,14 @@ $json = decode_json($response->decoded_content());
 # Verbose 3 or higher is true debug mode
 
 if ( $verbose > 2 ) {
-	print "*** QUERY ***\n";
-	print "$api/info\n";
-	print "*** RESPONSE HEADERS *** \n";
-	my $headers = $response->headers();
-	print $headers->as_string();
-	print "*** RESPONSE DATA ***\n";
-	print $response->decoded_content();
-	print "\n";
+    print "*** QUERY ***\n";
+    print "$api/info\n";
+    print "*** RESPONSE HEADERS *** \n";
+    my $headers = $response->headers();
+    print $headers->as_string();
+    print "*** RESPONSE DATA ***\n";
+    print $response->decoded_content();
+    print "\n";
 }
 
 
@@ -179,125 +185,125 @@ my $scanner_ver = "v$json->{engineVersion} (criteria version $json->{criteriaVer
 my $maxScans = $json->{maxAssessments};
 my $coolOff = $json->{newAssessmentCoolOff};
 unless($quiet) {
-	print "Scans will be performed by SSL Labs v$json->{engineVersion} (criteria version $json->{criteriaVersion}) - www.ssllabs.com\n" unless $quiet;
-	print "Maximum number of concurrent assessments: $maxScans\n" if $verbose;
-	print "Cool off period before starting a new assessment: $coolOff ms\n" if $verbose;
-	print "\n";
-	print join "\n", @{$json->{messages}};
-	print "\n";
+    print "Scans will be performed by SSL Labs v$json->{engineVersion} (criteria version $json->{criteriaVersion}) - www.ssllabs.com\n" unless $quiet;
+    print "Maximum number of concurrent assessments: $maxScans\n" if $verbose;
+    print "Cool off period before starting a new assessment: $coolOff ms\n" if $verbose;
+    print "\n";
+    print join "\n", @{$json->{messages}};
+    print "\n";
 }
 
 my $active = 9999;
 my $results = {};
 my $extraSleep = 0;
 while ( $active ) {
-	# Don't sleep on the first iteration
-	unless ( $active == 9999 ) {
-		print "$active scans in progress, sleeping for $sleep seconds\n" unless $quiet;
-		sleep($sleep);
-	}
-	# Iterate over all hosts
-	$active = 0;
-	foreach my $host ( @hosts ) {
-		chomp $host;
-		# Determine if we need to query result for this host. Only if a scan is in progress and we have not exceeded our scan limit
-		if ( $active < $maxScans &&
-			(! defined $results->{$host} || $results->{$host}->{status} eq "IN_PROGRESS" || $results->{$host}->{status} eq "DNS" ) ) {
-			$active++;
+    # Don't sleep on the first iteration
+    unless ( $active == 9999 ) {
+        print "$active scans in progress, sleeping for $sleep seconds\n" unless $quiet;
+        sleep($sleep);
+    }
+    # Iterate over all hosts
+    $active = 0;
+    foreach my $host ( @hosts ) {
+        chomp $host;
+        # Determine if we need to query result for this host. Only if a scan is in progress and we have not exceeded our scan limit
+        if ( $active < $maxScans &&
+            (! defined $results->{$host} || $results->{$host}->{status} eq "IN_PROGRESS" || $results->{$host}->{status} eq "DNS" ) ) {
+            $active++;
 
-			# Delay if we were previously notified of a problem on the API side
-			if ( $extraSleep ) {
-				print "Sleeping for $extraSleep seconds\n" if $verbose && $extraSleep;
-				sleep($extraSleep);
-			}
+            # Delay if we were previously notified of a problem on the API side
+            if ( $extraSleep ) {
+                print "Sleeping for $extraSleep seconds\n" if $verbose && $extraSleep;
+                sleep($extraSleep);
+            }
 
-			# Let's build a query
-			my @params = (
-				"host=$host",
-				"all=done"
-			);
-			push @params, "publish=on" if $publish;
-			push @params, "fromCache=on" if $fromCache;
+            # Let's build a query
+            my @params = (
+                "host=$host",
+                "all=done"
+            );
+            push @params, "publish=on" if $publish;
+            push @params, "fromCache=on" if $fromCache;
 
-			# If this is the first time we call the API for a host and we want the cache cleared, now it s good time to do it.
-			if ( ! defined $results->{$host} ) {
-				push @params, "clearCache=on" if $clearCache;
-				print "Starting scan of $host\n" unless $quiet;
-				print "Sleeping for $coolOff ms before scan\n" if $verbose;
-				select(undef, undef, undef, $coolOff/1000);
-			} else {
-				print "Getting status of $host scan\n" if $verbose;
-			}
+            # If this is the first time we call the API for a host and we want the cache cleared, now it s good time to do it.
+            if ( ! defined $results->{$host} ) {
+                push @params, "clearCache=on" if $clearCache;
+                print "Starting scan of $host\n" unless $quiet;
+                print "Sleeping for $coolOff ms before scan\n" if $verbose;
+                select(undef, undef, undef, $coolOff/1000);
+            } else {
+                print "Getting status of $host scan\n" if $verbose;
+            }
 
-			# Do the actual API call
-			my $url = "analyze?" . join "&", @params;
-			print "Calling $url\n" if $verbose > 1;
-			my $response = $ua->get("$api/$url");
+            # Do the actual API call
+            my $url = "analyze?" . join "&", @params;
+            print "Calling $url\n" if $verbose > 1;
+            my $response = $ua->get("$api/$url");
 
 
-			# Verbose 3 or higher is true debug mode
-			if ( $verbose > 2 ) {
-				print "*** QUERY ***\n";
-				print "$api/info\n";
-				print "*** RESPONSE HEADERS *** \n";
-				my $headers = $response->headers();
-				print $headers->as_string();
-				print "*** RESPONSE DATA ***\n";
-				print $response->decoded_content();
-			}
+            # Verbose 3 or higher is true debug mode
+            if ( $verbose > 2 ) {
+                print "*** QUERY ***\n";
+                print "$api/info\n";
+                print "*** RESPONSE HEADERS *** \n";
+                my $headers = $response->headers();
+                print $headers->as_string();
+                print "*** RESPONSE DATA ***\n";
+                print $response->decoded_content();
+            }
 
-			my $newMaxScans = $response->headers()->header('X-ClientMaxAssessments');
-			if ( $newMaxScans && $newMaxScans != $maxScans ) {
-				$maxScans = $newMaxScans;
-				print "API has sent new max scan limit of $maxScans, adjusting...\n" unless $quiet;
-			}
+            my $newMaxScans = $response->headers()->header('X-ClientMaxAssessments');
+            if ( $newMaxScans && $newMaxScans != $maxScans ) {
+                $maxScans = $newMaxScans;
+                print "API has sent new max scan limit of $maxScans, adjusting...\n" unless $quiet;
+            }
 
-			# Handle responses: 200 - All OK
-			eval {
-				$json = decode_json($response->decoded_content());
-			} or do {
-				die "Unable to decode JSON from: " . $response->decoded_content();
-			};
-			if ($response->code() == 200) {
-				# Store result and continue normal timing
-				$extraSleep = 0;
-				print "$host -> $json->{status}\n" if $verbose;
-				$results->{$host} = $json;
-				if ( $json->{status} ne "IN_PROGRESS" && $json->{status} ne "DNS" ) {
-					print "Host: $host, status: $json->{status} - done\n" unless $quiet;
-					$active--;
-				} else {
-					print "Host: $host, status: $json->{status} - in progress\n" unless $quiet;
+            # Handle responses: 200 - All OK
+            eval {
+                $json = decode_json($response->decoded_content());
+            } or do {
+                die "Unable to decode JSON from: " . $response->decoded_content();
+            };
+            if ($response->code() == 200) {
+                # Store result and continue normal timing
+                $extraSleep = 0;
+                print "$host -> $json->{status}\n" if $verbose;
+                $results->{$host} = $json;
+                if ( $json->{status} ne "IN_PROGRESS" && $json->{status} ne "DNS" ) {
+                    print "Host: $host, status: $json->{status} - done\n" unless $quiet;
+                    $active--;
+                } else {
+                    print "Host: $host, status: $json->{status} - in progress\n" unless $quiet;
 
-				}
-			# Other statuses are a problem
-			} elsif ( $response->code() == 429 ) {
-				print "Request rate too high, sleeping 5 minutes before next request\n" unless $quiet;
-				$extraSleep = 300;
-			} elsif ( $response->code() == 503 ) {
-				print "Service not available, sleeping 15 minutes before next request\n" unless $quiet;
-				$extraSleep = 900;
-			} elsif ( $response->code() == 529 ) {
-				print "Service overloaded, sleeping 30 minutes before next request\n" unless $quiet;
-				$extraSleep = 1800;
-			} else {
-				# Enumerate error messages
-				my $msg = "";
-				foreach my $error ( @{$json->{errors}} ) {
-					$msg .= "$error->{message}\n";
-				}
-				print "Received error. Error code ". $response->code() . " messages:\n$msg" unless $quiet;
-				print "Host: $host, status: ERROR - done\n" unless $quiet;
+                }
+            # Other statuses are a problem
+            } elsif ( $response->code() == 429 ) {
+                print "Request rate too high, sleeping 5 minutes before next request\n" unless $quiet;
+                $extraSleep = 300;
+            } elsif ( $response->code() == 503 ) {
+                print "Service not available, sleeping 15 minutes before next request\n" unless $quiet;
+                $extraSleep = 900;
+            } elsif ( $response->code() == 529 ) {
+                print "Service overloaded, sleeping 30 minutes before next request\n" unless $quiet;
+                $extraSleep = 1800;
+            } else {
+                # Enumerate error messages
+                my $msg = "";
+                foreach my $error ( @{$json->{errors}} ) {
+                    $msg .= "$error->{message}\n";
+                }
+                print "Received error. Error code ". $response->code() . " messages:\n$msg" unless $quiet;
+                print "Host: $host, status: ERROR - done\n" unless $quiet;
 
-				# Atrifically construct an ERROR API reply
-				$results->{$host}->{status} = "ERROR";
-				$results->{$host}->{statusMessage} = "$msg";
-				# Mark the host as being inactive
-				$active--;
-			}
-		}
-	}
-	print "$active active scans\n" if $verbose;
+                # Atrifically construct an ERROR API reply
+                $results->{$host}->{status} = "ERROR";
+                $results->{$host}->{statusMessage} = "$msg";
+                # Mark the host as being inactive
+                $active--;
+            }
+        }
+    }
+    print "$active active scans\n" if $verbose;
 }
 #die Dumper $results;
 
@@ -313,97 +319,167 @@ print OUT ivil_open();
 
 # Addressee block
 print OUT ivil_addressee("Seccubus", {
-		"workspace" => $workspace,
-		"scan"		=> $scan,
-	}
+        "workspace" => $workspace,
+        "scan"        => $scan,
+    }
 );
 # Findings
 print OUT "<findings>\n";
 
 
+
 # Iterate over each host
 foreach my $host ( @hosts ) {
 
-	my $scan = $results->{$host};
+    my $scan = $results->{$host};
 
-	my $finding = {};
-	if ( $scan->{port} ) {
-		$finding->{port} = "$scan->{port}/tcp";
-	} else {
-		$finding->{port} = "unknow";
-	}
+    my $finding = {};
+    if ( $scan->{port} ) {
+        $finding->{port} = "$scan->{port}/tcp";
+    } else {
+        $finding->{port} = "unknow";
+    }
 
-	# Handle errors first
+    # Handle errors first
     if ( $scan->{status} eq "ERROR" || $scan->{status} eq "Assessment failed" ) {
-		$finding->{ip} = $host;
-		$finding->{hostname} = $host;
-		$finding->{id} = "ERROR/Assessment failed";
-		$finding->{finding} = $scan->{statusMessage};
-		$finding->{severity} = 0;
-		print OUT ivil_finding($finding);
-	} else {
-		$finding->{severity} = 0;
-		foreach my $key ( sort keys %$scan ) {
-			if ( $key eq "endpoints" ) {
-				foreach my $ep ( @{$scan->{endpoints}} ) {
-					#die Dumper $ep;
-					$finding->{hostname}="$host";
-					$finding->{ip}="$host/$ep->{ipAddress}";
-					foreach my $epkey ( sort keys %$ep ) {
-						if ( ! $keys->{$epkey}->{ignore} ) {
-							if ( $gradeonly ) {
-								if ( ($keys->{$epkey}->{type} eq "grade" || $epkey =~ /[gG]rade/ ) ||
-									 ( $epkey eq "statusMessage" && $ep->{$epkey} ne "Ready" )
-								   ) {
-									$finding->{id} = $epkey;
-									$finding->{finding} = parse_finding($epkey,$ep->{$epkey},$keys->{$epkey});
-									print OUT ivil_finding($finding);
-								}
-							} else {
-								if ( $epkey eq "details" ) {
-									foreach my $dkey ( sort keys %{$ep->{$epkey}} ) {
-										if ( ! $details->{$dkey}->{ignore} ) {
-											$finding->{id} = $dkey;
-											$finding->{finding} = parse_finding($dkey,$ep->{details}->{$dkey},$details->{$dkey});
-											print OUT ivil_finding($finding);
-										}
-									}
-								} else {
-									$finding->{id} = $epkey;
-									$finding->{finding} = parse_finding($epkey,$ep->{$epkey},$keys->{$epkey});
-									print OUT ivil_finding($finding);
-								}
-							}
-						}
-					}
-				}
-			} elsif ( ! $keys->{$key}->{ignore} ) {
-				if ( $gradeonly  )  {
-					if ( $keys->{$key}->{type} eq "grade" || $key =~ /[gG]rade/ ) {
-						$finding->{hostname} = $host;
-						$finding->{ip} = $host;
-						$finding->{id} = $key;
-						$finding->{finding} = parse_finding($key,$scan->{$key},$keys->{$key});
-						print OUT ivil_finding($finding);
-					}
-				} else {
-					$finding->{hostname} = $host;
-					$finding->{ip} = $host;
-					$finding->{id} = $key;
-					$finding->{finding} = parse_finding($key,$scan->{$key},$keys->{$key});
-					print OUT ivil_finding($finding);
-				}
-			}
-		}
-	} # error or not
+        $finding->{ip} = $host;
+        $finding->{hostname} = $host;
+        $finding->{id} = "ERROR/Assessment failed";
+        $finding->{finding} = $scan->{statusMessage};
+        $finding->{severity} = 0;
+        print OUT ivil_finding($finding);
+    } else {
+        $finding->{severity} = 0;
+        foreach my $key ( sort keys %$scan ) {
+            if ( $key eq "endpoints" ) {
+                foreach my $ep ( @{$scan->{endpoints}} ) {
+                    #die Dumper $ep;
+                    $finding->{hostname}="$host";
+                    $finding->{ip}="$host/$ep->{ipAddress}";
+                    foreach my $epkey ( sort keys %$ep ) {
+                        if ( ! $keys->{$epkey}->{ignore} ) {
+                            if ( $gradeonly ) {
+                                if ( ($keys->{$epkey}->{type} eq "grade" || $epkey =~ /[gG]rade/ ) ||
+                                     ( $epkey eq "statusMessage" && $ep->{$epkey} ne "Ready" )
+                                   ) {
+                                    $finding->{id} = $epkey;
+                                    $finding->{finding} = parse_finding($epkey,$ep->{$epkey},$keys->{$epkey});
+                                    print OUT ivil_finding($finding);
+                                }
+                            } else {
+                                if ( $epkey eq "details" ) {
+                                    foreach my $dkey ( sort keys %{$ep->{$epkey}} ) {
+                                        if ( ! $details->{$dkey}->{ignore} ) {
+                                            $finding->{id} = $dkey;
+                                            $finding->{finding} = parse_finding($dkey,$ep->{details}->{$dkey},$details->{$dkey});
+                                            print OUT ivil_finding($finding);
+                                        }
+                                    }
+                                } else {
+                                    $finding->{id} = $epkey;
+                                    $finding->{finding} = parse_finding($epkey,$ep->{$epkey},$keys->{$epkey});
+                                    print OUT ivil_finding($finding);
+                                }
+                            }
+                        }
+                    }
+                }
+            } elsif ( ! $keys->{$key}->{ignore} ) {
+                if ( $gradeonly  )  {
+                    if ( $keys->{$key}->{type} eq "grade" || $key =~ /[gG]rade/ ) {
+                        $finding->{hostname} = $host;
+                        $finding->{ip} = $host;
+                        $finding->{id} = $key;
+                        $finding->{finding} = parse_finding($key,$scan->{$key},$keys->{$key});
+                        print OUT ivil_finding($finding);
+                    }
+                } else {
+                    $finding->{hostname} = $host;
+                    $finding->{ip} = $host;
+                    $finding->{id} = $key;
+                    $finding->{finding} = parse_finding($key,$scan->{$key},$keys->{$key});
+                    print OUT ivil_finding($finding);
+                }
+            }
+        }
+    } # error or not
 } # Hosts
 
 # Close IVIL
 print OUT "</findings>\n";
 print OUT ivil_close();
 close OUT;
-#die `cat $tempfile.ivil.xml`;
-#die Dumper($results);
+
+# Perform CDN deduplication on IVIL file
+$results = undef; # Free up memory
+if ( $cdn) {
+    my $cdn = {};
+    my $ivil = XMLin(
+        "$tempfile.ivil.xml",
+        forcearray  => [ 'finding', 'references' ],
+        KeyAttr     => undef,
+        SuppressEmpty   => "",
+    );
+    my $findings = $ivil->{findings}->{finding};
+    $ivil->{findings}->{finding} = [];
+    #die Dumper $ivil;
+
+     foreach my $f ( @$findings ) {
+        # Detect endpoint findings
+        if ( $f->{ip} =~ /\// ) {
+            my $proto;
+            # Determine protocol
+            if ( $f->{ip} =~ /\/\d+\.\d+\.\d+\.\d+$/ ) {
+                $proto = "ipv4";
+            } elsif ( $f->{ip} =~ /\/[\da-f]+(:[\da-f]*)+$/ ) {
+                $proto = "ipv6";
+            } else {
+                die " Unknow protocol for endpoint" . $f->{ip};
+            }
+            $cdn->{$proto}->{$f->{id}}->{ip} = "$f->{hostname}/$proto";
+            $cdn->{$proto}->{$f->{id}}->{hostname} = $f->{hostname};
+            $cdn->{$proto}->{$f->{id}}->{port} = $f->{port};
+            $cdn->{$proto}->{$f->{id}}->{id} = $f->{id};
+            $cdn->{$proto}->{$f->{id}}->{severity} = $f->{severity};
+            $cdn->{$proto}->{$f->{id}}->{finding_txt}->{$f->{ip}} = $f->{finding_txt};
+        } else {
+            push @{$ivil->{findings}->{finding}}, $f;
+        }
+    }
+    foreach my $proto ( sort keys %$cdn ) {
+        foreach my $plugin ( sort keys %{$cdn->{$proto}} ) {
+            my $diff = 0;
+            my $txt = "Findings vary per endpoint!!!\n\n";
+            my $same_txt = "";
+            foreach my $host ( sort keys %{ $cdn->{$proto}->{$plugin}->{finding_txt} } ) {
+                $same_txt = $cdn->{$proto}->{$plugin}->{finding_txt}->{$host} if $same_txt eq "";
+                $txt .= "$host:\n\n" . $cdn->{$proto}->{$plugin}->{finding_txt}->{$host} . "\n---\n";
+                $diff++ if $same_txt ne $cdn->{$proto}->{$plugin}->{finding_txt}->{$host};
+            }
+            if ( $diff ) {
+                $cdn->{$proto}->{$plugin}->{finding_txt} = $txt;
+            } else {
+                $cdn->{$proto}->{$plugin}->{finding_txt} = $same_txt;
+            }
+        }
+    }
+    foreach my $proto ( sort keys %$cdn ) {
+        foreach my $plugin ( sort keys %{$cdn->{$proto}} ) {
+            push @{$ivil->{findings}->{finding}}, $cdn->{$proto}->{$plugin};
+        }
+    }
+    #unlink "$tempfile.ivil.xml";
+    # Overwrite IVIL
+    open IVIL, ">$tempfile.ivil.xml" or die "Unable to write file";
+    print IVIL XMLout(
+        $ivil,
+        KeyAttr     => undef,
+        SuppressEmpty   => "",
+    );
+    close IVIL;
+}
+
+
 
 # Load the results
 my ( $workspace_id, $scan_id, $run_id) = load_ivil("$tempfile.ivil.xml", "Qualys SSL labs", $scanner_ver, $timestamp );
@@ -417,15 +493,15 @@ print "Attaching file '$tempfile.ivil.xml' to scan '$scan'\n" if $verbose;
 update_run($workspace_id, $scan_id, $timestamp, "$tempfile.ivil.xml", "IVIL file");
 
 unless ( $nodelete ) {
-	unlink "$tempfile.json";
-	unlink "$tempfile.ivil.xml";
+    unlink "$tempfile.json";
+    unlink "$tempfile.ivil.xml";
 }
 print "Done\n" unless $quiet;
 
 exit(0);
 
 sub help() {
-	print "
+    print "
 Usage: scan     --hosts=<hosts file|hosts spec>
                 --workspace=<seccubus workspace> --scan=<seccubus scan>
                 [--gradeonly] [--api=<api_url>] [--sleep=<sleeptime>]
@@ -433,13 +509,13 @@ Usage: scan     --hosts=<hosts file|hosts spec>
                 [--from-cache] [--publish] [--nodelete] [--verbose]
                 [--quiet] [--help]
 
---hosts		      - Specification of hosts to scan. (A file containing) a
+--hosts           - Specification of hosts to scan. (A file containing) a
                     list of hostnames separated by newlines. Empty lines
                     are ignored. Comments start with #
 --workspace (-ws) - Seccubus workspace the scan in in
---scan (-sc)	  - Seccubus scan the data should be saved in
---gradeonly	      - Only process the findings that give a grade
---api (-a)		  - URL of the ssllabs API, defaults to
+--scan (-sc)      - Seccubus scan the data should be saved in
+--gradeonly       - Only process the findings that give a grade
+--api (-a)        - URL of the ssllabs API, defaults to
                     https://api.ssllabs.com/api/v3/
 --sleep           - Seconds to sleep between polls of the API
                     (default=15) Lower then 15 seconds is considered rude
@@ -454,337 +530,341 @@ Usage: scan     --hosts=<hosts file|hosts spec>
 --no-clear-cache  - Do not clear the cache of the SSL labs scan engine
                     Gives results faster but may be less accurate
 --from-cache      - Prefer cached results over fresh results (for very
-	                quick results)
+                    quick results)
 --publish         - Publish the results of this scan on the SSL labs website
+--cdn             - Since end nodes may vary when using CDN networks, the
+                    ip addresses of endpoints will be replaced with ipv4 or ipv6
+                    if endpoints don't give consistent results this will be
+                    highlighted in the finding text
 --nodelete        - Don't erase temporary files
 --verbose (-v)    - Be verbose during execution (repeat to increase verbosity)
 --quiet (-q)      - Don't print output
 --help (-h)       - Print this message
 ";
-	exit(1);
+    exit(1);
 }
 
 sub make_timestamp() {
-	my ($second, $minute, $hour, $day, $month, $year) = localtime();
-	$month++;
-	$second = "0" . $second if $second < 10;
-	$minute = "0" . $minute if $minute <10;
-	$hour = "0". $hour if $hour < 10;
-	$day = "0". $day if $day <10;
-	$month = "0" . $month if $month <10;
-	$year += 1900;
+    my ($second, $minute, $hour, $day, $month, $year) = localtime();
+    $month++;
+    $second = "0" . $second if $second < 10;
+    $minute = "0" . $minute if $minute <10;
+    $hour = "0". $hour if $hour < 10;
+    $day = "0". $day if $day <10;
+    $month = "0" . $month if $month <10;
+    $year += 1900;
 
-	return "$year$month$day$hour$minute$second";
+    return "$year$month$day$hour$minute$second";
 }
 
 sub parse_finding($$) {
-	my $key = shift;
-	my $finding = shift;
-	my $meta = shift;
+    my $key = shift;
+    my $finding = shift;
+    my $meta = shift;
 
-	my $txt;
-	if ( ! %$meta ) {
-		$txt = "Unknown finding '$key'\nAPI returned:\n";
-		$txt .= to_json({data => $finding});
-	} else {
-		$txt = "$meta->{description}";
-		if ( $meta->{type} eq "certificates" ) {
-			$txt .= parse_certs($finding);
-		} elsif ( $meta->{type} eq "boolean" ) {
-			$txt .= ( $finding ? "True" : "False");
-		} elsif ( $meta->{type} eq "bitmap" ) {
-			$txt .= parse_bitmap($finding,@{$meta->{values}});
-		} elsif ( $meta->{type} eq "list" ) {
-			$txt .= parse_valuelist( $finding + $meta->{startsAt} , @{$meta->{values}});
-		} elsif ( $meta->{type} eq "grade" ) {
-			$txt .= parse_grade($finding);
-		} elsif ( $meta->{type} eq "timestamp" ) {
-			$txt .= parse_ts($finding);
-		} elsif ( $meta->{type} eq "milliseconds" ) {
-			$txt .= ( $finding / 1000 ) . " seconds\n";
-		} elsif ( $meta->{type} eq "string" ) {
-			$txt .= $finding;
-		} elsif ( $meta->{type} eq "vulnerability" ) {
-			$txt .= parse_vuln($finding,$meta);
-		} elsif ( $meta->{type} eq "hpkpPolicy" ) {
-			$txt .= parse_hpkppolicy($finding);
-		} elsif ( $meta->{type} eq "hstsPolicy" ) {
-			$txt .= parse_hstspolicy($finding);
-		} elsif ( $meta->{type} eq "hstsPreloads" ) {
-			$txt .= parse_hstspreloads($finding);
-		} elsif ( $meta->{type} eq "array" ) {
-			$txt .= parse_array($finding,$meta);
-		} elsif ( $meta->{type} eq "sims" ) {
-			$txt .= parse_sims($finding);
-		} elsif ( $meta->{type} eq "suites" ) {
-			if ( exists $meta->{key} ) {
-				$txt .= parse_suites($finding->{$meta->{key}});
-			} else {
-				$txt .= parse_suites($finding);
-			}
-		} elsif ( $meta->{type} eq "staticPkpPolicy" ) {
-			$txt .= parse_staticPkp($finding);
-		} elsif ( $meta->{type} eq "namedGroups") {
-			$txt .= parse_named_groups($finding);
-		} else {
-			die "Unknow data type $meta->{type}" . ( Dumper $meta ) . " ";
-		}
-		$txt .= "\n\n$meta->{note}";
-	} # Unknown
-	return $txt;
+    my $txt;
+    if ( ! %$meta ) {
+        $txt = "Unknown finding '$key'\nAPI returned:\n";
+        $txt .= to_json({data => $finding});
+    } else {
+        $txt = "$meta->{description}";
+        if ( $meta->{type} eq "certificates" ) {
+            $txt .= parse_certs($finding);
+        } elsif ( $meta->{type} eq "boolean" ) {
+            $txt .= ( $finding ? "True" : "False");
+        } elsif ( $meta->{type} eq "bitmap" ) {
+            $txt .= parse_bitmap($finding,@{$meta->{values}});
+        } elsif ( $meta->{type} eq "list" ) {
+            $txt .= parse_valuelist( $finding + $meta->{startsAt} , @{$meta->{values}});
+        } elsif ( $meta->{type} eq "grade" ) {
+            $txt .= parse_grade($finding);
+        } elsif ( $meta->{type} eq "timestamp" ) {
+            $txt .= parse_ts($finding);
+        } elsif ( $meta->{type} eq "milliseconds" ) {
+            $txt .= ( $finding / 1000 ) . " seconds\n";
+        } elsif ( $meta->{type} eq "string" ) {
+            $txt .= $finding;
+        } elsif ( $meta->{type} eq "vulnerability" ) {
+            $txt .= parse_vuln($finding,$meta);
+        } elsif ( $meta->{type} eq "hpkpPolicy" ) {
+            $txt .= parse_hpkppolicy($finding);
+        } elsif ( $meta->{type} eq "hstsPolicy" ) {
+            $txt .= parse_hstspolicy($finding);
+        } elsif ( $meta->{type} eq "hstsPreloads" ) {
+            $txt .= parse_hstspreloads($finding);
+        } elsif ( $meta->{type} eq "array" ) {
+            $txt .= parse_array($finding,$meta);
+        } elsif ( $meta->{type} eq "sims" ) {
+            $txt .= parse_sims($finding);
+        } elsif ( $meta->{type} eq "suites" ) {
+            if ( exists $meta->{key} ) {
+                $txt .= parse_suites($finding->{$meta->{key}});
+            } else {
+                $txt .= parse_suites($finding);
+            }
+        } elsif ( $meta->{type} eq "staticPkpPolicy" ) {
+            $txt .= parse_staticPkp($finding);
+        } elsif ( $meta->{type} eq "namedGroups") {
+            $txt .= parse_named_groups($finding);
+        } else {
+            die "Unknow data type $meta->{type}" . ( Dumper $meta ) . " ";
+        }
+        $txt .= "\n\n$meta->{note}";
+    } # Unknown
+    return $txt;
 }
 
 sub parse_certs($) {
-	my $certs = shift;
+    my $certs = shift;
 
-	my $number = 1;
-	my $txt;
-	foreach my $cert ( @$certs ) {
-		$txt .= "\n#$number\n\n";
-		$txt .= "Subject                   : $cert->{subject}\n";
-		$cert->{subject}=~/CN=(.*?),/;
-		$txt .= "Common names              : \n * ";
-		$txt .= join "\n * ", @{$cert->{commonNames}};
-		$txt .= "\nAlternative names         : \n * ";
-		$txt .= join "\n * ", @{$cert->{altNames}} if defined $cert->{altNames};
-		$txt .= "\n";
-		$txt .= "Valid from                : " . parse_ts($cert->{notBefore}) . "\n";
-		$txt .= "Valid until               : " . parse_ts($cert->{notAfter}) . "\n";
-		$txt .= "Key                       : $cert->{keyAlg} $cert->{keySize} bits\n";
-		$txt .= "Issuer                    : $cert->{issuerSubject}\n";
-		$cert->{issuerSubject} =~ /CN=(.*?),/;
-		$txt .= "Issuer CN                 : $1\n";
-		$txt .= "Signature algorithm       : $cert->{sigAlg}\n";
-		$txt .= "Extended validation       : " . ($cert->{validationType} eq 'E' ? 'Yes' :  'No') . "\n";
-		$txt .= "OCSP Must Staple          : ";
-		$txt .= parse_valuelist($cert->{mustStaple}, (
-			"Not supported",
-			"Supported, but OCSP response is not stapled",
-			"Supported, OICSP response is stapled"
-		)) . "\n";
-		$txt .= "Revocation information    :\n" . parse_bitmap($cert->{revocationInfo}, (
-			"CRL information available",
-			"OCSP information available"
-		));
-		$txt .= "Revocation URLs           :\n";
-		$txt .= " * CRL : " . join("\nCRL: ", @{$cert->{crlURIs}}) . "\n" if defined $cert->{crlURIs};
-		$txt .= " * OCSP : " . join("\nOCSP: ", @{$cert->{ocspURIs}}) . "\n" if defined $cert->{ocspURIs};
-		$txt .= "Revocation status         : " . parse_valuelist($cert->{revocationStatus}, (
-			"Not checked",
-			"Certificate revoked",
-			"Certificate NOT revoked",
-			"Revocation check error",
-			"No revocation information",
-			"Internal error"
-		)) . "\n";
-		$txt .= "Hashes                    : \n * SHA1: $cert->{sha1Hash} \n * Pin SHA256 :  $cert->{pinSha256}\n";
-		$txt .= "Server Gated Crypto (SGC) : \n" . parse_bitmap($cert->{sgc}, "Netscape SGC", "Microsoft SGC");
-		$txt .= "\nCertificate issues        :\n";
-		$txt .= " * Known weak (insecure) Debian key\n" if $cert->{keyKnownDebianInsecure};
-		$txt .= parse_bitmap($cert->{issues}, (
-			"No chain of trust",
-			"Not yet valid (not before)",
-			"Expired (not after)",
-			"Hostname mismatch",
-			"Revoked",
-			"Bad common name",
-			"Self signed",
-			"Blacklisted",
-			"Insecure signature",
-		));
-		$number++;
-	}
-	return $txt;
-	# End certificate
+    my $number = 1;
+    my $txt;
+    foreach my $cert ( @$certs ) {
+        $txt .= "\n#$number\n\n";
+        $txt .= "Subject                   : $cert->{subject}\n";
+        $cert->{subject}=~/CN=(.*?),/;
+        $txt .= "Common names              : \n * ";
+        $txt .= join "\n * ", @{$cert->{commonNames}};
+        $txt .= "\nAlternative names         : \n * ";
+        $txt .= join "\n * ", @{$cert->{altNames}} if defined $cert->{altNames};
+        $txt .= "\n";
+        $txt .= "Valid from                : " . parse_ts($cert->{notBefore}) . "\n";
+        $txt .= "Valid until               : " . parse_ts($cert->{notAfter}) . "\n";
+        $txt .= "Key                       : $cert->{keyAlg} $cert->{keySize} bits\n";
+        $txt .= "Issuer                    : $cert->{issuerSubject}\n";
+        $cert->{issuerSubject} =~ /CN=(.*?),/;
+        $txt .= "Issuer CN                 : $1\n";
+        $txt .= "Signature algorithm       : $cert->{sigAlg}\n";
+        $txt .= "Extended validation       : " . ($cert->{validationType} eq 'E' ? 'Yes' :  'No') . "\n";
+        $txt .= "OCSP Must Staple          : ";
+        $txt .= parse_valuelist($cert->{mustStaple}, (
+            "Not supported",
+            "Supported, but OCSP response is not stapled",
+            "Supported, OICSP response is stapled"
+        )) . "\n";
+        $txt .= "Revocation information    :\n" . parse_bitmap($cert->{revocationInfo}, (
+            "CRL information available",
+            "OCSP information available"
+        ));
+        $txt .= "Revocation URLs           :\n";
+        $txt .= " * CRL : " . join("\nCRL: ", @{$cert->{crlURIs}}) . "\n" if defined $cert->{crlURIs};
+        $txt .= " * OCSP : " . join("\nOCSP: ", @{$cert->{ocspURIs}}) . "\n" if defined $cert->{ocspURIs};
+        $txt .= "Revocation status         : " . parse_valuelist($cert->{revocationStatus}, (
+            "Not checked",
+            "Certificate revoked",
+            "Certificate NOT revoked",
+            "Revocation check error",
+            "No revocation information",
+            "Internal error"
+        )) . "\n";
+        $txt .= "Hashes                    : \n * SHA1: $cert->{sha1Hash} \n * Pin SHA256 :  $cert->{pinSha256}\n";
+        $txt .= "Server Gated Crypto (SGC) : \n" . parse_bitmap($cert->{sgc}, "Netscape SGC", "Microsoft SGC");
+        $txt .= "\nCertificate issues        :\n";
+        $txt .= " * Known weak (insecure) Debian key\n" if $cert->{keyKnownDebianInsecure};
+        $txt .= parse_bitmap($cert->{issues}, (
+            "No chain of trust",
+            "Not yet valid (not before)",
+            "Expired (not after)",
+            "Hostname mismatch",
+            "Revoked",
+            "Bad common name",
+            "Self signed",
+            "Blacklisted",
+            "Insecure signature",
+        ));
+        $number++;
+    }
+    return $txt;
+    # End certificate
 }
 
 sub parse_ts($) {
-	my $ts = shift;
-	$ts /= 1000;
-	time2str("%a %d %b %Y %T UTC",$ts,"UTC");
+    my $ts = shift;
+    $ts /= 1000;
+    time2str("%a %d %b %Y %T UTC",$ts,"UTC");
 }
 
 sub parse_grade($) {
-	my $grade = shift;
-	my $txt = "$grade\n";
-	if ( $grade eq "T" ) {
-		$txt .= "The certificate is not trusted."
-	} elsif ( $grade eq "M" ) {
-		$txt .= "The name of the site could not be matched to a name in the certificate."
-	}
-	return $txt;
+    my $grade = shift;
+    my $txt = "$grade\n";
+    if ( $grade eq "T" ) {
+        $txt .= "The certificate is not trusted."
+    } elsif ( $grade eq "M" ) {
+        $txt .= "The name of the site could not be matched to a name in the certificate."
+    }
+    return $txt;
 }
 
 sub parse_vuln($$) {
-	my $finding = shift;
-	my $meta = shift;
+    my $finding = shift;
+    my $meta = shift;
 
-	if ( $finding ) {
-		return "VULNERABLE to $meta->{name}";
-	} else {
-		return "Not vulnerable to $meta->{name}";
-	}
+    if ( $finding ) {
+        return "VULNERABLE to $meta->{name}";
+    } else {
+        return "Not vulnerable to $meta->{name}";
+    }
 }
 
 sub parse_valuelist($@) {
-	my $val = shift;
+    my $val = shift;
 
-	if ( $val > @_ ) {
-		return "Unknown value: $val"
-	}
+    if ( $val > @_ ) {
+        return "Unknown value: $val"
+    }
 
-	return $_[$val];
+    return $_[$val];
 }
 
 sub parse_bitmap($@) {
-	my $val = shift;
+    my $val = shift;
 
-	my $bit = 1;
-	my $txt = "";
-	foreach my $line ( @_ ) {
-		# Bitwise and to figure out if bit is set
-		if ( $val & $bit ) {
-			$txt .= "\n * $line";
-		}
-		$bit *= 2;
-	}
-	return $txt;
+    my $bit = 1;
+    my $txt = "";
+    foreach my $line ( @_ ) {
+        # Bitwise and to figure out if bit is set
+        if ( $val & $bit ) {
+            $txt .= "\n * $line";
+        }
+        $bit *= 2;
+    }
+    return $txt;
 }
 
 sub parse_hpkppolicy($) {
-	my $finding = shift;
-	my $matched = {};
+    my $finding = shift;
+    my $matched = {};
 
-	my $txt = "\n\nHTKP Header: $finding->{header}\n";
-	$txt .= "Status: $finding->{status}\n";
-	my $age = 0;
-	foreach my $directive ( @{$finding->{directives}} ) {
-		$age=$directive->{value} if $directive->{name} eq 'max-age';
-		$txt .= "$directive->{name}: $directive->{value}\n" unless $directive->{name} =~ /^pin/;
-	}
-	$txt .= sprintf("Valid for %0.2f days ( %d second(s) )\n", $age / 84600, $age);
-	$txt .= "Error: $finding->{error}\n" if $finding->{error};
-	my $count = 0;
-	foreach my $pin ( @{$finding->{matchedPins} }) {
-		$matched->{$pin->{value}} = "(Found in chain)";
-		$count ++;
-	}
-	foreach my $pin ( @{$finding->{pins}} ) {
-		my $bin = pack ("H*", $pin->{value});
-		my $b64 = encode_base64($bin,"");
-		chomp($b64);
-		$txt .= "pin-$pin->{hashFunction} : $b64 $matched->{$pin->{value}}\n";
-	}
-	$txt .= "\n$count pins are found in the chain.\n";
-	return $txt;
+    my $txt = "\n\nHTKP Header: $finding->{header}\n";
+    $txt .= "Status: $finding->{status}\n";
+    my $age = 0;
+    foreach my $directive ( @{$finding->{directives}} ) {
+        $age=$directive->{value} if $directive->{name} eq 'max-age';
+        $txt .= "$directive->{name}: $directive->{value}\n" unless $directive->{name} =~ /^pin/;
+    }
+    $txt .= sprintf("Valid for %0.2f days ( %d second(s) )\n", $age / 84600, $age);
+    $txt .= "Error: $finding->{error}\n" if $finding->{error};
+    my $count = 0;
+    foreach my $pin ( @{$finding->{matchedPins} }) {
+        $matched->{$pin->{value}} = "(Found in chain)";
+        $count ++;
+    }
+    foreach my $pin ( @{$finding->{pins}} ) {
+        my $bin = pack ("H*", $pin->{value});
+        my $b64 = encode_base64($bin,"");
+        chomp($b64);
+        $txt .= "pin-$pin->{hashFunction} : $b64 $matched->{$pin->{value}}\n";
+    }
+    $txt .= "\n$count pins are found in the chain.\n";
+    return $txt;
 }
 
 sub parse_hstspolicy($) {
-	my $finding = shift;
+    my $finding = shift;
 
-	my $txt = "\n\nHSTS header : $finding->{header}\n";
-	$txt .= "Status : $finding->{status}\n";
-	if ( $finding->{maxAge} >= $finding->{LONG_MAX_AGE} ) {
-		$txt .= sprintf("HSTS duration of %0.2f days (%d seconds) is considered sufficiently long\n",$finding->{maxAge} / 84600, $finding->{maxAge});
-	} else {
-		$txt .= sprintf("HSTS duration of %0.2f days (%d seconds) is considered TOO SHORT\n",$finding->{maxAge} / 84600, $finding->{maxAge});
-	}
-	return $txt;
+    my $txt = "\n\nHSTS header : $finding->{header}\n";
+    $txt .= "Status : $finding->{status}\n";
+    if ( $finding->{maxAge} >= $finding->{LONG_MAX_AGE} ) {
+        $txt .= sprintf("HSTS duration of %0.2f days (%d seconds) is considered sufficiently long\n",$finding->{maxAge} / 84600, $finding->{maxAge});
+    } else {
+        $txt .= sprintf("HSTS duration of %0.2f days (%d seconds) is considered TOO SHORT\n",$finding->{maxAge} / 84600, $finding->{maxAge});
+    }
+    return $txt;
 }
 
 sub parse_hstspreloads($) {
-	my $finding = shift;
+    my $finding = shift;
 
-	my $txt;
-	foreach my $b ( @$finding ) {
-		$txt .= " * $b->{source} - $b->{status}\n";
-	}
-	return $txt;
+    my $txt;
+    foreach my $b ( @$finding ) {
+        $txt .= " * $b->{source} - $b->{status}\n";
+    }
+    return $txt;
 }
 
 sub parse_staticPkp($) {
-	my $finding = shift;
-	my $txt = Dumper $finding;
+    my $finding = shift;
+    my $txt = Dumper $finding;
 
-	return $txt;
+    return $txt;
 }
 
 sub parse_array($$) {
-	my $finding = shift;
-	my $meta = shift;
+    my $finding = shift;
+    my $meta = shift;
 
-	my $txt;
-	foreach my $line ( @$finding ) {
-		$txt .= " *";
-		foreach my $f ( @{$meta->{fields}} ) {
-			$txt .= " $line->{$f}";
-		}
-		$txt .= "\n";
-	}
-	return $txt;
+    my $txt;
+    foreach my $line ( @$finding ) {
+        $txt .= " *";
+        foreach my $f ( @{$meta->{fields}} ) {
+            $txt .= " $line->{$f}";
+        }
+        $txt .= "\n";
+    }
+    return $txt;
 }
 
 sub parse_sims($) {
-	my $f = shift;
+    my $f = shift;
 
-	my $txt;
-	my $first = 1;
-	#die Dumper $f;
-	foreach my $s ( @{$f->{results}} ) {
-		$txt .= '-' x 80 . "\n" unless $first;
-		$first = 0;
-		$txt .= "$s->{client}->{name} $s->{client}->{version}";
-		$txt .= " / $s->{client}->{platform}" if $s->{client}->{platform};
+    my $txt;
+    my $first = 1;
+    #die Dumper $f;
+    foreach my $s ( @{$f->{results}} ) {
+        $txt .= '-' x 80 . "\n" unless $first;
+        $first = 0;
+        $txt .= "$s->{client}->{name} $s->{client}->{version}";
+        $txt .= " / $s->{client}->{platform}" if $s->{client}->{platform};
 
-		if ( $s->{keyAlg} ) {
-			$s->{sigAlg} =~ s/withRSA$//;
-			my $proto = parse_version($s->{protocolId});
-			$txt .= "\t$s->{keyAlg} $s->{keySize} ($s->{sigAlg})\t$proto\t$s->{suiteName}\n";
-		}
-		$txt .= "\t\t$s->{errorMessage}\n" if $s->{errorMessage};
-	}
-	return $txt;
+        if ( $s->{keyAlg} ) {
+            $s->{sigAlg} =~ s/withRSA$//;
+            my $proto = parse_version($s->{protocolId});
+            $txt .= "\t$s->{keyAlg} $s->{keySize} ($s->{sigAlg})\t$proto\t$s->{suiteName}\n";
+        }
+        $txt .= "\t\t$s->{errorMessage}\n" if $s->{errorMessage};
+    }
+    return $txt;
 }
 
 sub parse_version($) {
-	my $n = shift;
+    my $n = shift;
 
-	my $major = int($n/256);
-	my $minor = $n-(256*$major);
+    my $major = int($n/256);
+    my $minor = $n-(256*$major);
 
-	$major = "SSL 1" if $major == 0;
-	$major = "SSL 2" if $major == 1;
-	$major = "SSL 3" if $major == 2;
-	$major = "TLS 1" if $major == 3;
+    $major = "SSL 1" if $major == 0;
+    $major = "SSL 2" if $major == 1;
+    $major = "SSL 3" if $major == 2;
+    $major = "TLS 1" if $major == 3;
 
-	return "$major\.$minor";
+    return "$major\.$minor";
 }
 
 sub parse_suites($) {
-	my $a = shift;
+    my $a = shift;
 
-	my $txt;
-	foreach my $f (@$a) {
+    my $txt;
+    foreach my $f (@$a) {
 
-		my $proto = parse_version($f->{protocol});
-		$txt .= "$proto\n-------\n";
-		if ( $f->{preference} ) {
-			$txt .= "Server sets the order of preference for cipher suites\n";
-		} else {
-			$txt .= "Server DOES NOT set the order of preference for cipher suites\n";
-		}
-		$txt .= parse_array($f->{list},{ fields => ["name", "cipherStrength"]});
-		$txt .= "\n";
-	}
-	return $txt;
+        my $proto = parse_version($f->{protocol});
+        $txt .= "$proto\n-------\n";
+        if ( $f->{preference} ) {
+            $txt .= "Server sets the order of preference for cipher suites\n";
+        } else {
+            $txt .= "Server DOES NOT set the order of preference for cipher suites\n";
+        }
+        $txt .= parse_array($f->{list},{ fields => ["name", "cipherStrength"]});
+        $txt .= "\n";
+    }
+    return $txt;
 }
 
 sub parse_named_groups($) {
-	my $f = shift;
+    my $f = shift;
 
-	my $meta = { "fields" => [ "id", "name", "bits"] };
-	my $txt = "List of (named) DH groups:\n--------------------------\n\nID,name,bits\n";
-	$txt .= parse_array($f->{list},$meta);
+    my $meta = { "fields" => [ "id", "name", "bits"] };
+    my $txt = "List of (named) DH groups:\n--------------------------\n\nID,name,bits\n";
+    $txt .= parse_array($f->{list},$meta);
 
-	return $txt;
+    return $txt;
 }

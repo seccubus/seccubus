@@ -145,9 +145,9 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 x-x-2017 - v2.35 - Development release
 ======================================
 
-
 Enhancements
 ------------
+#$$2 - Add --cdn option to ssllabs
 
 Bug Fixes
 ---------
