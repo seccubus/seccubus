@@ -40,10 +40,19 @@ sub create {
         my ( $dbuser, $valid, $isadmin, $message ) = get_login($header_value);
         $user->{username} = $dbuser;
         if ( ! $valid ) {
-            $self->session(expires => 1); # Expire session
-            delete $self->session->{user};
-            $self->error("Login failed: $message", 401);
-            return;
+            if ( $config->{auth}->{jit_group} ) {
+                $isadmin = 1 if ( $config->{auth}->{jit_group} eq "ADMINISTRATORS" );
+                $ENV{SECCUBUS_USER} = "system";
+                add_user($header_value,"User created by JIT provisioning",$isadmin);
+                delete $ENV{SECCUBUS_USER};
+                ( $dbuser, $valid, $isadmin, $message ) = get_login($header_value);
+                $user->{username} = $dbuser;
+            } else {
+                $self->session(expires => 1); # Expire session
+                delete $self->session->{user};
+                $self->error("Login failed: $message", 401);
+                return;
+            }
         }
     } else {
         # Log in with username and password
@@ -92,6 +101,16 @@ sub read {
 
     if ( ( $header_name && $self->app->mode() eq "production" ) || ( $self->app->mode() eq "development" && $header_value ) ) {
         $ENV{SECCUBUS_USER} = $header_value;
+        if ( $config->{auth}->{jit_group} ) {
+            # We need to do JIT provisioning if needed
+            my ( $username, $valid, $isadmin, $message) = get_login();
+            if ( ! $valid ) {
+                $isadmin = 1 if ( $config->{auth}->{jit_group} eq "ADMINISTRATORS" );
+                $ENV{SECCUBUS_USER} = "system";
+                add_user($header_value,"User created by JIT provisioning",$isadmin);
+                $ENV{SECCUBUS_USER} = $header_value;
+            }
+        }
     } elsif ( $u && check_password($u->{name},undef,$u->{hash}) ) {
         $ENV{SECCUBUS_USER} = $u->{name};
     } else {

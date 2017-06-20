@@ -134,6 +134,7 @@ You can set the following environment variables:
   - If you are using something like OpenAM to authenticate your users, this allows you to set which http request header contains the user that OpenAM detected
 * TZ - Set the timezone of the container
 * TLS - Controls TLS behaviour `yes` means TLS is on, otherwise TLS is off. TLS is on by default.
+* JIT_GROUP - Controls JIT provisioning of users
 
 
 Change log
@@ -147,7 +148,8 @@ x-x-2017 - v2.35 - Development release
 
 Enhancements
 ------------
-#$$2 - Add --cdn option to ssllabs
+#401 - JIT provisioning of users
+#442 - Add --cdn option to ssllabs
 
 Bug Fixes
 ---------

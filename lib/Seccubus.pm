@@ -191,6 +191,9 @@ sub startup {
     # Runs
     $auth_api->get   ('api/workspace/:workspace_id/scan/:scan_id/runs')->to('runs#list');
 
+    # Users
+    $auth_api->get   ('api/users')->to('users#list');
+
     # Version
     $r->get          ('api/version')->to('version#read');
 

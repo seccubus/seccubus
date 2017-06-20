@@ -223,4 +223,154 @@ $t->get_ok('/api/session')
     })
 ;
 
+# Get user list
+$t->get_ok('/api/users' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200)
+    ->json_is([
+        {
+            id          => 1,
+            username    => "admin",
+            name        => "Builtin administrator account",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 3,
+            username    => "importer",
+            name        => "Builtin importer utility account",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 2,
+            username    => "system",
+            name        => "Builtin system user",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+    ])
+;
+
+$t->get_ok('/api/session' => { 'REMOTEUSER' => 'seccubus' })
+    ->status_is(200)
+    ->json_is({
+        isAdmin     => 1,
+        message     => "Valid user 'User created by JIT provisioning' (seccubus)",
+        username    => "seccubus",
+        valid       => 1
+    })
+;
+
+# Get user list
+$t->get_ok('/api/users' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200)
+    ->json_is([
+       {
+            id          => 1,
+            username    => "admin",
+            name        => "Builtin administrator account",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 3,
+            username    => "importer",
+            name        => "Builtin importer utility account",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 100,
+            username    => "seccubus",
+            name        => "User created by JIT provisioning",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 2,
+            username    => "system",
+            name        => "Builtin system user",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+    ])
+;
+
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'seccubus2' })
+    ->status_is(200)
+    ->json_is({
+        isAdmin     => 1,
+        message     => "You are now logged in as seccubus2",
+        password    => "",
+        status      => "Success",
+    })
+;
+
+# Get user list
+$t->get_ok('/api/users' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200)
+    ->json_is([
+        {
+            id          => 1,
+            username    => "admin",
+            name        => "Builtin administrator account",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 3,
+            username    => "importer",
+            name        => "Builtin importer utility account",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 100,
+            username    => "seccubus",
+            name        => "User created by JIT provisioning",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 101,
+            username    => "seccubus2",
+            name        => "User created by JIT provisioning",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 2,
+            username    => "system",
+            name        => "Builtin system user",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+    ])
+;
+
+
 done_testing();

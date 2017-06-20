@@ -180,6 +180,7 @@ cat <<EOF >/opt/seccubus/etc/config.xml
         <auth>
             <http_auth_header>$HTTP_AUTH_HEADER</http_auth_header>
             <sessionkey>$SESSION_KEY</sessionkey>
+            <jit_group>$JIT_GROUP</jit_group>
         </auth>
         <http>
             <port>$PORT</port>
