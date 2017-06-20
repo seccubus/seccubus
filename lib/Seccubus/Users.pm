@@ -130,13 +130,13 @@ sub get_users() {
         my $rows = sql (
             "return" => "ref",
             "query"  => "
-                SELECT      u.username, u.name, g.name
+                SELECT      u.id, u.username, u.name, g.id, g.name
                 FROM        users u
                 LEFT JOIN   user2group u2g
                 ON          u2g.user_id = u.id
                 LEFT JOIN   groups g
                 ON          u2g.group_id = g.id
-                GROUP BY    u.username, u.name, g.name
+                GROUP BY    u.id,u.username, u.name, g.id, g.name
                 ORDER BY    u.username;
             ",
         );
@@ -145,16 +145,17 @@ sub get_users() {
             username => ""
         };
         foreach my $row ( @$rows ) {
-            if ( $user->{username} ne $$row[0] ) {
+            if ( $user->{username} ne $$row[1] ) {
                 push @$users, $user unless $user->{username} eq "";
                 $user = {
-                    username    => $$row[0],
-                    name        => $$row[1],
+                    id          => $$row[0],
+                    username    => $$row[1],
+                    name        => $$row[2],
                 };
             }
             if ( $$row[2] ) {
                 $user->{groups} = [] unless $user->{groups};
-                push @{$user->{groups}}, $$row[2];
+                push @{$user->{groups}}, { id => $$row[3], name => $$row[4] };
             }
         }
         push @$users, $user;

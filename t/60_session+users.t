@@ -228,27 +228,30 @@ $t->get_ok('/api/users' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200)
     ->json_is([
         {
+            id          => 1,
             username    => "admin",
             name        => "Builtin administrator account",
             groups      => [
-                "ADMINISTRATORS",
-                "ALL"
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
             ]
         },
         {
+            id          => 3,
             username    => "importer",
             name        => "Builtin importer utility account",
             groups      => [
-                "ADMINISTRATORS",
-                "ALL"
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
             ]
         },
         {
+            id          => 2,
             username    => "system",
             name        => "Builtin system user",
             groups      => [
-                "ADMINISTRATORS",
-                "ALL"
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
             ]
         },
     ])
@@ -268,36 +271,40 @@ $t->get_ok('/api/session' => { 'REMOTEUSER' => 'seccubus' })
 $t->get_ok('/api/users' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200)
     ->json_is([
-        {
+       {
+            id          => 1,
             username    => "admin",
             name        => "Builtin administrator account",
             groups      => [
-                "ADMINISTRATORS",
-                "ALL"
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
             ]
         },
         {
+            id          => 3,
             username    => "importer",
             name        => "Builtin importer utility account",
             groups      => [
-                "ADMINISTRATORS",
-                "ALL"
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
             ]
         },
         {
+            id          => 100,
             username    => "seccubus",
             name        => "User created by JIT provisioning",
             groups      => [
-                "ADMINISTRATORS",
-                "ALL"
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
             ]
         },
         {
+            id          => 2,
             username    => "system",
             name        => "Builtin system user",
             groups      => [
-                "ADMINISTRATORS",
-                "ALL"
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
             ]
         },
     ])
@@ -318,43 +325,48 @@ $t->get_ok('/api/users' => { 'REMOTEUSER' => 'admin' })
     ->status_is(200)
     ->json_is([
         {
+            id          => 1,
             username    => "admin",
             name        => "Builtin administrator account",
             groups      => [
-                "ADMINISTRATORS",
-                "ALL"
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
             ]
         },
         {
+            id          => 3,
             username    => "importer",
             name        => "Builtin importer utility account",
             groups      => [
-                "ADMINISTRATORS",
-                "ALL"
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
             ]
         },
         {
+            id          => 100,
             username    => "seccubus",
             name        => "User created by JIT provisioning",
             groups      => [
-                "ADMINISTRATORS",
-                "ALL"
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
             ]
         },
         {
+            id          => 101,
             username    => "seccubus2",
             name        => "User created by JIT provisioning",
             groups      => [
-                "ADMINISTRATORS",
-                "ALL"
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
             ]
         },
         {
+            id          => 2,
             username    => "system",
             name        => "Builtin system user",
             groups      => [
-                "ADMINISTRATORS",
-                "ALL"
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
             ]
         },
     ])
