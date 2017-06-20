@@ -43,6 +43,12 @@
 	<auth>
 		<http_auth_header></http_auth_header>
         <sessionkey>SeccubusScanSmarterNotHarder</sessionkey>
-        <baseurl></baseurl>
+        <jit_group>ADMINISTRATORS</jit_group>
 	</auth>
+    <http>
+        <port>8443</port>
+        <cert>testdata/seccubus.crt</cert>
+        <key>testdata/seccubus.key</key>
+        <baseurl></baseurl>
+    </http>
 </seccubus>

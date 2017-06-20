@@ -35,11 +35,19 @@
 		<url_head>https://jira.atlassian.com/browse/</url_head>
 		<url_tail></url_tail>
 	</tickets>
-	<auth>
-		<http_auth_header>REMOTEUSER</http_auth_header>
-	</auth>
 	<smtp>
 		<server>localhost</server>
 		<from>seccubus@localhost</from>
 	</smtp>
+    <auth>
+        <http_auth_header>REMOTEUSER</http_auth_header>
+        <sessionkey>SeccubusScanSmarterNotHarder</sessionkey>
+        <jit_group>ADMINISTRATORS</jit_group>
+    </auth>
+    <http>
+        <port>9090</port>
+        <cert>testdata/seccubus.crt</cert>
+        <key>testdata/seccubus.key</key>
+        <baseurl></baseurl>
+    </http>
 </seccubus>

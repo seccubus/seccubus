@@ -147,7 +147,8 @@ x-x-2017 - v2.35 - Development release
 
 Enhancements
 ------------
-#$$2 - Add --cdn option to ssllabs
+#401 - JIT provisioning of users
+#442 - Add --cdn option to ssllabs
 
 Bug Fixes
 ---------

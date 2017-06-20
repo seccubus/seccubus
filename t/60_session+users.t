@@ -223,4 +223,142 @@ $t->get_ok('/api/session')
     })
 ;
 
+# Get user list
+$t->get_ok('/api/users' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200)
+    ->json_is([
+        {
+            username    => "admin",
+            name        => "Builtin administrator account",
+            groups      => [
+                "ADMINISTRATORS",
+                "ALL"
+            ]
+        },
+        {
+            username    => "importer",
+            name        => "Builtin importer utility account",
+            groups      => [
+                "ADMINISTRATORS",
+                "ALL"
+            ]
+        },
+        {
+            username    => "system",
+            name        => "Builtin system user",
+            groups      => [
+                "ADMINISTRATORS",
+                "ALL"
+            ]
+        },
+    ])
+;
+
+$t->get_ok('/api/session' => { 'REMOTEUSER' => 'seccubus' })
+    ->status_is(200)
+    ->json_is({
+        isAdmin     => 1,
+        message     => "Valid user 'User created by JIT provisioning' (seccubus)",
+        username    => "seccubus",
+        valid       => 1
+    })
+;
+
+# Get user list
+$t->get_ok('/api/users' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200)
+    ->json_is([
+        {
+            username    => "admin",
+            name        => "Builtin administrator account",
+            groups      => [
+                "ADMINISTRATORS",
+                "ALL"
+            ]
+        },
+        {
+            username    => "importer",
+            name        => "Builtin importer utility account",
+            groups      => [
+                "ADMINISTRATORS",
+                "ALL"
+            ]
+        },
+        {
+            username    => "seccubus",
+            name        => "User created by JIT provisioning",
+            groups      => [
+                "ADMINISTRATORS",
+                "ALL"
+            ]
+        },
+        {
+            username    => "system",
+            name        => "Builtin system user",
+            groups      => [
+                "ADMINISTRATORS",
+                "ALL"
+            ]
+        },
+    ])
+;
+
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'seccubus2' })
+    ->status_is(200)
+    ->json_is({
+        isAdmin     => 1,
+        message     => "You are now logged in as seccubus2",
+        password    => "",
+        status      => "Success",
+    })
+;
+
+# Get user list
+$t->get_ok('/api/users' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200)
+    ->json_is([
+        {
+            username    => "admin",
+            name        => "Builtin administrator account",
+            groups      => [
+                "ADMINISTRATORS",
+                "ALL"
+            ]
+        },
+        {
+            username    => "importer",
+            name        => "Builtin importer utility account",
+            groups      => [
+                "ADMINISTRATORS",
+                "ALL"
+            ]
+        },
+        {
+            username    => "seccubus",
+            name        => "User created by JIT provisioning",
+            groups      => [
+                "ADMINISTRATORS",
+                "ALL"
+            ]
+        },
+        {
+            username    => "seccubus2",
+            name        => "User created by JIT provisioning",
+            groups      => [
+                "ADMINISTRATORS",
+                "ALL"
+            ]
+        },
+        {
+            username    => "system",
+            name        => "Builtin system user",
+            groups      => [
+                "ADMINISTRATORS",
+                "ALL"
+            ]
+        },
+    ])
+;
+
+
 done_testing();

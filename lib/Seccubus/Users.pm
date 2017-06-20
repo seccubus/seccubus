@@ -18,6 +18,7 @@ package Seccubus::Users;
 use SeccubusV2;
 use Seccubus::Rights;
 use Seccubus::DB;
+use Data::Dumper;
 
 =head1 NAME $RCSfile: SeccubusUsers.pm,v $
 
@@ -30,6 +31,7 @@ all functions within the module
 
 @EXPORT = qw (
 	get_user_id
+    get_users
 	add_user
 	get_login
     set_password
@@ -51,6 +53,7 @@ my $pbkdf2 = Crypt::PBKDF2->new(
 );
 
 sub get_user_id($);
+sub get_users();
 sub add_user($$$);
 sub get_login(;$);
 sub set_password($$);
@@ -98,6 +101,70 @@ sub get_user_id($) {
 	}
 }
 
+=head2 get_users
+
+This function return an array of users objects
+
+=over 2
+
+=item Parameters
+
+=over 4
+
+=item None
+
+=back
+
+=item Checks
+
+If the user has admin rights
+
+=back
+
+=cut
+
+sub get_users() {
+    my $user = shift;
+
+    if ( is_admin() ) {
+        my $rows = sql (
+            "return" => "ref",
+            "query"  => "
+                SELECT      u.username, u.name, g.name
+                FROM        users u
+                LEFT JOIN   user2group u2g
+                ON          u2g.user_id = u.id
+                LEFT JOIN   groups g
+                ON          u2g.group_id = g.id
+                GROUP BY    u.username, u.name, g.name
+                ORDER BY    u.username;
+            ",
+        );
+        my $users = [];
+        my $user = {
+            username => ""
+        };
+        foreach my $row ( @$rows ) {
+            if ( $user->{username} ne $$row[0] ) {
+                push @$users, $user unless $user->{username} eq "";
+                $user = {
+                    username    => $$row[0],
+                    name        => $$row[1],
+                };
+            }
+            if ( $$row[2] ) {
+                $user->{groups} = [] unless $user->{groups};
+                push @{$user->{groups}}, $$row[2];
+            }
+        }
+        push @$users, $user;
+
+        return $users;
+    } else {
+        confess("Permission denied");
+    }
+}
+
 =head2 add_user
 
 This function adds a use to the users table and makes him member of the all
@@ -133,7 +200,7 @@ sub add_user($$$) {
 	my ( $id );
 
 	confess "No userid specified" unless $user;
-	confess "No naem specified for user $user" unless $name;
+	confess "No name specified for user $user" unless $name;
 
 	if ( is_admin() ) {
 		my $id = sql(	"return"	=> "id",
@@ -152,7 +219,13 @@ sub add_user($$$) {
 			    "values"	=> [$id, 1],
 			   );
 		}
-	}
+        # Set random password
+        my $password = "";
+        $password .= ("A".."Z","a".."z",0..9)[rand 62] for 1..16;
+        set_password($user,$password);
+	} else {
+        confess "Permission denied while adding user";
+    }
 }
 
 =head2 get_login
