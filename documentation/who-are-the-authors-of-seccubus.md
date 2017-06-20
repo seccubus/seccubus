@@ -8,7 +8,7 @@ Seccubus is maintained by the following people:
   * Lead developer and original author: [Frank Breedijk](../33-frank-breedijk/)
   * Co developer for Seccubus v2: Steven Launius
   * RPM packaging by: Peter Slootweg
-  * The IVIL standard: [Frank Breedijk](/who-is-frank-breedijk/) and [Zate Berg](http://blog.zate.org/)
+  * The IVIL standard: [Frank Breedijk](who-is-frank-breedijk/) and [Zate Berg](http://blog.zate.org/)
 
 With contributions from:
 
