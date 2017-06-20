@@ -137,7 +137,7 @@ sub get_users() {
                 LEFT JOIN   groups g
                 ON          u2g.group_id = g.id
                 GROUP BY    u.id,u.username, u.name, g.id, g.name
-                ORDER BY    u.username;
+                ORDER BY    u.username, g.name;
             ",
         );
         my $users = [];
