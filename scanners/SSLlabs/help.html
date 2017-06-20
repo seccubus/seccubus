@@ -1,5 +1,5 @@
 <!--
-Copyright 2017 Frank Breedijk, Frank Spijkerman
+Copyright 2014-2017 Frank Breedijk, Frank Spijkerman
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ This scanner takes the following parameters:
 		<br>- URL of the ssllabs API, defaults to
                     https://api.ssllabs.com/api/v2/
 	<li>--sleep
-		<br>- Seconds to sleep between polls of the API (default=15) 
-		Lower then 15 seconds is considered rude and a violation of 
+		<br>- Seconds to sleep between polls of the API (default=15)
+		Lower then 15 seconds is considered rude and a violation of
 		the terms of usage of the API
 	<li>--nosslcheck
 		<br>- Do not check the validity of the API SSL certificate
@@ -44,6 +44,11 @@ This scanner takes the following parameters:
 	    quick results)
 	<li>--publish
 		<br>- Publish the results of this scan on the SSL labs website
+    <li>--cdn
+        <br>- Since end nodes may vary when using CDN networks, the
+              ip addresses of endpoints will be replaced with ipv4 or ipv6
+              if endpoints don't give consistent results this will be
+              highlighted in the finding text
 	<li>--nodelete
 		<br>- Don't erase temporary files
 	<li>--verbose (-v)

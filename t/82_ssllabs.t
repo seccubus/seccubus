@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk
+# Copyright 2017-2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -90,6 +90,28 @@ $t->post_ok('/api/workspace/100/scans',
     ->status_is(200)
 ;
 
+# Create CDN scan
+$t->post_ok('/api/workspace/100/scans',
+    json => {
+        "name"          => "cdn",
+        "scanner"       => "SSLlabs",
+        "parameters"    => '--hosts @HOSTS --from-cache --publish --cdn',
+        "targets"       => "www.schubergphilis.com"
+    })
+    ->status_is(200)
+;
+
+# Create gradeonly CDN scan
+$t->post_ok('/api/workspace/100/scans',
+    json => {
+        "name"          => "cdn_gradeonly",
+        "scanner"       => "SSLlabs",
+        "parameters"    => '--hosts @HOSTS --from-cache --publish --cdn --gradeonly',
+        "targets"       => "www.schubergphilis.com"
+    })
+    ->status_is(200)
+;
+
 # Lets run scans
 pass("Running ssllabs scan");
 `bin/do-scan -w test1 -s ssl`;
@@ -101,6 +123,14 @@ is($?,0,"Command executed ok");
 
 pass("Running gradeonly_error scan");
 `bin/do-scan -w test1 -s gradeonly_error`;
+is($?,0,"Command executed ok");
+
+pass("Running cdn scan");
+`bin/do-scan -w test1 -s cdn`;
+is($?,0,"Command executed ok");
+
+pass("Running gradeonly cdn scan");
+`bin/do-scan -w test1 -s cdn_gradeonly`;
 is($?,0,"Command executed ok");
 
 # Reactivate Mojo
@@ -128,7 +158,6 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
     like($f->{plugin}, qr/^(grade(TrustIgnored)?|statusMessage|ERROR\/Assessment failed)$/i, "Finding $f->{id} is correct type");
 }
 
-
 # We should only have ERROR or statusMessage plugins
 $t->get_ok('/api/workspace/100/findings?scanIds[]=3')
     ->status_is(200)
@@ -136,5 +165,38 @@ $t->get_ok('/api/workspace/100/findings?scanIds[]=3')
 foreach my $f ( @{$t->{tx}->res()->json()} ) {
     like($f->{plugin}, qr/^(statusMessage|ERROR\/Assessment failed)$/i, "Finding $f->{id} is correct type");
 }
+
+# We should only have ERROR or statusMessage plugins
+$t->get_ok('/api/workspace/100/findings?scanIds[]=4')
+    ->status_is(200)
+;
+foreach my $f ( @{$t->{tx}->res()->json()} ) {
+    like($f->{host},qr/^[^\/]+(\/ipv[46])?$/,"Hostname is correctly normalized");
+    if ( $f->{plugin} =~ /^(renegSupport|serverName)$/ ) {
+    } elsif ( $f->{plugin} eq "duration" ) {
+        like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints");
+    } else {
+        unlike($f->{find},qr/^Findings vary per endpoint/,"Findings are consistent across endpoints");
+    }
+    #die Dumper $f;
+    #like($f->{plugin}, qr/^(statusMessage|ERROR\/Assessment failed)$/i, "Finding $f->{id} is correct type");
+}
+
+# We should only have ERROR or statusMessage plugins
+$t->get_ok('/api/workspace/100/findings?scanIds[]=5')
+    ->status_is(200)
+;
+foreach my $f ( @{$t->{tx}->res()->json()} ) {
+    like($f->{plugin}, qr/^(grade(TrustIgnored)?|statusMessage|ERROR\/Assessment failed)$/i, "Finding $f->{id} is correct type");
+    like($f->{host},qr/^[^\/]+(\/ipv[46])?$/,"Hostname is correctly normalized");
+    if ( $f->{plugin} =~ /^(renegSupport|serverName)$/ ) {
+    } elsif ( $f->{plugin} eq "duration" ) {
+        like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints");
+    } else {
+        unlike($f->{find},qr/^Findings vary per endpoint/,"Findings are consistent across endpoints");
+    }
+}
+
+
 
 done_testing();

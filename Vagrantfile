@@ -105,4 +105,20 @@ Vagrant.configure("2") do |config|
   #  f.vm.box = "bento/fedora-26"
   #end
 
+  config.vm.define "u14" do |f|
+    f.vm.network "forwarded_port", guest: 8443, host: 817, host_ip: "127.0.0.1"
+    f.vm.box = "bento/ubuntu-14.04"
+  end
+
+  config.vm.define "u16" do |f|
+    f.vm.network "forwarded_port", guest: 8443, host: 817, host_ip: "127.0.0.1"
+    f.vm.box = "bento/ubuntu-16.04"
+  end
+
+  #config.vm.define "u17" do |f|
+  #  f.vm.network "forwarded_port", guest: 8443, host: 817, host_ip: "127.0.0.1"
+  #  f.vm.box = "bento/ubuntu-17.04"
+  #end
+
+
 end
