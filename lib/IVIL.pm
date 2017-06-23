@@ -1,9 +1,9 @@
 # ------------------------------------------------------------------------------
-# IVIL perl module. This is where most of the real logic is 
+# IVIL perl module. This is where most of the real logic is
 # This modules is based on the IVIL standard version v0.2
 # ------------------------------------------------------------------------------
 # Copyright (C) 2012  Schuberg Philis, Frank Breedijk - Under the MIT license
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -31,36 +31,28 @@ of all functions within the module.
 
 =cut
 
+use strict;
+use Exporter;
+
 my $IVIL_VERSION = "0.2";
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw ( 
-		xml_header
-		ivil_open
-		ivil_addressee
-		ivil_sender
-		ivil_close
-		get_refs
-		ivil_findings
-		ivil_finding
-	);
+our @EXPORT = qw (
+	xml_header
+	ivil_open
+	ivil_addressee
+	ivil_sender
+	ivil_close
+	get_refs
+	ivil_findings
+	ivil_finding
+);
 
-use strict;
 use Carp;
 use HTML::Entities qw(encode_entities_numeric);
 use XML::Simple;
 use Data::Dumper;
-
-sub xml_header();
-sub ivil_open();
-sub ivil_addressee($;$);
-sub ivil_sender($$$);
-sub ivil_close();
-sub get_refs($);
-sub ivil_findings($);
-sub ivil_finding($);
-sub load_ivil($;$$$$$);
 
 =head1 IVIL - Functions to read and write IVIL
 
@@ -86,7 +78,7 @@ none
 
 =cut
 
-sub xml_header() {
+sub xml_header {
 	return "<?xml version=\"1.0\" standalone='yes'?>\n";
 }
 
@@ -112,7 +104,7 @@ none
 
 =cut
 
-sub ivil_open() {
+sub ivil_open {
 	return "<IVIL version=\"$IVIL_VERSION\">\n";
 }
 
@@ -138,7 +130,7 @@ none
 
 =cut
 
-sub ivil_close() {
+sub ivil_close {
 	return "</IVIL>\n";
 }
 
@@ -166,7 +158,7 @@ none
 
 =cut
 
-sub ivil_addressee($;$) {
+sub ivil_addressee {
 	my $program = shift;
 	my $prog_data = shift;
 
@@ -209,7 +201,7 @@ The Timestamp is validated against pattern \d{8} or \d{6} if it is 6 digits 00 f
 
 =cut
 
-sub ivil_sender($$$) {
+sub ivil_sender {
 	my $scanner = shift;
 	my $version = shift;
 	my $timestamp = shift;
@@ -231,7 +223,7 @@ sub ivil_sender($$$) {
 
 =head2 get_refs
 
-This function returns a hash of references from finding text. Currently 
+This function returns a hash of references from finding text. Currently
 supported:
 CVE
 BID
@@ -258,7 +250,7 @@ None
 
 =cut
 
-sub get_refs($) {
+sub get_refs {
 	my $text = shift;
 
 	my (
@@ -282,38 +274,38 @@ sub get_refs($) {
 	foreach my $type ( @types ) {
 		my @refs = ();
 		$fix = undef;
-		# Define pattern match and code reference to fix routine to 
+		# Define pattern match and code reference to fix routine to
 		# normalize referenc for each type of reference we know
 		if ( $type eq "OSVDB" ) {
 			$pattern = 'OSVDB[\-\:]\d+';
-			$fix = sub { 
+			$fix = sub {
 					my $ref = shift;
-					$ref =~ s/\-/:/g; 
+					$ref =~ s/\-/:/g;
 					return $ref;
 			   	};
 		} elsif ( $type eq "CVE" ) {
 			$pattern = '(CAN|CVE)\-\d{4}\-\d+';
 		} elsif ( $type eq "BID" ) {
 			$pattern = 'BID \: \d+';
-			$fix = sub { 
+			$fix = sub {
 					my $ref = shift;
-					$ref =~ s/\s+//g; 
+					$ref =~ s/\s+//g;
 					return $ref;
 			   	};
 		} elsif ( $type eq "CVSS2" ) {
 			$pattern = '\(CVSS2\#.*?\)';
-			$fix = sub { 
+			$fix = sub {
 					my $ref = shift;
-					$ref =~ s/[\(\)]//g; 
+					$ref =~ s/[\(\)]//g;
 					return $ref;
 			   	};
 		} elsif ( $type eq "GLSA" ) {
 			$pattern = 'GLSA\:\d+\-\d+';
 		} elsif ( $type eq "URL" ) {
 			$pattern = '(https?\:\/\/|\s+www\.|ftps?\:\/\/|email\:|skype\:)[a-zA-Z0-9\.\/\&\?\%\-\_\=\#\;\:\|\"\@]+';
-			$fix = sub { 
+			$fix = sub {
 					my $ref = shift;
-					$ref =~ s/^\s+/http:\/\//g; 
+					$ref =~ s/^\s+/http:\/\//g;
 					return $ref;
 			   	};
 		} elsif ( $type eq "SECUNIA" ) {
@@ -321,12 +313,12 @@ sub get_refs($) {
 		} else {
 			confess "Unknown reference type $type";
 		}
-	
+
 		my $txt = encode_entities_numeric($text);
 		while ( $txt =~ m/^.*?($pattern)/ ) {
 			my $ref = $1;			# Get ref text
 			$txt =~ s/^.*?$pattern//;	# Strip it from text
-							# Call the fix routine 
+							# Call the fix routine
 							# (if any)
 			$ref = $fix->($ref) if defined $fix;
 			push @refs, $ref;	# Push to the array
@@ -358,14 +350,14 @@ None
 
 =cut
 
-sub ivil_findings($) {
+sub ivil_findings {
 	my $findings = shift;
 	my $block = "\t<findings>\n";
-	
+
 	foreach my $finding ( @$findings ) {
 		$block .= ivil_finding($finding);
 	}
-		
+
 	$block .= "\t</findings>\n";
 
 	return $block;
@@ -393,10 +385,10 @@ None
 
 =cut
 
-sub ivil_finding($) {
+sub ivil_finding {
 	my $finding = shift;
 	my $block = "";
-	
+
 	$block .= "\t\t<finding>\n";
 	$block .= "\t\t\t<ip>$finding->{ip}<\/ip>\n";
 	$block .= "\t\t\t<hostname>$finding->{hostname}<\/hostname>\n";
