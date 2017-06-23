@@ -23,9 +23,11 @@ of all functions within the module.
 
 #use SeccubusConfig;
 
-@ISA = ('Exporter');
+use strict;
 
-@EXPORT = qw (
+our @ISA = ('Exporter');
+
+our @EXPORT = qw (
 		dirlist
 		api_error
 		api_result
@@ -33,16 +35,11 @@ of all functions within the module.
 		get_severity
 	);
 
-use strict;
 use Carp;
 use HTML::Entities;
 use SeccubusV2;
 use Seccubus::DB;
 use Data::Dumper;
-
-sub check_config();
-sub dirlist($;$);
-sub run_cmd($;$$$$);
 
 
 =head2 dirlist
@@ -76,7 +73,7 @@ None
 
 =cut
 
-sub dirlist($;$) {
+sub dirlist {
     my $DIR     = $_[0] || return;
     my $PATTERN = $_[1] || "";
     my @FILES_TMP = ();
@@ -133,7 +130,7 @@ None
 
 =cut
 
-sub run_cmd($;$$$$) {
+sub run_cmd {
 	my $cmd = shift;
 	my $print = shift;
 	my $remote = shift;
@@ -164,12 +161,12 @@ sub run_cmd($;$$$$) {
 		print " as user $user on $host" if $print > 1;
 	}
 	print "\n" if $print >1;
-	open CMD, "$cmd |" or confess "Unable to execute";
-	while ( <CMD> ) {
+	open(my $CMD, "-|", $cmd) or confess "Unable to execute";
+	while ( <$CMD> ) {
 		print $_ if $print;
 		push @out, $_;
 	}
-	close CMD;
+	close $CMD;
 
 	if ( $remote ) {
 		# Fetch files
@@ -218,7 +215,7 @@ None
 
 =cut
 
-sub get_severity(;) {
+sub get_severity {
 	return sql(
 		"return"	=> "ref",
 		"query"		=> "SELECT id, name, description

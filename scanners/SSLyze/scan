@@ -84,20 +84,20 @@ my $tempfile = "/tmp/seccubus.sslyze.$$";
 my $sslyze_options = "--targets_in='$hosts_file' --xml_out='$tempfile.xml' $sslyze_options";
 print "SSLyze options: $sslyze_options\n" if $verbose;
 
-open TMP, ">$tempfile.txt" or die "Unable to open tempfile $tempfile for writing";
+open(my $TMP, ">", "$tempfile.txt") or die "Unable to open tempfile $tempfile for writing";
 
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 
 print "Execuing $sslyze_path $sslyze_options\n" unless $quiet;
-open SSLYZE, "$sslyze_path $sslyze_options |" or die "Unable to open pipe";
+open(my $SSLYZE, "-|", "$sslyze_path $sslyze_options") or die "Unable to open pipe";
 
-while ( <SSLYZE> ) {
+while ( <$SSLYZE> ) {
 	print $_ if $verbose;
-	print TMP $_;
+	print $TMP $_;
 }
-close TMP;
-close SSLYZE;
+close $TMP;
+close $SSLYZE;
 
 print "Scanning done, converting .xml to ivil\n" unless $quiet;
 my $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/sslyze2ivil --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile '$tempfile.xml' ";
@@ -183,7 +183,7 @@ sub get_sslyze_path() {
 	if ( -e '/opt/sslyze/sslyze.py' ) {
 		return '/opt/sslyze/sslyze.py';
 	}
-	return undef;
+	return;
 }
 
 sub get_sslyze_version() {

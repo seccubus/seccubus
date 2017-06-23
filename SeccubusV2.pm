@@ -20,15 +20,17 @@ This Pod documentation generated from the module SeccubusV2 gives a list of all
 functions within the module.
 
 =cut
+use strict;
+use Exporter;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw(
-		VERSION
-		DBVERSION
-		get_config
-		check_param
-	    );
+our @EXPORT = qw(
+    VERSION
+    DBVERSION
+    get_config
+    check_param
+);
 
 use XML::Simple;
 use Data::Dumper;
@@ -50,11 +52,10 @@ use lib "/opt/seccubus/lib";
 use lib "lib";
 push (@main::INC, @INC);
 
-$VERSION = '2.35';
-$DBVERSION = 10;
-$USER = '';
+our $VERSION = '2.35';
+our $DBVERSION = 10;
+our $USER = '';
 
-use strict;
 use Carp;
 #use SeccubusConfig;
 use Seccubus::Helpers;
@@ -86,7 +87,7 @@ Reference to a hash containing the config in XML
 
 =cut
 
-sub get_config(;$) {
+sub get_config {
 	my $cfg = shift;
 
 	if ( $cfg ) {
@@ -123,7 +124,7 @@ False if parameter is ok, error text if otherwise
 
 =cut
 
-sub check_param($$;$) {
+sub check_param {
 	my $name = shift or die "No name provided";
 	my $value = shift;
 	my $is_numeric = shift;
@@ -132,7 +133,7 @@ sub check_param($$;$) {
 		return "Parameter $name is missing";
 	} elsif ( $is_numeric ) {
 		if ( $value + 0 eq $value ) {
-			return undef;
+			return;
 		} else {
 			return "Parameter $name is not numeric";
 		}

@@ -21,30 +21,24 @@ list of all functions within the module.
 
 =cut
 
+use strict;
 use Exporter;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
-		create_workspace
-		delete_workspace
-		edit_workspace
-		get_workspaces
-		get_workspace_id
-	);
+our @EXPORT = qw (
+	create_workspace
+	delete_workspace
+	edit_workspace
+	get_workspaces
+	get_workspace_id
+);
 
-use strict;
 use Carp;
 
 use SeccubusV2;
 use Seccubus::DB;
 use Seccubus::Rights;
-
-sub create_workspace($;);
-sub delete_workspace($;$);
-sub edit_workspace($$;);
-sub get_workspaces(;);
-sub get_workspace_id($;);
 
 =head1 Data manipulation - Workspaces
 
@@ -70,7 +64,7 @@ User must be an admin. A workspace with this name musn't exist.
 
 =cut
 
-sub create_workspace($;) {
+sub create_workspace {
 	my $name = shift;
 	my $id;
 
@@ -119,7 +113,7 @@ User must be an admin. The workspace name must exist in the database.
 
 =cut
 
-sub delete_workspace($;$) {
+sub delete_workspace {
 	my $name = shift;
 	my $verbose = shift;
 
@@ -281,7 +275,7 @@ User must be an admin. A workspace with this name musn't exist.
 
 =cut
 
-sub edit_workspace($$;) {
+sub edit_workspace {
 	my $id = shift;
 	my $newname = shift;
 
@@ -324,7 +318,7 @@ If the workspace exists the workspace ID is returned, else 0 is returned
 
 =cut
 
-sub get_workspace_id($;) {
+sub get_workspace_id {
 	my $name = shift;
 
 	my $id =
@@ -362,7 +356,7 @@ Only workspaces the user can read and/or write are returned
 
 =cut
 
-sub get_workspaces(;) {
+sub get_workspaces {
 	my $workspaces;
 
 	my $user_is_admin = is_admin();

@@ -150,6 +150,7 @@ Enhancements
 ------------
 #401 - JIT provisioning of users
 #442 - Add --cdn option to ssllabs
+* Perl Critic is now part of unit testing. All critique was handled
 
 Bug Fixes
 ---------

@@ -21,6 +21,26 @@ use Test::Mojo;
 
 use lib "lib";
 
+my $db_version = 0;
+foreach my $data_file (glob "db/data_v*.mysql") {
+    $data_file =~ /^db\/data_v(\d+)\.mysql$/;
+    $db_version = $1 if $1 > $db_version;
+}
+
+ok($db_version > 0, "DB version = $db_version");
+`mysql -uroot -e "drop database seccubus"`;
+is($?,0,"Database dropped ok");
+`mysql -uroot -e "create database seccubus"`;
+is($?,0,"Database created ok");
+`mysql -uroot -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
+is($?,0,"Privileges granted ok");
+`mysql -uroot -e "flush privileges;"`;
+is($?,0,"Privileges flushed ok");
+`mysql -uroot seccubus < db/structure_v$db_version.mysql`;
+is($?,0,"Database structure created ok");
+`mysql -uroot seccubus < db/data_v$db_version.mysql`;
+is($?,0,"Database data imported ok");
+
 my $t = Test::Mojo->new('Seccubus');
 $t->get_ok('/')
 	->status_is(302)

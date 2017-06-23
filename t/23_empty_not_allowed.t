@@ -27,8 +27,6 @@ use Seccubus::Scans;
 use Seccubus::Runs;
 use Seccubus::Findings;
 
-sub decodeit(@);
-
 my $db_version = 0;
 foreach my $data_file (glob "db/data_v*.mysql") {
 	$data_file =~ /^db\/data_v(\d+)\.mysql$/;

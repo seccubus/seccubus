@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# This little script checks all files te see if they are perl files and if so 
+# This little script checks all files te see if they are perl files and if so
 # ------------------------------------------------------------------------------
 
 use strict;
@@ -21,12 +21,13 @@ use Test::More;
 
 my $tests = 0;
 
-open F, "jmvc/seccubus/seccubus.js" or diag("Unable to open jmvc/seccubus/seccubus.js");
+open( my $F, "<", "jmvc/seccubus/seccubus.js") or diag("Unable to open jmvc/seccubus/seccubus.js");
 
-while(<F>) {
+while(<$F>) {
 	if ( $_ =~ /fixtures\.js/ ) {
 		like( $_, qr/^\s*\/[\/\*]/, "fixtures.js disabled");
 		$tests++;
 	}
 }
+close($F);
 done_testing($tests);

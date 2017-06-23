@@ -21,21 +21,19 @@ list of all functions within the module.
 
 =cut
 
+use strict;
 use Exporter;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
-		get_events
-	);
+our @EXPORT = qw (
+	get_events
+);
 
-use strict;
 use Carp;
 
 use SeccubusV2;
 use Seccubus::DB;
-
-sub get_events(;);
 
 =head1 Data manipulation - Events
 
@@ -61,7 +59,7 @@ Only events the user can read and/or write are returned
 
 =cut
 
-sub get_events(;) {
+sub get_events {
 	my $events;
 
 	$events =

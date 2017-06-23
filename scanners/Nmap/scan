@@ -195,7 +195,7 @@ sub get_nmap_path() {
 	if ( run_cmd("ls /opt/nmap/nmap.pl",0,$remote) ) {
 		return '/opt/nmap/nmap.pl';
 	}
-	return undef;
+	return;
 }
 
 sub get_nmap_version() {

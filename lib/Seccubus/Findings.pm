@@ -21,6 +21,7 @@ of all functions within the module.
 
 =cut
 
+use strict;
 use SeccubusV2;
 use Seccubus::DB;
 use Seccubus::Rights;
@@ -29,28 +30,19 @@ use Seccubus::Issues;
 use Algorithm::Diff qw( diff );
 use Data::Dumper;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
-        get_findings
-        get_status
-        get_filters
-        get_finding
-        update_finding
-        process_status
-        diff_finding
-    );
+our @EXPORT = qw (
+    get_findings
+    get_status
+    get_filters
+    get_finding
+    update_finding
+    process_status
+    diff_finding
+);
 
-use strict;
 use Carp;
-
-sub get_findings($;$$$$);
-sub get_finding($$;);
-sub get_status($$$;$);
-sub get_filters($$$;$);
-sub update_finding(@);
-sub diff_finding($$$$$;);
-sub create_finding_change($;$$);
 
 =head1 Data manipulation - findings
 
@@ -81,7 +73,7 @@ Must have at least read rights
 
 =cut
 
-sub get_findings($;$$$$) {
+sub get_findings {
     my $workspace_id = shift or die "No workspace_id provided";
     my $scan_id = shift;
     my $asset_id = shift;
@@ -246,7 +238,7 @@ Must have at least read rights
 
 =cut
 
-sub get_status($$$;$) {
+sub get_status {
     my $workspace_id = shift or die "No workspace_id provided";
     my $scan_ids = shift;
     my $asset_ids = shift;
@@ -365,7 +357,7 @@ Must have at least read rights
 
 =cut
 
-sub get_filters($$$;$) {
+sub get_filters {
     my $workspace_id = shift or die "No workspace_id provided";
     my $scan_ids = shift;
     my $asset_ids = shift;
@@ -799,7 +791,7 @@ sub get_filters($$$;$) {
     }
 }
 
-sub construct_filter($$$$) {
+sub construct_filter {
     my $filter = shift;
     my $exclude = shift;
     my $args = shift;
@@ -921,7 +913,7 @@ Private function that returns 1 if a finding matches a filter or 0 if it doesn't
 
 =cut
 
-sub match($$;$) {
+sub match {
     my $finding = shift or die "No finding specified for match";
     my $filter = shift or die "No filter specified for match";
     my $fields = shift;
@@ -1026,7 +1018,7 @@ Must have at least read rights
 
 =cut
 
-sub get_finding($$;) {
+sub get_finding {
     my $workspace_id = shift or die "No workspace_id provided";
     my $finding_id = shift or die "No finding_id provided";
 
@@ -1119,7 +1111,7 @@ Madatory parameters are checked. User must have write permission.
 
 =cut
 
-sub update_finding(@) {
+sub update_finding {
     my %arg = @_;
 
     # Check if the user has write permissions
@@ -1245,12 +1237,12 @@ checking should have been doine a higher levels.
 
 =cut
 
-sub create_finding_change($;$$) {
+sub create_finding_change {
     my $finding_id = shift or die "No fidnings_id given";
     my $timestamp = shift;
     my $user_id = shift;
 
-    my $user_id = get_user_id($ENV{SECCUBUS_USER}) unless $user_id;
+    $user_id = get_user_id($ENV{SECCUBUS_USER}) unless $user_id;
 
     my @new_data = sql( "return"	=> "array",
             "query"		=> "select status, finding, remark, severity, run_id from findings where id = ?",
@@ -1321,7 +1313,7 @@ The user must have write rights on the workspace
 
 =cut
 
-sub process_status($$$;$) {
+sub process_status {
     my $workspace_id = shift;
     my $scan_id = shift;
     my $run_id = shift;
@@ -1533,7 +1525,7 @@ Must be able to read the workspaced
 
 =cut
 
-sub diff_finding($$$$$;) {
+sub diff_finding {
     my $type = shift;
     my $workspace_id = shift;
     my $finding_id = shift;

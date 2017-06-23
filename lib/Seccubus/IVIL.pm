@@ -21,9 +21,12 @@ of all functions within the module.
 
 =cut
 
-@ISA = ('Exporter');
+use strict;
+use Exporter;
 
-@EXPORT = qw (
+our @ISA = ('Exporter');
+
+our @EXPORT = qw (
 		load_ivil
 	);
 
@@ -34,7 +37,6 @@ use Seccubus::Runs;
 use Seccubus::Findings;
 use Seccubus::Hostnames;
 
-use strict;
 use Carp;
 use IVIL;
 
@@ -84,7 +86,7 @@ run_id		- ID of the run that was created for this scan
 
 =cut
 
-sub load_ivil($;$$$$$$$) {
+sub load_ivil {
 	my $ivil_xml_data = shift;
 	my $scanner = shift;
 	my $scanner_ver = shift;

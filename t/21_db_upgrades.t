@@ -62,12 +62,12 @@ while ( $version <= $max_version) {
 	$upgrade =~ s/\-\- Dump completed on .*?\n//;
 
 
-	open(C, ">/tmp/seccubus_create") or die;
-	print C $create;
-	close C;
-	open(U, ">/tmp/seccubus_upgrade") or die;
-	print U $upgrade;
-	close U;
+	open(my $C, ">", "/tmp/seccubus_create") or die;
+	print $C $create;
+	close $C;
+	open(my $U, ">", "/tmp/seccubus_upgrade") or die;
+	print $U $upgrade;
+	close $U;
 	my $diff = `diff -u /tmp/seccubus_create /tmp/seccubus_upgrade`;
 	cmp_ok($diff, "eq", "", "v$version equal to $u_version upgrade?");
 	$version++;

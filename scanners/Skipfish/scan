@@ -43,17 +43,17 @@ $nodelete = undef;
 # Create default values
 
 GetOptions(
-		'skipfish_path|p=s'	=> \$skipfish_path,
-		'skipfish_options|o=s'	=> \$skipfish_options,
-		'hosts=s'		=> \$hosts_file,
-		'workspace=s'		=> \$workspace,
-		'scan=s'		=> \$scan,
-		'nodelete!'		=> \$nodelete,
-		'remote|r=s'            => \$remote,
-		'verbose|v+'		=> \$verbose,
-		'quiet|q!'		=> \$quiet,
-		'help|h'		=> \$help,
-	  );
+    'skipfish_path|p=s'       => \$skipfish_path,
+    'skipfish_options|o=s'    => \$skipfish_options,
+    'hosts=s'                 => \$hosts_file,
+    'workspace=s'             => \$workspace,
+    'scan=s'		          => \$scan,
+    'nodelete!'               => \$nodelete,
+    'remote|r=s'              => \$remote,
+    'verbose|v+'              => \$verbose,
+    'quiet|q!'                => \$quiet,
+    'help|h'                  => \$help,
+);
 
 help() if $help;
 $verbose = 0 if $quiet;
@@ -91,10 +91,10 @@ print "Skipfish version is $skipfish_version\n" if $verbose;
 
 my $tempfile = "/tmp/seccubus.$$";
 
-open FILE, $hosts_file or die "Couldn't open file: $!";
+open(my $FILE, "<", $hosts_file) or die "Couldn't open file: $!";
 
-my $host = join("", <FILE>);
-close FILE;
+my $host = join("", <$FILE>);
+close $FILE;
 
 my $skipfish_options = " -o $tempfile $skipfish_options $host";
 print "Skipfish options: $skipfish_options\n" if $verbose;
@@ -181,7 +181,7 @@ sub get_skipfish_path() {
         if ( $path == '/opt/skipfish/skipfish' ) {
                 return '/opt/skipfish/skipfish';
         }
-        return undef;
+        return;
 }
 
 sub get_skipfish_version() {

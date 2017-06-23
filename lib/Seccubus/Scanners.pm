@@ -21,19 +21,16 @@ list of all functions within the module.
 
 =cut
 
+use strict;
 use Exporter;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
-		get_scanners
-	);
+our @EXPORT = qw (
+	get_scanners
+);
 
-
-use strict;
 use Carp;
-
-sub get_scanners(;);
 
 =head2 get_scanners
 
@@ -59,7 +56,7 @@ None
 
 =cut
 
-sub get_scanners(;) {
+sub get_scanners {
 	my $config = SeccubusV2::get_config();
 
 	my @result = ();
@@ -73,23 +70,23 @@ sub get_scanners(;) {
 		my $scanner = $1;
 		my @data = ( $scanner ) ;
 		if ( -e "$scanpath/description.txt" ) {
-			open(DESC, "$scanpath/description.txt") or die "Unable to open $scanpath/description.txt";
-			push @data, (join "", <DESC>);
-			close DESC;
+			open(my $DESC, "<", "$scanpath/description.txt") or die "Unable to open $scanpath/description.txt";
+			push @data, (join "", <$DESC>);
+			close $DESC;
 		} else {
 			push @data, "No description available";
 		}
 		if ( -e "$scanpath/help.html" ) {
-			open(HELP, "$scanpath/help.html") or die "Unable to open $scanpath/help.html";
-			push @data, (join "", <HELP>);
-			close HELP;
+			open(my $HELP, "<", "$scanpath/help.html") or die "Unable to open $scanpath/help.html";
+			push @data, (join "", <$HELP>);
+			close $HELP;
 		} else {
 			push @data, "No help available";
 		}
 		if ( -e "$scanpath/defaults.txt" ) {
-			open(PARAM, "$scanpath/defaults.txt") or die "Unable to open $scanpath/defaults.txt";
-			push @data, (join "", <PARAM>);
-			close PARAM;
+			open(my $PARAM, "<", "$scanpath/defaults.txt") or die "Unable to open $scanpath/defaults.txt";
+			push @data, (join "", <$PARAM>);
+			close $PARAM;
 		} else {
 			push @data, "No default parameters available";
 		}

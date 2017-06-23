@@ -15,6 +15,8 @@
 
 package Seccubus::Users;
 
+use strict;
+use Exporter;
 use SeccubusV2;
 use Seccubus::Rights;
 use Seccubus::DB;
@@ -27,9 +29,9 @@ all functions within the module
 
 =cut
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
+our @EXPORT = qw (
 	get_user_id
     get_users
 	add_user
@@ -38,7 +40,6 @@ all functions within the module
     check_password
 );
 
-use strict;
 use Carp;
 use Crypt::PBKDF2;
 
@@ -51,13 +52,6 @@ my $pbkdf2 = Crypt::PBKDF2->new(
     iterations => 50000,
     salt_len => 10,
 );
-
-sub get_user_id($);
-sub get_users();
-sub add_user($$$);
-sub get_login(;$);
-sub set_password($$);
-sub check_password($$$);
 
 =head1 User manipulation
 
@@ -84,7 +78,7 @@ None
 
 =cut
 
-sub get_user_id($) {
+sub get_user_id {
 	my $user = shift;
 	confess "No username specified" unless $user;
 
@@ -97,7 +91,7 @@ sub get_user_id($) {
 		return $id;
 	} else {
 		# Could not find a userid for user
-		return undef;
+		return;
 	}
 }
 
@@ -123,7 +117,7 @@ If the user has admin rights
 
 =cut
 
-sub get_users() {
+sub get_users {
     my $user = shift;
 
     if ( is_admin() ) {
@@ -193,7 +187,7 @@ In order to run this function you must be an admin
 
 =cut
 
-sub add_user($$$) {
+sub add_user {
 	my $user = shift;
 	my $name = shift;
 	my $isadmin = shift;
@@ -261,7 +255,7 @@ This function logs in a user
 
 =cut
 
-sub get_login(;$) {
+sub get_login {
     my $username = shift;
 
     $username = $ENV{SECCUBUS_USER} unless $username;
@@ -310,7 +304,7 @@ Checks if the user setting the password is an admin or the user itself.
 
 =cut
 
-sub set_password($$) {
+sub set_password {
     my $user = shift or confess("You must provide a username to set_password");
     my $password = shift or confess("You must provide a valid password to set_password");
 
@@ -326,7 +320,7 @@ sub set_password($$) {
         );
         return $sth->rows;
     } else {
-        return undef;
+        return;
     }
 
 }
@@ -364,7 +358,7 @@ if the hash matches the hash of the encrypted password (this is stored in the se
 
 =cut
 
-sub check_password($$$) {
+sub check_password {
     my $user = shift or confess("Must provide a username to check_password");
     my $password = shift;
     my $hash = shift;
@@ -378,7 +372,7 @@ sub check_password($$$) {
         if ( $dbhash ) {
             return $pbkdf2->validate($dbhash, $password);
         } else {
-            return undef;
+            return;
         }
     } elsif ( $hash ) {
         my ( $count ) = sql(

@@ -22,7 +22,7 @@ use Perl::Critic;
 
 my $critic = Perl::Critic->new();
 
-my @files = split(/\n/, `find . -type f`);
+my @files = sort split(/\n/, `find . -type f`);
 
 my $no_critic = {
     "./lib/OpenVAS/OMP.pm" => "Third party file"
