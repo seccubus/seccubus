@@ -21,46 +21,32 @@ list of all functions within the module.
 
 =cut
 
+use strict;
 use Exporter;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
-		create_asset
-		delete_asset
-		get_assets
-		get_asset_id
-		update_asset
-		get_asset_hosts
-		delete_asset_host
-		create_asset_host
-		update_asset_host
-		get_asset2scan
-		update_asset2scan
-	);
+our @EXPORT = qw (
+	create_asset
+	delete_asset
+	get_assets
+	get_asset_id
+	update_asset
+	get_asset_hosts
+	delete_asset_host
+	create_asset_host
+	update_asset_host
+	get_asset2scan
+	update_asset2scan
+);
+
+use Carp;
+use Net::IP;
+use Socket;
 
 use SeccubusV2;
 use Seccubus::DB;
 use Seccubus::Rights;
-
-sub get_asset_id($$;);
-sub get_assets($;);
-sub create_asset($$;$$);
-sub update_asset($$$;$$);
-sub delete_asset($;);
-
-sub create_asset_host($$;$$);
-sub get_asset_hosts($$;);
-sub update_asset_host($;$$);
-sub delete_asset_host($;);
-
-sub get_asset2scan($;);
-sub update_asset2scan($@;);
-
-use strict;
-use Carp;
-use Net::IP;
-use Socket;
 
 =head1 Data manipulation - assets
 
@@ -87,7 +73,7 @@ User must be able to read workspace.
 =back
 
 =cut
-sub get_asset_id($$;){
+sub get_asset_id {
 	my $workspace_id = shift or confess "No workspace_id provided";
 	my $asset_name = shift or confess "No asset_name provided";
 	if ( may_read($workspace_id) ) {
@@ -96,7 +82,7 @@ sub get_asset_id($$;){
 			    "values"	=> [$asset_name, $workspace_id],
 			  );
 	} else {
-		return undef;
+		confess "Permission denied";
 	}
 
 }
@@ -123,10 +109,10 @@ Must have at least read rights
 
 =cut
 
-sub get_assets($;) {
+sub get_assets {
 	my $workspace_id = shift or confess "No workspace_id provided";
 	if(! may_read($workspace_id) ) {
-		return undef;
+	   confess "Permission denied";
 	} else {
 		return sql( "return" => "ref",
 		    "query"	=> "SELECT id, name, hosts, recipients, workspace_id FROM assets WHERE workspace_id = ? ORDER BY NAME",
@@ -159,10 +145,10 @@ Must have at least read rights
 
 =cut
 
-sub get_asset_hosts($$;) {
+sub get_asset_hosts {
 	my $workspace_id = shift or confess "No workspace_id provided";
 	my $asset_id = shift or confess "No asset_id provided";
-	return undef if(! may_read($workspace_id) );
+	confess "Permission denied" if(! may_read($workspace_id) );
 	return sql( "return" => "ref",
 	    "query"		=> "SELECT a.id, a.ip, a.host
 	    				FROM asset_hosts a, assets b
@@ -200,7 +186,7 @@ User must be able to write workspace.
 
 =cut
 
-sub create_asset($$;$$) {
+sub create_asset {
 	my $workspace_id = shift or confess "No workspace_id provided";
 	my $asset_name = shift or confess "No asset_name provide to asset_id";
 	my $hosts = shift;
@@ -242,7 +228,7 @@ Function for internal use only
 
 =cut
 
-sub _set_asset_host_auto_gen($;$){
+sub _set_asset_host_auto_gen {
 	my $assetid = shift or confess "No asset Id Given";
 	my $hosts = shift;
 	sql( "return"	=> "handle",
@@ -251,14 +237,14 @@ sub _set_asset_host_auto_gen($;$){
 		);
 	return if(!$hosts);
 	$hosts =~ s/\s+-\s+/-/g;
-	map {
+    foreach my $h ( split /[\s\n\r,]+/, $hosts ) {
 		my $error;
-		if($_ =~ /^(\d{1,3})(\.\d{1,3})(\.\d{1,3})(\.\d{1,3})-(\d{1,3})$/){
+		if($h =~ /^(\d{1,3})(\.\d{1,3})(\.\d{1,3})(\.\d{1,3})-(\d{1,3})$/){
 			my $left = $1.$2.$3.$4;
 			my $right = $1.$2.$3.".".$5;
-			$_ = $left."-".$right;
+			$h = $left."-".$right;
 		}
-		my $ipObj = new Net::IP($_) or $error = 1;
+		my $ipObj = new Net::IP($h) or $error = 1;
 		if(!$error){
 			do {
 				sql("return"=>"id",
@@ -267,29 +253,27 @@ sub _set_asset_host_auto_gen($;$){
 				);
 			} while (++$ipObj);
 		} else {
-			my $qname = $_;
+			my $qname = $h;
 			my ($name, $aliases, $addrtype,$length,@addrs) = gethostbyname($qname);
 			if(@addrs){
-				map {
-					my $ip = inet_ntoa($_);
+				foreach my $a ( @addrs ) {
+					my $ip = inet_ntoa($a);
 					sql("return"=>"id",
 						"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?, auto_gen=1",
 						"values"=>[$assetid,$name,$ip]
-						);
+					);
 					if ( $qname ne $name ) {
 						sql("return"=>"id",
 							"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?, auto_gen=1",
 							"values"=>[$assetid,$qname,$ip]
-							);
+						);
 					}
-				} @addrs;
-
+				}
 			} else{
-				warn "Address [ ".$_." ] have no resolved IP and not added.";
+				warn "Address [ ".$h." ] have no resolved IP and not added.";
 			}
-
 		}
-	} split /[\s\n\r,]+/, $hosts;
+	}
 }
 
 =head2 update_asset
@@ -323,7 +307,7 @@ The asset must exist in the workspace.
 
 =cut
 
-sub update_asset($$$;$$) {
+sub update_asset {
 	my $workspace_id = shift or confess "No workspace_id provided";
 	my $asset_id = shift or confess "No asset_id provided";
 	my $asset_name = shift or confess "No asset_name provide to asset_id";
@@ -367,7 +351,7 @@ This function deletes a asset host
 
 =cut
 
-sub delete_asset_host($;){
+sub delete_asset_host {
 	my $asset_host_id = shift or confess "no asset_host_id provided";
 	my ($workspace_id) = sql( "return"=> "array",
 		"query"	=> "SELECT	a.workspace_id
@@ -405,7 +389,7 @@ User must be able to write workspace.
 
 =cut
 
-sub delete_asset($;){
+sub delete_asset {
 	my $asset_id = shift or confess "no asset_id provided";
 	my ($workspace_id) = sql( "return"=> "array",
 		"query"	=> "SELECT	a.workspace_id FROM assets a where a.id = ? ",
@@ -450,7 +434,7 @@ workspace id need to be equal with asset workspace id
 =back
 
 =cut
-sub create_asset_host($$;$$){
+sub create_asset_host {
 	my $workspace_id = shift or confess "no workspace_id provided";
 	my $asset_id = shift or confess "no asset_id provided";
 	my $ip = shift;
@@ -504,7 +488,7 @@ workspace id need to be equal with asset workspace id
 =back
 
 =cut
-sub update_asset_host($;$$){
+sub update_asset_host {
 	my $host_id = shift or confess "no host_id provided";
 	my $ip = shift;
 	my $host = shift;
@@ -548,7 +532,7 @@ This function selects asset scans
 =back
 
 =cut
-sub get_asset2scan($;){
+sub get_asset2scan {
 	my $scan_id = shift or confess "no scan_id provided";
 	my ($workspace_id) = sql(
 		"return"	=> "array",
@@ -583,7 +567,7 @@ This function edits asset scans
 =back
 
 =cut
-sub update_asset2scan($@;){
+sub update_asset2scan {
 	my $scan_id = shift or confess "no scan_id provided";
 	my @assets = @_;
 	my ($workspace_id) = sql(

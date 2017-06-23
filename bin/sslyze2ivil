@@ -71,12 +71,12 @@ unless ( $outfile ) {
 	$outfile .= ".ivil.xml";
 }
 print "Opening file $outfile for output\n" if $verbose;
-open(OUT, ">$outfile") or die "Unable to open output file $outfile";
-print OUT xml_header();
-print OUT ivil_open();
+open(my $OUT, ">", "$outfile") or die "Unable to open output file $outfile";
+print $OUT xml_header();
+print $OUT ivil_open();
 if ($workspace) {
 	print "Creating addressee block\n" if $verbose;
-	print OUT ivil_addressee("Seccubus", {
+	print $OUT ivil_addressee("Seccubus", {
 						"workspace" => $workspace,
 						"scan"		=> $scanname,
 			 		     });
@@ -92,7 +92,7 @@ my $sslyze = XMLin(
 my $scanner_version = $sslyze->{SSLyzeVersion};
 
 print "Creating sender block\n" if $verbose;
-print OUT ivil_sender($scanner, $scanner_version, $timestamp);
+print $OUT ivil_sender($scanner, $scanner_version, $timestamp);
 
 #die Dumper($sslyze);
 #die Dumper(sort keys ${$$sslyze->{results}->{target}[0]});
@@ -270,11 +270,11 @@ foreach my $target ( @{$sslyze->{results}->{target}} ) {
 	}
 }
 
-print OUT ivil_findings(\@findings) if (@findings);
+print $OUT ivil_findings(\@findings) if (@findings);
 
-print OUT ivil_close();
+print $OUT ivil_close();
 
-close OUT;
+close $OUT;
 
 exit();
 

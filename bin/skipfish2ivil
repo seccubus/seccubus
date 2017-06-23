@@ -25,14 +25,6 @@ use JSON qw( decode_json );
 use Getopt::Long;
 use Carp;
 
-sub find($$);
-sub issuesInfo($$);
-sub find($$);
-sub issuesDataReq($);
-sub items($);
-sub issuesDataReq($);
-sub grep_pattern($);
-
 my (
 	$scanname,
 	$scanner,
@@ -81,61 +73,62 @@ unless ( $outfile ) {
 }
 
 print "Opening file $outfile for output\n" if $verbose;
-open(OUT, ">$outfile") or die "Unable to open output file $outfile";
-print OUT xml_header();
-print OUT ivil_open();
+open(my $OUT, ">", "$outfile") or die "Unable to open output file $outfile";
+print $OUT xml_header();
+print $OUT ivil_open();
 if ($workspace) {
 	print "Creating addressee block\n" if $verbose;
-	print OUT ivil_addressee("Seccubus", {
+	print $OUT ivil_addressee("Seccubus", {
 						"workspace" => $workspace,
 						"scan"		=> $scanname,
 			 		     });
 }
 
 print "Creating sender block\n" if $verbose;
-print OUT ivil_sender($scanner, "Skipfish", $timestamp);
-print OUT "<findings>";
+print $OUT ivil_sender($scanner, "Skipfish", $timestamp);
+print $OUT "<findings>";
 
 
 print "Issues found: \n";
 &issuesInfo("samples.js",$infile);
 
-print OUT "</findings>";
-print OUT ivil_close();
-close OUT;
+print $OUT "</findings>";
+print $OUT ivil_close();
+close $OUT;
 exit();
 
 
-sub find($$){
+sub find(){
 
-        my $search = $_[0];
+    my $search = $_[0];
 	my $dir = $_[1];
 	my @files;
-        my $file;
-        dir($dir)->recurse(callback => sub {
-            $file = shift;
-            if($file =~ /$search/) {
-                push @files, $file->absolute->stringify;
-            }
-        });
+    my $file;
 
-        return @files;
+    dir($dir)->recurse(callback => sub {
+        $file = shift;
+        if($file =~ /$search/) {
+            push @files, $file->absolute->stringify;
+        }
+    });
+
+    return @files;
 }
 
-sub issuesInfo($$){
+sub issuesInfo(){
 
-        my $file = $_[0];
+    my $file = $_[0];
 	my $infile = $_[1];
 
-	open SMPL, $infile."/".$file or die "Unable to open samples.js";
+	open(my $SMPL, "<", $infile."/".$file) or die "Unable to open samples.js";
 
 	my $sample = "[";
-	while(<SMPL>) {
-        	if ( $_ =~ /issue_samples/ ) {
-                	$sample .= join "", <SMPL>;
-        	}
+	while(<$SMPL>) {
+    	if ( $_ =~ /issue_samples/ ) {
+            $sample .= join "", <$SMPL>;
+    	}
 	}
-	close SMPL;
+	close $SMPL;
 
 	$sample =~ s/\'/\"/g;
 	$sample =~ s/\]\;/\]/g;
@@ -146,114 +139,110 @@ sub issuesInfo($$){
 	my $json = decode_json($sample);
 
 	for my $record (@$json) {
-   	       for my $key (keys(%$record)){
+        for my $key (keys(%$record)){
 
-     		  my $type     = $record->{type};
-      		  my $severity = $record->{severity};
-      		  my $samples  = $record->{samples};
+            my $type     = $record->{type};
+            my $severity = $record->{severity};
+            my $samples  = $record->{samples};
 
+            @typeList = &items($infile);
+            my $issue = &grep_pattern($record->{type});
 
-      		  @typeList = &items($infile);
-      		  my $issue = &grep_pattern($record->{type});
+            my $finding = {};
 
-                  my $finding = {};
+            if($severity >= 3 ){
+                $finding->{severity} = 1;
+            }elsif($severity > 0 ){
+                $finding->{severity} = 4 - $severity;
+            }else{
+                $finding->{severity} = $severity;
+            }
 
-  		  if($severity >= 3 ){
-                  	$finding->{severity} = 1;
-                  }elsif($severity > 0 ){
-                  	$finding->{severity} = 4 - $severity;
-                  }else{
-                  	$finding->{severity} = $severity;
-                 }
+            $finding->{id} = $type;
+            $finding->{finding} =
+            "Security item:\n
+            ".$issue;
+            my $countSamp = 0;
 
-                  $finding->{id} = $type;
-                  $finding->{finding} =
-                  "Security item:\n
-                  ".$issue;
-		  my $countSamp = 0;
+            for my $sample (@$samples){
+                $countSamp++;
 
-       		  for my $sample (@$samples){
-			$countSamp++;
+                my $url = $sample->{url};
+                my ($domain) = $url =~ m!(https?://[^:/]+)!;
+                $finding->{ip} = $domain;
+                my $port  = substr $url, 0, 5;
+                if($port eq "http:"){
+                    $finding->{port} = "80";
+                }
+                if($port eq "https"){
+                    $finding->{port} = "443";
+                }
+                my @dataReq = &issuesDataReq($infile."/".$sample->{dir}."/request.js");
+                $dataReq[0]  =~ s/x0dx0a/ \n/g;
 
-			my $url = $sample->{url};
-			my ($domain) = $url =~ m!(https?://[^:/]+)!;
-                        $finding->{ip} = $domain;
-    			my $port  = substr $url, 0, 5;
-			if($port eq "http:"){
-	                	$finding->{port} = "80";
-			}
-                        if($port eq "https"){
-	                	$finding->{port} = "443";
+                $finding->{finding} .= "
+                PoC ".$countSamp." Request:\n
+                ".$dataReq[0]."\n
+                Extra info:\n".$sample->{extra}."\n
+                #############end-PoC#############\n";
 
-			}
-			my @dataReq = &issuesDataReq($infile."/".$sample->{dir}."/request.js");
-                        $dataReq[0]  =~ s/x0dx0a/ \n/g;
+                print $OUT ivil_finding($finding);
 
-			$finding->{finding} .= "
-			PoC ".$countSamp." Request:\n
-                        ".$dataReq[0]."\n
-			Extra info:\n".$sample->{extra}."\n
-			#############end-PoC#############\n";
-
-			print OUT ivil_finding($finding);
-
-        	  }
-    	       }
-	}
-
-
-}
-
-sub items($){
-
-        my $fileRes = $_[0];
-        my $foo = $fileRes."/index.html";
-	open F, $foo or die "Cannot open index.html";
-	my @linesRes = grep { /": / } <F>;
-	close F;
-        my @dataRes;
-        foreach (@linesRes) {
-
-                my $stringRes = $_;
-                my $lineRes = $stringRes;
-
-                $lineRes =~ s/"//g;
-                $lineRes =~ s/://g;
-                $lineRes =~ s/,//g;
-               push(@dataRes,$lineRes."\n");
+            }
         }
-        return @dataRes;
+    }
 }
 
-sub issuesDataReq($){
+sub items(){
 
-        my $file = $_[0];
-        open F, $file or die "Cannot open request.js";
-        my @lines = grep { /^var req = {/ } <F>;
-        close F;
-        my @data;
+    my $fileRes = $_[0];
+    my $foo = $fileRes."/index.html";
+	open(my $F, "<", $foo) or die "Cannot open index.html";
+	my @linesRes = grep { /": / } <$F>;
+	close $F;
+    my @dataRes;
+    foreach (@linesRes) {
 
-        foreach (@lines) {
+        my $stringRes = $_;
+        my $lineRes = $stringRes;
 
-                my $string = join('', $_,"\n");
-
-                my $line = $string;
-                $line =~ s/'/"/g;
-                $line =~ s/},/}/g;
-                $line =~ s/\\//g;
-
-                my $decoded = decode_json(substr($line,"10"));
-                @data = $decoded->{'data'};
-        }
-        return @data;
+        $lineRes =~ s/"//g;
+        $lineRes =~ s/://g;
+        $lineRes =~ s/,//g;
+        push(@dataRes,$lineRes."\n");
+    }
+    return @dataRes;
 }
 
-sub grep_pattern($){
-        my $pattern = $_[0];
+sub issuesDataReq(){
+
+    my $file = $_[0];
+    open(my $F, "<", $file) or die "Cannot open request.js";
+    my @lines = grep { /^var req = {/ } <$F>;
+    close $F;
+    my @data;
+
+    foreach (@lines) {
+
+        my $string = join('', $_,"\n");
+
+        my $line = $string;
+        $line =~ s/'/"/g;
+        $line =~ s/},/}/g;
+        $line =~ s/\\//g;
+
+        my $decoded = decode_json(substr($line,"10"));
+        @data = $decoded->{'data'};
+    }
+    return @data;
+}
+
+sub grep_pattern(){
+    my $pattern = shift;
 	my $issue;
 	foreach my $itm (@typeList){
 		$issue = "$itm\n" if $itm =~ /$pattern/;
-        }
+    }
 	return $issue;
 }
 

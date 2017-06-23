@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# This little script checks all files te see if they are perl files and if so 
+# This little script checks all files te see if they are perl files and if so
 # ------------------------------------------------------------------------------
 
 use strict;
@@ -21,12 +21,12 @@ use strict;
 my $db_version = shift;
 
 unless ( $db_version ) {
-	foreach my $data_file (<db/data_v*.mysql>) {
+	foreach my $data_file (glob "db/data_v*.mysql") {
 		$data_file =~ /^db\/data_v(\d+)\.mysql$/;
 		$db_version = $1 if $1 > $db_version;
 	}
 }
-	
+
 print "DB version = $db_version\n";
 `mysql -uroot -e "drop database seccubus"`;
 `mysql -uroot -e "create database seccubus"`;

@@ -23,7 +23,7 @@ use Data::Dumper;
 use lib "lib";
 
 my $db_version = 0;
-foreach my $data_file (<db/data_v*.mysql>) {
+foreach my $data_file (glob "db/data_v*.mysql") {
 	$data_file =~ /^db\/data_v(\d+)\.mysql$/;
 	$db_version = $1 if $1 > $db_version;
 }

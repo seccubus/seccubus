@@ -78,20 +78,20 @@ unless ( $outfile ) {
 	$outfile .= ".ivil.xml";
 }
 print "Opening file $outfile for output\n" if $verbose;
-open(OUT, ">$outfile") or die "Unable to open output file $outfile";
-print OUT xml_header();
-print OUT ivil_open();
+open(my $OUT, ">", "$outfile") or die "Unable to open output file $outfile";
+print $OUT xml_header();
+print $OUT ivil_open();
 
 if ($workspace) {
 	print "Creating addressee block\n" if $verbose;
-	print OUT ivil_addressee("Seccubus", {
+	print $OUT ivil_addressee("Seccubus", {
 						"workspace" => $workspace,
 						"scan"		=> $scanname,
 			 		     });
 }
 
 print "Creating findings\n" if $verbose;
-print OUT "<findings>\n";
+print $OUT "<findings>\n";
 
 print "Handling scaninfo\n" if $verbose;
 
@@ -102,7 +102,7 @@ $finding->{id} = "scaninfo";
 $finding->{finding} = "
 SSL Enabled       : $zap->{site}->{ssl}
 Website scanned   : $zap->{site}->{name}";
-print OUT ivil_finding($finding);
+print $OUT ivil_finding($finding);
 
 print "Iterating over findings\n" if $verbose;
 my $j = 0;
@@ -202,12 +202,12 @@ foreach my $item ( @{$zap->{site}->{alerts}->{alertitem}} ) {
         }
 
 	$j++;
-	print OUT ivil_finding($finding);
+	print $OUT ivil_finding($finding);
 }
 
-print OUT "</findings>\n";
-print OUT ivil_close();
-close OUT;
+print $OUT "</findings>\n";
+print $OUT ivil_close();
+close $OUT;
 print "Total Ammount of issues found:\r\n".$j."\r\n";
 
 exit();

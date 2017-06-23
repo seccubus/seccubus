@@ -20,11 +20,11 @@ use strict;
 use SeccubusV2;
 use IVIL;
 
-open(OUT, ">testdata/big.ivil.xml") or die "Unable to open output file testdata/big.ivil.xml";
-print OUT xml_header();
-print OUT ivil_open();
+open(my $OUT, ">", "testdata/big.ivil.xml") or die "Unable to open output file testdata/big.ivil.xml";
+print $OUT xml_header();
+print $OUT ivil_open();
 print "Creating findings\n";
-print OUT "<findings>\n";
+print $OUT "<findings>\n";
 
 my $finding = {};
 $finding->{ip} = "127.0.0.1";
@@ -33,12 +33,12 @@ $finding->{severity} = 0;
 foreach my $n (0..1000) {
 	$finding->{port} = $n;
 	$finding->{finding} = "Big finding #$n\n";
-	print OUT ivil_finding($finding);
+	print $OUT ivil_finding($finding);
 }
-print OUT "</findings>\n";
+print $OUT "</findings>\n";
 
-print OUT ivil_close();
+print $OUT ivil_close();
 
-close OUT;
+close $OUT;
 
 exit();
