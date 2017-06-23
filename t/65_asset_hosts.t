@@ -42,7 +42,7 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin', "content-type" => "application/json" })
     ->status_is(200,"Login ok")
 ;
 
@@ -344,41 +344,41 @@ $t->get_ok('/api/workspace/100/asset/1/hosts')
 
 # Delete
 # Invalid workspace
-$t->delete_ok("/api/workspace/101/asset/1/host/4")
+$t->delete_ok("/api/workspace/101/asset/1/host/4" => { 'content-type' => 'application/json'} )
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
-$t->delete_ok("/api/workspace/a/asset/1/host/4")
+$t->delete_ok("/api/workspace/a/asset/1/host/4" => { 'content-type' => 'application/json'} )
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
 # Invalid asset
-$t->delete_ok("/api/workspace/100/asset/101/host/4")
+$t->delete_ok("/api/workspace/100/asset/101/host/4" => { 'content-type' => 'application/json'} )
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
-$t->delete_ok("/api/workspace/100/asset/a/host/4")
+$t->delete_ok("/api/workspace/100/asset/a/host/4" => { 'content-type' => 'application/json'} )
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
 # Invalid host
-$t->delete_ok("/api/workspace/100/asset/1/host/401")
+$t->delete_ok("/api/workspace/100/asset/1/host/401" => { 'content-type' => 'application/json'} )
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
-$t->delete_ok("/api/workspace/100/asset/1/host/a")
+$t->delete_ok("/api/workspace/100/asset/1/host/a" => { 'content-type' => 'application/json'} )
     ->status_is(400)
     ->json_is("/status","Error")
     ->json_has("/message")
 ;
 
 # OK
-$t->delete_ok("/api/workspace/100/asset/1/host/4")
+$t->delete_ok("/api/workspace/100/asset/1/host/4" => { 'content-type' => 'application/json'} )
     ->status_is(200)
     ->json_is({id=>4})
 ;

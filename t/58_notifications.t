@@ -42,7 +42,7 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin', "content-type" => "application/json" })
     ->status_is(200,"Login ok")
 ;
 
@@ -508,7 +508,7 @@ $t->put_ok('/api/workspace/100/scan/5/notification/5',
 	;
 
 # Can delete a notification
-$t->delete_ok('/api/workspace/100/scan/1/notification/1')
+$t->delete_ok('/api/workspace/100/scan/1/notification/1' => { "content-type" => "application/json" })
 	->status_is(200)
 	->json_is("/status", "OK")
 	->json_has("/message")
@@ -543,7 +543,7 @@ $t->get_ok('/api/workspace/100/scan/1/notification/1')
 	->json_has("/message")
 	;
 
-$t->delete_ok('/api/workspace/100/scan/1/notification/1')
+$t->delete_ok('/api/workspace/100/scan/1/notification/1' => { "content-type" => "application/json" })
 	->status_is(400)
 	->json_is("/status", "Error")
 	->json_has("/message")
