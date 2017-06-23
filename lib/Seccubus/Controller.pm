@@ -38,11 +38,14 @@ sub new {
     my $req = $self->req();
 
     # CSRF protection
-    if ( $req->{method} ne "GET" ) {
+    if ( $req->{method} && $req->{method} ne "GET" ) {
         # Get methods are considered safe...
         # Post requests should be applicaiton/json which cannot be generated with CSRF techniques
         # without violating same-origin policies
-        if ( $req->{content}->{headers}->header('content-type') !~ /^application\/json/ ) {
+        if (
+            ( ! $req->{content}->{headers}->header('content-type') ) ||
+            $req->{content}->{headers}->header('content-type') !~ /^application\/json/
+        ) {
             $self->error("CSRF protection kicked in", 500);
             return $self;
         }
