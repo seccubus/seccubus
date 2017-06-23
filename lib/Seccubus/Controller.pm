@@ -37,6 +37,17 @@ sub new {
 	my $res = $self->res();
     my $req = $self->req();
 
+    # CSRF protection
+    if ( $req->{method} ne "GET" ) {
+        # Get methods are considered safe...
+        # Post requests should be applicaiton/json which cannot be generated with CSRF techniques
+        # without violating same-origin policies
+        if ( $req->{content}->{headers}->header('content-type') !~ /^application\/json/ ) {
+            $self->error("CSRF protection kicked in", 500);
+            return $self;
+        }
+    }
+
 	# Set some default security and caching headers
 	$res->headers()->header('Server' => "Seccubus v$SeccubusV2::VERSION");
 	$res->headers()->header('X-Frame-Options' => 'DENY');
