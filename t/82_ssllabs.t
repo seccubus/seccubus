@@ -48,7 +48,7 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin', "content-type" => "application/json" })
     ->status_is(200,"Login ok")
 ;
 
@@ -137,7 +137,7 @@ is($?,0,"Command executed ok");
 $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin', "content-type" => "application/json" })
     ->status_is(200,"Login ok")
 ;
 

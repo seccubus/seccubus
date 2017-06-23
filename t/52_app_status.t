@@ -42,6 +42,8 @@ is($?,0,"Database structure created ok");
 is($?,0,"Database data imported ok");
 
 my $t = Test::Mojo->new('Seccubus');
+$t->ua->inactivity_timeout(40);
+
 $t->get_ok('/api/appstatus')
 	->status_is(200)
 	->json_is("/0/name","Configuration file")

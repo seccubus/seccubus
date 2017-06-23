@@ -42,4 +42,17 @@ $t->get_ok('/seccubus/seccubus.html')
 	->header_unlike("Server", qr/mojo/i)
 	;
 
+# CSRF protection
+$t->post_ok('/api/session'=> { 'REMOTEUSER' => 'admin' } )
+    ->status_is(500)
+    ->json_is({
+        status => "Error",
+        message => "CSRF protection kicked in"
+    })
+;
+
+$t->post_ok('/api/session'=> { 'REMOTEUSER' => 'admin', "content-type" => "application/json" } )
+    ->status_is(200)
+;
+
 done_testing();

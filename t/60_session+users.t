@@ -48,7 +48,7 @@ $t->get_ok('/api/appstatus')
     ->status_is(200)
 ;
 
-$t->get_ok('/api/session')
+$t->get_ok('/api/session' => { "content-type" => "application/json" })
     ->status_is(200)
     ->json_is({
         isAdmin     => 0,
@@ -66,11 +66,11 @@ $t->get_ok('/api/logout')
     ->status_is(200)
 ;
 
-$t->delete_ok('/api/session')
+$t->delete_ok('/api/session' => { "content-type" => "application/json" })
     ->status_is(200)
 ;
 
-$t->delete_ok('/api/session/1')
+$t->delete_ok('/api/session/1' => { "content-type" => "application/json" })
     ->status_is(200)
 ;
 
@@ -161,7 +161,7 @@ $t->get_ok('/api/events')
 ;
 
 # logging out via delete request
-$t->delete_ok('/api/session')
+$t->delete_ok('/api/session' => { "content-type" => "application/json" })
     ->status_is(200)
 ;
 
@@ -310,7 +310,7 @@ $t->get_ok('/api/users' => { 'REMOTEUSER' => 'admin' })
     ])
 ;
 
-$t->post_ok('/api/session' => { 'REMOTEUSER' => 'seccubus2' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'seccubus2', "content-type" => "application/json" })
     ->status_is(200)
     ->json_is({
         isAdmin     => 1,

@@ -39,7 +39,7 @@ ok($db_version > 0, "DB version = $db_version");
 my $t = Test::Mojo->new('Seccubus');
 
 # Log in
-$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin' })
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin', "content-type" => "application/json" })
     ->status_is(200,"Login ok")
 ;
 
@@ -88,7 +88,7 @@ $t->get_ok('/api/workspace/a/assets')
 # Testing asset creation
 
 # No parameters
-$t->post_ok('/api/workspace/100/assets')
+$t->post_ok('/api/workspace/100/assets' => { 'content-type' => 'application/json' })
     ->status_is(400)
     ->json_is('/status', 'Error')
     ->json_has('/message')
@@ -888,7 +888,7 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
 # Deleting assets
 
 # INvalid params
-$t->delete_ok('/api/workspace/a/asset/2')
+$t->delete_ok('/api/workspace/a/asset/2' => { 'content-type' => 'application/json'} )
     ->status_is(400)
     ->json_is("/status", "Error")
     ->json_has("/message")
@@ -917,7 +917,7 @@ $t->get_ok('/api/workspace/100/assets')
     ])
 ;
 
-$t->delete_ok('/api/workspace/100/asset/a')
+$t->delete_ok('/api/workspace/100/asset/a' => { 'content-type' => 'application/json'} )
     ->status_is(400)
     ->json_is("/status", "Error")
     ->json_has("/message")
@@ -946,7 +946,7 @@ $t->get_ok('/api/workspace/100/assets')
     ])
 ;
 
-$t->delete_ok('/api/workspace/101/asset/2')
+$t->delete_ok('/api/workspace/101/asset/2' => { 'content-type' => 'application/json'} )
     ->status_is(400)
     ->json_is("/status", "Error")
     ->json_has("/message")
@@ -975,14 +975,14 @@ $t->get_ok('/api/workspace/100/assets')
     ])
 ;
 
-$t->delete_ok('/api/workspace/100/asset/2')
+$t->delete_ok('/api/workspace/100/asset/2' => { 'content-type' => 'application/json'} )
     ->status_is(200)
     ->json_is({ id => 2 })
 ;
 
 
 # Should list with one item
-$t->get_ok('/api/workspace/100/assets')
+$t->get_ok('/api/workspace/100/assets' => { 'content-type' => 'application/json'} )
     ->status_is(200)
     ->json_is([
         {
