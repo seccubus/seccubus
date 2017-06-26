@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk
+# Copyright 2017 Frank Breedijk, Jericho
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,8 +39,8 @@ sub new {
 
     # CSRF protection
     if ( $req->{method} && $req->{method} ne "GET" ) {
-        # Get methods are considered safe...
-        # Post requests should be applicaiton/json which cannot be generated with CSRF techniques
+        # GET methods are considered safe...
+        # POST requests should be application/json which cannot be generated with CSRF techniques
         # without violating same-origin policies
         if (
             ( ! $req->{content}->{headers}->header('content-type') ) ||
@@ -61,6 +61,6 @@ sub new {
 	return $self;
 }
 
-# Return a json encoded error message
+# Return a JSON encoded error message
 
 1;

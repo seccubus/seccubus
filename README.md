@@ -154,4 +154,5 @@ Enhancements
 
 Bug Fixes
 ---------
-#132 - We have CSRF protection now. Non-get requests should have content-type application/json.
+* #132 - We have CSRF protection now. Non-get requests should have content-type application/json.
+* #474 - Some typo/style fixes by Jericho (attrition.org)
