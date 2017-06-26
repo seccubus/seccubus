@@ -23,10 +23,6 @@ use lib "lib";
 
 my $t = Test::Mojo->new('Seccubus');
 
-$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin', "content-type" => "application/json" })
-    ->status_is(200,"Login ok")
-;
-
 $t->get_ok('/api/version')
 	->status_is(200)
 	->json_is("/link","")

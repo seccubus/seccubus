@@ -22,23 +22,20 @@ functions within the module.
 
 =cut
 
+use strict;
 use Exporter;
 use DBI;
 
 #use SeccubusConfig;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
-		open_database
-		sql
-	);
+our @EXPORT = qw (
+	open_database
+	sql
+);
 
-use strict;
 use Carp;
-
-sub open_database();
-sub sql(@);
 
 my (
 	$dbh,
@@ -77,7 +74,7 @@ Global variable $dbh to see it the database is allready open.
 
 =cut
 
-sub open_database() {
+sub open_database {
 	my $dsn;
 
 	# This routine uses DBI->connect_cached to efficiently and safely use
@@ -140,7 +137,7 @@ If statement prepares and executes well
 
 =cut
 
-sub sql(@) {
+sub sql {
 	my %arg = @_;
 	$arg{return} = "ref" unless $arg{return};
 

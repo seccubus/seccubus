@@ -43,6 +43,7 @@ WriteMakefile (
                 'Carp'                  => 1.04,
                 'ExtUtils::MakeMaker'   => 6.30,
                 'Mojolicious'           => '7.26',
+                'Perl::Critic'          => 1.0,
 			},
 	NO_MYMETA	=> 1
 );

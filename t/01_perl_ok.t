@@ -18,10 +18,15 @@
 
 use strict;
 use Test::More;
+use Perl::Critic;
 
-my $tests = 0;
+my $critic = Perl::Critic->new();
 
-my @files = split(/\n/, `find . -type f`);
+my @files = sort split(/\n/, `find . -type f`);
+
+my $no_critic = {
+    "./lib/OpenVAS/OMP.pm" => "Third party file"
+};
 
 foreach my $file ( @files ) {
 	if ( $file !~ /\/\./ &&			# Skip hidden files
@@ -35,22 +40,23 @@ foreach my $file ( @files ) {
 		if ( $type =~ /Perl/i ) {
 			if ( $file !~ qr|^./www/| ) { # Exclude www directory
 				isnt(`grep 'use strict;' '$file'`, '', "$file contains 'use strict'");
-				$tests++;
 
-				like(`perl -ISeccubusV2 -It -c '$file' 2>&1`, qr/OK/, "Perl compile test: $file");
-				$tests++;
+				like(`perl -c '$file' 2>&1`, qr/OK/, "Perl compile test: $file");
+
+                my @violations = $critic->critique($file);
+                unless ( $no_critic->{$file} ) {
+                    is(@violations,0,"perlcritic $file : " . join "", @violations);
+                }
 
 				if ( $file =~ /\.pm$/ ) {
 					# Modules
 					like(`ls -l '$file'`, qr/^\-rw\-r.\-.\-\-/, "File '$file' has the correct permissions");
-					$tests++;
 				} else {
 					# Executables
 					like(`ls -l '$file'`, qr/^\-rwxr.x.\-./, "File '$file' has the correct permissions");
-					$tests++;
 				}
 			}
 		}
 	}
 }
-done_testing($tests);
+done_testing();

@@ -21,22 +21,21 @@ of all functions within the module.
 
 =cut
 
+use strict;
+
 use SeccubusV2;
 use Seccubus::DB;
 use Seccubus::Rights;
 use Socket;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
-		update_hostname
-		get_hostnames
-	);
+our @EXPORT = qw (
+	update_hostname
+	get_hostnames
+);
 
-use strict;
 use Carp;
-
-sub update_hostname($$$;);
 
 =head1 Data manipulation - hostnames
 
@@ -66,7 +65,7 @@ Must have write rights in the workspace_id.
 
 =cut
 
-sub update_hostname($$$;) {
+sub update_hostname {
 	my $workspace_id = shift;
 	my $ip = shift;
 	my $name = shift;
@@ -123,7 +122,7 @@ Must have read rights in the workspace_id.
 
 =cut
 
-sub get_hostnames($;) {
+sub get_hostnames {
 	my $workspace_id = shift;
 
 	confess "No workspace_id provided" unless $workspace_id;

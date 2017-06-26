@@ -78,7 +78,7 @@ my $run_id = update_run($workspace_id, $scan_id, $timestamp, $file, $description
 
 exit;
 
-sub help(;$) {
+sub help() {
 	my $msg = shift;
 	print "$msg\n
 Usage: attach_file --workspace <workspace name> --scan <scan name>

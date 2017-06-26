@@ -22,24 +22,20 @@ all functions within the module.
 =cut
 
 
+use strict;
 use Exporter;
 use SeccubusV2;
 use Seccubus::DB;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
-		is_admin
-		may_read
-		may_write
-	);
+our @EXPORT = qw (
+	is_admin
+	may_read
+	may_write
+);
 
-use strict;
 use Carp;
-
-sub is_admin(;$);
-sub may_write($);
-sub may_read($);
 
 =head1 Access control functions
 
@@ -72,7 +68,7 @@ None
 
 =cut
 
-sub is_admin(;$) {
+sub is_admin  {
     my $username = shift;
     $username = $ENV{SECCUBUS_USER} unless $username;
 
@@ -122,7 +118,7 @@ None
 
 =cut
 
-sub may_write($) {
+sub may_write  {
 	my $id = shift;
 
 	return 1 if is_admin();
@@ -173,7 +169,7 @@ None
 
 =cut
 
-sub may_read($) {
+sub may_read {
 	my $id = shift;
 
 	return 1 if is_admin();

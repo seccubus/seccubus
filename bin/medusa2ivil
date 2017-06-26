@@ -70,29 +70,29 @@ if ( ! $timestamp ) {
 };
 
 print "Opening file $infile for input\n" if $verbose;
-open(IN, $infile) or die "Unable to open $infile";
+open(my $IN, "<", $infile) or die "Unable to open $infile";
 unless ( $outfile ) {
 	$outfile = $infile;
 	$outfile =~ s/\.medusa$//;
 	$outfile .= ".ivil.xml";
 }
 print "Opening file $outfile for output\n" if $verbose;
-open(OUT, ">$outfile") or die "Unable to open output file $outfile";
-print OUT xml_header();
-print OUT ivil_open();
+open(my $OUT, ">", "$outfile") or die "Unable to open output file $outfile";
+print $OUT xml_header();
+print $OUT ivil_open();
 if ($workspace) {
 	print "Creating addressee block\n" if $verbose;
-	print OUT ivil_addressee("Seccubus", {
+	print $OUT ivil_addressee("Seccubus", {
 						"workspace" => $workspace,
 						"scan"		=> $scanname,
 			 		     });
 }
 print "Creating sender block\n" if $verbose;
-print OUT ivil_sender($scanner, $scannerversion, $timestamp);
+print $OUT ivil_sender($scanner, $scannerversion, $timestamp);
 
 print "Reading findings\n" if $verbose;
 @findings = ();
-while (<IN>) {
+while (<$IN>) {
 	if (/ACCOUNT FOUND: \[(\S+)\] Host: (\S+).*/) {
 		my $plugin = $1;
 		my $ip = $2;
@@ -106,12 +106,13 @@ while (<IN>) {
 		push @findings, \%finding;
 	}
 }
-print OUT ivil_findings(\@findings) if (@findings);
+print $OUT ivil_findings(\@findings) if (@findings);
 print ivil_findings(\@findings) if $verbose and @findings;
 
-print OUT ivil_close();
+print $OUT ivil_close();
 
-close OUT;
+close $OUT;
+close $IN;
 
 exit();
 

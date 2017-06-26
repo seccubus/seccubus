@@ -19,8 +19,6 @@
 use strict;
 use Test::More;
 
-my $travis = 1 if ( `pwd` =~ /\/travis\// );
-
 my %exclude = (
     "./lib/IVIL.pm"     => "MIT Licensed project",
     "./lib/OpenVAS/OMP.pm"  => "Artistic License 2.0",
@@ -121,9 +119,9 @@ sub checklic {
     my $start = shift;
     $start = 1 unless defined $start;
 
-    open F, $file or die "Unable to open file $file";
-    my @data = (<F>);
-    close F;
+    open (my $F, "<", $file) or die "Unable to open file $file";
+    my @data = (<$F>);
+    close $F;
     return 1 if $data[$start+0] !~ /Copyright/;
     return 2 if $data[$start+2] !~ /Licensed under the Apache License, Version 2\.0 \(the "License"\);/;
     return 3 if $data[$start+3] !~ /you may not use this file except in compliance with the License\./;

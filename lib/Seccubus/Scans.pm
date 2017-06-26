@@ -20,30 +20,26 @@ This Pod documentation generated from the module SeccubusScans gives a list of
 all functions within the module.
 
 =cut
+
+use strict;
+use Exporter;
 use SeccubusV2;
 use Seccubus::DB;
 use Seccubus::Rights;
 use Seccubus::Notifications;
 use Data::Dumper;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
-		get_scan_id
-		get_scans
-		create_scan
-		update_scan
-		run_scan
-	);
+our @EXPORT = qw (
+	get_scan_id
+	get_scans
+	create_scan
+	update_scan
+	run_scan
+);
 
-use strict;
 use Carp;
-
-sub get_scan_id($$;);
-sub get_scans($;$);
-sub create_scan($$$$;$$);
-sub update_scan($$$$$;$$);
-sub run_scan($$;$$$);
 
 =head1 Data manipulation - scans
 
@@ -80,7 +76,7 @@ exist in the same workspace
 
 =cut
 
-sub create_scan($$$$;$$) {
+sub create_scan {
 	my $workspace_id = shift or confess "No workspace_id provided";
 	my $scanname = shift or confess "No scanname provide to getscanid";
 	my $scanner_name = shift or confess "No scanner_name provided";
@@ -133,7 +129,7 @@ None
 
 =cut
 
-sub get_scan_id($$;) {
+sub get_scan_id {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scanname = shift or die "No scanname provide to getscanid";
 
@@ -168,7 +164,7 @@ Must have at least read rights
 
 =cut
 
-sub get_scans($;$) {
+sub get_scans {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_id = shift;
 
@@ -195,7 +191,7 @@ sub get_scans($;$) {
 					"values"	=> $values,
 		);
 	} else {
-		return undef;
+		return;
 	}
 }
 
@@ -234,7 +230,7 @@ The scan must exist in the workspace.
 
 =cut
 
-sub update_scan($$$$$;$$) {
+sub update_scan {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_id = shift or die "No scan_id provided";
 	my $scanname = shift or die "No scanname provide to getscanid";
@@ -312,7 +308,7 @@ User must be able to write workspace. The scan must exist in the workspace.
 
 =cut
 
-sub run_scan($$;$$$) {
+sub run_scan {
 	my $workspace_id = shift;
 	my $scan_id = shift;
 	my $verbose = shift;
@@ -343,9 +339,9 @@ sub run_scan($$;$$$) {
 				$param = $param .' --pw \''. $password. '\' ';
 			};
 			if ( $param =~ /\@HOSTS/ ) {
-				open TMP, ">$tempfile" or die "Unable to open $tempfile for write";
-				print TMP "$targets\n";
-				close TMP;
+				open(my $TMP, ">", "$tempfile") or die "Unable to open $tempfile for write";
+				print $TMP "$targets\n";
+				close $TMP;
 				$param =~ s/\@HOSTS/$tempfile/g;
 			}
 			if ( $param =~ /\$HOSTS/ ) {
@@ -363,9 +359,9 @@ sub run_scan($$;$$$) {
 						group by a.ip",
 					'values'=>[$scan_id]
 					)};
-				open TMP, ">$tempfile" or die "Unable to open $tempfile for write";
-				print TMP "$assets\n";
-				close TMP;
+				open(my $TMP, ">", "$tempfile") or die "Unable to open $tempfile for write";
+				print $TMP "$assets\n";
+				close $TMP;
 				$param =~ s/\@ASSETS/$tempfile/g;
 			}
 
@@ -426,12 +422,12 @@ sub run_scan($$;$$$) {
 			# Starting the actual scan
 			print "cmd: $printcmd\n" if $print;
 			my $result = "cmd: $printcmd\n";
-			open CMD, "$cmd |" or die "Unable to open pipe to '$printcmd'";
-			while (<CMD>) {
+			open( my $CMD, "-|", $cmd) or die "Unable to open pipe to '$printcmd'";
+			while (<$CMD>) {
 				$result .= $_;
 				print $_ if $print;
 			}
-			close CMD;
+			close $CMD;
 			unlink $tempfile;
 
 			# Sending post scan notifications

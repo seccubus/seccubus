@@ -21,29 +21,23 @@ of all functions within the module.
 
 =cut
 
+use strict;
 use SeccubusV2;
 use Seccubus::DB;
 use Seccubus::Rights;
 use Seccubus::Users;
 use Data::Dumper;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
+our @EXPORT = qw (
 	update_issue
 	get_issues
 	get_issue
 	issue_finding_link
 );
 
-use strict;
 use Carp;
-
-sub update_issue(@);
-sub create_issue_change($;$);
-sub get_issues($;$$$);
-sub get_issue($$);
-sub issue_finding_link($$$;$);
 
 =head1 Data manipulation - issues
 
@@ -85,7 +79,7 @@ Madatory parameters are checked. User must have write permission.
 
 =cut
 
-sub update_issue(@) {
+sub update_issue {
 	my %arg = @_;
 	my $return = -1;
 
@@ -201,7 +195,7 @@ checking should have been doine a higher levels.
 
 =cut
 
-sub create_issue_change($;$) {
+sub create_issue_change {
 	my $issue_id = shift or die "No issue_id given";
 	my $timestamp = shift;
 
@@ -273,7 +267,7 @@ Must have at least read rights
 
 =cut
 
-sub get_issues($;$$$) {
+sub get_issues {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $issue_id = shift;
 	my $with_finding_ids = shift;
@@ -343,7 +337,7 @@ Must have at least read rights
 
 =cut
 
-sub get_issue($$) {
+sub get_issue {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $issue_id = shift or die "No finding_id provided";
 
@@ -400,7 +394,7 @@ Must have write rights
 =back
 
 =cut
-sub issue_finding_link($$$;$) {
+sub issue_finding_link {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $issue_id = shift or die "No issue_id provided";
 	my $finding_id = shift or die "No finding_id provided";

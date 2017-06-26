@@ -273,9 +273,9 @@ foreach my $type ( @types ) {
 		<get_reports report_id='$report_id' format_id='$formats->{report_format}->{uc($type)}->{id}'/>
 	");
 	if ( $xml->{status} eq "200" ) {
-		open(OUT,">$tempfile.$type") or die "Unable to open file '$tempfile.$type' for write";
-		print OUT MIME::Base64::decode_base64($xml->{report}->{content});
-		close OUT;
+		open(my $OUT,">", "$tempfile.$type") or die "Unable to open file '$tempfile.$type' for write";
+		print $OUT MIME::Base64::decode_base64($xml->{report}->{content});
+		close $OUT;
 	} else {
 		die "Get report request failed with status '$xml->{status}' : $xml->{status_text}";
 	}
@@ -337,7 +337,7 @@ sub make_timestamp() {
 	return "$year$month$day$hour$minute$second";
 }
 
-sub omp_request($) {
+sub omp_request() {
 	my $request = shift;
 	die "No omp request specified" unless $request;
 	print "sumbitted omp request : $request\n" if $verbose >2;

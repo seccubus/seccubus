@@ -88,7 +88,8 @@ sub list {
                 $i->{severityName} = $$issue[5];
                 $i->{status} = $$issue[6];
                 $i->{statusName} = $$issue[7];
-                my $url = $config->{tickets}->{url_head} . $$issue[2] . $config->{tickets}->{url_tail} if $config->{tickets}->{url_head};
+                my $url;
+                $url = $config->{tickets}->{url_head} . $$issue[2] . $config->{tickets}->{url_tail} if $config->{tickets}->{url_head};
                 $i->{url} = $url;
                 push @{$i2f{$id}}, $i;
             }

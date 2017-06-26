@@ -168,7 +168,7 @@ sub get_zap_path() {
 	if ( run_cmd("ls /opt/zap/zap.jar",0,$remote) ) {
 		return '/opt/zap/zap.jar';
 	}
-	return undef;
+	return;
 }
 
 sub make_timestamp() {

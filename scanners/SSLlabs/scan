@@ -29,9 +29,7 @@ use Data::Dumper;
 use Date::Format;
 use MIME::Base64;
 use XML::Simple;
-
-sub help();
-sub make_timestamp();
+use Time::HiRes;
 
 my (
     $workspace,
@@ -54,9 +52,6 @@ my (
     $verbose,
     $quiet,
    );
-
-sub help();
-sub make_timestamp();
 
 # Default values for command line values
 $help = 0;
@@ -119,8 +114,8 @@ my $config = SeccubusV2::get_config();
 
 # Expand hosts
 if ( -e $hosts ) {
-    open HOSTS, $hosts or die "Unable to open file '$hosts'";
-    while (<HOSTS>) {
+    open( my $HOSTS, "<", $hosts) or die "Unable to open file '$hosts'";
+    while (<$HOSTS>) {
         chomp;
         s/\#.*$//; # Remove comments
         s/\s+$//; # Remove trailing spaces
@@ -129,7 +124,7 @@ if ( -e $hosts ) {
             print "Scanning hosts $_\n" if $verbose > 1;
         }
     }
-    close HOSTS;
+    close $HOSTS;
 } else {
     @hosts = split /\s+/, $hosts #split it
 }
@@ -142,13 +137,13 @@ if ( $noClearCache || $fromCache ) {
 }
 
 # Get parsing hints files
-open KEYS, "$config->{paths}->{scanners}/SSLlabs/keys.json" or die "Unable to open parsing hints from $config->{paths}->{scanners}/SSLlabs/keys.json";
-my $keys = decode_json(join "", (<KEYS>));
-close KEYS;
+open(my $KEYS, "<", "$config->{paths}->{scanners}/SSLlabs/keys.json") or die "Unable to open parsing hints from $config->{paths}->{scanners}/SSLlabs/keys.json";
+my $keys = decode_json(join "", (<$KEYS>));
+close $KEYS;
 
-open DETAILS, "$config->{paths}->{scanners}/SSLlabs/details.json" or die "Unable to open parsing hints from $config->{paths}->{scanners}/SSLlabs/details.json";
-my $details = decode_json(join "", (<DETAILS>));
-close DETAILS;
+open(my $DETAILS, "<", "$config->{paths}->{scanners}/SSLlabs/details.json") or die "Unable to open parsing hints from $config->{paths}->{scanners}/SSLlabs/details.json";
+my $details = decode_json(join "", (<$DETAILS>));
+close $DETAILS;
 
 # Setup LWP::UserAgent client
 #my $client = REST::Client->new(host => $api);
@@ -230,7 +225,7 @@ while ( $active ) {
                 push @params, "clearCache=on" if $clearCache;
                 print "Starting scan of $host\n" unless $quiet;
                 print "Sleeping for $coolOff ms before scan\n" if $verbose;
-                select(undef, undef, undef, $coolOff/1000);
+                sleep($coolOff/1000);
             } else {
                 print "Getting status of $host scan\n" if $verbose;
             }
@@ -308,23 +303,23 @@ while ( $active ) {
 #die Dumper $results;
 
 # Create output files
-open JSFILE, ">$tempfile.json" or die "Unable to open $tempfile.json for write";
-print JSFILE to_json($results, {pretty => 1});
-close JSFILE;
+open(my $JSFILE, ">", "$tempfile.json") or die "Unable to open $tempfile.json for write";
+print $JSFILE to_json($results, {pretty => 1});
+close $JSFILE;
 
 # Create IVIL file header
-open OUT, ">$tempfile.ivil.xml" or die "Unable to open $tempfile.ivil.xml for write";
-print OUT xml_header();
-print OUT ivil_open();
+open( my $OUT, ">" , "$tempfile.ivil.xml") or die "Unable to open $tempfile.ivil.xml for write";
+print $OUT xml_header();
+print $OUT ivil_open();
 
 # Addressee block
-print OUT ivil_addressee("Seccubus", {
+print $OUT ivil_addressee("Seccubus", {
         "workspace" => $workspace,
         "scan"        => $scan,
     }
 );
 # Findings
-print OUT "<findings>\n";
+print $OUT "<findings>\n";
 
 
 
@@ -347,7 +342,7 @@ foreach my $host ( @hosts ) {
         $finding->{id} = "ERROR/Assessment failed";
         $finding->{finding} = $scan->{statusMessage};
         $finding->{severity} = 0;
-        print OUT ivil_finding($finding);
+        print $OUT ivil_finding($finding);
     } else {
         $finding->{severity} = 0;
         foreach my $key ( sort keys %$scan ) {
@@ -364,7 +359,7 @@ foreach my $host ( @hosts ) {
                                    ) {
                                     $finding->{id} = $epkey;
                                     $finding->{finding} = parse_finding($epkey,$ep->{$epkey},$keys->{$epkey});
-                                    print OUT ivil_finding($finding);
+                                    print $OUT ivil_finding($finding);
                                 }
                             } else {
                                 if ( $epkey eq "details" ) {
@@ -372,13 +367,13 @@ foreach my $host ( @hosts ) {
                                         if ( ! $details->{$dkey}->{ignore} ) {
                                             $finding->{id} = $dkey;
                                             $finding->{finding} = parse_finding($dkey,$ep->{details}->{$dkey},$details->{$dkey});
-                                            print OUT ivil_finding($finding);
+                                            print $OUT ivil_finding($finding);
                                         }
                                     }
                                 } else {
                                     $finding->{id} = $epkey;
                                     $finding->{finding} = parse_finding($epkey,$ep->{$epkey},$keys->{$epkey});
-                                    print OUT ivil_finding($finding);
+                                    print $OUT ivil_finding($finding);
                                 }
                             }
                         }
@@ -391,14 +386,14 @@ foreach my $host ( @hosts ) {
                         $finding->{ip} = $host;
                         $finding->{id} = $key;
                         $finding->{finding} = parse_finding($key,$scan->{$key},$keys->{$key});
-                        print OUT ivil_finding($finding);
+                        print $OUT ivil_finding($finding);
                     }
                 } else {
                     $finding->{hostname} = $host;
                     $finding->{ip} = $host;
                     $finding->{id} = $key;
                     $finding->{finding} = parse_finding($key,$scan->{$key},$keys->{$key});
-                    print OUT ivil_finding($finding);
+                    print $OUT ivil_finding($finding);
                 }
             }
         }
@@ -406,9 +401,9 @@ foreach my $host ( @hosts ) {
 } # Hosts
 
 # Close IVIL
-print OUT "</findings>\n";
-print OUT ivil_close();
-close OUT;
+print $OUT "</findings>\n";
+print $OUT ivil_close();
+close $OUT;
 
 # Perform CDN deduplication on IVIL file
 $results = undef; # Free up memory
@@ -470,16 +465,14 @@ if ( $cdn) {
     }
     #unlink "$tempfile.ivil.xml";
     # Overwrite IVIL
-    open IVIL, ">$tempfile.ivil.xml" or die "Unable to write file";
-    print IVIL XMLout(
+    open( my $IVIL, ">", "$tempfile.ivil.xml") or die "Unable to write file";
+    print $IVIL XMLout(
         $ivil,
         KeyAttr     => undef,
         SuppressEmpty   => "",
     );
-    close IVIL;
+    close $IVIL;
 }
-
-
 
 # Load the results
 my ( $workspace_id, $scan_id, $run_id) = load_ivil("$tempfile.ivil.xml", "Qualys SSL labs", $scanner_ver, $timestamp );
@@ -500,7 +493,7 @@ print "Done\n" unless $quiet;
 
 exit(0);
 
-sub help() {
+sub help {
     print "
 Usage: scan     --hosts=<hosts file|hosts spec>
                 --workspace=<seccubus workspace> --scan=<seccubus scan>
@@ -544,7 +537,7 @@ Usage: scan     --hosts=<hosts file|hosts spec>
     exit(1);
 }
 
-sub make_timestamp() {
+sub make_timestamp {
     my ($second, $minute, $hour, $day, $month, $year) = localtime();
     $month++;
     $second = "0" . $second if $second < 10;
@@ -557,7 +550,7 @@ sub make_timestamp() {
     return "$year$month$day$hour$minute$second";
 }
 
-sub parse_finding($$) {
+sub parse_finding {
     my $key = shift;
     my $finding = shift;
     my $meta = shift;
@@ -614,7 +607,7 @@ sub parse_finding($$) {
     return $txt;
 }
 
-sub parse_certs($) {
+sub parse_certs {
     my $certs = shift;
 
     my $number = 1;
@@ -678,13 +671,13 @@ sub parse_certs($) {
     # End certificate
 }
 
-sub parse_ts($) {
+sub parse_ts {
     my $ts = shift;
     $ts /= 1000;
     time2str("%a %d %b %Y %T UTC",$ts,"UTC");
 }
 
-sub parse_grade($) {
+sub parse_grade {
     my $grade = shift;
     my $txt = "$grade\n";
     if ( $grade eq "T" ) {
@@ -695,7 +688,7 @@ sub parse_grade($) {
     return $txt;
 }
 
-sub parse_vuln($$) {
+sub parse_vuln {
     my $finding = shift;
     my $meta = shift;
 
@@ -706,7 +699,7 @@ sub parse_vuln($$) {
     }
 }
 
-sub parse_valuelist($@) {
+sub parse_valuelist {
     my $val = shift;
 
     if ( $val > @_ ) {
@@ -716,7 +709,7 @@ sub parse_valuelist($@) {
     return $_[$val];
 }
 
-sub parse_bitmap($@) {
+sub parse_bitmap {
     my $val = shift;
 
     my $bit = 1;
@@ -731,7 +724,7 @@ sub parse_bitmap($@) {
     return $txt;
 }
 
-sub parse_hpkppolicy($) {
+sub parse_hpkppolicy {
     my $finding = shift;
     my $matched = {};
 
@@ -759,7 +752,7 @@ sub parse_hpkppolicy($) {
     return $txt;
 }
 
-sub parse_hstspolicy($) {
+sub parse_hstspolicy {
     my $finding = shift;
 
     my $txt = "\n\nHSTS header : $finding->{header}\n";
@@ -772,7 +765,7 @@ sub parse_hstspolicy($) {
     return $txt;
 }
 
-sub parse_hstspreloads($) {
+sub parse_hstspreloads {
     my $finding = shift;
 
     my $txt;
@@ -782,14 +775,14 @@ sub parse_hstspreloads($) {
     return $txt;
 }
 
-sub parse_staticPkp($) {
+sub parse_staticPkp {
     my $finding = shift;
     my $txt = Dumper $finding;
 
     return $txt;
 }
 
-sub parse_array($$) {
+sub parse_array {
     my $finding = shift;
     my $meta = shift;
 
@@ -804,7 +797,7 @@ sub parse_array($$) {
     return $txt;
 }
 
-sub parse_sims($) {
+sub parse_sims {
     my $f = shift;
 
     my $txt;
@@ -826,7 +819,7 @@ sub parse_sims($) {
     return $txt;
 }
 
-sub parse_version($) {
+sub parse_version {
     my $n = shift;
 
     my $major = int($n/256);
@@ -840,7 +833,7 @@ sub parse_version($) {
     return "$major\.$minor";
 }
 
-sub parse_suites($) {
+sub parse_suites {
     my $a = shift;
 
     my $txt;
@@ -859,7 +852,7 @@ sub parse_suites($) {
     return $txt;
 }
 
-sub parse_named_groups($) {
+sub parse_named_groups {
     my $f = shift;
 
     my $meta = { "fields" => [ "id", "name", "bits"] };

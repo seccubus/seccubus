@@ -190,7 +190,7 @@ sub get_nikto_path() {
 	if ( $path eq '/opt/nikto/nikto.pl' ) {
 		return '/opt/nikto/nikto.pl';
 	}
-	return undef;
+	return;
 }
 
 sub get_nikto_version() {

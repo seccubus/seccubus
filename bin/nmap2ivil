@@ -90,20 +90,20 @@ unless ( $outfile ) {
 	$outfile .= ".ivil.xml";
 }
 print "Opening file $outfile for output\n" if $verbose;
-open(OUT, ">$outfile") or die "Unable to open output file $outfile";
-print OUT xml_header();
-print OUT ivil_open();
+open(my $OUT, ">", "$outfile") or die "Unable to open output file $outfile";
+print $OUT xml_header();
+print $OUT ivil_open();
 
 if ($workspace) {
 	print "Creating addressee block\n" if $verbose;
-	print OUT ivil_addressee("Seccubus", {
+	print $OUT ivil_addressee("Seccubus", {
 						"workspace" => $workspace,
 						"scan"		=> $scanname,
 			 		     });
 }
 
 print "Creating findings\n" if $verbose;
-print OUT "<findings>\n";
+print $OUT "<findings>\n";
 
 print "Handling scaninfo\n" if $verbose;
 my $finding = {};
@@ -116,7 +116,7 @@ Number of ports : $nmap->{scaninfo}->{numservices}
 Ports scanned   : $nmap->{scaninfo}->{services}
 Scan type       : $nmap->{scaninfo}->{type}
 Nmap command    : $nmap->{args}";
-print OUT ivil_finding($finding);
+print $OUT ivil_finding($finding);
 
 print "Handling stats\n" if $verbose;
 $finding = {};
@@ -127,7 +127,7 @@ $finding->{finding} = "Number of hosts
 Scanned : $nmap->{runstats}->{hosts}->{total}
 Up      : $nmap->{runstats}->{hosts}->{up}
 Down    : $nmap->{runstats}->{hosts}->{down}";
-print OUT ivil_finding($finding);
+print $OUT ivil_finding($finding);
 
 print "Handling summary\n" if $verbose;
 $finding = {};
@@ -144,7 +144,7 @@ if ( ref($nmap->{runstats}->{finished}->{summary}) eq "" ) {
 	$finding->{finding} .= "Duration  : $nmap->{runstats}->{finished}->{elapsed} seconds";
 }
 
-print OUT ivil_finding($finding);
+print $OUT ivil_finding($finding);
 
 print "Iterating over hosts\n" if $verbose;
 
@@ -211,12 +211,12 @@ foreach my $host ( @{$nmap->{host}} ) {
 				$finding->{finding} .= "Extra info   : $port->{service}->{extrainfo}\n" if $port->{service}->{extrainfo};
 				$finding->{finding} .= "Fingerprint  : $port->{service}->{servicefp}\nPlease submit fingerprint to http://insecure.org/cgi-bin/submit.cgi" if $port->{service}->{servicefp};
 				$finding->{finding} .= "Confidence   : $port->{service}->{conf}";
-				print OUT ivil_finding($finding) if $finding;
+				print $OUT ivil_finding($finding) if $finding;
 				if (exists $port->{script} ) {
 					foreach my $script ( @{$port->{script}} ) {
 						$finding->{id} = $script->{id};
 						$finding->{finding} = $script->{output};
-						print OUT ivil_finding($finding);
+						print $OUT ivil_finding($finding);
 					}
 				} #script
 			} #port
@@ -245,18 +245,18 @@ foreach my $host ( @{$nmap->{host}} ) {
 			print "Unknown item: $item\n" if $verbose;
 			$finding = undef;
 		}
-		print OUT ivil_finding($finding) if $finding;
+		print $OUT ivil_finding($finding) if $finding;
 	} #items
 } #hosts
 
-print OUT "</findings>\n";
+print $OUT "</findings>\n";
 
 #print "Creating sender block\n" if $verbose;
-#print OUT ivil_sender($scanner, $scannerversion, $timestamp);
+#print $OUT ivil_sender($scanner, $scannerversion, $timestamp);
 
-print OUT ivil_close();
+print $OUT ivil_close();
 
-close OUT;
+close $OUT;
 
 exit();
 

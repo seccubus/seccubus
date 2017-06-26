@@ -19,9 +19,6 @@
 use strict;
 use Getopt::Long;
 
-sub syst($);
-sub help(;$);
-
 my (
 	$base_dir,
 	$bin_dir,
@@ -260,7 +257,7 @@ syst("rm -rf $stage_dir");
 # Done
 exit;
 
-sub syst($) {
+sub syst() {
     my $cmd = shift;
 
 	print "Executing: $cmd\n" if $verbose >1;
@@ -269,7 +266,7 @@ sub syst($) {
 	print "\n" if $verbose;
 }
 
-sub help(;$) {
+sub help() {
 	my $warning = shift;
 
 	print "$warning\n" if $warning;

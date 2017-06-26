@@ -21,6 +21,9 @@ list of all functions within the module.
 
 =cut
 
+use strict;
+use Exporter;
+
 use SeccubusV2;
 use Seccubus::DB;
 use Seccubus::Rights;
@@ -28,26 +31,18 @@ use Seccubus::Runs;
 use Net::SMTP;
 use MIME::Base64;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
-		get_notifications
-		create_notification
-		update_notification
-		do_notifications
-		del_notification
-		send_notification_from_finding
-	);
+our @EXPORT = qw (
+	get_notifications
+	create_notification
+	update_notification
+	do_notifications
+	del_notification
+	send_notification_from_finding
+);
 
-use strict;
 use Carp;
-
-sub get_notifications($;$);
-sub create_notification($$$$$$;);
-sub update_notification($$$$$;);
-sub do_notifications($$$;$);
-sub del_notification($;);
-sub send_notification_from_finding($;);
 
 =head1 Data manipulation - notifications
 
@@ -73,7 +68,7 @@ User must be able to read workspace.
 
 =cut
 
-sub get_notifications($;$) {
+sub get_notifications  {
 	my $scan_id = shift or die "No scan_id provided";
 	my $id = shift;
 
@@ -105,7 +100,7 @@ sub get_notifications($;$) {
 			    "values"	=> $values
 		);
 	} else {
-		return undef;
+		return;
 	}
 }
 
@@ -149,7 +144,7 @@ Newly inserted id and event_name
 
 =cut
 
-sub create_notification($$$$$$;) {
+sub create_notification  {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_id = shift or die "No scan_id provided";
 	my $event_id = shift or die "No event_id provided";
@@ -196,7 +191,7 @@ sub create_notification($$$$$$;) {
 
 
 	} else {
-		return undef;
+		return;
 	}
 }
 
@@ -239,7 +234,7 @@ Description of the event
 =back
 
 =cut
-sub update_notification($$$$$;) {
+sub update_notification  {
 	my $notification_id = shift or die "No notification_id provided";
 	my $event_id = shift or die "No event_id provided";
 	my $subject = shift or die "Subject is empty";
@@ -279,7 +274,7 @@ sub update_notification($$$$$;) {
 		);
 		return( ($event_name) );
 	} else {
-		return undef;
+		return;
 	}
 }
 
@@ -306,7 +301,7 @@ User must be able to write workspace.
 
 =cut
 
-sub del_notification($;) {
+sub del_notification  {
 	my $notification_id = shift or die "No notification_id provided";
 
 	my ($workspace_id) = sql(
@@ -326,7 +321,7 @@ sub del_notification($;) {
 			    "values"	=> [ $notification_id ]
 		);
 	} else {
-		return undef;
+		return;
 	}
 }
 
@@ -360,7 +355,7 @@ Number of notifications sent, -1 means error
 
 =cut
 
-sub do_notifications($$$;$) {
+sub do_notifications  {
 	my $workspace_id = shift or die "No workspace_id provided";
 	my $scan_id = shift or die "No scan_id provided";
 	my $event_id = shift or die "No event_id provided";
@@ -585,7 +580,7 @@ Content-Type: text/plain\n\n" . $$notification[2];
 	}
 }
 
-sub send_notification_from_finding($;){
+sub send_notification_from_finding {
 	my $findingId = shift;
 	my ($email,$workspace_id,$scan_id) = sql(
 		query => "SELECT

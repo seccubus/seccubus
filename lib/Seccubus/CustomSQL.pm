@@ -22,27 +22,22 @@ list of all functions within the module.
 
 =cut
 
-
+use strict;
 use Exporter;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
-		get_customsql
-		get_savedsql
-		set_customsql
-	);
+our @EXPORT = qw (
+	get_customsql
+	get_savedsql
+	set_customsql
+);
 
-use strict;
 use SeccubusV2;
 use Seccubus::DB;
 use Seccubus::Rights;
 use Data::Dumper;
 use Carp;
-
-sub get_customsql($);
-sub get_savedsql();
-sub set_customsql($$;$);
 
 =head2 get_customsql
 
@@ -68,7 +63,7 @@ User must be admin to execute custom SQL.
 
 =cut
 
-sub get_customsql($){
+sub get_customsql{
 	my $sql = shift or confess "no sql provided";
 	confess "Permission denied" unless is_admin();
 	my $sth =  sql (
@@ -96,7 +91,7 @@ User must be admin to execute custom SQL.
 
 =cut
 
-sub get_savedsql() {
+sub get_savedsql {
 	confess "Permission denied" unless is_admin();
 	return sql (
 		"return"	=> "arrayref",
@@ -132,7 +127,7 @@ User must be admin to execute custom SQL.
 
 =cut
 
-sub set_customsql($$;$) {
+sub set_customsql {
 	my $name = shift or confess "no name provided";
 	my $sql = shift or confess "no sql provided";
     my $id = shift;

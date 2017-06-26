@@ -267,7 +267,7 @@ print "\n*** Done ***\n" unless $quiet;
 
 exit;
 
-sub help(;$) {
+sub help() {
     my $message = shift;
 
     print "
@@ -305,17 +305,17 @@ Usage: bin/import --in <input directory> --workspace <workspace_name>
     }
 }
 
-sub get_json($) {
+sub get_json() {
     my $file = shift;
 
-    open JS, $file or die "Cannot open $file";
-    my $json = decode_json(join "", <JS>);
-    close JS;
+    open(my $JS, "<", $file) or die "Cannot open $file";
+    my $json = decode_json(join "", <$JS>);
+    close $JS;
 
     return $json;
 }
 
-sub create_or_get_user($) {
+sub create_or_get_user() {
     my $user = shift;
 
     my $user_id = get_user_id($user);

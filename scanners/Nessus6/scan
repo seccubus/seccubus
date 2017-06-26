@@ -30,13 +30,6 @@ use JSON;
 use Data::Dumper;
 use LWP::UserAgent;
 
-sub help();
-sub make_timestamp();
-sub rest_get($;$$$$);
-sub rest_post($;$$$$);
-sub rest_delete($;$$$$);
-sub rest_call($$$;$$$);
-
 my (
 	$user,
 	$password,
@@ -206,10 +199,10 @@ if ( $pid != -1 ) {
 
 if ( -e $hosts_file ) {			# Assume its a host spect rather then a
 					# hosts file if there is no file
-	open(FILE,$hosts_file) or die "Cannot read hosts file";
+	open(my $FILE,"<",$hosts_file) or die "Cannot read hosts file";
 	local $/;
-	$scandata->{settings}{text_targets} = <FILE>;
-	close(FILE);
+	$scandata->{settings}{text_targets} = <$FILE>;
+	close($FILE);
 } else {
 	$scandata->{settings}{text_targets} = $hosts_file;
 }
@@ -283,9 +276,9 @@ foreach my $format ( @formats ) {
 
 		die "Cannot download report" if ($r->code() != 200);
 		print "Report downloaded, saving $filehandle to $tempfile.$format\n" if $verbose;
-		open FILE, ">". "$tempfile.$format" or die "Cannot save report";
-		print FILE $r->decoded_content();
-		close FILE;
+		open( my $FILE, ">", "$tempfile.$format") or die "Cannot save report";
+		print $FILE $r->decoded_content();
+		close $FILE;
 
 	} else {
 		print "Could not initiate export in $format format, skipping.\n" if ($r->code() != 200 && ! $quiet);
@@ -345,7 +338,7 @@ print "Done\n" unless $quiet;
 
 exit(0);
 
-sub help() {
+sub help {
 	print "
 Usage: scan       --user=<username> --password=<password> --server=<server> \\
                   --port=<portnumber> --policy=<policy name> \\
@@ -378,7 +371,7 @@ Usage: scan       --user=<username> --password=<password> --server=<server> \\
 	exit(1);
 }
 
-sub make_timestamp() {
+sub make_timestamp {
 	my ($second, $minute, $hour, $day, $month, $year) = localtime();
 	$month++;
 	$second = "0" . $second if $second < 10;
@@ -391,7 +384,7 @@ sub make_timestamp() {
 	return "$year$month$day$hour$minute$second";
 }
 
-sub login() {
+sub login {
 	my $cred = {
 		'username' => $user,
 		'password' => $password
@@ -407,7 +400,7 @@ sub login() {
 	$token = $json->{token};
 }
 
-sub rest_get($;$$$$) {
+sub rest_get {
 	my $uri = shift;
 	my $params = shift;
 	my $response = shift;
@@ -416,7 +409,7 @@ sub rest_get($;$$$$) {
 	rest_call("get",$uri,$params,$response,$nojson,$retries);
 }
 
-sub rest_post($;$$$$) {
+sub rest_post {
 	my $uri = shift;
 	my $params = shift;
 	my $response = shift;
@@ -425,7 +418,7 @@ sub rest_post($;$$$$) {
 	rest_call("post",$uri, $params,$response,$nojson,$retries);
 }
 
-sub rest_delete($;$$$$) {
+sub rest_delete {
 	my $uri = shift;
 	my $params = shift;
 	my $response = shift;
@@ -434,7 +427,7 @@ sub rest_delete($;$$$$) {
 	rest_call("delete",$uri, $params,$response,$nojson,$retries);
 }
 
-sub rest_call($$$;$$$){
+sub rest_call {
 	my $method = shift;
 	my $uri = shift;
 	my $param = shift;

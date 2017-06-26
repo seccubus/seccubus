@@ -193,7 +193,7 @@ sub get_nmap_path() {
         if ( run_cmd("ls /opt/nmap/nmap.pl",0,$remote) ) {
                 return '/opt/nmap/nmap.pl';
         }
-        return undef;
+        return;
 }
 
 sub get_nmap_version() {
@@ -209,7 +209,7 @@ sub get_medusa_path() {
 	if ( $path =~ /(^\/.*medusa)/ ) {
 		return $1;
 	}
-	return undef;
+	return;
 }
 
 sub get_medusa_version() {

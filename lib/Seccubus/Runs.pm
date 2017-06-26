@@ -21,25 +21,23 @@ all functions within the module.
 
 =cut
 
+use strict;
+use Exporter;
 use SeccubusV2;
 use Seccubus::DB;
 use Seccubus::Rights;
 use File::Basename;
 
-@ISA = ('Exporter');
+our @ISA = ('Exporter');
 
-@EXPORT = qw (
-		update_run
-		get_runs
-		get_attachment
-	);
+our @EXPORT = qw (
+	update_run
+	get_runs
+	get_attachment
+);
 
-use strict;
 use Carp;
 
-sub update_run($$$;$$);
-sub get_runs($$);
-sub get_attachment($$$$);
 
 =head2 update_run
 
@@ -77,7 +75,7 @@ Attachment must be a file that exists
 
 =cut
 
-sub update_run($$$;$$) {
+sub update_run {
 	my $workspace_id = shift or confess "No workspace_id provided to update_run";
 	my $scan_id = shift or confess "No scan_id provided to update_run";
 	my $timestamp = shift or confess "No timestamp provided to update_run";
@@ -104,9 +102,9 @@ sub update_run($$$;$$) {
 				      	      );
 			} elsif ( $attachment ) {
 				if ( -e $attachment ) {
-					open ATT, $attachment or confess "Unable to open attachment '$attachment'";
-					my @file = <ATT>; # Slurp
-					close ATT;
+					open(my $ATT, "<", $attachment) or confess "Unable to open attachment '$attachment'";
+					my @file = <$ATT>; # Slurp
+					close $ATT;
 					my $name = basename($attachment);
 					my $id = sql( "return"	=> "id",
 				      		"query"	=> "INSERT into attachments(run_id, name, description, data) values (?, ?, ?, ?);",
@@ -153,7 +151,7 @@ Must be a reader to get the data
 
 =cut
 
-sub get_runs($$) {
+sub get_runs {
 	my $workspace_id = shift or confess "No workspace_id provided to get_runs";
 	my $scan_id = shift or confess "No scan_id provided to get_runs";
 
@@ -209,7 +207,7 @@ Must be a reader to get the data
 
 =cut
 
-sub get_attachment($$$$) {
+sub get_attachment {
 	my $workspace_id = shift or confess "No workspace_id provided to get_attachment";
 	my $scan_id = shift or confess "No scan_id provided to get_attachment";
 	my $run_id = shift or confess "No run_id provided to get_attachment";

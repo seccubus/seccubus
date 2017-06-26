@@ -101,9 +101,9 @@ print "Exporting workspace details\n" if $verbose;
 my $workspace = {
     name => $workspace
 };
-open WS, ">$out/workspace.json" or die("Unable to open '$out/workspace.json'");
-print WS to_json($workspace, { pretty => 1 });
-close WS;
+open(my $WS, ">", "$out/workspace.json") or die("Unable to open '$out/workspace.json'");
+print $WS to_json($workspace, { pretty => 1 });
+close $WS;
 print to_json($workspace, { pretty => 1 }) if $verbose > 2;
 
 print "Exporting hostnames\n" if $verbose;
@@ -113,9 +113,9 @@ foreach my $h ( @$hostnames_in ) {
     push @$hostnames, { ip => $$h[0], name => $$h[1] };
 }
 $hostnames_in = [];
-open JS, ">$out/hostnames.json" or die("Unable to open '$out/hostnames.json'");
-print JS to_json($hostnames, { pretty => 1 });
-close JS;
+open(my $JS, ">", "$out/hostnames.json") or die("Unable to open '$out/hostnames.json'");
+print $JS to_json($hostnames, { pretty => 1 });
+close $JS;
 print to_json($hostnames, { pretty => 1 }) if $verbose > 2;
 
 print "Exporting scan configurations\n" if $verbose;
@@ -133,9 +133,9 @@ foreach my $s ( @{ get_scans($workspace_id) } ) {
     		push @$scans, $scan;
     }
 }
-open JS, ">$out/scans.json" or die("Unable to open '$out/scans.json'");
-print JS to_json($scans, { pretty => 1 });
-close JS;
+open(my $JS, ">", "$out/scans.json") or die("Unable to open '$out/scans.json'");
+print $JS to_json($scans, { pretty => 1 });
+close $JS;
 print to_json($scans, { pretty => 1 }) if $verbose > 2;
 
 foreach my $scan ( @$scans ) {
@@ -153,9 +153,9 @@ foreach my $scan ( @$scans ) {
     		trigger => $$n[4]
     	};
     }
-    open JS, ">$scandir/notifications.json" or die("Unable to open '$scandir/notifications.json'");
-    print JS to_json($notifications, { pretty => 1 });
-    close JS;
+    open(my $JS, ">", "$scandir/notifications.json") or die("Unable to open '$scandir/notifications.json'");
+    print $JS to_json($notifications, { pretty => 1 });
+    close $JS;
     print to_json($notifications, { pretty => 1 }) if $verbose > 2;
 
     print "Exporting runs and attachments\n" if $verbose;
@@ -170,9 +170,9 @@ foreach my $scan ( @$scans ) {
     			mkdir "$scandir/att_$$r[2]", 0700;
     			my $att = get_attachment($workspace_id,$scan->{id},$$r[0],$$r[2]);
     			#die Dumper $att;
-    			open ATT, ">$scandir/att_$$r[2]/$$r[3]" or die "Unable to write attachments $$r[2] in scan '$scan->{name}'";
-    			print ATT $$att[0][1];
-    			close ATT;
+    			open(my $ATT, ">", "$scandir/att_$$r[2]/$$r[3]") or die "Unable to write attachments $$r[2] in scan '$scan->{name}'";
+    			print $ATT $$att[0][1];
+    			close $ATT;
     			print "Wrote " if $verbose > 1;
     			print length $$att[0][1] if $verbose > 1;
     			print " bytes to $scandir/att_$$r[2]/$$r[3]\n" if $verbose > 1;
@@ -211,9 +211,9 @@ foreach my $scan ( @$scans ) {
     		print "Skipping data from run '$ts' because it is before '$after'\n" if $verbose > 1;
     	}
     }
-    open JS, ">$scandir/runs.json" or die("Unable to open '$scandir/runs.json'");
-    print JS to_json($runs, { pretty => 1 });
-    close JS;
+    open(my $JS, ">", "$scandir/runs.json") or die("Unable to open '$scandir/runs.json'");
+    print $JS to_json($runs, { pretty => 1 });
+    close $JS;
     print to_json($runs, { pretty => 1 }) if $verbose > 2;
 
     print "Exporting findings and history\n" if $verbose;
@@ -258,9 +258,9 @@ foreach my $scan ( @$scans ) {
     			} # After
     		}
     		#print Dumper $finding;die;
-    		open JS, ">$scandir/finding_$finding->{id}.json" or die("Unable to open '$scandir/finding_$finding->{id}.json'");
-    		print JS to_json($finding, { pretty => 1 });
-    		close JS;
+    		open(my $JS, ">", "$scandir/finding_$finding->{id}.json") or die("Unable to open '$scandir/finding_$finding->{id}.json'");
+    		print $JS to_json($finding, { pretty => 1 });
+    		close $JS;
     		print to_json($finding, { pretty => 1 }) if $verbose > 3;
     		print "." if ! $quiet && $verbose <= 3;
     		$count++;
@@ -315,16 +315,16 @@ foreach my $i ( @{ get_issues($workspace_id,undef,1) } ) {
     }
     push @{$issue->{findings}}, $$i[8];
 }
-open JS, ">$out/issues.json" or die("Unable to open '$out/issues.json'");
-print JS to_json($issues, { pretty => 1 });
-close JS;
+open(my $JS, ">", "$out/issues.json") or die("Unable to open '$out/issues.json'");
+print $JS to_json($issues, { pretty => 1 });
+close $JS;
 print to_json($issues, { pretty => 1 }) if $verbose > 2;
 
 print "\n*** Done ***\n" unless $quiet;
 
 exit;
 
-sub help(;$) {
+sub help() {
     my $message = shift;
 
     print "
