@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016, Glenn ten Cate
+# Copyright 2016-2017 Glenn ten Cate, Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@
 
 use strict;
 use SeccubusV2;
-use SeccubusIVIL;
-use SeccubusHelpers;
+use Seccubus::IVIL;
+use Seccubus::Helpers;
 
 use Getopt::Long;
 use Carp;
@@ -42,18 +42,18 @@ $nodelete = undef;
 
 # Create default values
 
-GetOptions( 
-        'testssl_path|p=s'  => \$testssl_path,
-        'testssl_options|o=s'   => \$testssl_options,
-        'hosts=s'       => \$hosts_file,
-        'workspace=s'       => \$workspace,
-        'scan=s'        => \$scan,
-        'nodelete!'     => \$nodelete,
-        'remote|r=s'            => \$remote,
-        'verbose|v+'        => \$verbose,
-        'quiet|q!'      => \$quiet,
-        'help|h'        => \$help,
-      );
+GetOptions(
+    'testssl_path|p=s'      => \$testssl_path,
+    'testssl_options|o=s'   => \$testssl_options,
+    'hosts=s'               => \$hosts_file,
+    'workspace=s'           => \$workspace,
+    'scan=s'                => \$scan,
+    'nodelete!'             => \$nodelete,
+    'remote|r=s'            => \$remote,
+    'verbose|v+'            => \$verbose,
+    'quiet|q!'              => \$quiet,
+    'help|h'                => \$help,
+);
 
 help() if $help;
 $verbose = 0 if $quiet;
@@ -134,10 +134,10 @@ Usage: scan     [--testssl_path|p <path to testssl>] \\
 
 Arguments:
 --testssl_path  - You can use this optional parameter to provide the script with
-(-p)          the path to testssl.sh directory. If you do not provide this the 
-          script tries to find the files itself and fails if it cannot 
+(-p)          the path to testssl.sh directory. If you do not provide this the
+          script tries to find the files itself and fails if it cannot
           find it.
---testssl_options   - Additional command line options to provide to testssl see 
+--testssl_options   - Additional command line options to provide to testssl see
 (-o)          'testssl.sh --help' for more information. Please quote the options so that they are
           passed to testssl as a single block. E.g. -o '--beast --client-simulation'
 --hosts     - The file containing the 'hosts' to scan
@@ -157,21 +157,22 @@ Arguments:
 sub get_testssl_path() {
     my $path = run_cmd("ls /opt/testssl.sh/testssl.sh",0,$remote);
         if ( $path == '/opt/testssl.sh/testssl.sh' ) {
-        open my $fh, '<', $path or die "Could not open '$path' $!\n";
-                while (my $line = <$fh>) {
-                        if ($line =~ /(VERSION)/){
-                                $version = $line =~s/[^\d.]//g;
-                                $version =~s/\.//;
-                                if(int($version) => int(27) ){
-                                        return "VERSION $path";
-                                }else{  
-                                        return "ERROR: Installed testssl.sh version is not supported by Seccubus use the 2.7dev release at leaast.";
-                                }
-                                exit();
-                        }
+        open(my $FH, '<', $path) or die "Could not open '$path' $!\n";
+        while (my $line = <$FH>) {
+            if ($line =~ /(VERSION)/){
+                my $version = $line =~s/[^\d.]//g;
+                $version =~s /\.//;
+                if(int($version) => int(27) ){
+                    return "VERSION $path";
+                }else{
+                    return "ERROR: Installed testssl.sh version is not supported by Seccubus use the 2.7dev release at leaast.";
                 }
-        return '/opt/testssl.sh/testssl.sh';
+                exit();
+            }
         }
+        close $FH;
+        return '/opt/testssl.sh/testssl.sh';
+    }
 }
 
 sub make_timestamp() {

@@ -20,7 +20,7 @@ use strict;
 use Test::More;
 use Perl::Critic;
 
-my $critic = Perl::Critic->new();
+my $critic = Perl::Critic->new(-severity => 5);
 
 my @files = sort split(/\n/, `find . -type f`);
 

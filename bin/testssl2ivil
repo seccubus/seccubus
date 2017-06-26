@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016, Glenn ten Cate (blabla1337), vagrant
+# Copyright 2016-2017 Glenn ten Cate, Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 # ------------------------------------------------------------------------------
 
 use strict;
+use SeccubusV2;
 use IVIL;
 use XML::Simple;
 use JSON;
@@ -72,12 +73,12 @@ unless ( $outfile ) {
     $outfile .= ".ivil.xml";
 }
 print "Opening file $outfile for output\n" if $verbose;
-open(OUT, ">$outfile") or die "Unable to open output file $outfile";
-print OUT xml_header();
-print OUT ivil_open();
+open(my $OUT, ">", $outfile) or die "Unable to open output file $outfile";
+print $OUT xml_header();
+print $OUT ivil_open();
 if ($workspace) {
     print "Creating addressee block\n" if $verbose;
-    print OUT ivil_addressee("Seccubus", {
+    print $OUT ivil_addressee("Seccubus", {
                         "workspace" => $workspace,
                         "scan"      => $scanname,
                          });
@@ -95,7 +96,7 @@ my $json;
 my $scanner_version = "1.0";
 
 print "Creating sender block\n" if $verbose;
-print OUT ivil_sender($scanner, $scanner_version, $timestamp);
+print $OUT ivil_sender($scanner, $scanner_version, $timestamp);
 
 my $array = decode_json($json);
 
@@ -116,9 +117,9 @@ foreach my $element ( @$array ) {
   }
 }
 
-print OUT ivil_findings(\@findings) if (@findings);
-print OUT ivil_close();
-close OUT;
+print $OUT ivil_findings(\@findings) if (@findings);
+print $OUT ivil_close();
+close $OUT;
 
 exit();
 
