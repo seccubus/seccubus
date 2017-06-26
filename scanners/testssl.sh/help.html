@@ -1,5 +1,5 @@
 <!--
-Copyright 2016 Glenn ten Cate, Frank Breedijk
+Copyright 2016-2017 Glenn ten Cate, Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +16,12 @@ limitations under the License.
 
 This scanner takes the following parameters:
 <ul>
-    <li>-o
+    <li>--path (-p)
+        <br>Full path of the testssl.sh script in case we cannot find it
+    <li>--remote (-r)
+        <br>Optional comma separed list of hostname, username, and key path used to ssh
+        to the host and run the command there
+    <li>options (-o)
         <br>Options to be passed to the testssl.sh scanner. See <a href='https://testssl.sh/'>https://testssl.sh/</a> Some of them include:
     <ul>
         <li>-e, --each-cipher
