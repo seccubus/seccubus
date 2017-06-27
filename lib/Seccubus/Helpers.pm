@@ -162,11 +162,14 @@ sub run_cmd {
 	}
 	print "\n" if $print >1;
 	open(my $CMD, "-|", $cmd) or confess "Unable to execute";
+    select $CMD; $| = 1;
+    select STDOUT; $| = 1;
 	while ( <$CMD> ) {
 		print $_ if $print;
 		push @out, $_;
 	}
 	close $CMD;
+    select STDOUT; $| = 0;
 
 	if ( $remote ) {
 		# Fetch files

@@ -1,0 +1,220 @@
+#!/usr/bin/env perl
+# Copyright 2016-2017 Glenn ten Cate, Frank Breedijk
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+# This script will call the testssl.sh scanner and import the results as IVIL
+# ------------------------------------------------------------------------------
+
+use strict;
+use SeccubusV2;
+use Seccubus::IVIL;
+use Seccubus::Helpers;
+
+use Getopt::Long;
+use Carp;
+
+my (
+    $testssl_path,
+    $testssl_options,
+    $hosts_file,
+    $workspace,
+    $scan,
+    $nodelete,
+    $remote,
+    $help,
+    $verbose,
+    $quiet,
+   );
+
+$help = 0;
+$nodelete = undef;
+
+# Create default values
+
+GetOptions(
+    'path|p=s'              => \$testssl_path,
+    'options|o=s'           => \$testssl_options,
+    'hosts=s'               => \$hosts_file,
+    'workspace=s'           => \$workspace,
+    'scan=s'                => \$scan,
+    'nodelete!'             => \$nodelete,
+    'remote|r=s'            => \$remote,
+    'verbose|v+'            => \$verbose,
+    'quiet|q!'              => \$quiet,
+    'help|h'                => \$help,
+);
+
+help() if $help;
+$verbose = 0 if $quiet;
+
+my $config = get_config();
+my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
+my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
+
+if ( ! $hosts_file ) {
+    print "You must specify hosts to scan";
+    help();
+} elsif ( ! $workspace ) {
+    print "You must specify a workspace name";
+    help();
+} elsif ( ! $scan ){
+    print "You must specify a scan name";
+    help();
+};
+
+$testssl_path = get_testssl_path($testssl_path);
+if ( ! $testssl_path ) {
+    print "Unable to find testssl on your system. I suggest you use the --testssl_path option\nto provide a path to testssl or testssl.pl\n";
+    help();
+}
+help() unless testssl_version($testssl_path);
+
+my $tempfile = "/tmp/seccubus.testssl.$$";
+
+my $options = " --color 0 $testssl_options --jsonfile=$tempfile.json";
+if ( -e $hosts_file ) {
+    $options .= " --file $hosts_file";
+} else {
+    $options .= " $hosts_file";
+}
+print "testssl options: $testssl_options\n" if $verbose;
+
+my $timestamp = make_timestamp();
+print "Timestamp = $timestamp\n" if $verbose;
+
+print "Execuing $testssl_path $testssl_options\n" unless $quiet;
+run_cmd("$testssl_path $options",$verbose,$remote,[ $tempfile,"$tempfile.*" ], [ $hosts_file ]);
+
+print "Scanning done, converting .json to ivil\n" unless $quiet;
+my $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/testssl2ivil --scanner=testssl --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile '$tempfile.json' --outfile '$tempfile.ivil.xml' ";
+$cmd .= "-v" if $verbose > 1;
+run_cmd($cmd,$verbose);
+
+print "Importing ivil\n" unless $quiet;
+$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner testssl --timestamp $timestamp";
+$cmd .= " -v" if $verbose > 1;
+$cmd .= " '$tempfile.ivil.xml'";
+run_cmd($cmd,$verbose);
+
+print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.json' --description 'JSON output'";
+$cmd .= " -v" if $verbose > 1;
+run_cmd($cmd,$verbose);
+
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
+$cmd .= " -v" if $verbose > 1;
+run_cmd($cmd,$verbose);
+
+# Cleanup
+unless ( $nodelete ) {
+    unlink "$tempfile.json" if -e "$tempfile.json";
+    unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+    run_cmd("rm -f $tempfile $tempfile.*",$verbose,$remote) if $remote;
+    if ( -e $hosts_file ) {
+        unlink $hosts_file;
+        run_cmd("rm $hosts_file",$verbose,$remote) if $remote;
+    }
+}
+
+exit(0);
+
+
+sub help() {
+    print "
+
+Usage: scan [--path|-p <path to testssl>]
+    [--options|-o '<additional testssl options>'] --hosts <hosts file|host>
+    [--remote|-r <host>,<user>,<key>] [--verbose|-v] [--quiet|-q]
+    [--help|-h]
+
+Arguments:
+--path         - You can use this optional parameter to provide the script with
+(-p)             the path to testssl.sh directory. If you do not provide this
+                 the script tries to find the files itself and fails if it
+                 cannot find it.
+--options      - Additional command line options to provide to testssl see
+(-o)             'testssl.sh --help' for more information. Please quote the
+                 options so that they are passed to testssl as a single block.
+                 E.g. -o '--beast --client-simulation'
+--hosts        - The file containing the 'hosts' to scan (or a single hostname)
+--workspace    - Name of the workspace to load the findings into
+--scan         - Name of the scan to load the findings into
+--remote       - Comma separated list of hostname, username and key used
+(-r)             to ssh into the host specified and run the command
+--verbose (-v) - Be verbose during execution
+--nodelete     - Don't delete temporary files
+--quiet (-q)   - Don't print output
+--help (-h)    - Print this message
+";
+    exit(1);
+}
+
+
+sub get_testssl_path {
+    my $path = shift;
+    if ( $path ) {
+        #die $path;
+        my $testssl = run_cmd("ls -ld $path",$verbose,$remote);
+        if ( $testssl =~ /^d/ ) {
+            my $testssl = run_cmd("ls -ld \"$path/testssl.sh\"",$verbose,$remote);
+            if ( $testssl =~ /^\-r.x/ ) {
+                return ( "$path/testssl.sh");
+            } else {
+                print STDERR "Unable to find the testssl.sh script in '$path'\n";
+            }
+        } elsif ( $testssl =~ /^\-r.x/ ) {
+            return ( $path );
+        } else {
+            print STDERR "Unable to find the testssl.sh script at '$path'\n";
+        }
+    } else {
+        my $path = run_cmd("which testssl.sh",$verbose,$remote);
+        if ( $path ) {
+            chomp $path;
+            return ( $path );
+        } else {
+            print STDERR "You did not specify a testssl.sh path and we cannot find it in your PATH\n";
+        }
+    }
+    return;
+}
+
+sub testssl_version {
+    my $path = shift;
+    die "testssl_version need a path" unless $path;
+
+    my $version = run_cmd("grep \"VERSION=\" $path",$verbose,$remote);
+    $version =~ /(\d+\.\d+)/;
+    $version = $1;
+    if ( $version <= 2.7 ) {
+        print STDERR "Your version of testssl.sh ($version) is too old or not recognized\n";
+        return;
+    } else {
+        return $version;
+    }
+}
+
+sub make_timestamp() {
+    my ($second, $minute, $hour, $day, $month, $year) = localtime();
+    $month++;
+    $second = "0" . $second if $second < 10;
+    $minute = "0" . $minute if $minute <10;
+    $hour = "0". $hour if $hour < 10;
+    $day = "0". $day if $day <10;
+    $month = "0" . $month if $month <10;
+    $year += 1900;
+
+    return "$year$month$day$hour$minute$second";
+}

@@ -1,0 +1,1 @@
+testssl.sh is a checks TLS/SSL ciphers, protocols as well as cryptographic flaws and more.

@@ -21,6 +21,7 @@ Seccubus V2 works with the following scanners:
 * SSLyze
 * Medusa
 * Qualys SSL labs
+* testssl.sh (local and remote)
 
 For more information visit [www.seccubus.com]
 
@@ -148,6 +149,7 @@ x-x-2017 - v2.35 - Development release
 
 Enhancements
 ------------
+#302 - Testssl.sh support for Seccubus
 #401 - JIT provisioning of users
 #442 - Add --cdn option to ssllabs
 * Perl Critic is now part of unit testing. All critique was handled
