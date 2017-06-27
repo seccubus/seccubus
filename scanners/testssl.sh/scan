@@ -134,28 +134,29 @@ exit(0);
 sub help() {
     print "
 
-Usage: scan     [--path|-p <path to testssl>] \\
-        [--options|-o '<additional testssl options>'] \\
-        --hosts <hosts file> [--remote|-r <host>,<user>,<key>] [--verbose|-v] [--quiet|-q]
-        [--help|-h]
+Usage: scan [--path|-p <path to testssl>]
+    [--options|-o '<additional testssl options>'] --hosts <hosts file|host>
+    [--remote|-r <host>,<user>,<key>] [--verbose|-v] [--quiet|-q]
+    [--help|-h]
 
 Arguments:
---path  - You can use this optional parameter to provide the script with
-(-p)          the path to testssl.sh directory. If you do not provide this the
-          script tries to find the files itself and fails if it cannot
-          find it.
---options   - Additional command line options to provide to testssl see
-(-o)          'testssl.sh --help' for more information. Please quote the options so that they are
-          passed to testssl as a single block. E.g. -o '--beast --client-simulation'
---hosts     - The file containing the 'hosts' to scan
---workspace - Name of the workspace to load the findings into
---scan      - Name of the scan to load the findings into
---remote (-r)   - Comma separated list of hostname, username and key used to ssh into the host
-          specified and run the command
---verbose (-v)  - Be verbose during execution
---nodelete  - Don't delete temporary files
---quiet (-q)    - Don't print output
---help (-h) - Print this message
+--path         - You can use this optional parameter to provide the script with
+(-p)             the path to testssl.sh directory. If you do not provide this
+                 the script tries to find the files itself and fails if it
+                 cannot find it.
+--options      - Additional command line options to provide to testssl see
+(-o)             'testssl.sh --help' for more information. Please quote the
+                 options so that they are passed to testssl as a single block.
+                 E.g. -o '--beast --client-simulation'
+--hosts        - The file containing the 'hosts' to scan (or a single hostname)
+--workspace    - Name of the workspace to load the findings into
+--scan         - Name of the scan to load the findings into
+--remote       - Comma separated list of hostname, username and key used
+(-r)             to ssh into the host specified and run the command
+--verbose (-v) - Be verbose during execution
+--nodelete     - Don't delete temporary files
+--quiet (-q)   - Don't print output
+--help (-h)    - Print this message
 ";
     exit(1);
 }
@@ -173,7 +174,7 @@ sub get_testssl_path {
             } else {
                 print STDERR "Unable to find the testssl.sh script in '$path'\n";
             }
-        } elsif ( $testssl =~ /^\-rwxr\-x/ ) {
+        } elsif ( $testssl =~ /^\-r.x/ ) {
             return ( $path );
         } else {
             die "Unable to find the testssl.sh script at '$path'\n";
