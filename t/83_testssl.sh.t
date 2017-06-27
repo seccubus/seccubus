@@ -92,12 +92,15 @@ $t->post_ok('/api/workspaces', json => { 'name' => 'test1'})
     ->status_is(200)
 ;
 
+my $pwd = `pwd`;
+chomp $pwd;
+
 # Create a scan
 $t->post_ok('/api/workspace/100/scans',
     json => {
         name          => 'seccubus',
         scanner       => 'testssl.sh',
-        parameters    => '-p tmp/testssl.sh --hosts @HOSTS',
+        parameters    => "-p $pwd/tmp/testssl.sh --hosts \@HOSTS",
         targets       => "www.seccubus.com"
     })
     ->status_is(200)
