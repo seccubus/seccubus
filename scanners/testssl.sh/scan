@@ -169,7 +169,7 @@ sub get_testssl_path {
         my $testssl = run_cmd("ls -ld $path",$verbose,$remote);
         if ( $testssl =~ /^d/ ) {
             my $testssl = run_cmd("ls -ld \"$path/testssl.sh\"",$verbose,$remote);
-            if ( $testssl =~ /^\-rwxr\-x/ ) {
+            if ( $testssl =~ /^\-r.x/ ) {
                 return ( "$path/testssl.sh");
             } else {
                 print STDERR "Unable to find the testssl.sh script in '$path'\n";
@@ -177,7 +177,7 @@ sub get_testssl_path {
         } elsif ( $testssl =~ /^\-r.x/ ) {
             return ( $path );
         } else {
-            die "Unable to find the testssl.sh script at '$path'\n";
+            print STDERR "Unable to find the testssl.sh script at '$path'\n";
         }
     } else {
         my $path = run_cmd("which testssl.sh",$verbose,$remote);
