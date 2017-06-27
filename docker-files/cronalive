@@ -19,8 +19,13 @@
 # ------------------------------------------------------------------------------
 #
 if [[ -e "/var/run/crond.pid" && $(ps -ef|grep `cat /var/run/crond.pid`|grep cron|wc -l) -gt 0 ]]; then
-	echo "cron alive"
-	exit 0
+    if [[ $(grep -c 'this crontab file will be ignored' /var/log/syslog ) -gt 0 ]]; then
+        echo "cron corrupt"
+        exit 1
+    else
+    	echo "cron alive"
+    	exit 0
+    fi
 else
 	echo "cron dead"
 	exit 1

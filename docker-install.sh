@@ -78,7 +78,8 @@ EOF
     INSERT INTO scans VALUES
         (1,'ssllabs','SSLlabs','--hosts @HOSTS --from-cache','','www.seccubus.com',1),
         (2,'nmap','Nmap','-o \"\" --hosts @HOSTS','','www.seccubus.com',1),
-        (3,'nikto','Nikto','-o \"\" --hosts @HOSTS','','www.seccubus.com',1);
+        (3,'nikto','Nikto','-o \"\" --hosts @HOSTS','','www.seccubus.com',1),
+        (4,'testssl.sh','testssl.sh','-o \"\" --hosts @HOSTS','','www.seccubus.com',1);
 EOF1
 
 
@@ -137,13 +138,15 @@ echo >>/root/.bashrc 'export PERL5LIB="/opt/seccubus:/opt/seccubus/lib"'
 cd /opt
 git clone https://github.com/sullo/nikto.git --depth 1
 echo 'export PATH="$PATH:/opt/nikto/program"' > /etc/profile.d/nikto.sh
-echo 'export PATH="$PATH:/opt/nikto/program"' > /root/.bashrc
+echo 'export PATH="$PATH:/opt/nikto/program"' >> /root/.bashrc
 chmod +x /etc/profile.d/nikto.sh
 
 
 # Install testssl.sh
 cd /opt
 git clone https://github.com/drwetter/testssl.sh.git --depth 1
+echo 'export PATH="$PATH:/opt/testssl.sh"' > /etc/profile.d/testssl.sh.sh
+echo 'export PATH="$PATH:/opt/testssl"' >> /root/.bashrc
 
 # Cleanup build stuff
 rm -rf /build

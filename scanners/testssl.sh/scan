@@ -182,6 +182,7 @@ sub get_testssl_path {
     } else {
         my $path = run_cmd("which testssl.sh",$verbose,$remote);
         if ( $path ) {
+            chomp $path;
             return ( $path );
         } else {
             print STDERR "You did not specify a testssl.sh path and we cannot find it in your PATH\n";
