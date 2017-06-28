@@ -46,10 +46,7 @@ if ( ! $username ) {
 } elsif ( ! $name ) {
 	print "You must specify the users real name (or a string you can identify them by";
 	help();
-} elsif ( ! check_config() ) {
-	print "Configuration file problem";
-	help();
-};
+}
 
 add_user($username, $name, $isadmin); # insert in the user table
 

@@ -159,3 +159,4 @@ Bug Fixes
 * #132 - We have CSRF protection now. Non-get requests should have content-type application/json.
 * #474 - Some typo/style fixes by Jericho (attrition.org)
 * #478 - Conralive should check if cron isn't ignored
+* #483 - add_user broken
