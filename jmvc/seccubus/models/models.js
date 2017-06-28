@@ -25,15 +25,16 @@ function api(url, method){
 
 function createApi(url){
     return (function(attrs,success,failure) {
+        var _api_rul = url;
         var re = new RegExp("\{(.*?)\}");
-        var m = re.exec(url);
+        var m = re.exec(api_url);
         while ( m ) {
-            url = url.replace(re,attrs[m[1]]);
-            m = re.exec(url);
+            api_url = api_url.replace(re,attrs[m[1]]);
+            m = re.exec(api_url);
         }
 
         return $.ajax({
-            url: baseUrl() + url,
+            url: baseUrl() + api_url,
             type: "POST",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -46,15 +47,16 @@ function createApi(url){
 
 function updateApi(url){
     return (function(id,attrs,success,failure) {
-          var re = new RegExp("\{(.*?)\}");
-          var m = re.exec(url);
-          while ( m ) {
-              url = url.replace(re,attrs[m[1]]);
-              m = re.exec(url);
-          }
+        var api_url = url;
+        var re = new RegExp("\{(.*?)\}");
+        var m = re.exec(api_url);
+        while ( m ) {
+            api_url = api_url.replace(re,attrs[m[1]]);
+            m = re.exec(api_url);
+        }
 
         return $.ajax({
-            url: baseUrl() + url,
+            url: baseUrl() + api_url,
             type: "PUT",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -67,15 +69,16 @@ function updateApi(url){
 
 function deleteApi(url){
     return (function(id,attrs,success,failure) {
+        var api_rul = url;
         var re = new RegExp("\{(.*?)\}");
-        var m = re.exec(url);
+        var m = re.exec(api_url);
         while ( m ) {
-            url = url.replace(re,attrs[m[1]]);
-            m = re.exec(url);
+            api_url = api_url.replace(re,attrs[m[1]]);
+            m = re.exec(api_url);
         }
 
         return $.ajax({
-            url: baseUrl() + url,
+            url: baseUrl() + api_url,
             type: "DELETE",
             contentType: "application/json; charset=utf-8",
             dataType: "json",

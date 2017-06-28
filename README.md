@@ -160,3 +160,4 @@ Bug Fixes
 * #474 - Some typo/style fixes by Jericho (attrition.org)
 * #478 - Conralive should check if cron isn't ignored
 * #480 - Editing/showing notifications broken
+* #484 - Failure to update 1+n scan configuration in Manage Scans (And all other update funtions)
