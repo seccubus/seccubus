@@ -160,3 +160,4 @@ Bug Fixes
 * #474 - Some typo/style fixes by Jericho (attrition.org)
 * #478 - Conralive should check if cron isn't ignored
 * #480 - Editing/showing notifications broken
+* #483 - add_user broken
