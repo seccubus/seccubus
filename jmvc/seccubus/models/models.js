@@ -25,16 +25,16 @@ function api(url, method){
 
 function createApi(url){
     return (function(attrs,success,failure) {
-        var _api_rul = url;
+        var apiUrl = url;
         var re = new RegExp("\{(.*?)\}");
-        var m = re.exec(api_url);
+        var m = re.exec(apiUrl);
         while ( m ) {
-            api_url = api_url.replace(re,attrs[m[1]]);
-            m = re.exec(api_url);
+            apiUrl = apiUrl.replace(re,attrs[m[1]]);
+            m = re.exec(apiUrl);
         }
 
         return $.ajax({
-            url: baseUrl() + api_url,
+            url: baseUrl() + apiUrl,
             type: "POST",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -47,16 +47,16 @@ function createApi(url){
 
 function updateApi(url){
     return (function(id,attrs,success,failure) {
-        var api_url = url;
+        var apiUrl = url;
         var re = new RegExp("\{(.*?)\}");
-        var m = re.exec(api_url);
+        var m = re.exec(apiUrl);
         while ( m ) {
-            api_url = api_url.replace(re,attrs[m[1]]);
-            m = re.exec(api_url);
+            apiUrl = apiUrl.replace(re,attrs[m[1]]);
+            m = re.exec(apiUrl);
         }
 
         return $.ajax({
-            url: baseUrl() + api_url,
+            url: baseUrl() + apiUrl,
             type: "PUT",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -69,16 +69,16 @@ function updateApi(url){
 
 function deleteApi(url){
     return (function(id,attrs,success,failure) {
-        var api_rul = url;
+        var apiUrl = url;
         var re = new RegExp("\{(.*?)\}");
-        var m = re.exec(api_url);
+        var m = re.exec(apiUrl);
         while ( m ) {
-            api_url = api_url.replace(re,attrs[m[1]]);
-            m = re.exec(api_url);
+            apiUrl = apiUrl.replace(re,attrs[m[1]]);
+            m = re.exec(apiUrl);
         }
 
         return $.ajax({
-            url: baseUrl() + api_url,
+            url: baseUrl() + apiUrl,
             type: "DELETE",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
