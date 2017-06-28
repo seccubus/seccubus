@@ -16,16 +16,16 @@
 	<% if (columns[i] == "") { %>
 		<% if(columns[i+1] == "Action") { %>
 			<td>
-			    <% if ( ! noEdit ) { %> 
+			    <% if ( typeof(noEdit) == "undefined" || ! noEdit ) { %>
 					<img class='editFinding' src='img/edit.png'><br>
 				<% } %>
-			    <% if ( ! noLink ) { %> 
+			    <% if ( typeof(noLink) == "undefined" ||! noLink ) { %>
 					<img class='linkFinding' src='img/link.png'><br>
 				<% } %>
-			    <% if ( ! noFindingUnlink ) { %> 
+			    <% if ( typeof(noFindingUnlink) == "undefined" || ! noFindingUnlink ) { %>
 					<img class='unlinkFinding' src='img/unlink.png'><br>
 				<% } %>
-			    <% if ( ! noEdit ) { %> 
+                <% if ( typeof(noEdit) == "undefined" || ! noEdit ) { %>
 					<% if (status == 99 ) { %>
 						<a href='javascript://' value='1' class='small changeState'><img src='img/new.png'></a><br>
 					<% } %>
@@ -87,10 +87,10 @@
 					<% for ( x = 0; x < issues.length ; x++ ) { %>
 						<li>
 							<div title='<%= issues[x].description %>'>
-							    <% if ( ! noLink ) { %> 
-									<img class='editIssue' issueId='<%= issues[x].id %>' src='img/edit.png'>
+                                <% if ( typeof(noLink) == "undefined" ||! noLink ) { %>
+							    	<img class='editIssue' issueId='<%= issues[x].id %>' src='img/edit.png'>
 								<% } %>
-							    <% if ( ! noIssueUnlink ) { %> 
+							    <% if ( ! noIssueUnlink ) { %>
 									<img class='unlinkIssue' issueId='<%= issues[x].id %>' src='img/unlink.png'>
 								<% } %>
 								<%= issues[x].name %>
