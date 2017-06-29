@@ -52,7 +52,7 @@ use lib "/opt/seccubus/lib";
 use lib "lib";
 push (@main::INC, @INC);
 
-our $VERSION = '2.36';
+our $VERSION = '2.37';
 our $DBVERSION = 10;
 our $USER = '';
 
