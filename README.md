@@ -144,8 +144,26 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-x-x-2017 - v2.35 - Development release
+29-6-2017 - v2.36 - TestSSL.sh release
 ======================================
+
+This release has been in the making for a long time. In fact the first pull
+request for it's main feature was back in June 2016 by our friend and then
+colleague Glenn ten Cate.
+
+This release marks the integration of Dirk Wetter's excellent tool testssl.sh
+into Seccubus. With testssl.sh you can get a detailed overview of how well
+your TLS enabled service is set up. Not just for websites, but for any TCP
+service, even those that use STARTTLS.
+
+In addition we introduced the --cdn switch for ssllabs, to reduce noise for
+CDN enabled sites, we the ability to dynamically create users via JIT
+provisionsing and we added CSRF protection for enhanced security.
+
+To boost future code quality, Perl::Critic testing has been integrated in the
+unit testing process.
+
+Besides that we squased some bugs, five of which got introduced in the previous release :(
 
 Enhancements
 ------------
