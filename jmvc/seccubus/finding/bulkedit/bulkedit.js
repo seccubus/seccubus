@@ -78,7 +78,6 @@ $.Controller('Seccubus.Finding.Bulkedit',
 	 * default event and calls bulkUpdate to perform a bulk update
 	 */
 	submit : function(el, ev) {
-        console.log("Submit");
 		ev.preventDefault();
 		var params = this.element.formParams();
 		this.bulkUpdate();
@@ -124,7 +123,6 @@ $.Controller('Seccubus.Finding.Bulkedit',
 	 * This is the callback function for update on the list
 	 */
 	saved : function() {
-        console.log("Saved");
 		this.element.find('[type=submit]').val('Update');
 		this.element[0].reset();
 		// Update our view
