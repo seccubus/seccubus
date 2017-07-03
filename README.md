@@ -151,6 +151,6 @@ x-x-2017 - v2.37 - Development release
 Enhancements
 ------------
 *
+
 Bug Fixes
----------
-*
+* #490 - --cdn switch doesn't work as expected

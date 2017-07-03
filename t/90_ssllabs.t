@@ -107,7 +107,7 @@ $t->post_ok('/api/workspace/100/scans',
         "name"          => "cdn_gradeonly",
         "scanner"       => "SSLlabs",
         "parameters"    => '--hosts @HOSTS --from-cache --publish --cdn --gradeonly',
-        "targets"       => "www.schubergphilis.com"
+        "targets"       => "www.schubergphilis.com\nwww.seccubus.com\nwww.cupfighter.net"
     })
     ->status_is(200)
 ;
@@ -186,9 +186,15 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
 $t->get_ok('/api/workspace/100/findings?scanIds[]=5')
     ->status_is(200)
 ;
+my $hosts = {};
 foreach my $f ( @{$t->{tx}->res()->json()} ) {
     like($f->{plugin}, qr/^(grade(TrustIgnored)?|statusMessage|ERROR\/Assessment failed)$/i, "Finding $f->{id} is correct type");
     like($f->{host},qr/^[^\/]+(\/ipv[46])?$/,"Hostname is correctly normalized");
+    if ( $f->{host} =~ /^(.*?)\// ) {
+        $hosts->{$1}++;
+    } else {
+        $hosts->{$f->{host}}++;
+    }
     if ( $f->{plugin} =~ /^(renegSupport|serverName)$/ ) {
     } elsif ( $f->{plugin} eq "duration" ) {
         like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints");
@@ -196,7 +202,11 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
         unlike($f->{find},qr/^Findings vary per endpoint/,"Findings are consistent across endpoints");
     }
 }
-
+foreach my $host ( qw(www.seccubus.com www.schubergphilis.com www.cupfighter.net) ) {
+    cmp_ok($hosts->{$host}, '>', 0, "Has findigns for $host");
+    delete $hosts->{$host};
+}
+is(keys %$hosts, 0, "Has no findings for other hosts: " . sort keys %$hosts);
 
 
 done_testing();

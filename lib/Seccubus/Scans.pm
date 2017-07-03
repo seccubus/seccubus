@@ -423,11 +423,14 @@ sub run_scan {
 			print "cmd: $printcmd\n" if $print;
 			my $result = "cmd: $printcmd\n";
 			open( my $CMD, "-|", $cmd) or die "Unable to open pipe to '$printcmd'";
+            select $CMD; $| = 1 if $print;
+            select STDOUT; $| = 1 if $print;
 			while (<$CMD>) {
 				$result .= $_;
 				print $_ if $print;
 			}
 			close $CMD;
+            select STDOUT; $| = 0 if $print;
 			unlink $tempfile;
 
 			# Sending post scan notifications
