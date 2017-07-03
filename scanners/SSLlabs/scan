@@ -438,7 +438,6 @@ if ( $cdn ) {
             } else {
                 die " Unknow protocol for endpoint" . $f->{ip};
             }
-            print "Host: $host ip: $ip proto: $proto\n";
             $cdn->{$host}->{$f->{id}}->{$proto}->{ip} = "$f->{hostname}/$proto";
             $cdn->{$host}->{$f->{id}}->{$proto}->{hostname} = $f->{hostname};
             $cdn->{$host}->{$f->{id}}->{$proto}->{port} = $f->{port};
