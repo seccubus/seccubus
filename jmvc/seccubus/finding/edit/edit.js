@@ -91,12 +91,15 @@ $.Controller('Seccubus.Finding.Edit',
 			});
 		}
 		if ( this.options.history != null ) {
+            console.log(this.options.history);
 			/* Display the finding history */
 			$(this.options.history).seccubus_history_table({
 				workspace	: this.options.workspace,
 				findingId	: this.options.findings[this.options.index].id
 			});
-		}
+		} else {
+            console.log("History was null");
+        }
 	},
 	".editSetStatus click" : function(el,ev) {
 		ev.preventDefault();

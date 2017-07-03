@@ -17,7 +17,7 @@ steal( 	'jquery/controller',
 	'jquery/view/ejs',
 	'jquery/controller/view',
 	'seccubus/models'
-).then( './views/init.ejs', 
+).then( './views/init.ejs',
 	'./views/history.ejs',
 function($){
 
@@ -34,9 +34,9 @@ $.Controller('Seccubus.History.Table',
 	 * Object that holds the options in its attributes
 	 */
 	defaults : {
-                /* 
+                /*
 		 * @attribute options.workspace
-		 * The currently selected workspace, 
+		 * The currently selected workspace,
 		 * -1 = no workspace
 		 */
                 workspace       : -1,
@@ -72,8 +72,8 @@ $.Controller('Seccubus.History.Table',
 				this.view(
 					'init',
 					Seccubus.Models.History.findAll({
-						workspaceId : this.options.workspace,
-						findingId   : this.options.findingId
+						workspace   : this.options.workspace,
+						id          : this.options.findingId
 					}),
 					{
 						asHTML	    : this.options.asHTML
