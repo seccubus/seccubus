@@ -150,9 +150,10 @@ x-x-2017 - v2.37 - Development release
 
 Enhancements
 ------------
-*
+* #504 - Changed container crontab shell for sh to bash
 
 Bug Fixes
 * #490 - --cdn switch doesn't work as expected
 * #492 - Finding history wasn't showing in the GUI
 * #502 - Incorrect path set when using CRON in a container
+
