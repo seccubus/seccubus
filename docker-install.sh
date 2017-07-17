@@ -146,7 +146,7 @@ chmod +x /etc/profile.d/nikto.sh
 cd /opt
 git clone https://github.com/drwetter/testssl.sh.git --depth 1
 echo 'export PATH="$PATH:/opt/testssl.sh"' > /etc/profile.d/testssl.sh.sh
-echo 'export PATH="$PATH:/opt/testssl"' >> /root/.bashrc
+echo 'export PATH="$PATH:/opt/testssl.sh"' >> /root/.bashrc
 
 # Cleanup build stuff
 rm -rf /build
