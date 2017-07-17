@@ -24,6 +24,8 @@ if ( -e "/opt/seccubus/data/crontab" ) {
 	system("ln -s /opt/seccubus/data/crontab /var/spool/cron/crontabs/seccubus")
 } else {
 	open(my $CRON, ">", "/var/spool/cron/crontabs/seccubus") or die "Unable to open crontab for write";
+    print $CRON "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/seccubus/bin:/opt/nikto/program:/opt/testssl.sh\n";
+    print "Setting PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/seccubus/bin:/opt/nikto/program:/opt/testssl.sh\n";
 	foreach my $key ( sort keys %ENV ) {
 		if ( $key =~ /^CRON_/ ) {
 			my $line = $ENV{$key};
