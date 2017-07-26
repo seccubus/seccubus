@@ -151,6 +151,7 @@ x-x-2017 - v2.37 - Development release
 Enhancements
 ------------
 * #504 - Changed container crontab shell for sh to bash
+* #512 - New ssllabs finding httpForwarding
 
 Bug Fixes
 * #490 - --cdn switch doesn't work as expected
