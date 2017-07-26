@@ -150,6 +150,7 @@ x-x-2017 - v2.37 - Development release
 
 Enhancements
 ------------
+* #500 - Added --cdn switch to testssl.sh too
 * #504 - Changed container crontab shell for sh to bash
 
 Bug Fixes

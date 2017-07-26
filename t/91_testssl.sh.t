@@ -100,7 +100,7 @@ $t->post_ok('/api/workspace/100/scans',
     json => {
         name          => 'seccubus',
         scanner       => 'testssl.sh',
-        parameters    => "-p $pwd/tmp/testssl.sh --hosts \@HOSTS",
+        parameters    => "-p $pwd/tmp/testssl.sh --hosts \@HOSTS -o '-p -S -P -h -U --fast' --cdn",
         targets       => "www.seccubus.com"
     })
     ->status_is(200)
@@ -108,7 +108,7 @@ $t->post_ok('/api/workspace/100/scans',
 
 
 # Lets run scans
-pass("Running simple testssl.sh scan");
+pass("Running simple testssl.sh scan, this can take 3-5 minutes");
 `bin/do-scan -w test1 -s seccubus`;
 is($?,0,"Command executed ok");
 # Reactivate Mojo
@@ -122,12 +122,19 @@ $t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin', "content-type" => "appl
 # We should have a lot of findings in scan 1
 $t->get_ok('/api/workspace/100/findings?Limit=-1&scanIds[]=1')
     ->status_is(200)
-    ->json_has("/250", "Should have at least 250 findings in normal scan")
+    ->json_has("/50", "Should have at least 50 findings in normal scan")
 ;
 foreach my $f ( @{$t->{tx}->res()->json()} ) {
     like($f->{severity}, qr/^[0-3]$/, "Finding $f->{id} has the right priority");
     is($f->{port},"443/tcp","Finnding $f->{id} has the right port");
-    like($f->{host},qr/^www\.seccubus\.com\/[\d\:\.]+$/, "Finding $f->{id} has the right hostname");
+    like($f->{host},qr/^www\.seccubus\.com\/ipv[46]$/, "Finding $f->{id} has the right hostname");
+    if ( $f->{plugin} eq "X-Served-By" ) {
+        like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints");
+    } else {
+        unlike($f->{find},qr/^Findings vary per endpoint/,"Findings are consistent across endpoints");
+    }
+    #die Dumper $f;
+    #like($f->{plugin}, qr/^(statusMessage|ERROR\/Assessment failed)$/i, "Finding $f->{id} is correct type");
 }
 
 done_testing();

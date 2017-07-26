@@ -27,16 +27,17 @@ use Getopt::Long;
 use Carp;
 
 my (
-	$help,
-	$workspace,
-	$scanname,
-	$verbose,
-	$scanner,
-	$scanner_version,
-	$timestamp,
-	$scan,
-	$noprocess,
-	$allowempty
+    $help,
+    $workspace,
+    $scanname,
+    $verbose,
+    $scanner,
+    $scanner_version,
+    $timestamp,
+    $scan,
+    $noprocess,
+    $allowempty,
+    $cdn,
    );
 
 $help = 0;
@@ -44,27 +45,30 @@ $help = 0;
 # Set defaults
 $timestamp = make_timestamp();
 
-GetOptions(	'scan|s=s'			=> \$scanname,
-			'scanner=s'			=> \$scanner,
-			'scannerversion=s'	=> \$scanner_version,
-			'help|h!'			=> \$help,
-			'verbose|v!'		=> \$verbose,
-			'workspace|w=s'		=> \$workspace,
-			'timestamp|t=s'		=> \$timestamp,
-			'noprocess'			=> \$noprocess,
-			'allowempty'		=> \$allowempty,
-	  );
+GetOptions(
+    'scan|s=s'          => \$scanname,
+    'scanner=s'         => \$scanner,
+    'scannerversion=s'  => \$scanner_version,
+    'help|h!'           => \$help,
+    'verbose|v!'        => \$verbose,
+    'workspace|w=s'     => \$workspace,
+    'timestamp|t=s'     => \$timestamp,
+    'noprocess'         => \$noprocess,
+    'allowempty'        => \$allowempty,
+    'cdn'               => \$cdn,
+);
+
 my $filename = shift(@ARGV);
 help() unless $filename;
 
 if ( ! -e $filename ) {
-	carp "File '$filename' does not exist";
+    carp "File '$filename' does not exist";
 }
 
 help() if $help;
 
-$ENV{SECCUBUS_USER} = "importer";			# This utility runs under its
-						# Own account
+$ENV{SECCUBUS_USER} = "importer";           # This utility runs under its
+                                            # Own account
 
 print "Reading file $filename into memory\n" if $verbose;
 open(my $IVIL, "<", $filename) or die "Unable to open file $filename for read";
@@ -72,39 +76,51 @@ my $ivil = join("", <$IVIL>);
 close($IVIL);
 print "File loaded\n" if $verbose;
 print "Parsing data\n" if $verbose;
-my ($workspace_id, $scan_id, $run_id) = load_ivil($ivil, $scanner, $scanner_version, $timestamp, $workspace, $scanname, $verbose, $allowempty);
+my ($workspace_id, $scan_id, $run_id) = load_ivil(
+    $ivil,
+    $scanner,
+    $scanner_version,
+    $timestamp,
+    $workspace,
+    $scanname,
+    $verbose,
+    $allowempty,
+    $cdn,
+);
 print "WorkspaceID: $workspace_id\nScanID: $scan_id\nRunID: $run_id\n" if $verbose;
 unless ( $noprocess && $workspace_id >= 0 ) {
-	process_status($workspace_id, $scan_id, $run_id, $verbose);
+    process_status($workspace_id, $scan_id, $run_id, $verbose);
 }
 
 exit;
 
 sub help() {
-	print "
+    print "
 Usage: load_ivil --workspace <workspace name> --scan <scan name>
                  [--scanner <scanner name>] [--scannerversion <scanner version>]
-		 		  --timestamp <YYYYMMDDHHmm[ss]> [--help] [--verbose] <filename>
+                 --timestamp <YYYYMMDDHHmm[ss]> [--help] [--verbose] <filename>
 
 Arguments:
 --workspace (-w) - The name of the workspace the file should be loaded into
---scan (-s)		 - The name of the scan
---scanner		 - Optional: name of the scanner used. If not provided it will be
-		  		   read from the IVIL file
+--scan (-s)      - The name of the scan
+--scanner        - Optional: name of the scanner used. If not provided it will be
+                     read from the IVIL file
 --scannerversion - Optional: Verison of the scanner used. If not provided it will
-		  		   be read from the IVIL file
+                     be read from the IVIL file
 --timestamp (-t) - Optional : Time the scan ran in the format YYYYMMDDHHmm[ss]
                    Defaults to the current date and time
---noprocess		 - Just load the file into Seccubus, but don't process the status
+--noprocess      - Just load the file into Seccubus, but don't process the status
                    This is handy for importing older data or data out of sequence
-		           into Seccubus. Findings that have not been seen before will
-		           get the status NEW
---allowempty	 - Allow an empty ivil file to be imported (not allowed by default)
---verbose (-v)	 - Be verbose
---help (-h)		 - Print this message
-<filename>		 - Path to the file to be loaded
+                   into Seccubus. Findings that have not been seen before will
+                   get the status NEW
+--allowempty     - Allow an empty ivil file to be imported (not allowed by default)
+--cdn            - Normalize IP addresses in the file to damped the effects of
+                   flipping IP addresses due to CDNs
+--verbose (-v)   - Be verbose
+--help (-h)      - Print this message
+<filename>       - Path to the file to be loaded
 ";
-	exit();
+    exit();
 }
 
 sub make_timestamp() {

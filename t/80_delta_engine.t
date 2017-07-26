@@ -88,6 +88,8 @@ $t->get_ok('/api/workspace/100/findings')
 # Loading AAAAAAA 30-42
 `bin/load_ivil -t 201701010002 -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAA.ivil.xml`;
 is($?,0,"Command executed ok");
+# Reactivate Mojo
+$t = Test::Mojo->new('Seccubus');
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, after load AAAAAAA")
@@ -121,6 +123,8 @@ $t->get_ok('/api/workspace/100/findings')
 # Loading BBBBBBB - 64-73
 `bin/load_ivil -t 201701010003 -w test -s ab --scanner Nessus6 testdata/delta-BBBBBBB.ivil.xml`;
 is($?,0,"Command executed ok");
+# Reactivate Mojo
+$t = Test::Mojo->new('Seccubus');
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, after load BBBBBBB")
@@ -162,6 +166,8 @@ sleep 1; # Make sure timestamp is different
 # Loading none - 95-104
 `bin/load_ivil -t 201701010004 -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml --allowempty`;
 is($?,0,"Command executed ok");
+# Reactivate Mojo
+$t = Test::Mojo->new('Seccubus');
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'Gone', "Status[1] is Gone, after load none")
@@ -201,6 +207,8 @@ sleep 1; # Make sure timestamp is different
 # Load BBBBBBBB - 114-124
 `bin/load_ivil -t 201701010005 -w test -s ab --scanner Nessus6 testdata/delta-BBBBBBBB.ivil.xml`;
 is($?,0,"Command executed ok");
+# Reactivate Mojo
+$t = Test::Mojo->new('Seccubus');
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, Status before gone is new, after load BBBBBBB")
@@ -230,6 +238,8 @@ sleep 1; # Make sure timestamp is different
 # Loading none - 141 - 155
 `bin/load_ivil -t 201701010006 -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml --allowempty`;
 is($?,0,"Command executed ok");
+# Reactivate Mojo
+$t = Test::Mojo->new('Seccubus');
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'Gone', "Status[1] is Gone, after load none")
@@ -270,6 +280,8 @@ sleep 1;
 # Load AAAAAAAAA 161 -
 `bin/load_ivil -t 201701010007 -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAAAA.ivil.xml`;
 is($?,0,"Command executed ok");
+# Reactivate Mojo
+$t = Test::Mojo->new('Seccubus');
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, Status before gone is new, after load BBBBBBB again")
