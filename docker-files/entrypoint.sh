@@ -242,11 +242,24 @@ fi
 
 # Crontab
 if [[ "$STACK" == "cron" || "$STACK" == "full" ]]; then
-    /mkcron
+    CRON_MAIL_TO=${CRON_MAIL_TO:-"$SMTPFROM"}
     #if [[ ! -z $1 ]]; then
-        /etc/init.d/rsyslog start
-        /etc/init.d/cron start
+
     #fi
+    if [[ ! -z $SMTPSERVER ]]; then
+        SMTPDOMAIN=$(echo $SMTPFROM|sed "s/^.*@//")
+        echo "localhost" >/etc/mailname
+        cat <<EOF >/etc/ssmtp/ssmtp.conf
+root=$CRON_MAIL_TO
+mailhub=$SMTPSERVER
+rewriteDomain=$SMTPDOMAIN
+hostname=$(hostname).$SMTPDOMAIN
+EOF
+        /etc/init.d/ssmtp start
+    fi
+    /mkcron
+    /etc/init.d/rsyslog start
+    /etc/init.d/cron start
 fi
 
 if [[ "$STACK" != "front" ]]; then

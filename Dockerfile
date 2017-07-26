@@ -22,11 +22,10 @@
 FROM perl:5
 MAINTAINER fbreedijk@schubergphilis.com
 
-RUN apt-get update && apt-get upgrade -y
-RUN \
+RUN apt-get update && apt-get upgrade -y && \
     (echo 'mysql-server mysql-server/root_password password dwofMVR8&E^#3owHA0!Y' | debconf-set-selections ) && \
-    (echo 'mysql-server mysql-server/root_password_again password dwofMVR8&E^#3owHA0!Y' | debconf-set-selections )
-RUN apt-get install default-jre-headless mysql-server dnsutils nmap nginx cron rsyslog -y
+    (echo 'mysql-server mysql-server/root_password_again password dwofMVR8&E^#3owHA0!Y' | debconf-set-selections ) && \
+    apt-get install default-jre-headless mysql-server dnsutils nmap nginx cron rsyslog ssmtp -y
 RUN cpanm --notest DBD::mysql Mojolicious Net::IP JSON DBI HTML::Entities Crypt::PBKDF2 \
     Algorithm::Diff XML::Simple LWP::Simple LWP::Protocol::https LWP::UserAgent\
     Date::Format Term::ReadKey
