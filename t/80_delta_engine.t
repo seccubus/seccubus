@@ -45,13 +45,7 @@ ok($db_version > 0, "DB version = $db_version");
 `mysql -uroot seccubus < db/structure_v$db_version.mysql`;
 `mysql -uroot seccubus < db/data_v$db_version.mysql`;
 
-my $t = Test::Mojo->new('Seccubus');
-
-# Log in
-$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin', "content-type" => "application/json" })
-    ->status_is(200,"Login ok")
-;
-
+my $t = session();
 # Loading AAAAAAA - 12-18
 `bin/load_ivil -t 201701010001 -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAA.ivil.xml`;
 is($?,0,"Command executed ok");
@@ -89,7 +83,7 @@ $t->get_ok('/api/workspace/100/findings')
 `bin/load_ivil -t 201701010002 -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAA.ivil.xml`;
 is($?,0,"Command executed ok");
 # Reactivate Mojo
-$t = Test::Mojo->new('Seccubus');
+$t = session();
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, after load AAAAAAA")
@@ -124,7 +118,7 @@ $t->get_ok('/api/workspace/100/findings')
 `bin/load_ivil -t 201701010003 -w test -s ab --scanner Nessus6 testdata/delta-BBBBBBB.ivil.xml`;
 is($?,0,"Command executed ok");
 # Reactivate Mojo
-$t = Test::Mojo->new('Seccubus');
+$t = session();
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, after load BBBBBBB")
@@ -167,7 +161,7 @@ sleep 1; # Make sure timestamp is different
 `bin/load_ivil -t 201701010004 -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml --allowempty`;
 is($?,0,"Command executed ok");
 # Reactivate Mojo
-$t = Test::Mojo->new('Seccubus');
+$t = session();
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'Gone', "Status[1] is Gone, after load none")
@@ -208,7 +202,7 @@ sleep 1; # Make sure timestamp is different
 `bin/load_ivil -t 201701010005 -w test -s ab --scanner Nessus6 testdata/delta-BBBBBBBB.ivil.xml`;
 is($?,0,"Command executed ok");
 # Reactivate Mojo
-$t = Test::Mojo->new('Seccubus');
+$t = session();
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, Status before gone is new, after load BBBBBBB")
@@ -239,7 +233,7 @@ sleep 1; # Make sure timestamp is different
 `bin/load_ivil -t 201701010006 -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml --allowempty`;
 is($?,0,"Command executed ok");
 # Reactivate Mojo
-$t = Test::Mojo->new('Seccubus');
+$t = session();
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'Gone', "Status[1] is Gone, after load none")
@@ -281,7 +275,7 @@ sleep 1;
 `bin/load_ivil -t 201701010007 -w test -s ab --scanner Nessus6 testdata/delta-AAAAAAAAA.ivil.xml`;
 is($?,0,"Command executed ok");
 # Reactivate Mojo
-$t = Test::Mojo->new('Seccubus');
+$t = session();
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
     ->json_is("/0/statusName", 'New', "Status[1] is New, Status before gone is new, after load BBBBBBB again")
@@ -297,3 +291,14 @@ $t->get_ok('/api/workspace/100/findings')
 
 done_testing();
 
+exit;
+
+sub session {
+    my $t = Test::Mojo->new('Seccubus');
+
+    # Log in
+    $t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin', "content-type" => "application/json" })
+        ->status_is(200,"Login ok")
+    ;
+    return $t;
+}
