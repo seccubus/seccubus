@@ -160,5 +160,6 @@ Enhancements
 Bug Fixes
 * #490 - --cdn switch doesn't work as expected
 * #492 - Finding history wasn't showing in the GUI
+* #494 - Prototype mismatch warning in Nessus scanner
 * #502 - Incorrect path set when using CRON in a container
 
