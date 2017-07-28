@@ -35,7 +35,8 @@ my (
     $help,
     $verbose,
     $quiet,
-   );
+    $cdn,
+);
 
 $help = 0;
 $nodelete = undef;
@@ -50,6 +51,7 @@ GetOptions(
     'scan=s'                => \$scan,
     'nodelete!'             => \$nodelete,
     'remote|r=s'            => \$remote,
+    'cdn'                   => \$cdn,
     'verbose|v+'            => \$verbose,
     'quiet|q!'              => \$quiet,
     'help|h'                => \$help,
@@ -104,6 +106,7 @@ run_cmd($cmd,$verbose);
 print "Importing ivil\n" unless $quiet;
 $cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner testssl --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
+$cmd .= " --cdn" if $cdn;
 $cmd .= " '$tempfile.ivil.xml'";
 run_cmd($cmd,$verbose);
 
@@ -153,6 +156,8 @@ Arguments:
 --scan         - Name of the scan to load the findings into
 --remote       - Comma separated list of hostname, username and key used
 (-r)             to ssh into the host specified and run the command
+--cdn          - Normalize IP addresses in the file to damped the effects of
+                 flipping IP addresses due to CDNs
 --verbose (-v) - Be verbose during execution
 --nodelete     - Don't delete temporary files
 --quiet (-q)   - Don't print output

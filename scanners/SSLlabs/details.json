@@ -38,7 +38,7 @@
 	"ecdhParameterReuse": {
 		"type"			: "boolean",
 		"name"			: "ECHD parameter reuse : ",
-		"note"			: "DHE or ECDHE parameter reuse saves some CPU (more so for ECDHE than for DHE) at the theoretical expense of a weakening of the 'forward secrecy' rule, which is considered not a problem as long as the reused parameters are cached in RAM only and the server implementation does not leak information on the selected DH/ECDH secret key even when faced with invalid values from the client." 
+		"note"			: "DHE or ECDHE parameter reuse saves some CPU (more so for ECDHE than for DHE) at the theoretical expense of a weakening of the 'forward secrecy' rule, which is considered not a problem as long as the reused parameters are cached in RAM only and the server implementation does not leak information on the selected DH/ECDH secret key even when faced with invalid values from the client."
 	},
 	"fallbackScsv": {
 		"type"			: "boolean",
@@ -54,7 +54,7 @@
 			"All simulated clients achieve FS. In other words, this requires an ECDHE + DHE combination to be supported."
 		],
 		"note"			: "This is based on client simulation results"
-	},	
+	},
 	"freak"	: {
 		"type"			: "vulnerability",
 		"name"			: "FREAK attack",
@@ -96,6 +96,10 @@
 		"type"			: "hstsPreloads",
 		"description"	: "HSTS preloading status:\n"
 	},
+    "httpForwarding"     : {
+        "type"          : "string",
+        "description"   : "Requests to this url get forwarded to : "
+    },
 	"logjam" : {
 		"type"			: "vulnerability",
 		"name"			: "Log Jam",

@@ -166,7 +166,7 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
     like($f->{plugin}, qr/^(statusMessage|ERROR\/Assessment failed)$/i, "Finding $f->{id} is correct type");
 }
 
-# We should only have ERROR or statusMessage plugins
+# Testing --cdn scan
 $t->get_ok('/api/workspace/100/findings?scanIds[]=4')
     ->status_is(200)
 ;

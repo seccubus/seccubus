@@ -405,84 +405,19 @@ print $OUT "</findings>\n";
 print $OUT ivil_close();
 close $OUT;
 
-# Perform CDN deduplication on IVIL file
-$results = undef; # Free up memory
-if ( $cdn ) {
-    print "Normalizing CDN results\n" unless $quiet;
-    my $cdn = {};
-    my $ivil = XMLin(
-        "$tempfile.ivil.xml",
-        forcearray  => [ 'finding', 'references' ],
-        KeyAttr     => undef,
-        SuppressEmpty   => "",
-    );
-    my $findings = $ivil->{findings}->{finding};
-    $ivil->{findings}->{finding} = [];
-    #die Dumper $ivil;
-
-    foreach my $f ( @$findings ) {
-        # Detect endpoint findings
-        if ( $f->{ip} =~ /\// ) {
-            my $proto;
-            my $host;
-            my $ip;
-            # Determine protocol
-            if ( $f->{ip} =~ /^(.*?)\/(\d+\.\d+\.\d+\.\d+)$/ ) {
-                $proto = "ipv4";
-                $host = $1;
-                $ip = $2;
-            } elsif ( $f->{ip} =~ /^(.*?)\/([\da-f]+(:[\da-f]*)+)$/ ) {
-                $proto = "ipv6";
-                $host = $1;
-                $ip = $2;
-            } else {
-                die " Unknow protocol for endpoint" . $f->{ip};
-            }
-            $cdn->{$host}->{$f->{id}}->{$proto}->{ip} = "$f->{hostname}/$proto";
-            $cdn->{$host}->{$f->{id}}->{$proto}->{hostname} = $f->{hostname};
-            $cdn->{$host}->{$f->{id}}->{$proto}->{port} = $f->{port};
-            $cdn->{$host}->{$f->{id}}->{$proto}->{id} = $f->{id};
-            $cdn->{$host}->{$f->{id}}->{$proto}->{severity} = $f->{severity};
-            $cdn->{$host}->{$f->{id}}->{$proto}->{finding_txt}->{$ip} = $f->{finding_txt};
-        } else {
-            push @{$ivil->{findings}->{finding}}, $f;
-        }
-    }
-    foreach my $host ( sort keys %$cdn ) {
-        foreach my $plugin ( sort keys %{$cdn->{$host}} ) {
-            foreach my $proto ( sort keys %{$cdn->{$host}->{$plugin}}) {
-
-                my $f = $cdn->{$host}->{$plugin}->{$proto};
-                my $diff = 0;
-                my $txt = "Findings vary per endpoint!!!\n\n";
-                my $same_txt = "";
-                foreach my $ip ( sort keys %{ $f->{finding_txt} } ) {
-                    $same_txt = $f->{finding_txt}->{$ip} if $same_txt eq "";
-                    $diff++ if $same_txt ne $f->{finding_txt}->{$ip};
-                    $txt .= "$host:\n\n" . $f->{finding_txt}->{$ip} . "\n---\n";
-                }
-                if ( $diff ) {
-                    $f->{finding_txt} = $txt;
-                } else {
-                    $f->{finding_txt} = $same_txt;
-                }
-                push @{$ivil->{findings}->{finding}}, $f;
-            }
-        }
-    }
-    #unlink "$tempfile.ivil.xml";
-    # Overwrite IVIL
-    open( my $IVIL, ">", "$tempfile.ivil.xml") or die "Unable to write file";
-    print $IVIL XMLout(
-        $ivil,
-        KeyAttr     => undef,
-        SuppressEmpty   => "",
-    );
-    close $IVIL;
-}
 
 # Load the results
-my ( $workspace_id, $scan_id, $run_id) = load_ivil("$tempfile.ivil.xml", "Qualys SSL labs", $scanner_ver, $timestamp );
+my ( $workspace_id, $scan_id, $run_id) = load_ivil(
+    "$tempfile.ivil.xml",
+    "Qualys SSL labs",
+    $scanner_ver,
+    $timestamp,
+    undef,  #workspace comes from address block
+    undef,  #scan comes form address block too
+    undef,  # Don't print
+    undef,  # Don't allow empty
+    $cdn
+);
 # Process the results
 process_status($workspace_id, $scan_id, $run_id, $verbose);
 
