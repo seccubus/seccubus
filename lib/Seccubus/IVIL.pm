@@ -27,8 +27,8 @@ use Exporter;
 our @ISA = ('Exporter');
 
 our @EXPORT = qw (
-		load_ivil
-	);
+        load_ivil
+    );
 
 use SeccubusV2;
 use Seccubus::Workspaces;
@@ -53,9 +53,9 @@ the Seccubus database.
 
 =over 4
 
-=item ivil		- the IVIL content, this can either be a variable
-			  containing the IVIL text itself or the path to a file
-			  containing the IVIL text
+=item ivil		    - the IVIL content, this can either be a variable
+                      containing the IVIL text itself or the path to a file
+                      containing the IVIL text
 
 =item scanner		- (Optional) The name of the scanner to be used, if not value is given the value will be read from IVIL
 
@@ -65,9 +65,11 @@ the Seccubus database.
 
 =item workspace		- (Optional) Name of the workspace to load the findings into, if no value is given the value will be read from ivil. If the workspace does not exist, it will be created.
 
-=item scan		- (Optional) Name of the scan to load the findings into, if not value is given the the value will be read from IVIL. If no value can be read, this defaults to the workspace name. If the scan does not exist it will be created.
+=item scan		    - (Optional) Name of the scan to load the findings into, if not value is given the the value will be read from IVIL. If no value can be read, this defaults to the workspace name. If the scan does not exist it will be created.
 
-=item print		- (Optional) Print progress to stdin
+=item print		    - (Optional) Print progress to stdin
+
+=item cdn           - (Optional) Handle the flipping IP addreses that CDNs introduce
 
 =back
 
@@ -87,83 +89,148 @@ run_id		- ID of the run that was created for this scan
 =cut
 
 sub load_ivil {
-	my $ivil_xml_data = shift;
-	my $scanner = shift;
-	my $scanner_ver = shift;
-	my $timestamp = shift;
-	my $workspace = shift;
-	my $scan = shift;
-	my $print = shift;
-	my $allowempty = shift;
+    my $ivil_xml_data = shift;
+    my $scanner = shift;
+    my $scanner_ver = shift;
+    my $timestamp = shift;
+    my $workspace = shift;
+    my $scan = shift;
+    my $print = shift;
+    my $allowempty = shift;
+    my $cdn = shift;
 
-	my $xml = new XML::Simple;
-	my $ivil = $xml->XMLin($ivil_xml_data,
-			      	forcearray	=> [ 'finding', 'references' ],
-				KeyAttr		=> undef,
-				SuppressEmpty	=> "",
-	                      );
+    my $xml = new XML::Simple;
+    my $ivil = $xml->XMLin($ivil_xml_data,
+                      forcearray	=> [ 'finding', 'references' ],
+                KeyAttr		=> undef,
+                SuppressEmpty	=> "",
+                          );
 
-	if ( exists $ivil->{addressee} && $ivil->{addressee}->{program} eq "Seccubus" ) {
-		$scan = $ivil->{addressee}->{programSpecificData}->{scan} unless $scan;
-		$workspace = $ivil->{addressee}->{programSpecificData}->{workspace} unless $workspace;
-	}
-	confess "Unable to determine workspace" unless $workspace;
-	$scan = $workspace unless $scan;
+    if ( exists $ivil->{addressee} && $ivil->{addressee}->{program} eq "Seccubus" ) {
+        $scan = $ivil->{addressee}->{programSpecificData}->{scan} unless $scan;
+        $workspace = $ivil->{addressee}->{programSpecificData}->{workspace} unless $workspace;
+    }
+    confess "Unable to determine workspace" unless $workspace;
+    $scan = $workspace unless $scan;
 
-	$scanner = $ivil->{sender}->{scanner_type} unless $scanner;
-	$scanner_ver = $ivil->{sender}->{version} unless $scanner_ver;
+    $scanner = $ivil->{sender}->{scanner_type} unless $scanner;
+    $scanner_ver = $ivil->{sender}->{version} unless $scanner_ver;
 
-	$timestamp = $ivil->{sender}->{timestamp} unless $timestamp;
-	confess "Unable to determine timestamp" unless $timestamp;
+    $timestamp = $ivil->{sender}->{timestamp} unless $timestamp;
+    confess "Unable to determine timestamp" unless $timestamp;
 
-	$timestamp .= "00" if  $timestamp =~ /^\d{12}$/;
-	confess "Timestamp: '$timestamp' is invalid" unless $timestamp =~ /^\d{14}$/;
+    $timestamp .= "00" if  $timestamp =~ /^\d{12}$/;
+    confess "Timestamp: '$timestamp' is invalid" unless $timestamp =~ /^\d{14}$/;
 
-	my $count = 0;
-	if ( exists $ivil->{findings}->{finding} ) {
-		$count = @{$ivil->{findings}->{finding}};
-	}
-	print "There are $count findings\n" if $print;
-	if ( $count > 0 || $allowempty ) {
-		# This bocks gets the ID from and/or creates the workspace, scan and run
-		my $workspace_id = get_workspace_id("$workspace");
-		unless ( $workspace_id ) {
-			$workspace_id = create_workspace($workspace);
-		}
-		my $scan_id = get_scan_id($workspace_id, $scan);
-		unless ( $scan_id ) {
-			confess "Unable to determine scanner" unless $scanner;
-			$scan_id = create_scan($workspace_id, $scan, $scanner, "Please update manually");
-		}
-		my $run_id = update_run($workspace_id, $scan_id, $timestamp);
+    my $count = 0;
+    if ( exists $ivil->{findings}->{finding} ) {
+        $count = @{$ivil->{findings}->{finding}};
+    }
+    print "There are $count findings\n" if $print;
 
-		# Now we create the findings
+    # Perform CDN deduplication on IVIL file
+    if ( $cdn ) {
+        print "Normalizing CDN results\n" if $print;
+        my $cdn = {};
+        my $findings = $ivil->{findings}->{finding};
+        $ivil->{findings}->{finding} = [];
+        #die Dumper $ivil;
 
-		foreach my $finding ( @{$ivil->{findings}->{finding}} ) {
-			$finding->{severity} = 0 unless defined $finding->{severity};
-			$finding->{severity} = 0 if $finding->{severity} eq "";
-			# TODO: Seccubus currently does not handle the
-			# references as specified in the IVIL format
-			update_finding(
-				      	workspace_id	=> $workspace_id,
-					run_id		=> $run_id,
-					scan_id		=> $scan_id,
-					host		=> $finding->{ip},
-					port		=> $finding->{port},
-					plugin		=> $finding->{id},
-					finding		=> $finding->{finding_txt},
-					severity	=> $finding->{severity},
-					timestamp 	=> $timestamp,
-				      );
-			if ( $finding->{ip} =~ /^\d+\.\d+\.\d+\.\d+$/ ) {
-				update_hostname($workspace_id, $finding->{ip}, $finding->{hostname});
-			}
-			print "Finding: $finding->{ip}, $finding->{port}, $finding->{id}\n$finding->{finding_txt}\n" if $print >1;
-		}
-		return ($workspace_id, $scan_id, $run_id);
-	} else {
-		return (-1,-1,-1);
-	}
+        foreach my $f ( @$findings ) {
+            # Detect findings that contain a slash and end in an IP
+            my $proto;
+            my $host;
+            my $ip;
+            # Determine protocol
+            if ( $f->{ip} =~ /^(.*?)\/(\d+\.\d+\.\d+\.\d+)$/ ) {
+                $proto = "ipv4";
+                $host = $1;
+                $ip = $2;
+            } elsif ( $f->{ip} =~ /^(.*?)\/([\da-f]+(:[\da-f]*)+)$/ ) {
+                $proto = "ipv6";
+                $host = $1;
+                $ip = $2;
+            }
+            if ( $proto ) {
+                $cdn->{$host}->{$f->{id}}->{$proto}->{ip} = "$f->{hostname}/$proto";
+                $cdn->{$host}->{$f->{id}}->{$proto}->{hostname} = $f->{hostname};
+                $cdn->{$host}->{$f->{id}}->{$proto}->{port} = $f->{port};
+                $cdn->{$host}->{$f->{id}}->{$proto}->{id} = $f->{id};
+                $cdn->{$host}->{$f->{id}}->{$proto}->{severity} = $f->{severity};
+                $cdn->{$host}->{$f->{id}}->{$proto}->{finding_txt}->{$ip} = $f->{finding_txt};
+            } else {
+                push @{$ivil->{findings}->{finding}}, $f;
+            }
+        }
+        foreach my $host ( sort keys %$cdn ) {
+            foreach my $plugin ( sort keys %{$cdn->{$host}} ) {
+                foreach my $proto ( sort keys %{$cdn->{$host}->{$plugin}}) {
+
+                    my $f = $cdn->{$host}->{$plugin}->{$proto};
+                    my $diff = 0;
+                    my $txt = "Findings vary per endpoint!!!\n\n";
+                    my $same_txt = "";
+                    foreach my $ip ( sort keys %{ $f->{finding_txt} } ) {
+                        $same_txt = $f->{finding_txt}->{$ip} if $same_txt eq "";
+                        $diff++ if $same_txt ne $f->{finding_txt}->{$ip};
+                        $txt .= "$host:\n\n" . $f->{finding_txt}->{$ip} . "\n---\n";
+                    }
+                    if ( $diff ) {
+                        $f->{finding_txt} = $txt;
+                    } else {
+                        $f->{finding_txt} = $same_txt;
+                    }
+                    push @{$ivil->{findings}->{finding}}, $f;
+                }
+            }
+        }
+        $count = 0;
+        if ( exists $ivil->{findings}->{finding} ) {
+            $count = @{$ivil->{findings}->{finding}};
+        }
+        print "There are $count findings after normalisation\n" if $print;
+    }
+
+    if ( $count > 0 || $allowempty ) {
+        # This bocks gets the ID from and/or creates the workspace, scan and run
+        my $workspace_id = get_workspace_id("$workspace");
+        unless ( $workspace_id ) {
+            $workspace_id = create_workspace($workspace);
+        }
+        my $scan_id = get_scan_id($workspace_id, $scan);
+        unless ( $scan_id ) {
+            confess "Unable to determine scanner" unless $scanner;
+            $scan_id = create_scan($workspace_id, $scan, $scanner, "Please update manually");
+        }
+        my $run_id = update_run($workspace_id, $scan_id, $timestamp);
+
+        # Now we create the findings
+
+        foreach my $finding ( @{$ivil->{findings}->{finding}} ) {
+            $finding->{severity} = 0 unless defined $finding->{severity};
+            $finding->{severity} = 0 if $finding->{severity} eq "";
+            # TODO: Seccubus currently does not handle the
+            # references as specified in the IVIL format
+            update_finding(
+                workspace_id	=> $workspace_id,
+                run_id		=> $run_id,
+                scan_id		=> $scan_id,
+                host		=> $finding->{ip},
+                port		=> $finding->{port},
+                plugin		=> $finding->{id},
+                finding		=> $finding->{finding_txt},
+                severity	=> $finding->{severity},
+                timestamp 	=> $timestamp,
+            );
+            if ( $finding->{ip} =~ /^\d+\.\d+\.\d+\.\d+$/ ) {
+                update_hostname($workspace_id, $finding->{ip}, $finding->{hostname});
+            }
+            print "Finding: $finding->{ip}, $finding->{port}, $finding->{id}\n$finding->{finding_txt}\n" if $print >1;
+        }
+        return ($workspace_id, $scan_id, $run_id);
+    } else {
+        return (-1,-1,-1);
+    }
 }
 
 # Close the PM file.
