@@ -163,4 +163,5 @@ Bug Fixes
 * #492 - Finding history wasn't showing in the GUI
 * #494 - Prototype mismatch warning in Nessus scanner
 * #502 - Incorrect path set when using CRON in a container
+* #507 - It is not longer possible to add duplicate users
 
