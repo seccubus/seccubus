@@ -136,6 +136,8 @@ You can set the following environment variables:
 * TZ - Set the timezone of the container
 * TLS - Controls TLS behaviour `yes` means TLS is on, otherwise TLS is off. TLS is on by default.
 * JIT_GROUP - Controls JIT provisioning of users
+* CRON_MAIL_TO - Mail cron messages to this addres
+* CRON_* - Add these lines to crontab in alphabetical order
 
 
 Change log
@@ -152,6 +154,7 @@ Enhancements
 ------------
 * #500 - Added --cdn switch to testssl.sh too
 * #504 - Changed container crontab shell for sh to bash
+* #506 - Allow cron email to be sent externally
 * #512 - New ssllabs finding httpForwarding
 
 Bug Fixes
