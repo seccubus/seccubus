@@ -31,33 +31,29 @@ use Data::Dumper;
 use LWP::UserAgent;
 
 my (
-	$user,
-	$password,
-	$password2,
-	$server,
-	$policy,
-	$port,
-	$hosts_file,
-	$workspace,
-	$scan,
-	$nodelete,
-	$help,
-	$verbose,
-	$quiet,
-	$sleep,
-	$cmd,
-	$nosslcheck,
-	$sslcheck,
-	$token,
-	$r,
-	$retries,
-   );
+    $user,
+    $password,
+    $password2,
+    $server,
+    $policy,
+    $port,
+    $hosts_file,
+    $workspace,
+    $scan,
+    $nodelete,
+    $help,
+    $verbose,
+    $quiet,
+    $sleep,
+    $cmd,
+    $nosslcheck,
+    $sslcheck,
+    $token,
+    $r,
+    $retries,
+);
 
 my @formats = qw(nessus pdf html);
-
-sub login();
-sub help();
-sub make_timestamp();
 
 # Default values for command line values
 $help = 0;
@@ -68,40 +64,40 @@ $nosslcheck = 0;
 $retries = 3;
 
 GetOptions(
-		'user|u=s'		=> \$user,
-		'password|p=s'	=> \$password,
-		'pw=s'			=> \$password2,
-		'server|s=s'	=> \$server,
-		'policy|pol=s'	=> \$policy,
-		'port=s'		=> \$port,
-		'hosts|h=s'		=> \$hosts_file,
-		'workspace|ws=s'=> \$workspace,
-		'scan|sc=s'		=> \$scan,
-		'sleep=s'		=> \$sleep,
-		'nodelete'		=> \$nodelete,
-		'nosslcheck!'	=> \$nosslcheck,
-		'sslcheck!'	    => \$sslcheck,
-		'retries'		=> \$retries,
-		'verbose|v+'	=> \$verbose,
-		'quiet|q!'		=> \$quiet,
-		'help'			=> \$help,
-	  );
+    'user|u=s'          => \$user,
+    'password|p=s'      => \$password,
+    'pw=s'              => \$password2,
+    'server|s=s'        => \$server,
+    'policy|pol=s'      => \$policy,
+    'port=s'            => \$port,
+    'hosts|h=s'         => \$hosts_file,
+    'workspace|ws=s'    => \$workspace,
+    'scan|sc=s'         => \$scan,
+    'sleep=s'           => \$sleep,
+    'nodelete'          => \$nodelete,
+    'nosslcheck!'       => \$nosslcheck,
+    'sslcheck!'         => \$sslcheck,
+    'retries'           => \$retries,
+    'verbose|v+'        => \$verbose,
+    'quiet|q!'          => \$quiet,
+    'help'              => \$help,
+);
 
 help() if $help;
 $verbose = 0 if $quiet;
 
-$port = 8834 unless $port;		 # Default port is 8834
+$port = 8834 unless $port;               # Default port is 8834
 $password = $password2 unless $password; # Equalize the use of --pw
 
 my $checkssl = 1;
 if ( $sslcheck ) {
-	$checkssl = 1;
+    $checkssl = 1;
 } elsif ( $nosslcheck ) {
-	$checkssl = 0;
+    $checkssl = 0;
 } elsif ( $port == 443 ) {
-	$checkssl = 1;
+    $checkssl = 1;
 } elsif ( $port == 8834 ) {
-	$checkssl = 0;
+    $checkssl = 0;
 }
 
 # Disable SSL checking if needed
@@ -111,26 +107,26 @@ $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = $checkssl;
 my $config = get_config();
 
 if ( ! $hosts_file ) {
-	print "You must specify a valid hosts spec";
-	help();
+    print "You must specify a valid hosts spec";
+    help();
 } elsif ( ! $user ) {
-	print "You must specify a user";
-	help();
+    print "You must specify a user";
+    help();
 } elsif ( ! $password ) {
-	print "You must specify a password";
-	help();
+    print "You must specify a password";
+    help();
 } elsif ( ! $server ) {
-	print "You must specify a nessus server";
-	help();
+    print "You must specify a nessus server";
+    help();
 } elsif ( ! $policy ) {
-	print "You must specify a policy";
-	help();
+    print "You must specify a policy";
+    help();
 } elsif ( ! $workspace ) {
-	print "You must specify a workspace name";
-	help();
+    print "You must specify a workspace name";
+    help();
 } elsif ( ! $scan ){
-	print "You must specify a scan name";
-	help();
+    print "You must specify a scan name";
+    help();
 };
 
 my $timestamp = make_timestamp();
@@ -152,59 +148,59 @@ my $tuuid;
 my $pid = -1;
 
 for my $pol (@{$json->{templates}} ) {
-	if ($pol->{name} eq $policy) {
-		$tuuid = $pol->{uuid};
-		last;
-	}
+    if ($pol->{name} eq $policy) {
+        $tuuid = $pol->{uuid};
+        last;
+    }
 }
 
 if (!$tuuid) {
-	for my $pol (@{$json->{templates}} ) {
-		if ($pol->{name} eq 'basic') {
-			$tuuid = $pol->{uuid};
-			last;
-		}
-	}
+    for my $pol (@{$json->{templates}} ) {
+        if ($pol->{name} eq 'basic') {
+            $tuuid = $pol->{uuid};
+            last;
+        }
+    }
 
-	$json = rest_get("/policies",undef,\$r);
-	die "Cannot get policy list" if ($r->code() != 200);
+    $json = rest_get("/policies",undef,\$r);
+    die "Cannot get policy list" if ($r->code() != 200);
 
-	foreach my $pol (@{$json->{policies}} ) {
-		if ($pol->{name} eq $policy) {
-			$tuuid = $pol->{template_uuid} if $pol->{template_uuid};
-			$pid = $pol->{id};
-			last;
-		}
-	}
+    foreach my $pol (@{$json->{policies}} ) {
+        if ($pol->{name} eq $policy) {
+            $tuuid = $pol->{template_uuid} if $pol->{template_uuid};
+            $pid = $pol->{id};
+            last;
+        }
+    }
 }
 
 if (!$tuuid && !$pid) {
-	die "Policy $policy not found";
+    die "Policy $policy not found";
 } else {
-	print "Found policy $policy as template $tuuid policy $pid\n" if $verbose;
+    print "Found policy $policy as template $tuuid policy $pid\n" if $verbose;
 }
 
 my $scandata = {
-	'uuid'		=> $tuuid,
-	'settings'	=> {
-		'name'		=> $tempscan,
-		'description'	=> 'Seccubus automated scan',
-		'launch'	=> 'ON_DEMAND',
-	}
+    'uuid'          => $tuuid,
+    'settings'      => {
+        'name'          => $tempscan,
+        'description'   => 'Seccubus automated scan',
+        'launch'        => 'ON_DEMAND',
+    }
 };
 
 if ( $pid != -1 ) {
-	$scandata->{settings}->{policy_id} = $pid;
+    $scandata->{settings}->{policy_id} = $pid;
 }
 
-if ( -e $hosts_file ) {			# Assume its a host spect rather then a
-					# hosts file if there is no file
-	open(my $FILE,"<",$hosts_file) or die "Cannot read hosts file";
-	local $/;
-	$scandata->{settings}{text_targets} = <$FILE>;
-	close($FILE);
+if ( -e $hosts_file ) {         # Assume its a host spect rather then a
+                                # hosts file if there is no file
+    open(my $FILE,"<",$hosts_file) or die "Cannot read hosts file";
+    local $/;
+    $scandata->{settings}{text_targets} = <$FILE>;
+    close($FILE);
 } else {
-	$scandata->{settings}{text_targets} = $hosts_file;
+    $scandata->{settings}{text_targets} = $hosts_file;
 }
 
 print "Imported scan targets: $scandata->{settings}{text_targets} \n" if $verbose;
@@ -225,64 +221,64 @@ die "Cannot get scan history" if ($r->code() != 200);
 my $hid;
 
 for my $history (@{$json->{history}} ) {
-	if ($history->{uuid} eq $launched) {
-		$hid = $history->{history_id};
-	}
+    if ($history->{uuid} eq $launched) {
+        $hid = $history->{history_id};
+    }
 }
 
 if ($hid) {
-	print "Found history id $hid for scan $launched\n" if $verbose;
+    print "Found history id $hid for scan $launched\n" if $verbose;
 } else {
-	die "Cannot find history id for scan $launched";
+    die "Cannot find history id for scan $launched";
 }
 
 do {
-	sleep(5);
-	$json = rest_get("/scans/$sid", { 'history_id' => $hid }, \$r);
+    sleep(5);
+    $json = rest_get("/scans/$sid", { 'history_id' => $hid }, \$r);
 
-	if ($r->code() eq 200) {
-		my $vulncount = @{$json->{vulnerabilities}};
-		print "Scan status: $json->{info}->{status}. $vulncount findings on $json->{info}->{hostcount} host(s).\n" if $verbose;
-	} else {
-		die "Scan status request returned " . $r->code();
-	}
+    if ($r->code() eq 200) {
+        my $vulncount = @{$json->{vulnerabilities}};
+        print "Scan status: $json->{info}->{status}. $vulncount findings on $json->{info}->{hostcount} host(s).\n" if $verbose;
+    } else {
+        die "Scan status request returned " . $r->code();
+    }
 } until ($json->{info}->{status} eq "completed" || $json->{info}->{status} eq "canceled" || $json->{info}->{status} eq "aborted" );
 
 foreach my $format ( @formats ) {
-	print "Exporting report in $format format\n" unless $quiet;
+    print "Exporting report in $format format\n" unless $quiet;
 
         my $exportdata = {
                 'format'                =>      $format,
                 'chapters'                =>      "vuln_hosts_summary;vuln_by_host;compliance_exec;remediations;vuln_by_plugin;compliance",
         };
 
-	$json = rest_post("/scans/$sid/export?history_id=$hid", encode_json($exportdata), \$r);
+    $json = rest_post("/scans/$sid/export?history_id=$hid", encode_json($exportdata), \$r);
 
-	if ( $r->code == 200 ) {
-		my $filehandle=$json->{file};
-		print "Initiated scan export to file $filehandle\n" if $verbose;
+    if ( $r->code == 200 ) {
+        my $filehandle=$json->{file};
+        print "Initiated scan export to file $filehandle\n" if $verbose;
 
-		do {
-			sleep(5);
-			$json = rest_get("/scans/$sid/export/$filehandle/status", {}, \$r);
-			if ($r->code() eq 200) {
-				print "Scan export status: $json->{status}\n";
-			} else {
-				print "Scan export status request returned " . $r->code() if $verbose;
-			}
-		} until ($json->{status} eq 'ready');
+        do {
+            sleep(5);
+            $json = rest_get("/scans/$sid/export/$filehandle/status", {}, \$r);
+            if ($r->code() eq 200) {
+                print "Scan export status: $json->{status}\n";
+            } else {
+                print "Scan export status request returned " . $r->code() if $verbose;
+            }
+        } until ($json->{status} eq 'ready');
 
-		rest_get("/scans/$sid/export/$filehandle/download", {}, \$r,1 ); # This call doesn't return json, but a file
+        rest_get("/scans/$sid/export/$filehandle/download", {}, \$r,1 ); # This call doesn't return json, but a file
 
-		die "Cannot download report" if ($r->code() != 200);
-		print "Report downloaded, saving $filehandle to $tempfile.$format\n" if $verbose;
-		open( my $FILE, ">", "$tempfile.$format") or die "Cannot save report";
-		print $FILE $r->decoded_content();
-		close $FILE;
+        die "Cannot download report" if ($r->code() != 200);
+        print "Report downloaded, saving $filehandle to $tempfile.$format\n" if $verbose;
+        open( my $FILE, ">", "$tempfile.$format") or die "Cannot save report";
+        print $FILE $r->decoded_content();
+        close $FILE;
 
-	} else {
-		print "Could not initiate export in $format format, skipping.\n" if ($r->code() != 200 && ! $quiet);
-	}
+    } else {
+        print "Could not initiate export in $format format, skipping.\n" if ($r->code() != 200 && ! $quiet);
+    }
 }
 
 rest_delete("/scans/$sid/history/$hid",{},\$r);
@@ -314,24 +310,24 @@ print "$result\n" if $verbose > 1;
 
 print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
 foreach my $format ( @formats, "ivil.xml") {
-	if ( -e "$tempfile.$format" ) {
-		print "Attaching file $tempfile.$format to scan\n" if $verbose;
-		$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.$format' --description '$format output'";
-		$cmd .= " -v" if $verbose > 1;
-		print "Execuing $cmd\n" if $verbose > 1;
-		$result = `$cmd 2>&1`;
-		print "$result\n" if $verbose > 1;
-	}
+    if ( -e "$tempfile.$format" ) {
+        print "Attaching file $tempfile.$format to scan\n" if $verbose;
+        $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.$format' --description '$format output'";
+        $cmd .= " -v" if $verbose > 1;
+        print "Execuing $cmd\n" if $verbose > 1;
+        $result = `$cmd 2>&1`;
+        print "$result\n" if $verbose > 1;
+    }
 }
 
 # Cleanup
 unless ( $nodelete ) {
-	foreach my $format ( @formats, "ivil.xml") {
-		if ( -e "$tempfile.$format" ) {
-			print "Deleting $tempfile.$format\n" if $verbose >1;
-			unlink "$tempfile.$format";
-		}
-	}
+    foreach my $format ( @formats, "ivil.xml") {
+        if ( -e "$tempfile.$format" ) {
+            print "Deleting $tempfile.$format\n" if $verbose >1;
+            unlink "$tempfile.$format";
+        }
+    }
 }
 
 print "Done\n" unless $quiet;
@@ -339,7 +335,7 @@ print "Done\n" unless $quiet;
 exit(0);
 
 sub help {
-	print "
+    print "
 Usage: scan       --user=<username> --password=<password> --server=<server> \\
                   --port=<portnumber> --policy=<policy name> \\
                   --hosts=<hosts file|hosts spec> \\
@@ -368,160 +364,160 @@ Usage: scan       --user=<username> --password=<password> --server=<server> \\
 --quiet (-q)      - Don't print output
 --help (-h)       - Print this message
 ";
-	exit(1);
+    exit(1);
 }
 
 sub make_timestamp {
-	my ($second, $minute, $hour, $day, $month, $year) = localtime();
-	$month++;
-	$second = "0" . $second if $second < 10;
-	$minute = "0" . $minute if $minute <10;
-	$hour = "0". $hour if $hour < 10;
-	$day = "0". $day if $day <10;
-	$month = "0" . $month if $month <10;
-	$year += 1900;
+    my ($second, $minute, $hour, $day, $month, $year) = localtime();
+    $month++;
+    $second = "0" . $second if $second < 10;
+    $minute = "0" . $minute if $minute <10;
+    $hour = "0". $hour if $hour < 10;
+    $day = "0". $day if $day <10;
+    $month = "0" . $month if $month <10;
+    $year += 1900;
 
-	return "$year$month$day$hour$minute$second";
+    return "$year$month$day$hour$minute$second";
 }
 
 sub login {
-	my $cred = {
-		'username' => $user,
-		'password' => $password
-	};
-	$token = undef;
-	my $r;
-	my $json = rest_post("/session",$cred, \$r);
+    my $cred = {
+        'username' => $user,
+        'password' => $password
+    };
+    $token = undef;
+    my $r;
+    my $json = rest_post("/session",$cred, \$r);
 
-	confess "Cannot authenticate to scanner.\nReturn code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " " unless $r->is_success;
+    confess "Cannot authenticate to scanner.\nReturn code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " " unless $r->is_success;
 
-	print "Authenticated\n" if $verbose;
+    print "Authenticated\n" if $verbose;
 
-	$token = $json->{token};
+    $token = $json->{token};
 }
 
 sub rest_get {
-	my $uri = shift;
-	my $params = shift;
-	my $response = shift;
-	my $nojson = shift;
+    my $uri = shift;
+    my $params = shift;
+    my $response = shift;
+    my $nojson = shift;
 
-	rest_call("get",$uri,$params,$response,$nojson,$retries);
+    rest_call("get",$uri,$params,$response,$nojson,$retries);
 }
 
 sub rest_post {
-	my $uri = shift;
-	my $params = shift;
-	my $response = shift;
-	my $nojson = shift;
+    my $uri = shift;
+    my $params = shift;
+    my $response = shift;
+    my $nojson = shift;
 
-	rest_call("post",$uri, $params,$response,$nojson,$retries);
+    rest_call("post",$uri, $params,$response,$nojson,$retries);
 }
 
 sub rest_delete {
-	my $uri = shift;
-	my $params = shift;
-	my $response = shift;
-	my $nojson = shift;
+    my $uri = shift;
+    my $params = shift;
+    my $response = shift;
+    my $nojson = shift;
 
-	rest_call("delete",$uri, $params,$response,$nojson,$retries);
+    rest_call("delete",$uri, $params,$response,$nojson,$retries);
 }
 
 sub rest_call {
-	my $method = shift;
-	my $uri = shift;
-	my $param = shift;
-	my $response = shift;
-	my $nojson = shift;
-	my $retries = shift;
+    my $method = shift;
+    my $uri = shift;
+    my $param = shift;
+    my $response = shift;
+    my $nojson = shift;
+    my $retries = shift;
 
-	my $ua = LWP::UserAgent->new();
-	$ua->agent("Seccubus $SeccubusV2::VERSION ");
+    my $ua = LWP::UserAgent->new();
+    $ua->agent("Seccubus $SeccubusV2::VERSION ");
 
-	$ua->default_header('Content-Type' => 'application/json');
-	$ua->default_header('Accept' => 'application/json');
-	# Disable max return size
-	$ua->max_size(undef);
+    $ua->default_header('Content-Type' => 'application/json');
+    $ua->default_header('Accept' => 'application/json');
+    # Disable max return size
+    $ua->max_size(undef);
 
-	if ( $token ) {
-		$ua->default_header('X-Cookie' => "token=$token");
-	}
+    if ( $token ) {
+        $ua->default_header('X-Cookie' => "token=$token");
+    }
 
-	my $r;
-	if ( $method eq "post" ) {
-		if ( $verbose > 2 ) {
-			print "POST to https://$server:$port$uri\nParams:\n";
-			print Dumper $param;
-		}
-		if ( ref $param ) {
-			$r = $ua->post("https://$server:$port$uri", $param);
-		} else {
-			my $req = HTTP::Request->new(POST => "https://$server:$port$uri");
-			$req->content_type('application/json');
-			$req->content($param);
+    my $r;
+    if ( $method eq "post" ) {
+        if ( $verbose > 2 ) {
+            print "POST to https://$server:$port$uri\nParams:\n";
+            print Dumper $param;
+        }
+        if ( ref $param ) {
+            $r = $ua->post("https://$server:$port$uri", $param);
+        } else {
+            my $req = HTTP::Request->new(POST => "https://$server:$port$uri");
+            $req->content_type('application/json');
+            $req->content($param);
 
-			$r = $ua->request($req);
-		}
-	} elsif ( $method eq "get" ) {
-		my $geturi = "$uri?";
-		foreach my $key ( sort keys %$param ) {
-			$geturi .= $key . "=" . $param->{$key} . "&";
-		}
-		$geturi =~ s/\&$//;
-		print "GET to https://$server:$port$geturi\n" if $verbose > 2;
-		$r = $ua->get("https://$server:$port$geturi");
-	} elsif ( $method eq "delete" ) {
-		print "DELETE to https://$server:$port$uri\n" if $verbose > 2;
-		if ( defined $ua->{delete} ) {
-			$r = $ua->delete("https://$server:$port$uri", $param);
-		} else {
-			print "Delete not supported on this platform\n" unless $quiet;
-			return({});
-		}
-	}
-	print "Server response : " . $r->decoded_content() . "\n" if $verbose > 2;
+            $r = $ua->request($req);
+        }
+    } elsif ( $method eq "get" ) {
+        my $geturi = "$uri?";
+        foreach my $key ( sort keys %$param ) {
+            $geturi .= $key . "=" . $param->{$key} . "&";
+        }
+        $geturi =~ s/\&$//;
+        print "GET to https://$server:$port$geturi\n" if $verbose > 2;
+        $r = $ua->get("https://$server:$port$geturi");
+    } elsif ( $method eq "delete" ) {
+        print "DELETE to https://$server:$port$uri\n" if $verbose > 2;
+        if ( defined $ua->{delete} ) {
+            $r = $ua->delete("https://$server:$port$uri", $param);
+        } else {
+            print "Delete not supported on this platform\n" unless $quiet;
+            return({});
+        }
+    }
+    print "Server response : " . $r->decoded_content() . "\n" if $verbose > 2;
 
-	if ( $token && ( $r->code() == 401 || $r->code() == 503 ) && $retries > 0) {
-		print "Authentication failed, attempting to re-login\n" if $verbose;
-		# Login and retry if failed
-		login();
-		return(rest_call($method,$uri,$param,$response,$nojson,$retries-1));
-	}
-	# Export cvalls can actually return a 404 if an export has failed for some internal Nessus reason, we should not
-	# retry in this case
-	unless ( $r->is_success || ( $uri =~ qr#/scans/\d+/export/\d+\/status# && $r->code() == 404 ) ) {
-		unless ( $quiet ) {
-			print "Nessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content();
-			print "\n$retries retries left\n";
-		}
-		if ( $retries > 0 ) {
-			print "Sleeping for 30 seconds before retring\n" unless $quiet;
-			sleep 30;
-			return(rest_call($method,$uri,$param,$response,$nojson,$retries-1))
-		} else {
-			die "No more retries!\nNessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " ";
-		}
-	}
+    if ( $token && ( $r->code() == 401 || $r->code() == 503 ) && $retries > 0) {
+        print "Authentication failed, attempting to re-login\n" if $verbose;
+        # Login and retry if failed
+        login();
+        return(rest_call($method,$uri,$param,$response,$nojson,$retries-1));
+    }
+    # Export cvalls can actually return a 404 if an export has failed for some internal Nessus reason, we should not
+    # retry in this case
+    unless ( $r->is_success || ( $uri =~ qr#/scans/\d+/export/\d+\/status# && $r->code() == 404 ) ) {
+        unless ( $quiet ) {
+            print "Nessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content();
+            print "\n$retries retries left\n";
+        }
+        if ( $retries > 0 ) {
+            print "Sleeping for 30 seconds before retring\n" unless $quiet;
+            sleep 30;
+            return(rest_call($method,$uri,$param,$response,$nojson,$retries-1))
+        } else {
+            die "No more retries!\nNessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " ";
+        }
+    }
 
-	$$response = $r if $response; # Return response object
+    $$response = $r if $response; # Return response object
 
-	unless ( $nojson ) {
-		my $json;
+    unless ( $nojson ) {
+        my $json;
 
-		eval {
-			if ( $r->decoded_content() ) {
-				$json = decode_json($r->decoded_content());
-			} else {
-				$json = {};
-			}
-		} or do {
-			$json = {
-				error => "Unable to decode JSON from: " . $r->decoded_content()
-			}
-		};
-		if ( $json->{error} ) {
-			print "Server returned error: $json->{error}\n";
-		}
-		return $json;
-	}
+        eval {
+            if ( $r->decoded_content() ) {
+                $json = decode_json($r->decoded_content());
+            } else {
+                $json = {};
+            }
+        } or do {
+            $json = {
+                error => "Unable to decode JSON from: " . $r->decoded_content()
+            }
+        };
+        if ( $json->{error} ) {
+            print "Server returned error: $json->{error}\n";
+        }
+        return $json;
+    }
 }
