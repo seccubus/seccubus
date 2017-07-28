@@ -153,6 +153,7 @@ x-x-2017 - v2.37 - Development release
 Enhancements
 ------------
 * #477 - Finding coloring better reflects the urgency now
+* #464 - Scan objects in Nessus are now reused in stead of created from scratch
 * #500 - Added --cdn switch to testssl.sh too
 * #504 - Changed container crontab shell for sh to bash
 * #506 - Allow cron email to be sent externally
@@ -160,6 +161,9 @@ Enhancements
 
 Bug Fixes
 * #490 - --cdn switch doesn't work as expected
+* #491 - Help message of load_ivil didn't align nicely
 * #492 - Finding history wasn't showing in the GUI
+* #494 - Prototype mismatch warning in Nessus scanner
 * #502 - Incorrect path set when using CRON in a container
+* #507 - It is not longer possible to add duplicate users
 
