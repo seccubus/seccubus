@@ -450,27 +450,27 @@ sub rest_delete {
 }
 
 sub rest_call {
-	my $method = shift;
-	my $uri = shift;
-	my $param = shift;
-	my $response = shift;
-	my $nojson = shift;
-	my $retries = shift;
+    my $method = shift;
+    my $uri = shift;
+    my $param = shift;
+    my $response = shift;
+    my $nojson = shift;
+    my $retries = shift;
 
-	my $ua = LWP::UserAgent->new();
-	$ua->agent("Seccubus $SeccubusV2::VERSION ");
+    my $ua = LWP::UserAgent->new();
+    $ua->agent("Seccubus $SeccubusV2::VERSION ");
 
-	$ua->default_header('Content-Type' => 'application/json');
-	$ua->default_header('Accept' => 'application/json');
-	# Disable max return size
-	$ua->max_size(undef);
+    $ua->default_header('Content-Type' => 'application/json');
+    $ua->default_header('Accept' => 'application/json');
+    # Disable max return size
+    $ua->max_size(undef);
 
-	if ( $token ) {
-		$ua->default_header('X-Cookie' => "token=$token");
-	}
+    if ( $token ) {
+        $ua->default_header('X-Cookie' => "token=$token");
+    }
 
-	my $r;
-	if ( $method eq "post" ) {
+    my $r;
+    if ( $method eq "post" ) {
         if ( $verbose > 2 ) {
             print "POST to https://$server:$port$uri\nParams:\n";
             print Dumper $param;
@@ -499,66 +499,66 @@ sub rest_call {
             $r = $ua->request($req);
         }
     } elsif ( $method eq "get" ) {
-		my $geturi = "$uri?";
-		foreach my $key ( sort keys %$param ) {
-			$geturi .= $key . "=" . $param->{$key} . "&";
-		}
-		$geturi =~ s/\&$//;
-		print "GET to https://$server:$port$geturi\n" if $verbose > 2;
-		$r = $ua->get("https://$server:$port$geturi");
-	} elsif ( $method eq "delete" ) {
-		print "DELETE to https://$server:$port$uri\n" if $verbose > 2;
-		if ( defined $ua->{delete} ) {
-			$r = $ua->delete("https://$server:$port$uri", $param);
-		} else {
-			print "Delete not supported on this platform\n" unless $quiet;
-			return({});
-		}
-	}
-	print "Server response : " . $r->decoded_content() . "\n" if $verbose > 2;
+        my $geturi = "$uri?";
+        foreach my $key ( sort keys %$param ) {
+            $geturi .= $key . "=" . $param->{$key} . "&";
+        }
+        $geturi =~ s/\&$//;
+        print "GET to https://$server:$port$geturi\n" if $verbose > 2;
+        $r = $ua->get("https://$server:$port$geturi");
+    } elsif ( $method eq "delete" ) {
+        print "DELETE to https://$server:$port$uri\n" if $verbose > 2;
+        if ( defined $ua->{delete} ) {
+            $r = $ua->delete("https://$server:$port$uri", $param);
+        } else {
+            print "Delete not supported on this platform\n" unless $quiet;
+            return({});
+        }
+    }
+    print "Server response : " . $r->decoded_content() . "\n" if $verbose > 2;
 
-	if ( $token && ( $r->code() == 401 || $r->code() == 503 ) && $retries > 0) {
-		print "Authentication failed, attempting to re-login\n" if $verbose;
-		# Login and retry if failed
-		login();
-		return(rest_call($method,$uri,$param,$response,$nojson,$retries-1));
-	}
-	# Export cvalls can actually return a 404 if an export has failed for some internal Nessus reason, we should not
-	# retry in this case
-	unless ( $r->is_success || ( $uri =~ qr#/scans/\d+/export/\d+\/status# && $r->code() == 404 ) ) {
-		unless ( $quiet ) {
-			print "Nessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content();
-			print "\n$retries retries left\n";
-		}
-		if ( $retries > 0 ) {
-			print "Sleeping for 30 seconds before retring\n" unless $quiet;
-			sleep 30;
-			return(rest_call($method,$uri,$param,$response,$nojson,$retries-1))
-		} else {
-			die "No more retries!\nNessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " ";
-		}
-	}
+    if ( $token && ( $r->code() == 401 || $r->code() == 503 ) && $retries > 0) {
+        print "Authentication failed, attempting to re-login\n" if $verbose;
+        # Login and retry if failed
+        login();
+        return(rest_call($method,$uri,$param,$response,$nojson,$retries-1));
+    }
+    # Export cvalls can actually return a 404 if an export has failed for some internal Nessus reason, we should not
+    # retry in this case
+    unless ( $r->is_success || ( $uri =~ qr#/scans/\d+/export/\d+\/status# && $r->code() == 404 ) ) {
+        unless ( $quiet ) {
+            print "Nessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content();
+            print "\n$retries retries left\n";
+        }
+        if ( $retries > 0 ) {
+            print "Sleeping for 30 seconds before retring\n" unless $quiet;
+            sleep 30;
+            return(rest_call($method,$uri,$param,$response,$nojson,$retries-1))
+        } else {
+            die "No more retries!\nNessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " ";
+        }
+    }
 
-	$$response = $r if $response; # Return response object
+    $$response = $r if $response; # Return response object
 
-	unless ( $nojson ) {
-		my $json;
+    unless ( $nojson ) {
+        my $json;
 
-		eval {
-			if ( $r->decoded_content() ) {
-				$json = decode_json($r->decoded_content());
-			} else {
-				$json = {};
-			}
-		} or do {
-			$json = {
-				error => "Unable to decode JSON from: " . $r->decoded_content()
-			}
-		};
-		if ( $json->{error} ) {
-			print "Server returned error: $json->{error}\n";
-		}
-		return $json;
-	}
+        eval {
+            if ( $r->decoded_content() ) {
+                $json = decode_json($r->decoded_content());
+            } else {
+                $json = {};
+            }
+        } or do {
+            $json = {
+                error => "Unable to decode JSON from: " . $r->decoded_content()
+            }
+        };
+        if ( $json->{error} ) {
+            print "Server returned error: $json->{error}\n";
+        }
+        return $json;
+    }
 
 }
