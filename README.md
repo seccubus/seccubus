@@ -161,4 +161,5 @@ Bug Fixes
 * #490 - --cdn switch doesn't work as expected
 * #492 - Finding history wasn't showing in the GUI
 * #502 - Incorrect path set when using CRON in a container
+* #507 - It is not longer possible to add duplicate users
 
