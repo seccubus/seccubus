@@ -55,10 +55,6 @@ my (
 
 my @formats = qw(nessus pdf html);
 
-sub login();
-sub help();
-sub make_timestamp();
-
 # Default values for command line values
 $help = 0;
 $quiet = 0;
@@ -135,7 +131,7 @@ if ( ! $hosts_file ) {
 
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose > 1;
-my $tempscan = "seccubus.$workspace.$scan.$timestamp";
+my $tempscan = "seccubus.$workspace.$scan";
 my $tempfile = "/tmp/$tempscan.$$";
 my $nivil = "$config->{paths}->{scanners}\/Nessus\/nivil.rb";
 my $nessus2ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nessus2ivil";
@@ -208,11 +204,28 @@ if ( -e $hosts_file ) {			# Assume its a host spect rather then a
 }
 
 print "Imported scan targets: $scandata->{settings}{text_targets} \n" if $verbose;
-$json = rest_post('/scans',encode_json($scandata),\$r);
-die "Cannot create scan" if ($r->code() != 200);
 
-my $sid = $json->{scan}{id};
-print "Created scan $sid\n" if $verbose;
+$json = rest_get('/scans',undef,\$r);
+my $sid;
+foreach my $scan ( @{$json->{scans}} ) {
+    if ( $scan->{name} eq $tempscan ) {
+        $sid = $scan->{id};
+        last;
+    }
+}
+if ( $sid ) {
+    $json = rest_put('/scans',encode_json($scandata),\$r);
+    die "Cannot update scan" if ($r->code() != 200);
+
+    print "Updated scan $sid\n" if $verbose;
+} else {
+    $json = rest_post('/scans/{$sid}',encode_json($scandata),\$r);
+    die "Cannot update scan" if ($r->code() != 200);
+
+    $sid = $json->{scan}{id};
+    print "Created scan $sid\n" if $verbose;
+
+}
 
 $json = rest_post("/scans/$sid/launch",{},\$r);
 die "Cannot launch scan" if ($r->code() != 200);
@@ -418,6 +431,15 @@ sub rest_post {
 	rest_call("post",$uri, $params,$response,$nojson,$retries);
 }
 
+sub rest_put {
+    my $uri = shift;
+    my $params = shift;
+    my $response = shift;
+    my $nojson = shift;
+
+    rest_call("post",$uri, $params,$response,$nojson,$retries);
+}
+
 sub rest_delete {
 	my $uri = shift;
 	my $params = shift;
@@ -449,20 +471,34 @@ sub rest_call {
 
 	my $r;
 	if ( $method eq "post" ) {
-		if ( $verbose > 2 ) {
-			print "POST to https://$server:$port$uri\nParams:\n";
-			print Dumper $param;
-		}
-		if ( ref $param ) {
-			$r = $ua->post("https://$server:$port$uri", $param);
-		} else {
-			my $req = HTTP::Request->new(POST => "https://$server:$port$uri");
-			$req->content_type('application/json');
-			$req->content($param);
+        if ( $verbose > 2 ) {
+            print "POST to https://$server:$port$uri\nParams:\n";
+            print Dumper $param;
+        }
+        if ( ref $param ) {
+            $r = $ua->post("https://$server:$port$uri", $param);
+        } else {
+            my $req = HTTP::Request->new(POST => "https://$server:$port$uri");
+            $req->content_type('application/json');
+            $req->content($param);
 
-			$r = $ua->request($req);
-		}
-	} elsif ( $method eq "get" ) {
+            $r = $ua->request($req);
+        }
+    } elsif ( $method eq "put" ) {
+        if ( $verbose > 2 ) {
+            print "PUT to https://$server:$port$uri\nParams:\n";
+            print Dumper $param;
+        }
+        if ( ref $param ) {
+            $r = $ua->put("https://$server:$port$uri", $param);
+        } else {
+            my $req = HTTP::Request->new(PUT => "https://$server:$port$uri");
+            $req->content_type('application/json');
+            $req->content($param);
+
+            $r = $ua->request($req);
+        }
+    } elsif ( $method eq "get" ) {
 		my $geturi = "$uri?";
 		foreach my $key ( sort keys %$param ) {
 			$geturi .= $key . "=" . $param->{$key} . "&";
