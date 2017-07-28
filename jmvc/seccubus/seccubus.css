@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* 
+/*
   Default skin CSS stylesheet
-  
+
   $Id$
-  
+
 */
 * {
 	margin: 0;
@@ -58,7 +58,7 @@ div.shell {
 }
 
 /* Left side div */
-div.left { 
+div.left {
 	width: 200px;
 	left: 0px;
         margin-left: 0;
@@ -73,7 +73,7 @@ select.left {
 
 
 /* Div next to a left side div */
-div.main { 
+div.main {
 	margin-left: 260px;
 	margin-right: 50px;
 }
@@ -81,7 +81,7 @@ div.main {
 /* Div is there is no left side div */
 div.full {
 	margin-left: 0px;
-	margin-right: 50px; 
+	margin-right: 50px;
 	float: left;
 }
 
@@ -208,29 +208,29 @@ table {
 }
 
 th.asc_disabled {
-	background: url("img/sort_asc_disabled.png") no-repeat scroll right center; 
+	background: url("img/sort_asc_disabled.png") no-repeat scroll right center;
 	padding-right: 20px;
 }
 th.desc_disabled {
-	background: url("img/sort_desc_disabled.png") no-repeat scroll right center; 
+	background: url("img/sort_desc_disabled.png") no-repeat scroll right center;
 	padding-right: 20px;
 }
 th.both_disabled {
-	background: url("img/sort_both_disabled.png") no-repeat scroll right center; 
+	background: url("img/sort_both_disabled.png") no-repeat scroll right center;
 	padding-right: 20px;
 }
 th.asc {
-	background: url("img/sort_asc.png") no-repeat scroll right center; 
+	background: url("img/sort_asc.png") no-repeat scroll right center;
 	padding-right: 20px;
 	cursor: hand;
 }
 th.desc {
-	background: url("img/sort_desc.png") no-repeat scroll right center; 
+	background: url("img/sort_desc.png") no-repeat scroll right center;
 	padding-right: 20px;
 	cursor: hand;
 }
 th.both {
-	background: url("img/sort_both.png") no-repeat scroll right center; 
+	background: url("img/sort_both.png") no-repeat scroll right center;
 	padding-right: 20px;
 	cursor: hand;
 }
@@ -256,26 +256,26 @@ tr.sev_1 {
 	background-color: #FF6666;
 }
 tr.sev_2 {
-	background-color: yellow;
+	background-color: orange;
 }
 tr.sev_3 {
-	background-color: #66FF33;
+	background-color: yellow;
 }
 tr.sev_4 {
 	background-color: blue;
 }
 
-.collapsed { 
-	background: url("img/expand.png") no-repeat scroll right center ; 
+.collapsed {
+	background: url("img/expand.png") no-repeat scroll right center ;
 	padding-right: 20px;
 }
-.expanded { 
-	background: url("img/sort_desc.png") no-repeat scroll right center ; 
+.expanded {
+	background: url("img/sort_desc.png") no-repeat scroll right center ;
 	padding-right: 20px;
 }
 
 
-/* 
+/*
  * Modal window stuff
  */
 
