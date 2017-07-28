@@ -152,6 +152,7 @@ x-x-2017 - v2.37 - Development release
 
 Enhancements
 ------------
+* #464 - Scan objects in Nessus are now reused in stead of created from scratch
 * #500 - Added --cdn switch to testssl.sh too
 * #504 - Changed container crontab shell for sh to bash
 * #506 - Allow cron email to be sent externally
