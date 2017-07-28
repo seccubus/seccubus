@@ -358,7 +358,7 @@ foreach my $host ( @hosts ) {
                                      ( $epkey eq "statusMessage" && $ep->{$epkey} ne "Ready" )
                                    ) {
                                     $finding->{id} = $epkey;
-                                    $finding->{finding} = parse_finding($epkey,$ep->{$epkey},$keys->{$epkey});
+                                    ($finding->{finding},$finding->{severity}) = parse_finding($epkey,$ep->{$epkey},$keys->{$epkey});
                                     print $OUT ivil_finding($finding);
                                 }
                             } else {
@@ -366,13 +366,13 @@ foreach my $host ( @hosts ) {
                                     foreach my $dkey ( sort keys %{$ep->{$epkey}} ) {
                                         if ( ! $details->{$dkey}->{ignore} ) {
                                             $finding->{id} = $dkey;
-                                            $finding->{finding} = parse_finding($dkey,$ep->{details}->{$dkey},$details->{$dkey});
+                                            ($finding->{finding},$finding->{severity}) = parse_finding($dkey,$ep->{details}->{$dkey},$details->{$dkey});
                                             print $OUT ivil_finding($finding);
                                         }
                                     }
                                 } else {
                                     $finding->{id} = $epkey;
-                                    $finding->{finding} = parse_finding($epkey,$ep->{$epkey},$keys->{$epkey});
+                                    ($finding->{finding},$finding->{severity}) = parse_finding($epkey,$ep->{$epkey},$keys->{$epkey});
                                     print $OUT ivil_finding($finding);
                                 }
                             }
@@ -385,14 +385,14 @@ foreach my $host ( @hosts ) {
                         $finding->{hostname} = $host;
                         $finding->{ip} = $host;
                         $finding->{id} = $key;
-                        $finding->{finding} = parse_finding($key,$scan->{$key},$keys->{$key});
+                        ($finding->{finding},$finding->{severity}) = parse_finding($key,$scan->{$key},$keys->{$key});
                         print $OUT ivil_finding($finding);
                     }
                 } else {
                     $finding->{hostname} = $host;
                     $finding->{ip} = $host;
                     $finding->{id} = $key;
-                    $finding->{finding} = parse_finding($key,$scan->{$key},$keys->{$key});
+                    ($finding->{finding},$finding->{severity}) = parse_finding($key,$scan->{$key},$keys->{$key});
                     print $OUT ivil_finding($finding);
                 }
             }
@@ -498,55 +498,57 @@ sub parse_finding {
     my $meta = shift;
 
     my $txt;
+    my $severity = 4;
     if ( ! %$meta ) {
         $txt = "Unknown finding '$key'\nAPI returned:\n";
         $txt .= to_json({data => $finding});
     } else {
         $txt = "$meta->{description}";
+        my $ftxt = "";
         if ( $meta->{type} eq "certificates" ) {
-            $txt .= parse_certs($finding);
+            $ftxt = parse_certs($finding);
         } elsif ( $meta->{type} eq "boolean" ) {
-            $txt .= ( $finding ? "True" : "False");
+            $ftxt = ( $finding ? "True" : "False");
         } elsif ( $meta->{type} eq "bitmap" ) {
-            $txt .= parse_bitmap($finding,@{$meta->{values}});
+            $ftxt = parse_bitmap($finding,@{$meta->{values}});
         } elsif ( $meta->{type} eq "list" ) {
-            $txt .= parse_valuelist( $finding + $meta->{startsAt} , @{$meta->{values}});
+            $ftxt = parse_valuelist( $finding + $meta->{startsAt} , @{$meta->{values}});
         } elsif ( $meta->{type} eq "grade" ) {
-            $txt .= parse_grade($finding);
+            ($ftxt,$severity) = parse_grade($finding);
         } elsif ( $meta->{type} eq "timestamp" ) {
-            $txt .= parse_ts($finding);
+            $ftxt = parse_ts($finding);
         } elsif ( $meta->{type} eq "milliseconds" ) {
-            $txt .= ( $finding / 1000 ) . " seconds\n";
+            $ftxt = ( $finding / 1000 ) . " seconds\n";
         } elsif ( $meta->{type} eq "string" ) {
-            $txt .= $finding;
+            $ftxt = $finding;
         } elsif ( $meta->{type} eq "vulnerability" ) {
-            $txt .= parse_vuln($finding,$meta);
+            ($ftxt,$severity) = parse_vuln($finding,$meta);
         } elsif ( $meta->{type} eq "hpkpPolicy" ) {
-            $txt .= parse_hpkppolicy($finding);
+            $ftxt = parse_hpkppolicy($finding);
         } elsif ( $meta->{type} eq "hstsPolicy" ) {
-            $txt .= parse_hstspolicy($finding);
+            $ftxt = parse_hstspolicy($finding);
         } elsif ( $meta->{type} eq "hstsPreloads" ) {
-            $txt .= parse_hstspreloads($finding);
+            $ftxt = parse_hstspreloads($finding);
         } elsif ( $meta->{type} eq "array" ) {
-            $txt .= parse_array($finding,$meta);
+            $ftxt = parse_array($finding,$meta);
         } elsif ( $meta->{type} eq "sims" ) {
-            $txt .= parse_sims($finding);
+            $ftxt = parse_sims($finding);
         } elsif ( $meta->{type} eq "suites" ) {
             if ( exists $meta->{key} ) {
-                $txt .= parse_suites($finding->{$meta->{key}});
+                $ftxt = parse_suites($finding->{$meta->{key}});
             } else {
-                $txt .= parse_suites($finding);
+                $ftxt = parse_suites($finding);
             }
         } elsif ( $meta->{type} eq "staticPkpPolicy" ) {
-            $txt .= parse_staticPkp($finding);
+            $ftxt = parse_staticPkp($finding);
         } elsif ( $meta->{type} eq "namedGroups") {
-            $txt .= parse_named_groups($finding);
+            $ftxt = parse_named_groups($finding);
         } else {
             die "Unknow data type $meta->{type}" . ( Dumper $meta ) . " ";
         }
-        $txt .= "\n\n$meta->{note}";
+        $txt .= "$ftxt\n\n$meta->{note}";
     } # Unknown
-    return $txt;
+    return ($txt,$severity);
 }
 
 sub parse_certs {
@@ -621,13 +623,25 @@ sub parse_ts {
 
 sub parse_grade {
     my $grade = shift;
+
     my $txt = "$grade\n";
     if ( $grade eq "T" ) {
         $txt .= "The certificate is not trusted."
     } elsif ( $grade eq "M" ) {
         $txt .= "The name of the site could not be matched to a name in the certificate."
     }
-    return $txt;
+    my $severity = 1;
+
+    if ( $grade =~ /^A/i ) {
+        $severity = 4;
+    } elsif ( $grade =~ /^B/ ) {
+        $severity = 3;
+    } elsif ( $grade =~ /^[CD]/ ) {
+        $severity = 2;
+    } else {
+        $severity = 1;
+    }
+    return ( $txt, $severity );
 }
 
 sub parse_vuln {
@@ -635,9 +649,9 @@ sub parse_vuln {
     my $meta = shift;
 
     if ( $finding ) {
-        return "VULNERABLE to $meta->{name}";
+        return("VULNERABLE to $meta->{name}",2);
     } else {
-        return "Not vulnerable to $meta->{name}";
+        return("Not vulnerable to $meta->{name}",4);
     }
 }
 
