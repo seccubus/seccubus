@@ -32,10 +32,10 @@ all functions within the module
 our @ISA = ('Exporter');
 
 our @EXPORT = qw (
-	get_user_id
+    get_user_id
     get_users
-	add_user
-	get_login
+    add_user
+    get_login
     set_password
     check_password
 );
@@ -79,20 +79,21 @@ None
 =cut
 
 sub get_user_id {
-	my $user = shift;
-	confess "No username specified" unless $user;
+    my $user = shift;
+    confess "No username specified" unless $user;
 
-	my $id = sql ( "return"	=> "array",
-		       "query"	=> "select id from users where username = ?",
-		       "values" => [ $user ],
-		     );
+    my $id = sql (
+        "return"    => "array",
+        "query"     => "select id from users where username = ?",
+        "values"    => [ $user ],
+    );
 
-	if ( $id ) {
-		return $id;
-	} else {
-		# Could not find a userid for user
-		return;
-	}
+    if ( $id ) {
+        return $id;
+    } else {
+        # Could not find a userid for user
+        return;
+    }
 }
 
 =head2 get_users
@@ -188,37 +189,46 @@ In order to run this function you must be an admin
 =cut
 
 sub add_user {
-	my $user = shift;
-	my $name = shift;
-	my $isadmin = shift;
+    my $user = shift;
+    my $name = shift;
+    my $isadmin = shift;
 
-	my ( $id );
+    my ( $id );
 
-	confess "No userid specified" unless $user;
-	confess "No name specified for user $user" unless $name;
+    confess "No userid specified" unless $user;
+    confess "No name specified for user $user" unless $name;
 
-	if ( is_admin() ) {
-		my $id = sql(	"return"	=> "id",
-				"query"		=> "INSERT into users (`username`, `name`) values (? , ?)",
-				"values"	=> [$user, $name],
-			    );
-		#Make sure member of the all group
-		sql("return"	=> "id",
-		    "query"	=> "INSERT into user2group values (?, ?)",
-		    "values"	=> [$id, 2],
-	 	   );
-		if ( $isadmin ) {
-			# Make user meber of the admins group
-			sql("return"	=> "id",
-			    "query"	=> "INSERT into user2group values (?, ?)",
-			    "values"	=> [$id, 1],
-			   );
-		}
+    if ( is_admin() ) {
+        my ( $id ) = sql(
+            return      => "array",
+            query       => "SELECT id FROM users WHERE `username` = ?",
+            values      => [ $user ]
+        );
+        confess "Username '$user' already exists" if $id;
+        $id = sql(
+            "return"    => "id",
+            "query"     => "INSERT into users (`username`, `name`) values (? , ?)",
+            "values"    => [$user, $name],
+        );
+        #Make sure member of the all group
+        sql(
+            "return"    => "id",
+            "query"     => "INSERT into user2group values (?, ?)",
+            "values"    => [$id, 2],
+        );
+        if ( $isadmin ) {
+            # Make user meber of the admins group
+            sql(
+                "return"    => "id",
+                "query"     => "INSERT into user2group values (?, ?)",
+                "values"    => [$id, 1],
+            );
+        }
         # Set random password
         my $password = "";
         $password .= ("A".."Z","a".."z",0..9)[rand 62] for 1..16;
         set_password($user,$password);
-	} else {
+    } else {
         confess "Permission denied while adding user";
     }
 }
@@ -260,18 +270,18 @@ sub get_login {
 
     $username = $ENV{SECCUBUS_USER} unless $username;
 
-	my $name = sql(
+    my $name = sql(
         "return"    => "array",
-	    "query"     => "select name from users where username = ?",
+        "query"     => "select name from users where username = ?",
         "values"    => [ $username ],
-	);
-	if ( $name ) {
-		# Valid user
-		return($username,1,is_admin($username),"Valid user '$name' ($username)");
-	} else {
-		# Invalid user
-		return(undef,0,0,"Undefined user '$username'");
-	}
+    );
+    if ( $name ) {
+        # Valid user
+        return($username,1,is_admin($username),"Valid user '$name' ($username)");
+    } else {
+        # Invalid user
+        return(undef,0,0,"Undefined user '$username'");
+    }
 }
 
 =head2 set_password

@@ -372,5 +372,169 @@ $t->get_ok('/api/users' => { 'REMOTEUSER' => 'admin' })
     ])
 ;
 
+# Manually adding a user
+`bin/add_user  -n "Third seccubus user" --isadmin`;
+isnt($?,0,"Adduser fails without username");
 
+`bin/add_user -u seccubus3 -n "Third seccubus user (admin)" --isadmin`;
+is($?,0,"Command executed ok");
+
+# SHould be able to log in seccubus 3
+$t->get_ok('/api/session' => { 'REMOTEUSER' => 'seccubus3' })
+    ->status_is(200)
+    ->json_is({
+        isAdmin     => 1,
+        message     => "Valid user 'Third seccubus user (admin)' (seccubus3)",
+        username    => "seccubus3",
+        valid       => 1
+    })
+;
+
+# Get user list
+$t->get_ok('/api/users' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200)
+    ->json_is([
+        {
+            id          => 1,
+            username    => "admin",
+            name        => "Builtin administrator account",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 3,
+            username    => "importer",
+            name        => "Builtin importer utility account",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 100,
+            username    => "seccubus",
+            name        => "User created by JIT provisioning",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 101,
+            username    => "seccubus2",
+            name        => "User created by JIT provisioning",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 102,
+            username    => "seccubus3",
+            name        => "Third seccubus user (admin)",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 2,
+            username    => "system",
+            name        => "Builtin system user",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+    ])
+;
+
+`bin/add_user -u seccubus3 -n "Third seccubus user (admin)" --isadmin`;
+isnt($?,0,"Cannot add duplicate user");
+
+# Adding non admin user
+`bin/add_user -u seccubus4 -n "Fourth seccubus user (not an admin)"`;
+is($?,0,"Command executed ok");
+
+# SHould be able to log in seccubus 3
+$t->get_ok('/api/session' => { 'REMOTEUSER' => 'seccubus4' })
+    ->status_is(200)
+    ->json_is({
+        isAdmin     => 0,
+        message     => "Valid user 'Fourth seccubus user (not an admin)' (seccubus4)",
+        username    => "seccubus4",
+        valid       => 1
+    })
+;
+
+# Get user list
+$t->get_ok('/api/users' => { 'REMOTEUSER' => 'admin' })
+    ->status_is(200)
+    ->json_is([
+        {
+            id          => 1,
+            username    => "admin",
+            name        => "Builtin administrator account",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 3,
+            username    => "importer",
+            name        => "Builtin importer utility account",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 100,
+            username    => "seccubus",
+            name        => "User created by JIT provisioning",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 101,
+            username    => "seccubus2",
+            name        => "User created by JIT provisioning",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 102,
+            username    => "seccubus3",
+            name        => "Third seccubus user (admin)",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 103,
+            username    => "seccubus4",
+            name        => "Fourth seccubus user (not an admin)",
+            groups      => [
+                { id => 2, name => "ALL" },
+            ]
+        },
+        {
+            id          => 2,
+            username    => "system",
+            name        => "Builtin system user",
+            groups      => [
+                { id => 1, name => "ADMINISTRATORS" },
+                { id => 2, name => "ALL" },
+            ]
+        },
+    ])
+;
 done_testing();
