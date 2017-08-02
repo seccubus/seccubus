@@ -124,7 +124,7 @@ cat <<EOF2 >/opt/seccubus/etc/config.xml
 EOF2
 
 cd /opt/seccubus/
-bin/seccubus_passwd -u admin -p 'GiveMeVulns!'
+perl -I . bin/seccubus_passwd -u admin -p 'GiveMeVulns!'
 
 # Setup default environment
 echo >/etc/profile.d/seccubus.sh 'export PATH="$PATH:/opt/seccubus/bin"'
