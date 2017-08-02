@@ -34,6 +34,7 @@ We've fixed various bug and implemented some enhancements in this version.
 
 Enhancements
 ------------
+* #421 - Implemented a scoring system for SSLlabs findings
 * #477 - Finding coloring better reflects the urgency now
 * #464 - Scan objects in Nessus are now reused in stead of created from scratch
 * #500 - Added --cdn switch to testssl.sh too
