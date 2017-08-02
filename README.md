@@ -146,9 +146,10 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-x-x-2017 - v2.37 - Development release
-======================================
+2-8-2017 - v2.38 - Various fixes and improvements
+=================================================
 
+We've fixed various bug and implemented some enhancements in this version.
 
 Enhancements
 ------------

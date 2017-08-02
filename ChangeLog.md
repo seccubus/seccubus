@@ -27,6 +27,31 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+2-8-2017 - v2.38 - Various fixes and improvements
+=================================================
+
+We've fixed various bug and implemented some enhancements in this version.
+
+Enhancements
+------------
+* #421 - Implemented a scoring system for SSLlabs findings
+* #477 - Finding coloring better reflects the urgency now
+* #464 - Scan objects in Nessus are now reused in stead of created from scratch
+* #500 - Added --cdn switch to testssl.sh too
+* #504 - Changed container crontab shell for sh to bash
+* #506 - Allow cron email to be sent externally
+* #512 - New ssllabs finding httpForwarding
+* #522 - You can now configure which formats get exported from nessus
+
+Bug Fixes
+* #490 - --cdn switch doesn't work as expected
+* #491 - Help message of load_ivil didn't align nicely
+* #492 - Finding history wasn't showing in the GUI
+* #494 - Prototype mismatch warning in Nessus scanner
+* #502 - Incorrect path set when using CRON in a container
+* #507 - It is not longer possible to add duplicate users
+* #522 - Nessus scans now get correctly recycled or created
+
 29-6-2017 - v2.36 - TestSSL.sh release
 ======================================
 
