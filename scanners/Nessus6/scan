@@ -34,6 +34,8 @@ my (
     $user,
     $password,
     $password2,
+    @export,
+    $download,
     $server,
     $policy,
     $port,
@@ -53,7 +55,6 @@ my (
     $retries,
 );
 
-my @formats = qw(nessus pdf html);
 
 # Default values for command line values
 $help = 0;
@@ -72,6 +73,7 @@ GetOptions(
     'port=s'            => \$port,
     'hosts|h=s'         => \$hosts_file,
     'workspace|ws=s'    => \$workspace,
+    'export=s'          => \@export,
     'scan|sc=s'         => \$scan,
     'sleep=s'           => \$sleep,
     'nodelete'          => \$nodelete,
@@ -82,6 +84,32 @@ GetOptions(
     'quiet|q!'          => \$quiet,
     'help'              => \$help,
 );
+
+my @formats = qw(nessus html pdf);
+if ( @export ) {
+    @formats = ();
+    foreach my $format ( @export ) {
+        if ( $format =~ /^(nessus|html|pdf|csv|db)$/ ) {
+            unshift @formats, $format;
+        } else {
+            print "Ignoring invalid export format $format\n" unless $quiet;
+        }
+    }
+}
+my $nessus_format_found=0;
+foreach my $format ( @export ) {
+    if ( $format eq "nessus") {
+        $nessus_format_found = 1;
+        last;
+    }
+}
+unless ( $nessus_format_found ) {
+    print STDERR "You need to at least export the scan in nessus format";
+    help();
+}
+
+
+
 
 help() if $help;
 $verbose = 0 if $quiet;
@@ -214,12 +242,14 @@ foreach my $scan ( @{$json->{scans}} ) {
     }
 }
 if ( $sid ) {
-    $json = rest_put('/scans',encode_json($scandata),\$r);
+    print "Previous scan found, updating\n" if $verbose;
+    $json = rest_put("/scans/$sid",encode_json($scandata),\$r);
     die "Cannot update scan" if ($r->code() != 200);
 
     print "Updated scan $sid\n" if $verbose;
 } else {
-    $json = rest_post('/scans/{$sid}',encode_json($scandata),\$r);
+    print "Scan doesn't exist yet, creating\n" if $verbose;
+    $json = rest_post("/scans",encode_json($scandata),\$r);
     die "Cannot update scan" if ($r->code() != 200);
 
     $sid = $json->{scan}{id};
@@ -264,10 +294,10 @@ do {
 foreach my $format ( @formats ) {
     print "Exporting report in $format format\n" unless $quiet;
 
-        my $exportdata = {
-                'format'                =>      $format,
-                'chapters'                =>      "vuln_hosts_summary;vuln_by_host;compliance_exec;remediations;vuln_by_plugin;compliance",
-        };
+    my $exportdata = {
+        'format'    => $format,
+        'chapters'  => "vuln_hosts_summary;vuln_by_host;compliance_exec;remediations;vuln_by_plugin;compliance",
+    };
 
     $json = rest_post("/scans/$sid/export?history_id=$hid", encode_json($exportdata), \$r);
 
@@ -278,6 +308,7 @@ foreach my $format ( @formats ) {
         do {
             sleep(5);
             $json = rest_get("/scans/$sid/export/$filehandle/status", {}, \$r);
+            print Dumper $json;
             if ($r->code() eq 200) {
                 print "Scan export status: $json->{status}\n";
             } else {
@@ -357,7 +388,8 @@ Usage: scan       --user=<username> --password=<password> --server=<server> \\
                   --port=<portnumber> --policy=<policy name> \\
                   --hosts=<hosts file|hosts spec> \\
                   --workspace=<seccubus workspace> --scan=<seccubus scan>\\
-                  [--nodelete] [--verbose] [--quiet] [--help]
+                  [--export=(nessus|html|pdf|csv|db)] [--nodelete] \\
+                  [--verbose] [--quiet] [--help]
 --user (-u)       - Nessus username
 --password (-p)   - Nessus password
 --server (-s)     - Nessus server (ip or name)
@@ -368,6 +400,11 @@ Usage: scan       --user=<username> --password=<password> --server=<server> \\
                     specification
 --workspace (-ws) - Seccubus workspace the scan in in
 --scan (-sc)      - Seccubus scan the data should be saved in
+--export          - Export the scan in these formats (specify more then once
+                    for more formats), currently supported formats are:
+                    nessus, html, pdf, csv, db. Your server may not support them
+                    all. NOTE: you need to export the nessus format for Seccubus
+                    to work properly.
 --nodelete        - Don't erase temporary files
 --nosslcheck      - Don't validate Nessus' TLS certificate Common Name
                     (default: true when port is 8834 false when port is 443)
@@ -437,7 +474,7 @@ sub rest_put {
     my $response = shift;
     my $nojson = shift;
 
-    rest_call("post",$uri, $params,$response,$nojson,$retries);
+    rest_call("put",$uri, $params,$response,$nojson,$retries);
 }
 
 sub rest_delete {
@@ -471,7 +508,7 @@ sub rest_call {
 
     my $r;
     if ( $method eq "post" ) {
-        if ( $verbose > 2 ) {
+        if ( $verbose > 1 ) {
             print "POST to https://$server:$port$uri\nParams:\n";
             print Dumper $param;
         }
@@ -485,7 +522,7 @@ sub rest_call {
             $r = $ua->request($req);
         }
     } elsif ( $method eq "put" ) {
-        if ( $verbose > 2 ) {
+        if ( $verbose > 1 ) {
             print "PUT to https://$server:$port$uri\nParams:\n";
             print Dumper $param;
         }
@@ -504,10 +541,10 @@ sub rest_call {
             $geturi .= $key . "=" . $param->{$key} . "&";
         }
         $geturi =~ s/\&$//;
-        print "GET to https://$server:$port$geturi\n" if $verbose > 2;
+        print "GET to https://$server:$port$geturi\n" if $verbose > 1;
         $r = $ua->get("https://$server:$port$geturi");
     } elsif ( $method eq "delete" ) {
-        print "DELETE to https://$server:$port$uri\n" if $verbose > 2;
+        print "DELETE to https://$server:$port$uri\n" if $verbose > 1;
         if ( defined $ua->{delete} ) {
             $r = $ua->delete("https://$server:$port$uri", $param);
         } else {

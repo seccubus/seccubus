@@ -1,5 +1,5 @@
 <!--
-Copyright 2014 Alex Smirnoff (arkenoi), Frank Breedijk, Artien Bel (Ar0xA)
+Copyright 2014-2017 Alex Smirnoff (arkenoi), Frank Breedijk, Artien Bel (Ar0xA)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ This scanner takes the following parameters:
 	<li>--port		<br> Nessus server port
 	<li>--policy	  <br> Name of Nessus policy
 	<li>--hosts		  <br> Specification of hosts to scan. Follows the Nessus rules for specifying hosts, or path to a file containing such specification
+    <li>--export=(nessus|html|pdf|csv|db) <br> Export and attach scan in this format. Can be specified more then once. Some formats may not be supported by all scanners
+    <li>--(no)sslcheck<br>Do (not) check the ssl certificate of the server
 </ul>
 You must use --hosts @HOSTS
 <p>
