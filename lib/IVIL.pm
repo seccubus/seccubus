@@ -389,6 +389,10 @@ sub ivil_finding {
 	my $finding = shift;
 	my $block = "";
 
+    if ( $finding->{severity} < 0 || $finding->{severity} > 4 ) {
+        confess "Invaliod severity for finding " . Dumper $finding;
+    }
+
 	$block .= "\t\t<finding>\n";
 	$block .= "\t\t\t<ip>$finding->{ip}<\/ip>\n";
 	$block .= "\t\t\t<hostname>$finding->{hostname}<\/hostname>\n";

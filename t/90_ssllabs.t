@@ -206,7 +206,7 @@ foreach my $host ( qw(www.seccubus.com www.schubergphilis.com www.cupfighter.net
     cmp_ok($hosts->{$host}, '>', 0, "Has findigns for $host");
     delete $hosts->{$host};
 }
-is(keys %$hosts, 0, "Has no findings for other hosts: " . sort keys %$hosts);
+is(keys %$hosts, 0, "Has no findings for other hosts: " . join("\n", sort keys %$hosts));
 
 
 done_testing();
