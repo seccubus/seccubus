@@ -97,7 +97,7 @@ if ( @export ) {
     }
 }
 my $nessus_format_found=0;
-foreach my $format ( @export ) {
+foreach my $format ( @formats ) {
     if ( $format eq "nessus") {
         $nessus_format_found = 1;
         last;
