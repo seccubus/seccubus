@@ -14,7 +14,7 @@ Get you lab number from your instructor. You can access you lab via the followin
 <table>
     <thead>
         <tr>
-            <th>What?</th><th>External</th><td>Internal</th>
+            <th>What?</th><th>External</th><th>Internal</th>
         </tr>
     </thead>
     <tbody>
