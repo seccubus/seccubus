@@ -33,9 +33,9 @@ machine:
     PERL5LIB: /home/ubuntu/perl5/lib/perl5
 
 ## Customize checkout
-#checkout:
-#  post:
-#    - git fetch --unshallow
+checkout:
+  post:
+    - git fetch --unshallow
 
 ## Customize dependencies
 dependencies:
