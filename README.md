@@ -156,4 +156,4 @@ Enhancements
 
 Bug Fixes
 ---------
-* #542 - Docker broken
+* #536 - Seccubus did not install on debian because openssl passphrase was too short (also effected docker container)
