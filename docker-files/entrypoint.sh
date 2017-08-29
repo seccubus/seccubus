@@ -66,8 +66,8 @@ if [[ "$TLS" == "yes" && "$STACK" != "cron" && "$STACK" != "perl" ]]; then
             echo "$TLSCERT" > "/opt/seccubus/data/seccubus.pem"
             echo "$TLSKEY" > "/opt/seccubus/data/seccubus.key"
         else
-            openssl genrsa -des3 -passout pass:x -out /opt/seccubus/data/seccubus.pass.key 4096
-            openssl rsa -passin pass:x -in /opt/seccubus/data/seccubus.pass.key -out /opt/seccubus/data/seccubus.key
+            openssl genrsa -des3 -passout pass:x12345 -out /opt/seccubus/data/seccubus.pass.key 4096
+            openssl rsa -passin pass:x12345 -in /opt/seccubus/data/seccubus.pass.key -out /opt/seccubus/data/seccubus.key
             rm /opt/seccubus/data/seccubus.pass.key
             openssl req -new -key /opt/seccubus/data/seccubus.key -out /opt/seccubus/data/seccubus.csr \
                 -subj "/CN=Seccubus"
