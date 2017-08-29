@@ -201,7 +201,7 @@ if [[ "$STACK" == "full" ||  "$STACK" == "api" || "$STACK" == "web" ]] ; then
 
     # We need to start mojolicious
     cd /opt/seccubus
-    hypnotoad seccubus.pl
+    PERL5LIB=/opt/seccubus hypnotoad seccubus.pl
 fi
 
 
