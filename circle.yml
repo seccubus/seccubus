@@ -35,7 +35,7 @@ machine:
 ## Customize checkout
 checkout:
   post:
-    - [ -e .git/shallow ] && git fetch --unshallow
+    - if [ -e .git/shallow ]; then git fetch --unshallow; fi
 
 ## Customize dependencies
 dependencies:
