@@ -1,0 +1,13 @@
+#!/bin/bash
+
+CIRCLE_NODE_TOTAL=${CIRCLE_NODE_TOTAL:-'1'}
+CIRCLE_NODE_INDEX=${CIRCLE_NODE_INDEX:-'0'}
+
+testfiles=$(ls t/*.t|sort|awk "NR % ${CIRCLE_NODE_TOTAL} == ${CIRCLE_NODE_INDEX}")
+
+if [ -z "$testfiles" ]
+then
+    echo "more parallelism than tests"
+else
+    prove -I lib $testfiles
+fi
