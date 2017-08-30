@@ -60,7 +60,7 @@ test:
     - mysql -e "create database seccubus"
     - mysql -e "create database seccubus_create"
     - mysql -e "create database seccubus_upgrade"
-    - prove -I lib 
+    - prove -I lib: 
       - parallel: true
       - files:
         - t/0*
