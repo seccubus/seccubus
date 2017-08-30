@@ -60,7 +60,7 @@ database:
 ## Customize test commands
 test:
   override:
-    - t/parallel
+    - prove -I lib
   post:
     - ./build_all
     - mkdir $CIRCLE_ARTIFACTS/tarball
