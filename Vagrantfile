@@ -114,11 +114,21 @@ Vagrant.configure("2") do |config|
     f.vm.network "forwarded_port", guest: 8443, host: 817, host_ip: "127.0.0.1"
     f.vm.box = "bento/ubuntu-16.04"
   end
+  
+  config.vm.define "d8" do |f|
+    f.vm.network "forwarded_port", guest: 8443, host: 838, host_ip: "127.0.0.1"
+    f.vm.box = "bento/debian-8.2"
+  end
 
-  #config.vm.define "u17" do |f|
-  #  f.vm.network "forwarded_port", guest: 8443, host: 817, host_ip: "127.0.0.1"
-  #  f.vm.box = "bento/ubuntu-17.04"
-  #end
+  config.vm.define "d9" do |f|
+    f.vm.network "forwarded_port", guest: 8443, host: 839, host_ip: "127.0.0.1"
+    f.vm.box = "bento/debian-9.0"
+  end
+
+  config.vm.define "c7" do |f|
+    f.vm.network "forwarded_port", guest: 8834, host: 18834, host_ip: "127.0.0.1"
+    f.vm.box = "bento/centos-7.3"
+  end
 
 
 end
