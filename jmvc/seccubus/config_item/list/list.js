@@ -48,12 +48,20 @@ $.Controller('Seccubus.ConfigItem.List',
 	 * @return undefined
 	 */
 	init : function(){
-		this.element.html(this.view('init',Seccubus.Models.ConfigItem.findAll({},this.callback("changed"))) )
+		this.element.html(
+            this.view(
+                "init",
+                Seccubus.Models.ConfigItem.findAll(
+                    {},
+                    this.callback("changed")
+                )
+            )
+        );
 	},
     changed: function(tests) {
         var ok = true;
         for (var i =0; i < tests.length && ok; i++ ) {
-            if ( tests[i].result == "Error"  ) {
+            if ( tests[i].result === "Error"  ) {
                 ok = false;
             }
         }
