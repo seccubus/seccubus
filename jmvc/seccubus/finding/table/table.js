@@ -197,7 +197,12 @@ steal(
              * @attribute options.noUnlink
              * Boolean that turns the unlink button for a issue off
              */
-            noIssueUnlink    : false
+            noIssueUnlink    : false,
+            /*
+             * @attribute options.issue
+             * The issue object currently being edited
+             */
+            editedIssue      : null
         }
     },
     /** @Prototype */
@@ -352,9 +357,12 @@ steal(
             ev.preventDefault();
             var find = el.closest(".finding").model();
             var issue = new Seccubus.Models.Issue;
-            //issue.attr("issue_id",this.options.issue);
+            if ( this.options.editedIssue !== null ) {
+                issue = this.options.editedIssue
+            }
             issue.attr("workspace",this.options.workspace);
             issue.attr("findings_remove",[find.id]);
+            console.log(issue);
             issue.save();
         },
         ".unlinkIssue click" : function(el,ev) {
