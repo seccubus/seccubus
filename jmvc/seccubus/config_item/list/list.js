@@ -37,7 +37,7 @@ $.Controller('Seccubus.ConfigItem.List',
          */
         onChange : function(ok) {
             console.log("Seccubus.ConfigItem.List: config ok? : " + ok);
-        },
+        }
     }
 },
 /** @Prototype */
