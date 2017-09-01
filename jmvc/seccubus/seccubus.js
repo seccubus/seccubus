@@ -136,21 +136,10 @@ steal(
             console.log("admins state changed");
             update_tabs_admin();
         });
-
-        /***********************************************************
-         * Let's see how we are logged in
-         **********************************************************/
-//bla        Seccubus.Models.Session.findOne(
-//bla            {},
-//bla            function(s){
-//bla                console.log("This is our current session");
-//bla                console.log(s);
-//bla                gui_state.attr("username",s.username);
-//bla                gui_state.attr("isAdmin",s.isAdmin);
-//bla                gui_state.attr("session",s);
-//bla            }
-//bla        );
-
+        gui_state.bind("isOk", function(ev, isOk){
+            console.log("config status changed");
+            update_tabs_user();
+        });
 
         /***********************************************************
          * Hook into findings model to update findings view that
@@ -221,7 +210,12 @@ steal(
             $('#up_to_dates').seccubus_up_to_date_list("init");
 
             // ConfigItem status
-            $('#config_items').seccubus_config_item_list("init");
+            //$('#config_items').seccubus_config_item_list("init");
+            $('#config_items').seccubus_config_item_list({
+                onChange : function(ok) {
+                    gui_state.attr("isOk",ok);
+                }
+            });
 
             // Workspaces
             $('.workspaceSelector').each( function() {
@@ -374,7 +368,11 @@ steal(
                 loggedIn = "hide";
                 // Login - tab 0
                 $('#navTab').seccubus_tabs("show", 0);
-                $('#navTab').seccubus_tabs("clickOn", 0);
+                if ( gui_state.attr("isOk") ) {
+                    $('#navTab').seccubus_tabs("clickOn", 0);
+                } else {
+                    $('#navTab').seccubus_tabs("clickOn", 1);
+                }
                 $('#logout').hide();
             } else {
                 // Login - tab 0

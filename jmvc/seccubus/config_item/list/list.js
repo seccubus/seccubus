@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2011-2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ steal( 'jquery/controller',
 	   'jquery/view/ejs',
 	   'jquery/controller/view',
 	   'seccubus/models' )
-.then( './views/init.ejs', 
-       './views/config_item.ejs', 
+.then( './views/init.ejs',
+       './views/config_item.ejs',
        function($){
 
 /**
@@ -30,7 +30,15 @@ steal( 'jquery/controller',
 $.Controller('Seccubus.ConfigItem.List',
 /** @Static */
 {
-	defaults : {}
+	defaults : {
+        /*
+         * @attribute options.onOk
+         * Function that is called there are no error in the config
+         */
+        onChange : function(ok) {
+            console.log("Seccubus.ConfigItem.List: config ok? : " + ok);
+        }
+    }
 },
 /** @Prototype */
 {
@@ -40,8 +48,25 @@ $.Controller('Seccubus.ConfigItem.List',
 	 * @return undefined
 	 */
 	init : function(){
-		this.element.html(this.view('init',Seccubus.Models.ConfigItem.findAll()) )
-	}
+		this.element.html(
+            this.view(
+                "init",
+                Seccubus.Models.ConfigItem.findAll(
+                    {},
+                    this.callback("changed")
+                )
+            )
+        );
+	},
+    changed: function(tests) {
+        var ok = true;
+        for (var i =0; i < tests.length && ok; i++ ) {
+            if ( tests[i].result === "Error"  ) {
+                ok = false;
+            }
+        }
+        this.options.onChange(ok);
+    }
 });
 
 });

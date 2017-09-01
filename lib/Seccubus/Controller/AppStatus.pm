@@ -170,7 +170,7 @@ sub read {
     if ( $valid ) {
         push @$json, {name => "Authentication", message => "You are logged in: $message", result => 'OK'};
     } else {
-        push @$json, {name => "Authentication", message => "You are not in: $message", result => 'Error'};
+        push @$json, {name => "Authentication", message => "You are not in: $message", result => 'Warn'};
     }
 
 	##### Test SMTP config

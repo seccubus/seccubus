@@ -115,7 +115,11 @@ $.Model('Seccubus.GuiState',
      * Determines if the user sees admin level functions in the gui
      * actual permissions are still checked in the backend
      */
-        isAdmin     : false
+        isAdmin     : false,
+    /* @attribute isOk
+     * True if config test passed ok, false if it didn't.
+     */
+        isOk        : false
     }
 
 },

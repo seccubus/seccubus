@@ -152,6 +152,7 @@ x-x-2017 - v2.39 - Development release
 
 Enhancements
 ------------
+# #539 - Status tab will become the default instead of the login tab if there is a config issue
 
 
 Bug Fixes
