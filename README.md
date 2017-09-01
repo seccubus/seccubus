@@ -158,3 +158,6 @@ Bug Fixes
 ---------
 * #536 - Seccubus did not install on debian because openssl passphrase was too short (also effected docker container)
 * #542 - Docker broken
+* #548 - Notifications editor did not work correctly
+* #549 - Deleting notifications did not work correctly
+

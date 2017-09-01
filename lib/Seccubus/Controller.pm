@@ -29,7 +29,7 @@ sub new {
 
 	my $self = $class->SUPER::new(@_);
 
-    # Set up cookiers
+    # Set up cookies
     $self->session(expiration => 900);
 
     my $config = get_config();
@@ -38,9 +38,10 @@ sub new {
     my $req = $self->req();
 
     # CSRF protection
-    if ( $req->{method} && $req->{method} ne "GET" ) {
+    if ( $req->{method} && $req->{method} ne "GET" && $req->{method} ne "DELETE" ) {
         # GET methods are considered safe...
-        # POST requests should be application/json which cannot be generated with CSRF techniques
+        # DELETE requests cannot be made with CSRF techniques
+        # POST/PUT requests should be application/json which cannot be generated with CSRF techniques
         # without violating same-origin policies
         if (
             ( ! $req->{content}->{headers}->header('content-type') ) ||

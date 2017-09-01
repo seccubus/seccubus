@@ -65,7 +65,7 @@ $.Controller('Seccubus.Notification.Edit',
 			)
 		);
 		$('#editNotTrigger').seccubus_event_select({
-			selected : this.options.notification.event_id
+			selected : this.options.notification.trigger
 		});
 	},
 	submit : function(el, ev){
@@ -89,13 +89,15 @@ $.Controller('Seccubus.Notification.Edit',
 		if ( ok ) {
 			this.element.find('[type=submit]').val('Updating...')
 
-			notification = this.options.notification;
-			notification.subject = params.subject;
-			notification.event_id = params.trigger;
-			notification.recipients = params.recipients;
-			notification.message = params.message;
+			//notification = this.options.notification;
+			this.options.notification.subject = params.subject;
+			this.options.notification.trigger = params.trigger;
+			this.options.notification.recipients = params.recipients;
+			this.options.notification.message = params.message;
+            //this.options.notification = notification;
+            console.log(this.options.notification);
 
-			notification.save(this.callback('saved'));
+			this.options.notification.save(this.callback('saved'));
 		} else {
 			this.nok(elements);
 		}
