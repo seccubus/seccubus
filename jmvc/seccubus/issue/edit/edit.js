@@ -112,7 +112,8 @@ $.Controller('Seccubus.Issue.Edit',
 				noFindingUnlink
 							: false,
 				noIssueUnlink
-							: true
+							: true,
+                editedIssue : this.options.issue
 			});
 		}
 	},

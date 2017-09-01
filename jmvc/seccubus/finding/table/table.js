@@ -197,7 +197,12 @@ steal(
              * @attribute options.noUnlink
              * Boolean that turns the unlink button for a issue off
              */
-            noIssueUnlink    : false
+            noIssueUnlink    : false,
+            /*
+             * @attribute options.issue
+             * The issue object currently being edited
+             */
+            editedIssue      : null
         }
     },
     /** @Prototype */
@@ -352,9 +357,12 @@ steal(
             ev.preventDefault();
             var find = el.closest(".finding").model();
             var issue = new Seccubus.Models.Issue;
-            //issue.attr("issue_id",this.options.issue);
+            if ( this.options.editedIssue !== null ) {
+                issue = this.options.editedIssue;
+            }
             issue.attr("workspace",this.options.workspace);
             issue.attr("findings_remove",[find.id]);
+            console.log(issue);
             issue.save();
         },
         ".unlinkIssue click" : function(el,ev) {
@@ -371,8 +379,8 @@ steal(
             ev.preventDefault();
             var issue = Seccubus.Models.Issue.findOne(
                 {
-                    workspaceId    : this.options.workspace,
-                    issueId        : el.attr("issueId")
+                    workspace      : this.options.workspace,
+                    id             : el.attr("issueId")
                 },
                 this.options.onIssueEdit
             );
@@ -383,7 +391,7 @@ steal(
             var newState = $(el).attr("value");
             var finding = el.closest(".finding").model();
             finding.attr("status",newState);
-            finding.attr("workspaceId",this.options.workspace);
+            finding.attr("workspace",this.options.workspace);
             finding.attr("overwrite",1);
             finding.save();
         },

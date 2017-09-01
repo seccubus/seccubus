@@ -31,7 +31,7 @@ $.Model('Seccubus.Models.Issue',
 	 * @return {Deferred} Deferred with all issues in it
 	 */
     findAll: api("workspace/{workspace}/issues"),
-  	//findOne: api("workspace/{workspace}/issue/{id}"),
+  	findOne: api("workspace/{workspace}/issue/{id}"),
     create  : createApi("workspace/{workspace}/issues"),
 
 	/*
