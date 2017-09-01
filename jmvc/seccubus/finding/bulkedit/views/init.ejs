@@ -1,4 +1,4 @@
-<%# Copyright 2017 Frank Breedijk                                            %>
+<%# Copyright 2012-2017 Frank Breedijk                                       %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -16,7 +16,7 @@
 <label for='append'>Append:</label><input type='checkbox' name='append' checked></input>
 <input type=hidden name='status' id='bulkEditStatus' value='<%= status %>'/>
 <input type=button newStatus=<%= status %> value='Update' class='bulkSetStatus'/>
-<input type=button value='Link to isse' class='bulkLink'/>
+<input type=button value='Link to issue' class='bulkLink'/>
 <% if ( status == 99) { %>
 	<input type=button newStatus=1 value='Set to New' class='bulkSetStatus'/>
 <% }  %>
