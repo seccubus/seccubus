@@ -101,7 +101,6 @@ $.Controller('Seccubus.Notification.Table',
 		var not = el.closest('.notification').model();
         not.workspace = this.options.workspace;
         not.scan = this.options.scan;
-        console.log(not);
 		this.options.onEdit(not);
 	},
 	".destroy click" : function(el, ev) {

@@ -94,8 +94,6 @@ $.Controller('Seccubus.Notification.Edit',
 			this.options.notification.trigger = params.trigger;
 			this.options.notification.recipients = params.recipients;
 			this.options.notification.message = params.message;
-            //this.options.notification = notification;
-            console.log(this.options.notification);
 
 			this.options.notification.save(this.callback('saved'));
 		} else {
