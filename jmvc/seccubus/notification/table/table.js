@@ -99,6 +99,8 @@ $.Controller('Seccubus.Notification.Table',
 	".edit click" : function(el,ev) {
 		ev.preventDefault();
 		var not = el.closest('.notification').model();
+        not.workspace = this.options.workspace;
+        not.scan = this.options.scan;
 		this.options.onEdit(not);
 	},
 	".destroy click" : function(el, ev) {
