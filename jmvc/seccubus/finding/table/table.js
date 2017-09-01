@@ -358,7 +358,7 @@ steal(
             var find = el.closest(".finding").model();
             var issue = new Seccubus.Models.Issue;
             if ( this.options.editedIssue !== null ) {
-                issue = this.options.editedIssue
+                issue = this.options.editedIssue;
             }
             issue.attr("workspace",this.options.workspace);
             issue.attr("findings_remove",[find.id]);
