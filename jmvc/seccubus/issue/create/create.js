@@ -104,9 +104,9 @@ steal(
                 var issue = new Seccubus.Models.Issue(param);
                 issue.attr("status", newState);
                 issue.attr("workspace", this.options.workspace);
-                issue.attr("findingIds[]", []);
+                issue.attr("findings_add", []);
                 for ( i=0;i < this.options.findings.length;i++) {
-                    issue.attr("findingIds[]").push(this.options.findings[i].id);
+                    issue.attr("findings_add").push(this.options.findings[i].id);
                 }
                 issue.save(this.callback("saved"));
             } else {
