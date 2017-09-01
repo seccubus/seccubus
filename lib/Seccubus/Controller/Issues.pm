@@ -62,10 +62,71 @@ sub create {
 }
 
 # Read
-#sub read {
-#    my $self = shift;
-#
-#}
+sub read {
+    my $self = shift;
+
+    my $config = get_config();
+
+    my $workspace_id = $self->param('workspace_id');
+    my $id = $self->param('id');
+
+    if ( $workspace_id + 0 ne $workspace_id ) {
+        $self->error("WorkspaceId is not numeric");
+    };
+    if ( $id + 0 ne $id ) {
+        $self->error("Id is not numeric");
+    };
+
+    eval {
+        my @data;
+        my $issues;
+        $issues = get_issues($workspace_id, $id, undef, undef);
+
+        foreach my $row ( @$issues ) {
+            my $url = "";
+            if ( $config->{tickets}->{url_head} ) {
+                $url = $config->{tickets}->{url_head} . $$row[2] . $config->{tickets}->{url_tail};
+            }
+            push (@data, {
+                'id'            => $$row[0],
+                'name'          => $$row[1],
+                'ext_ref'       => $$row[2],
+                'description'   => $$row[3],
+                'severity'      => $$row[4],
+                'severityName'  => $$row[5],
+                'status'        => $$row[6],
+                'statusName'    => $$row[7],
+                'url'           => $url,
+            });
+        }
+        foreach my $issue ( @data ) {
+            my $findings_in = get_findings($workspace_id, undef, undef, { 'issue' => $issue->{id} } );
+            my $findings_out = [];
+            foreach my $row ( @$findings_in ) {
+                push ( @$findings_out, {
+                    'id'            => $$row[0],
+                    'host'          => $$row[1],
+                    'hostName'      => $$row[2],
+                    'port'          => $$row[3],
+                    'plugin'        => $$row[4],
+                    'find'          => $$row[5],
+                    'remark'        => $$row[6],
+                    'severity'      => $$row[7],
+                    'severityName'  => $$row[8],
+                    'status'        => $$row[9],
+                    'statusName'    => $$row[10],
+                    'scanId'        => $$row[11],
+                    'scanName'      => $$row[12],
+                });
+            }
+            $issue->{findings} = $findings_out;
+        }
+        $self->render( json => $data[0] );
+    } or do {
+        $self->error(join "\n", $@);
+    };
+
+}
 
 # List
 sub list {

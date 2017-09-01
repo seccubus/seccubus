@@ -146,6 +146,7 @@ sub startup {
 
     # Issues
     $auth_api->post  ('api/workspace/:workspace_id/issues')->to('issues#create');
+    $auth_api->get   ('api/workspace/:workspace_id/issue/:id')->to('issues#read');
     $auth_api->get   ('api/workspace/:workspace_id/issues')->to('issues#list');
     $auth_api->put   ('api/workspace/:workspace_id/issue/:id')->to('issues#update');
 

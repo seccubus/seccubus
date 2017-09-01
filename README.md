@@ -157,6 +157,8 @@ Enhancements
 
 Bug Fixes
 ---------
+* #499 - Status change buttons in findings grid not working
+* #529 - No all buttons were working correctly when working with linked issues
 * #536 - Seccubus did not install on debian because openssl passphrase was too short (also effected docker container)
 * #542 - Docker broken
 * #548 - Notifications editor did not work correctly
