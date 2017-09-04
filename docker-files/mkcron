@@ -33,6 +33,8 @@ if ( -e "/opt/seccubus/data/crontab" ) {
     print "Setting SHELL=/bin/bash in cron\n";
     print $CRON "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/seccubus/bin:/opt/nikto/program:/opt/testssl.sh\n";
     print "Setting PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/seccubus/bin:/opt/nikto/program:/opt/testssl.sh in cron\n";
+    print $CRON "PERL5LIB=/opt/seccubus:/opt/seccubus/lib\n";
+    print "Setting PERL5LIB=/opt/seccubus:/opt/seccubus/lib in cron\n";
 	foreach my $key ( sort keys %ENV ) {
 		if ( $key =~ /^CRON_/ ) {
 			my $line = $ENV{$key};
