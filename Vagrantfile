@@ -91,37 +91,37 @@ Vagrant.configure("2") do |config|
   # SHELL
 
   config.vm.define "f24" do |f|
-    f.vm.network "forwarded_port", guest: 8443, host: 824, host_ip: "127.0.0.1"
+    f.vm.network "forwarded_port", guest: 8443, host: 8824, host_ip: "127.0.0.1"
     f.vm.box = "bento/fedora-24"
   end
 
   config.vm.define "f25" do |f|
-    f.vm.network "forwarded_port", guest: 8443, host: 825, host_ip: "127.0.0.1"
+    f.vm.network "forwarded_port", guest: 8443, host: 8825, host_ip: "127.0.0.1"
     f.vm.box = "bento/fedora-25"
   end
 
   #config.vm.define "f26" do |f|
-  #  f.vm.network "forwarded_port", guest: 8443, host: 826, host_ip: "127.0.0.1"
+  #  f.vm.network "forwarded_port", guest: 8443, host: 8826, host_ip: "127.0.0.1"
   #  f.vm.box = "bento/fedora-26"
   #end
 
   config.vm.define "u14" do |f|
-    f.vm.network "forwarded_port", guest: 8443, host: 817, host_ip: "127.0.0.1"
+    f.vm.network "forwarded_port", guest: 8443, host: 8814, host_ip: "127.0.0.1"
     f.vm.box = "bento/ubuntu-14.04"
   end
 
   config.vm.define "u16" do |f|
-    f.vm.network "forwarded_port", guest: 8443, host: 817, host_ip: "127.0.0.1"
+    f.vm.network "forwarded_port", guest: 8443, host: 8816, host_ip: "127.0.0.1"
     f.vm.box = "bento/ubuntu-16.04"
   end
-  
+
   config.vm.define "d8" do |f|
-    f.vm.network "forwarded_port", guest: 8443, host: 838, host_ip: "127.0.0.1"
+    f.vm.network "forwarded_port", guest: 8443, host: 8808, host_ip: "127.0.0.1"
     f.vm.box = "bento/debian-8.2"
   end
 
   config.vm.define "d9" do |f|
-    f.vm.network "forwarded_port", guest: 8443, host: 839, host_ip: "127.0.0.1"
+    f.vm.network "forwarded_port", guest: 8443, host: 8809, host_ip: "127.0.0.1"
     f.vm.box = "bento/debian-9.0"
   end
 

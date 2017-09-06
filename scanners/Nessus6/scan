@@ -128,10 +128,6 @@ if ( $sslcheck ) {
     $checkssl = 0;
 }
 
-# Disable SSL checking if needed
-$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = $checkssl;
-
-
 my $config = get_config();
 
 if ( ! $hosts_file ) {
@@ -495,6 +491,7 @@ sub rest_call {
     my $retries = shift;
 
     my $ua = LWP::UserAgent->new();
+    $ua->ssl_opts( SSL_verify_mode => 0 ) unless $checkssl;
     $ua->agent("Seccubus $SeccubusV2::VERSION ");
 
     $ua->default_header('Content-Type' => 'application/json');
