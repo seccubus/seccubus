@@ -160,7 +160,7 @@ Bug Fixes
 * #499 - Status change buttons in findings grid not working
 * #529 - No all buttons were working correctly when working with linked issues
 * #536 - Seccubus did not install on debian because openssl passphrase was too short (also effected docker container)
-* #539 - Fixed an error that prevented connections to a Nessus instance with a self signed certificate on certain OSes
+* #534 - Fixed an error that prevented connections to a Nessus instance with a self signed certificate on certain OSes
 * #542 - Docker broken
 * #548 - Notifications editor did not work correctly
 * #549 - Deleting notifications did not work correctly
