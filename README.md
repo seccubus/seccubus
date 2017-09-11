@@ -165,4 +165,4 @@ Bug Fixes
 * #548 - Notifications editor did not work correctly
 * #549 - Deleting notifications did not work correctly
 * #559 - PERL5LIB path was not set in cron container
-
+* #563 - Removed some dedub output

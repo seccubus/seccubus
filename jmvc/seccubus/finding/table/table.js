@@ -427,7 +427,6 @@ steal(
                     )
                 );
             } else {
-                console.log("Not the same");
                 if ( ! finding.bulk ) {
                     this.updateView();
                 }
