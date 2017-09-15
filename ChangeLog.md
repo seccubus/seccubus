@@ -27,6 +27,33 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+15-9-2017 - v2.40 - Fixes and improvements
+==========================================
+
+This release mainly fixes installation issues on Debian and issue in docker that are due to the PERL5LIB path
+that doesn't include the current directory anymore.
+It also fixes the issue where people were unable to connect to a Nessus instance with a self signed certificate
+that was trigged by altered behaviour of a perl library.
+I've also fixed and tweaked the user interface a bit.
+
+
+Enhancements
+------------
+# #539 - Status tab will become the default instead of the login tab if there is a config issue
+
+
+Bug Fixes
+---------
+* #499 - Status change buttons in findings grid not working
+* #529 - No all buttons were working correctly when working with linked issues
+* #536 - Seccubus did not install on debian because openssl passphrase was too short (also effected docker container)
+* #534 - Fixed an error that prevented connections to a Nessus instance with a self signed certificate on certain OSes
+* #542 - Docker broken
+* #548 - Notifications editor did not work correctly
+* #549 - Deleting notifications did not work correctly
+* #559 - PERL5LIB path was not set in cron container
+* #563 - Removed some dedug output
+
 2-8-2017 - v2.38 - Various fixes and improvements
 =================================================
 

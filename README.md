@@ -146,8 +146,14 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-x-x-2017 - v2.39 - Development release
-=================================================
+15-9-2017 - v2.40 - Fixes and improvements
+==========================================
+
+This release mainly fixes installation issues on Debian and issue in docker that are due to the PERL5LIB path
+that doesn't include the current directory anymore.
+It also fixes the issue where people were unable to connect to a Nessus instance with a self signed certificate
+that was trigged by altered behaviour of a perl library.
+I've also fixed and tweaked the user interface a bit.
 
 
 Enhancements
