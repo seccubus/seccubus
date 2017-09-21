@@ -146,29 +146,16 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-15-9-2017 - v2.40 - Fixes and improvements
+xx-x-2017 - v2.41 - Developement release
 ==========================================
-
-This release mainly fixes installation issues on Debian and issue in docker that are due to the PERL5LIB path
-that doesn't include the current directory anymore.
-It also fixes the issue where people were unable to connect to a Nessus instance with a self signed certificate
-that was trigged by altered behaviour of a perl library.
-I've also fixed and tweaked the user interface a bit.
+Fixes a big issue with the validation of SSL certificates. Certificate validation was cnot correctly turned off in the Nessus scanner
 
 
 Enhancements
 ------------
-# #539 - Status tab will become the default instead of the login tab if there is a config issue
+* None
 
 
 Bug Fixes
 ---------
-* #499 - Status change buttons in findings grid not working
-* #529 - No all buttons were working correctly when working with linked issues
-* #536 - Seccubus did not install on debian because openssl passphrase was too short (also effected docker container)
-* #534 - Fixed an error that prevented connections to a Nessus instance with a self signed certificate on certain OSes
-* #542 - Docker broken
-* #548 - Notifications editor did not work correctly
-* #549 - Deleting notifications did not work correctly
-* #559 - PERL5LIB path was not set in cron container
-* #563 - Removed some dedub output
+* #572 - Issues with disabling SSL verification in Nessus

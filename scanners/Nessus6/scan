@@ -48,7 +48,6 @@ my (
     $quiet,
     $sleep,
     $cmd,
-    $nosslcheck,
     $sslcheck,
     $token,
     $r,
@@ -61,7 +60,7 @@ $help = 0;
 $quiet = 0;
 $sleep = 10;
 $verbose = 0;
-$nosslcheck = 0;
+$sslcheck=2;
 $retries = 3;
 
 GetOptions(
@@ -77,7 +76,6 @@ GetOptions(
     'scan|sc=s'         => \$scan,
     'sleep=s'           => \$sleep,
     'nodelete'          => \$nodelete,
-    'nosslcheck!'       => \$nosslcheck,
     'sslcheck!'         => \$sslcheck,
     'retries'           => \$retries,
     'verbose|v+'        => \$verbose,
@@ -118,9 +116,9 @@ $port = 8834 unless $port;               # Default port is 8834
 $password = $password2 unless $password; # Equalize the use of --pw
 
 my $checkssl = 1;
-if ( $sslcheck ) {
+if ( $sslcheck == 1 ) {
     $checkssl = 1;
-} elsif ( $nosslcheck ) {
+} elsif ( $sslcheck == 0 ) {
     $checkssl = 0;
 } elsif ( $port == 443 ) {
     $checkssl = 1;
@@ -490,6 +488,7 @@ sub rest_call {
     my $nojson = shift;
     my $retries = shift;
 
+    $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0 unless $checkssl;
     my $ua = LWP::UserAgent->new();
     $ua->ssl_opts( SSL_verify_mode => 0 ) unless $checkssl;
     $ua->agent("Seccubus $SeccubusV2::VERSION ");
