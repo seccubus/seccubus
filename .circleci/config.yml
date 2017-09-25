@@ -10,6 +10,4 @@ jobs:
 
     steps:
       - checkout
-      - run:
-        command: |
-          prove
+      - run: prove
