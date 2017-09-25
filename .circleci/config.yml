@@ -1,36 +1,35 @@
 version: 2
-
 jobs:
-    deps:
-        docker:
-            - image: perl:latest
-
-    steps:
-        - checkout
-        - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
-
-prove:
+  deps:
     docker:
-        - image: perl:latest
+      - image: perl:latest
 
     steps:
-        - checkout
-        - run: apt-get update
-        - run: apt-get -y install build-essential mysql-server
-        - restore_cache:
-            key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-        - run: cpanm --installdeps --notest .
-        - save_cache:
-            key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-            paths:
-                - "/usr/local/lib/perl5/site_perl"
-        - run: mysql -e "create database seccubus"
-        - run: prove
+      - checkout
+      - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
+
+  prove:
+    docker:
+      - image: perl:latest
+
+    steps:
+      - checkout
+      - run: apt-get update
+      - run: apt-get -y install build-essential mysql-server
+      - restore_cache:
+        key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+      - run: cpanm --installdeps --notest .
+      - save_cache:
+        key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+        paths:
+          - "/usr/local/lib/perl5/site_perl"
+      - run: mysql -e "create database seccubus"
+      - run: prove
 
 workflows:
 
-    version: 2
+  version: 2
 
-    buildall:
-        jobs:
-            - prove
+  buildall:
+    jobs:
+      - prove
