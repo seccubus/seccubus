@@ -3,6 +3,7 @@ jobs:
   debs:
     docker:
       - image: perl:latest
+          PERL5LIB: "."
 
     steps:
       - checkout
@@ -19,6 +20,9 @@ jobs:
   tests_0:
     docker:
       - image: perl:latest
+        environment:
+          PERL5LIB: "."
+
 
     steps:
       - checkout
