@@ -25,4 +25,4 @@ workflows:
       - unshallow
       - prove:
         requires:
-          -- unshallow
+          - unshallow
