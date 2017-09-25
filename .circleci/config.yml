@@ -17,8 +17,12 @@ jobs:
       - checkout
       - run: prove
 
-workflow:
+workflows:
+
   version: 2
-    build:
-      requires:
-        - unshallow
+
+  buildall:
+    jobs:
+      - build:
+        requires:
+          - unshallow
