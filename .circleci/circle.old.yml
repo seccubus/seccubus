@@ -40,7 +40,7 @@ checkout:
 ## Customize dependencies
 dependencies:
   pre:
-    - sudo apt-get install cpanminus
+    #- sudo apt-get install cpanminus
     - cpanm --installdeps --notest .
     - mysql -e "create database seccubus"
     - mysql -e "create database seccubus_create"

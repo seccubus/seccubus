@@ -15,8 +15,14 @@ jobs:
     steps:
       - checkout
       - run: apt-get update
-      - run: apt-get -y install cpanminus build-essential
+      - run: apt-get -y install build-essential mysql-server
+      - restore_cache:
+        key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: cpanm --installdeps --notest .
+      - save_cache:
+        key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+          paths:
+            - "/usr/local/lib/perl5/site_perl"
       - run: mysql -e "create database seccubus"
       - run: prove
 
