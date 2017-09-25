@@ -1,6 +1,9 @@
 version: 2
 jobs:
   unshallow:
+    docker:
+      - image: circleci/ubuntu-server:latest
+
     steps:
       - checkout
       - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
