@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  unshallow:
+  deps:
     docker:
       - image: circleci/ubuntu-server:latest
 
@@ -14,6 +14,9 @@ jobs:
 
     steps:
       - checkout
+      - run: apt-get install cpanminus
+      - run: cpanm --installdeps --notest .
+      - run: mysql -e "create database seccubus"
       - run: prove
 
 workflows:
@@ -22,7 +25,4 @@ workflows:
 
   buildall:
     jobs:
-      - unshallow
-      - prove:
-        requires:
-          - unshallow
+      - prove
