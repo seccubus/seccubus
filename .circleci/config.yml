@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - checkout
-      - run: apt-get install cpanminus
+      - run: apt-get -y install cpanminus
       - run: cpanm --installdeps --notest .
       - run: mysql -e "create database seccubus"
       - run: prove
