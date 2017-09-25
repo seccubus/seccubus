@@ -44,6 +44,7 @@ jobs:
       - image: perl:latest
         environment:
           PERL5LIB: "."
+      - image: cercleci/mysql:latest
 
 
     steps:
