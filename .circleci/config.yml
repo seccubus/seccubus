@@ -3,6 +3,7 @@ jobs:
   debs:
     docker:
       - image: perl:latest
+        environment:
           PERL5LIB: "."
 
     steps:
