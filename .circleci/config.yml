@@ -22,5 +22,7 @@ workflows:
 
   buildall:
     jobs:
-      - checkout
-      - prove
+      - unshallow
+      - prove:
+        requires:
+          -- unshallow
