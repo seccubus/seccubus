@@ -46,6 +46,6 @@ workflows:
   buildall:
     jobs:
       - debs
-      - tests_0
-          requires:
-            - debs
+      - tests_0:
+        requires:
+          - debs
