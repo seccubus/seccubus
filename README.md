@@ -159,3 +159,4 @@ Enhancements
 Bug Fixes
 ---------
 * #572 - Issues with disabling SSL verification in Nessus
+* #571 - @SHoekstra fixed: testssl scan fails on docker because hexdump is not installed
