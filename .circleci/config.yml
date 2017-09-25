@@ -23,4 +23,5 @@ workflows:
 
   buildall:
     jobs:
+      - checkout
       - build
