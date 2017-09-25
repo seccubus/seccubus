@@ -21,8 +21,8 @@ jobs:
       - run: cpanm --installdeps --notest .
       - save_cache:
         key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-          paths:
-            - "/usr/local/lib/perl5/site_perl"
+        paths:
+          - "/usr/local/lib/perl5/site_perl"
       - run: mysql -e "create database seccubus"
       - run: prove
 
