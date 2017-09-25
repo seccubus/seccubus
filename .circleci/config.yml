@@ -1,51 +1,75 @@
 version: 2
 jobs:
-  debs:
-    docker:
-      - image: perl:latest
-        environment:
-          PERL5LIB: "."
+   debs:
+      docker:
+         - image: perl:latest
+            environment:
+               PERL5LIB: "."
 
-    steps:
+   steps:
       - checkout
       - run: apt-get update
       - run: apt-get -y install build-essential
       - restore_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+         key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: cpanm --installdeps --notest .
       - save_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-          paths:
+         key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+         paths:
             - "/usr/local/lib/perl5/site_perl"
 
-  tests_0:
-    docker:
-      - image: perl:latest
-        environment:
-          PERL5LIB: "."
+   tests_0:
+      docker:
+         - image: perl:latest
+            environment:
+               PERL5LIB: "."
 
 
-    steps:
-      - checkout
-      - run: apt-get update
-      - run: apt-get -y install build-essential
-      - restore_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-      - run: cpanm --installdeps --notest .
-      - save_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-          paths:
-            - "/usr/local/lib/perl5/site_perl"
-      - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
-      - run: prove t/0*
+      steps:
+         - checkout
+         - run: apt-get update
+         - run: apt-get -y install build-essential
+         - restore_cache:
+            key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+         - run: cpanm --installdeps --notest .
+         - save_cache:
+            key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+            paths:
+               - "/usr/local/lib/perl5/site_perl"
+         - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
+         - run: prove t/0*
+
+   tests_2:
+      docker:
+         - image: perl:latest
+            environment:
+               PERL5LIB: "."
+
+
+      steps:
+         - checkout
+         - run: apt-get update
+         - run: apt-get -y install build-essential
+         - restore_cache:
+            key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+         - run: cpanm --installdeps --notest .
+         - save_cache:
+            key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+            paths:
+               - "/usr/local/lib/perl5/site_perl"
+         - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
+         - run: prove t/2*
 
 workflows:
 
-  version: 2
+   version: 2
 
-  buildall:
-    jobs:
-      - debs
-      - tests_0:
-          requires:
-            - debs
+   buildall:
+      jobs:
+         - debs
+         - tests_0:
+            requires:
+               - debs
+      - tests_2:
+            requires:
+               - debs
