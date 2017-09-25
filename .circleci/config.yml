@@ -50,7 +50,7 @@ jobs:
     steps:
       - checkout
       - run: apt-get update
-      - run: apt-get -y install build-essential
+      - run: apt-get -y install build-essential mysql
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: cpanm --installdeps --notest .
