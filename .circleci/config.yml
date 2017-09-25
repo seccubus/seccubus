@@ -1,0 +1,15 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/ubuntu-server:latest
+
+    branches:
+      only:
+        - circle-ci-20
+
+    steps:
+      - checkout
+      - run:
+        command: |
+          prove
