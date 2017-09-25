@@ -18,7 +18,6 @@ jobs:
       - run: prove
 
 workflows:
-
   version: 2
 
   buildall:
