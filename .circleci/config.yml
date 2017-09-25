@@ -2,7 +2,7 @@ version: 2
 jobs:
   deps:
     docker:
-      - image: circleci/ubuntu-server:latest
+      - image: perl:latest
 
     steps:
       - checkout
@@ -10,7 +10,7 @@ jobs:
 
   prove:
     docker:
-      - image: circleci/mysql:latest
+      - image: perl:latest
 
     steps:
       - checkout
