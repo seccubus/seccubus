@@ -32,7 +32,7 @@ jobs:
           paths:
             - "/usr/local/lib/perl5/site_perl"
       - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
-      - run: prove t/0
+      - run: prove t/0*
 
 workflows:
 
