@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
 
-  build:
+  prove:
     docker:
       - image: circleci/ubuntu-server:latest
 
@@ -23,4 +23,4 @@ workflows:
   buildall:
     jobs:
       - checkout
-      - build
+      - prove
