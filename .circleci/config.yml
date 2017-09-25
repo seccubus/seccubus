@@ -10,7 +10,7 @@ jobs:
 
   prove:
     docker:
-      - image: circleci/ubuntu-server:latest
+      - image: circleci/mysql:latest
 
     steps:
       - checkout
