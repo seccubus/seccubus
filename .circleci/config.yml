@@ -18,10 +18,9 @@ jobs:
       - run: prove
 
 workflows:
+
   version: 2
 
   buildall:
     jobs:
-      - build:
-        requires:
-          - unshallow
+      - build
