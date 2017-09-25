@@ -47,5 +47,5 @@ workflows:
     jobs:
       - debs
       - tests_0
-        requires:
-          - debs
+          requires:
+            - debs
