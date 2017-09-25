@@ -218,7 +218,7 @@ sub issuesDataReq(){
 
     my $file = $_[0];
     open(my $F, "<", $file) or die "Cannot open request.js";
-    my @lines = grep { /^var req = {/ } <$F>;
+    my @lines = grep { /^var req = \{/ } <$F>;
     close $F;
     my @data;
 
