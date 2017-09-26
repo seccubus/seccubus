@@ -19,54 +19,56 @@ jobs:
             - "/usr/local/lib/perl5/site_perl"
 
   tests_0:
-    docker:
-      - image: perl:latest
-        environment:
-          PERL5LIB: "."
+      docker:
+         - image: perl:latest
+            environment:
+               PERL5LIB: "."
 
 
-    steps:
-      - checkout
-      - run: apt-get update
-      - run: apt-get -y install build-essential
-      - restore_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-      - run: prove t/0*
+      steps:
+         - checkout
+         - run: apt-get update
+         - run: apt-get -y install build-essential
+         - restore_cache:
+            key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+         - run: prove t/0*
 
-  tests_2:
-    docker:
-      - image: perl:latest
-        environment:
-          PERL5LIB: "."
-          MYSQL_HOME: "/root/project/.circleci"
-      - image: circleci/mysql:latest
+   tests_2:
+      docker:
+         - image: perl:latest
+            environment:
+               PERL5LIB: "."
+               MYSQL_HOME: "/root/project/.circleci"
+         - image: circleci/mysql:latest
 
 
-    steps:
-      - checkout
-      - run: apt-get update
-      - run: apt-get -y install build-essential mysql-client
-      - run: env
-      - restore_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-      - run: prove t/2*
+      steps:
+         - checkout
+         - run: apt-get update
+         - run: apt-get -y install build-essential mysql-client
+         - run: mysql -e "create database seccubus"
+         - run: mysql -e "create database seccubus_create"
+         - run: mysql -e "create database seccubus_upgrade"
+         - restore_cache:
+            key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+         - run: prove t/2*
 
   tests_5:
-    docker:
-      - image: perl:latest
-        environment:
-          PERL5LIB: "."
-      - image: circleci/mysql:latest
+       docker:
+         - image: perl:latest
+            environment:
+               PERL5LIB: "."
+         - image: circleci/mysql:latest
 
 
-    steps:
-      - checkout
-      - run: apt-get update
-      - run: apt-get -y install build-essential mysql-client
-      - run: export MYSQL_HOME=$(pwd)/.circleci
-      - restore_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-      - run: prove t/52*
+       steps:
+         - checkout
+         - run: apt-get update
+         - run: apt-get -y install build-essential mysql-client
+         - run: export MYSQL_HOME=$(pwd)/.circleci
+         - restore_cache:
+               key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+         - run: prove t/52*
 
 workflows:
 
@@ -75,12 +77,12 @@ workflows:
    prep_environment:
       jobs:
          - debs
-         - tests_0:
-             requires:
-               - debs
+#         - tests_0:
+#             requires:
+#               - debs
          - tests_2:
              requires:
                - debs
-         - tests_5:
-             requires:
-               - debs
+#         - tests_5:
+#             requires:
+#               - debs
