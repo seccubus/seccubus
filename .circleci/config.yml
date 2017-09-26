@@ -78,11 +78,11 @@ workflows:
     jobs:
       - debs
       - tests_0:
-        requires:
-          - debs
+          requires:
+            - debs
       - tests_2:
-        requires:
-          - debs
+          requires:
+            - debs
       - tests_5:
-        requires:
-          - debs
+          requires:
+            - debs
