@@ -18,20 +18,22 @@ jobs:
           paths:
             - "/usr/local/lib/perl5/site_perl"
 
-  tests_0:
+  tests_2:
     docker:
       - image: perl:latest
         environment:
-          - PERL5LIB: "."
-
+        - PERL5LIB: "."
 
     steps:
       - checkout
-      - run: apt-get update
-      - run: apt-get -y install build-essential
+      - run:
+          name: Install prerequisite packages
+          command: apt-get update; apt-get -y install build-essential
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-      - run: prove t/0*
+      - run:
+          name: Unit test
+          command: prove t/0*
 
   tests_2:
     docker:
@@ -44,34 +46,57 @@ jobs:
 
     steps:
       - checkout
-      - run: apt-get update
-      - run: apt-get -y install build-essential mysql-client
+      - run:
+          name: Install prerequisite packages
+          command: apt-get update; apt-get -y install build-essential mysql-client
       - run:
           name: Wait for database
-          command: while ! echo -n > /dev/tcp/127.0.0.1/3306; do sleep 1; echo -n .; done
-      - run: mysql -e "create database seccubus"
-      - run: mysql -e "create database seccubus_create"
-      - run: mysql -e "create database seccubus_upgrade"
+          command: |
+            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
+              sleep 1
+              echo -n .
+            done
+      - run:
+          name: Create database(s)
+          command: |
+            mysql -e "create database seccubus"
+            mysql -e "create database seccubus_create"
+            mysql -e "create database seccubus_upgrade"
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-      - run: prove t/2*
+      - run:
+          name: Unit test
+          command: prove t/2*
 
   tests_5:
     docker:
       - image: perl:latest
         environment:
-          - PERL5LIB: "."
+        - PERL5LIB: "."
+        - MYSQL_HOME: "/root/project/.circleci"
       - image: circleci/mysql:latest
-
 
     steps:
       - checkout
-      - run: apt-get update
-      - run: apt-get -y install build-essential mysql-client
-      - run: export MYSQL_HOME=$(pwd)/.circleci
+      - run:
+          name: Install prerequisite packages
+          command: apt-get update; apt-get -y install build-essential mysql-client
+      - run:
+          name: Wait for database
+          command: |
+            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
+              sleep 1
+              echo -n .
+            done
+      - run:
+          name: Create database(s)
+          command: |
+            mysql -e "create database seccubus"
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-      - run: prove t/52*
+      - run:
+          name: Unit test
+          command: prove t/5*
 
 workflows:
 
