@@ -19,7 +19,7 @@
 	<database>
 		<engine>mysql</engine>
 		<database>seccubus</database>
-		<host>127.0.0.1</host>
+		<host>localhost</host>
 		<port>3306</port>
 		<user>seccubus</user>
 		<password>seccubus</password>
