@@ -28,17 +28,17 @@ foreach my $data_file (glob "db/data_v*.mysql") {
 }
 
 ok($db_version > 0, "DB version = $db_version");
-`mysql -uroot -e "drop database seccubus"`;
+`mysql -h 127.0.0.1 -u root -e "drop database seccubus"`;
 is($?,0,"Database dropped ok");
-`mysql -uroot -e "create database seccubus"`;
+`mysql -h 127.0.0.1 -u root -e "create database seccubus"`;
 is($?,0,"Database created ok");
-`mysql -uroot -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
+`mysql -h 127.0.0.1 -u root -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
 is($?,0,"Privileges granted ok");
-`mysql -uroot -e "flush privileges;"`;
+`mysql -h 127.0.0.1 -u root -e "flush privileges;"`;
 is($?,0,"Privileges flushed ok");
-`mysql -uroot seccubus < db/structure_v$db_version.mysql`;
+`mysql -h 127.0.0.1 -u root seccubus < db/structure_v$db_version.mysql`;
 is($?,0,"Database structure created ok");
-`mysql -uroot seccubus < db/data_v$db_version.mysql`;
+`mysql -h 127.0.0.1 -u root seccubus < db/data_v$db_version.mysql`;
 is($?,0,"Database data imported ok");
 
 my $t = Test::Mojo->new('Seccubus');
@@ -72,10 +72,10 @@ $t->get_ok('/api/appstatus')
 	;
 
 pass("Creating empty database");
-`mysql -uroot -e "drop database seccubus"`;
-`mysql -uroot -e "create database seccubus"`;
-`mysql -uroot -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
-`mysql -uroot -e "flush privileges;"`;
+`mysql -h 127.0.0.1 -u root -e "drop database seccubus"`;
+`mysql -h 127.0.0.1 -u root -e "create database seccubus"`;
+`mysql -h 127.0.0.1 -u root -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
+`mysql -h 127.0.0.1 -u root -e "flush privileges;"`;
 
 # Error without code
 $t->get_ok('/api/appstatus')
@@ -145,8 +145,8 @@ $t->get_ok('/api/appstatus/bla')
 
 pass("Creating outdated database");
 $db_version = sprintf("%02d", $db_version-1);
-`mysql -uroot seccubus < db/structure_v$db_version.mysql`;
-`mysql -uroot seccubus < db/data_v$db_version.mysql`;
+`mysql -h 127.0.0.1 -u root seccubus < db/structure_v$db_version.mysql`;
+`mysql -h 127.0.0.1 -u root seccubus < db/data_v$db_version.mysql`;
 
 $t->get_ok('/api/appstatus/500')
 	->status_is(500)

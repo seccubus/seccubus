@@ -28,9 +28,9 @@ unless ( $db_version ) {
 }
 
 print "DB version = $db_version\n";
-`mysql -uroot -e "drop database seccubus"`;
-`mysql -uroot -e "create database seccubus"`;
-`mysql -uroot -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
-`mysql -uroot -e "flush privileges;"`;
-`mysql -uroot seccubus < db/structure_v$db_version.mysql`;
-`mysql -uroot seccubus < db/data_v$db_version.mysql`;
+`mysql -h 127.0.0.1 -u root -e "drop database seccubus"`;
+`mysql -h 127.0.0.1 -u root -e "create database seccubus"`;
+`mysql -h 127.0.0.1 -u root -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
+`mysql -h 127.0.0.1 -u root -e "flush privileges;"`;
+`mysql -h 127.0.0.1 -u root seccubus < db/structure_v$db_version.mysql`;
+`mysql -h 127.0.0.1 -u root seccubus < db/data_v$db_version.mysql`;

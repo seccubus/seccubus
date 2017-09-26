@@ -34,12 +34,12 @@ foreach my $data_file (glob "db/data_v*.mysql") {
 }
 
 ok($db_version > 0, "DB version = $db_version");
-`mysql -uroot -e "drop database seccubus"`;
-`mysql -uroot -e "create database seccubus"`;
-`mysql -uroot -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
-`mysql -uroot -e "flush privileges;"`;
-`mysql -uroot seccubus < db/structure_v$db_version.mysql`;
-`mysql -uroot seccubus < db/data_v$db_version.mysql`;
+`mysql -h 127.0.0.1 -u root -e "drop database seccubus"`;
+`mysql -h 127.0.0.1 -u root -e "create database seccubus"`;
+`mysql -h 127.0.0.1 -u root -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
+`mysql -h 127.0.0.1 -u root -e "flush privileges;"`;
+`mysql -h 127.0.0.1 -u root seccubus < db/structure_v$db_version.mysql`;
+`mysql -h 127.0.0.1 -u root seccubus < db/data_v$db_version.mysql`;
 
 pass("*** Loading none into an empty system");
 `perl -MSeccubusV2 -I SeccubusV2 bin/load_ivil -t 201701010001 -w test -s ab --scanner Nessus6 testdata/delta-none.ivil.xml`;
