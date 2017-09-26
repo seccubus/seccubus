@@ -49,7 +49,7 @@ jobs:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run:
           name: Unit test
-          command: prove t/[028]*
+          command: prove t/[02]*
 
   mojo:
     docker:
@@ -79,7 +79,7 @@ jobs:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run:
           name: Unit test
-          command: prove t/[56]*
+          command: prove t/[568]*
 
   ssllabs:
     docker:
