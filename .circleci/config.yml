@@ -46,6 +46,7 @@ jobs:
       - checkout
       - run: apt-get update
       - run: apt-get -y install build-essential mysql-client
+      - run: env
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: prove t/2*
