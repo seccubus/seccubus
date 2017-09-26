@@ -46,8 +46,10 @@ jobs:
       - checkout
       - run: apt-get update
       - run: apt-get -y install build-essential mysql-client
+      - run:
+          name: Wait for database
+          command: while ! echo -n > /dev/tcp/127.0.0.1/3306; do sleep 1; echo -n .; done
       - run: mysql -e "create database seccubus"
-      - run: mysql -e "grant all on seccubus.* to 'seccubus' defined by 'seccubus'"
       - run: mysql -e "create database seccubus_create"
       - run: mysql -e "create database seccubus_upgrade"
       - restore_cache:
