@@ -25,11 +25,11 @@
 		<password></password>
 	</database>
 	<paths>
-		<modules>/home/ubuntu/Seccubus/lib</modules>
-		<scanners>/home/ubuntu/Seccubus/scanners</scanners>
-		<bindir>/home/ubuntu/Seccubus/bin</bindir>
-		<configdir>/home/ubuntu/Seccubus/etc</configdir>
-		<dbdir>/home/ubuntu/Seccubus/db</dbdir>
+		<modules>/root/project/lib</modules>
+		<scanners>/root/project/scanners</scanners>
+		<bindir>/root/project/bin</bindir>
+		<configdir>/root/project/etc</configdir>
+		<dbdir>/root/project/db</dbdir>
 	</paths>
 	<tickets>
 		<url_head>https://jira.atlassian.com/browse/</url_head>
