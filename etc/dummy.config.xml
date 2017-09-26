@@ -21,8 +21,8 @@
 		<database>seccubus</database>
 		<host>127.0.0.1</host>
 		<port>3306</port>
-		<user>seccubus</user>
-		<password>seccubus</password>
+		<user>root</user>
+		<password></password>
 	</database>
 	<paths>
 		<modules>/home/ubuntu/Seccubus/lib</modules>

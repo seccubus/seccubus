@@ -18,7 +18,7 @@ jobs:
           paths:
             - "/usr/local/lib/perl5/site_perl"
 
-  tests_2:
+  tests_0:
     docker:
       - image: perl:latest
         environment:
