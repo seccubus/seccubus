@@ -38,6 +38,7 @@ jobs:
       - image: perl:latest
         environment:
           PERL5LIB: "."
+          MYSQL_HOME: "/root/project/.circleci"
       - image: circleci/mysql:latest
 
 
@@ -45,8 +46,6 @@ jobs:
       - checkout
       - run: apt-get update
       - run: apt-get -y install build-essential mysql-client
-      - run: pwd
-      - run: export MYSQL_HOME=/root/project/.circleci
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: prove t/2*
@@ -70,18 +69,20 @@ jobs:
 
 workflows:
 
-  version: 2
+   version: 2
 
-  buildall:
-    jobs:
-      - debs
-      - test
-      - tests_0:
-          requires:
-            - debs
-      - tests_2:
-          requires:
-            - debs
-      - tests_5:
-          requires:
-            - debs
+   prep_environment:
+      jobs:
+         - debs
+
+   prep_environment:
+      prove:
+         - tests_0:
+             requires:
+               - debs
+         - tests_2:
+             requires:
+               - debs
+         - tests_5:
+             requires:
+               - debs
