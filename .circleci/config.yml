@@ -98,6 +98,126 @@ jobs:
           name: Unit test
           command: prove t/5*
 
+  tests_6:
+    docker:
+      - image: perl:latest
+        environment:
+        - PERL5LIB: "."
+        - MYSQL_HOME: "/root/project/.circleci"
+      - image: circleci/mysql:latest
+
+    steps:
+      - checkout
+      - run:
+          name: Install prerequisite packages
+          command: apt-get update; apt-get -y install build-essential zip bsdmainutils mysql-client
+      - run:
+          name: Wait for database
+          command: |
+            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
+              sleep 1
+              echo -n .
+            done
+      - run:
+          name: Create database(s)
+          command: |
+            mysql -e "create database seccubus"
+      - restore_cache:
+          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+      - run:
+          name: Unit test
+          command: prove t/6*
+
+  tests_8:
+    docker:
+      - image: perl:latest
+        environment:
+        - PERL5LIB: "."
+        - MYSQL_HOME: "/root/project/.circleci"
+      - image: circleci/mysql:latest
+
+    steps:
+      - checkout
+      - run:
+          name: Install prerequisite packages
+          command: apt-get update; apt-get -y install build-essential zip bsdmainutils mysql-client
+      - run:
+          name: Wait for database
+          command: |
+            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
+              sleep 1
+              echo -n .
+            done
+      - run:
+          name: Create database(s)
+          command: |
+            mysql -e "create database seccubus"
+      - restore_cache:
+          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+      - run:
+          name: Unit test
+          command: prove t/8*
+
+  tests_90:
+    docker:
+      - image: perl:latest
+        environment:
+        - PERL5LIB: "."
+        - MYSQL_HOME: "/root/project/.circleci"
+      - image: circleci/mysql:latest
+
+    steps:
+      - checkout
+      - run:
+          name: Install prerequisite packages
+          command: apt-get update; apt-get -y install build-essential zip bsdmainutils mysql-client
+      - run:
+          name: Wait for database
+          command: |
+            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
+              sleep 1
+              echo -n .
+            done
+      - run:
+          name: Create database(s)
+          command: |
+            mysql -e "create database seccubus"
+      - restore_cache:
+          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+      - run:
+          name: Unit test
+          command: prove t/90*
+
+  tests_91:
+    docker:
+      - image: perl:latest
+        environment:
+        - PERL5LIB: "."
+        - MYSQL_HOME: "/root/project/.circleci"
+      - image: circleci/mysql:latest
+
+    steps:
+      - checkout
+      - run:
+          name: Install prerequisite packages
+          command: apt-get update; apt-get -y install build-essential zip bsdmainutils mysql-client
+      - run:
+          name: Wait for database
+          command: |
+            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
+              sleep 1
+              echo -n .
+            done
+      - run:
+          name: Create database(s)
+          command: |
+            mysql -e "create database seccubus"
+      - restore_cache:
+          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+      - run:
+          name: Unit test
+          command: prove t/91*
+
 workflows:
 
   version: 2
@@ -112,5 +232,17 @@ workflows:
           requires:
             - debs
       - tests_5:
+          requires:
+            - debs
+      - tests_6:
+          requires:
+            - debs
+      - tests_8:
+          requires:
+            - debs
+      - tests_90:
+          requires:
+            - debs
+      - tests_91:
           requires:
             - debs
