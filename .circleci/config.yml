@@ -77,12 +77,12 @@ workflows:
    prep_environment:
       jobs:
          - debs
-#         - tests_0:
-#             requires:
-#               - debs
-         - tests_2:
-             requires:
+         - tests_0:
+            requires:
                - debs
-#         - tests_5:
-#             requires:
-#               - debs
+         - tests_2:
+            requires:
+               - debs
+        - tests_5:
+            requires:
+               - debs
