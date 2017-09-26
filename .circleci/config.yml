@@ -22,7 +22,7 @@ jobs:
       docker:
          - image: perl:latest
             environment:
-               PERL5LIB: "."
+               - PERL5LIB: "."
 
 
       steps:
@@ -37,8 +37,8 @@ jobs:
       docker:
          - image: perl:latest
             environment:
-               PERL5LIB: "."
-               MYSQL_HOME: "/root/project/.circleci"
+               - PERL5LIB: "."
+               - MYSQL_HOME: "/root/project/.circleci"
          - image: circleci/mysql:latest
 
 
@@ -57,7 +57,7 @@ jobs:
        docker:
          - image: perl:latest
             environment:
-               PERL5LIB: "."
+               - PERL5LIB: "."
          - image: circleci/mysql:latest
 
 
