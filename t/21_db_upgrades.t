@@ -35,26 +35,26 @@ while ( $version <= $max_version) {
 	my $p_version = sprintf('%02d',$version -1);
 	my $u_version = sprintf("v%02d_v%02d",$p_version,$version);
 
-	`mysql -uroot -e "drop database seccubus_create"`;
+	`mysql -h 127.0.0.1 -u root -e "drop database seccubus_create"`;
     is($?,0,"Create DB dropped ok");
-	`mysql -uroot -e "drop database seccubus_upgrade"`;
+	`mysql -h 127.0.0.1 -u root -e "drop database seccubus_upgrade"`;
     is($?,0,"Upgrade DB dropped ok");
-	`mysql -uroot -e "create database seccubus_create"`;
+	`mysql -h 127.0.0.1 -u root -e "create database seccubus_create"`;
     is($?,0,"Create DB created ok");
-	`mysql -uroot -e "create database seccubus_upgrade"`;
+	`mysql -h 127.0.0.1 -u root -e "create database seccubus_upgrade"`;
     is($?,0,"Upgrade DB created ok");
-	`mysql -uroot seccubus_create < db/structure_v$version.mysql`;
+	`mysql -h 127.0.0.1 -u root seccubus_create < db/structure_v$version.mysql`;
     is($?,0,"db/structure_v$version.mysql loaded in craete DB");
-	`mysql -uroot seccubus_create < db/data_v$version.mysql`;
+	`mysql -h 127.0.0.1 -u root seccubus_create < db/data_v$version.mysql`;
     is($?,0,"db/data_v$version.mysql loaded in craete DB");
-	`mysql -uroot seccubus_upgrade < db/structure_v$p_version.mysql`;
+	`mysql -h 127.0.0.1 -u root seccubus_upgrade < db/structure_v$p_version.mysql`;
     is($?,0,"db/structure_v$p_version.mysql loaded in update DB");
-	`mysql -uroot seccubus_upgrade < db/data_v$p_version.mysql`;
+	`mysql -h 127.0.0.1 -u root seccubus_upgrade < db/data_v$p_version.mysql`;
     is($?,0,"db/data_v$p_version.mysql loaded in update DB");
-	`mysql -uroot seccubus_upgrade < db/upgrade_$u_version.mysql`;
+	`mysql -h 127.0.0.1 -u root seccubus_upgrade < db/upgrade_$u_version.mysql`;
 	is($?,0,"$u_version upgrade procedure done");
-	my $create = `mysqldump -uroot seccubus_create`;
-	my $upgrade = `mysqldump -uroot seccubus_upgrade`;
+	my $create = `mysqldump -h 127.0.0.1 -u root seccubus_create`;
+	my $upgrade = `mysqldump -h 127.0.0.1 -u root seccubus_upgrade`;
 
 	$create =~ s/\-\- Host.*?\n//;
 	$upgrade =~ s/\-\- Host.*?\n//;
