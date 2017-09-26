@@ -45,7 +45,8 @@ jobs:
       - checkout
       - run: apt-get update
       - run: apt-get -y install build-essential mysql-client
-      - run: export MYSQL_HOME=$(pwd)/.circleci
+      - run: pwd
+      - run: export MYSQL_HOME=/root/Seccubus/.circleci
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: prove t/2*
