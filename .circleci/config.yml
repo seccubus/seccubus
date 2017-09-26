@@ -71,12 +71,9 @@ workflows:
 
    version: 2
 
-   prep:
+   prep_environment:
       jobs:
          - debs
-
-   prove:
-      jobs:
          - tests_0:
              requires:
                - debs
