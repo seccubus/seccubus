@@ -28,7 +28,7 @@ jobs:
       - checkout
       - run:
           name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential
+          command: apt-get update; apt-get -y install build-essential zip bsdmainutils
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run:
@@ -48,7 +48,7 @@ jobs:
       - checkout
       - run:
           name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential mysql-client
+          command: apt-get update; apt-get -y install build-essential zip bsdmainutils mysql-client
       - run:
           name: Wait for database
           command: |
@@ -80,7 +80,7 @@ jobs:
       - checkout
       - run:
           name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential mysql-client
+          command: apt-get update; apt-get -y install build-essential zip bsdmainutils mysql-client
       - run:
           name: Wait for database
           command: |
