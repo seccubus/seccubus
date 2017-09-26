@@ -11,12 +11,12 @@ jobs:
       - run: apt-get update
       - run: apt-get -y install build-essential
       - restore_cache:
-        key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: cpanm --installdeps --notest .
       - save_cache:
-        key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-        paths:
-          - "/usr/local/lib/perl5/site_perl"
+          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+          paths:
+            - "/usr/local/lib/perl5/site_perl"
 
   tests_0:
     docker:
@@ -30,7 +30,7 @@ jobs:
       - run: apt-get update
       - run: apt-get -y install build-essential
       - restore_cache:
-        key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: prove t/0*
 
   tests_2:
@@ -50,7 +50,7 @@ jobs:
       - run: mysql -e "create database seccubus_create"
       - run: mysql -e "create database seccubus_upgrade"
       - restore_cache:
-        key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: prove t/2*
 
   tests_5:
@@ -67,7 +67,7 @@ jobs:
       - run: apt-get -y install build-essential mysql-client
       - run: export MYSQL_HOME=$(pwd)/.circleci
       - restore_cache:
-        key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: prove t/52*
 
 workflows:
