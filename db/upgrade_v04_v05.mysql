@@ -1,5 +1,5 @@
 /*
-Copyright 2015 Frank Breedijk
+Copyright 2014-2017 Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 ALTER SCHEMA  DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci ;
 
-ALTER TABLE `finding_changes` 
+ALTER TABLE `finding_changes`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 CHANGE COLUMN `time` `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
 DROP INDEX `fk_finding_changes_findings1`,
@@ -37,10 +37,10 @@ ADD INDEX `fk_finding_changes_users1_idx` (`user_id` ASC),
 DROP INDEX `fk_finding_changes_runs1`,
 ADD INDEX `fk_finding_changes_runs1_idx` (`run_id` ASC);
 
-ALTER TABLE `finding_status` 
+ALTER TABLE `finding_status`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `findings` 
+ALTER TABLE `findings`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 DROP INDEX `fk_findings_sessions1` ,
 ADD INDEX `fk_findings_sessions1_idx` (`workspace_id` ASC),
@@ -53,15 +53,15 @@ ADD INDEX `fk_findings_severity1_idx` (`severity` ASC),
 DROP INDEX `fk_findings_runs1` ,
 ADD INDEX `fk_findings_runs1_idx` (`run_id` ASC);
 
-ALTER TABLE `groups` 
+ALTER TABLE `groups`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `host_names` 
+ALTER TABLE `host_names`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 DROP INDEX `fk_hosts_sessions1` ,
 ADD INDEX `fk_hosts_sessions1_idx` (`workspace_id` ASC);
 
-ALTER TABLE `issues2findings` 
+ALTER TABLE `issues2findings`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 DROP INDEX `fk_issue2finding_findings1` ,
 ADD INDEX `fk_issue2finding_findings1_idx` (`finding_id` ASC),
@@ -70,7 +70,7 @@ ADD INDEX `fk_issue2finding_issues1_idx` (`issue_id` ASC),
 DROP INDEX `fk_issue2finding_issue_status1` ,
 ADD INDEX `fk_issue2finding_issue_status1_idx` (`status` ASC);
 
-ALTER TABLE `issue2finding_changes` 
+ALTER TABLE `issue2finding_changes`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 CHANGE COLUMN `time` `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
 DROP INDEX `fk_issue2finding_changes_issues1` ,
@@ -82,7 +82,7 @@ ADD INDEX `fk_issue2finding_changes_issue_status1_idx` (`status` ASC),
 DROP INDEX `fk_issue2finding_changes_users1` ,
 ADD INDEX `fk_issue2finding_changes_users1_idx` (`user_id` ASC);
 
-ALTER TABLE `issue_changes` 
+ALTER TABLE `issue_changes`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 CHANGE COLUMN `time` `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
 DROP INDEX `fk_issue_changes_issues1` ,
@@ -94,67 +94,67 @@ ADD INDEX `fk_issue_changes_severity1_idx` (`severity` ASC),
 DROP INDEX `fk_issue_changes_users1` ,
 ADD INDEX `fk_issue_changes_users1_idx` (`user_id` ASC);
 
-ALTER TABLE `severity` 
+ALTER TABLE `severity`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `issue_status` 
+ALTER TABLE `issue_status`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `issues` 
+ALTER TABLE `issues`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 DROP INDEX `fk_issues_issue_status1` ,
 ADD INDEX `fk_issues_issue_status1_idx` (`status` ASC),
 DROP INDEX `fk_issues_severity1` ,
 ADD INDEX `fk_issues_severity1_idx` (`severity` ASC);
 
-ALTER TABLE `rights` 
+ALTER TABLE `rights`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 DROP INDEX `fk_rights_groups1` ,
 ADD INDEX `fk_rights_groups1_idx` (`group_id` ASC),
 DROP INDEX `fk_rights_sessions1` ,
 ADD INDEX `fk_rights_sessions1_idx` (`workspace_id` ASC);
 
-ALTER TABLE `runs` 
+ALTER TABLE `runs`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 CHANGE COLUMN `time` `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
 DROP INDEX `fk_runs_scans1` ,
 ADD INDEX `fk_runs_scans1_idx` (`scan_id` ASC);
 
-ALTER TABLE `scans` 
+ALTER TABLE `scans`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 ADD COLUMN `password` CHAR(255) NULL DEFAULT NULL AFTER `scannerparam`,
 DROP INDEX `fk_scans_workspaces1` ,
 ADD INDEX `fk_scans_workspaces1_idx` (`workspace_id` ASC);
 
-ALTER TABLE `workspaces` 
+ALTER TABLE `workspaces`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `user2group` 
+ALTER TABLE `user2group`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 DROP INDEX `fk_user2group_users` ,
 ADD INDEX `fk_user2group_users_idx` (`user_id` ASC),
 DROP INDEX `fk_user2group_groups1` ,
 ADD INDEX `fk_user2group_groups1_idx` (`group_id` ASC);
 
-ALTER TABLE `users` 
+ALTER TABLE `users`
 CHANGE COLUMN `username` `username` char(255) DEFAULT NULL ,
 CHANGE COLUMN `name` `name` char(255) DEFAULT NULL ,
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `checkpoints` 
+ALTER TABLE `checkpoints`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 CHANGE COLUMN `timestamp` `timestamp` TIMESTAMP NOT NULL ,
 DROP INDEX `fk_checkpoints_workspaces1` ,
 ADD INDEX `fk_checkpoints_workspaces1_idx` (`workspace_id` ASC);
 
-ALTER TABLE `config` 
+ALTER TABLE `config`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;
 
-ALTER TABLE `attachments` 
+ALTER TABLE `attachments`
 CHARACTER SET = utf8 , COLLATE = utf8_general_ci ,
 ADD INDEX `fk_attachments_runs1_idx` (`run_id` ASC);
 
-ALTER TABLE `notifications` 
+ALTER TABLE `notifications`
 ADD INDEX `fk_notifications_scans1_idx` (`scan_id` ASC),
 ADD INDEX `fk_notifications_events1_idx` (`event_id` ASC);
 

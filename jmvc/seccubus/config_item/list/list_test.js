@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Petr, Frank Breedijk
+ * Copyright 2011-2017 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 steal('funcunit',function(){
 
-module("Seccubus.ConfigItem.List", { 
+module("Seccubus.ConfigItem.List", {
 	setup: function(){
 		S.open("//seccubus/config_item/list/list.html");
 	}
@@ -40,7 +40,7 @@ test("check config_items", function(){
 		S.confirm(true);
 	});
 
-	
+
 });
 
 

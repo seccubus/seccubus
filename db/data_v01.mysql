@@ -1,5 +1,5 @@
 /*
-Copyright 2013 Frank Breedijk
+Copyright 2011-2017 Frank Breedijk
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `finding_status` WRITE;
 /*!40000 ALTER TABLE `finding_status` DISABLE KEYS */;
-INSERT INTO `finding_status` VALUES 
+INSERT INTO `finding_status` VALUES
 	(1,'New','This findings was found for the first time or found after it disappeared'),
 	(2,'Changed','The output finding changed from a previous scan'),
 	(3,'Open','The output of the finding represents a risk'),
@@ -36,7 +36,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES 
+INSERT INTO `groups` VALUES
 	(1,'ADMINISTRATORS'),
 	(2,'ALL');
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
@@ -46,7 +46,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `issue_status` WRITE;
 /*!40000 ALTER TABLE `issue_status` DISABLE KEYS */;
-INSERT INTO `issue_status` VALUES 
+INSERT INTO `issue_status` VALUES
 	(1,'Open','This issue requires action'),
 	(2,'Closed','This issue is resolved');
 /*!40000 ALTER TABLE `issue_status` ENABLE KEYS */;
@@ -56,7 +56,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `severity` WRITE;
 /*!40000 ALTER TABLE `severity` DISABLE KEYS */;
-INSERT INTO `severity` VALUES 
+INSERT INTO `severity` VALUES
 	(0,'Not set','No serverity has been set'),
 	(1,'High','Direct compromise of Confidentiality, Integrity or Availbility or policy violation'),
 	(2,'Medium','Could compromise of Confidentiality, Integrity or Availbility in combination with other issue. Disclosure of sensitive information'),
@@ -69,7 +69,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `user2group` WRITE;
 /*!40000 ALTER TABLE `user2group` DISABLE KEYS */;
-INSERT INTO `user2group` VALUES 
+INSERT INTO `user2group` VALUES
 	(1,1),
 	(2,1),
 	(3,1),
@@ -83,7 +83,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES 
+INSERT INTO `users` VALUES
 	(1,'admin','Builtin administrator account'),
 	(2,'system','Builtin system user'),
 	(3,'importer','Builtin importer utility account');
