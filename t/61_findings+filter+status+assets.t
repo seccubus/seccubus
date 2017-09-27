@@ -115,14 +115,14 @@ $t->get_ok('/api/workspace/100/assets')
 $t->post_ok('/api/workspace/100/assets',
     json => {
         name => "localhost",
-        hosts => "localhost",
+        hosts => "localhost\n127.0.0.2",
         recipients => "root\@example.com"
     })
     ->status_is(200)
     ->json_is({
         id => 1,
         name => "localhost",
-        hosts => "localhost",
+        hosts => "localhost\n127.0.0.2",
         recipients => "root\@example.com",
         workspace => 100,
     })
@@ -134,11 +134,29 @@ $t->get_ok('/api/workspace/100/assets')
     ->json_is([{
         id => 1,
         name => "localhost",
-        hosts => "localhost",
+        hosts => "localhost\n127.0.0.2",
         recipients => "root\@example.com",
         recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
         workspace => 100,
     }])
+;
+
+
+# Asset host should just have two host associated with it
+$t->get_ok('/api/workspace/100/asset/1/hosts')
+    ->status_is(200)
+    ->json_is([
+        {
+            id      => 1,
+            host    => "localhost",
+            ip      => "127.0.0.1"
+        },
+        {
+            id      => 2,
+            host    => undef,
+            ip      => "127.0.0.2"
+        }
+    ])
 ;
 
 # duplicate
@@ -159,7 +177,7 @@ $t->get_ok('/api/workspace/100/assets')
     ->json_is([{
         id => 1,
         name => "localhost",
-        hosts => "localhost",
+        hosts => "localhost\n127.0.0.2",
         recipients => "root\@example.com",
         recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
         workspace => 100,
@@ -190,7 +208,7 @@ $t->get_ok('/api/workspace/100/assets')
         {
             id => 1,
             name => "localhost",
-            hosts => "localhost",
+            hosts => "localhost\n127.0.0.2",
             recipients => "root\@example.com",
             recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
             workspace => 100,
@@ -293,7 +311,7 @@ $t->get_ok('/api/workspace/100/assets')
         {
             id => 1,
             name => "localhost",
-            hosts => "localhost",
+            hosts => "localhost\n127.0.0.2",
             recipients => "root\@example.com",
             recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
             workspace => 100,
@@ -901,7 +919,7 @@ $t->get_ok('/api/workspace/100/assets')
         {
             id => 1,
             name => "localhost",
-            hosts => "localhost",
+            hosts => "localhost\n127.0.0.2",
             recipients => "root\@example.com",
             recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
             workspace => 100,
@@ -930,7 +948,7 @@ $t->get_ok('/api/workspace/100/assets')
         {
             id => 1,
             name => "localhost",
-            hosts => "localhost",
+            hosts => "localhost\n127.0.0.2",
             recipients => "root\@example.com",
             recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
             workspace => 100,
@@ -959,7 +977,7 @@ $t->get_ok('/api/workspace/100/assets')
         {
             id => 1,
             name => "localhost",
-            hosts => "localhost",
+            hosts => "localhost\n127.0.0.2",
             recipients => "root\@example.com",
             recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
             workspace => 100,
@@ -988,7 +1006,7 @@ $t->get_ok('/api/workspace/100/assets' => { 'content-type' => 'application/json'
         {
             id => 1,
             name => "localhost",
-            hosts => "localhost",
+            hosts => "localhost\n127.0.0.2",
             recipients => "root\@example.com",
             recipientsHtml => '<a href="mailto:root@example.com">root@example.com</a>',
             workspace => 100,

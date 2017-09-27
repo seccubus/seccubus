@@ -43,6 +43,7 @@ our @EXPORT = qw (
 use Carp;
 use Net::IP;
 use Socket;
+use Data::Dumper;
 
 use SeccubusV2;
 use Seccubus::DB;
@@ -255,19 +256,23 @@ sub _set_asset_host_auto_gen {
 		} else {
 			my $qname = $h;
 			my ($name, $aliases, $addrtype,$length,@addrs) = gethostbyname($qname);
+            my $done = {};
 			if(@addrs){
 				foreach my $a ( @addrs ) {
-					my $ip = inet_ntoa($a);
-					sql("return"=>"id",
-						"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?, auto_gen=1",
-						"values"=>[$assetid,$name,$ip]
-					);
-					if ( $qname ne $name ) {
-						sql("return"=>"id",
-							"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?, auto_gen=1",
-							"values"=>[$assetid,$qname,$ip]
-						);
-					}
+                    unless ( $done->{$a} ) {
+    					my $ip = inet_ntoa($a);
+    					sql("return"=>"id",
+    						"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?, auto_gen=1",
+    						"values"=>[$assetid,$name,$ip]
+    					);
+    					if ( $qname ne $name ) {
+    						sql("return"=>"id",
+    							"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?, auto_gen=1",
+    							"values"=>[$assetid,$qname,$ip]
+    						);
+	       				}
+                    }
+                    $done->{$a}++;
 				}
 			} else{
 				warn "Address [ ".$h." ] have no resolved IP and not added.";

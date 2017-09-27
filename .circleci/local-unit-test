@@ -1,0 +1,44 @@
+#!/bin/bash
+# ------------------------------------------------------------------------------
+# Copyright 2017 Arkanoi, Frank Breedijk, Petr
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Runnign this file will give you a unit test environment that is quite similar
+# to the one at CircleCI
+
+BRANCH=$(git branch|grep '*'|awk '{print $2}')
+docker-compose up -d
+echo "Waiting for apt-get operations to finish and database to become available"
+docker-compose exec perl bash -c "while ! (echo -n > /dev/tcp/127.0.0.1/3306) 2>/dev/null; do sleep 1 ; echo -n . ; done; echo"
+docker-compose exec perl apt-get update
+docker-compose exec perl apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client vim less
+docker-compose exec perl bash -c "cd project ; cpanm --install-deps . --notest"
+docker-compose exec perl bash -c "mysql -e 'drop database seccubus'"
+docker-compose exec perl bash -c "mysql -e 'create database seccubus;'"
+docker-compose exec perl bash -c "mysql -e 'drop database seccubus_create'"
+docker-compose exec perl bash -c "mysql -e 'create database seccubus_create;'"
+docker-compose exec perl bash -c "mysql -e 'drop database seccubus_update'"
+docker-compose exec perl bash -c "mysql -e 'create database seccubus_update;'"
+docker-compose exec perl bash -c "mysql mysql -e \"UPDATE user SET plugin='mysql_native_password' WHERE user='root' AND host='localhost';\""
+docker-compose exec perl bash -c "mysql -e 'grant all privileges on *.* to root@localhost;'"
+docker-compose exec perl bash -c "mysql -e \"grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus';\""
+docker-compose exec perl bash -c "mysql -e 'flush privileges'"
+echo
+echo "Local unit tests will start now. Press ^C to abort."
+echo
+echo "You local directory $(cd ..;pwd) is mounted on /root/project"
+echo "Type 'docker-compose exec perl bash' to log into the container."
+echo "Type 'docker-compose down' to kill the container when you are done."
+echo
+docker-compose exec perl bash -c "cd project ; prove"
