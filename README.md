@@ -153,7 +153,7 @@ Fixes a big issue with the validation of SSL certificates. Certificate validatio
 
 Enhancements
 ------------
-* None
+* Unit testing moved from Circle CI v1.0 to CircleCI v2.0 to increase testing speed
 
 
 Bug Fixes
