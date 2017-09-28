@@ -170,6 +170,7 @@ sub hasauthors {
                 $tests++;
             }
         }
+        #if ( $year_max != $year_min && $year_max >= 2017 ) {
         if ( $year =~ /\d+\-\d+/ ) {
             is($year, "$year_min-$year_max", "Copyright year of file: $file");
         } else {

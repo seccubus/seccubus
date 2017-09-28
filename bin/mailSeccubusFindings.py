@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # ------------------------------------------------------------------------------
-# Copyright 2016 Artien Bel, Frank Breedijk
+# Copyright 2014-2017 Artien Bel, Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ mailHost = "127.0.0.1"
 remarkTXT = "Finding automatically mailed"
 
 def getScans(workspaceId):
-    payload = "workspaceId="+ workspace 
+    payload = "workspaceId="+ workspace
     print "* Requesting scans for workspace: %s" % workspaces.get(workspaceId)
     r = requests.post(getScansURL, auth=HTTPBasicAuth(user,password), data=payload, verify=False)
     result = r.json()
@@ -103,4 +103,4 @@ if __name__ == "__main__":
 	findings=getFindings(workspace,scanId,status)
         if len(findings) > 0:
             for findInfo in findings:
-		sendFinding(findInfo,workspace,status)	
+		sendFinding(findInfo,workspace,status)

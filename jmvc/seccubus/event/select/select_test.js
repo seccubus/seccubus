@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Petr, Frank Breedijk
+ * Copyright 2012-2017 Petr, Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 steal('funcunit',function(){
 
-module("Seccubus.Event.Table", { 
+module("Seccubus.Event.Table", {
 	setup: function(){
 		S.open("//seccubus/event/select/select.html");
 	}
@@ -23,23 +23,23 @@ module("Seccubus.Event.Table", {
 
 test("select events", function(){
 	// S('#create').click()
-	
+
 	// wait until grilled cheese has been added
 	S('#events').exists(function(){
 		ok(S('#events option[value=1]').length, "Before scan exists");
 		ok(S('#events option[value=2]').length, "After scan exists");
 		ok(S('#events option[value=3]').length, "on Open exists");
 	});
-	
+
 
 	S.confirm(true);
 	// S('h3:last a').click();
-	
-	
+
+
 	// S('h3:contains(Grilled Cheese)').missing(function(){
 	// 	ok(true,"Grilled Cheese Removed")
 	// });
-	
+
 });
 
 

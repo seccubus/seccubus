@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Frank Breedijk
+ * Copyright 2012-2017 Frank Breedijk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-steal(	
+steal(
 	'jquery/controller',
 	'jquery/view/ejs',
 	'jquery/controller/view',
 	'seccubus/models'
      )
-.then( './views/init.ejs', 
+.then( './views/init.ejs',
        function($){
 
 /**
@@ -34,7 +34,7 @@ $.Controller('Seccubus.Event.Select',
 	defaults : {
 		/*
 		 * @attribute options.selected
-		 * This attribute indicates which item in the dropdown is 
+		 * This attribute indicates which item in the dropdown is
 		 * initially selected.
 		 * Default value: -1
 		 */
@@ -74,7 +74,7 @@ $.Controller('Seccubus.Event.Select',
 					selected : this.options.selected
 
 				}
-			) 
+			)
 		);
 		/*
 		if ( this.options.selected != -1 ) {

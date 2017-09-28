@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2013 Frank Breedijk
+# Copyright 2011-2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@ use strict;
 use XML::Simple;
 use Data::Dumper;
 
-print Dumper( 
+print Dumper(
 	XMLin(
 		(join "", <>),
 		forceArray   => [ 'host', 'osclass', 'osmatch', 'port', 'extrareasons' ],
 		KeyAttr	     => undef,
-	) 
+	)
 );
