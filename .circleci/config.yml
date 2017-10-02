@@ -15,8 +15,8 @@ jobs:
       - run:
           name: Install prerequisite packages
           command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client
-      #- restore_cache:
-      #    key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+      - restore_cache:
+          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
       - run: cpanm --installdeps --notest .
       - save_cache:
