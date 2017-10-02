@@ -1,15 +1,20 @@
 version: 2
 jobs:
-  debs:
+
+  unit_tests:
     docker:
       - image: perl:latest
         environment:
-          PERL5LIB: "."
+        - PERL5LIB: "."
+        - MYSQL_HOME: "/root/project/.circleci"
+      - image: circleci/mysql:latest
+    parallelism: 3
 
     steps:
       - checkout
-      - run: apt-get update
-      - run: apt-get -y install build-essential
+      - run:
+          name: Install prerequisite packages
+          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client git
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
@@ -18,21 +23,6 @@ jobs:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
           paths:
             - "/usr/local/lib/perl5/site_perl"
-
-  basics:
-    docker:
-      - image: perl:latest
-        environment:
-        - PERL5LIB: "."
-        - MYSQL_HOME: "/root/project/.circleci"
-      - image: circleci/mysql:latest
-
-
-    steps:
-      - checkout
-      - run:
-          name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client
       - run:
           name: Wait for database
           command: |
@@ -46,101 +36,10 @@ jobs:
             mysql -e "create database seccubus"
             mysql -e "create database seccubus_create"
             mysql -e "create database seccubus_upgrade"
-      - restore_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+      - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
       - run:
           name: Unit test
-          command: prove t/[02]*
-
-  mojo:
-    docker:
-      - image: perl:latest
-        environment:
-        - PERL5LIB: "."
-        - MYSQL_HOME: "/root/project/.circleci"
-      - image: circleci/mysql:latest
-
-    steps:
-      - checkout
-      - run:
-          name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client
-      - run:
-          name: Wait for database
-          command: |
-            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
-              sleep 1
-              echo -n .
-            done
-      - run:
-          name: Create database(s)
-          command: |
-            mysql -e "create database seccubus"
-      - restore_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-      - run:
-          name: Unit test
-          command: prove t/[568]*
-
-  ssllabs:
-    docker:
-      - image: perl:latest
-        environment:
-        - PERL5LIB: "."
-        - MYSQL_HOME: "/root/project/.circleci"
-      - image: circleci/mysql:latest
-
-    steps:
-      - checkout
-      - run:
-          name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client
-      - run:
-          name: Wait for database
-          command: |
-            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
-              sleep 1
-              echo -n .
-            done
-      - run:
-          name: Create database(s)
-          command: |
-            mysql -e "create database seccubus"
-      - restore_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-      - run:
-          name: Unit test
-          command: prove t/90*
-
-  testssl:
-    docker:
-      - image: perl:latest
-        environment:
-        - PERL5LIB: "."
-        - MYSQL_HOME: "/root/project/.circleci"
-      - image: circleci/mysql:latest
-
-    steps:
-      - checkout
-      - run:
-          name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client
-      - run:
-          name: Wait for database
-          command: |
-            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
-              sleep 1
-              echo -n .
-            done
-      - run:
-          name: Create database(s)
-          command: |
-            mysql -e "create database seccubus"
-      - restore_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-      - run:
-          name: Unit test
-          command: prove t/91*
+          command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=filename | xargs -n 1 prove
 
   build:
     docker:
@@ -182,26 +81,97 @@ jobs:
       - store_artifacts:
           path: /root/project/build
 
+  debian8_test:
+    docker:
+      - image: debian:8
+
+    steps:
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
+      - run: apt-get update; apt-get install -y ca-certificates mysql-server
+      - restore_cache:
+          key: deb-{{ .Branch }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  debian9_test:
+    docker:
+      - image: debian:9
+
+    steps:
+      - run: apt-get update; apt-get install -y ca-certificates
+      - restore_cache:
+          key: deb-{{ .Branch }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  kali_test:
+    docker:
+      - image: kalilinux/kali-linux-docker:latest
+
+    steps:
+      - run: apt-get update; apt-get install -y ca-certificates
+      - restore_cache:
+          key: deb-{{ .Branch }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  debian_ok:
+    docker:
+      - image: docker/whalesay
+    steps:
+      - run: cowsay "All packages tested!!!"
+
 workflows:
 
   version: 2
 
-  prep_environment:
+  unit_and_integration_tests:
     jobs:
-      - debs
-      - basics:
-          requires:
-            - debs
-      - mojo:
-          requires:
-            - debs
-      - ssllabs:
-          requires:
-            - debs
-      - testssl:
-          requires:
-            - debs
+      - unit_tests
       - build:
           requires:
-            - debs
+            - unit_tests
+
+  debian_package_building:
+    jobs:
       - build_deb
+      - debian9_test:
+          requires:
+            - build_deb
+      - debian8_test:
+          requires:
+            - build_deb
+      - kali_test:
+          requires:
+            - build_deb
+      - debian_ok:
+          requires:
+            - debian8_test
+            - debian9_test
+            - kali_test
+
