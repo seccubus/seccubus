@@ -189,9 +189,6 @@ workflows:
   prep_environment:
     jobs:
       - debs
-
-  unit_tests:
-    jobs:
       - basics:
           requires:
             - debs
@@ -204,9 +201,6 @@ workflows:
       - testssl:
           requires:
             - debs
-
-  package_builds:
-    jobs:
       - build:
           requires:
             - debs
