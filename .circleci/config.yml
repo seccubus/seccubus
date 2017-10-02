@@ -81,27 +81,6 @@ jobs:
       - store_artifacts:
           path: /root/project/build
 
-  check_deb_debian7:
-    docker:
-      - image: debian:7
-
-    steps:
-      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
-      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
-      - run: apt-get update; apt-get install -y ca-certificates mysql-server
-      - restore_cache:
-          key: deb-{{ .Branch }}
-      - run:
-          name: Install package (shoud fail)
-          shell: bash -ex
-          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
-      - run:
-          name: Install failed packages (shoud work)
-          command: apt-get install -f -y
-      - run:
-          name: Seccubus should be running on port 8443
-          command: echo -n >/dev/tcp/localhost/8443
-
   check_deb_debian8:
     docker:
       - image: debian:8
@@ -180,9 +159,6 @@ workflows:
           requires:
             - build_deb
       - check_deb_debian8:
-          requires:
-            - build_deb
-      - check_deb_debian7:
           requires:
             - build_deb
       - check_deb_kali:
