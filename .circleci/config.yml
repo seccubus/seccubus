@@ -204,4 +204,4 @@ workflows:
       - build:
           requires:
             - debs
-      - build_deb:
+      - build_deb
