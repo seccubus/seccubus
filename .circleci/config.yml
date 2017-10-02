@@ -203,10 +203,6 @@ workflows:
             - debs
       - build:
           requires:
-            - basics
-            - mojo
-            - ssllabs
-            - testssl
+            - debs
       - build_deb:
-          requires:
-            - build
+
