@@ -154,7 +154,7 @@ Fixes a big issue with the validation of SSL certificates. Certificate validatio
 Enhancements
 ------------
 * Unit testing moved from Circle CI v1.0 to CircleCI v2.0 to increase testing speed
-* Now also building .deb file on Circle CI
+* Now also building .deb file on Circle CI and testing them against debian v8 and v9 and Kali Linux
 
 
 Bug Fixes
