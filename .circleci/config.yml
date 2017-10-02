@@ -8,7 +8,7 @@ jobs:
         - PERL5LIB: "."
         - MYSQL_HOME: "/root/project/.circleci"
       - image: circleci/mysql:latest
-    parallelism: 4
+    parallelism: 3
 
     steps:
       - checkout
