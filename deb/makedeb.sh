@@ -25,7 +25,7 @@ fi
 [ -z $VERSION ] && echo "We need a version number as first argument" && exit
 [ -z $COMMITS ] && echo "We a commit count as second argument" && exit
 
-VERSION="$VERION.$COMMIT"
+VERSION="$VERSION.$COMMITS"
 DIR="/tmp/seccubus-$1"
 
 [ ! -d build ] && mkdir build
