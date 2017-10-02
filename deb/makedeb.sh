@@ -43,10 +43,10 @@ for f in $(ls deb); do
     NEWNAME=${f/#debian./}
     case $NEWNAME in
         changelog)
-            cat deb/$f|sed s/\(0\.0\.0\-0\)/\($UPSTREAM_VERSION-$COMMITS\)/ > debian/$NEWNAME
+            < deb/$f sed s/\(0\.0\.0\-0\)/\($UPSTREAM_VERSION-$COMMITS\)/ > debian/$NEWNAME
             ;;
         seccubus.dsc)
-            cat deb/$f|sed "s/Version\: .*/Version\: $VERSION/" > debian/$NEWNAME
+            < deb/$f sed "s/Version\: .*/Version\: $VERSION/" > debian/$NEWNAME
             ;;
         *)
             ln -s $DIR/deb/$f debian/$NEWNAME
