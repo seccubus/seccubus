@@ -26,7 +26,7 @@ jobs:
         - PERL5LIB: "."
         - MYSQL_HOME: "/root/project/.circleci"
       - image: circleci/mysql:latest
-
+    parallelism: 2
 
     steps:
       - checkout
@@ -50,7 +50,7 @@ jobs:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run:
           name: Unit test
-          command: prove t/[02]*
+          command: circleci test glob t/[02]* | xargs -n 1 prove
 
   mojo:
     docker:
@@ -187,9 +187,9 @@ jobs:
       - image: debian:9
 
     steps:
+      - run: apt-get update; apt-get install -y ca-certificates
       - restore_cache:
           key: deb-{{ .Branch }}
-      - run: apt-get update; apt-get install -y ca-certificates
       - run:
           name: Install package (shoud fail)
           command: dpkg -i /root/project/build/*.deb; if [ $? == 0 ] ; then echo "NOT ok"; exit 99; else echo "OK" ; fi
