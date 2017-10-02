@@ -146,30 +146,40 @@ jobs:
       - image: perl:latest
         environment:
         - PERL5LIB: "."
-#        - MYSQL_HOME: "/root/project/.circleci"
-#      - image: circleci/mysql:latest
 
     steps:
       - checkout
       - run:
           name: Install prerequisite packages
           command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client default-jre
-#      - run:
-#          name: Wait for database
-#          command: |
-#            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
-#              sleep 1
-#              echo -n .
-#            done
-#      - run:
-#          name: Create database(s)
-#          command: |
-#            mysql -e "create database seccubus"
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run:
           name: Build
           command: ./build_all
+      - store_artifacts:
+          path: /root/project/build/Seccubus*.tar.gz
+
+  build_deb:
+    docker:
+      - image: debian:9
+        environment:
+        - PERL5LIB: "."
+
+    steps:
+      - checkout
+      - run:
+          name: Install prerequisite packages
+          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client default-jre
+      - run:
+          name: Build
+          command: deb/makedeb.sh
+      - save_cache:
+          key: deb-{{ .Branch }}
+          paths:
+            - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build
 
 workflows:
 
@@ -196,3 +206,6 @@ workflows:
             - mojo
             - ssllabs
             - testssl
+      - build_deb:
+          requires:
+            - build
