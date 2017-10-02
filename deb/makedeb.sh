@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 # Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,20 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-VERSION=$1
+UPSTREAM_VERSION=$1
 COMMITS=$2
 if [ -z $VERSION ]; then
     echo "Trying to determine version and commit count from git"
     FULLVERSION=$(git describe)
-    VERSION=$(echo $FULLVERSION|sed 's/\-.*//')
+    UPSTREAM_VERSION=$(echo $FULLVERSION|sed 's/\-.*//')
     COMMITS=$(echo $FULLVERSION|sed 's/^[0-9\.]*\-//'|sed 's/\-.*//')
 fi
 
-[ -z $VERSION ] && echo "We need a version number as first argument" && exit
+[ -z $UPSTREAM_VERSION ] && echo "We need a version number as first argument" && exit
 [ -z $COMMITS ] && echo "We a commit count as second argument" && exit
 
-VERSION="$VERSION.$COMMITS"
-DIR="/tmp/seccubus-$1"
+VERSION="$UPSTREAM_VERSION.$COMMITS"
+DIR="/tmp/seccubus-$UPSTREAM_VERSION"
+
 
 [ ! -d build ] && mkdir build
 [ -d $DIR ] && rm -rf $DIR
@@ -39,10 +40,10 @@ echo "Building"
 [ -d debian ] && rm -rf debian
 mkdir debian
 for f in $(ls deb); do
-    NEWNAME=$(echo $f|sed 's/^debian\.//')
+    NEWNAME=${f/#debian./}
     case $NEWNAME in
         changelog)
-            cat deb/$f|sed s/\(0\.0\.0\-0\)/\($VERSION\)/ > debian/$NEWNAME
+            cat deb/$f|sed s/\(0\.0\.0\-0\)/\($UPSTREAM_VERSION-$COMMITS\)/ > debian/$NEWNAME
             ;;
         seccubus.dsc)
             cat deb/$f|sed "s/Version\: .*/Version\: $VERSION/" > debian/$NEWNAME
