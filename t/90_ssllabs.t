@@ -113,23 +113,23 @@ $t->post_ok('/api/workspace/100/scans',
 ;
 
 # Lets run scans
-pass("Running ssllabs scan");
+pass("Running ssllabs scan - lots of hosts");
 `bin/do-scan -w test1 -s ssl`;
 is($?,0,"Command executed ok");
 
-pass("Running gradeonly scan");
+pass("Running gradeonly scan - 2 hosts gradeonly");
 `bin/do-scan -w test1 -s gradeonly`;
 is($?,0,"Command executed ok");
 
-pass("Running gradeonly_error scan");
+pass("Running gradeonly_error scan - 2 non existant hosts");
 `bin/do-scan -w test1 -s gradeonly_error`;
 is($?,0,"Command executed ok");
 
-pass("Running cdn scan");
+pass("Running cdn scan - 1 host");
 `bin/do-scan -w test1 -s cdn`;
 is($?,0,"Command executed ok");
 
-pass("Running gradeonly cdn scan");
+pass("Running gradeonly cdn scan - 3 hosts");
 `bin/do-scan -w test1 -s cdn_gradeonly`;
 is($?,0,"Command executed ok");
 
@@ -172,7 +172,8 @@ $t->get_ok('/api/workspace/100/findings?scanIds[]=4')
 ;
 foreach my $f ( @{$t->{tx}->res()->json()} ) {
     like($f->{host},qr/^[^\/]+(\/ipv[46])?$/,"Hostname is correctly normalized");
-    if ( $f->{plugin} =~ /^(renegSupport|serverName)$/ ) {
+    if ( $f->{plugin} =~ /^(renegSupport|serverName|sims|suites|isExceptional|hasWarnings|gradeTrustIgnored|grade|forwardSecrecy)$/ ) {
+        # These plugins may or may not vary
     } elsif ( $f->{plugin} eq "duration" ) {
         like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints");
     } else {

@@ -159,6 +159,7 @@ Enhancements
 
 Bug Fixes
 ---------
+* #580 - --cdn option did not add IPs to finding if findings were not consitent across endpoints
 * #572 - Issues with disabling SSL verification in Nessus
 * #571 - @SHoekstra fixed: testssl scan fails on docker because hexdump is not installed
 * #533 - Installation of .deb package on Kali failed (Thanks @rhertzog)
