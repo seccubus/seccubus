@@ -225,4 +225,4 @@ workflows:
       - build_deb
       - check_deb_debian9:
           requires:
-            build_deb
+            - build_deb
