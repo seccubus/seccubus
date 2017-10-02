@@ -13,6 +13,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Unshallow source (if needed)
+          command: [ -f .git/shallow ] && git fetch --unshallow
+      - run:
           name: Install prerequisite packages
           command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client
       - restore_cache:
@@ -96,7 +99,7 @@ jobs:
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
       - run:
           name: Install failed packages (shoud work)
-          command: apt-get -y install mysql-serverapt-get install -f -y
+          command: apt-get install -f -y
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
@@ -114,7 +117,7 @@ jobs:
       - run:
           name: Install package (shoud fail)
           shell: bash -ex
-          command: apt-get -y install mysql-serverapt-get install -f -y
+          command: apt-get install -f -y
       - run:
           name: Install failed packages (shoud work)
           command: apt-get install -f -y
