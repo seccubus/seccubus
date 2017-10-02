@@ -50,7 +50,7 @@ jobs:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run:
           name: Unit test
-          command: circleci tests glob t/[02]* | xargs -n 1 prove
+          command: circleci tests glob t/[02]* | circleci tests split --split-by=timings --timings-type=filename | xargs -n 1 prove
 
   mojo:
     docker:
