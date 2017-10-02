@@ -171,7 +171,7 @@ jobs:
       - checkout
       - run:
           name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client default-jre
+          command: apt-get update; apt-get -y install build-essential debhelper default-jre
       - run:
           name: Build
           command: deb/makedeb.sh

@@ -12,10 +12,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-[ -z $1 ] && echo "We need a version number as first argument" && exit
-[ -z $2 ] && echo "We a commit count as second argument" && exit
 
-VERSION="$1.$2"
+VERSION=$1
+COMMITS=$2
+if [ -z $VERSION ]; then
+    echo "Trying to determine version and commit count from git"
+    FULLVERSION=$(git describe)
+    VERSION=$(echo $FULLVERSION|sed 's/\-.*//')
+    COMMITS=$(echo $FULLVERSION|sed 's/^[0-9\.]*\-//'|sed 's/\-.*//')
+fi
+
+[ -z $VERSION ] && echo "We need a version number as first argument" && exit
+[ -z $COMMITS ] && echo "We a commit count as second argument" && exit
+
+VERSION="$VERION.$COMMIT"
 DIR="/tmp/seccubus-$1"
 
 [ ! -d build ] && mkdir build
