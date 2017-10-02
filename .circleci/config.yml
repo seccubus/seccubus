@@ -81,7 +81,7 @@ jobs:
       - store_artifacts:
           path: /root/project/build
 
-  check_deb_debian8:
+  debian8_test:
     docker:
       - image: debian:8
 
@@ -102,7 +102,7 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
-  check_deb_debian9:
+  debian9_test:
     docker:
       - image: debian:9
 
@@ -121,7 +121,7 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
-  check_deb_kali:
+  kali_test:
     docker:
       - image: kalilinux/kali-linux-docker:latest
 
@@ -140,6 +140,11 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
+  debian_ok:
+    docker:
+      - image: docker/whalesay
+    steps:
+      -run: cowsay "All packages tested!!!"
 
 workflows:
 
@@ -155,12 +160,18 @@ workflows:
   debian_package_building:
     jobs:
       - build_deb
-      - check_deb_debian9:
+      - debian9_test:
           requires:
             - build_deb
-      - check_deb_debian8:
+      - debian8_test:
           requires:
             - build_deb
-      - check_deb_kali:
+      - kali_test:
           requires:
             - build_deb
+      - debian_ok:
+          requires:
+            - debian8_test
+            - debian9_test
+            - kali_test
+
