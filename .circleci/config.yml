@@ -15,6 +15,7 @@ jobs:
       - run:
           name: Install prerequisite packages
           command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client
+<<<<<<< HEAD
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
@@ -94,12 +95,35 @@ jobs:
           name: Install package (shoud fail)
           shell: bash -ex
           command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+=======
+      - restore_cache:
+          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+      - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
+      - run: cpanm --installdeps --notest .
+      - save_cache:
+          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+          paths:
+            - "/usr/local/lib/perl5/site_perl"
+>>>>>>> dec279759d0d1205e240a4e09714e1ead7492cc9
       - run:
           name: Install failed packages (shoud work)
           command: apt-get install -f -y
       - run:
+<<<<<<< HEAD
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
+=======
+          name: Create database(s)
+          command: |
+            mysql -e "create database seccubus"
+            mysql -e "create database seccubus_create"
+            mysql -e "create database seccubus_upgrade"
+      - restore_cache:
+          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+      - run:
+          name: Unit test
+          command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=filename | xargs -n 1 prove
+>>>>>>> dec279759d0d1205e240a4e09714e1ead7492cc9
 
   check_deb_debian8:
     docker:
@@ -142,6 +166,25 @@ jobs:
   check_deb_kali:
     docker:
       - image: kalilinux/kali-linux-docker:latest
+
+    steps:
+      - run: apt-get update; apt-get install -y ca-certificates
+      - restore_cache:
+          key: deb-{{ .Branch }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  check_deb_debian9:
+    docker:
+      - image: debian:9
 
     steps:
       - run: apt-get update; apt-get install -y ca-certificates
