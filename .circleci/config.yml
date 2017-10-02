@@ -204,7 +204,7 @@ workflows:
 
   version: 2
 
-  prep_environment:
+  unit_and_integration_tests:
     jobs:
       - debs
       - basics:
@@ -222,6 +222,9 @@ workflows:
       - build:
           requires:
             - debs
+
+  debian_package_building:
+    jobs:
       - build_deb
       - check_deb_debian9:
           requires:
