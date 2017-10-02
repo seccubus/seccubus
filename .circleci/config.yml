@@ -36,8 +36,6 @@ jobs:
             mysql -e "create database seccubus"
             mysql -e "create database seccubus_create"
             mysql -e "create database seccubus_upgrade"
-      - restore_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run:
           name: Unit test
           command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=filename | xargs -n 1 prove
@@ -96,7 +94,10 @@ jobs:
           command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
       - run:
           name: Install failed packages (shoud work)
-          command: apt-get install -f -y
+          command: |
+          sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+          sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
+          sudo apt-get -y install mysql-serverapt-get install -f -y
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
@@ -112,7 +113,10 @@ jobs:
       - run:
           name: Install package (shoud fail)
           shell: bash -ex
-          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+          command: |
+          sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+          sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
+          sudo apt-get -y install mysql-serverapt-get install -f -y
       - run:
           name: Install failed packages (shoud work)
           command: apt-get install -f -y
@@ -158,24 +162,6 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
-  check_deb_debian9:
-    docker:
-      - image: debian:9
-
-    steps:
-      - run: apt-get update; apt-get install -y ca-certificates
-      - restore_cache:
-          key: deb-{{ .Branch }}
-      - run:
-          name: Install package (shoud fail)
-          shell: bash -ex
-          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
-      - run:
-          name: Install failed packages (shoud work)
-          command: apt-get install -f -y
-      - run:
-          name: Seccubus should be running on port 8443
-          command: echo -n >/dev/tcp/localhost/8443
 
 workflows:
 
