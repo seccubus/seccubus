@@ -55,7 +55,9 @@ install:
 	    --basedir=${HOMEDIR} --docdir=${DOCDIR} \
     )
 
-binary: build install
+binary: binary-indep binary-arch
+
+binary-indep: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs
@@ -73,3 +75,4 @@ binary: build install
 	dh_md5sums
 	dh_builddeb
 
+binary-arch:
