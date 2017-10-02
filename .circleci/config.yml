@@ -144,7 +144,7 @@ jobs:
     docker:
       - image: docker/whalesay
     steps:
-      -run: cowsay "All packages tested!!!"
+      - run: cowsay "All packages tested!!!"
 
 workflows:
 
