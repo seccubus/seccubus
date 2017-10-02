@@ -1,15 +1,20 @@
 version: 2
 jobs:
-  debs:
+
+  unit_tests:
     docker:
       - image: perl:latest
         environment:
-          PERL5LIB: "."
+        - PERL5LIB: "."
+        - MYSQL_HOME: "/root/project/.circleci"
+      - image: circleci/mysql:latest
+    parallelism: 8
 
     steps:
       - checkout
-      - run: apt-get update
-      - run: apt-get -y install build-essential
+      - run:
+          name: Install prerequisite packages
+          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
@@ -18,21 +23,6 @@ jobs:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
           paths:
             - "/usr/local/lib/perl5/site_perl"
-
-  basics:
-    docker:
-      - image: perl:latest
-        environment:
-        - PERL5LIB: "."
-        - MYSQL_HOME: "/root/project/.circleci"
-      - image: circleci/mysql:latest
-    parallelism: 2
-
-    steps:
-      - checkout
-      - run:
-          name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client
       - run:
           name: Wait for database
           command: |
@@ -50,97 +40,7 @@ jobs:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run:
           name: Unit test
-          command: circleci tests glob t/[02]* | circleci tests split --split-by=timings --timings-type=filename | xargs -n 1 prove
-
-  mojo:
-    docker:
-      - image: perl:latest
-        environment:
-        - PERL5LIB: "."
-        - MYSQL_HOME: "/root/project/.circleci"
-      - image: circleci/mysql:latest
-
-    steps:
-      - checkout
-      - run:
-          name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client
-      - run:
-          name: Wait for database
-          command: |
-            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
-              sleep 1
-              echo -n .
-            done
-      - run:
-          name: Create database(s)
-          command: |
-            mysql -e "create database seccubus"
-      - restore_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-      - run:
-          name: Unit test
-          command: prove t/[568]*
-
-  ssllabs:
-    docker:
-      - image: perl:latest
-        environment:
-        - PERL5LIB: "."
-        - MYSQL_HOME: "/root/project/.circleci"
-      - image: circleci/mysql:latest
-
-    steps:
-      - checkout
-      - run:
-          name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client
-      - run:
-          name: Wait for database
-          command: |
-            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
-              sleep 1
-              echo -n .
-            done
-      - run:
-          name: Create database(s)
-          command: |
-            mysql -e "create database seccubus"
-      - restore_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-      - run:
-          name: Unit test
-          command: prove t/90*
-
-  testssl:
-    docker:
-      - image: perl:latest
-        environment:
-        - PERL5LIB: "."
-        - MYSQL_HOME: "/root/project/.circleci"
-      - image: circleci/mysql:latest
-
-    steps:
-      - checkout
-      - run:
-          name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client
-      - run:
-          name: Wait for database
-          command: |
-            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
-              sleep 1
-              echo -n .
-            done
-      - run:
-          name: Create database(s)
-          command: |
-            mysql -e "create database seccubus"
-      - restore_cache:
-          key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
-      - run:
-          name: Unit test
-          command: prove t/91*
+          command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=filename | xargs -n 1 prove
 
   build:
     docker:
@@ -193,7 +93,7 @@ jobs:
       - run:
           name: Install package (shoud fail)
           shell: bash -ex
-          command: dpkg -i /root/project/build/*.deb; if [ $? == 0 ] ; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
       - run:
           name: Install failed packages (shoud work)
           command: apt-get install -f -y
@@ -207,22 +107,10 @@ workflows:
 
   unit_and_integration_tests:
     jobs:
-      - debs
-      - basics:
-          requires:
-            - debs
-      - mojo:
-          requires:
-            - debs
-      - ssllabs:
-          requires:
-            - debs
-      - testssl:
-          requires:
-            - debs
+      - unit_tests
       - build:
           requires:
-            - debs
+            - unit_tests
 
   debian_package_building:
     jobs:
