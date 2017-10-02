@@ -192,7 +192,7 @@ jobs:
           key: deb-{{ .Branch }}
       - run:
           name: Install package (shoud fail)
-          command: dpkg -i /root/project/build/*.deb; if [ $? == 0 ] ; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+          command: set +o pipefail;dpkg -i /root/project/build/*.deb; if [ $? == 0 ] ; then echo "NOT ok"; exit 99; else echo "OK" ; fi
       - run:
           name: Install failed packages (shoud work)
           command: apt-get install -f -y
