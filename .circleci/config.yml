@@ -182,6 +182,24 @@ jobs:
       - store_artifacts:
           path: /root/project/build
 
+  check_deb_debian9:
+    docker:
+      - image: debian:9
+
+    steps:
+      - restore_cache:
+          key: deb-{{ .Branch }}
+      - run: apt-get update
+      - run:
+          name: Install package (shoud fail)
+          command: dpkg -i /root/project/*.deb; if [ $? == 0 ]; then echo "This should have failed, but did not"; exit 99; else ; exit 0 ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/proc/tcp/localhost/8443
+
 workflows:
 
   version: 2
@@ -205,3 +223,6 @@ workflows:
           requires:
             - debs
       - build_deb
+      - check_deb_debian9
+          requires:
+            build_deb
