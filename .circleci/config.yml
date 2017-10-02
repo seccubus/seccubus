@@ -86,6 +86,8 @@ jobs:
       - image: debian:7
 
     steps:
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
       - run: apt-get update; apt-get install -y ca-certificates mysql-server
       - restore_cache:
           key: deb-{{ .Branch }}
@@ -93,8 +95,6 @@ jobs:
           name: Install package (shoud fail)
           shell: bash -ex
           command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
-      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
-      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
       - run:
           name: Install failed packages (shoud work)
           command: apt-get install -f -y
@@ -107,6 +107,8 @@ jobs:
       - image: debian:8
 
     steps:
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
       - run: apt-get update; apt-get install -y ca-certificates mysql-server
       - restore_cache:
           key: deb-{{ .Branch }}
@@ -114,8 +116,6 @@ jobs:
           name: Install package (shoud fail)
           shell: bash -ex
           command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
-      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
-      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
       - run:
           name: Install failed packages (shoud work)
           command: apt-get install -f -y
