@@ -173,7 +173,7 @@ sub load_ivil {
                     foreach my $ip ( sort keys %{ $f->{finding_txt} } ) {
                         $same_txt = $f->{finding_txt}->{$ip} if $same_txt eq "";
                         $diff++ if $same_txt ne $f->{finding_txt}->{$ip};
-                        $txt .= "$host:\n\n" . $f->{finding_txt}->{$ip} . "\n---\n";
+                        $txt .= "$ip:\n\n" . $f->{finding_txt}->{$ip} . "\n---\n";
                     }
                     if ( $diff ) {
                         $f->{finding_txt} = $txt;
