@@ -189,7 +189,7 @@ jobs:
     steps:
       - restore_cache:
           key: deb-{{ .Branch }}
-      - run: apt-get update
+      - run: apt-get update; apt-get install -y ca-certificates
       - run:
           name: Install package (shoud fail)
           command: dpkg -i /root/project/build/*.deb; if [ $? == 0 ] ; then echo "NOT ok"; exit 99; else echo "OK" ; fi
