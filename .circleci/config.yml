@@ -12,6 +12,7 @@ jobs:
       - run: apt-get -y install build-essential
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
+      - run: cpanm --notest . MITHALDU/PPI-1.236.tar.gz
       - run: cpanm --installdeps --notest .
       - save_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
