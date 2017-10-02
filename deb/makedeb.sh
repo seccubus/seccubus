@@ -1,6 +1,5 @@
 #!/bin/bash
-# ------------------------------------------------------------------------------
-# Copyright 2017 Arkanoi, Frank Breedijk, Petr
+# Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
