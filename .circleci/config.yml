@@ -88,7 +88,7 @@ jobs:
     steps:
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
-      - run: apt-get update; apt-get install -y ca-certificates mysql-server
+      - run: apt-get update; apt-get install -y ca-certificates
       - restore_cache:
           key: deb-{{ .Branch }}
       - run:
@@ -145,6 +145,8 @@ jobs:
       - image: ubuntu:14.04
 
     steps:
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
       - run: apt-get update; apt-get install -y ca-certificates
       - restore_cache:
           key: deb-{{ .Branch }}
@@ -183,6 +185,8 @@ jobs:
       - image: ubuntu:17.04
 
     steps:
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
       - run: apt-get update; apt-get install -y ca-certificates
       - restore_cache:
           key: deb-{{ .Branch }}
