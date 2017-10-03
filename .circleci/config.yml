@@ -203,9 +203,9 @@ jobs:
 
   debian_ok:
     docker:
-      - image: docker/whalesay
+      - image: alpine
     steps:
-      - run: cowsay "All packages tested!!!"
+      - run: echo "All packages tested!!!"
 
 workflows:
 
