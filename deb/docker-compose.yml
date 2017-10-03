@@ -22,24 +22,4 @@ services:
       PERL5LIB: "."
     volumes:
       - ..:/root/project
-  debian8:
-    image: debian:8
-    command: bash -c "tail -f /var/log/faillog"
-    environment:
-      PERL5LIB: "."
-    volumes:
-      - ..:/root/project
-  debian7:
-    image: debian:7
-    command: bash -c "tail -f /var/log/faillog"
-    environment:
-      PERL5LIB: "."
-    volumes:
-      - ..:/root/project
-  kali:
-    image: kalilinux/kali-linux-docker:latest
-    command: bash -c "tail -f /var/log/faillog"
-    environment:
-      PERL5LIB: "."
-    volumes:
-      - ..:/root/project
+
