@@ -1366,6 +1366,7 @@ sub process_status {
                                     WHERE
                                         finding_id = ? AND
                                         status <> 5 AND
+                                        status <> 6 AND
                                         run_id <> ?
                                     ORDER BY time DESC
                                     LIMIT 1",
