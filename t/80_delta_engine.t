@@ -136,7 +136,30 @@ $t->get_ok('/api/workspace/100/findings')
 
 sleep 1; # Make sure timestamp is different
 
+# Create baseline of No Issue
+$t->put_ok('/api/workspace/100/finding/1', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/2', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/3', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/4', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/5', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/6', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/7', json => { status => 4 })->status_is(200);
+
+$t->get_ok('/api/workspace/100/findings')
+    ->status_is(200)
+    ->json_is("/0/statusName", 'No issue', "Status[1] is No issue, after reset")
+    ->json_is("/1/statusName", 'No issue', "Status[2] is No issue, after reset")
+    ->json_is("/2/statusName", 'No issue', "Status[3] is No issue, after reset")
+    ->json_is("/3/statusName", 'No issue', "Status[4] is No issue, after reset")
+    ->json_is("/4/statusName", 'No issue', "Status[5] is No issue, after reset")
+    ->json_is("/5/statusName", 'No issue', "Status[6] is No issue, after reset")
+    ->json_is("/6/statusName", 'No issue', "Status[7] is No issue, after reset")
+;
+
+sleep 1; # Make sure timestamp is different
+
 # Set to all possible statusses 74-94
+$t->put_ok('/api/workspace/100/finding/1', json => { status => 1 })->status_is(200);
 $t->put_ok('/api/workspace/100/finding/2', json => { status => 2 })->status_is(200);
 $t->put_ok('/api/workspace/100/finding/3', json => { status => 3 })->status_is(200);
 $t->put_ok('/api/workspace/100/finding/4', json => { status => 4 })->status_is(200);
@@ -172,6 +195,7 @@ $t->get_ok('/api/workspace/100/findings')
     ->json_is("/5/statusName", 'Closed', "Status[6] is Closed, after load none")
     ->json_is("/6/statusName", 'MASKED', "Status[7] is MASKED, after load none")
 ;
+
 # Hard set 6 and 7 to Gone too
 $t->put_ok('/api/workspace/100/finding/6', json => { status => 5 })->status_is(200);
 $t->put_ok('/api/workspace/100/finding/7', json => { status => 5 })->status_is(200);
@@ -191,6 +215,11 @@ update_finding(
 # Validate
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
+    ->json_is("/0/statusName", 'Gone', "Status[1] is Gone, after load none")
+    ->json_is("/1/statusName", 'Gone', "Status[2] is Gone, after load none")
+    ->json_is("/2/statusName", 'Gone', "Status[3] is Gone, after load none")
+    ->json_is("/3/statusName", 'Gone', "Status[4] is Gone, after load none")
+    ->json_is("/4/statusName", 'Gone', "Status[5] is Gone, after load none")
     ->json_is("/5/statusName", 'Gone', "Status[6] is Gone after setting it the hard way")
     ->json_is("/6/statusName", 'Gone', "Status[7] is Gone after setting it the hard way")
     ->json_is("/7/statusName", 'Gone', "Status[8] is Gone after creating it the hard way")
@@ -209,10 +238,32 @@ $t->get_ok('/api/workspace/100/findings')
     ->json_is("/1/statusName", 'Changed', "Status[2] is Changed, Status before gone is changed, after load BBBBBBB")
     ->json_is("/2/statusName", 'New', "Status[3] is New, Status before gone is Open, after load BBBBBBB")
     ->json_is("/3/statusName", 'No issue', "Status[4) is No issue, status before gone is No issue and it didn't change, after load BBBBBBB")
-    ->json_is("/4/statusName", 'New', "Status[5] is New, after load BBBBBBB")
-    ->json_is("/5/statusName", 'New', "Status[6] is New, after load BBBBBBB")
+    ->json_is("/4/statusName", 'No issue', "Status[5] is New, status before gone is No issue and it didn't change, after load BBBBBBB")
+    ->json_is("/5/statusName", 'No issue', "Status[6] is New, status before gone is No issue and it didn't change, after load BBBBBBB")
     ->json_is("/6/statusName", 'MASKED', "Status[7] is MASKED, after load BBBBBBB")
     ->json_is("/7/statusName", 'New', "Status[8] is New, there is no status before gone, after load BBBBBBB")
+;
+
+sleep 1; # Make sure timestamp is different
+
+# Create baseline of No Issue
+$t->put_ok('/api/workspace/100/finding/1', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/2', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/3', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/4', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/5', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/6', json => { status => 4 })->status_is(200);
+$t->put_ok('/api/workspace/100/finding/7', json => { status => 4 })->status_is(200);
+
+$t->get_ok('/api/workspace/100/findings')
+    ->status_is(200)
+    ->json_is("/0/statusName", 'No issue', "Status[1] is No issue, after reset")
+    ->json_is("/1/statusName", 'No issue', "Status[2] is No issue, after reset")
+    ->json_is("/2/statusName", 'No issue', "Status[3] is No issue, after reset")
+    ->json_is("/3/statusName", 'No issue', "Status[4] is No issue, after reset")
+    ->json_is("/4/statusName", 'No issue', "Status[5] is No issue, after reset")
+    ->json_is("/5/statusName", 'No issue', "Status[6] is No issue, after reset")
+    ->json_is("/6/statusName", 'No issue', "Status[7] is No issue, after reset")
 ;
 
 sleep 1; # Make sure timestamp is different
@@ -226,6 +277,18 @@ $t->put_ok('/api/workspace/100/finding/5', json => { status => 5 })->status_is(2
 $t->put_ok('/api/workspace/100/finding/6', json => { status => 6 })->status_is(200);
 $t->put_ok('/api/workspace/100/finding/7', json => { status => 99 })->status_is(200);
 $t->put_ok('/api/workspace/100/finding/8', json => { status => 5 })->status_is(200);
+
+$t->get_ok('/api/workspace/100/findings')
+    ->status_is(200)
+    ->json_is("/0/statusName", 'New', "Status[1] is New, after reset")
+    ->json_is("/1/statusName", 'Changed', "Status[2] is Changed, after reset")
+    ->json_is("/2/statusName", 'Open', "Status[3] is Open, after reset")
+    ->json_is("/3/statusName", 'No issue', "Status[4}) is No issue, after reset")
+    ->json_is("/4/statusName", 'Gone', "Status[5] is Gone, after reset")
+    ->json_is("/5/statusName", 'Closed', "Status[6] is Closed, after reset")
+    ->json_is("/6/statusName", 'MASKED', "Status[7] is MASKED, after reset")
+    ->json_is("/7/statusName", 'Gone', "Status[8] is Gone, after reset")
+;
 
 sleep 1; # Make sure timestamp is different
 
@@ -245,6 +308,7 @@ $t->get_ok('/api/workspace/100/findings')
     ->json_is("/6/statusName", 'MASKED', "Status[7] is MASKED, after load none")
     ->json_is("/7/statusName", 'Gone', "Status[8] is Gone, after load none")
 ;
+
 # Hard set 6 and 7 to Gone too
 $t->put_ok('/api/workspace/100/finding/6', json => { status => 5 })->status_is(200);
 $t->put_ok('/api/workspace/100/finding/7', json => { status => 5 })->status_is(200);
@@ -261,12 +325,17 @@ update_finding(
     status => 5
 );
 
-# Validate 155 - 160
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
-    ->json_is("/5/statusName", 'Gone', "Status[6] is Gone after setting it the hard way")
-    ->json_is("/6/statusName", 'Gone', "Status[7] is Gone after setting it the hard way")
-    ->json_is("/8/statusName", 'Gone', "Status[9] is Gone after creating it the hard way")
+    ->json_is("/0/statusName", 'Gone', "Status[1] is Gone, after load none")
+    ->json_is("/1/statusName", 'Gone', "Status[2] is Gone, after load none")
+    ->json_is("/2/statusName", 'Gone', "Status[3] is Gone, after load none")
+    ->json_is("/3/statusName", 'Gone', "Status[4] is Gone, after load none")
+    ->json_is("/4/statusName", 'Gone', "Status[5] is Gone, after load none")
+    ->json_is("/5/statusName", 'Gone', "Status[6] is Gone, after load none")
+    ->json_is("/6/statusName", 'Gone', "Status[7] is Gone, after load none")
+    ->json_is("/7/statusName", 'Gone', "Status[8] is Gone, after load none")
+    ->json_is("/8/statusName", 'Gone', "Status[9] is Gone, after load none")
 ;
 
 sleep 1;
@@ -278,15 +347,15 @@ is($?,0,"Command executed ok");
 $t = session();
 $t->get_ok('/api/workspace/100/findings')
     ->status_is(200)
-    ->json_is("/0/statusName", 'New', "Status[1] is New, Status before gone is new, after load BBBBBBB again")
-    ->json_is("/1/statusName", 'Changed', "Status[2]) is Changed, Status before gone is changed, after load BBBBBBB again")
-    ->json_is("/2/statusName", 'New', "Status[3] is New, Status before gone is Open, after load BBBBBBB again")
-    ->json_is("/3/statusName", 'Changed', "Status[4]) is Changed, status before gone is No issdue and it didn't change, after load BBBBBBB again")
-    ->json_is("/4/statusName", 'New', "Status[5] is New, after load BBBBBBB again")
-    ->json_is("/5/statusName", 'New', "Status[6] is New, after load BBBBBBB again")
-    ->json_is("/6/statusName", 'MASKED', "Status[7]) is MASKED, after load BBBBBBB again")
-    ->json_is("/7/statusName", 'New', "Status[8] is New, Status before gone is new, after load BBBBBBB again")
-    ->json_is("/8/statusName", 'New', "Status[9] is New, there is no status before gone, after load BBBBBBB again")
+    ->json_is("/0/statusName", 'New', "Status[1] is New, Status before gone is new, after load AAAAAAAAA")
+    ->json_is("/1/statusName", 'Changed', "Status[2]) is Changed, Status before gone is changed, after load AAAAAAAAA")
+    ->json_is("/2/statusName", 'New', "Status[3] is New, Status before gone is Open, after load AAAAAAAAA")
+    ->json_is("/3/statusName", 'Changed', "Status[4]) is Changed, status before gone is No issdue and it didn't change, after load AAAAAAAAA")
+    ->json_is("/4/statusName", 'Changed', "Status[5] is Changed, status before done is No issue, but it changed,after load AAAAAAAAA")
+    ->json_is("/5/statusName", 'Changed', "Status[6] is Changed, status before done is No issue, but it changed,after load AAAAAAAAA")
+    ->json_is("/6/statusName", 'MASKED', "Status[7]) is MASKED, after load AAAAAAAAA")
+    ->json_is("/7/statusName", 'New', "Status[8] is New, Status before gone is new, after load AAAAAAAAA")
+    ->json_is("/8/statusName", 'New', "Status[9] is New, there is no status before gone, after load AAAAAAAAA")
 ;
 
 done_testing();

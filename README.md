@@ -163,5 +163,6 @@ Bug Fixes
 * #572 - Issues with disabling SSL verification in Nessus
 * #571 - @SHoekstra fixed: testssl scan fails on docker because hexdump is not installed
 * #533 - Installation of .deb package on Kali failed (Thanks @rhertzog)
+* #509 - Fixed a bug in the state engine, causing incorrect recovery from gone when an issue was previously closed
 * Fixed an issue where duplicate asset_hosts were created on certain platforms (e.g. docker)
 * Fixed an issue in how filters were composed if
