@@ -88,7 +88,7 @@ jobs:
     steps:
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
-      - run: apt-get update; apt-get install -y ca-certificates mysql-server
+      - run: apt-get update; apt-get install -y ca-certificates
       - restore_cache:
           key: deb-{{ .Branch }}
       - run:
@@ -140,11 +140,72 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
+  ubuntu14_test:
+    docker:
+      - image: ubuntu:14.04
+
+    steps:
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
+      - run: apt-get update; apt-get install -y ca-certificates
+      - restore_cache:
+          key: deb-{{ .Branch }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  ubuntu16_test:
+    docker:
+      - image: ubuntu:16.04
+
+    steps:
+      - run: apt-get update; apt-get install -y ca-certificates
+      - restore_cache:
+          key: deb-{{ .Branch }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  ubuntu17_test:
+    docker:
+      - image: ubuntu:17.04
+
+    steps:
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
+      - run: apt-get update; apt-get install -y ca-certificates
+      - restore_cache:
+          key: deb-{{ .Branch }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
   debian_ok:
     docker:
-      - image: docker/whalesay
+      - image: alpine
     steps:
-      - run: cowsay "All packages tested!!!"
+      - run: echo "All packages tested!!!"
 
 workflows:
 
@@ -166,6 +227,15 @@ workflows:
       - debian8_test:
           requires:
             - build_deb
+      - ubuntu14_test:
+          requires:
+            - build_deb
+      - ubuntu16_test:
+          requires:
+            - build_deb
+      - ubuntu17_test:
+          requires:
+            - build_deb
       - kali_test:
           requires:
             - build_deb
@@ -173,5 +243,8 @@ workflows:
           requires:
             - debian8_test
             - debian9_test
+            - ubuntu14_test
+            - ubuntu16_test
+            - ubuntu17_test
             - kali_test
 
