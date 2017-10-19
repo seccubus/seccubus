@@ -128,7 +128,7 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
     like($f->{severity}, qr/^[0-3]$/, "Finding $f->{id} has the right priority");
     is($f->{port},"443/tcp","Finnding $f->{id} has the right port");
     like($f->{host},qr/^www\.seccubus\.com\/ipv[46]$/, "Finding $f->{id} has the right hostname");
-    if ( $f->{plugin} =~ /^(X\-Served\-By|http_clock_skew|rp_header|order(_cipher)?|cbc_tls\d)$/ ) {
+    if ( $f->{plugin} =~ /^(X\-Served\-By|http_clock_skew|rp_header|order(_cipher)?|cbc_tls\d|CAA_record)$/ ) {
         # May or may not differ
     } elsif( undef ) {
         like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints");
