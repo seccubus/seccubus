@@ -162,7 +162,10 @@ Bug Fixes
 * #580 - --cdn option did not add IPs to finding if findings were not consitent across endpoints
 * #572 - Issues with disabling SSL verification in Nessus
 * #571 - @SHoekstra fixed: testssl scan fails on docker because hexdump is not installed
+* #563 - Fixed an issue with picking the wrong color for notes (Severity 4)
 * #533 - Installation of .deb package on Kali failed (Thanks @rhertzog)
 * #509 - Fixed a bug in the state engine, causing incorrect recovery from gone when an issue was previously closed
 * Fixed an issue where duplicate asset_hosts were created on certain platforms (e.g. docker)
 * Fixed an issue in how filters were composed if
+* Removed debug output from entrypoint.sh
+* Fixed git complaining about unrelated histories

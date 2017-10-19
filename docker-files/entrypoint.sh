@@ -18,7 +18,7 @@
 # not exist yet ;)
 # ------------------------------------------------------------------------------
 #
-set -x
+#set -x
 
 STACK=${STACK:-'full'}
 DBHOST=${DBHOST:-'127.0.0.1'}
@@ -264,9 +264,9 @@ fi
 
 if [[ "$STACK" != "front" ]]; then
     cd /opt/nikto
-    git pull --depth=1
+    git pull
     cd /opt/testssl.sh
-    git pull --depth=1
+    git pull
 fi
 
 # Return to home

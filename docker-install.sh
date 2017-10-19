@@ -136,7 +136,7 @@ echo >>/root/.bashrc 'export PERL5LIB="/opt/seccubus:/opt/seccubus/lib"'
 
 # Install Nikto
 cd /opt
-git clone https://github.com/sullo/nikto.git --depth 1
+git clone https://github.com/sullo/nikto.git
 echo 'export PATH="$PATH:/opt/nikto/program"' > /etc/profile.d/nikto.sh
 echo 'export PATH="$PATH:/opt/nikto/program"' >> /root/.bashrc
 chmod +x /etc/profile.d/nikto.sh
@@ -144,7 +144,7 @@ chmod +x /etc/profile.d/nikto.sh
 
 # Install testssl.sh
 cd /opt
-git clone https://github.com/drwetter/testssl.sh.git --depth 1
+git clone https://github.com/drwetter/testssl.sh.git
 echo 'export PATH="$PATH:/opt/testssl.sh"' > /etc/profile.d/testssl.sh.sh
 echo 'export PATH="$PATH:/opt/testssl.sh"' >> /root/.bashrc
 

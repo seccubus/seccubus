@@ -261,9 +261,6 @@ tr.sev_2 {
 tr.sev_3 {
 	background-color: yellow;
 }
-tr.sev_4 {
-	background-color: blue;
-}
 
 .collapsed {
 	background: url("img/expand.png") no-repeat scroll right center ;
