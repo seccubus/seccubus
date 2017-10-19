@@ -167,3 +167,5 @@ Bug Fixes
 * #509 - Fixed a bug in the state engine, causing incorrect recovery from gone when an issue was previously closed
 * Fixed an issue where duplicate asset_hosts were created on certain platforms (e.g. docker)
 * Fixed an issue in how filters were composed if
+* Removed debug output from entrypoint.sh
+* Fixed git complaining about unrelated histories
