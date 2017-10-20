@@ -20,6 +20,9 @@ if [ -z $VERSION ]; then
     FULLVERSION=$(git describe)
     UPSTREAM_VERSION=$(echo $FULLVERSION|sed 's/\-.*//')
     COMMITS=$(echo $FULLVERSION|sed 's/^[0-9\.]*\-//'|sed 's/\-.*//')
+    if [[ "$UPSTREAM_VERSION" == "$COMMITS" ]]; then
+        COMMITS=0
+    fi
 fi
 
 [ -z $UPSTREAM_VERSION ] && echo "We need a version number as first argument" && exit
