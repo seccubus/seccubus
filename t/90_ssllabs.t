@@ -172,12 +172,12 @@ $t->get_ok('/api/workspace/100/findings?scanIds[]=4')
 ;
 foreach my $f ( @{$t->{tx}->res()->json()} ) {
     like($f->{host},qr/^[^\/]+(\/ipv[46])?$/,"Hostname is correctly normalized");
-    if ( $f->{plugin} =~ /^(renegSupport|serverName|sims|suites|isExceptional|hasWarnings|gradeTrustIgnored|grade|forwardSecrecy)$/ ) {
+    if ( $f->{plugin} =~ /^(renegSupport|serverName|sims|suites|isExceptional|hasWarnings|gradeTrustIgnored|grade|forwardSecrecy|namedGroups)$/ ) {
         # These plugins may or may not vary
     } elsif ( $f->{plugin} eq "duration" ) {
-        like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints");
+        like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints for plugin '$f->{plugin}'");
     } else {
-        unlike($f->{find},qr/^Findings vary per endpoint/,"Findings are consistent across endpoints");
+        unlike($f->{find},qr/^Findings vary per endpoint/,"Findings are consistent across endpoints for plugin '$f->{plugin}'");
     }
     #die Dumper $f;
     #like($f->{plugin}, qr/^(statusMessage|ERROR\/Assessment failed)$/i, "Finding $f->{id} is correct type");
@@ -198,13 +198,13 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
     }
     if ( $f->{plugin} =~ /^(renegSupport|serverName|grade(TrustIgnored)?)$/ ) {
     } elsif ( $f->{plugin} eq "duration" ) {
-        like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints");
+        like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints for plugin '$f->{plugin}'");
     } else {
-        unlike($f->{find},qr/^Findings vary per endpoint/,"Findings are consistent across endpoints");
+        unlike($f->{find},qr/^Findings vary per endpoint/,"Findings are consistent across endpoints for plugin '$f->{plugin}'");
     }
 }
 foreach my $host ( qw(www.seccubus.com www.schubergphilis.com www.cupfighter.net) ) {
-    cmp_ok($hosts->{$host}, '>', 0, "Has findigns for $host");
+    cmp_ok($hosts->{$host}, '>', 0, "Has findings for $host");
     delete $hosts->{$host};
 }
 is(keys %$hosts, 0, "Has no findings for other hosts: " . join("\n", sort keys %$hosts));

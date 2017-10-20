@@ -131,9 +131,9 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
     if ( $f->{plugin} =~ /^(X\-Served\-By|http_clock_skew|rp_header|order(_cipher)?|cbc_tls\d|CAA_record)$/ ) {
         # May or may not differ
     } elsif( undef ) {
-        like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints");
+        like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints for plugin '$f->{plugin}'");
     } else {
-        unlike($f->{find},qr/^Findings vary per endpoint/,"Findings are consistent across endpoints");
+        unlike($f->{find},qr/^Findings vary per endpoint/,"Findings are consistent across endpoints for plugin '$f->{plugin}'");
     }
     #die Dumper $f;
     #like($f->{plugin}, qr/^(statusMessage|ERROR\/Assessment failed)$/i, "Finding $f->{id} is correct type");
