@@ -146,15 +146,18 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-xx-x-2017 - v2.41 - Developement release
-==========================================
-Fixes a big issue with the validation of SSL certificates. Certificate validation was cnot correctly turned off in the Nessus scanner
+20-10-2017 - v2.42 - Kali, Certificate validation and State Engine
+==================================================================
+Three major improvements in this release:
+* It fixes a big issue with the validation of SSL certificates. Certificate validation was cot correctly turned off in the Nessus scanner when an internal scanner is used
+* Debian packages now work on Debian, Ubuntu and Kali
+* The state engine still had a bug when findings needed to recover from the Gone status
 
 
 Enhancements
 ------------
 * Unit testing moved from Circle CI v1.0 to CircleCI v2.0 to increase testing speed
-* Now also building .deb file on Circle CI and testing them against debian v8 and v9 and Kali Linux
+* Now also building .deb file on Circle CI and testing them against debian v8 and v9, Ubuntu and Kali Linux
 
 
 Bug Fixes
