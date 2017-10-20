@@ -86,6 +86,7 @@ jobs:
       - image: debian:8
 
     steps:
+      - checkout
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
       - run: apt-get update; apt-get install -y ca-certificates
@@ -101,7 +102,6 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
-      - checkout
       - run:
           name: Ensure all perl moduels are installed
           command: prove t/01_perl_ok.t
