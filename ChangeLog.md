@@ -30,6 +30,7 @@ For more information visit [www.seccubus.com]
 20-10-2017 - v2.42 - Kali, Certificate validation and State Engine
 ==================================================================
 Three major improvements in this release:
+
 * It fixes a big issue with the validation of SSL certificates. Certificate validation was cot correctly turned off in the Nessus scanner when an internal scanner is used
 * Debian packages now work on Debian, Ubuntu and Kali
 * The state engine still had a bug when findings needed to recover from the Gone status
