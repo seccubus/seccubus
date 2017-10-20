@@ -89,7 +89,7 @@ jobs:
       - checkout
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
-      - run: apt-get update; apt-get install -y ca-certificates
+      - run: apt-get update; apt-get install -y ca-certificates libtest-perl-critic-perl
       - restore_cache:
           key: deb-{{ .Branch }}
       - run:
