@@ -101,6 +101,10 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
+      - checkout
+      - run:
+          name: Ensure all perl moduels are installed
+          command: prove t/01_perl_ok.t
 
   debian9_test:
     docker:

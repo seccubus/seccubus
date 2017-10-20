@@ -172,7 +172,7 @@ $t->get_ok('/api/workspace/100/findings?scanIds[]=4')
 ;
 foreach my $f ( @{$t->{tx}->res()->json()} ) {
     like($f->{host},qr/^[^\/]+(\/ipv[46])?$/,"Hostname is correctly normalized");
-    if ( $f->{plugin} =~ /^(renegSupport|serverName|sims|suites|isExceptional|hasWarnings|gradeTrustIgnored|grade|forwardSecrecy)$/ ) {
+    if ( $f->{plugin} =~ /^(renegSupport|serverName|sims|suites|isExceptional|hasWarnings|gradeTrustIgnored|grade|forwardSecrecy|namedGroups)$/ ) {
         # These plugins may or may not vary
     } elsif ( $f->{plugin} eq "duration" ) {
         like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints for plugin '$f->{plugin}'");
@@ -196,7 +196,7 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
     } else {
         $hosts->{$f->{host}}++;
     }
-    if ( $f->{plugin} =~ /^(renegSupport|serverName|grade(TrustIgnored)?|namedGroups)$/ ) {
+    if ( $f->{plugin} =~ /^(renegSupport|serverName|grade(TrustIgnored)?)$/ ) {
     } elsif ( $f->{plugin} eq "duration" ) {
         like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints for plugin '$f->{plugin}'");
     } else {
