@@ -88,7 +88,7 @@ jobs:
     steps:
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
-      - run: apt-get update; apt-get install -y ca-certificates file
+      - run: apt-get update; apt-get install -y ca-certificates
       - restore_cache:
           key: deb-{{ .Branch }}
       - run:
@@ -101,16 +101,13 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
-      - run:
-          name: Perl should compile
-          command: for f in $(find /opt/seccubus -type f) ; do [ $(file $f | grep -i perl | wc -l) -gt 0 ] && [ $( perl -I /opt/seccubus -c $f 2>&1|grep 'syntax OK' | wc -l) -gt 0 ] && echo "$f -> OK"; done
 
   debian9_test:
     docker:
       - image: debian:9
 
     steps:
-      - run: apt-get update; apt-get install -y ca-certificates file
+      - run: apt-get update; apt-get install -y ca-certificates
       - restore_cache:
           key: deb-{{ .Branch }}
       - run:
@@ -123,16 +120,13 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
-      - run:
-          name: Perl should compile
-          command: for f in $(find /opt/seccubus -type f) ; do [ $(file $f | grep -i perl | wc -l) -gt 0 ] && [ $( perl -I /opt/seccubus -c $f 2>&1|grep 'syntax OK' | wc -l) -gt 0 ] && echo "$f -> OK"; done
 
   kali_test:
     docker:
       - image: kalilinux/kali-linux-docker:latest
 
     steps:
-      - run: apt-get update; apt-get install -y ca-certificates file
+      - run: apt-get update; apt-get install -y ca-certificates
       - restore_cache:
           key: deb-{{ .Branch }}
       - run:
@@ -145,9 +139,6 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
-      - run:
-          name: Perl should compile
-          command: for f in $(find /opt/seccubus -type f) ; do [ $(file $f | grep -i perl | wc -l) -gt 0 ] && [ $( perl -I /opt/seccubus -c $f 2>&1|grep 'syntax OK' | wc -l) -gt 0 ] && echo "$f -> OK"; done
 
   ubuntu14_test:
     docker:
@@ -156,7 +147,7 @@ jobs:
     steps:
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
-      - run: apt-get update; apt-get install -y ca-certificates file
+      - run: apt-get update; apt-get install -y ca-certificates
       - restore_cache:
           key: deb-{{ .Branch }}
       - run:
@@ -169,16 +160,13 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
-      - run:
-          name: Perl should compile
-          command: for f in $(find /opt/seccubus -type f) ; do [ $(file $f | grep -i perl | wc -l) -gt 0 ] && [ $( perl -I /opt/seccubus -c $f 2>&1|grep 'syntax OK' | wc -l) -gt 0 ] && echo "$f -> OK"; done
 
   ubuntu16_test:
     docker:
       - image: ubuntu:16.04
 
     steps:
-      - run: apt-get update; apt-get install -y ca-certificates file
+      - run: apt-get update; apt-get install -y ca-certificates
       - restore_cache:
           key: deb-{{ .Branch }}
       - run:
@@ -191,9 +179,6 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
-      - run:
-          name: Perl should compile
-          command: for f in $(find /opt/seccubus -type f) ; do [ $(file $f | grep -i perl | wc -l) -gt 0 ] && [ $( perl -I /opt/seccubus -c $f 2>&1|grep 'syntax OK' | wc -l) -gt 0 ] && echo "$f -> OK"; done
 
   ubuntu17_test:
     docker:
@@ -202,7 +187,7 @@ jobs:
     steps:
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
-      - run: apt-get update; apt-get install -y ca-certificates file
+      - run: apt-get update; apt-get install -y ca-certificates
       - restore_cache:
           key: deb-{{ .Branch }}
       - run:
@@ -215,9 +200,6 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
-      - run:
-          name: Perl should compile
-          command: for f in $(find /opt/seccubus -type f) ; do [ $(file $f | grep -i perl | wc -l) -gt 0 ] && [ $( perl -I /opt/seccubus -c $f 2>&1|grep 'syntax OK' | wc -l) -gt 0 ] && echo "$f -> OK"; done
 
   debian_ok:
     docker:
