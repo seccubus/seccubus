@@ -78,8 +78,8 @@ jobs:
           key: deb-{{ .Branch }}
           paths:
             - "/root/project/build"
-      - store_artifacts:
-          path: /root/project/build
+#      - store_artifacts:
+#          path: /root/project/build
 
   debian8_test:
     docker:
@@ -205,6 +205,10 @@ jobs:
     docker:
       - image: alpine
     steps:
+      - restore_cache:
+          key: deb-{{ .Branch }}
+      - store_artifacts:
+          path: /root/project/build
       - run: echo "All packages tested!!!"
 
 workflows:
