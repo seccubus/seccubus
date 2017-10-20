@@ -103,7 +103,7 @@ jobs:
           command: echo -n >/dev/tcp/localhost/8443
       - run:
           name: Perl should compile
-          command: [ $(for f in $(find /opt/seccubus -type f) ; do  [ $(file $f | grep -i perl | wc -l) -gt 0 ] && [ $( perl -I /opt/seccubus -I /opt/seccubus/lib -c $f |grep 'syntax OK' | wc -l) -gt 0 ] ; done
+          command: for f in $(find /opt/seccubus -type f) ; do [ $(file $f | grep -i perl | wc -l) -gt 0 ] && [ $( perl -I /opt/seccubus -c $f 2>&1|grep 'syntax OK' | wc -l) -gt 0 ] && echo "$f -> OK"; done
 
   debian9_test:
     docker:
