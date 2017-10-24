@@ -146,27 +146,13 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-20-10-2017 - v2.42 - Kali, Certificate validation and State Engine
+24-10-2017 - v2.43 - Developement release
 ==================================================================
-Three major improvements in this release:
-* It fixes a big issue with the validation of SSL certificates. Certificate validation was cot correctly turned off in the Nessus scanner when an internal scanner is used
-* Debian packages now work on Debian, Ubuntu and Kali
-* The state engine still had a bug when findings needed to recover from the Gone status
 
 Enhancements
 ------------
-* Unit testing moved from Circle CI v1.0 to CircleCI v2.0 to increase testing speed
-* Now also building .deb file on Circle CI and testing them against debian v8 and v9, Ubuntu and Kali Linux
+*
 
 Bug Fixes
 ---------
-* #580 - --cdn option did not add IPs to finding if findings were not consitent across endpoints
-* #572 - Issues with disabling SSL verification in Nessus
-* #571 - @SHoekstra fixed: testssl scan fails on docker because hexdump is not installed
-* #563 - Fixed an issue with picking the wrong color for notes (Severity 4)
-* #533 - Installation of .deb package on Kali failed (Thanks @rhertzog)
-* #509 - Fixed a bug in the state engine, causing incorrect recovery from gone when an issue was previously closed
-* Fixed an issue where duplicate asset_hosts were created on certain platforms (e.g. docker)
-* Fixed an issue in how filters were composed if
-* Removed debug output from entrypoint.sh
-* Fixed git complaining about unrelated histories
+*
