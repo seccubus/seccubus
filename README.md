@@ -153,12 +153,10 @@ Three major improvements in this release:
 * Debian packages now work on Debian, Ubuntu and Kali
 * The state engine still had a bug when findings needed to recover from the Gone status
 
-
 Enhancements
 ------------
 * Unit testing moved from Circle CI v1.0 to CircleCI v2.0 to increase testing speed
 * Now also building .deb file on Circle CI and testing them against debian v8 and v9, Ubuntu and Kali Linux
-
 
 Bug Fixes
 ---------
