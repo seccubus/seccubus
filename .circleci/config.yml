@@ -69,13 +69,16 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Generate build signature
+          command: git describe --long > .git-describe
+      - run:
           name: Install prerequisite packages
           command: apt-get update; apt-get -y install build-essential debhelper default-jre git
       - run:
           name: Build
           command: deb/makedeb.sh
       - save_cache:
-          key: deb-{{ .Branch }}
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
           paths:
             - "/root/project/build"
 #      - store_artifacts:
@@ -88,9 +91,13 @@ jobs:
     steps:
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
-      - run: apt-get update; apt-get install -y ca-certificates
+      - run: apt-get update; apt-get install -y ca-certificates git ssh
+      - checkout
+      - run:
+          name: Generate build signature
+          command: git describe --long > .git-describe
       - restore_cache:
-          key: deb-{{ .Branch }}
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
           name: Install package (shoud fail)
           shell: bash -ex
@@ -107,9 +114,13 @@ jobs:
       - image: debian:9
 
     steps:
-      - run: apt-get update; apt-get install -y ca-certificates
+      - run: apt-get update; apt-get install -y ca-certificates git ssh
+      - checkout
+      - run:
+          name: Generate build signature
+          command: git describe --long > .git-describe
       - restore_cache:
-          key: deb-{{ .Branch }}
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
           name: Install package (shoud fail)
           shell: bash -ex
@@ -126,9 +137,13 @@ jobs:
       - image: kalilinux/kali-linux-docker:latest
 
     steps:
-      - run: apt-get update; apt-get install -y ca-certificates
+      - run: apt-get update; apt-get install -y ca-certificates git ssh
+      - checkout
+      - run:
+          name: Generate build signature
+          command: git describe --long > .git-describe
       - restore_cache:
-          key: deb-{{ .Branch }}
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
           name: Install package (shoud fail)
           shell: bash -ex
@@ -147,9 +162,13 @@ jobs:
     steps:
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
-      - run: apt-get update; apt-get install -y ca-certificates
+      - run: apt-get update; apt-get install -y ca-certificates git ssh
+      - checkout
+      - run:
+          name: Generate build signature
+          command: git describe --long > .git-describe
       - restore_cache:
-          key: deb-{{ .Branch }}
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
           name: Install package (shoud fail)
           shell: bash -ex
@@ -166,9 +185,13 @@ jobs:
       - image: ubuntu:16.04
 
     steps:
-      - run: apt-get update; apt-get install -y ca-certificates
+      - run: apt-get update; apt-get install -y ca-certificates git ssh
+      - checkout
+      - run:
+          name: Generate build signature
+          command: git describe --long > .git-describe
       - restore_cache:
-          key: deb-{{ .Branch }}
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
           name: Install package (shoud fail)
           shell: bash -ex
@@ -187,9 +210,13 @@ jobs:
     steps:
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
-      - run: apt-get update; apt-get install -y ca-certificates
+      - run: apt-get update; apt-get install -y ca-certificates git ssh
+      - checkout
+      - run:
+          name: Generate build signature
+          command: git describe --long > .git-describe
       - restore_cache:
-          key: deb-{{ .Branch }}
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
           name: Install package (shoud fail)
           shell: bash -ex
@@ -205,9 +232,13 @@ jobs:
     docker:
       - image: alpine
     steps:
-      - run: apk update; apk add ca-certificates
+      - run: apk update; apk add ca-certificates git ssh
+      - checkout
+      - run:
+          name: Generate build signature
+          command: git describe --long > .git-describe
       - restore_cache:
-          key: deb-{{ .Branch }}
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - store_artifacts:
           path: /root/project/build
       - run: echo "All packages tested!!!"
