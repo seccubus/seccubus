@@ -71,7 +71,7 @@ jobs:
       - checkout
       - run:
           name: Generate build signature
-          command: git describe --long | tee .git-describe
+          command: git rev-parse HEAD | tee .git-describe
       - run:
           name: Install prerequisite packages
           command: apt-get update; apt-get -y install build-essential debhelper default-jre-headless git
@@ -96,7 +96,7 @@ jobs:
       - checkout
       - run:
           name: Generate build signature
-          command: git describe --long | tee .git-describe
+          command: git rev-parse HEAD | tee .git-describe
       - restore_cache:
           key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
@@ -119,7 +119,7 @@ jobs:
       - checkout
       - run:
           name: Generate build signature
-          command: git describe --long | tee .git-describe
+          command: git rev-parse HEAD | tee .git-describe
       - restore_cache:
           key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
@@ -142,7 +142,7 @@ jobs:
       - checkout
       - run:
           name: Generate build signature
-          command: git describe --long | tee .git-describe
+          command: git rev-parse HEAD | tee .git-describe
       - restore_cache:
           key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
@@ -167,7 +167,7 @@ jobs:
       - checkout
       - run:
           name: Generate build signature
-          command: git describe --long | tee .git-describe
+          command: git rev-parse HEAD | tee .git-describe
       - restore_cache:
           key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
@@ -190,7 +190,7 @@ jobs:
       - checkout
       - run:
           name: Generate build signature
-          command: git describe --long | tee .git-describe
+          command: git rev-parse HEAD | tee .git-describe
       - restore_cache:
           key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
@@ -215,7 +215,7 @@ jobs:
       - checkout
       - run:
           name: Generate build signature
-          command: git describe --long | tee .git-describe
+          command: git rev-parse HEAD | tee .git-describe
       - restore_cache:
           key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
@@ -237,7 +237,7 @@ jobs:
       - checkout
       - run:
           name: Generate build signature
-          command: git describe --long | tee .git-describe
+          command: git rev-parse HEAD | tee .git-describe
       - restore_cache:
           key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - store_artifacts:
