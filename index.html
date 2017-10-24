@@ -35,33 +35,34 @@ layout: default
 	converted to the Intermediate Vulnerability Information Language (IVIL) format to make
 	sure Seccubus can work with many different scanners</p>
     </div>
-    <div class="what">
+    <div class="why">
     	<h3>What scanners are supported?</h3>
-    	<p>THe following scanners are supported:
+    	<p>The following scanners are supported:
     		<ul>
-    			<li>Nessus
-    			<li>OpenVAS
-    			<li>Nmap
-    			<li>Nikto
-    			<li>Medusa
-    			<li>SSLyze
-    			<li>Qualys SSL labs
-    			<li>SkipFish
-    			<li>ZAP
+    			<li><a href='https://www.tenable.com/products/nessus-vulnerability-scanner'>Nessus</a>
+    			<li><a href='http://www.openvas.org/'>OpenVAS</a>
+    			<li><a href='https://nmap.org/'>Nmap</a>
+    			<li><a href='https://cirt.net/Nikto2'>Nikto</a>
+    			<li><a href='http://foofus.net/goons/jmk/medusa/medusa.html'>Medusa<a/>
+    			<li><a href='https://github.com/nabla-c0d3/sslyze'>SSLyze</a>
+    			<li><a href='https://www.ssllabs.com/'>Qualys SSL labs</a>
+                <li><a href='https://testssl.sh'>testssl.sh</a>
+    			<li><a href='https://code.google.com/archive/p/skipfish/'>SkipFish</a>
+    			<li><a href='https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project'>ZAP</a>
     		</ul>
     	</p>
     </div>
-    <div class="news">
-        <h2>News</h2>
-		<ul>
+    <div class="how">
+        <h3>News</h3>
+        <ul>
             {% for post in site.posts %}
-				{% if forloop.index <= 10 %}
-		            <li>
-			    	    <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-				    </li>
-				{% endif %}
-        	{% endfor %}
-		</ul>
-		<a href='news'>More news...</a>
+                {% if forloop.index <= 10 %}
+                    <li>
+                        <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <a href='news'>More news...</a>
     </div>
 </section>

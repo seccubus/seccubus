@@ -12,18 +12,11 @@
 
 - text: Documentation
   url: /documentation
+
+- text: Mailing List
+  url: /mailing_list/subscribe/
   subitems:
-    - text: User documentation
-      url: /documentation#usr
-    - text: Developer documentation
-      url: /documentation#dev
-    - text: FAQ
-      url: /documentation#faq
-    - text: License
-      url: /documentation#license
-    - text: Subscribe to Mailing List
-      url: /mailing_list/subscribe/
-    - text: Mailing List Archive
+    - text: Archive
       url: /mailing_list/archive/
 
 

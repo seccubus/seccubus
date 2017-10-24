@@ -31,9 +31,15 @@ Make sure that README.md reflects all changes since the last released version, M
 
 Check [![Circle-CI build status](https://circleci.com/gh/schubergphilis/Seccubus.svg?style=shield&circle-token=63e8efd7e0bff0b1e9578ff312b4b0c47963709a)](https://circleci.com/gh/schubergphilis/Seccubus)
 
-# Make sure the package builds on all platforms
+# Make sure the RPMs build on all platforms
 
 Check [OpenSUSE Build Serice](https://build.opensuse.org/package/show/home:seccubus/Seccubus)
+
+(Debian package is part of CircelCI now)
+
+# Make sure hub.docker.com is building the container
+
+Check [Docker Hub](https://hub.docker.com/r/seccubus/seccubus/builds/)
 
 # Tag the repo
 
@@ -56,9 +62,13 @@ To git@github.com:schubergphilis/Seccubus
 
 Check [![Circle-CI build status](https://circleci.com/gh/schubergphilis/Seccubus.svg?style=shield&circle-token=63e8efd7e0bff0b1e9578ff312b4b0c47963709a)](https://circleci.com/gh/schubergphilis/Seccubus)
 
-# Make sure the package builds on all platforms (AGAIN!)
+# Make sure the RPMs builds on all platforms (AGAIN!)
 
 Check [OpenSUSE Build Serice](https://build.opensuse.org/package/show/home:seccubus/Seccubus)
+
+# Make sure hub.docker.com is building the containers (AGAIN!)
+
+Check [Docker Hub](https://hub.docker.com/r/seccubus/seccubus/builds/)
 
 # Create a release on GitHub
 
@@ -71,8 +81,7 @@ Use the tag you have just created. If you committed after you created the tag yo
 Platform(s):
 
 * [Fedora based RPMs](http://software.opensuse.org//download.html?project=home%3Aseccubus&package=Seccubus) - Make sure to download all versions (fc24, fc25 and fc26) as well as the source RPM.
-* [Debian based deb amd64](http://download.opensuse.org/repositories/home:/seccubus/Debian_9.0/amd64/)
-* [Debian based deb i386](http://download.opensuse.org/repositories/home:/seccubus/Debian_9.0/i386/)
+* [Debian deb](https://circleci.com/gh/schubergphilis/Seccubus/tree/master) - It is an artifact of the 'debian_ok' step in the 'debian_package_building' workflow.
 
 
 # Attach them to the build
@@ -91,7 +100,10 @@ You know how mail works.
 
 Code is on [Frank Breedijk's GitHub](https://github.com/seccubus/Seccubus_version_check)
 
+# Import blog post in Medium
+
+On Medium [import the blog post](https://medium.com/p/import) and add it to the Schuberg Philis publication.
+
 # Tweet, LinkedIn, Facebook, etc...
 
 Make some noise, you are done!
-
