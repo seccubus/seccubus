@@ -233,7 +233,7 @@ jobs:
     docker:
       - image: alpine
     steps:
-      - run: apk update; apk add ca-certificates git ssh
+      - run: apk update; apk add ca-certificates git
       - checkout
       - run:
           name: Generate build signature
