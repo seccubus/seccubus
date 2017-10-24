@@ -67,6 +67,7 @@ jobs:
         - PERL5LIB: "."
 
     steps:
+      - run: apt-get update; apt-get install -y git ssh
       - checkout
       - run:
           name: Generate build signature
