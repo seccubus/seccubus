@@ -153,9 +153,18 @@
 		"note"			: "See https://en.wikipedia.org/wiki/POODLE"
 	},
 	"poodleTls" : {
-		"type"			: "vulnerability",
-		"name"			: "Poodle over TLS",
-		"note"			: "See https://en.wikipedia.org/wiki/POODLE"
+        "type"          : "list",
+        "values"        : [
+            "Timeout",
+            "TLS not supported",
+            "Test failed",
+            "Unknown",
+            "Not vulnerable",
+            "Vulnerable"
+        ],
+        "description"   : "Outcome of test for Poodle over TLS : ",
+        "startsAt"      : -3,
+        "note"          : "See https://en.wikipedia.org/wiki/POODLE"
 	},
 	"protocols" : {
 		"type"			: "array",
