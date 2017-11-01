@@ -229,6 +229,13 @@ sub load_ivil {
         }
         return ($workspace_id, $scan_id, $run_id);
     } else {
+        log_msg({
+            message     => "IVIL file is empty. Did not import",
+            type        => "error",
+            program     => "load_ivil",
+            workspace   => $workspace,
+            scan        => $scan
+        });
         return (-1,-1,-1);
     }
 }
