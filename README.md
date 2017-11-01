@@ -156,3 +156,4 @@ Enhancements
 Bug Fixes
 ---------
 * #593 - Fixed incorrect parsing of the values for poodleTls finding in SSLlabs.
+* #595 - Fixed incorrect parsing of the values for Ticketbleed finding in SSLlabs.
