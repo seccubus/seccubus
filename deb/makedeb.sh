@@ -12,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 UPSTREAM_VERSION=$1
 COMMITS=$2
 if [ -z $VERSION ]; then
@@ -30,10 +29,19 @@ fi
 
 VERSION="$UPSTREAM_VERSION.$COMMITS"
 DIR="/tmp/seccubus-$UPSTREAM_VERSION"
-
+BRANCH=$(git branch | grep '*'|awk '{print $2}')
 
 [ ! -d build ] && mkdir build
 [ -d $DIR ] && rm -rf $DIR
+
+if [[ "$BRANCH" -eq "master" ]] && [[ ! -z $SECCUBUS_GPG_KEY ]]; then
+    echo Setting up gpg
+    set +x
+    echo $SECCUBUS_GPG_KEY | sed 's/\\n/\n/g' > /tmp/gpg.key
+    gpg --import --batch --yes /tmp/gpg.key
+    rm /tmp/gpg.key
+fi
+
 
 echo "Copying files"
 mkdir $DIR
@@ -57,4 +65,9 @@ for f in $(ls deb); do
     esac
 done
 dpkg-buildpackage
+rm /root/project/build/*.deb
 dpkg-deb --build debian/seccubus /root/project/build
+
+if [[ "$BRANCH" -eq "master" ]] && [[ ! -z $SECCUBUS_GPG_KEY ]]; then
+    debsigs --sign=origin -k EF5607C9981C85C3F4255B3E56C0D88A157EB9C4 /root/project/build/*.deb
+fi
