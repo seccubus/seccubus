@@ -57,4 +57,17 @@ for f in $(ls deb); do
     esac
 done
 dpkg-buildpackage
+rm /root/project/build/*.deb
 dpkg-deb --build debian/seccubus /root/project/build
+
+BRANCH=$(git branch | grep '*'|awk '{print $2}')
+if [[ "$BRANCH" -eq "master" ]] || [[ "$BRANCH" -eq "deb-sign" ]]; then
+    if [[ ! -z $SECCUBUS_GPG_KEY ]]; then
+        set +x
+        echo $SECCUBUS_GPG_KEY | sed 's/\\n/\n/g' > /tmp/gpg.key
+        #gpg --import --passphrase "$SECCUBUS_GPG_PASS" --batch --yes /tmp/gpg.key
+        gpg --import --batch --yes /tmp/gpg.key
+        rm /tmp/gpg.key
+        debsigs --sign=origin -k EF5607C9981C85C3F4255B3E56C0D88A157EB9C4 /root/project/build/*.deb
+    fi
+fi
