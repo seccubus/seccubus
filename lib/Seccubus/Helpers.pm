@@ -40,6 +40,7 @@ use HTML::Entities;
 use SeccubusV2;
 use Seccubus::DB;
 use Data::Dumper;
+use Sys::Syslog;
 
 
 =head2 dirlist

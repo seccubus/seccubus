@@ -279,7 +279,7 @@ case $1 in
         tail -f /var/log/nginx/* 2>&1|grep -v '0x794c7630'
     fi
     if [[ "$STACK" == "full" || "$STACK" == "front" || "$STACK" == "api" || "$STACK" == "web" ]]; then
-        tail -f /var/log/seccubus/* 2>&1|grep -v '0x794c7630'
+        tail -f /var/log/seccubus/* /var/log/syslog 2>&1|grep -v '0x794c7630'
     fi
     if [[ "$STACK" == "cron" ]]; then
         tail -f /var/log/syslog 2>&1|grep -v '0x794c7630'

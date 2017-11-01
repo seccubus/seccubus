@@ -344,7 +344,7 @@ Returns a reference to a list of workspaces the user can read and/or write
 
 =over 4
 
-None
+=item workspace_id (optional) just get this workspace
 
 =back
 
@@ -357,30 +357,40 @@ Only workspaces the user can read and/or write are returned
 =cut
 
 sub get_workspaces {
+    my $workspace_id = shift;
+
 	my $workspaces;
 
 	my $user_is_admin = is_admin();
 
-	$workspaces =
-		sql( "return"	=> "ref",
-		     "query"	=> "
-				   SELECT DISTINCT
-				   	workspaces.id, workspaces.name,
-				   	( SELECT MAX(time) FROM scans LEFT JOIN runs ON scans.id = runs.scan_id WHERE scans.workspace_id = workspaces.id) as lastrun,
-				   	'' as findings,
-				   	( SELECT COUNT(*) FROM scans WHERE workspace_id = workspaces.id) as scans
-				   FROM workspaces
-				   LEFT JOIN rights ON workspaces.id = rights.workspace_id
-				   LEFT JOIN groups ON rights.group_id = groups.id
-				   LEFT JOIN user2group ON groups.id = user2group.group_id
-				   LEFT JOIN users ON user2group.user_id = users.id
-				   WHERE
-				   	(users.username= ? and rights.allow_read=1 or rights.allow_write=1)
-				   OR (1=?)
-				   ORDER BY workspaces.name;
-				   ",
-		    "values"	=> [ $ENV{SECCUBUS_USER}, $user_is_admin ],
-	       );
+    my $query = qq{
+        SELECT DISTINCT
+            workspaces.id, workspaces.name,
+            ( SELECT MAX(time) FROM scans LEFT JOIN runs ON scans.id = runs.scan_id WHERE scans.workspace_id = workspaces.id) as lastrun,
+            '' as findings,
+            ( SELECT COUNT(*) FROM scans WHERE workspace_id = workspaces.id) as scans
+        FROM workspaces
+            LEFT JOIN rights ON workspaces.id = rights.workspace_id
+            LEFT JOIN groups ON rights.group_id = groups.id
+            LEFT JOIN user2group ON groups.id = user2group.group_id
+            LEFT JOIN users ON user2group.user_id = users.id
+        WHERE
+            (
+                (users.username= ? and rights.allow_read=1 or rights.allow_write=1)
+                OR (1=?)
+            )
+    };
+    $query .= " AND workspaces.id = ? " if $workspace_id;
+    $query .= " ORDER BY workspaces.name; ";
+
+    my $values = [ $ENV{SECCUBUS_USER}, $user_is_admin ];
+    push @$values, $workspace_id if $workspace_id;
+
+	$workspaces = sql(
+        "return"    => "ref",
+        "query"     => $query,
+        "values"    => $values,
+    );
 	return $workspaces;
 }
 

@@ -30,10 +30,15 @@ our @EXPORT = qw(
     DBVERSION
     get_config
     check_param
+    log_msg
 );
 
 use XML::Simple;
 use Data::Dumper;
+use Sys::Syslog;
+
+
+openlog("Seccubus","nofatal,pid","user");
 
 our $config = "config.xml";		# Change this value to match your setup
 					# if your configuration file cannot be
@@ -60,6 +65,8 @@ use Carp;
 #use SeccubusConfig;
 use Seccubus::Helpers;
 use Seccubus::Users;
+use Seccubus::Workspaces;
+use Seccubus::Scans;
 
 if ( ! $ENV{SECCUBUS_USER} && ! exists $ENV{MOJO_MODE} && ! exists $ENV{MOJO_HOME} ) {
 	$ENV{SECCUBUS_USER} = "admin"		# Run as admin user if we are not running via mojo
@@ -138,6 +145,85 @@ sub check_param {
 			return "Parameter $name is not numeric";
 		}
 	}
+}
+
+=head2 log_msg
+
+Function to log messages to syslog
+
+= item Parameters (named)
+
+=over 4
+
+=item type - info or error, info is assumed
+
+=item program - what part of Seccubus is logging
+
+=item workspace - name of the current workspace
+
+=item workspace_id - id of the current workspace (will be used if workspace is not given)
+
+=item scan - name of the current scan
+
+=item scan_id - id of the current scan (will be used if scan is not given)
+
+=item message - the actual message
+
+=back
+
+=cut
+
+sub log_msg {
+    my $param = shift;
+
+    # Default log type is info
+    if ( ! $param->{type} || $param->{type} ne "err" ) {
+        $param->{type} = "info"
+    }
+
+    $param->{program} = $ARGV[0] unless $param->{program};
+
+    # Determine workspace name
+    if ( $param->{workspace} ) {
+        $param->{workspace_id} = get_workspace_id($param->{workspace});
+    } else {
+        if ( $param->{workspace_id} ) {
+            my $workspaces = get_workspaces($param->{workspace_id});
+            if ( $$workspaces[0] ) {
+                $param->{workspace} = $$workspaces[0][1];
+            }
+        }
+        $param->{workspace} = "unknown" unless $param->{workspace};
+    }
+
+    # Determine scan name
+    unless ( $param->{scan} ) {
+        if ( $param->{scan_id} ) {
+            my $scans = get_scans($param->{workspace_id},$param->{scan_id});
+            if ( $$scans[0] ) {
+                $param->{scan} = $$scans[0][1];
+            }
+        }
+        $param->{scan} = "unknown" unless $param->{scan};
+    }
+
+    syslog(
+        $param->{type},
+        "program:'%s' workspace:'%s' scan:'%s' level:'%s' message:'%s'",
+        $param->{program}, $param->{workspace}, $param->{scan}, $param->{type},
+        $param->{message}
+    );
+}
+
+=head2 DESTROY
+
+Exit handler
+
+=cut
+
+sub DESTROY {
+    # Close syslog
+    closelog();
 }
 
 # Close the PM file.

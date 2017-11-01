@@ -151,7 +151,7 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 Enhancements
 ------------
-*
+* #597 - do-scan and import ivil now log to syslog
 
 Bug Fixes
 ---------
