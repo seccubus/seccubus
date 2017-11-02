@@ -16,7 +16,7 @@
 # Use this file to build a debian package locally. Make sure you are in the deb directory!
 
 docker-compose up -d
-docker-compose exec debian9 bash -c "apt-get update;apt-get install -y build-essential debhelper default-jre git"
+docker-compose exec debian9 bash -c "apt-get update;apt-get install -y build-essential debhelper default-jre-headless git"
 docker-compose exec debian9 bash -c "cd /root/project;deb/makedeb.sh"
 
 if [ $? == 0 ] ; then
