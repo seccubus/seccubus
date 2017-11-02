@@ -64,7 +64,9 @@ BRANCH=$(git branch | grep '*'|awk '{print $2}')
 if [[ "$BRANCH" -eq "master" ]] ; then
     if [[ ! -z $SECCUBUS_GPG_KEY ]]; then
         set +x
-        echo $SECCUBUS_GPG_KEY | sed 's/\\n/\n/g' > /tmp/gpg.key
+        EOL=$'\n'
+        SECCUBUS_GPG_KEY=${SECCUBUS_GPG_KEY/\\n/$EOL}
+        echo $SECCUBUS_GPG_KEY > /tmp/gpg.key
         gpg --import --batch --yes /tmp/gpg.key
         rm /tmp/gpg.key
         debsigs --sign=origin -k EF5607C9981C85C3F4255B3E56C0D88A157EB9C4 /root/project/build/*.deb
