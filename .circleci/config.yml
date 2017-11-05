@@ -275,7 +275,7 @@ jobs:
         - PERL5LIB: "."
 
     steps:
-      - run: dnf install -y ssh git
+      - run: dnf install -y git
       - checkout
       - run:
           name: Generate build signature
@@ -297,7 +297,7 @@ jobs:
     docker:
       - image: fedora:26
     steps:
-      - run: dnf install -y ssh git
+      - run: dnf install -y git
       - checkout
       - run:
           name: Generate build signature
@@ -322,7 +322,7 @@ jobs:
         - PERL5LIB: "."
 
     steps:
-      - run: dnf install -y ssh git
+      - run: dnf install -y git
       - checkout
       - run:
           name: Generate build signature
@@ -344,7 +344,7 @@ jobs:
     docker:
       - image: fedora:25
     steps:
-      - run: dnf install -y ssh git
+      - run: dnf install -y git
       - checkout
       - run:
           name: Generate build signature
