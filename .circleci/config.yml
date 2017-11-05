@@ -242,7 +242,31 @@ jobs:
           key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
       - store_artifacts:
           path: /root/project/build
-      - run: echo "All packages tested!!!"
+
+  debian_upload:
+    docker:
+      - image: alpine
+    steps:
+      - run:
+          name: Installing prerequisites
+          command: apk update; apk add alpine-sdk ruby-dev ruby git
+      - checkout
+      - run:
+          name: Generate build signature
+          command: git rev-parse HEAD | tee .git-describe
+      - run:
+          name: Setup package cloud
+          command: gem install package_cloud -N
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: |
+            package_cloud push seccubus/seccubus/debian/jessie build/*.deb
+            package_cloud push seccubus/seccubus/debian/stretch build/*.deb
+            package_cloud push seccubus/seccubus/ubuntu/trusty build/*.deb
+            package_cloud push seccubus/seccubus/ubuntu/zesty build/*.deb
+            package_cloud push seccubus/seccubus/ubuntu/artful build/*.deb
 
   build_fc26:
     docker:
@@ -425,6 +449,14 @@ workflows:
             - ubuntu16_test
             - ubuntu17_test
             - kali_test
+      - debian_upload:
+          requires:
+            - debian_ok
+          filters:
+            branches:
+              only:
+                - master
+                - rpm-build
 
   fedora_package_building:
     jobs:
