@@ -338,6 +338,31 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
+ fedora_ok:
+    docker:
+      - image: alpine
+    steps:
+      - run:
+          name: Installing prerequisites
+          command: apk update; apk add alpine-sdk ruby-dev ruby git
+      - checkout
+      - run:
+          name: Generate build signature
+          command: git rev-parse HEAD | tee .git-describe
+      - run:
+          name: Setup package cloud
+          command: |
+            echo "{\"url\":\"https://packagecloud.io\",\"token\":\"$PACKAGECLOUD_TOKEN\"}" > ~/.packagecloud
+            gem install package_cloud -N
+      - restore_cache:
+          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - store_artifacts:
+          path: /root/project/build
+      - restore_cache:
+          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - store_artifacts:
+          path: /root/project/build
+      - run: echo "All packages tested!!!"
 
 workflows:
 
@@ -390,4 +415,7 @@ workflows:
       - test_fc26:
           requires:
             - build_fc26
-
+      - fedora_ok:
+          requires:
+            - test_fc25
+            - test_fc26
