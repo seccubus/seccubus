@@ -283,7 +283,7 @@ jobs:
       - run: ls -al build
       - run:
           name: Install rpm
-          command: dnf install build/*fc26*rpm
+          command: dnf install -y build/*fc26*rpm
       - run:
           name: Start hypnotoad
           command: cd /opt/seccubus; hypnotoad seccubus.pl
