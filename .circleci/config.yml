@@ -285,7 +285,7 @@ jobs:
           command: dnf install build/*fc26*rpm
       - run:
           name: Start hypnotoad
-          commands: cd /opt/seccubus; hypnotoad seccubus.pl
+          command: cd /opt/seccubus; hypnotoad seccubus.pl
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
