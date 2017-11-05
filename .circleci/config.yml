@@ -14,7 +14,7 @@ jobs:
       - checkout
       - run:
           name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client git
+          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client ssh git
       - restore_cache:
           key: cpanm-{{ .Branch }}-{{ checksum "Makefile.PL" }}
       - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
@@ -233,7 +233,7 @@ jobs:
     docker:
       - image: alpine
     steps:
-      - run: apk update; apk add ca-certificates git
+      - run: apk update; apk add ca-certificates ssh git
       - checkout
       - run:
           name: Generate build signature
@@ -249,7 +249,7 @@ jobs:
     steps:
       - run:
           name: Installing prerequisites
-          command: apk update; apk add alpine-sdk ruby-dev ruby git
+          command: apk update; apk add alpine-sdk ruby-dev ruby ssh git
       - checkout
       - run:
           name: Generate build signature
@@ -275,7 +275,7 @@ jobs:
         - PERL5LIB: "."
 
     steps:
-      - run: dnf install -y git
+      - run: dnf install -y ssh git
       - checkout
       - run:
           name: Generate build signature
@@ -297,7 +297,7 @@ jobs:
     docker:
       - image: fedora:26
     steps:
-      - run: dnf install -y git
+      - run: dnf install -y ssh git
       - checkout
       - run:
           name: Generate build signature
@@ -322,7 +322,7 @@ jobs:
         - PERL5LIB: "."
 
     steps:
-      - run: dnf install -y git
+      - run: dnf install -y ssh git
       - checkout
       - run:
           name: Generate build signature
@@ -344,7 +344,7 @@ jobs:
     docker:
       - image: fedora:25
     steps:
-      - run: dnf install -y git
+      - run: dnf install -y ssh git
       - checkout
       - run:
           name: Generate build signature
@@ -368,7 +368,7 @@ jobs:
     steps:
       - run:
           name: Installing prerequisites
-          command: apk update; apk add git
+          command: apk update; apk add ssh git
       - checkout
       - run:
           name: Generate build signature
@@ -388,7 +388,7 @@ jobs:
     steps:
       - run:
           name: Installing prerequisites
-          command: apk update; apk add alpine-sdk ruby-dev ruby git
+          command: apk update; apk add alpine-sdk ruby-dev ruby ssh git
       - checkout
       - run:
           name: Generate build signature

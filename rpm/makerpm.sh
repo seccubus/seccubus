@@ -28,7 +28,7 @@ fi
 [ -z $UPSTREAM_VERSION ] && echo "We need a version number as first argument" && exit
 [ -z $COMMITS ] && echo "We a commit count as second argument" && exit
 
-VERSION="$UPSTREAM_VERSION.$COMMITS"
+VERSION="$UPSTREAM_VERSION"
 BRANCH=$(git branch | grep '*'|awk '{print $2}')
 
 [ ! -d build ] && mkdir build
@@ -53,7 +53,7 @@ echo "Copying files"
 (cd /tmp; rm -f Seccubus-$VERSION ; ln -s /root/project /tmp/Seccubus-$VERSION;tar -czf /root/rpmbuild/SOURCES/Seccubus-$VERSION.tar.gz --exclude "Seccubus-$VERSION/tmp" --exclude "Seccubus-$VERSION/build" Seccubus-$VERSION/*)
 
 echo "Building"
-cat /root/project/rpm/Seccubus2.spec | sed "s/master$/$VERSION/" >/root/rpmbuild/SOURCES/Seccubus.spec
+cat /root/project/rpm/Seccubus2.spec | sed "s/master$/$VERSION/" | sed "s/^Release\\:    0$/Release:    $COMMITS/" >/root/rpmbuild/SOURCES/Seccubus.spec
 rpmbuild $SIGN -ba /root/rpmbuild/SOURCES/Seccubus.spec
 find /root/rpmbuild -name "*.rpm" -exec cp {} /root/project/build \;
 
