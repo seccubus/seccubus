@@ -244,6 +244,31 @@ jobs:
           path: /root/project/build
       - run: echo "All packages tested!!!"
 
+  build_fc26:
+    docker:
+      - image: fedora:26
+        environment:
+        - PERL5LIB: "."
+
+    steps:
+      #- run: apt-get update; apt-get install -y git ssh
+      - checkout
+      - run:
+          name: Generate build signature
+          command: git rev-parse HEAD | tee .git-describe
+      - run:
+          name: Install prerequisite packages
+          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign
+      - run:
+          name: Build
+          command: rpm/makerpm.sh
+      - save_cache:
+          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
+          paths:
+            - "/root/project/build"
+#      - store_artifacts:
+#          path: /root/project/build
+
 workflows:
 
   version: 2
@@ -284,4 +309,8 @@ workflows:
             - ubuntu16_test
             - ubuntu17_test
             - kali_test
+
+  fedora_package_building:
+    jobs:
+      - build_fc26
 

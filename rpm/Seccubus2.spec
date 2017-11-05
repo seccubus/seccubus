@@ -14,7 +14,7 @@
 # limitations under the License.
 
 # OS detection
-%define is_rh5 %(grep -qi 'Red Hat Enterprise Linux Server release 5' /etc/redhat-release && echo 1 || echo 0)
+#%define is_rh5 %(grep -qi 'Red Hat Enterprise Linux Server release 5' /etc/redhat-release && echo 1 || echo 0)
 
 # Seccubus
 %define installdir	/opt/seccubus
@@ -31,7 +31,8 @@
 
 Name:		Seccubus
 Version:	master
-Release:	0%{?dist}
+Release:    0
+#Release:    0%{?dist}
 Summary:	Automated regular vulnerability scanning with delta reporting
 Group:		Applications/Internet
 License:	ASL 2.0
@@ -45,9 +46,9 @@ BuildArch:	noarch
 Source0:	%{name}-%{version}.tar.gz
 #Source0:	https://github.com/schubergphilis/%{name}_v2/tarball/%{version}
 
-%{?el6:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.el6.rpm}
-%{?el7:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.el7.rpm}
-%{?fedora:%define _build_name_fmt %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}%{dist}.%%{ARCH}.rpm}
+#%{?el6:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.el6.rpm}
+#%{?el7:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.el7.rpm}
+#%{?fedora:%define _build_name_fmt %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}%{dist}.%%{ARCH}.rpm}
 
 %if 0%{?is_rh5}
 BuildRequires:	java-1.6.0-openjdk
@@ -60,7 +61,7 @@ BuildRequires:  perl(ExtUtils::MakeMaker)
 
 Requires:	perl(Algorithm::Diff)
 Requires:	perl(DBI)
-Requires:	perl(DBD::mysql)
+Requires:	perl(DBD::mysql)``
 Requires:	perl(JSON)
 Requires:	perl(XML::Simple)
 Requires:	perl-libwww-perl
