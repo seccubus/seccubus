@@ -351,18 +351,22 @@ jobs:
           command: git rev-parse HEAD | tee .git-describe
       - run:
           name: Setup package cloud
-          command: |
-            echo "{\"url\":\"https://packagecloud.io\",\"token\":\"$PACKAGECLOUD_TOKEN\"}" > ~/.packagecloud
-            gem install package_cloud -N
+          command: gem install package_cloud -N
       - restore_cache:
           key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
       - store_artifacts:
           path: /root/project/build
+      - run:
+          name : Upload to packagecloud.io
+          command: packagecloud push seccubus/seccubus/fedora/25 build/*fc25*rpm
       - restore_cache:
           key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
       - store_artifacts:
           path: /root/project/build
-      - run: echo "All packages tested!!!"
+      - run:
+          name : Upload to packagecloud.io
+          command: packagecloud push seccubus/seccubus/fedora/26 build/*fc26*rpm
+      - run: echo "All packages tested and uploaded!!!"
 
 workflows:
 
