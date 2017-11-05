@@ -258,7 +258,7 @@ jobs:
           command: git rev-parse HEAD | tee .git-describe
       - run:
           name: Install prerequisite packages
-          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign
+          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk "perl(ExtUtils::MakeMaker)" gpg rpm-sign
       - run:
           name: Build
           command: rpm/makerpm.sh
