@@ -341,6 +341,7 @@ jobs:
     docker:
       - image: alpine
     steps:
+      - run: apk update; apk add ca-certificates
       - run:
           name: Generate build signature
           command: echo $CIRCLE_SHA1 > .git-describe
@@ -359,7 +360,7 @@ jobs:
     steps:
       - run:
           name: Installing prerequisites
-          command: apk update; apk add alpine-sdk ruby-dev ruby
+          command: apk update; apk add ca-certificates alpine-sdk ruby-dev ruby
       - run:
           name: Generate build signature
           command: echo $CIRCLE_SHA1 > .git-describe

@@ -16,14 +16,14 @@
 # Use this file to build a debian package locally. Make sure you are in the deb directory!
 
 docker-compose up -d
-docker-compose exec fedora26 bash -c "dnf install -y fedora-packager fedora-review java-1.8.0-openjdk \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign"
+docker-compose exec fedora26 bash -c "dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign"
 docker-compose exec fedora26 bash -c "cd /root/project;rpm/makerpm.sh"
-docker-compose exec fedora25 bash -c "dnf install -y fedora-packager fedora-review java-1.8.0-openjdk \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign"
+docker-compose exec fedora25 bash -c "dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign"
 docker-compose exec fedora25 bash -c "cd /root/project;rpm/makerpm.sh"
 
-#if [ $? == 0 ] ; then
-#    echo "Done building, shutting down docker image in 10 secoonds..."
-#    sleep 10
-#    docker-compose down
-#fi
+if [ $? == 0 ] ; then
+    echo "Done building, shutting down docker image in 10 secoonds..."
+    sleep 10
+    docker-compose down
+fi
 exit;
