@@ -251,7 +251,7 @@ jobs:
         - PERL5LIB: "."
 
     steps:
-      - run: apt-get install -y git
+      - run: dnf install -y git
       - checkout
       - run:
           name: Generate build signature
