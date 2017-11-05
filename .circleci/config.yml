@@ -338,7 +338,7 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
- fedora_ok:
+  fedora_ok:
     docker:
       - image: alpine
     steps:
