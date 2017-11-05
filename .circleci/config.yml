@@ -269,7 +269,7 @@ jobs:
 #      - store_artifacts:
 #          path: /root/project/build
 
-  build_fc26:
+  test_fc26:
     docker:
       - image: fedora:26
     steps:
@@ -280,6 +280,7 @@ jobs:
           command: git rev-parse HEAD | tee .git-describe
       - restore_cache:
           key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run: ls -al build
       - run:
           name: Install rpm
           command: dnf install build/*fc26*rpm
