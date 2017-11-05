@@ -56,7 +56,7 @@ BuildRequires:	java-1.6.0-openjdk
 %{?el6:BuildRequires:   java-1.7.0-openjdk}
 %{?el7:BuildRequires:	java-1.7.0-openjdk}
 %endif
-%{?fedora:BuildRequires:  java-1.8.0-openjdk}
+%{?fedora:BuildRequires:  java-1.8.0-openjdk-headless}
 BuildRequires:  perl(ExtUtils::MakeMaker)
 
 Requires:	perl(Algorithm::Diff)
