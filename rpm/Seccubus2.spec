@@ -61,7 +61,7 @@ BuildRequires:  perl(ExtUtils::MakeMaker)
 
 Requires:	perl(Algorithm::Diff)
 Requires:	perl(DBI)
-Requires:	perl(DBD::mysql)``
+Requires:	perl(DBD::mysql)
 Requires:	perl(JSON)
 Requires:	perl(XML::Simple)
 Requires:	perl-libwww-perl
@@ -80,6 +80,7 @@ Requires:	perl(Net::SMTP)
 Requires:   perl(Crypt::PBKDF2)
 Requires:   perl(Term::ReadKey)
 Requires:   perl(Time::HiRes)
+Requires:   perl(Sys::Syslog)
 Requires:   perl(Mojolicious) >= 6.0
 
 Requires:	mysql

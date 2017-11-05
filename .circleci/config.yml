@@ -269,6 +269,28 @@ jobs:
 #      - store_artifacts:
 #          path: /root/project/build
 
+  build_fc26:
+    docker:
+      - image: fedora:26
+    steps:
+      - run: dnf install -y git
+      - checkout
+      - run:
+          name: Generate build signature
+          command: git rev-parse HEAD | tee .git-describe
+      - restore_cache:
+          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install rpm
+          command: dnf install build/*fc26*rpm
+      - run:
+          name: Start hypnotoad
+          commands: cd /opt/seccubus; hypnotoad seccubus.pl
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+
 workflows:
 
   version: 2
@@ -313,4 +335,7 @@ workflows:
   fedora_package_building:
     jobs:
       - build_fc26
+      - test_fc26:
+          requires:
+            - build_fc26
 

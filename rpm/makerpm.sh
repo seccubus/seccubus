@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-set -x
+#set -x
 UPSTREAM_VERSION=$1
 COMMITS=$2
 if [ -z $VERSION ]; then
@@ -50,7 +50,7 @@ echo "Creating directories"
 mkdir -p /root/rpmbuild/SOURCES
 
 echo "Copying files"
-(cd /tmp; ln -s /root/project Seccubus-$VERSION;tar -cvzf /root/rpmbuild/SOURCES/Seccubus-$VERSION.tar.gz --exclude "Seccubus-$VERSION/tmp" --exclude "Seccubus-$VERSION/build" Seccubus-$VERSION/*)
+(cd /tmp; rm -f Seccubus-$VERSION ; ln -s /root/project /tmp/Seccubus-$VERSION;tar -czf /root/rpmbuild/SOURCES/Seccubus-$VERSION.tar.gz --exclude "Seccubus-$VERSION/tmp" --exclude "Seccubus-$VERSION/build" Seccubus-$VERSION/*)
 
 echo "Building"
 cat /root/project/rpm/Seccubus2.spec | sed "s/master$/$VERSION/" >/root/rpmbuild/SOURCES/Seccubus.spec

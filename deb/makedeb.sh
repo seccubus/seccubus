@@ -34,7 +34,7 @@ BRANCH=$(git branch | grep '*'|awk '{print $2}')
 [ ! -d build ] && mkdir build
 [ -d $DIR ] && rm -rf $DIR
 
-if [[ "$BRANCH" -eq "master" ]] && [[ ! -z $SECCUBUS_GPG_KEY ]]; then
+if [[ "$BRANCH" == "master" ]] && [[ ! -z $SECCUBUS_GPG_KEY ]]; then
     echo Setting up gpg
     set +x
     echo $SECCUBUS_GPG_KEY | sed 's/\\n/\n/g' > /tmp/gpg.key
@@ -68,6 +68,6 @@ dpkg-buildpackage
 rm /root/project/build/*.deb
 dpkg-deb --build debian/seccubus /root/project/build
 
-if [[ "$BRANCH" -eq "master" ]] && [[ ! -z $SECCUBUS_GPG_KEY ]]; then
+if [[ "$BRANCH" == "master" ]] && [[ ! -z $SECCUBUS_GPG_KEY ]]; then
     debsigs --sign=origin -k EF5607C9981C85C3F4255B3E56C0D88A157EB9C4 /root/project/build/*.deb
 fi
