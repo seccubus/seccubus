@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#set -x
 UPSTREAM_VERSION=$1
 COMMITS=$2
 if [ -z $VERSION ]; then
@@ -27,47 +28,33 @@ fi
 [ -z $UPSTREAM_VERSION ] && echo "We need a version number as first argument" && exit
 [ -z $COMMITS ] && echo "We a commit count as second argument" && exit
 
-VERSION="$UPSTREAM_VERSION.$COMMITS"
-DIR="/tmp/seccubus-$UPSTREAM_VERSION"
+VERSION="$UPSTREAM_VERSION"
 BRANCH=$(git branch | grep '*'|awk '{print $2}')
 
 [ ! -d build ] && mkdir build
 [ -d $DIR ] && rm -rf $DIR
 
-if [[ "$BRANCH" == "master" ]] && [[ ! -z $SECCUBUS_GPG_KEY ]]; then
-    echo Setting up gpg
-    set +x
-    echo $SECCUBUS_GPG_KEY | sed 's/\\n/\n/g' > /tmp/gpg.key
-    gpg --import --batch --yes /tmp/gpg.key
-    rm /tmp/gpg.key
+if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] ; then
+    if [[ ! -z $SECCUBUS_GPG_KEY ]]; then
+        echo Setting up gpg
+        set +x
+        echo $SECCUBUS_GPG_KEY | sed 's/\\n/\n/g' > /tmp/gpg.key
+        gpg --import --batch --yes /tmp/gpg.key
+        rm /tmp/gpg.key
+        echo "%_gpg_name Frank Breedijk" > ~/.rpmmacros
+        SIGN=" --sign "
+    fi
 fi
 
+echo "Creating directories"
+mkdir -p /root/rpmbuild/SOURCES
 
 echo "Copying files"
-mkdir $DIR
-cd $DIR
-(cd /root/project;tar -cf - --exclude \"tmp/*\" *)|tar -xf -
-echo "Building"
-[ -d debian ] && rm -rf debian
-mkdir debian
-for f in $(ls deb); do
-    NEWNAME=${f/#debian./}
-    case $NEWNAME in
-        changelog)
-            < deb/$f sed s/\(0\.0\.0\-0\)/\($UPSTREAM_VERSION-$COMMITS\)/ > debian/$NEWNAME
-            ;;
-        seccubus.dsc)
-            < deb/$f sed "s/Version\: .*/Version\: $VERSION/" > debian/$NEWNAME
-            ;;
-        *)
-            ln -s $DIR/deb/$f debian/$NEWNAME
-            ;;
-    esac
-done
-dpkg-buildpackage
-rm /root/project/build/*.deb
-dpkg-deb --build debian/seccubus /root/project/build
+(cd /tmp; rm -f Seccubus-$VERSION ; ln -s /root/project /tmp/Seccubus-$VERSION;tar -czf /root/rpmbuild/SOURCES/Seccubus-$VERSION.tar.gz --exclude "Seccubus-$VERSION/tmp" --exclude "Seccubus-$VERSION/build" Seccubus-$VERSION/*)
 
-if [[ "$BRANCH" == "master" ]] && [[ ! -z $SECCUBUS_GPG_KEY ]]; then
-    debsigs --sign=origin -k EF5607C9981C85C3F4255B3E56C0D88A157EB9C4 /root/project/build/*.deb
-fi
+echo "Building"
+cat /root/project/rpm/Seccubus2.spec | sed "s/master$/$VERSION/" | sed "s/^Release\\:    0$/Release:    $COMMITS/" >/root/rpmbuild/SOURCES/Seccubus.spec
+rpmbuild $SIGN -ba /root/rpmbuild/SOURCES/Seccubus.spec
+find /root/rpmbuild -name "*.rpm" -exec cp {} /root/project/build \;
+
+exit
