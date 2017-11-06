@@ -427,7 +427,6 @@ workflows:
             branches:
               only:
                 - master
-                - rpm-build
 
   fedora_package_building:
     jobs:
@@ -450,4 +449,3 @@ workflows:
             branches:
               only:
                 - master
-                - rpm-build
