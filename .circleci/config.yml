@@ -252,11 +252,35 @@ jobs:
       - run:
           name : Upload to packagecloud.io
           command: |
-            package_cloud push seccubus/seccubus/debian/jessie build/*.deb
-            package_cloud push seccubus/seccubus/debian/stretch build/*.deb
-            package_cloud push seccubus/seccubus/ubuntu/trusty build/*.deb
-            package_cloud push seccubus/seccubus/ubuntu/zesty build/*.deb
-            package_cloud push seccubus/seccubus/ubuntu/artful build/*.deb
+            package_cloud push seccubus/latest/debian/jessie build/*.deb
+            package_cloud push seccubus/latest/debian/stretch build/*.deb
+            package_cloud push seccubus/latest/ubuntu/trusty build/*.deb
+            package_cloud push seccubus/latest/ubuntu/zesty build/*.deb
+            package_cloud push seccubus/latest/ubuntu/artful build/*.deb
+
+  debian_upload_release:
+    docker:
+      - image: alpine
+    steps:
+      - run:
+          name: Installing prerequisites
+          command: apk update; apk add alpine-sdk ruby-dev ruby
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Setup package cloud
+          command: gem install package_cloud -N
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: |
+            package_cloud push seccubus/releases/debian/jessie build/*.deb
+            package_cloud push seccubus/releases/debian/stretch build/*.deb
+            package_cloud push seccubus/releases/ubuntu/trusty build/*.deb
+            package_cloud push seccubus/releases/ubuntu/zesty build/*.deb
+            package_cloud push seccubus/releases/ubuntu/artful build/*.deb
 
   build_fc26:
     docker:
@@ -371,14 +395,40 @@ jobs:
           key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
           name : Upload to packagecloud.io
-          command: package_cloud push seccubus/seccubus/fedora/25 build/*fc25*rpm
+          command: package_cloud push seccubus/latest/fedora/25 build/*fc25*rpm
       - restore_cache:
           key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
       - store_artifacts:
           path: /root/project/build
       - run:
           name : Upload to packagecloud.io
-          command: package_cloud push seccubus/seccubus/fedora/26 build/*fc26*rpm
+          command: package_cloud push seccubus/latest/fedora/26 build/*fc26*rpm
+
+  fedora_upload_release:
+    docker:
+      - image: alpine
+    steps:
+      - run:
+          name: Installing prerequisites
+          command: apk update; apk add ca-certificates alpine-sdk ruby-dev ruby
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Setup package cloud
+          command: gem install package_cloud -N
+      - restore_cache:
+          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: package_cloud push seccubus/releases/fedora/25 build/*fc25*rpm
+      - restore_cache:
+          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - store_artifacts:
+          path: /root/project/build
+      - run:
+          name : Upload to packagecloud.io
+          command: package_cloud push seccubus/releases/fedora/26 build/*fc26*rpm
 
 workflows:
 
@@ -427,6 +477,13 @@ workflows:
             branches:
               only:
                 - master
+      - debian_upload_release:
+          requires:
+            - debian_ok
+          filters:
+            branches:
+              only:
+                - releases
 
   fedora_package_building:
     jobs:
@@ -449,3 +506,10 @@ workflows:
             branches:
               only:
                 - master
+      - fedora_upload_release:
+          requires:
+            - fedora_ok
+          filters:
+            branches:
+              only:
+                - releases
