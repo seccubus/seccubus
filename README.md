@@ -68,7 +68,14 @@ Run the following command to start the scan 'ssllabs' in workspace 'Example' (th
 docker run -ti seccubus/seccubus scan Example ssllabs
 ```
 
-Please be aware that you need soem data persistency here or the data will be stored in a local database that will be deleted whent he container terminates
+Please be aware that you need some data persistency here or the data will be stored in a local database that will be deleted whent he container terminates.
+An optional fourth parameter can be given to specify that the scan should only run on a certain weekday, e.g. to only run this scan on Monday, you can specify"
+
+```
+docker run -ti seccubus/seccubus scan Example ssllabs Mon
+```
+
+This is usefull for container ochestration, like e..g Kubernetes cron jobs.
 
 Running a scheduler
 ---
@@ -152,8 +159,10 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 Enhancements
 ------------
 * #597 - do-scan and import ivil now log to syslog
+* #605 - Container scan command allows scans to only starts on a certain weekday
 * Fedora, Ubuntu and Debian package building has been moved to CircleCI
 * Packages are automatically uploaded to [packagecloud.io](https://packagecloud.io/seccubus/seccubus)
+
 
 Bug Fixes
 ---------

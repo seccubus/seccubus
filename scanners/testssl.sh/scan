@@ -200,7 +200,7 @@ sub testssl_version {
     my $path = shift;
     die "testssl_version need a path" unless $path;
 
-    my $version = run_cmd("grep \"VERSION=\" $path",$verbose,$remote);
+    my $version = run_cmd("grep \"VERSION=\" $path",0,$remote);
     $version =~ /(\d+\.\d+)/;
     $version = $1;
     if ( $version <= 2.7 ) {
