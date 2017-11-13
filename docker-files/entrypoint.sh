@@ -20,6 +20,13 @@
 #
 #set -x
 
+if [[ $1 == "scan" ]] && [[ ! -z "$4" ]]; then
+    if [ "$(date '+%a')" != "$4" ]; then
+        echo "Today is $(date '+%a'), not $4"
+        exit 0
+    fi
+fi
+
 STACK=${STACK:-'full'}
 DBHOST=${DBHOST:-'127.0.0.1'}
 DBPORT=${DBPORT:-'3306'}
@@ -276,7 +283,7 @@ cd
 case $1 in
 "")
     if [[ "$STACK" == "front" ]]; then
-        tail -f /var/log/nginx/* 2>&1|grep -v '0x794c7630'
+        tail -f /var/log/nginx/* 2>&1|grep -v '0x794c7630'|grep -v liblogging-stdlog
     fi
     if [[ "$STACK" == "full" || "$STACK" == "front" || "$STACK" == "api" || "$STACK" == "web" ]]; then
         tail -f /var/log/seccubus/* /var/log/syslog 2>&1|grep -v '0x794c7630'
@@ -286,8 +293,11 @@ case $1 in
     fi
     ;;
 "scan")
+    touch /var/log/syslog
+    /etc/init.d/rsyslog start
+    (tail -f /var/log/syslog 2>&1|grep -v '0x794c7630'|grep -v liblogging-stdlog)&
     cd /opt/seccubus
-    su - seccubus -c "bin/do-scan -w \"$2\" -s \"$3\""
+    su - seccubus -c "bin/do-scan -w \"$2\" -s \"$3\" -v"
     ;;
 "help")
     echo
