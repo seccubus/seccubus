@@ -34,12 +34,14 @@ BRANCH=$(git branch | grep '*'|awk '{print $2}')
 [ ! -d build ] && mkdir build
 [ -d $DIR ] && rm -rf $DIR
 
-if [[ "$BRANCH" == "master" ]] && [[ ! -z $SECCUBUS_GPG_KEY ]]; then
-    echo Setting up gpg
-    set +x
-    echo $SECCUBUS_GPG_KEY | sed 's/\\n/\n/g' > /tmp/gpg.key
-    gpg --import --batch --yes /tmp/gpg.key
-    rm /tmp/gpg.key
+if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "deb-building" ]]; then
+    if  [[ ! -z $SECCUBUS_GPG_KEY ]]; then
+        echo Setting up gpg
+        set +x
+        echo $SECCUBUS_GPG_KEY | sed 's/\\n/\n/g' > /tmp/gpg.key
+        gpg --import --batch --yes /tmp/gpg.key
+        rm /tmp/gpg.key
+    fi
 fi
 
 
