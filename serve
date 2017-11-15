@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker run --rm --volume="$PWD:/srv/jekyll" -p4000:4000 -t jekyll/jekyll jekyll serve

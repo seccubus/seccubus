@@ -8,6 +8,29 @@ title: Installation on Fedora
 
 [Click here for other operating systems](../11-installation)
 
+## From the package cloud repo
+
+For the repo that is synced with current releases run
+
+```bash
+curl -s https://packagecloud.io/install/repositories/seccubus/releases/script.rpm.sh | sudo bash
+```
+
+For the repo that is synced with the latest code pushes to master run
+
+```bash
+curl -s https://packagecloud.io/install/repositories/seccubus/latest/script.rpm.sh | sudo bash
+```
+
+Once the repo is set up you can install Seccubus via the regular dnf command
+
+```bash
+dnf install seccubus
+```
+
+If you get an error about the package not being trusted, then please run `apt-get install gpg` before you run the script from packagecloud.io
+
+## Dowloaded from Github
 
 Install the rpm
 

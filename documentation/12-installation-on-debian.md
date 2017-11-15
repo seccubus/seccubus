@@ -8,7 +8,27 @@ title: Installation on Debian
 By: [Scott Pack](https://twitter.com/packscott) and Frank Breedijk
 Based on [this article](http://secopsmonkey.com/seccubus-on-ubuntu-the-missing-manual.html)
 
-## Software Installation
+## From the package cloud repo
+
+For the repo that is synced with current releases run
+
+```bash
+curl -s https://packagecloud.io/install/repositories/seccubus/releases/script.deb.sh | sudo bash
+```
+
+For the repo that is synced with the latest code pushes to master run
+
+```bash
+curl -s https://packagecloud.io/install/repositories/seccubus/latest/script.deb.sh | sudo bash
+```
+
+Once the repo is set up you can install Seccubus via the regular `apt-get` command
+
+```bash
+apt-get install seccubus
+```
+
+## Downloaded from GitHub
 
 Download and installing the Seccubus application
 

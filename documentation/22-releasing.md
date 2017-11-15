@@ -31,11 +31,7 @@ Make sure that README.md reflects all changes since the last released version, M
 
 Check [![Circle-CI build status](https://circleci.com/gh/schubergphilis/Seccubus.svg?style=shield&circle-token=63e8efd7e0bff0b1e9578ff312b4b0c47963709a)](https://circleci.com/gh/schubergphilis/Seccubus)
 
-# Make sure the RPMs build on all platforms
-
-Check [OpenSUSE Build Serice](https://build.opensuse.org/package/show/home:seccubus/Seccubus)
-
-(Debian package is part of CircelCI now)
+This ensures that the packes build on all supported platforms too.
 
 # Make sure hub.docker.com is building the container
 
@@ -62,14 +58,6 @@ To git@github.com:schubergphilis/Seccubus
 
 Check [![Circle-CI build status](https://circleci.com/gh/schubergphilis/Seccubus.svg?style=shield&circle-token=63e8efd7e0bff0b1e9578ff312b4b0c47963709a)](https://circleci.com/gh/schubergphilis/Seccubus)
 
-# Make sure the RPMs builds on all platforms (AGAIN!)
-
-Check [OpenSUSE Build Serice](https://build.opensuse.org/package/show/home:seccubus/Seccubus)
-
-# Make sure hub.docker.com is building the containers (AGAIN!)
-
-Check [Docker Hub](https://hub.docker.com/r/seccubus/seccubus/builds/)
-
 # Create a release on GitHub
 
 See [GitHub release page](https://github.com/schubergphilis/Seccubus/releases).
@@ -78,11 +66,10 @@ Use the tag you have just created. If you committed after you created the tag yo
 
 # Download the binary packages
 
-Platform(s):
+Get the following from [CircleCI](https://circleci.com/gh/schubergphilis/workflows/Seccubus/tree/master):
 
-* [Fedora based RPMs](http://software.opensuse.org//download.html?project=home%3Aseccubus&package=Seccubus) - Make sure to download all versions (fc24, fc25 and fc26) as well as the source RPM.
-* [Debian deb](https://circleci.com/gh/schubergphilis/Seccubus/tree/master) - It is an artifact of the 'debian_ok' step in the 'debian_package_building' workflow.
-
+* RPMS: master / fedora_package_building -> fedora_ok -> artifacts
+* .deb file: master / debian_package_building -> debian_ok -> artifacts
 
 # Attach them to the build
 
