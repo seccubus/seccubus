@@ -82,6 +82,8 @@ jobs:
           key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
           paths:
             - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/*.deb
 
   debian8_test:
     docker:
@@ -301,6 +303,8 @@ jobs:
           key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
           paths:
             - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/*.rpm
 
   test_fc26:
     docker:
@@ -340,6 +344,8 @@ jobs:
           key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
           paths:
             - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/*.rpm
 
   test_fc25:
     docker:
