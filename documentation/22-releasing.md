@@ -58,6 +58,10 @@ To git@github.com:schubergphilis/Seccubus
 
 Check [![Circle-CI build status](https://circleci.com/gh/schubergphilis/Seccubus.svg?style=shield&circle-token=63e8efd7e0bff0b1e9578ff312b4b0c47963709a)](https://circleci.com/gh/schubergphilis/Seccubus)
 
+# Create a pull request from master to releases
+
+This will make sure the release also gets uploaded to the releases repository.
+
 # Create a release on GitHub
 
 See [GitHub release page](https://github.com/schubergphilis/Seccubus/releases).
