@@ -58,7 +58,7 @@ jobs:
           name: Build
           command: ./build_all
       - store_artifacts:
-          path: /root/project/build/Seccubus*.tar.gz
+          path: /root/project/build/
 
   build_deb:
     docker:
@@ -82,6 +82,8 @@ jobs:
           key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
           paths:
             - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/
 
   debian8_test:
     docker:
@@ -301,6 +303,8 @@ jobs:
           key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
           paths:
             - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/
 
   test_fc26:
     docker:
@@ -340,6 +344,8 @@ jobs:
           key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
           paths:
             - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/
 
   test_fc25:
     docker:

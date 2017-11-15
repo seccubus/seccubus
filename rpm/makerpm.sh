@@ -50,11 +50,11 @@ echo "Creating directories"
 mkdir -p /root/rpmbuild/SOURCES
 
 echo "Copying files"
-(cd /tmp; rm -f Seccubus-$VERSION ; ln -s /root/project /tmp/Seccubus-$VERSION;tar -czf /root/rpmbuild/SOURCES/Seccubus-$VERSION.tar.gz --exclude "Seccubus-$VERSION/tmp" --exclude "Seccubus-$VERSION/build" Seccubus-$VERSION/*)
+(cd /tmp; rm -f seccubus-$VERSION ; ln -s /root/project /tmp/seccubus-$VERSION;tar -czf /root/rpmbuild/SOURCES/seccubus-$VERSION.tar.gz --exclude "seccubus-$VERSION/tmp" --exclude "seccubus-$VERSION/build" seccubus-$VERSION/*)
 
 echo "Building"
-cat /root/project/rpm/Seccubus2.spec | sed "s/master$/$VERSION/" | sed "s/^Release\\:    0$/Release:    $COMMITS/" >/root/rpmbuild/SOURCES/Seccubus.spec
-rpmbuild $SIGN -ba /root/rpmbuild/SOURCES/Seccubus.spec
+cat /root/project/rpm/seccubus.spec | sed "s/master$/$VERSION/" | sed "s/^Release\\:    0$/Release:    $COMMITS/" >/root/rpmbuild/SOURCES/seccubus.spec
+rpmbuild $SIGN -ba /root/rpmbuild/SOURCES/seccubus.spec
 find /root/rpmbuild -name "*.rpm" -exec cp {} /root/project/build \;
 
 exit

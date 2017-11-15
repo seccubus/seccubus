@@ -29,7 +29,7 @@
 %define moddir		%{installdir}/lib
 %define scandir		%{installdir}/scanners
 
-Name:		Seccubus
+Name:		seccubus
 Version:	master
 Release:    0
 #Release:    0%{?dist}

@@ -153,8 +153,15 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-24-10-2017 - v2.43 - Developement release
+15-11-2017 - v2.44 - PackageCloud release
 ==================================================================
+This release clean up technical debt. Package building has been moved from OpenSuse Build Services to CicleCI
+and packages now automatically are uploade to [our PackageCloud repositories](https://packagecloud.io/seccubus/).
+Here you will find two repositories:
+* [Latest](https://packagecloud.io/seccubus/latest) - Follows the latest code that gets merged into the master branch
+* [Releases](https://packagecloud.io/seccubus/releases) - Follows the regular releases
+
+You can configure these repositories on your operating system to include Seccubus upgrades in your regular package updates.
 
 Enhancements
 ------------

@@ -27,6 +27,29 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+15-11-2017 - v2.44 - PackageCloud release
+==================================================================
+This release clean up technical debt. Package building has been moved from OpenSuse Build Services to CicleCI
+and packages now automatically are uploade to [our PackageCloud repositories](https://packagecloud.io/seccubus/).
+Here you will find two repositories:
+* [Latest](https://packagecloud.io/seccubus/latest) - Follows the latest code that gets merged into the master branch
+* [Releases](https://packagecloud.io/seccubus/releases) - Follows the regular releases
+
+You can configure these repositories on your operating system to include Seccubus upgrades in your regular package updates.
+
+Enhancements
+------------
+* #597 - do-scan and import ivil now log to syslog
+* #605 - Container scan command allows scans to only starts on a certain weekday
+* Fedora, Ubuntu and Debian package building has been moved to CircleCI
+* Packages are automatically uploaded to [packagecloud.io](https://packagecloud.io/seccubus/seccubus)
+
+
+Bug Fixes
+---------
+* #593 - Fixed incorrect parsing of the values for poodleTls finding in SSLlabs.
+* #595 - Fixed incorrect parsing of the values for Ticketbleed finding in SSLlabs.
+
 20-10-2017 - v2.42 - Kali, Certificate validation and State Engine
 ==================================================================
 Three major improvements in this release:
