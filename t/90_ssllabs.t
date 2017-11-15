@@ -196,7 +196,7 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
     } else {
         $hosts->{$f->{host}}++;
     }
-    if ( $f->{plugin} =~ /^(renegSupport|serverName|grade(TrustIgnored)?)$/ ) {
+    if ( $f->{plugin} =~ /^(renegSupport|serverName|grade(TrustIgnored)?|duration)$/ ) {
     } elsif ( $f->{plugin} eq "duration" ) {
         like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints for plugin '$f->{plugin}'");
     } else {
