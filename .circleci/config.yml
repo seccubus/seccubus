@@ -83,7 +83,7 @@ jobs:
           paths:
             - "/root/project/build"
       - store_artifacts:
-          path: /root/project/build/*.deb
+          path: /root/project/build/
 
   debian8_test:
     docker:
