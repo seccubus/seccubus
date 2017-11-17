@@ -302,6 +302,13 @@ foreach my $format ( @formats ) {
         do {
             sleep(5);
             $json = rest_get("/scans/$sid/export/$filehandle/status", {}, \$r);
+            
+            #$json will be undefined if trying to export a fileformat will fail
+            if (!defined $json) {
+                print "Exporting scan to $format failed, skipping\n";
+                last;
+            }
+
             print Dumper $json;
             if ($r->code() eq 200) {
                 print "Scan export status: $json->{status}\n";
@@ -560,6 +567,10 @@ sub rest_call {
     # retry in this case
     unless ( $r->is_success || ( $uri =~ qr#/scans/\d+/export/\d+\/status# && $r->code() == 404 ) ) {
         unless ( $quiet ) {
+            #Internal server errors (500) should be fail gracefully so it does not loop
+            if ($uri =~ qr#/scans/\d+/export/\d+\/status# && $r->code() == 500) {
+                return;
+            }
             print "Nessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content();
             print "\n$retries retries left\n";
         }
