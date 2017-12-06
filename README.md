@@ -162,3 +162,4 @@ Enhancements
 
 Bug Fixes
 ---------
+* #615 - Docker: when the database was on the data volume the database failed to start
