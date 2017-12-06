@@ -163,4 +163,5 @@ Enhancements
 Bug Fixes
 ---------
 * #603 - Nessus scan fails when pdf files cannot be exported (Thanks @Ar0xA)
+* #615 - Docker: when the database was on the data volume the database failed to start
 * #617 - Nikto scanner gives unintended error output

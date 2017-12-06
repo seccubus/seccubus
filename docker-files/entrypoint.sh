@@ -217,7 +217,7 @@ if [[ "$DBHOST" == "127.0.0.1" && "$DBPORT" == "3306" ]]; then
     DBDIR="/var/lib/mysql"
     if [[ -e /opt/seccubus/data/db ]]; then
         DBDIR="/opt/seccubus/data/db"
-        sed -i.bak "s#/var/lib/mysql#$DBDIR#" /etc/mysql/my.cnf
+        sed -i.bak "s#/var/lib/mysql#$DBDIR#" /etc/mysql/mariadb.conf.d/50-server.cnf
         if [[ ! -e "$DBDIR/ibdata1" ]]; then
             # Assume that DB directory is unitialized
             /usr/bin/mysql_install_db --datadir="$DBDIR" --user=mysql
