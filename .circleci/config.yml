@@ -288,7 +288,7 @@ jobs:
     docker:
       - image: fedora:26
     steps:
-      - run: dnf install -y git
+      - run: dnf install -y git make
       - checkout
       - run:
           name: Generate build signature
