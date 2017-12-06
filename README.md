@@ -162,3 +162,4 @@ Enhancements
 
 Bug Fixes
 ---------
+* #617 - Nikto scanner gives unintended error output
