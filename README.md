@@ -162,3 +162,4 @@ Enhancements
 
 Bug Fixes
 ---------
+* #603 - Nessus scan fails when pdf files cannot be exported (Thanks @Ar0xA)
