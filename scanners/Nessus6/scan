@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk, Alex Smirnoff, Glenn ten Cate
+# Copyright 2017 Frank Breedijk, Alex Smirnoff, Glenn ten Cate, Artien Bel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -302,7 +302,7 @@ foreach my $format ( @formats ) {
         do {
             sleep(5);
             $json = rest_get("/scans/$sid/export/$filehandle/status", {}, \$r);
-            
+
             #$json will be undefined if trying to export a fileformat will fail
             if (!defined $json) {
                 print "Exporting scan to $format failed, skipping\n";
