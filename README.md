@@ -162,4 +162,5 @@ Enhancements
 
 Bug Fixes
 ---------
+* #603 - Nessus scan fails when pdf files cannot be exported (Thanks @Ar0xA)
 * #617 - Nikto scanner gives unintended error output
