@@ -198,6 +198,7 @@ foreach my $host ( @{$nmap->{host}} ) {
 			}
 		} elsif ( $item eq 'ports') {
 			foreach my $port ( @{$host->{$item}->{'port'}} ) {
+				$finding->{id} = "ports";
 				$finding->{port} = "$port->{portid}/$port->{protocol}";
 				$finding->{finding} = "Port         : $port->{portid}/$port->{protocol} - $port->{state}->{state}\n";
 				$finding->{finding} .= "State        : $port->{state}->{state}\n";
