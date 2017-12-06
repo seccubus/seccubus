@@ -122,10 +122,6 @@ run_cmd($cmd,$verbose);
 
 print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
 
-$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile' --description 'Command line output'";
-$cmd .= " -v" if $verbose > 1;
-run_cmd($cmd,$verbose);
-
 $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.nbe' --description 'NBE output'";
 $cmd .= " -v" if $verbose > 1;
 run_cmd($cmd,$verbose);
