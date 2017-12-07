@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2011-2017 Frank Breedijk, Andrey Danin, Glenn ten Cate
+# Copyright 2011-2017 Frank Breedijk, Andrey Danin, Glenn ten Cate, Alireza Karbasian
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -198,6 +198,7 @@ foreach my $host ( @{$nmap->{host}} ) {
 			}
 		} elsif ( $item eq 'ports') {
 			foreach my $port ( @{$host->{$item}->{'port'}} ) {
+				$finding->{id} = "ports";
 				$finding->{port} = "$port->{portid}/$port->{protocol}";
 				$finding->{finding} = "Port         : $port->{portid}/$port->{protocol} - $port->{state}->{state}\n";
 				$finding->{finding} .= "State        : $port->{state}->{state}\n";
