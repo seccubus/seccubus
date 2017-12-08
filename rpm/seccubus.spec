@@ -162,7 +162,8 @@ EOF
 
 ################################################################################
 %pre
-%if 0%{fedora}
+
+%if 0%{?fedora}
 %{_sbindir}/groupadd -r -f %{seccuser}
 %else
 %{_sbindir}/groupadd -r -f seccubus
