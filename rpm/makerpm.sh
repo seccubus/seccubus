@@ -36,7 +36,9 @@ BRANCH=$(git branch | grep '*'|awk '{print $2}')
 [ -d $DIR ] && rm -rf $DIR
 
 if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] ; then
-    if [[ ! -z $SECCUBUS_GPG_KEY ]]; then
+    if [[ ! -z $SECCUBUS_GPG_KEY ]] ; then
+        # && [[ $(grep -i centos /etc/redhat-release | wc - l) -lt 1 ]]; then
+        # TODO fix sgining on CentOS
         echo Setting up gpg
         set +x
         echo $SECCUBUS_GPG_KEY | sed 's/\\n/\n/g' > /tmp/gpg.key
@@ -55,7 +57,7 @@ echo "Copying files"
 
 echo "Building"
 cat /root/project/rpm/seccubus.spec | sed "s/master$/$VERSION/" | sed "s/^Release\\:    0$/Release:    $COMMITS/" >/root/rpmbuild/SOURCES/seccubus.spec
-rpmbuild $SIGN -ba /root/rpmbuild/SOURCES/seccubus.spec
+echo | rpmbuild $SIGN -ba /root/rpmbuild/SOURCES/seccubus.spec
 
 if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
     yum install -y epel-release

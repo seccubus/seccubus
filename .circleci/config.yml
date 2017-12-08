@@ -409,7 +409,7 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
-  rh_ok:
+  el_ok:
     docker:
       - image: alpine
     steps:
@@ -426,7 +426,7 @@ jobs:
       - store_artifacts:
           path: /root/project/build
 
-  rh_upload:
+  el_upload:
     docker:
       - image: alpine
     steps:
@@ -457,7 +457,7 @@ jobs:
           name : Upload to packagecloud.io
           command: package_cloud push seccubus/latest/fedora/26 build/*fc26*rpm
 
-  rh_upload_release:
+  el_upload_release:
     docker:
       - image: alpine
     steps:
@@ -543,7 +543,7 @@ workflows:
               only:
                 - releases
 
-  rh_package_building:
+  el_package_building:
     jobs:
       - build_el7
       - test_el7:
@@ -557,21 +557,21 @@ workflows:
       - test_fc26:
           requires:
             - build_fc26
-      - rh_ok:
+      - el_ok:
           requires:
             - test_el7
             - test_fc25
             - test_fc26
-      - rh_upload:
+      - el_upload:
           requires:
-            - rh_ok
+            - el_ok
           filters:
             branches:
               only:
                 - master
-      - rh_upload_release:
+      - el_upload_release:
           requires:
-            - rh_ok
+            - el_ok
           filters:
             branches:
               only:
