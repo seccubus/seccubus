@@ -76,7 +76,7 @@ fi
 
 find /root/rpmbuild -name "*.rpm" -exec cp {} /root/project/build \;
 for OLD in $(ls build/*.noarch.rpm build/*.x86_64.rpm); do
-    NEW=${$OLD//.rpm/.el7.rpm/}
+    NEW=$(echo $OLD|sed 's/.rpm/.el7.rpm/')
     mv $OLD $NEW
 done
 
