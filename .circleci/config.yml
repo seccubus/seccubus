@@ -1,6 +1,22 @@
 version: 2
 jobs:
 
+  cache_perl:
+    docker:
+      - image: perl:latest
+        environment:
+        - PERL5LIB: "."
+    steps:
+      - checkout
+      - restore_cache:
+          key: cpanm-{{ checksum "Makefile.PL" }}
+      - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
+      - run: cpanm --installdeps --notest .
+      - save_cache:
+          key: cpanm-{{ checksum "Makefile.PL" }}
+          paths:
+            - "/usr/local/lib/perl5/site_perl"
+
   unit_tests:
     docker:
       - image: perl:latest
@@ -498,7 +514,10 @@ workflows:
 
   unit_and_integration_tests:
     jobs:
-      - unit_tests
+      - cache_perl
+      - unit_tests:
+          requires:
+            - cache_perl
       - build:
           requires:
             - unit_tests
