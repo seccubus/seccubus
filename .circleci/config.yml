@@ -288,14 +288,14 @@ jobs:
     docker:
       - image: fedora:26
     steps:
-      - run: dnf install -y git make
+      - run: dnf install -y git
       - checkout
       - run:
           name: Generate build signature
           command: echo $CIRCLE_SHA1 > .git-describe
       - run:
           name: Install prerequisite packages
-          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign
+          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign make
       - run:
           name: Build
           command: rpm/makerpm.sh
@@ -367,7 +367,49 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
-  fedora_ok:
+  build_el7:
+    docker:
+      - image: centos:7
+    steps:
+      - run: yum install -y git
+      - checkout
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Install prerequisite packages
+          command: yum install -y java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign rpm-build make "perl(Test::Simple)" "perl(CPAN)"
+      - run:
+          name: Build
+          command: rpm/makerpm.sh
+      - save_cache:
+          key: rpm-el7-{{ .Branch }}-{{ checksum ".git-describe" }}
+          paths:
+            - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/
+
+  test_el7:
+    docker:
+      - image: fedora:25
+    steps:
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: rpm-el7-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run: ls -al build
+      - run:
+          name: Install rpm
+          command: dnf install -y build/*el7*rpm
+      - run:
+          name: Start hypnotoad
+          command: cd /opt/seccubus; hypnotoad seccubus.pl
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  rh_ok:
     docker:
       - image: alpine
     steps:
@@ -384,7 +426,7 @@ jobs:
       - store_artifacts:
           path: /root/project/build
 
-  fedora_upload:
+  rh_upload:
     docker:
       - image: alpine
     steps:
@@ -397,6 +439,11 @@ jobs:
       - run:
           name: Setup package cloud
           command: gem install package_cloud -N
+      - restore_cache:
+          key: rpm-el7-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: package_cloud push seccubus/latest/el/7 build/*el7*rpm
       - restore_cache:
           key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
@@ -410,7 +457,7 @@ jobs:
           name : Upload to packagecloud.io
           command: package_cloud push seccubus/latest/fedora/26 build/*fc26*rpm
 
-  fedora_upload_release:
+  rh_upload_release:
     docker:
       - image: alpine
     steps:
@@ -423,6 +470,11 @@ jobs:
       - run:
           name: Setup package cloud
           command: gem install package_cloud -N
+      - restore_cache:
+          key: rpm-el7-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: package_cloud push seccubus/releases/el/7 build/*el7*rpm
       - restore_cache:
           key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
@@ -491,8 +543,12 @@ workflows:
               only:
                 - releases
 
-  fedora_package_building:
+  rh_package_building:
     jobs:
+      - build_el7
+      - test_el7:
+          requires:
+            - build_el7
       - build_fc25
       - test_fc25:
           requires:
@@ -501,20 +557,21 @@ workflows:
       - test_fc26:
           requires:
             - build_fc26
-      - fedora_ok:
+      - rh_ok:
           requires:
+            - test_el7
             - test_fc25
             - test_fc26
-      - fedora_upload:
+      - rh_upload:
           requires:
-            - fedora_ok
+            - rh_ok
           filters:
             branches:
               only:
                 - master
-      - fedora_upload_release:
+      - rh_upload_release:
           requires:
-            - fedora_ok
+            - rh_ok
           filters:
             branches:
               only:

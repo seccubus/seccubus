@@ -17,73 +17,72 @@
 #%define is_rh5 %(grep -qi 'Red Hat Enterprise Linux Server release 5' /etc/redhat-release && echo 1 || echo 0)
 
 # Seccubus
-%define installdir	/opt/seccubus
-%define homedir		%{installdir}
-%define bindir		%{installdir}/bin
-%define confdir		/etc/seccubus
-%define vardir		%{installdir}/var
-%define seccuser	seccubus
-%define docsdir		%{installdir}/doc/
+%define installdir  /opt/seccubus
+%define homedir     %{installdir}
+%define bindir      %{installdir}/bin
+%define confdir     /etc/seccubus
+%define vardir      %{installdir}/var
+%define seccuse     seccubus
+%define docsdir     %{installdir}/doc/
 %define logdir      /var/log/seccubus
 
-%define moddir		%{installdir}/lib
-%define scandir		%{installdir}/scanners
+%define moddir      %{installdir}/lib
+%define scandir     %{installdir}/scanners
 
-Name:		seccubus
-Version:	master
+Name:       seccubus
+Version:    master
 Release:    0
-#Release:    0%{?dist}
-Summary:	Automated regular vulnerability scanning with delta reporting
-Group:		Applications/Internet
-License:	ASL 2.0
-URL:		http://www.seccubus.com
+Summary:    Automated regular vulnerability scanning with delta reporting
+Group:      Applications/Internet
+License:    ASL 2.0
+URL:        http://www.seccubus.com
 
-Packager:	Frank Breedijk <fbreedijk@schubergphilis.com>
+Packager:   Frank Breedijk <fbreedijk@schubergphilis.com>
 
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildArch:	noarch
+BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:  noarch
 
-Source0:	%{name}-%{version}.tar.gz
-#Source0:	https://github.com/schubergphilis/%{name}_v2/tarball/%{version}
+Source0:    %{name}-%{version}.tar.gz
 
-#%{?el6:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.el6.rpm}
 #%{?el7:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.el7.rpm}
 #%{?fedora:%define _build_name_fmt %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}%{dist}.%%{ARCH}.rpm}
 
-%if 0%{?is_rh5}
-BuildRequires:	java-1.6.0-openjdk
-%else
-%{?el6:BuildRequires:   java-1.7.0-openjdk}
-%{?el7:BuildRequires:	java-1.7.0-openjdk}
-%endif
-%{?fedora:BuildRequires:  java-1.8.0-openjdk-headless}
+BuildRequires:  java-1.8.0-openjdk-headless
 BuildRequires:  perl(ExtUtils::MakeMaker)
+%if 0%{?fedora}
+    # Nothing
+%else
+BuildRequires:  perl-CPAN
+BuildRequires:  perl-devel
+BuildRequires:  curl
+BuildRequires:  perl(Test::Simple)
+%endif
 
-Requires:	perl(Algorithm::Diff)
-Requires:	perl(DBI)
-Requires:	perl(DBD::mysql)
-Requires:	perl(JSON)
-Requires:	perl(XML::Simple)
-Requires:	perl-libwww-perl
+Requires:   perl(Algorithm::Diff)
+Requires:   perl(DBI)
+Requires:   perl(DBD::mysql)
+Requires:   perl(JSON)
+Requires:   perl(XML::Simple)
+Requires:   perl-libwww-perl
 Requires:   perl(LWP::Simple)
 Requires:   perl(LWP::Protocol::https)
-Requires:	perl(Net::IP)
-Requires:	perl(Date::Format)
-Requires:	perl(Exporter)
-Requires:	perl(Getopt::Long)
-Requires:	perl(Data::Dumper)
-Requires:	perl(HTML::Entities)
-Requires:	perl(MIME::Base64)
-Requires:	perl(File::Basename)
-Requires:	perl(Socket)
-Requires:	perl(Net::SMTP)
+Requires:   perl(Net::IP)
+Requires:   perl(Date::Format)
+Requires:   perl(Exporter)
+Requires:   perl(Getopt::Long)
+Requires:   perl(Data::Dumper)
+Requires:   perl(HTML::Entities)
+Requires:   perl(MIME::Base64)
+Requires:   perl(File::Basename)
+Requires:   perl(Socket)
+Requires:   perl(Net::SMTP)
 Requires:   perl(Crypt::PBKDF2)
 Requires:   perl(Term::ReadKey)
 Requires:   perl(Time::HiRes)
 Requires:   perl(Sys::Syslog)
 Requires:   perl(Mojolicious) >= 6.0
 
-Requires:	mysql
+Requires:   mysql
 %{?el6:Requires: mysql-server}
 %{?el7:Requires: mariadb-server}
 %{?fedora:Requires: mariadb-server}
@@ -121,26 +120,26 @@ cp ChangeLog.md LICENSE.txt NOTICE.txt README.md %{buildroot}/%{docsdir}
 cat > %{buildroot}/%{confdir}/config.xml <<- EOF
 <?xml version="1.0" standalone='yes'?>
 <seccubus>
-	<database>
-		<engine>mysql</engine>
-		<database>seccubus</database>
-		<host>localhost</host>
-		<port>3306</port>
-		<user>%{seccuser}</user>
-		<password>%{seccuser}</password>
-	</database>
-	<paths>
-		<modules>%{installdir}/lib</modules>
-		<scanners>%{scandir}</scanners>
-		<bindir>%{bindir}</bindir>
-		<configdir>%{confdir}</configdir>
-		<dbdir>%{vardir}</dbdir>
+    <database>
+        <engine>mysql</engine>
+        <database>seccubus</database>
+        <host>localhost</host>
+        <port>3306</port>
+        <user>%{seccuser}</user>
+        <password>%{seccuser}</password>
+    </database>
+    <paths>
+        <modules>%{installdir}/lib</modules>
+        <scanners>%{scandir}</scanners>
+        <bindir>%{bindir}</bindir>
+        <configdir>%{confdir}</configdir>
+        <dbdir>%{vardir}</dbdir>
         <logdir>/var/log/seccubus</logdir>
-	</paths>
-	<smtp>
-		<server>localhost</server>
-		<from>seccubus@localhost</from>
-	</smtp>
+    </paths>
+    <smtp>
+        <server>localhost</server>
+        <from>seccubus@localhost</from>
+    </smtp>
     <tickets>
         <url_head></url_head>
         <url_tail></url_tail>
@@ -166,7 +165,7 @@ EOF
 %{_sbindir}/groupadd -r -f %{seccuser}
 grep \^%{seccuser} /etc/passwd >/dev/null
 if [ $? -ne 0 ]; then
-	%{_sbindir}/useradd -d %{installdir} -g %{seccuser} -r %{seccuser}
+    %{_sbindir}/useradd -d %{installdir} -g %{seccuser} -r %{seccuser}
 fi
 
 ## %pre
@@ -208,7 +207,7 @@ Seccubus is listening on https://localhost:8443/
 
 ################################################################################
 OEF
-
+%if 0%{?fedora}%{el7}
 cat >/lib/systemd/system/seccubus.service <<EOF
 [Unit]
 Description=Seccubus - Scan Smarter not Harder
@@ -230,6 +229,8 @@ EOF
 systemctl --system daemon-reload
 /bin/systemctl enable seccubus.service
 /bin/systemctl start  seccubus.service
+%else
+%endif
 
 ## %post
 
@@ -263,6 +264,8 @@ rm /etc/init.d/seccubus
 #
 
 %changelog
+* Fri Dec  8 2017 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Re-added support for RedHat/CentOs 7
 * Wed Jun  7 2017 Frank Breedijk <fbreedijk@schubergphilis.com>
 - New Mojolicious backend
 - Dropped suport of Centos5 and RedHat5

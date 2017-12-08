@@ -12,7 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#set -x
+set -x
+set -e
 UPSTREAM_VERSION=$1
 COMMITS=$2
 if [ -z $VERSION ]; then
@@ -55,6 +56,30 @@ echo "Copying files"
 echo "Building"
 cat /root/project/rpm/seccubus.spec | sed "s/master$/$VERSION/" | sed "s/^Release\\:    0$/Release:    $COMMITS/" >/root/rpmbuild/SOURCES/seccubus.spec
 rpmbuild $SIGN -ba /root/rpmbuild/SOURCES/seccubus.spec
+
+if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
+    yum install -y epel-release
+    yum install -y perl-libwww-perl gcc "perl(Module::Build)" "perl(JSON::PP)" "perl(IO::Socket::IP)" "perl(Pod::Parser)" \
+        "perl(Canary::Stability)" "perl(common::sense)"
+    curl -L http://cpanmin.us | perl - App::cpanminus
+    #cpanm Mojolicious EV #Crypt::PBKDF2
+    [[ ! -e /tmp/cpan2rpm ]] && (cd /tmp;git clone https://github.com/ekkis/cpan2rpm.git --depth=1)
+    cpanm IO::Socket::IP
+    VER=$(cpanm IO::Socket::IP | sed 's/.*(//' | sed 's/).*//')
+    /tmp/cpan2rpm/cpan2rpm IO::Socket::IP --version $VER || /tmp/cpan2rpm/cpan2rpm IO::Socket::IP --version $VER
+    /tmp/cpan2rpm/cpan2rpm Mojolicious || /tmp/cpan2rpm/cpan2rpm Mojolicious
+#    VER=$(cpanm EV | sed 's/.*(//' | sed 's/).*//')
+    echo y | /tmp/cpan2rpm/cpan2rpm EV  || echo y | /tmp/cpan2rpm/cpan2rpm EV
+#    /tmp/cpan2rpm/cpan2rpm Net::IP || /tmp/cpan2rpm/cpan2rpm Net::IP
+#    /tmp/cpan2rpm/cpan2rpm Crypt::PBKDF2 || /tmp/cpan2rpm/cpan2rpm Crypt::PBKDF2
+#    No package perl(Moo) available.
+fi
+
 find /root/rpmbuild -name "*.rpm" -exec cp {} /root/project/build \;
+for OLD in $(ls build/*.noarch.rpm build/*.x86_64.rpm); do
+    NEW=$(echo $OLD|sed 's/.rpm/.el7.rpm/')
+    mv $OLD $NEW
+done
+
 
 exit

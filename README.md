@@ -158,7 +158,7 @@ xx-xx-2017 - v2.45 - Development release
 
 Enhancements
 ------------
-
+Added support for RPM with the extra needed packages being added to packagecloud.io
 
 Bug Fixes
 ---------
