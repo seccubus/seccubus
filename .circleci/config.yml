@@ -9,11 +9,11 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: cpanm-{{ checksum "Makefile.PL" }}
+          key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
       - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
       - run: cpanm --installdeps --notest .
       - save_cache:
-          key: cpanm-{{ checksum "Makefile.PL" }}
+          key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - "/usr/local/lib/perl5/site_perl"
 
@@ -32,13 +32,9 @@ jobs:
           name: Install prerequisite packages
           command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client ssh git
       - restore_cache:
-          key: cpanm-{{ checksum "Makefile.PL" }}
+          key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
       - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
       - run: cpanm --installdeps --notest .
-      - save_cache:
-          key: cpanm-{{ checksum "Makefile.PL" }}
-          paths:
-            - "/usr/local/lib/perl5/site_perl"
       - run:
           name: Wait for database
           command: |
@@ -69,7 +65,7 @@ jobs:
           name: Install prerequisite packages
           command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client default-jre
       - restore_cache:
-          key: cpanm-{{ checksum "Makefile.PL" }}
+          key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Build
           command: ./build_all
