@@ -71,16 +71,12 @@ if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
     VER=$(cpanm IO::Socket::IP | sed 's/.*(//' | sed 's/).*//')
     /tmp/cpan2rpm/cpan2rpm IO::Socket::IP --version $VER || /tmp/cpan2rpm/cpan2rpm IO::Socket::IP --version $VER
     /tmp/cpan2rpm/cpan2rpm Mojolicious || /tmp/cpan2rpm/cpan2rpm Mojolicious
-#    VER=$(cpanm EV | sed 's/.*(//' | sed 's/).*//')
     echo y | /tmp/cpan2rpm/cpan2rpm EV  || echo y | /tmp/cpan2rpm/cpan2rpm EV
-#    /tmp/cpan2rpm/cpan2rpm Net::IP || /tmp/cpan2rpm/cpan2rpm Net::IP
-#    /tmp/cpan2rpm/cpan2rpm Crypt::PBKDF2 || /tmp/cpan2rpm/cpan2rpm Crypt::PBKDF2
-#    No package perl(Moo) available.
 fi
 
 find /root/rpmbuild -name "*.rpm" -exec cp {} /root/project/build \;
 for OLD in $(ls build/*.noarch.rpm build/*.x86_64.rpm); do
-    NEW=$(echo $OLD|sed 's/.rpm/.el7.rpm/')
+    NEW=${$OLD//.rpm/.el7.rpm/}
     mv $OLD $NEW
 done
 
