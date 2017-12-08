@@ -418,6 +418,10 @@ jobs:
           name: Generate build signature
           command: echo $CIRCLE_SHA1 > .git-describe
       - restore_cache:
+          key: rpm-el7-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - store_artifacts:
+          path: /root/project/build
+      - restore_cache:
           key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
       - store_artifacts:
           path: /root/project/build
