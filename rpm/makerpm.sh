@@ -46,6 +46,8 @@ if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] ; then
         rm /tmp/gpg.key
         echo "%_gpg_name Frank Breedijk" > ~/.rpmmacros
         SIGN=" --sign "
+        gpg-agent --daemon --allow-preset-passphrase
+        echo "PRESET_PASSPHRASE DCF348E1 -1 00" | gpg-connect-agent
     fi
 fi
 
