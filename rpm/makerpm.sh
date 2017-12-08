@@ -36,8 +36,7 @@ BRANCH=$(git branch | grep '*'|awk '{print $2}')
 [ -d $DIR ] && rm -rf $DIR
 
 if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] ; then
-    if [[ ! -z $SECCUBUS_GPG_KEY ]] ; then
-        # && [[ $(grep -i centos /etc/redhat-release | wc - l) -lt 1 ]]; then
+    if [[ ! -z $SECCUBUS_GPG_KEY ]] && [[ $(grep -i centos /etc/redhat-release | wc - l) -lt 1 ]]; then
         # TODO fix sgining on CentOS
         echo Setting up gpg
         set +x
