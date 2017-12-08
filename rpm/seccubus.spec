@@ -22,7 +22,7 @@
 %define bindir      %{installdir}/bin
 %define confdir     /etc/seccubus
 %define vardir      %{installdir}/var
-%define seccuse     seccubus
+%define seccuser    seccubus
 %define docsdir     %{installdir}/doc/
 %define logdir      /var/log/seccubus
 
@@ -162,7 +162,12 @@ EOF
 
 ################################################################################
 %pre
+%if 0%{fedora}
 %{_sbindir}/groupadd -r -f %{seccuser}
+%else
+%{_sbindir}/groupadd -r -f seccubus
+%endif
+
 grep \^%{seccuser} /etc/passwd >/dev/null
 if [ $? -ne 0 ]; then
     %{_sbindir}/useradd -d %{installdir} -g %{seccuser} -r %{seccuser}
@@ -207,7 +212,6 @@ Seccubus is listening on https://localhost:8443/
 
 ################################################################################
 OEF
-%if 0%{?fedora}%{el7}
 cat >/lib/systemd/system/seccubus.service <<EOF
 [Unit]
 Description=Seccubus - Scan Smarter not Harder
@@ -229,8 +233,6 @@ EOF
 systemctl --system daemon-reload
 /bin/systemctl enable seccubus.service
 /bin/systemctl start  seccubus.service
-%else
-%endif
 
 ## %post
 
