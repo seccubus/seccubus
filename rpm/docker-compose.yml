@@ -29,3 +29,10 @@ services:
       PERL5LIB: "."
     volumes:
       - ..:/root/project
+  centos7:
+    image: centos:7
+    command: bash -c "tail -f /var/log/lastlog"
+    environment:
+      PERL5LIB: "."
+    volumes:
+      - ..:/root/project

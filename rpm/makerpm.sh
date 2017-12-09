@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #set -x
+set -e
 UPSTREAM_VERSION=$1
 COMMITS=$2
 if [ -z $VERSION ]; then
@@ -35,7 +36,8 @@ BRANCH=$(git branch | grep '*'|awk '{print $2}')
 [ -d $DIR ] && rm -rf $DIR
 
 if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] ; then
-    if [[ ! -z $SECCUBUS_GPG_KEY ]]; then
+    if [[ ! -z $SECCUBUS_GPG_KEY ]] && [[ $(grep -i centos /etc/redhat-release | wc -l) -lt 1 ]]; then
+        # TODO fix sgining on CentOS
         echo Setting up gpg
         set +x
         echo $SECCUBUS_GPG_KEY | sed 's/\\n/\n/g' > /tmp/gpg.key
@@ -43,6 +45,8 @@ if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] ; then
         rm /tmp/gpg.key
         echo "%_gpg_name Frank Breedijk" > ~/.rpmmacros
         SIGN=" --sign "
+        gpg-agent --daemon --allow-preset-passphrase
+        echo "PRESET_PASSPHRASE DCF348E1 -1 00" | gpg-connect-agent
     fi
 fi
 
@@ -54,7 +58,27 @@ echo "Copying files"
 
 echo "Building"
 cat /root/project/rpm/seccubus.spec | sed "s/master$/$VERSION/" | sed "s/^Release\\:    0$/Release:    $COMMITS/" >/root/rpmbuild/SOURCES/seccubus.spec
-rpmbuild $SIGN -ba /root/rpmbuild/SOURCES/seccubus.spec
+echo | rpmbuild $SIGN -ba /root/rpmbuild/SOURCES/seccubus.spec
+
+if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
+    yum install -y epel-release
+    yum install -y perl-libwww-perl gcc "perl(Module::Build)" "perl(JSON::PP)" "perl(IO::Socket::IP)" "perl(Pod::Parser)" \
+        "perl(Canary::Stability)" "perl(common::sense)"
+    curl -L http://cpanmin.us | perl - App::cpanminus
+    #cpanm Mojolicious EV #Crypt::PBKDF2
+    [[ ! -e /tmp/cpan2rpm ]] && (cd /tmp;git clone https://github.com/ekkis/cpan2rpm.git --depth=1)
+    cpanm IO::Socket::IP
+    VER=$(cpanm IO::Socket::IP | sed 's/.*(//' | sed 's/).*//')
+    /tmp/cpan2rpm/cpan2rpm IO::Socket::IP --version $VER || /tmp/cpan2rpm/cpan2rpm IO::Socket::IP --version $VER
+    /tmp/cpan2rpm/cpan2rpm Mojolicious || /tmp/cpan2rpm/cpan2rpm Mojolicious
+    echo y | /tmp/cpan2rpm/cpan2rpm EV  || echo y | /tmp/cpan2rpm/cpan2rpm EV
+fi
+
 find /root/rpmbuild -name "*.rpm" -exec cp {} /root/project/build \;
+for OLD in $(ls build/*.noarch.rpm build/*.x86_64.rpm); do
+    NEW=${OLD//.rpm/.el7.rpm}
+    mv $OLD $NEW
+done
+
 
 exit
