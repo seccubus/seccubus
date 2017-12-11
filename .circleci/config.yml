@@ -448,7 +448,7 @@ jobs:
     steps:
       - run:
           name: Installing prerequisites
-          command: apk update; apk add ca-certificates alpine-sdk ruby-dev ruby
+          command: apk update; apk add ca-certificates alpine-sdk ruby-dev ruby curl
       - run:
           name: Generate build signature
           command: echo $CIRCLE_SHA1 > .git-describe
@@ -459,7 +459,13 @@ jobs:
           key: rpm-el7-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
           name : Upload to packagecloud.io
-          command: package_cloud push seccubus/latest/el/7 build/*el7*rpm
+          command: |
+            cd build
+            for file in *el7*rpm; do
+              if [[ $(curl -I https://packagecloud.io/seccubus/latest/packages/el/7/$file|grep 404|wc -l) -eq 0 ]]; then
+                package_cloud push seccubus/latest/el/7 $file
+              fi
+            done
       - restore_cache:
           key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
