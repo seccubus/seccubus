@@ -95,7 +95,7 @@ print "testssl options: $testssl_options\n" if $verbose;
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 
-print "Execuing $testssl_path $testssl_options\n" unless $quiet;
+print "Executing $testssl_path $testssl_options\n" unless $quiet;
 run_cmd("$testssl_path $options",$verbose,$remote,[ $tempfile,"$tempfile.*" ], [ $hosts_file ]);
 
 print "Scanning done, converting .json to ivil\n" unless $quiet;

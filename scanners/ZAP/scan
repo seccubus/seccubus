@@ -94,7 +94,7 @@ $zap_path =~ s/zap.jar//;
 
 my $cmd = "cd $zap_path; java -Xmx512m -XX:PermSize=512M -jar zap.jar $zap_options";
 
-print "Execuing $cmd\n" unless $quiet;
+print "Executing $cmd\n" unless $quiet;
 run_cmd($cmd,$verbose,$remote,[ "$tempfile" ]);
 
 if ( $sudo ) {
