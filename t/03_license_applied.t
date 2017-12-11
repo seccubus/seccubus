@@ -27,8 +27,8 @@ my %exclude = (
     "./NOTICE.txt"      => "Part of the license",
     "./ChangeLog.md"    => "No license needed",
     "./README.md"       => "No license needed",
-    "./docs/Development_environment.md"
-                        => "No license needed",
+    "./README.md"       => "No license needed",
+    "./CONTRIBUTING.md" => "No license needed",
     "./docs/Development_on_MacOS.md"
                         => "No license needed",
     "./LICENSE.txt"     => "It is the license itself",
