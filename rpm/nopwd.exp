@@ -1,0 +1,18 @@
+#!/usr/bin/expect
+
+set timeout -1
+log_user 1
+#set cmd [lindex $argv 0]
+set cmd [lrange $argv 0 99]
+
+send_user "CMD is: $cmd\n"
+
+spawn bash "-c" $cmd
+
+expect {
+    "Enter pass phrase:"
+}
+send "\r"
+expect {
+    "qwerty"
+}
