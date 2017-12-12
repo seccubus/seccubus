@@ -17,10 +17,6 @@ jobs:
           paths:
             - "/usr/local/lib/perl5/site_perl"
       - save_cache:
-          key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - "/usr/local/lib/perl5/site_perl"
-      - save_cache:
           key: cpanm-{{ checksum "Makefile.PL" }}
           paths:
             - "/usr/local/lib/perl5/site_perl"
