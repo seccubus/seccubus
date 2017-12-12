@@ -9,11 +9,19 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
+          key: cpanm-{{ checksum "Makefile.PL" }}
       - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
       - run: cpanm --installdeps --notest .
       - save_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - "/usr/local/lib/perl5/site_perl"
+      - save_cache:
+          key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - "/usr/local/lib/perl5/site_perl"
+      - save_cache:
+          key: cpanm-{{ checksum "Makefile.PL" }}
           paths:
             - "/usr/local/lib/perl5/site_perl"
 
