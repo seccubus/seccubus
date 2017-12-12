@@ -9,7 +9,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: cpanm-{{ checksum "Makefile.PL" }}
+          key: cpanm-{{ checksum "Makefile.PL" }}-v2
       - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
       - run: cpanm --installdeps --notest .
       - save_cache:
@@ -17,7 +17,7 @@ jobs:
           paths:
             - "/usr/local/lib/perl5/site_perl"
       - save_cache:
-          key: cpanm-{{ checksum "Makefile.PL" }}
+          key: cpanm-{{ checksum "Makefile.PL" }}-v2
           paths:
             - "/usr/local/lib/perl5/site_perl"
 
