@@ -466,6 +466,7 @@ jobs:
                 package_cloud push seccubus/latest/el/7 $file
               fi
             done
+            cd ..
       - restore_cache:
           key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
@@ -495,19 +496,26 @@ jobs:
       - restore_cache:
           key: rpm-el7-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
-          name : Upload to packagecloud.io
-          command: package_cloud push seccubus/releases/el/7 build/*el7*rpm
+          name : Upload to packagecloud.io - el7
+          command: |
+            cd build
+            for file in *el7*rpm; do
+              if [[ $(curl -I https://packagecloud.io/seccubus/latest/packages/el/7/$file|grep 404|wc -l) -eq 0 ]]; then
+                package_cloud push seccubus/latest/el/7 $file
+              fi
+            done
+            cd ..
       - restore_cache:
           key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
-          name : Upload to packagecloud.io
+          name : Upload to packagecloud.io - fc25
           command: package_cloud push seccubus/releases/fedora/25 build/*fc25*rpm
       - restore_cache:
           key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
       - store_artifacts:
           path: /root/project/build
       - run:
-          name : Upload to packagecloud.io
+          name : Upload to packagecloud.io - fc26
           command: package_cloud push seccubus/releases/fedora/26 build/*fc26*rpm
 
 workflows:
