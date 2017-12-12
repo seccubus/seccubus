@@ -106,7 +106,7 @@ print "Nikto options: $nikto_options\n" if $verbose;
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 
-print "Execuing $nikto_path $nikto_options\n" unless $quiet;
+print "Executing $nikto_path $nikto_options\n" unless $quiet;
 run_cmd("$nikto_path $nikto_options",$verbose,$remote,[ $tempfile,"$tempfile.*" ], [ $hosts_file ]);
 
 print "Scanning done, converting .nbe to ivil\n" unless $quiet;
