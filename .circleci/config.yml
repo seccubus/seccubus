@@ -491,7 +491,8 @@ jobs:
           command: |
             cd build
             for file in *el7*rpm; do
-              if [[ $(curl -Is https://packagecloud.io/seccubus/latest/packages/el/7/$file|grep 404|wc -l) -eq 1 ]]; then
+              REMOTE=${file/.el7/}
+              if [[ $(curl -Is https://packagecloud.io/seccubus/latest/packages/el/7/$REMOTE|grep 404|wc -l) -eq 1 ]]; then
                 package_cloud push seccubus/latest/el/7 $file
               else
                 echo "$file already on packagecloud.io"
@@ -531,7 +532,8 @@ jobs:
           command: |
             cd build
             for file in *el7*rpm; do
-              if [[ $(curl -I https://packagecloud.io/seccubus/releases/packages/el/7/$file|grep 404|wc -l) -eq 1 ]]; then
+              REMOTE=${file/.el7/}
+              if [[ $(curl -I https://packagecloud.io/seccubus/releases/packages/el/7/$REMOTE|grep 404|wc -l) -eq 1 ]]; then
                 package_cloud push seccubus/releases/el/7 $file
               else
                 echo "$file already on packagecloud.io"
