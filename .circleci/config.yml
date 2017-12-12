@@ -51,7 +51,7 @@ jobs:
       - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
       - run:
           name: Unit test
-          command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=filename | xargs -n 1 prove
+          command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=classname | xargs -n 1 prove
 
   build:
     docker:
