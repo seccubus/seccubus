@@ -9,11 +9,15 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
+          key: cpanm-{{ checksum "Makefile.PL" }}-v2
       - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
       - run: cpanm --installdeps --notest .
       - save_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - "/usr/local/lib/perl5/site_perl"
+      - save_cache:
+          key: cpanm-{{ checksum "Makefile.PL" }}-v2
           paths:
             - "/usr/local/lib/perl5/site_perl"
 
@@ -51,7 +55,7 @@ jobs:
       - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
       - run:
           name: Unit test
-          command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=filename | xargs -n 1 prove
+          command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=classname | xargs -n 1 prove
 
   build:
     docker:
@@ -390,7 +394,7 @@ jobs:
           command: echo $CIRCLE_SHA1 > .git-describe
       - run:
           name: Install prerequisite packages
-          command: yum install -y java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign rpm-build make "perl(Test::Simple)" "perl(CPAN)"
+          command: yum install -y java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign rpm-build make "perl(Test::Simple)" "perl(CPAN)" expect
       - run:
           name: Build
           command: rpm/makerpm.sh

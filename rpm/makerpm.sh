@@ -35,8 +35,9 @@ BRANCH=$(git branch | grep '*'|awk '{print $2}')
 [ ! -d build ] && mkdir build
 [ -d $DIR ] && rm -rf $DIR
 
+NOSIGN="--no-sign"
 if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] ; then
-    if [[ ! -z $SECCUBUS_GPG_KEY ]] && [[ $(grep -i centos /etc/redhat-release | wc -l) -lt 1 ]]; then
+    if [[ ! -z $SECCUBUS_GPG_KEY ]] ; then #&& [[ $(grep -i centos /etc/redhat-release | wc -l) -lt 1 ]]; then
         # TODO fix sgining on CentOS
         echo Setting up gpg
         set +x
@@ -45,8 +46,11 @@ if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] ; then
         rm /tmp/gpg.key
         echo "%_gpg_name Frank Breedijk" > ~/.rpmmacros
         SIGN=" --sign "
-        gpg-agent --daemon --allow-preset-passphrase
-        echo "PRESET_PASSPHRASE DCF348E1 -1 00" | gpg-connect-agent
+        NOSIGN=" "
+        if [[ $(grep -i centos /etc/redhat-release | wc -l) -eq 1 ]]; then
+            echo
+            NOPWD="rpm/nopwd.exp"
+        fi
     fi
 fi
 
@@ -58,7 +62,7 @@ echo "Copying files"
 
 echo "Building"
 cat /root/project/rpm/seccubus.spec | sed "s/master$/$VERSION/" | sed "s/^Release\\:    0$/Release:    $COMMITS/" >/root/rpmbuild/SOURCES/seccubus.spec
-echo | rpmbuild $SIGN -ba /root/rpmbuild/SOURCES/seccubus.spec
+$NOPWD /usr/bin/rpmbuild $SIGN -ba /root/rpmbuild/SOURCES/seccubus.spec
 
 if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
     yum install -y epel-release
@@ -69,9 +73,14 @@ if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
     [[ ! -e /tmp/cpan2rpm ]] && (cd /tmp;git clone https://github.com/ekkis/cpan2rpm.git --depth=1)
     cpanm IO::Socket::IP
     VER=$(cpanm IO::Socket::IP | sed 's/.*(//' | sed 's/).*//')
-    /tmp/cpan2rpm/cpan2rpm IO::Socket::IP --version $VER || /tmp/cpan2rpm/cpan2rpm IO::Socket::IP --version $VER
-    /tmp/cpan2rpm/cpan2rpm Mojolicious || /tmp/cpan2rpm/cpan2rpm Mojolicious
-    echo y | /tmp/cpan2rpm/cpan2rpm EV  || echo y | /tmp/cpan2rpm/cpan2rpm EV
+    $NOPWD /tmp/cpan2rpm/cpan2rpm IO::Socket::IP --version $VER $NOSIGN
+    $NOPWD /tmp/cpan2rpm/cpan2rpm Mojolicious $NOSIGN
+    set -x
+    if [[ -z "$NOPWD" ]]; then
+        echo y | /tmp/cpan2rpm/cpan2rpm EV $NOSIGN
+    else
+        $NOPWD echo y \| /tmp/cpan2rpm/cpan2rpm EV $NOSIGN
+    fi
 fi
 
 find /root/rpmbuild -name "*.rpm" -exec cp {} /root/project/build \;
