@@ -60,7 +60,7 @@ jobs:
       - run:
           name: Rename unit tests cache
           command: |
-            mkdir -f testout
+            mkdir testout
             mv junit_output.xml testout/junit_$CIRCLE_NODE_INDEX.xml
       - save_cache:
           key: junit-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Environment.CIRCLE_SHA1 }}
@@ -68,7 +68,8 @@ jobs:
             - "/root/project/testout"
       - store_artifacts:
           path: /root/project/testout/
-
+      - store_test_results:
+          path: /root/project/testout/
   build:
     docker:
       - image: perl:latest
@@ -90,25 +91,25 @@ jobs:
       - restore_cache:
           key: junit-0-{{ .Environment.CIRCLE_SHA1 }}
       - store_test_results:
-          path: /root/project/testout
+          path: /root/project/testout/
       - store_artifacts:
           path: /root/project/testout/
       - restore_cache:
           key: junit-1-{{ .Environment.CIRCLE_SHA1 }}
       - store_test_results:
-          path: /root/project/testout
+          path: /root/project/testout/
       - store_artifacts:
           path: /root/project/testout/
       - restore_cache:
           key: junit-2-{{ .Environment.CIRCLE_SHA1 }}
       - store_test_results:
-          path: /root/project/testout
+          path: /root/project/testout/
       - store_artifacts:
           path: /root/project/testout/
       - restore_cache:
           key: junit-3-{{ .Environment.CIRCLE_SHA1 }}
       - store_test_results:
-          path: /root/project/testout
+          path: /root/project/testout/
       - store_artifacts:
           path: /root/project/testout/
 
