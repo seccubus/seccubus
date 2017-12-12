@@ -90,26 +90,14 @@ jobs:
           path: /root/project/build/
       - restore_cache:
           key: junit-0-{{ .Environment.CIRCLE_SHA1 }}
-      - store_test_results:
-          path: /root/project/testout/
-      - store_artifacts:
-          path: /root/project/testout/
       - restore_cache:
           key: junit-1-{{ .Environment.CIRCLE_SHA1 }}
-      - store_test_results:
-          path: /root/project/testout/
-      - store_artifacts:
-          path: /root/project/testout/
       - restore_cache:
           key: junit-2-{{ .Environment.CIRCLE_SHA1 }}
-      - store_test_results:
-          path: /root/project/testout/
-      - store_artifacts:
-          path: /root/project/testout/
       - restore_cache:
           key: junit-3-{{ .Environment.CIRCLE_SHA1 }}
       - store_test_results:
-          path: /root/project/testout/
+          path: /root/project/testout/*
       - store_artifacts:
           path: /root/project/testout/
 
