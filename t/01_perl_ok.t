@@ -34,7 +34,7 @@ foreach my $file ( @files ) {
 	     $file !~ /\.\/blib\// &&      # Skip blib directory
 	     $file !~ /\.(html|css|js|ejs|3pm|gif|jpg|png|pdf|doc|xml|nbe|txt)/i &&
                                        # Skip know extensions
-         $file !- /\.build\//          # Skip build directory
+         $file !~ /\.\/build\//        # Skip build directory
 	) {                                #skip hidden files
 		my $type = `file '$file'`;
 		chomp($type);
