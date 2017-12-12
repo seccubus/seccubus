@@ -578,25 +578,67 @@ workflows:
 
   debian_package_building:
     jobs:
-      - build_deb
+      - build_deb:
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - debian9_test:
           requires:
             - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - debian8_test:
           requires:
             - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - ubuntu14_test:
           requires:
             - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - ubuntu16_test:
           requires:
             - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - ubuntu17_test:
           requires:
             - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - kali_test:
           requires:
             - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - debian_ok:
           requires:
             - debian8_test
@@ -605,6 +647,12 @@ workflows:
             - ubuntu16_test
             - ubuntu17_test
             - kali_test
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - debian_upload:
           requires:
             - debian_ok
@@ -622,23 +670,65 @@ workflows:
 
   el_package_building:
     jobs:
-      - build_el7
+      - build_el7:
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
       - test_el7:
           requires:
             - build_el7
-      - build_fc25
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
+      - build_fc25:
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
       - test_fc25:
           requires:
             - build_fc25
-      - build_fc26
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
+      - build_fc26:
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
       - test_fc26:
           requires:
             - build_fc26
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
       - el_ok:
           requires:
             - test_el7
             - test_fc25
             - test_fc26
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
       - el_upload:
           requires:
             - el_ok
