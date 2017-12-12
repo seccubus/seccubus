@@ -29,12 +29,13 @@ my $no_critic = {
 };
 
 foreach my $file ( @files ) {
-	if ( $file !~ /\/\./ &&			# Skip hidden files
-	     $file !~ /tmp/ &&			# Skip temp files
-	     $file !~ /\.\/blib\// &&		# Skip blib directory
-	     $file !~ /\.(html|css|js|ejs|3pm|gif|jpg|png|pdf|doc|xml|nbe|txt)/i
-	     					# Skip know extensions
-	) { #skip hidden files
+	if ( $file !~ /\/\./ &&            # Skip hidden files
+	     $file !~ /tmp/ &&             # Skip temp files
+	     $file !~ /\.\/blib\// &&      # Skip blib directory
+	     $file !~ /\.(html|css|js|ejs|3pm|gif|jpg|png|pdf|doc|xml|nbe|txt)/i &&
+                                       # Skip know extensions
+         $file !- /\./build\//         # Skip build directory
+	) {                                #skip hidden files
 		my $type = `file '$file'`;
 		chomp($type);
 		if ( $type =~ /Perl/i ) {
