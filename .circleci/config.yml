@@ -38,6 +38,7 @@ jobs:
       - restore_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
       - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
+      - run: cpanm --notest TAP::Harness::JUnit
       - run: cpanm --installdeps --notest .
       - run:
           name: Wait for database
@@ -55,8 +56,20 @@ jobs:
       - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
       - run:
           name: Unit test
-          command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=classname | xargs -n 1 prove
-
+          command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=filename | xargs prove --harness TAP::Harness::JUnit
+      - run:
+          name: Rename unit tests cache
+          command: |
+            mkdir testout
+            mv junit_output.xml testout/junit_$CIRCLE_NODE_INDEX.xml
+      - save_cache:
+          key: junit-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - "/root/project/testout"
+      - store_artifacts:
+          path: /root/project/testout/
+      - store_test_results:
+          path: /root/project/testout/
   build:
     docker:
       - image: perl:latest
@@ -75,6 +88,18 @@ jobs:
           command: ./build_all
       - store_artifacts:
           path: /root/project/build/
+      - restore_cache:
+          key: junit-0-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: junit-1-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: junit-2-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: junit-3-{{ .Environment.CIRCLE_SHA1 }}
+      - store_test_results:
+          path: /root/project/testout/
+      - store_artifacts:
+          path: /root/project/testout/
 
   build_deb:
     docker:
@@ -466,8 +491,10 @@ jobs:
           command: |
             cd build
             for file in *el7*rpm; do
-              if [[ $(curl -I https://packagecloud.io/seccubus/latest/packages/el/7/$file|grep 404|wc -l) -eq 0 ]]; then
+              if [[ $(curl -Is https://packagecloud.io/seccubus/latest/packages/el/7/$file|grep 404|wc -l) -eq 1 ]]; then
                 package_cloud push seccubus/latest/el/7 $file
+              else
+                echo "$file already on packagecloud.io"
               fi
             done
             cd ..
@@ -504,8 +531,10 @@ jobs:
           command: |
             cd build
             for file in *el7*rpm; do
-              if [[ $(curl -I https://packagecloud.io/seccubus/releases/packages/el/7/$file|grep 404|wc -l) -eq 0 ]]; then
+              if [[ $(curl -I https://packagecloud.io/seccubus/releases/packages/el/7/$file|grep 404|wc -l) -eq 1 ]]; then
                 package_cloud push seccubus/releases/el/7 $file
+              else
+                echo "$file already on packagecloud.io"
               fi
             done
             cd ..
@@ -538,25 +567,67 @@ workflows:
 
   debian_package_building:
     jobs:
-      - build_deb
+      - build_deb:
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - debian9_test:
           requires:
             - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - debian8_test:
           requires:
             - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - ubuntu14_test:
           requires:
             - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - ubuntu16_test:
           requires:
             - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - ubuntu17_test:
           requires:
             - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - kali_test:
           requires:
             - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - debian_ok:
           requires:
             - debian8_test
@@ -565,6 +636,12 @@ workflows:
             - ubuntu16_test
             - ubuntu17_test
             - kali_test
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - debian_upload:
           requires:
             - debian_ok
@@ -582,23 +659,65 @@ workflows:
 
   el_package_building:
     jobs:
-      - build_el7
+      - build_el7:
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
       - test_el7:
           requires:
             - build_el7
-      - build_fc25
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
+      - build_fc25:
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
       - test_fc25:
           requires:
             - build_fc25
-      - build_fc26
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
+      - build_fc26:
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
       - test_fc26:
           requires:
             - build_fc26
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
       - el_ok:
           requires:
             - test_el7
             - test_fc25
             - test_fc26
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
       - el_upload:
           requires:
             - el_ok
