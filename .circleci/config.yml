@@ -524,10 +524,10 @@ workflows:
 
   unit_and_integration_tests:
     jobs:
-      #- cache_perl
-      - unit_tests
-      #    requires:
-      #      - cache_perl
+      - cache_perl
+      - unit_tests:
+          requires:
+            - cache_perl
       - build:
           requires:
             - unit_tests
