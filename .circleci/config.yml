@@ -390,7 +390,7 @@ jobs:
           command: echo $CIRCLE_SHA1 > .git-describe
       - run:
           name: Install prerequisite packages
-          command: yum install -y java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign rpm-build make "perl(Test::Simple)" "perl(CPAN)"
+          command: yum install -y java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign rpm-build make "perl(Test::Simple)" "perl(CPAN)" expect
       - run:
           name: Build
           command: rpm/makerpm.sh
