@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk, Alex Smirnoff, Glenn ten Cate, Artien Bel
+# Copyright 2017 Frank Breedijk, Alex Smirnoff, Glenn ten Cate, Artien Bel, Theodoor Scholte
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -345,7 +345,7 @@ print "Logged off server\n" if $verbose;
 print "Converting $tempfile.nessus to $tempfile.ivil.xml\n" unless $quiet;
 $cmd = "$nessus2ivil --infile '$tempfile.nessus'";
 $cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
+print "Executing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
@@ -353,7 +353,7 @@ print "Importing ivil\n" unless $quiet;
 $cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner Nessus --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
 $cmd .= " '$tempfile.ivil.xml'";
-print "Execuing $cmd\n" if $verbose > 1;
+print "Executing $cmd\n" if $verbose > 1;
 $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
@@ -363,7 +363,7 @@ foreach my $format ( @formats, "ivil.xml") {
         print "Attaching file $tempfile.$format to scan\n" if $verbose;
         $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.$format' --description '$format output'";
         $cmd .= " -v" if $verbose > 1;
-        print "Execuing $cmd\n" if $verbose > 1;
+        print "Executing $cmd\n" if $verbose > 1;
         $result = `$cmd 2>&1`;
         print "$result\n" if $verbose > 1;
     }

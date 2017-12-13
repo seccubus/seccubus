@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk, Dan McGinn-Combs, Alex Smirnoff
+# Copyright 2017 Frank Breedijk, Dan McGinn-Combs, Alex Smirnoff, Theodoor Scholte
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ print "Timestamp = $timestamp\n" if $verbose;
 my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
 
 my $cmd = "$nmap_path -iL $hosts_file -oG $tempfile.nmap -sT -p $nmap_port";
-print "Execuing $cmd\n" unless $quiet;
+print "Executing $cmd\n" unless $quiet;
 run_cmd($cmd,$verbose);
 
 $cmd = "/bin/grep \/open\/ $tempfile.nmap|/bin/cut -d ' ' -f 2 >$tempfile.hosts";
@@ -117,7 +117,7 @@ my $medusa_options = "-H $tempfile.hosts -O $tempfile $medusa_options";
 
 $cmd = "$medusa_path $medusa_options";
 
-print "Execuing $cmd\n" unless $quiet;
+print "Executing $cmd\n" unless $quiet;
 run_cmd($cmd,$verbose,$remote,[ "$tempfile.*" ],[ "$tempfile.hosts" ]);
 
 print "Scanning done, converting medusa to ivil\n" unless $quiet;

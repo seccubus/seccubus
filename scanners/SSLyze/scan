@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk
+# Copyright 2017 Frank Breedijk, Theodoor Scholte
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ open(my $TMP, ">", "$tempfile.txt") or die "Unable to open tempfile $tempfile fo
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 
-print "Execuing $sslyze_path $sslyze_options\n" unless $quiet;
+print "Executing $sslyze_path $sslyze_options\n" unless $quiet;
 open(my $SSLYZE, "-|", "$sslyze_path $sslyze_options") or die "Unable to open pipe";
 
 while ( <$SSLYZE> ) {
@@ -111,7 +111,7 @@ print "Importing ivil\n" unless $quiet;
 $cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
 $cmd .= " '$tempfile.ivil.xml'";
-print "Execuing $cmd\n" if $verbose > 1;
+print "Executing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
@@ -119,19 +119,19 @@ print "Scan imported, adding files to scan $scan in workspace $workspace\n" unle
 
 $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.txt' --description 'Command line output'";
 $cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
+print "Executing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
 $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.xml' --description 'Native SSLyze xml output'";
 $cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
+print "Executing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
 $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.ivil.xml' --description 'IVIL output'";
 $cmd .= " -v" if $verbose > 1;
-print "Execuing $cmd\n" if $verbose > 1;
+print "Executing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
