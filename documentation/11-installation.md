@@ -7,8 +7,9 @@ title: How to install Seccubus
 # How to install Seccubus?
 
 * For installation on Debian see [Installation on Debian](../12-installation-on-debian)
-* For installation on Fedora see [Installation on Fedora](../16-installation-on-fedora)
-* For installation from source see [Installation from source](../17-installation-from-source)
+* For installation on RedHat/CentOS see [Installation on RedHat/CentOS](../19-installation-on-centos)
+* For installation on Fedora see [Installation on Fedora](../13-installation-on-fedora)
+* For installation from source see [Installation from source](../14-installation-from-source)
 
 ## What about RedHat/CentOS
 
