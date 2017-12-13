@@ -60,6 +60,7 @@ jobs:
       - run:
           name: Rename unit tests cache
           command: |
+            sed -i .bak 's/"t_/t\//g; s/_t"/\.t"/g' junit_output.xml
             mkdir testout
             mv junit_output.xml testout/junit_$CIRCLE_NODE_INDEX.xml
       - save_cache:
