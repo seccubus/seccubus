@@ -1,4 +1,4 @@
-# ------------------------------------------------------------------------------
+#!/usr/bin/expect
 # Copyright 2017 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,27 +12,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-version: '3'
 
-services:
-  fedora25:
-    image: fedora:25
-    command: bash -c "tail -f /var/log/lastlog"
-    environment:
-      PERL5LIB: "."
-    volumes:
-      - ..:/root/project
-  fedora26:
-    image: fedora:26
-    command: bash -c "tail -f /var/log/lastlog"
-    environment:
-      PERL5LIB: "."
-    volumes:
-      - ..:/root/project
-  centos7:
-    image: centos:7
-    command: bash -c "tail -f /var/log/lastlog"
-    environment:
-      PERL5LIB: "."
-    volumes:
-      - ..:/root/project
+set timeout -1
+log_user 1
+#set cmd [lindex $argv 0]
+set cmd [lrange $argv 0 99]
+
+send_user "CMD is: $cmd\n"
+
+spawn bash "-c" $cmd
+
+expect {
+    "Enter pass phrase:"
+}
+send "\r"
+expect {
+    "qwerty"
+}

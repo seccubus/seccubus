@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2016-2017 Glenn ten Cate, Frank Breedijk
+# Copyright 2016-2017 Glenn ten Cate, Frank Breedijk, Theodoor Scholte
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ print "testssl options: $testssl_options\n" if $verbose;
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 
-print "Execuing $testssl_path $testssl_options\n" unless $quiet;
+print "Executing $testssl_path $testssl_options\n" unless $quiet;
 run_cmd("$testssl_path $options",$verbose,$remote,[ $tempfile,"$tempfile.*" ], [ $hosts_file ]);
 
 print "Scanning done, converting .json to ivil\n" unless $quiet;

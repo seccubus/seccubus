@@ -27,6 +27,23 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+14-12-2017 - v2.46 - RedHat 7 / Centos 7 packages
+=================================================
+This release adds RPM support for RedHat 7 and CentOS 7. Because Mojolicious and some of its dependancies were not available
+as RPM on any of the standard repos for el7 we are also buildign these RPMs as part of our el7 build street now and are
+pushing these packages to our [packagecloud.io](https://packagecloud.io/seccubus) repository. This makes tweaks like [this one](https://t.co/svO7z1RiRb) by @Ar0xA unneccasary.
+
+Enhancements
+------------
+* Added support for RedHat 7 / CentOS 7 RPM packages. With the extra needed packages being added to packagecloud.io
+
+Bug Fixes
+---------
+* #588 - Fix Nmap Plugin ID leak (Thanks @alirezakv)
+* #589 - Fix OpenVAS scan execution bug with only 1 target defined (Thanks @alirezakv)
+* #603 - Nessus scan fails when pdf files cannot be exported (Thanks @Ar0xA)
+* #615 - Docker: when the database was on the data volume the database failed to start
+
 15-11-2017 - v2.44 - PackageCloud release
 ==================================================================
 This release clean up technical debt. Package building has been moved from OpenSuse Build Services to CicleCI

@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk, Dan McGinn-Combs, Glenn ten Cate (blabla1337)
+# Copyright 2017 Frank Breedijk, Dan McGinn-Combs, Glenn ten Cate (blabla1337), Theodoor Scholte
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -106,7 +106,7 @@ print "Nikto options: $nikto_options\n" if $verbose;
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 
-print "Execuing $nikto_path $nikto_options\n" unless $quiet;
+print "Executing $nikto_path $nikto_options\n" unless $quiet;
 run_cmd("$nikto_path $nikto_options",$verbose,$remote,[ $tempfile,"$tempfile.*" ], [ $hosts_file ]);
 
 print "Scanning done, converting .nbe to ivil\n" unless $quiet;
@@ -121,10 +121,6 @@ $cmd .= " '$tempfile.ivil.xml'";
 run_cmd($cmd,$verbose);
 
 print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
-
-$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile' --description 'Command line output'";
-$cmd .= " -v" if $verbose > 1;
-run_cmd($cmd,$verbose);
 
 $cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.nbe' --description 'NBE output'";
 $cmd .= " -v" if $verbose > 1;

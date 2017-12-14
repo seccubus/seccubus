@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Fabien Guillaume, Frank Breedijk, Andrey Danin, Floris Kraak
+# Copyright 2017 Fabien Guillaume, Frank Breedijk, Andrey Danin, Floris Kraak, Alireza Karbasian
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -167,18 +167,25 @@ print "Target    : $targetname \n" if $verbose >1;
 print "Target ip : $targetip \n" if $verbose >1 && $targetip ne "0";
 
 $xml = omp_request("<get_targets/>");
+my $target = undef;
 if ( exists $xml->{target}->{$targetname} ) {
+	$target = $xml->{target}->{$targetname};
+} elsif ( $xml->{target}->{name} eq $targetname ) {
+	# if only one target is defined in OpenVAS, then the format changes
+	$target = $xml->{target};
+}
+if ( defined $target ) {
 	if ( $targetip ne "0" ) {
-		if ( $xml->{target}->{$targetname}->{hosts} ne $targetip ) {
+		if ( $target->{hosts} ne $targetip ) {
 			die "Target '$targetname' found, but it doesn't match target ip '$targetip', please omit target IP specification or edit the target manualy in OpenVAS to correct the problem";
 		}
 	}
 	if ( $portlist_id ) {
-		if ( $xml->{target}->{$targetname}->{port_list}->{id} ne $portlist_id ) {
+		if ( $target->{port_list}->{id} ne $portlist_id ) {
 			die "Target '$targetname' found, but it doesn't match the specified port list, please omit port list specification or edit the target manualy in OpenVAS to correct the problem";
 		}
 	}
-	$target_id = $xml->{target}->{$targetname}->{id};
+	$target_id = $target->{id};
 } else {
 	# Need to create a target
 	if ( $targetip eq "0" ) {
