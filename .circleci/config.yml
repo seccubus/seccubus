@@ -56,10 +56,11 @@ jobs:
       - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
       - run:
           name: Unit test
-          command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=filename | xargs prove --harness TAP::Harness::JUnit
+          command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=classname | xargs prove --harness TAP::Harness::JUnit
       - run:
           name: Rename unit tests cache
           command: |
+            sed -i.bak -e 's/"t_/"t\//g; s/_t"/\.t"/g' junit_output.xml
             mkdir testout
             mv junit_output.xml testout/junit_$CIRCLE_NODE_INDEX.xml
       - save_cache:
