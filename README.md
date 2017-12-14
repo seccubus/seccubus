@@ -153,22 +153,14 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-14-12-2017 - v2.46 - RedHat 7 / Centos 7 packages
+x-x-2018 - v2.47 - Development release
 =================================================
-This release adds RPM support for RedHat 7 and CentOS 7. Because Mojolicious and some of its dependancies were not available
-as RPM on any of the standard repos for el7 we are also buildign these RPMs as part of our el7 build street now and are
-pushing these packages to our [packagecloud.io](https://packagecloud.io/seccubus) repository. This makes tweaks like [this one](https://t.co/svO7z1RiRb) by @Ar0xA unneccasary.
+Defferences with 2.46
 
 Enhancements
 ------------
-* Added support for RedHat 7 / CentOS 7 RPM packages. With the extra needed packages being added to packagecloud.io
+*
 
 Bug Fixes
 ---------
-* #588 - Fix Nmap Plugin ID leak (Thanks @alirezakv)
-* #589 - Fix OpenVAS scan execution bug with only 1 target defined (Thanks @alirezakv)
-* #603 - Nessus scan fails when pdf files cannot be exported (Thanks @Ar0xA)
-* #615 - Docker: when the database was on the data volume the database failed to start
-* #617 - Nikto scanner gives unintended error output
-* Theodoor Scholte fixed some typos in the scanner scripts (Thanks!)
-* Streamlined CircleCI unit testing
+*
