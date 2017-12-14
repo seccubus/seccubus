@@ -68,7 +68,7 @@ if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
     yum install -y epel-release
     yum install -y perl-libwww-perl gcc "perl(Module::Build)" "perl(JSON::PP)" "perl(IO::Socket::IP)" "perl(Pod::Parser)" \
         "perl(Canary::Stability)" "perl(common::sense)"
-    curl -L http://cpanmin.us | perl - App::cpanminus
+    curl -Ls http://cpanmin.us | perl - App::cpanminus
     #cpanm Mojolicious EV #Crypt::PBKDF2
     [[ ! -e /tmp/cpan2rpm ]] && (cd /tmp;git clone https://github.com/ekkis/cpan2rpm.git --depth=1)
     cpanm IO::Socket::IP
@@ -84,10 +84,12 @@ if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
 fi
 
 find /root/rpmbuild -name "*.rpm" -exec cp {} /root/project/build \;
-for OLD in $(ls build/*.noarch.rpm build/*.x86_64.rpm); do
-    NEW=${OLD//.rpm/.el7.rpm}
-    mv $OLD $NEW
-done
 
+if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
+    for OLD in $(ls build/perl-*.noarch.rpm build/perl-*.x86_64.rpm); do
+        NEW=${OLD//-1./-1.el7.}
+        mv $OLD $NEW
+    done
+fi
 
 exit
