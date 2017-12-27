@@ -15,11 +15,11 @@ This document details what you have to do to set up a development environment on
 
 Check out the code
 ------------------
-I checked out my code in ~/Repositories with the following commend:
+I checked out my code in ~/Repos with the following commend:
 
 ```bash
-cd ~/Repositories
-git clone https://github.com/schubergphilis/Seccubus_v2.git
+cd ~/Repos
+git clone https://github.com/schubergphilis/Seccubus.git
 ```
 
 I suggest that you actually first fork the repository to your own github account and clone from there. In my case the clone command was:
@@ -51,15 +51,25 @@ brew install cpanm
 Next install the missing CPAN modules:
 
 ```bash
-sudo cpanm --installdeps .
+cpanm --installdeps . --sudo
 ```
+
+Create symlink
+--------------
+By default Seccubus wqill look for its configuration in `/opt/seccubus`. It is best to create a symlink to your repository from this location
+
+```bash
+cd /opt
+sudo ln -s ~/Repos/Seccubus seccubus
+```
+
 
 Setting up Seccubus
 -------------------
 Go to you repository. And create a config file
 	
 ```bash
-cd ~/Repositories/Seccubus_v2
+cd ~/Repos/Seccubus
 cp config.xml.mysql.example config.xml
 vi config.xml
 ```
@@ -83,8 +93,8 @@ grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus
 flush privileges;
 EOF
 
-mysql -uroot seccubus < ~/Repositories/Seccubus_v2/db/structure_v5.mysql
-mysql -uroot seccubus < ~/Repositories/Seccubus_v2/db/data_v5.mysql
+mysql -uroot seccubus < ~/Repos/Seccubus/db/structure_v5.mysql
+mysql -uroot seccubus < ~/Repos/Seccubus/db/data_v5.mysql
 ```
 
 Done. Default admin password is 'GiveMeVulns!'.
