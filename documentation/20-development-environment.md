@@ -70,7 +70,7 @@ Go to you repository. And create a config file
 	
 ```bash
 cd ~/Repos/Seccubus
-cp config.xml.mysql.example config.xml
+cp config.xml.mysql.dev.example config.xml
 vi config.xml
 ```
 
