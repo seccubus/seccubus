@@ -93,8 +93,8 @@ grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus
 flush privileges;
 EOF
 
-mysql -uroot seccubus < ~/Repos/Seccubus/db/structure_v5.mysql
-mysql -uroot seccubus < ~/Repos/Seccubus/db/data_v5.mysql
+mysql -uroot seccubus < ~/Repos/Seccubus/db/structure_v10.mysql # Make sure this is the latest version available
+mysql -uroot seccubus < ~/Repos/Seccubus/db/data_v10.mysql
 ```
 
 Done. Default admin password is 'GiveMeVulns!'.
