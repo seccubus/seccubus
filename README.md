@@ -159,7 +159,8 @@ Defferences with 2.46
 
 Enhancements
 ------------
-*
+* Added parsing of the ROBOT (bleichenbacher) attack to the SSLlabs scanner
+* Added a dev environment example config
 
 Bug Fixes
 ---------

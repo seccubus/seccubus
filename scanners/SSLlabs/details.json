@@ -3,6 +3,15 @@
 		"type"			: "string",
 		"description"	: "Supported SLPN protcols : "
 	},
+    "bleichenbacher"    : {
+        "type"          : "list",
+        "values"        : [
+            "Test failed", "Unknown", "Not vulnerable", "Vulnerable (weak oracle)", "Vulnerable (strong oracle)","Inconsistent results"
+        ],
+        "description"   : "Return Of Bleichenbacher's Oracle Threat (ROBOT) vulnerability test results: ",
+        "startsAt"      : -1,
+        "note"          : "See: https://robotattack.org/"
+    },
 	"chaCha20Preference": {
 		"type"			: "boolean",
 		"description"	: "Server take client preferences into account when deciding if to use ChaCha20 suites : "
