@@ -150,12 +150,12 @@ $.Controller('Seccubus.Scan.Create',
             $('#newScanPasswordRow').show();
         } else {
             $('#newScanPasswordRow').hide();
+            $('#newScanPassword').val("N/A");
         }
         if (  $('#newScanScanner').val() == 'tenable.io' ) {
             $('#newScanPasswordLabel').html('Secret Key');
         } else {
             $('#newScanPasswordLabel').html('Password');
-            $('#newScanPassword').val("N/A");
         }
 	},
 	".nok change" : function(el) {
