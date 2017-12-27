@@ -116,7 +116,7 @@ $.Controller('Seccubus.Scan.Create',
 	nok : function(elements) {
 		this.element.children(".nok").removeClass("nok");
 		for(i=0;i<elements.length;i++) {
-			$(elements[i]).addClass("nok");
+		    $(elements[i]).addClass("nok");
 		}
 		this.element.css({position : "absolute"});
 		this.element.animate({left : '+=20'},100);
@@ -146,6 +146,17 @@ $.Controller('Seccubus.Scan.Create',
 			$('#newScanOtherScannerRow').hide();
 		}
 		//if scanner is Nessus, nessuslegacy or openvas, show password field
+        if ( $('#newScanScanner').val() == 'Nessus6' || $('#newScanScanner').val() == 'OpenVAS' || $('#newScanScanner').val() == 'tenable.io' ) {
+            $('#newScanPasswordRow').show();
+        } else {
+            $('#newScanPasswordRow').hide();
+        }
+        if (  $('#newScanScanner').val() == 'tenable.io' ) {
+            $('#newScanPasswordLabel').html('Secret Key');
+        } else {
+            $('#newScanPasswordLabel').html('Password');
+            $('#newScanPassword').val("N/A");
+        }
 	},
 	".nok change" : function(el) {
 		el.removeClass("nok");

@@ -171,12 +171,18 @@ $.Controller('Seccubus.Scan.Edit',
 		} else {
 			$('#editScanOtherScannerRow').hide();
 		}
-		if ( $('#editScanScanner').val() == 'Nessus' || $('#editScanScanner').val() == 'OpenVAS' || $('#editScanScanner').val() == 'NessusLegacy'  ) {
-                        $('#editScanPasswordRow').show();
-                } else {
-                        $('#editScanPasswordRow').hide();
-                }
-
+        //if scanner is Nessus, nessuslegacy or openvas, show password field
+        if ( $('#editScanScanner').val() == 'Nessus6' || $('#editScanScanner').val() == 'OpenVAS' || $('#editScanScanner').val() == 'tenable.io' ) {
+            $('#editScanPasswordRow').show();
+        } else {
+            $('#editScanPasswordRow').hide();
+            $('#editScanPassword').val("N/A");
+        }
+        if (  $('#editScanScanner').val() == 'tenable.io' ) {
+            $('#editScanPasswordLabel').html('Secret Key');
+        } else {
+            $('#editScanPasswordLabel').html('Password');
+        }
 	},
 	".nok change" : function(el) {
 		el.removeClass("nok");

@@ -1,0 +1,38 @@
+<!--
+Copyright 2014-2017 Alex Smirnoff (arkenoi), Frank Breedijk, Artien Bel (Ar0xA)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+This scanner takes the following parameters:
+<ul>
+    <li>--policy          <br>- Name of policy or template to use for this scan
+    <li>--hosts           <br>- Specification of hosts to scan. Follows the tenable.io rules for specifying hosts, or path to a file containing such specification
+    <li>--accesskey       <br>- API access key to log into tennable.io. You can generate this key via Settings->My Account->API-Leys (https://cloud.tenable.com/app.html#/settings/my-account/api-keys)
+    <li>--secretkey       <br>- API secret key to log into tennable.io. (See accesskey)
+    <li>--scanner         <br>- Name of the scanner to use for this scan.
+    <li>--api             <br>- Can be used to overwrite the url of the tennable.io API
+    <li>--export          <br>- Export the scan in these formats (specify more then once for more formats), currently supported formats are: nessus, html, pdf, csv, db.
+    <li>--nosslcheck      <br>- Don't validate tenable.io' TLS certificate Common Name (default: true when port is 8834 false when port is 443)
+    <li>--retries         <br>- How many times should rest calls be retried before aborting the scan (default=3)
+    <li>--sleep           <br>- Seconds to sleep between polls of the tennable.io engine (default=30)
+</ul>
+You must use --hosts @HOSTS
+<p>
+<ul>
+	<li>$HOSTS is subsituted with the contents of the host field
+	<li>@HOSTS is subsituted with the path of a file containig the hosts field
+	<li>$WORSKPACE is subsituted with the workspace name
+	<li>$SCAN is substituted with the scan name
+	<li>$PASSWORD is substituted with the value in the password field
+</ul>

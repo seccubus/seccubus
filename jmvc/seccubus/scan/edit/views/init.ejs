@@ -14,42 +14,42 @@
 <h2>Change your scan here</h2>
 <table class='noborder'>
 	<tr><td class='noborder'>
-		<label for='name'>Name</label> 
+		<label for='name'>Name</label>
 	</td><td class='noborder'>
 		<input type='input' size=78 name='name' value='<%= name %>' id='editScanName'/>
 	</td></tr>
 	<tr><td class='noborder'>
-		<label for='scanner'>Scanner</label> 
+		<label for='scanner'>Scanner</label>
 	</td><td class='noborder'>
 		<select name='scanner' id='editScanScanner'/></select>
 	</td></tr>
 	<tr id='editScanOtherScannerRow'><td class='noborder'>
-		<label for='otherScanner'>Specify scanner:</label> 
+		<label for='otherScanner'>Specify scanner:</label>
 	</td><td class='noborder'>
 		<input type=input size=78 name='otherScanner' id='editScanOtherScanner' value='<%= scanner %>'/>
 	</td></tr>
 	<tr><td class='noborder'>
-		<label for='parameters'>Parameters</label> 
+		<label for='parameters'>Parameters</label>
 	</td><td class='noborder'>
 		<input type='input' size=78 name='parameters' id='editScanParam' value='<%= parameters %>'/>
 	</td></tr>
 	<tr><td class='noborder'>
-		<label for='defaults'>Defaults</label> 
+		<label for='defaults'>Defaults</label>
 	</td><td class='noborder'>
 		<input type='input' size=78 name='defaults' id='defaultParams' value='' readonly=true/>
 	</td></tr>
 	        <tr id='editScanPasswordRow'><td class='noborder'>
-                <label for='password'>Password</label>
+                <label id='editScanPasswordLabel' for='password'>Password</label>
         </td><td class='noborder'>
                 <input type='password' size=78 name='password' id='editScanPassword' value='<%= password %>'/>
         </td></tr>
 	<tr id="editScanTargetsPlace"><td class='noborder'>
-		<label for='targets'>Hosts</label> 
+		<label for='targets'>Hosts</label>
 	</td><td class='noborder'>
 		<textarea rows=5 cols=59 name='targets' id='editScanTargets'><%= targets %></textarea>
 	</td></tr>
 <!--	<tr id="editScanAssetsPlace"><td class='noborder'>
-		<label for='assets'>Assets</label> 
+		<label for='assets'>Assets</label>
 	</td><td class='noborder'>
 		<select id='editScanAssets' MULTIPLE size="6" style="width:400px;" name='assets' ></select>
 	</td></tr> -->
