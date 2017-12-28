@@ -122,15 +122,15 @@ $.Controller("Seccubus.Scan.Edit",
             elements.push("#editScanParam");
             ok = false;
         }
-        if( ( paramStr.indexOf("@HOSTS") != -1 || paramStr.indexOf("$HOSTS") != -1  ) && params.targets === ""){
+        if( ( paramStr.indexOf("@HOSTS") !== -1 || paramStr.indexOf("$HOSTS") !== -1  ) && params.targets === ""){
             elements.push("#editScanTargets");
             ok = false;
         }
 
         if ( ok ) {
-            this.element.find("[type=submit]").val("Updating...")
+            this.element.find("[type=submit]").val("Updating...");
 
-            sc = this.options.scan;
+            var sc = this.options.scan;
             sc.name = params.name;
             sc.scanner = params.scanner;
             sc.parameters = params.parameters;

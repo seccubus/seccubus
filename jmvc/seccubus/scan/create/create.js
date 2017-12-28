@@ -108,7 +108,7 @@ $.Controller("Seccubus.Scan.Create",
             ok = false;
         }
         if ( ok ) {
-            this.element.find("[type=submit]").val("Creating...")
+            this.element.find("[type=submit]").val("Creating...");
             params.workspace = this.options.workspace;
             new Seccubus.Models.Scan(params).save(this.callback("saved"));
         } else {
