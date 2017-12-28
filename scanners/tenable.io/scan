@@ -13,10 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# This script will call Zate Berg's Nessis-IVIL-Wrapper (see
-# https://github.com/Zate/Nessus-IVIL-Wrapper ) to connect to a Nessus instance,
-# initiate a scan, save the results as an IVIL file and import it
-# ------------------------------------------------------------------------------
 
 use strict;
 use warnings;
@@ -30,49 +26,44 @@ use JSON;
 use Data::Dumper;
 use LWP::UserAgent;
 
+
 my (
-    $user,
-    $password,
-    $password2,
-    @export,
-    $download,
-    $server,
-    $policy,
-    $port,
+    $api,
+    $nodelete,
+    $help,
+    $quiet,
+    $sleep,
+    $verbose,
+    $sslcheck,
+    $retries,
     $hosts_file,
     $workspace,
     $scan,
-    $nodelete,
-    $help,
-    $verbose,
-    $quiet,
-    $sleep,
-    $cmd,
-    $sslcheck,
-    $token,
+    $access_key,
+    $secret_key,
+    $policy_name,
     $r,
-    $retries,
+    $policy,
+    $cmd,
+    $scanner_name,
+    @export,
 );
-
 
 # Default values for command line values
 $help = 0;
 $quiet = 0;
-$sleep = 10;
+$sleep = 30;
 $verbose = 0;
-$sslcheck=2;
+$sslcheck=1;
 $retries = 3;
+$api = "https://cloud.tenable.com";
 
 GetOptions(
-    'user|u=s'          => \$user,
-    'password|p=s'      => \$password,
-    'pw=s'              => \$password2,
-    'server|s=s'        => \$server,
-    'policy|pol=s'      => \$policy,
-    'port=s'            => \$port,
+    'api|a=s'           => \$api,
+    'accesskey=s'       => \$access_key,
+    'secretkey=s'       => \$secret_key,
     'hosts|h=s'         => \$hosts_file,
     'workspace|ws=s'    => \$workspace,
-    'export=s'          => \@export,
     'scan|sc=s'         => \$scan,
     'sleep=s'           => \$sleep,
     'nodelete'          => \$nodelete,
@@ -81,7 +72,13 @@ GetOptions(
     'verbose|v+'        => \$verbose,
     'quiet|q!'          => \$quiet,
     'help'              => \$help,
+    'policy|pol=s'      => \$policy_name,
+    'export=s'          => \@export,
+    'scanner=s'         => \$scanner_name,
 );
+
+help() if $help;
+$verbose = 0 if $quiet;
 
 my @formats = qw(nessus html pdf);
 if ( @export ) {
@@ -106,41 +103,16 @@ unless ( $nessus_format_found ) {
     help();
 }
 
-
-
-
-help() if $help;
-$verbose = 0 if $quiet;
-
-$port = 8834 unless $port;               # Default port is 8834
-$password = $password2 unless $password; # Equalize the use of --pw
-
-my $checkssl = 1;
-if ( $sslcheck == 1 ) {
-    $checkssl = 1;
-} elsif ( $sslcheck == 0 ) {
-    $checkssl = 0;
-} elsif ( $port == 443 ) {
-    $checkssl = 1;
-} elsif ( $port == 8834 ) {
-    $checkssl = 0;
-}
-
-my $config = get_config();
-
 if ( ! $hosts_file ) {
     print "You must specify a valid hosts spec";
     help();
-} elsif ( ! $user ) {
-    print "You must specify a user";
+} elsif ( ! $access_key ) {
+    print "You must specify an access key";
     help();
-} elsif ( ! $password ) {
-    print "You must specify a password";
+} elsif ( ! $secret_key ) {
+    print "You must specify a secret key";
     help();
-} elsif ( ! $server ) {
-    print "You must specify a nessus server";
-    help();
-} elsif ( ! $policy ) {
+} elsif ( ! $policy_name ) {
     print "You must specify a policy";
     help();
 } elsif ( ! $workspace ) {
@@ -155,94 +127,126 @@ my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose > 1;
 my $tempscan = "seccubus.$workspace.$scan";
 my $tempfile = "/tmp/$tempscan.$$";
-my $nivil = "$config->{paths}->{scanners}\/Nessus\/nivil.rb";
+
+my $config = get_config();
 my $nessus2ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nessus2ivil";
 my $load_ivil = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/load_ivil";
 my $attach_file = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/attach_file";
 
-my $json;
+my $json = {};
 login();
 
-$json = rest_get("/editor/policy/templates",undef,\$r);
+$json = rest_get("/policies",undef,\$r);
 die "Cannot get policy list" if ($r->code() != 200);
 
 my $tuuid;
 my $pid = -1;
 
-for my $pol (@{$json->{templates}} ) {
-    if ($pol->{name} eq $policy) {
-        $tuuid = $pol->{uuid};
+foreach my $policy ( @{$json->{'policies'}} ) {
+    if ( $policy->{'name'} eq $policy_name ) {
+        $tuuid = $policy->{'template_uuid'};
+        $pid = $policy->{id};
+        print "Policy found, tuuid = $tuuid, id = $pid\n" if $verbose;
         last;
     }
 }
 
-if (!$tuuid) {
-    for my $pol (@{$json->{templates}} ) {
-        if ($pol->{name} eq 'basic') {
-            $tuuid = $pol->{uuid};
-            last;
-        }
-    }
-
-    $json = rest_get("/policies",undef,\$r);
-    die "Cannot get policy list" if ($r->code() != 200);
-
-    foreach my $pol (@{$json->{policies}} ) {
-        if ($pol->{name} eq $policy) {
-            $tuuid = $pol->{template_uuid} if $pol->{template_uuid};
-            $pid = $pol->{id};
+unless ( $tuuid ) {
+    $json = rest_get("/editor/policy/templates",undef,\$r);
+    die "Cannot get tempalte list" if ($r->code() != 200);
+    foreach my $template ( @{$json->{'templates'}} ) {
+        if ( $template->{name} eq $policy_name || $template->{'title'} eq $policy_name ) {
+            $tuuid = $template->{uuid};
+            print "Template found, tuuid = $tuuid\n" if $verbose;
             last;
         }
     }
 }
+
 
 if (!$tuuid && !$pid) {
-    die "Policy $policy not found";
-} else {
-    print "Found policy $policy as template $tuuid policy $pid\n" if $verbose;
+    confess("Unable to find a policy or template named '$policy_name'");
 }
 
-my $scandata = {
-    'uuid'          => $tuuid,
-    'settings'      => {
-        'name'          => $tempscan,
-        'description'   => 'Seccubus automated scan',
-        'launch'        => 'ON_DEMAND',
+my $scanner_id;
+if ( $scanner_name ) {
+    $json = rest_get("/scanners",undef,\$r);
+    die "Cannot get scanner list" if ($r->code() != 200);
+
+    foreach my $scanner ( @{$json->{scanners}}) {
+        if ( $scanner->{name} eq $scanner_name ) {
+            print "Scanner '$scanner_name' found, id: $scanner->{id}\n" if $verbose > 1;
+            $scanner_id = $scanner->{id};
+            last;
+        }
     }
-};
-
-if ( $pid != -1 ) {
-    $scandata->{settings}->{policy_id} = $pid;
+    confess("Could not find scanner '$scanner_name'") unless $scanner_id;
 }
 
+# Read target list
+my $target_list = $hosts_file;
 if ( -e $hosts_file ) {         # Assume its a host spect rather then a
                                 # hosts file if there is no file
     open(my $FILE,"<",$hosts_file) or die "Cannot read hosts file";
-    local $/;
-    $scandata->{settings}{text_targets} = <$FILE>;
+    my @list;
+    while (<$FILE>) {
+        chomp;
+        s/\#.*$//; # Strip comments
+        chomp;
+        if ( $_ ) {
+            push @list, $_;
+        }
+    }
     close($FILE);
-} else {
-    $scandata->{settings}{text_targets} = $hosts_file;
+    $target_list = join ", ", @list;
 }
-
-print "Imported scan targets: $scandata->{settings}{text_targets} \n" if $verbose;
 
 $json = rest_get('/scans',undef,\$r);
 my $sid;
 foreach my $scan ( @{$json->{scans}} ) {
     if ( $scan->{name} eq $tempscan ) {
         $sid = $scan->{id};
+        print "Found scan '$tempscan', id : $sid\n" if $verbose;
         last;
     }
 }
-if ( $sid ) {
-    print "Previous scan found, updating\n" if $verbose;
-    $json = rest_put("/scans/$sid",encode_json($scandata),\$r);
-    die "Cannot update scan" if ($r->code() != 200);
 
-    print "Updated scan $sid\n" if $verbose;
+if ( $sid ) {
+    $json = rest_get("/scans/$sid");
+    die "Cannot read scan $sid" if ($r->code() != 200);
+
+    print "Previous scan found, updating\n" if $verbose;
+
+    if  (
+            ( $json->{info}->{targets} ne $target_list ) ||
+            ( $scanner_id && ( $json->{info}->{scanner_name} ne $scanner_name ) )
+        )
+    {
+        print "Targets from server  : $json->{info}->{targets}\n" if $verbose;
+        print "Targets from seccubus: $target_list\n" if $verbose;
+        $json->{settings}->{text_targets} = $target_list;
+        print "Scanner from server  : $json->{info}->{scanner_name}\n" if $verbose;
+        print "Scanner from seccubus: $scanner_name\n" if $verbose;
+        $json->{settings}->{scanner_id} = $scanner_id;
+
+        $json = rest_put("/scans/$sid",encode_json($json),\$r);
+        die "Cannot update scan" if ($r->code() != 200);
+        print "Updated scan $sid\n" if $verbose;
+    }
 } else {
     print "Scan doesn't exist yet, creating\n" if $verbose;
+    my $scandata = {
+        'uuid'          => $tuuid,
+        'settings'      => {
+            'name'          => $tempscan,
+            'description'   => 'Seccubus automated scan',
+            'launch'        => 'ON_DEMAND',
+            'text_targets'  => $target_list
+        }
+    };
+    if ( $pid != -1 ) {
+        $scandata->{settings}->{policy_id} = $pid;
+    }
     $json = rest_post("/scans",encode_json($scandata),\$r);
     die "Cannot update scan" if ($r->code() != 200);
 
@@ -257,8 +261,8 @@ die "Cannot launch scan" if ($r->code() != 200);
 my $launched = $json->{scan_uuid};
 print "Launched scan $launched\n" if $verbose;
 
+
 $json = rest_get("/scans/$sid", {}, \$r);
-die "Cannot get scan history" if ($r->code() != 200);
 my $hid;
 
 for my $history (@{$json->{history}} ) {
@@ -274,7 +278,8 @@ if ($hid) {
 }
 
 do {
-    sleep(5);
+    print "Sleeping for $sleep seconds\n" if $verbose > 2;
+    sleep($sleep);
     $json = rest_get("/scans/$sid", { 'history_id' => $hid }, \$r);
 
     if ($r->code() eq 200) {
@@ -337,10 +342,6 @@ rest_delete("/scans/$sid" , {}, \$r);
 die "Cannot delete scan" if ($r->code() != 200);
 print "Scan deleted from server\n" if $verbose;
 
-rest_delete("/session", {}, \$r);
-die "Cannot log out" if ($r->code() != 200);
-print "Logged off server\n" if $verbose;
-
 print "Converting $tempfile.nessus to $tempfile.ivil.xml\n" unless $quiet;
 $cmd = "$nessus2ivil --infile '$tempfile.nessus'";
 $cmd .= " -v" if $verbose > 1;
@@ -349,7 +350,7 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
 print "Importing ivil\n" unless $quiet;
-$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner Nessus --timestamp $timestamp";
+$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner tenable.io --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
 $cmd .= " '$tempfile.ivil.xml'";
 print "Executing $cmd\n" if $verbose > 1;
@@ -384,36 +385,36 @@ exit(0);
 
 sub help {
     print "
-Usage: scan       --user=<username> --password=<password> --server=<server> \\
-                  --port=<portnumber> --policy=<policy name> \\
-                  --hosts=<hosts file|hosts spec> \\
-                  --workspace=<seccubus workspace> --scan=<seccubus scan>\\
-                  [--export=(nessus|html|pdf|csv|db)] [--nodelete] \\
+Usage: scan       --policy=<policy name> --hosts=<hosts file|hosts spec>    \\
+                  --workspace=<seccubus workspace> --scan=<seccubus scan>   \\
+                  --accesskey=<tennable.io access API key>                  \\
+                  --secretkey =<tenable.io secret API key>                  \\
+                  [--scanner=<scanner name>] [--api=<url>]                  \\
+                  [--export=(nessus|html|pdf|csv|db)] [--nodelete]          \\
+                  [--sleep=<seconds>] [--nosslcheck] [--retries=<attempts>] \\
                   [--verbose] [--quiet] [--help]
---user (-u)       - Nessus username
---password (-p)   - Nessus password
---server (-s)     - Nessus server (ip or name)
---port            - Nessus server portnumber (default=8834)
---policy          - Name of Nessus policy
---hosts           - Specification of hosts to scan. Follows the Nessus rules
-                    for specifying hosts, or path to a file containing such
-                    specification
+--policy          - Name of policy or template to use for this scan
+--hosts           - Specification of hosts to scan. Follows the tenable.io
+                    rules for specifying hosts, or path to a file containing
+                    such specification
+--accesskey       - API access key to log into tennable.io. You can generate
+                    this key via Settings->My Account->API-Leys
+                    (https://cloud.tenable.com/app.html#/settings/my-account/api-keys)
+--secretkey       - API secret key to log into tennable.io. (See accesskey)
+--scanner         - Name of the scanner to use for this scan.
 --workspace (-ws) - Seccubus workspace the scan in in
 --scan (-sc)      - Seccubus scan the data should be saved in
+--api             - Can be used to overwrite the url of the tennable.io API
 --export          - Export the scan in these formats (specify more then once
                     for more formats), currently supported formats are:
-                    nessus, html, pdf, csv, db. Your server may not support them
-                    all. NOTE: you need to export the nessus format for Seccubus
-                    to work properly.
+                    nessus, html, pdf, csv, db.
 --nodelete        - Don't erase temporary files
---nosslcheck      - Don't validate Nessus' TLS certificate Common Name
+--nosslcheck      - Don't validate tenable.io' TLS certificate Common Name
                     (default: true when port is 8834 false when port is 443)
---sslcheck        - Do validate Nessus' TLS certificate Common Name
-                    (default: false when port is 8834 true when port is 443)
 --retries         - How many times should rest calls be retried before aborting
                     the scan (default=3)
---sleep           - Seconds to sleep between polls of the Nessus engine
-                    (default=10)
+--sleep           - Seconds to sleep between polls of the tennable.io engine
+                    (default=30)
 --verbose (-v)    - Be verbose during execution
 --quiet (-q)      - Don't print output
 --help (-h)       - Print this message
@@ -435,19 +436,13 @@ sub make_timestamp {
 }
 
 sub login {
-    my $cred = {
-        'username' => $user,
-        'password' => $password
-    };
-    $token = undef;
     my $r;
-    my $json = rest_post("/session",$cred, \$r);
+    my $json = rest_get("/session", {}, \$r, undef, 0);
 
     confess "Cannot authenticate to scanner.\nReturn code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " " unless $r->is_success;
 
     print "Authenticated\n" if $verbose;
 
-    $token = $json->{token};
 }
 
 sub rest_get {
@@ -455,8 +450,10 @@ sub rest_get {
     my $params = shift;
     my $response = shift;
     my $nojson = shift;
+    my $localretry = shift;
 
-    rest_call("get",$uri,$params,$response,$nojson,$retries);
+    $localretry = $retries unless defined $localretry;
+    rest_call("get",$uri,$params,$response,$nojson,$localretry);
 }
 
 sub rest_post {
@@ -464,8 +461,10 @@ sub rest_post {
     my $params = shift;
     my $response = shift;
     my $nojson = shift;
+    my $localretry = shift;
 
-    rest_call("post",$uri, $params,$response,$nojson,$retries);
+    $localretry = $retries unless defined $localretry;
+    rest_call("post",$uri, $params,$response,$nojson,$localretry);
 }
 
 sub rest_put {
@@ -473,8 +472,10 @@ sub rest_put {
     my $params = shift;
     my $response = shift;
     my $nojson = shift;
+    my $localretry = shift;
 
-    rest_call("put",$uri, $params,$response,$nojson,$retries);
+    $localretry = $retries unless defined $localretry;
+    rest_call("put",$uri, $params,$response,$nojson,$localretry);
 }
 
 sub rest_delete {
@@ -482,8 +483,10 @@ sub rest_delete {
     my $params = shift;
     my $response = shift;
     my $nojson = shift;
+    my $localretry = shift;
 
-    rest_call("delete",$uri, $params,$response,$nojson,$retries);
+    $localretry = $retries unless defined $localretry;
+    rest_call("delete",$uri, $params,$response,$nojson,$localretry);
 }
 
 sub rest_call {
@@ -494,30 +497,30 @@ sub rest_call {
     my $nojson = shift;
     my $retries = shift;
 
-    $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0 unless $checkssl;
+    $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0 unless $sslcheck;
     my $ua = LWP::UserAgent->new();
-    $ua->ssl_opts( SSL_verify_mode => 0 ) unless $checkssl;
+    $ua->ssl_opts( SSL_verify_mode => 0 ) unless $sslcheck;
     $ua->agent("Seccubus $SeccubusV2::VERSION ");
 
     $ua->default_header('Content-Type' => 'application/json');
     $ua->default_header('Accept' => 'application/json');
+
+    # Authentication
+    $ua->default_header('X-ApiKeys' => "accessKey=$access_key; secretKey=$secret_key");
+
     # Disable max return size
     $ua->max_size(undef);
-
-    if ( $token ) {
-        $ua->default_header('X-Cookie' => "token=$token");
-    }
 
     my $r;
     if ( $method eq "post" ) {
         if ( $verbose > 1 ) {
-            print "POST to https://$server:$port$uri\nParams:\n";
+            print "POST to $api$uri\nParams:\n";
             print Dumper $param;
         }
         if ( ref $param ) {
-            $r = $ua->post("https://$server:$port$uri", $param);
+            $r = $ua->post("$api$uri", $param);
         } else {
-            my $req = HTTP::Request->new(POST => "https://$server:$port$uri");
+            my $req = HTTP::Request->new(POST => "$api$uri");
             $req->content_type('application/json');
             $req->content($param);
 
@@ -525,13 +528,13 @@ sub rest_call {
         }
     } elsif ( $method eq "put" ) {
         if ( $verbose > 1 ) {
-            print "PUT to https://$server:$port$uri\nParams:\n";
+            print "PUT to $api$uri\nParams:\n";
             print Dumper $param;
         }
         if ( ref $param ) {
-            $r = $ua->put("https://$server:$port$uri", $param);
+            $r = $ua->put("$api$uri", $param);
         } else {
-            my $req = HTTP::Request->new(PUT => "https://$server:$port$uri");
+            my $req = HTTP::Request->new(PUT => "$api$uri");
             $req->content_type('application/json');
             $req->content($param);
 
@@ -543,12 +546,12 @@ sub rest_call {
             $geturi .= $key . "=" . $param->{$key} . "&";
         }
         $geturi =~ s/\&$//;
-        print "GET to https://$server:$port$geturi\n" if $verbose > 1;
-        $r = $ua->get("https://$server:$port$geturi");
+        print "GET to $api$geturi\n" if $verbose > 1;
+        $r = $ua->get("$api$geturi");
     } elsif ( $method eq "delete" ) {
-        print "DELETE to https://$server:$port$uri\n" if $verbose > 1;
+        print "DELETE to $api$uri\n" if $verbose > 1;
         if ( defined $ua->{delete} ) {
-            $r = $ua->delete("https://$server:$port$uri", $param);
+            $r = $ua->delete("$api$uri", $param);
         } else {
             print "Delete not supported on this platform\n" unless $quiet;
             return({});
@@ -556,13 +559,7 @@ sub rest_call {
     }
     print "Server response : " . $r->decoded_content() . "\n" if $verbose > 2;
 
-    if ( $token && ( $r->code() == 401 || $r->code() == 503 ) && $retries > 0) {
-        print "Authentication failed, attempting to re-login\n" if $verbose;
-        # Login and retry if failed
-        login();
-        return(rest_call($method,$uri,$param,$response,$nojson,$retries-1));
-    }
-    # Export cvalls can actually return a 404 if an export has failed for some internal Nessus reason, we should not
+    # Export calls can actually return a 404 if an export has failed for some internal tenable.io reason, we should not
     # retry in this case
     unless ( $r->is_success || ( $uri =~ qr#/scans/\d+/export/\d+\/status# && $r->code() == 404 ) ) {
         unless ( $quiet ) {
@@ -570,7 +567,7 @@ sub rest_call {
             if ($uri =~ qr#/scans/\d+/export/\d+\/status# && $r->code() == 500) {
                 return;
             }
-            print "Nessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content();
+            print "tenable.io returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content();
             print "\n$retries retries left\n";
         }
         if ( $retries > 0 ) {
@@ -578,7 +575,7 @@ sub rest_call {
             sleep 30;
             return(rest_call($method,$uri,$param,$response,$nojson,$retries-1))
         } else {
-            die "No more retries!\nNessus server returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " ";
+            die "No more retries!\ntenable.io returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " ";
         }
     }
 

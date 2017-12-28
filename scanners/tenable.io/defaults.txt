@@ -1,0 +1,1 @@
+--accesskey "your access key goes here" --secretkey $PASSWORD --policy "your policy name goes here" --hosts @HOSTS

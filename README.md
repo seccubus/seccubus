@@ -159,7 +159,9 @@ Defferences with 2.46
 
 Enhancements
 ------------
-*
+* Seccubus now support tenable.io as a scanning platform
+* Added parsing of the ROBOT (bleichenbacher) attack to the SSLlabs scanner
+* Added a dev environment example config
 
 Bug Fixes
 ---------
