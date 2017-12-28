@@ -77,33 +77,33 @@ $.Controller("Seccubus.Scan.Create",
         ev.preventDefault();
 
         var params = el.formParams();
-        if ( params.scanner == "other" ) {
+        if ( params.scanner === "other" ) {
             params.scanner = params.otherScanner;
         }
         var ok = true;
         var elements = [];
-        if ( params.name == "" ) {
+        if ( params.name === "" ) {
             elements.push("#newScanName");
             ok = false;
         }
-        if ( params.scanner == "" || params.scanner == "none" ) {
+        if ( params.scanner === "" || params.scanner === "none" ) {
             elements.push("#newScanScanner", "#newScanOtherScanner");
             ok = false;
         }
-        if ( params.parameters == "" ) {
+        if ( params.parameters === "" ) {
             elements.push("#newScanParam");
             ok = false;
         }
-                   if ( params.password == "" ) {
+                   if ( params.password === "" ) {
                            elements.push("#newScanPassword");
                            ok = false;
                 }
 
-        if ( params.targets == "" ) {
+        if ( params.targets === "" ) {
             elements.push("#newScanTargets");
             ok = false;
         }
-        if ( this.options.workspace == -1 ) {
+        if ( this.options.workspace === -1 ) {
             alert("Error: workspace is not set");
             ok = false;
         }
@@ -142,7 +142,7 @@ $.Controller("Seccubus.Scan.Create",
         this.options.onClear();
     },
     "#newScanScanner change" : function() {
-        if ( $("#newScanScanner").val() == "other" ) {
+        if ( $("#newScanScanner").val() === "other" ) {
             $("#newScanOtherScannerRow").show();
         } else {
             $("#newScanOtherScannerRow").hide();

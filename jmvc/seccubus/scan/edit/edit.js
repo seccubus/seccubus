@@ -104,25 +104,25 @@ $.Controller("Seccubus.Scan.Edit",
         ev.preventDefault();
 
         var params = el.formParams();
-        if ( params.scanner == "other" ) {
+        if ( params.scanner === "other" ) {
             params.scanner = params.otherScanner;
         }
         var ok = true;
         var elements = [];
-        if ( params.name == "" ) {
+        if ( params.name === "" ) {
             elements.push("#editScanName");
             ok = false;
         }
-        if ( params.scanner == "" || params.scanner == "none" ) {
+        if ( params.scanner === "" || params.scanner === "none" ) {
             elements.push("#editScanScanner", "#editScanOtherScanner");
             ok = false;
         }
         var paramStr = params.parameters;
-        if ( paramStr == "" ) {
+        if ( paramStr === "" ) {
             elements.push("#editScanParam");
             ok = false;
         }
-        if( ( paramStr.indexOf("@HOSTS") != -1 || paramStr.indexOf("$HOSTS") != -1  ) && params.targets == ""){
+        if( ( paramStr.indexOf("@HOSTS") != -1 || paramStr.indexOf("$HOSTS") != -1  ) && params.targets === ""){
             elements.push("#editScanTargets");
             ok = false;
         }
@@ -168,7 +168,7 @@ $.Controller("Seccubus.Scan.Edit",
         this.options.onClear();
     },
     "#editScanScanner change" : function() {
-        if ( $("#editScanScanner").val() == null || $("#editScanScanner").val() == "other"  ) {
+        if ( $("#editScanScanner").val() === null || $("#editScanScanner").val() === "other"  ) {
             $("#editScanOtherScannerRow").show();
         } else {
             $("#editScanOtherScannerRow").hide();
@@ -180,7 +180,7 @@ $.Controller("Seccubus.Scan.Edit",
             $("#editScanPasswordRow").hide();
             $("#editScanPassword").val("N/A");
         }
-        if (  $("#editScanScanner").val() == "tenable.io" ) {
+        if (  $("#editScanScanner").val() === "tenable.io" ) {
             $("#editScanPasswordLabel").html("Secret Key");
         } else {
             $("#editScanPasswordLabel").html("Password");
