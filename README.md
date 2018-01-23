@@ -165,4 +165,4 @@ Enhancements
 
 Bug Fixes
 ---------
-*
+* #635 - Hypnotoad path was set incorrectly in systemd startup script on CentOS 7
