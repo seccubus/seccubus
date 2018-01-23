@@ -65,3 +65,12 @@ Replace X with the database version that you need.
 ```bash
 sysctl restart seccubus.service
 ```
+
+## Database tweaks
+
+The following tweak may be needed for /MariaDB if you are handling larger scan results in /etc/my.cnf.d/mariadb-server.cnf:
+
+```
+innodb_log_file_size = 1024M
+
+```

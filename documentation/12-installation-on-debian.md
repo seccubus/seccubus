@@ -71,3 +71,16 @@ Default admin password is `GiveMeVulns!`. You can change it on the command line:
 sudo su - seccubus
 bin/seccubus_passwd -u root
 ```
+
+## Database tweaks
+
+The following tweaks may be needed for /MariaDB if you are handling larger scan results in /etc/mysql/mariadb.conf.d/50-server.cnf
+
+```
+# * InnoDB
+#
+# InnoDB is enabled by default with a 10MB datafile in /var/lib/mysql/.
+# Read the manual for more InnoDB related options. There are many!
+innodb_log_file_size = 1024M
+
+```
