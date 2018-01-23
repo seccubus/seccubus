@@ -75,5 +75,5 @@ Replace X with the database version that you need.
 ## Restart the service
 
 ```bash
-sysctl restart seccubus.service
+systemctl restart seccubus.service
 ```
