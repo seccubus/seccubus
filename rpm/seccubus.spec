@@ -1,5 +1,5 @@
 #
-# Copyright 2011-2017 Peter Slootweg, Frank Breedijk, Glenn ten Cate
+# Copyright 2011-2018 Peter Slootweg, Frank Breedijk, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -213,6 +213,13 @@ Seccubus is listening on https://localhost:8443/
 
 ################################################################################
 OEF
+
+%if 0%{?fedora}
+%define hypnopath  /bin
+%else
+%define hypnopath  /usr/local/bin
+%endif
+
 cat >/lib/systemd/system/seccubus.service <<EOF
 [Unit]
 Description=Seccubus - Scan Smarter not Harder
@@ -222,9 +229,9 @@ After=network.target
 Type=simple
 Restart=always
 PIDFile=/opt/seccubus/hypnotaod.pid
-ExecStart=/bin/hypnotoad /opt/seccubus/seccubus.pl -f
-ExecStop=/bin/hypnotoad -s /opt/seccubus/seccubus.pl
-ExecReload=/bin/hypnotoad /opt/seccubus/seccubus.pl
+ExecStart=%{hypnopath}/hypnotoad /opt/seccubus/seccubus.pl -f
+ExecStop=%{hypnopath}/hypnotoad -s /opt/seccubus/seccubus.pl
+ExecReload=%{hypnopath}/hypnotoad /opt/seccubus/seccubus.pl
 WorkingDirectory=/opt/seccubus
 
 [Install]
