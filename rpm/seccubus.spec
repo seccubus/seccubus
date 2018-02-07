@@ -274,6 +274,8 @@ rm /etc/init.d/seccubus
 #
 
 %changelog
+* Tue Jan 23 2018 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Fixed error in system.d startup files
 * Fri Dec  8 2017 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Re-added support for RedHat/CentOs 7
 * Wed Jun  7 2017 Frank Breedijk <fbreedijk@schubergphilis.com>
