@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2017 Frank Breedijk, Artien Bel (Ar0xA), Petr
+ * Copyright 2012-2018 Frank Breedijk, Artien Bel (Ar0xA), Petr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -174,13 +174,13 @@ $.Controller("Seccubus.Scan.Edit",
             $("#editScanOtherScannerRow").hide();
         }
         //if scanner is Nessus, nessuslegacy or openvas, show password field
-        if ( $("#editScanScanner").val() === "Nessus6" || $("#editScanScanner").val() === "OpenVAS" || $("#editScanScanner").val() === "tenable.io" ) {
+        if ( $("#editScanScanner").val() === "Nessus6" || $("#editScanScanner").val() === "OpenVAS" || $("#editScanScanner").val() === "Tenable.io" ) {
             $("#editScanPasswordRow").show();
         } else {
             $("#editScanPasswordRow").hide();
             $("#editScanPassword").val("N/A");
         }
-        if (  $("#editScanScanner").val() === "tenable.io" ) {
+        if (  $("#editScanScanner").val() === "Tenable.io" ) {
             $("#editScanPasswordLabel").html("Secret Key");
         } else {
             $("#editScanPasswordLabel").html("Password");

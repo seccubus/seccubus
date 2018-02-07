@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk, Alex Smirnoff, Glenn ten Cate, Artien Bel, Theodoor Scholte
+# Copyright 2018 Frank Breedijk, Alex Smirnoff, Glenn ten Cate, Artien Bel, Theodoor Scholte
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -350,7 +350,7 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
 print "Importing ivil\n" unless $quiet;
-$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner tenable.io --timestamp $timestamp";
+$cmd = "$load_ivil --workspace '$workspace' --scan '$scan' --scanner Tenable.io --timestamp $timestamp";
 $cmd .= " -v" if $verbose > 1;
 $cmd .= " '$tempfile.ivil.xml'";
 print "Executing $cmd\n" if $verbose > 1;
@@ -387,33 +387,33 @@ sub help {
     print "
 Usage: scan       --policy=<policy name> --hosts=<hosts file|hosts spec>    \\
                   --workspace=<seccubus workspace> --scan=<seccubus scan>   \\
-                  --accesskey=<tennable.io access API key>                  \\
-                  --secretkey =<tenable.io secret API key>                  \\
+                  --accesskey=<Tenable.io access API key>                  \\
+                  --secretkey =<Tenable.io secret API key>                  \\
                   [--scanner=<scanner name>] [--api=<url>]                  \\
                   [--export=(nessus|html|pdf|csv|db)] [--nodelete]          \\
                   [--sleep=<seconds>] [--nosslcheck] [--retries=<attempts>] \\
                   [--verbose] [--quiet] [--help]
 --policy          - Name of policy or template to use for this scan
---hosts           - Specification of hosts to scan. Follows the tenable.io
+--hosts           - Specification of hosts to scan. Follows the Tenable.io
                     rules for specifying hosts, or path to a file containing
                     such specification
---accesskey       - API access key to log into tennable.io. You can generate
+--accesskey       - API access key to log into Tenable.io. You can generate
                     this key via Settings->My Account->API-Leys
-                    (https://cloud.tenable.com/app.html#/settings/my-account/api-keys)
---secretkey       - API secret key to log into tennable.io. (See accesskey)
+                    (https://cloud.Tenable.com/app.html#/settings/my-account/api-keys)
+--secretkey       - API secret key to log into Tenable.io. (See accesskey)
 --scanner         - Name of the scanner to use for this scan.
 --workspace (-ws) - Seccubus workspace the scan in in
 --scan (-sc)      - Seccubus scan the data should be saved in
---api             - Can be used to overwrite the url of the tennable.io API
+--api             - Can be used to overwrite the url of the Tenable.io API
 --export          - Export the scan in these formats (specify more then once
                     for more formats), currently supported formats are:
                     nessus, html, pdf, csv, db.
 --nodelete        - Don't erase temporary files
---nosslcheck      - Don't validate tenable.io' TLS certificate Common Name
+--nosslcheck      - Don't validate Tenable.io' TLS certificate Common Name
                     (default: true when port is 8834 false when port is 443)
 --retries         - How many times should rest calls be retried before aborting
                     the scan (default=3)
---sleep           - Seconds to sleep between polls of the tennable.io engine
+--sleep           - Seconds to sleep between polls of the Tenable.io engine
                     (default=30)
 --verbose (-v)    - Be verbose during execution
 --quiet (-q)      - Don't print output
@@ -559,7 +559,7 @@ sub rest_call {
     }
     print "Server response : " . $r->decoded_content() . "\n" if $verbose > 2;
 
-    # Export calls can actually return a 404 if an export has failed for some internal tenable.io reason, we should not
+    # Export calls can actually return a 404 if an export has failed for some internal Tenable.io reason, we should not
     # retry in this case
     unless ( $r->is_success || ( $uri =~ qr#/scans/\d+/export/\d+\/status# && $r->code() == 404 ) ) {
         unless ( $quiet ) {
@@ -567,7 +567,7 @@ sub rest_call {
             if ($uri =~ qr#/scans/\d+/export/\d+\/status# && $r->code() == 500) {
                 return;
             }
-            print "tenable.io returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content();
+            print "Tenable.io returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content();
             print "\n$retries retries left\n";
         }
         if ( $retries > 0 ) {
@@ -575,7 +575,7 @@ sub rest_call {
             sleep 30;
             return(rest_call($method,$uri,$param,$response,$nojson,$retries-1))
         } else {
-            die "No more retries!\ntenable.io returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " ";
+            die "No more retries!\nTenable.io returned error code: " . $r->code() . "\nMessage: " . $r->decoded_content() . " ";
         }
     }
 
