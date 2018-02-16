@@ -62,7 +62,20 @@ Please be aware that you can only run one container at a time if you mount a loc
 
 Running a scan
 ---
-Run the following command to start the scan 'ssllabs' in workspace 'Example' (this workspace is created by default if you use the local mysql database)
+
+There are two ways to run a scan
+
+### Starting a scan on an already running container
+
+To start the scan 'ssllabs' in the workspace 'Example' on an already running container, you could run a command like this:
+
+```
+docker exec -ti <containerID or tag> su - seccubus -c "do-scan --workspace Example --scan ssllabs"
+```
+
+### Dedicated scan container
+
+The following command will create a new container just for a signle scan and terminate this container after the scan is finised. It starts the scan 'ssllabs' in workspace 'Example' (this workspace is created by default if you use the local mysql database)
 
 ```
 docker run -ti seccubus/seccubus scan Example ssllabs
@@ -166,3 +179,4 @@ Enhancements
 Bug Fixes
 ---------
 * #635 - Hypnotoad path was set incorrectly in systemd startup script on CentOS 7
+* #642 - Updated readme to address how to run a scan on a running container
