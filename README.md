@@ -62,7 +62,10 @@ Please be aware that you can only run one container at a time if you mount a loc
 
 Running a scan
 ---
-h3. Starting a scan on an already running container
+
+There are two ways to run a scan
+
+### Starting a scan on an already running container
 
 To start the scan 'ssllabs' in the workspace 'Example' on an already running container, you could run a command like this:
 
@@ -70,8 +73,7 @@ To start the scan 'ssllabs' in the workspace 'Example' on an already running con
 docker exec -ti <containerID or tag> su - seccubus -c "do-scan --workspace Example --scan ssllabs"
 ```
 
-h3. Dedicated scan container
-
+### Dedicated scan container
 
 The following command will create a new container just for a signle scan and terminate this container after the scan is finised. It starts the scan 'ssllabs' in workspace 'Example' (this workspace is created by default if you use the local mysql database)
 
