@@ -130,7 +130,7 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
     unless( $f->{plugin} eq "scanTime" ) {
         like($f->{host},qr/^www\.seccubus\.com\/ipv[46]$/, "Finding $f->{id} has the right hostname");
     }
-    if ( $f->{plugin} =~ /^(X\-Served\-By|http_clock_skew|rp_header|order(_cipher)?|cbc_tls\d|CAA_record|X-Cache-Hits: \d+)$/ ) {
+    if ( $f->{plugin} =~ /^(X\-Served\-By|http_clock_skew|rp_header|order(_cipher)?|cbc_tls\d|CAA_record|banner_reverseproxy)$/ ) {
         # May or may not differ
     } elsif( undef ) {
         like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints for plugin '$f->{plugin}'");
