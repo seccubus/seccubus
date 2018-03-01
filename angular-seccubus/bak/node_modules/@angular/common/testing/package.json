@@ -1,0 +1,7 @@
+{
+  "name": "@angular/common/testing",
+  "typings": "./testing.d.ts",
+  "main": "../bundles/common-testing.umd.js",
+  "module": "../esm5/testing.js",
+  "es2015": "../esm2015/testing.js"
+}

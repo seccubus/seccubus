@@ -1,0 +1,15 @@
+{
+  "test": [
+    "src/**/*.test.js"
+  ],
+  "critics": {
+    "lint": {
+      "engine": "eslint"
+    }
+  },
+  "dependencies": {
+    "unused-ignores": [
+      "babel-runtime"
+    ]
+  }
+}
