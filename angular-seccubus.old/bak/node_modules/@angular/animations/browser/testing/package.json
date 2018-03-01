@@ -1,7 +1,0 @@
-{
-  "name": "@angular/animations/browser/testing",
-  "typings": "./testing.d.ts",
-  "main": "../../bundles/platform-browser-animations-testing.umd.js",
-  "module": "../../esm5/animations/testing.js",
-  "es2015": "../../esm2015/animations/testing.js"
-}
