@@ -1,7 +1,7 @@
 {
 	"certs": {
 		"type"			: "certificates",
-		"description"	:	 
+		"description"	:
 			"This is an overview of the certificates returned by this url\n"
 	},
 	"delegation": {
@@ -55,19 +55,21 @@
 		"description"	: "Scan started at : ",
 		"note"			: "Time at which the scan was started"
 	},
-	"statusMessage":	{ 
+	"statusMessage":	{
 		"type" 			: "string",
 		"description"	: "Status message received from SSL labs : ",
 		"note"			: ""
 	},
-	"cacheExpiryTime":  { "ignore" : true },
-	"criteriaVersion":  { "ignore" : true },
-	"engineVersion":  	{ "ignore" : true },
-	"host":  			{ "ignore" : true },
-	"ipAddress":		{ "ignore" : true },
-	"port":		  		{ "ignore" : true },
-	"progress":  		{ "ignore" : true },
-	"protocol":  		{ "ignore" : true },
-	"status":	  		{ "ignore" : true },
-	"testTime":	  		{ "ignore" : true }
+	"cacheExpiryTime"       : { "ignore" : true },
+	"criteriaVersion"       : { "ignore" : true },
+	"engineVersion"   	    : { "ignore" : true },
+	"host"   			    : { "ignore" : true },
+	"ipAddress" 		    : { "ignore" : true },
+	"port" 		  		    : { "ignore" : true },
+	"progress"   		    : { "ignore" : true },
+	"protocol"   		    : { "ignore" : true },
+	"status" 	  		    : { "ignore" : true },
+    "statusDetails"         : { "ignore" : true },
+    "statusDetailsMessage"  : { "ignore" : true },
+	"testTime"              : { "ignore" : true }
 }

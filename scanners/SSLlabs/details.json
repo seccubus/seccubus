@@ -247,10 +247,14 @@
 		"type"			: "suites",
 		"description"	: "List of cipher suites per protocols\n\n"
 	},
-	"supportsAlpn" : {
-		"type"			: "boolean",
-		"description"	: "This endpoint supports ALPN : "
-	},
+    "supportsAead" : {
+        "type"          : "boolean",
+        "description"   : "This endpoint supports AEAD ciphers : "
+    },
+    "supportsAlpn" : {
+        "type"          : "boolean",
+        "description"   : "This endpoint supports ALPN : "
+    },
 	"supportsNpn" : {
 		"type"			: "boolean",
 		"description"	: "This endpoint supports NPN : "
