@@ -247,6 +247,10 @@
 		"type"			: "suites",
 		"description"	: "List of cipher suites per protocols\n\n"
 	},
+    "supportsAead" : {
+        "type"          : "boolean",
+        "description"   : "This endpoint supports AEAD : "
+    },
 	"supportsAlpn" : {
 		"type"			: "boolean",
 		"description"	: "This endpoint supports ALPN : "
@@ -288,5 +292,7 @@
 	"httpTransactions"		: { "ignore" : true },
 	"nonPrefixDelegation"	: { "ignore" : true },
 	"prefixDelegation"		: { "ignore" : true },
+    "statusDetails"         : { "ignore" : true },
+    "statusDetailsMessage"  : { "ignore" : true },
 	"zz" : {}
 }
