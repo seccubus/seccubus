@@ -1,6 +1,19 @@
-<h2>{{ workspace.name | uppercase }} Details</h2>
-<div>
+<h2>Workspaces</h2>
+<ul class="workspaces">
+  <li *ngFor="let workspace of workspaces"
+    [class.selected]="workspace === selectedWorkspace"
+    (click)="onSelect(workspace)"
+  >
+    <span class="badge">{{workspace.id}}</span> {{workspace.name}}
+  </li>
+</ul>
+
+<div *ngIf="selectedWorkspace">
+  <h2>{{ selectedWorkspace.name | uppercase }} Details</h2>
+  <div><span>id: </span>{{selectedWorkspace.id}}</div>
+  <div>
     <label>name:
-      <input [(ngModel)]="workspace.name" placeholder="workspace">
+      <input [(ngModel)]="selectedWorkspace.name" placeholder="name">
     </label>
+  </div>
 </div>

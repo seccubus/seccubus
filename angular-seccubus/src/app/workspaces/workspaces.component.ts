@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Workspace } from '../workspace';
 
+import { WORKSPACES } from '../mock-workspaces';
+
 @Component({
   selector: 'app-workspaces',
   templateUrl: './workspaces.component.html',
@@ -8,14 +10,17 @@ import { Workspace } from '../workspace';
 })
 export class WorkspacesComponent implements OnInit {
 
-  workspace: Workspace = {
-    id : 1,
-    name : "Windstorm"
-  }
+  workspaces = WORKSPACES;
+
+  selectedWorkspace: Workspace;
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  onSelect(workspace: Workspace): void {
+    this.selectedWorkspace = workspace;
   }
 
 }
