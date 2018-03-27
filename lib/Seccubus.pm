@@ -201,6 +201,7 @@ sub startup {
     # Workspace
     $auth_api->post  ('api/workspaces')->to('workspaces#create');
     $auth_api->get   ('api/workspaces')->to('workspaces#list');
+    $auth_api->get   ('api/workspace/:id')->to('workspaces#read');
     $auth_api->put   ('api/workspace/:id')->to('workspaces#update');
 
 

@@ -1,0 +1,10 @@
+<h3>Top workspaces</h3>
+<div class="grid grid-pad">
+  <a *ngFor="let workspace of workspaces" class="col-1-4"
+    routerLink="/workspace/{{workspace.id}}"
+  >
+    <div class="module workspace">
+      <h4>{{workspace.name}}</h4>
+    </div>
+  </a>
+</div>

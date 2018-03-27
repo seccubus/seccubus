@@ -49,15 +49,21 @@ sub create {
 }
 
 #Read
-#sub read {
-#	my $self = shift;
-#
-#	my $data = [ $self->param('id') ];
-#
-#	$self->render(
-#		json => $data,
-#	);
-#}
+sub read {
+	my $self = shift;
+
+	my $workspace_id = $self->param('id');
+    my $workspaces = get_workspaces($workspace_id);
+    my $data = {};
+
+    $data->{id}         = $$workspaces[0][0];
+    $data->{name}       = $$workspaces[0][1];
+    $data->{lastScan}   = $$workspaces[0][2];
+    $data->{findCount}  = $$workspaces[0][3];
+    $data->{scanCount}  = $$workspaces[0][4];
+
+    $self->render( json => $data );
+}
 
 # List
 sub list {

@@ -1,6 +1,22 @@
 {
     "/api": {
-        "target": "http://localhost:3000",
+        "target": "http://localhost:3000/",
         "secure": false
-    } 
+    },
+    "/seccubus": {
+        "target": "http://localhost:3000/",
+        "secure": false
+    },
+    "/steal": {
+        "target": "http://localhost:3000/",
+        "secure": false
+    },
+    "/widgets": {
+        "target": "http://localhost:3000/",
+        "secure": false
+    },
+    "/jquery": {
+        "target": "http://localhost:3000/",
+        "secure": false
+    }
 }

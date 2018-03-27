@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Workspace } from '../workspace';
 
-import { WORKSPACES } from '../mock-workspaces';
+import { Workspace } from '../workspace';
+import { WorkspaceService } from '../workspace.service';
 
 @Component({
   selector: 'app-workspaces',
@@ -10,17 +10,30 @@ import { WORKSPACES } from '../mock-workspaces';
 })
 export class WorkspacesComponent implements OnInit {
 
-  workspaces = WORKSPACES;
+  workspaces : Workspace[];
 
-  selectedWorkspace: Workspace;
-
-  constructor() { }
+  constructor(private workspaceService: WorkspaceService) { }
 
   ngOnInit() {
+    this.getWorkspaces();
   }
 
-  onSelect(workspace: Workspace): void {
-    this.selectedWorkspace = workspace;
+  getWorkspaces(): void {
+    this.workspaceService.getWorkspaces()
+      .subscribe(workspaces => this.workspaces = workspaces);
   }
 
+  addWorkspace(name: string): void {
+    name = name.trim();
+    if ( !name) { return; }
+    const newWorkspace = {
+      name        : name,
+      lastScan    : null,
+      scanCount   : 0
+    }
+    this.workspaceService.addWorkspace(newWorkspace as Workspace).
+      subscribe(workspace =>  {
+        this.workspaces.push(workspace);
+      });
+  }
 }

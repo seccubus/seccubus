@@ -1,19 +1,16 @@
 <h2>Workspaces</h2>
+<div>
+  <label>Workspace name:
+    <input #workspaceName />
+  </label>
+  <!-- (click) passes input value to add() and then clears the input -->
+  <button (click)="addWorkspace(workspaceName.value); workspaceName.value=''">
+    add
+  </button>
 <ul class="workspaces">
-  <li *ngFor="let workspace of workspaces"
-    [class.selected]="workspace === selectedWorkspace"
-    (click)="onSelect(workspace)"
-  >
-    <span class="badge">{{workspace.id}}</span> {{workspace.name}}
+  <li *ngFor="let workspace of workspaces">
+    <a routerLink="/workspace/{{workspace.id}}">
+      <span class="badge">{{workspace.id}}</span> {{workspace.name}}
+    </a>
   </li>
 </ul>
-
-<div *ngIf="selectedWorkspace">
-  <h2>{{ selectedWorkspace.name | uppercase }} Details</h2>
-  <div><span>id: </span>{{selectedWorkspace.id}}</div>
-  <div>
-    <label>name:
-      <input [(ngModel)]="selectedWorkspace.name" placeholder="name">
-    </label>
-  </div>
-</div>
