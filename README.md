@@ -42,11 +42,12 @@ By default the container holds a mysql server that runs and stores data locally.
 
 Connect the container to a remote mysql/MariaDB database with environment viariables:
 ```
-docker run -ti seccubus/seccubus -e DBHOST=dns.name.of.db.host \
+docker run -e DBHOST=dns.name.of.db.host \
 -e DBPOSRT=3306 \
 -e DBNAME=name.of.database \
 -e DBUSER=db.username \
 -e DBPASS=password \
+-ti seccubus/seccubus \
 /bin/bash
 ```
 

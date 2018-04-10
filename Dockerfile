@@ -25,7 +25,7 @@ MAINTAINER fbreedijk@schubergphilis.com
 RUN apt-get update && apt-get upgrade -y && \
     (echo 'mysql-server mysql-server/root_password password dwofMVR8&E^#3owHA0!Y' | debconf-set-selections ) && \
     (echo 'mysql-server mysql-server/root_password_again password dwofMVR8&E^#3owHA0!Y' | debconf-set-selections ) && \
-    apt-get install default-jre-headless mysql-server dnsutils nmap nginx cron rsyslog ssmtp bsdmainutils -y &&\
+    apt-get install default-jre-headless mysql-server dnsutils nmap nginx cron rsyslog ssmtp bsdmainutils zip -y &&\
     apt-get purge logrotate -y && \
     apt autoremove -y
 RUN cpanm --notest DBD::mysql Mojolicious Net::IP JSON DBI HTML::Entities Crypt::PBKDF2 \
