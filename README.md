@@ -176,8 +176,12 @@ Enhancements
 * Seccubus now support Tenable.io as a scanning platform
 * Added parsing of the ROBOT (bleichenbacher) attack to the SSLlabs scanner
 * Added a dev environment example config
+* Increased the size of the scannerparam field in the database
 
 Bug Fixes
 ---------
 * #635 - Hypnotoad path was set incorrectly in systemd startup script on CentOS 7
 * #642 - Updated readme to address how to run a scan on a running container
+* Fixed an error in the Docker examples in README.md
+* Added zip to the docker image because it is needed for import/export
+
