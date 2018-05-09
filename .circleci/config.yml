@@ -265,6 +265,30 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
+  ubuntu18_test:
+    docker:
+      - image: ubuntu:18.04
+
+    steps:
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
+      - run: apt-get update; apt-get install -y ca-certificates
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
   debian_ok:
     docker:
       - image: alpine
@@ -301,6 +325,7 @@ jobs:
             package_cloud push seccubus/latest/ubuntu/trusty build/*.deb
             package_cloud push seccubus/latest/ubuntu/zesty build/*.deb
             package_cloud push seccubus/latest/ubuntu/artful build/*.deb
+            package_cloud push seccubus/latest/ubuntu/bionic build/*.deb
 
   debian_upload_release:
     docker:
@@ -325,6 +350,7 @@ jobs:
             package_cloud push seccubus/releases/ubuntu/trusty build/*.deb
             package_cloud push seccubus/releases/ubuntu/zesty build/*.deb
             package_cloud push seccubus/releases/ubuntu/artful build/*.deb
+            package_cloud push seccubus/releases/ubuntu/bionic build/*.deb
 
   build_fc26:
     docker:
@@ -622,6 +648,15 @@ workflows:
                 - master
                 - releases
                 - deb-building
+      - ubuntu18_test:
+          requires:
+            - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - kali_test:
           requires:
             - build_deb
@@ -638,6 +673,7 @@ workflows:
             - ubuntu14_test
             - ubuntu16_test
             - ubuntu17_test
+            - ubuntu18_test
             - kali_test
           filters:
             branches:
