@@ -167,9 +167,11 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-x-x-2018 - v2.47 - Development release
-=================================================
-Defferences with 2.46
+9-5-2018 - v2.48 - Tenable.io compatibility and more
+====================================================
+This release is fully compatible with the Tenable.io vulnerability management platform.
+
+Differences with 2.46
 
 Enhancements
 ------------
