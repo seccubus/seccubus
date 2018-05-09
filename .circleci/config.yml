@@ -28,8 +28,7 @@ jobs:
         - PERL5LIB: "."
         - MYSQL_HOME: "/root/project/.circleci"
 
-      - image: circleci/mysql
-        command: [ '--default-authentication-plugin=mysql_native_password' ]
+      - image: circleci/mysql:5.7
 
     parallelism: 3
 
