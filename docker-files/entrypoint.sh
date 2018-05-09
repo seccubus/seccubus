@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2017 Frank Breedijk
+# Copyright 2017-2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -116,11 +116,14 @@ if [[ "$STACK" == "front" ]] ; then
         sed -i.bak "s#baseUrl(){return\"/api/\"}#baseUrl(){return\"$APIURL\"}#" /opt/seccubus/public/seccubus/production.js
 
         service nginx start
+        DBHOST="Don't start"
     fi
+else
+    # Get rid of the log rotation for NGINX if we are not using it
+    rm -f /etc/logrotate.d/nginx
 fi
 
 # Set up Mojolicious stack
-
 if [[ "$STACK" == "api" ]] ; then
     # No need to have a public directory in API mode
     rm -rf /opt/seccubus/public
@@ -245,6 +248,9 @@ EOF
 EOF1
         (cd /opt/seccubus/;bin/seccubus_passwd -u admin -p 'GiveMeVulns!')
     fi
+else
+    # If we don't need a DB, we don't need to logrotate it
+    rm -f /etc/logrotate.d/mysql-server
 fi
 
 # Crontab

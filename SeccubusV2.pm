@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk, Glenn ten Cate
+# Copyright 2018 Frank Breedijk, Glenn ten Cate, Daniele Bonomi
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -57,8 +57,8 @@ use lib "/opt/seccubus/lib";
 use lib "lib";
 push (@main::INC, @INC);
 
-our $VERSION = '2.46';
-our $DBVERSION = 10;
+our $VERSION = '2.48';
+our $DBVERSION = 11;
 our $USER = '';
 
 use Carp;

@@ -1,5 +1,5 @@
 #/usr/bin/perl
-# Copyright 2017 Frank Breedijk
+# Copyright 2011-2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ WriteMakefile (
                 'Mojolicious'           => '7.26',
                 'Perl::Critic'          => 1.0,
                 'Sys::Syslog'           => 0.1,
+                'Crypt::PBKDF2'         => 0.15,
 			},
 	NO_MYMETA	=> 1
 );

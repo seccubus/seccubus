@@ -27,6 +27,27 @@ Seccubus V2 works with the following scanners:
 
 For more information visit [www.seccubus.com]
 
+9-5-2018 - v2.48 - Tenable.io compatibility and more
+====================================================
+This release is fully compatible with the Tenable.io vulnerability management platform.
+
+Differences with 2.46
+
+Enhancements
+------------
+* Seccubus now support Tenable.io as a scanning platform
+* Added parsing of the ROBOT (bleichenbacher) attack to the SSLlabs scanner
+* Added a dev environment example config
+* Increased the size of the scannerparam field in the database
+
+Bug Fixes
+---------
+* #635 - Hypnotoad path was set incorrectly in systemd startup script on CentOS 7
+* #642 - Updated readme to address how to run a scan on a running container
+* Fixed an error in the Docker examples in README.md
+* Added zip to the docker image because it is needed for import/export
+
+
 14-12-2017 - v2.46 - RedHat 7 / Centos 7 packages
 =================================================
 This release adds RPM support for RedHat 7 and CentOS 7. Because Mojolicious and some of its dependancies were not available

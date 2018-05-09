@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk
+# Copyright 2013-2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -172,9 +172,9 @@ sub hasauthors {
         }
         #if ( $year_max != $year_min && $year_max >= 2017 ) {
         if ( $year =~ /\d+\-\d+/ ) {
-            is($year, "$year_min-$year_max", "Copyright year of file: $file");
+            is($year, "$year_min-$year_max", "Copyright year of file '$file' is '$year_max' or '$year_min-$year_max'");
         } else {
-            is($year, $year_max, "Copyright year of file: $file");
+            is($year, $year_max, "Copyright year of file '$file' is '$year_max' or '$year_min-$year_max'");
         }
         $tests++;
     }

@@ -243,7 +243,7 @@ jobs:
 
   ubuntu17_test:
     docker:
-      - image: ubuntu:17.04
+      - image: ubuntu:17.10
 
     steps:
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'

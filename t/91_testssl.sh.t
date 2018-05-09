@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017-2017 Frank Breedijk
+# Copyright 2017-2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -130,7 +130,7 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
     unless( $f->{plugin} eq "scanTime" ) {
         like($f->{host},qr/^www\.seccubus\.com\/ipv[46]$/, "Finding $f->{id} has the right hostname");
     }
-    if ( $f->{plugin} =~ /^(X\-Served\-By|http_clock_skew|rp_header|order(_cipher)?|cbc_tls\d|CAA_record)$/ ) {
+    if ( $f->{plugin} =~ /^(X\-Served\-By|http_clock_skew|rp_header|order(_cipher)?|cbc_tls\d|CAA_record|banner_reverseproxy)$/ ) {
         # May or may not differ
     } elsif( undef ) {
         like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints for plugin '$f->{plugin}'");

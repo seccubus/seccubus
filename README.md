@@ -42,11 +42,12 @@ By default the container holds a mysql server that runs and stores data locally.
 
 Connect the container to a remote mysql/MariaDB database with environment viariables:
 ```
-docker run -ti seccubus/seccubus -e DBHOST=dns.name.of.db.host \
+docker run -e DBHOST=dns.name.of.db.host \
 -e DBPOSRT=3306 \
 -e DBNAME=name.of.database \
 -e DBUSER=db.username \
 -e DBPASS=password \
+-ti seccubus/seccubus \
 /bin/bash
 ```
 
@@ -62,7 +63,20 @@ Please be aware that you can only run one container at a time if you mount a loc
 
 Running a scan
 ---
-Run the following command to start the scan 'ssllabs' in workspace 'Example' (this workspace is created by default if you use the local mysql database)
+
+There are two ways to run a scan
+
+### Starting a scan on an already running container
+
+To start the scan 'ssllabs' in the workspace 'Example' on an already running container, you could run a command like this:
+
+```
+docker exec -ti <containerID or tag> su - seccubus -c "do-scan --workspace Example --scan ssllabs"
+```
+
+### Dedicated scan container
+
+The following command will create a new container just for a signle scan and terminate this container after the scan is finised. It starts the scan 'ssllabs' in workspace 'Example' (this workspace is created by default if you use the local mysql database)
 
 ```
 docker run -ti seccubus/seccubus scan Example ssllabs
@@ -153,22 +167,23 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-14-12-2017 - v2.46 - RedHat 7 / Centos 7 packages
-=================================================
-This release adds RPM support for RedHat 7 and CentOS 7. Because Mojolicious and some of its dependancies were not available
-as RPM on any of the standard repos for el7 we are also buildign these RPMs as part of our el7 build street now and are
-pushing these packages to our [packagecloud.io](https://packagecloud.io/seccubus) repository. This makes tweaks like [this one](https://t.co/svO7z1RiRb) by @Ar0xA unneccasary.
+9-5-2018 - v2.48 - Tenable.io compatibility and more
+====================================================
+This release is fully compatible with the Tenable.io vulnerability management platform.
+
+Differences with 2.46
 
 Enhancements
 ------------
-* Added support for RedHat 7 / CentOS 7 RPM packages. With the extra needed packages being added to packagecloud.io
+* Seccubus now support Tenable.io as a scanning platform
+* Added parsing of the ROBOT (bleichenbacher) attack to the SSLlabs scanner
+* Added a dev environment example config
+* Increased the size of the scannerparam field in the database
 
 Bug Fixes
 ---------
-* #588 - Fix Nmap Plugin ID leak (Thanks @alirezakv)
-* #589 - Fix OpenVAS scan execution bug with only 1 target defined (Thanks @alirezakv)
-* #603 - Nessus scan fails when pdf files cannot be exported (Thanks @Ar0xA)
-* #615 - Docker: when the database was on the data volume the database failed to start
-* #617 - Nikto scanner gives unintended error output
-* Theodoor Scholte fixed some typos in the scanner scripts (Thanks!)
-* Streamlined CircleCI unit testing
+* #635 - Hypnotoad path was set incorrectly in systemd startup script on CentOS 7
+* #642 - Updated readme to address how to run a scan on a running container
+* Fixed an error in the Docker examples in README.md
+* Added zip to the docker image because it is needed for import/export
+

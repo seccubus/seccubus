@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk
+# Copyright 2011-2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,6 +32,8 @@ foreach my $file ( @files ) {
 	if ( $file !~ /\/\./ &&            # Skip hidden files
 	     $file !~ /tmp/ &&             # Skip temp files
 	     $file !~ /\.\/blib\// &&      # Skip blib directory
+         $file !~ /^\.\/angular\-seccubus/ &&
+                                       # There shouldn't be perl of our own making here
 	     $file !~ /\.(html|css|js|ejs|3pm|gif|jpg|png|pdf|doc|xml|nbe|txt)/i &&
                                        # Skip know extensions
          $file !~ /\.\/build\//        # Skip build directory
