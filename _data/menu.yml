@@ -13,11 +13,11 @@
 - text: Documentation
   url: /documentation
 
-- text: Mailing List
-  url: /mailing_list/subscribe/
+- text: Slack channel
+  url: /documentation/34-slack-channel
   subitems:
-    - text: Archive
-      url: /mailing_list/archive/
+    - text: Visit
+      url: https://seccubus.slack.com
 
 
 - text: GitHub
