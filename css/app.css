@@ -1384,7 +1384,7 @@ h1 small, h2 small, h3 small, h4 small, h5 small, h6 small { font-size: 60%; col
 
 h1 { font-size: 2.125rem; }
 
-h2 { font-size: 1.6875rem; }
+h2 { font-size: 2.0rem; }
 
 h3 { font-size: 1.375rem; }
 
@@ -1895,7 +1895,8 @@ div.callout h2 { color: #a50303; font-weight: bold; }
 .post-entry { margin: 3rem 0; }
 
 .post { margin-bottom: 0; }
-.post h1, .post h2, .post h3, .post h4, .post h5 { font-size: 100%; font-weight: bold; }
+/* .post h1, .post h2, .post h3, .post h4, .post h5 { font-size: 100%; font-weight: bold; } */
+.post h1, .post h2, .post h3, .post h4, .post h5 { font-weight: bold; }
 
 .pagination { margin-bottom: 2rem; }
 .pagination a { padding: 0.4rem 1rem; border: 1px solid #a50303; }
