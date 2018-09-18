@@ -54,7 +54,7 @@ docker run -e DBHOST=dns.name.of.db.host \
 Or, mount a data volume with a db directory on it
 ```
 mkdir data
-mmdir data/db
+mkdir data/db
 docker run -it seccubus/seccubus -v ($pwd)/data:/opt/seccubus/data /bin/bash
 ```
 
