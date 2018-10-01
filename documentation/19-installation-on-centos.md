@@ -2,9 +2,9 @@
 version: 2
 category: user
 layout: page
-title: Installation on Fedora
+title: Installation on Redhat/CentOS
 ---
-# How to install Seccubus on RedHat/Centos?
+# How to install Seccubus on RedHat/CentOS?
 
 [Click here for other operating systems](../11-installation)
 
