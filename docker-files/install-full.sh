@@ -38,6 +38,7 @@ APKS="$APKS ssmtp"
 # Install
 apk add $APKS
 
+# Perl modules
 cpanm Digest::SHA3
 cpanm Crypt::PBKDF2
 
