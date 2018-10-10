@@ -18,7 +18,10 @@
 # not exist yet ;)
 # ------------------------------------------------------------------------------
 #
-set -x -e
+set -e
+
+echo "Seccubus setup"
+echo "--------------"
 
 export PERL5LIB=/opt/seccubus
 
@@ -41,15 +44,17 @@ TZ=${TZ:-'UTC'}
 
 # Fix timezone
 if [[ "$TZ" == "UTC" ]] ; then
-    echo "Keeping timezone as UTC"
+    echo "Timezone set to 'UTC'"
 else
     if [[ -e "/usr/share/zoneinfo/$TZ" ]]; then
         rm -f /etc/localtime
         ln -s /usr/share/zoneinfo/$TZ /etc/localtime
+        echo "Timezoen set to '$TZ'"
     else
         echo "*** Timezone '$TZ' does not exist, sticking to UTC"
     fi
 fi
+echo
 
 if [[ "$1" == "scan" ]]; then
     STACK="perl"
@@ -72,6 +77,8 @@ fi
 
 # Handle TLS certificates
 if [[ "$TLS" == "yes" && "$STACK" != "cron" && "$STACK" != "perl" ]]; then
+    echo "Creating TLS certificate"
+    echo
     if [[ -e "/opt/seccubus/data/seccubus.pem" && -e "/opt/seccubus/data/seccubus.key" ]]; then
         TLSCERT="/opt/seccubus/data/seccubus.pem"
         TLSKEY="/opt/seccubus/data/seccubus.key"
@@ -93,6 +100,7 @@ if [[ "$TLS" == "yes" && "$STACK" != "cron" && "$STACK" != "perl" ]]; then
         TLSKEY="/opt/seccubus/data/seccubus.key"
     fi
     PORT=443
+    echo
 else
     TLSCERT=""
     TLSKEY=""
@@ -105,6 +113,8 @@ if [[ "$STACK" == "front" ]] ; then
         echo "\$STACK is set to '$STACK', but \$APIURL is empty, this won't work"
         exit
     else
+        echo "Setting up nginx"
+        echo
         # Sanitize urls
         [[ ! "$APIURL" = */ ]] && APIURL="$APIURL/"
         [[ ! -z "$BASEURI" ]] && [[ ! "$BASEURI" = /* ]] && BASEURI="/$BASEURI"
@@ -137,6 +147,8 @@ fi
 # Set up SSH keys
 
 if [[ "$STACK" != "front" ]] ; then
+    echo "Setting up SSH keys"
+    echo
     mkdir -p ~seccubus/.ssh
     chmod 700 ~seccubus/.ssh
     echo "$SSHKEY1" > ~seccubus/.ssh/SSHKEY1
@@ -162,6 +174,8 @@ if [[ "$STACK" != "front" ]] ; then
 fi
 
 # Configure Seccubus
+echo "Configuring Seccubus"
+echo
 if [[ -z "$SESSION_KEY" ]]; then
     SESSION_KEY=$(cat /opt/seccubus/etc/SESSION_KEY)
 fi
@@ -216,14 +230,18 @@ if [[ "$STACK" == "full" || "$STACK" == "web" || "$STACK" == "front" ]] ; then
 fi
 
 if [[ "$STACK" == "full" || "$STACK" == "api" || "$STACK" == "web" ]] ; then
+    echo "Starting hypnotoad"
     # We need to start mojolicious
     cd /opt/seccubus
     PERL5LIB=/opt/seccubus hypnotoad seccubus.pl
+    echo
 fi
 
 
 # Let's figure out if we need a database...
 if [[ "$DBHOST" == "127.0.0.1" && "$DBPORT" == "3306" ]]; then
+    echo "Setting up MariaDB"
+    echo
     DBDIR="/var/lib/mysql"
     if [[ -e /opt/seccubus/data/db ]]; then
         DBDIR="/opt/seccubus/data/db"
@@ -262,8 +280,17 @@ else
     rm -f /etc/logrotate.d/mysql-server
 fi
 
+# syslog
+touch /var/log/messages
+if [[ "$STACK" == "full" || "$STACK" == "cron" || "$STACK"  == "api" ]]; then
+    /sbin/syslogd
+fi
+
+
 # Crontab
 if [[ "$STACK" == "cron" || "$STACK" == "full" ]]; then
+    echo "Setting up crontab and mail"
+    echo
     CRON_MAIL_TO=${CRON_MAIL_TO:-"$SMTPFROM"}
     #if [[ ! -z $1 ]]; then
 
@@ -280,24 +307,27 @@ EOF
         /etc/init.d/ssmtp start
     fi
     /docker/mkcron
-    /sbin/syslogd
     /usr/sbin/crond
+    echo
 fi
 
 if [[ "$STACK" != "front" ]]; then
+    echo "Updating nikto"
     cd /opt/nikto
     git pull
+    echo
+    echo "Updating testssl.sh"
     cd /opt/testssl.sh
     git pull
-fi
-
-touch /var/log/messages
-if [[ "$STACK" == "full" || "$STACK" == "cron" || "$STACK"  == "api" ]]; then
-    /sbin/syslogd
+    echo
 fi
 
 # Return to home
 cd
+
+echo
+echo "*** Setup DONE ***"
+echo
 
 # Execute commands if needed
 case $1 in
