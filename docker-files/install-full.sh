@@ -1,5 +1,5 @@
-#!/bin/bash
-# Copyright 2017 Frank Breedijk
+#!/bin/sh
+# Copyright 2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,25 +12,46 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ------------------------------------------------------------------------------
-# This program creates users from the command line, usefull if you have not set
-# up any users in the web gui, or if you are writing Seccubus and the GUI does
-# not exist yet ;)
-# ------------------------------------------------------------------------------
-#
-
-# Exit on error
+set -x
 set -e
 
-cd /build/seccubus
+# Install prerequisites
+apk update
+# Basics
+APKS="tzdata make bash perl logrotate"
+# Web server
+APKS="$APKS openssl nginx"
+# Perl modules
+APKS="$APKS perl-dbd-mysql perl-dbi perl-date-format perl-html-parser perl-json perl-libwww perl-lwp-protocol-https
+    perl-net-ip perl-term-readkey perl-xml-simple perl-app-cpanminus perl-mojolicious perl-algorithm-diff
+    perl-module-build perl-namespace-autoclean perl-moo perl-strictures perl-test-fatal perl-digest-hmac
+    perl-type-tiny linux-headers perl-dev perl-app-cpanminus wget gcc libc-dev"
+# Cron
+APKS="$APKS busybox-suid"
+# Database
+APKS="$APKS mariadb mariadb-client"
+# Scan tools
+APKS="$APKS git nmap"
+# Mail
+APKS="$APKS ssmtp"
 
-cpanm --installdeps --notest .
+# Install
+apk add $APKS
 
-# Build
-./build_all
+cpanm Digest::SHA3
+cpanm Crypt::PBKDF2
+
+# Setup database
+DB_DATA_PATH="/var/lib/mysql"
+DB_ROOT_PASS="dwofMVR8&E^#3owHA0!Y"
+DB_USER="mariadb_user"
+DB_PASS="dwofMVR8&E^#3owHA0!Y"
+MAX_ALLOWED_PACKET="200M"
+mysql_install_db --user=mysql --datadir=${DB_DATA_PATH}
+
 # Extract tarbal
-cd ..
-tar -xvzf seccubus/build/Seccubus*.tar.gz
+cd /build/seccubus
+tar -xvzf build/Seccubus*.tar.gz
 cd Seccubus-*
 
 # Make sure perl is set to the correct path
@@ -39,13 +60,19 @@ make clean
 perl Makefile.PL 2>&1| tee makefile.log
 
 # Check if we have all perl dependancies
-if [[ $(grep "Warning: prerequisite" makefile.log| wc -l) -gt 0 ]]; then
-	echo '*** ERROR: Not all perl dependancies installed ***'
-	cat makefile.log
-	exit 255
+if [[ $(grep "Warning: prerequisite" makefile.log| grep -v 'Perl::Critic' |wc -l) -gt 0 ]]; then
+    echo '*** ERROR: Not all perl dependancies installed ***'
+    cat makefile.log
+    exit 255
 fi
-# create users
-useradd -c "Seccubus system user" -d /opt/seccubus -m seccubus -s /bin/bash
+# create user
+mkdir -p /opt/seccubus
+addgroup seccubus
+adduser -h /opt/seccubus -g "Seccubus system user" -s /bin/bash -S -D -G seccubus seccubus
+addgroup seccubus wheel
+
+chown -R seccubus:seccubus /opt/seccubus
+chmod 755 /opt/seccubus
 
 # Install the software
 ./install.pl --basedir /opt/seccubus /opt/seccubus/www --stage_dir /build/stage --createdirs --owner seccubus -v -v
@@ -60,20 +87,18 @@ mkdir /var/log/seccubus
 chmod 755 /var/log/seccubus
 chown seccubus:seccubus /var/log/seccubus
 
-# Build up the database
-/usr/bin/mysql_install_db --datadir="/var/lib/mysql" --user=mysql
-#(cd /usr ; /usr/bin/mysqld_safe --datadir="/var/lib/mysql" --socket="/var/lib/mysql/mysql.sock" --user=mysql  >/dev/null 2>&1 &)
-#sleep 3
-/etc/init.d/mysql start
-/usr/bin/mysql -u root --password='dwofMVR8&E^#3owHA0!Y'<<EOF
-	create database seccubus;
-	grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus';
-	flush privileges;
+(cd /usr ; /usr/bin/mysqld_safe --datadir="/var/lib/mysql" --socket="/run/mysqld/mysqld.sock" --user=mysql  >/dev/null 2>&1 &)
+sleep 3
+#/etc/init.d/mariadb start
+/usr/bin/mysql <<EOF
+    create database seccubus;
+    grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus';
+    flush privileges;
 EOF
-/usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/structure*.mysql|tail -1)
-/usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/data*.mysql|tail -1)
+/usr/bin/mysql seccubus < $(ls /opt/seccubus/db/structure*.mysql|tail -1)
+/usr/bin/mysql seccubus < $(ls /opt/seccubus/db/data*.mysql|tail -1)
 
-/usr/bin/mysql -u seccubus -pseccubus seccubus <<EOF1
+/usr/bin/mysql seccubus <<EOF1
     INSERT INTO workspaces VALUES (1,'Example');
     INSERT INTO scans VALUES
         (1,'ssllabs','SSLlabs','--hosts @HOSTS --from-cache','','www.seccubus.com',1),
@@ -81,7 +106,6 @@ EOF
         (3,'nikto','Nikto','-o \"\" --hosts @HOSTS','','www.seccubus.com',1),
         (4,'testssl.sh','testssl.sh','-o \"\" --hosts @HOSTS','','www.seccubus.com',1);
 EOF1
-
 
 # Set up some default content
 SESSION_KEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
@@ -148,8 +172,12 @@ git clone https://github.com/drwetter/testssl.sh.git
 echo 'export PATH="$PATH:/opt/testssl.sh"' > /etc/profile.d/testssl.sh.sh
 echo 'export PATH="$PATH:/opt/testssl.sh"' >> /root/.bashrc
 
+# Clone bashrc
+cp ~/.bashrc ~seccubus/.bashrc
+chown seccubus:seccubus ~seccubus/.bashrc
+
 # Cleanup build stuff
+set +e
 rm -rf /build
 
-apt-get autoremove default-jre-headless -y
 

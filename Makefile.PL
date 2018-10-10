@@ -47,7 +47,8 @@ WriteMakefile (
                 'Sys::Syslog'           => 0.1,
                 'Crypt::PBKDF2'         => 0.15,
 			},
-	NO_MYMETA	=> 1
+	NO_MYMETA	=> 1,
+    dist => { COMPRESS => "gzip -9", SUFFIX => '.gz' }
 );
 
 package MY;

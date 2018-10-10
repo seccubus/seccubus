@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2011-2017 Frank Breedijk
+# Copyright 2011-2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,9 @@ echo '*************************************************************************'
 echo '*************************************************************************'
 echo Copying files
 echo '*************************************************************************'
-cp -r bin db docs lib scanners t testdata ChangeLog.md install.pl LICENSE.txt build
+cp -r bin db docs lib scanners ChangeLog.md install.pl LICENSE.txt build
+[[ -d t ]] && cp -r t build
+[[ -d testdata ]] && cp -r testdata build
 cp Makefile.PL NOTICE.txt README.md seccubus.pl SeccubusV2.pm build
 
 mkdir -p build/etc
