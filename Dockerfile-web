@@ -30,16 +30,16 @@ COPY jmvc /build/seccubus/jmvc
 COPY lib /build/seccubus/lib
 COPY scanners /build/seccubus/scanners
 COPY build_all build_jmvc install.pl Makefile.PL seccubus.pl SeccubusV2.pm ChangeLog.md LICENSE.txt NOTICE.txt README.md /build/seccubus/
-COPY docker-files/build.sh docker-files/install-front.sh /build/seccubus/docker-files/
+COPY docker-files/build.sh docker-files/install-web.sh /build/seccubus/docker-files/
 RUN cd /build/seccubus;./docker-files/build.sh
 
 FROM alpine:3.8
 
 COPY --from=build /build/seccubus/build /build/seccubus/build
-RUN /build/seccubus/build/docker-files/install-front.sh
+RUN /build/seccubus/build/docker-files/install-web.sh
 COPY docker-files /docker
 
-ENTRYPOINT ["/docker/entrypoint-front.sh"]
+ENTRYPOINT ["/docker/entrypoint-web.sh"]
 VOLUME [ "/opt/seccubus/data" ]
 
 EXPOSE 80
