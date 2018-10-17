@@ -18,22 +18,24 @@ set -e
 echo "Build hook running"
 
 IMAGE_NAME=${IMAGE_NAME:-$1}
-IMAGE_NAME=${IMAGE_NAME:-'seccubus'}
+BUILD_NAME=${IMAGE_NAME:-'seccubus'}
+BUILD_NAME=${BUILD_NAME##index*/}
+BUILD_NAME=${BUILD_NAME%:*}
 
-if [[ "$IMAGE_NAME" == "seccubus" ]]; then
+if [[ "$BUILD_NAME" == "seccubus" ]]; then
     BUILDSTACK="full"
-elif [[ "$IMAGE_NAME" == "seccubus-front" ]]; then
+elif [[ "$BUILD_NAME" == "seccubus-front" ]]; then
     BUILDSTACK="front"
-elif [[ "$IMAGE_NAME" == "seccubus-web" ]]; then
+elif [[ "$BUILD_NAME" == "seccubus-web" ]]; then
     BUILDSTACK="web"
-elif [[ "$IMAGE_NAME" == "seccubus-api" ]]; then
+elif [[ "$BUILD_NAME" == "seccubus-api" ]]; then
     BUILDSTACK="api"
-elif [[ "$IMAGE_NAME" == "seccubus-perl" ]]; then
+elif [[ "$BUILD_NAME" == "seccubus-perl" ]]; then
     BUILDSTACK="perl"
-elif [[ "$IMAGE_NAME" == "seccubus-cron" ]]; then
+elif [[ "$BUILD_NAME" == "seccubus-cron" ]]; then
     BUILDSTACK="cron"
 else
-    echo "Unknown image name '$IMAGE_NAME', buidling a full stack"
+    echo "Unknown build name '$BUILD_NAME', buidling a full stack"
     BUILDSTACK="full"
 fi
 
