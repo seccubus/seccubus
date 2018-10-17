@@ -17,27 +17,14 @@ set -e
 
 # Install prerequisites
 apk update
-# Basics
-APKS="tzdata logrotate bash"
-# Web server
-APKS="$APKS openssl nginx"
+apk add bash perl make openjdk7-jre
 
-# Install
-apk add $APKS
-
-# Extract tarbal
+# Build
 cd /build/seccubus
-tar -xvzf build/Seccubus*.tar.gz
-cd Seccubus-*
 
-# create files
-mkdir -p /opt/seccubus/data
-chmod -R 755 /opt/seccubus
+perl Makefile.PL
+make clean
+perl Makefile.PL
 
-mv public /opt/seccubus
-
-# Cleanup build stuff
-set +e
-rm -rf /build
-
-
+bash -e ./build_all
+(cd build;ls |grep -v tar.gz|xargs rm -rf)
