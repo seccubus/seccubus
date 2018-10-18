@@ -1,822 +1,680 @@
----
+version: 2
 jobs:
-  build:
-    docker:
-      -
-        environment:
-          -
-            PERL5LIB: "."
-        image: "perl:latest"
-    steps:
-      - checkout
-      -
-        run:
-          command: "apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client default-jre"
-          name: "Install prerequisite packages"
-      -
-        restore_cache:
-          key: "cpanm-{{ .Environment.CIRCLE_SHA1 }}"
-      -
-        run:
-          command: ./build_all
-          name: Build
-      -
-        store_artifacts:
-          path: /root/project/build/
-      -
-        restore_cache:
-          key: "junit-0-{{ .Environment.CIRCLE_SHA1 }}"
-      -
-        restore_cache:
-          key: "junit-1-{{ .Environment.CIRCLE_SHA1 }}"
-      -
-        restore_cache:
-          key: "junit-2-{{ .Environment.CIRCLE_SHA1 }}"
-      -
-        restore_cache:
-          key: "junit-3-{{ .Environment.CIRCLE_SHA1 }}"
-      -
-        store_test_results:
-          path: /root/project/testout/
-      -
-        store_artifacts:
-          path: /root/project/testout/
-  build_deb:
-    docker:
-      -
-        environment:
-          -
-            PERL5LIB: "."
-        image: "debian:9"
-    steps:
-      -
-        run: "apt-get update; apt-get install -y git ssh"
-      - checkout
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        run:
-          command: "apt-get update; apt-get -y install build-essential debhelper default-jre-headless git debsigs"
-          name: "Install prerequisite packages"
-      -
-        run:
-          command: deb/makedeb.sh
-          name: Build
-      -
-        save_cache:
-          key: "deb-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-          paths:
-            - /root/project/build
-      -
-        store_artifacts:
-          path: /root/project/build/
-  build_el7:
-    docker:
-      -
-        image: "centos:7"
-    steps:
-      -
-        run: "yum install -y git"
-      - checkout
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        run:
-          command: "yum install -y java-1.8.0-openjdk-headless \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign rpm-build make \"perl(Test::Simple)\" \"perl(CPAN)\" expect"
-          name: "Install prerequisite packages"
-      -
-        run:
-          command: rpm/makerpm.sh
-          name: Build
-      -
-        save_cache:
-          key: "rpm-el7-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-          paths:
-            - /root/project/build
-      -
-        store_artifacts:
-          path: /root/project/build/
-  build_fc25:
-    docker:
-      -
-        image: "fedora:25"
-    steps:
-      -
-        run: "dnf install -y git"
-      - checkout
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        run:
-          command: "dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign"
-          name: "Install prerequisite packages"
-      -
-        run:
-          command: rpm/makerpm.sh
-          name: Build
-      -
-        save_cache:
-          key: "rpm-fc25-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-          paths:
-            - /root/project/build
-      -
-        store_artifacts:
-          path: /root/project/build/
-  build_fc26:
-    docker:
-      -
-        image: "fedora:26"
-    steps:
-      -
-        run: "dnf install -y git"
-      - checkout
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        run:
-          command: "dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign make"
-          name: "Install prerequisite packages"
-      -
-        run:
-          command: rpm/makerpm.sh
-          name: Build
-      -
-        save_cache:
-          key: "rpm-fc26-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-          paths:
-            - /root/project/build
-      -
-        store_artifacts:
-          path: /root/project/build/
+
   cache_perl:
     docker:
-      -
-        image: "alpine:latest"
+      - image: alpine:3.8
     steps:
       - checkout
-      -
-        run:
-          command: "apk update && \\ apk add wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make perl-type-tiny \\ perl-digest-hmac perl-module-runtime perl-try-tiny perl-moo perl-strictures perl-test-fatal \\ perl-namespace-autoclean"
-          name: "Install prerequisite packages"
-      -
-        run: "cpanm Digest::SHA3"
-      -
-        run: "cpanm Crypt::PBKDF2"
-      -
-        save_cache:
-          key: "cpanm-{{ .Environment.CIRCLE_SHA1 }}"
+      - run:
+          name: Install prerequisite packages
+          command:
+            apk update && \
+            apk add wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make perl-type-tiny \
+            perl-digest-hmac perl-module-runtime perl-try-tiny perl-moo perl-strictures perl-test-fatal \
+            perl-namespace-autoclean
+      - run: cpanm Digest::SHA3
+      - run: cpanm Crypt::PBKDF2
+
+      - save_cache:
+          key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
           paths:
-            - /usr/local/lib/perl5/site_perl
-            - /usr/local/share/perl5/site_perl
-  debian8_test:
-    docker:
-      -
-        image: "debian:8"
-    steps:
-      -
-        run: "debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'"
-      -
-        run: "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'"
-      -
-        run: "apt-get update; apt-get install -y ca-certificates"
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        restore_cache:
-          key: "deb-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: "if dpkg -i /root/project/build/*.deb; then echo \"NOT ok\"; exit 99; else echo \"OK\" ; fi"
-          name: "Install package (shoud fail)"
-          shell: "bash -ex"
-      -
-        run:
-          command: "apt-get install -f -y"
-          name: "Install failed packages (shoud work)"
-      -
-        run:
-          command: "echo -n >/dev/tcp/localhost/8443"
-          name: "Seccubus should be running on port 8443"
-  debian9_test:
-    docker:
-      -
-        image: "debian:9"
-    steps:
-      -
-        run: "apt-get update; apt-get install -y ca-certificates"
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        restore_cache:
-          key: "deb-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: "if dpkg -i /root/project/build/*.deb; then echo \"NOT ok\"; exit 99; else echo \"OK\" ; fi"
-          name: "Install package (shoud fail)"
-          shell: "bash -ex"
-      -
-        run:
-          command: "apt-get install -f -y"
-          name: "Install failed packages (shoud work)"
-      -
-        run:
-          command: "echo -n >/dev/tcp/localhost/8443"
-          name: "Seccubus should be running on port 8443"
-  debian_ok:
-    docker:
-      -
-        image: alpine
-    steps:
-      -
-        run: "apk update; apk add ca-certificates"
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        restore_cache:
-          key: "deb-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        store_artifacts:
-          path: /root/project/build
-  debian_upload:
-    docker:
-      -
-        image: alpine
-    steps:
-      -
-        run:
-          command: "apk update; apk add alpine-sdk ruby-dev ruby"
-          name: "Installing prerequisites"
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        run:
-          command: "gem install package_cloud -N"
-          name: "Setup package cloud"
-      -
-        restore_cache:
-          key: "deb-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: |
-              package_cloud push seccubus/latest/debian/jessie build/*.deb
-              package_cloud push seccubus/latest/debian/stretch build/*.deb
-              package_cloud push seccubus/latest/ubuntu/trusty build/*.deb
-              package_cloud push seccubus/latest/ubuntu/zesty build/*.deb
-              package_cloud push seccubus/latest/ubuntu/artful build/*.deb
-              package_cloud push seccubus/latest/ubuntu/bionic build/*.deb
-          name: "Upload to packagecloud.io"
-  debian_upload_release:
-    docker:
-      -
-        image: alpine
-    steps:
-      -
-        run:
-          command: "apk update; apk add alpine-sdk ruby-dev ruby"
-          name: "Installing prerequisites"
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        run:
-          command: "gem install package_cloud -N"
-          name: "Setup package cloud"
-      -
-        restore_cache:
-          key: "deb-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: |
-              package_cloud push seccubus/releases/debian/jessie build/*.deb
-              package_cloud push seccubus/releases/debian/stretch build/*.deb
-              package_cloud push seccubus/releases/ubuntu/trusty build/*.deb
-              package_cloud push seccubus/releases/ubuntu/zesty build/*.deb
-              package_cloud push seccubus/releases/ubuntu/artful build/*.deb
-              package_cloud push seccubus/releases/ubuntu/bionic build/*.deb
-          name: "Upload to packagecloud.io"
-  el_ok:
-    docker:
-      -
-        image: alpine
-    steps:
-      -
-        run: "apk update; apk add ca-certificates"
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        restore_cache:
-          key: "rpm-el7-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        store_artifacts:
-          path: /root/project/build
-      -
-        restore_cache:
-          key: "rpm-fc25-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        store_artifacts:
-          path: /root/project/build
-      -
-        restore_cache:
-          key: "rpm-fc26-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        store_artifacts:
-          path: /root/project/build
-  el_upload:
-    docker:
-      -
-        image: alpine
-    steps:
-      -
-        run:
-          command: "apk update; apk add ca-certificates alpine-sdk ruby-dev ruby curl"
-          name: "Installing prerequisites"
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        run:
-          command: "gem install package_cloud -N"
-          name: "Setup package cloud"
-      -
-        restore_cache:
-          key: "rpm-el7-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: |
-              cd build
-              for file in *el7*rpm; do
-                REMOTE=${file/.el7/}
-                if [[ $(curl -Is https://packagecloud.io/seccubus/latest/packages/el/7/$REMOTE|grep 404|wc -l) -eq 1 ]]; then
-                  package_cloud push seccubus/latest/el/7 $file
-                else
-                  echo "$file already on packagecloud.io"
-                fi
-              done
-              cd ..
-          name: "Upload to packagecloud.io"
-      -
-        restore_cache:
-          key: "rpm-fc25-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: "package_cloud push seccubus/latest/fedora/25 build/*fc25*rpm"
-          name: "Upload to packagecloud.io"
-      -
-        restore_cache:
-          key: "rpm-fc26-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        store_artifacts:
-          path: /root/project/build
-      -
-        run:
-          command: "package_cloud push seccubus/latest/fedora/26 build/*fc26*rpm"
-          name: "Upload to packagecloud.io"
-  el_upload_release:
-    docker:
-      -
-        image: alpine
-    steps:
-      -
-        run:
-          command: "apk update; apk add ca-certificates alpine-sdk ruby-dev ruby"
-          name: "Installing prerequisites"
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        run:
-          command: "gem install package_cloud -N"
-          name: "Setup package cloud"
-      -
-        restore_cache:
-          key: "rpm-el7-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: |
-              cd build
-              for file in *el7*rpm; do
-                REMOTE=${file/.el7/}
-                if [[ $(curl -I https://packagecloud.io/seccubus/releases/packages/el/7/$REMOTE|grep 404|wc -l) -eq 1 ]]; then
-                  package_cloud push seccubus/releases/el/7 $file
-                else
-                  echo "$file already on packagecloud.io"
-                fi
-              done
-              cd ..
-          name: "Upload to packagecloud.io - el7"
-      -
-        restore_cache:
-          key: "rpm-fc25-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: "package_cloud push seccubus/releases/fedora/25 build/*fc25*rpm"
-          name: "Upload to packagecloud.io - fc25"
-      -
-        restore_cache:
-          key: "rpm-fc26-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        store_artifacts:
-          path: /root/project/build
-      -
-        run:
-          command: "package_cloud push seccubus/releases/fedora/26 build/*fc26*rpm"
-          name: "Upload to packagecloud.io - fc26"
-  kali_test:
-    docker:
-      -
-        image: "kalilinux/kali-linux-docker:latest"
-    steps:
-      -
-        run: "apt-get update; apt-get install -y ca-certificates"
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        restore_cache:
-          key: "deb-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: "if dpkg -i /root/project/build/*.deb; then echo \"NOT ok\"; exit 99; else echo \"OK\" ; fi"
-          name: "Install package (shoud fail)"
-          shell: "bash -ex"
-      -
-        run:
-          command: "apt-get install -f -y"
-          name: "Install failed packages (shoud work)"
-      -
-        run:
-          command: "echo -n >/dev/tcp/localhost/8443"
-          name: "Seccubus should be running on port 8443"
-  test_el7:
-    docker:
-      -
-        image: "centos:7"
-    steps:
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        restore_cache:
-          key: "rpm-el7-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run: "ls -al build"
-      -
-        run:
-          command: "yum install -y epel-release && yum install -y build/*el7*rpm"
-          name: "Install rpm"
-      -
-        run:
-          command: "cd /opt/seccubus; hypnotoad seccubus.pl"
-          name: "Start hypnotoad"
-      -
-        run:
-          command: "echo -n >/dev/tcp/localhost/8443"
-          name: "Seccubus should be running on port 8443"
-  test_fc25:
-    docker:
-      -
-        image: "fedora:25"
-    steps:
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        restore_cache:
-          key: "rpm-fc25-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run: "ls -al build"
-      -
-        run:
-          command: "dnf install -y build/*fc25*rpm"
-          name: "Install rpm"
-      -
-        run:
-          command: "cd /opt/seccubus; hypnotoad seccubus.pl"
-          name: "Start hypnotoad"
-      -
-        run:
-          command: "echo -n >/dev/tcp/localhost/8443"
-          name: "Seccubus should be running on port 8443"
-  test_fc26:
-    docker:
-      -
-        image: "fedora:26"
-    steps:
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        restore_cache:
-          key: "rpm-fc26-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: "dnf install -y build/*fc26*rpm"
-          name: "Install rpm"
-      -
-        run:
-          command: "cd /opt/seccubus; hypnotoad seccubus.pl"
-          name: "Start hypnotoad"
-      -
-        run:
-          command: "echo -n >/dev/tcp/localhost/8443"
-          name: "Seccubus should be running on port 8443"
-  ubuntu14_test:
-    docker:
-      -
-        image: "ubuntu:14.04"
-    steps:
-      -
-        run: "debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'"
-      -
-        run: "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'"
-      -
-        run: "apt-get update; apt-get install -y ca-certificates"
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        restore_cache:
-          key: "deb-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: "if dpkg -i /root/project/build/*.deb; then echo \"NOT ok\"; exit 99; else echo \"OK\" ; fi"
-          name: "Install package (shoud fail)"
-          shell: "bash -ex"
-      -
-        run:
-          command: "apt-get install -f -y"
-          name: "Install failed packages (shoud work)"
-      -
-        run:
-          command: "echo -n >/dev/tcp/localhost/8443"
-          name: "Seccubus should be running on port 8443"
-  ubuntu16_test:
-    docker:
-      -
-        image: "ubuntu:16.04"
-    steps:
-      -
-        run: "apt-get update; apt-get install -y ca-certificates"
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        restore_cache:
-          key: "deb-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: "if dpkg -i /root/project/build/*.deb; then echo \"NOT ok\"; exit 99; else echo \"OK\" ; fi"
-          name: "Install package (shoud fail)"
-          shell: "bash -ex"
-      -
-        run:
-          command: "apt-get install -f -y"
-          name: "Install failed packages (shoud work)"
-      -
-        run:
-          command: "echo -n >/dev/tcp/localhost/8443"
-          name: "Seccubus should be running on port 8443"
-  ubuntu17_test:
-    docker:
-      -
-        image: "ubuntu:17.10"
-    steps:
-      -
-        run: "debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'"
-      -
-        run: "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'"
-      -
-        run: "apt-get update; apt-get install -y ca-certificates"
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        restore_cache:
-          key: "deb-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: "if dpkg -i /root/project/build/*.deb; then echo \"NOT ok\"; exit 99; else echo \"OK\" ; fi"
-          name: "Install package (shoud fail)"
-          shell: "bash -ex"
-      -
-        run:
-          command: "apt-get install -f -y"
-          name: "Install failed packages (shoud work)"
-      -
-        run:
-          command: "echo -n >/dev/tcp/localhost/8443"
-          name: "Seccubus should be running on port 8443"
-  ubuntu18_test:
-    docker:
-      -
-        image: "ubuntu:18.04"
-    steps:
-      -
-        run: "debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'"
-      -
-        run: "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'"
-      -
-        run: "apt-get update; apt-get install -y ca-certificates"
-      -
-        run:
-          command: "echo $CIRCLE_SHA1 > .git-describe"
-          name: "Generate build signature"
-      -
-        restore_cache:
-          key: "deb-{{ .Branch }}-{{ checksum \".git-describe\" }}"
-      -
-        run:
-          command: "if dpkg -i /root/project/build/*.deb; then echo \"NOT ok\"; exit 99; else echo \"OK\" ; fi"
-          name: "Install package (shoud fail)"
-          shell: "bash -ex"
-      -
-        run:
-          command: "apt-get install -f -y"
-          name: "Install failed packages (shoud work)"
-      -
-        run:
-          command: "echo -n >/dev/tcp/localhost/8443"
-          name: "Seccubus should be running on port 8443"
+            - "/usr/local/lib/perl5/site_perl"
+            - "/usr/local/share/perl5/site_perl"
+
   unit_tests:
     docker:
-      -
+      - image: alpine:latest
         environment:
-          -
-            PERL5LIB: "."
-          -
-            MYSQL_HOME: /root/project/.circleci
-        image: "alpine:latest"
-      -
-        image: "circleci/mysql:5.7"
+        - PERL5LIB: "."
+        - MYSQL_HOME: "/root/project/.circleci"
+
+      - image: circleci/mysql:5.7
+
     parallelism: 3
+
     steps:
       - checkout
-      -
-        run:
-          command: "apk update apk add make mysql-client \\ perl-dbd-mysql perl-dbi perl-date-format perl-html-parser perl-json perl-libwww \\ perl-lwp-protocol-https perl-net-ip perl-term-readkey perl-xml-simple perl-app-cpanminus \\ perl-mojolicious perl-algorithm-diff perl-module-build perl-namespace-autoclean perl-moo \\ perl-strictures perl-test-fatal perl-digest-hmac perl-type-tinyperl-type-tiny perl-digest-hmac \\ perl-module-runtime perl-try-tiny perl-moo perl-strictures perl-test-fatal perl-namespace-autoclean"
-          name: "Install prerequisite packages"
-      -
-        restore_cache:
-          key: "cpanm-{{ .Environment.CIRCLE_SHA1 }}"
-      -
-        run: "cpanm --installdeps --notest ."
-      -
-        run:
+      - run:
+          name: Install prerequisite packages
+          command:
+            apk update
+            apk add make mysql-client \
+            perl-dbd-mysql perl-dbi perl-date-format perl-html-parser perl-json perl-libwww \
+            perl-lwp-protocol-https perl-net-ip perl-term-readkey perl-xml-simple perl-app-cpanminus \
+            perl-mojolicious perl-algorithm-diff perl-module-build perl-namespace-autoclean perl-moo \
+            perl-strictures perl-test-fatal perl-digest-hmac perl-type-tinyperl-type-tiny perl-digest-hmac \
+            perl-module-runtime perl-try-tiny perl-moo perl-strictures perl-test-fatal perl-namespace-autoclean
+      - restore_cache:
+          key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
+      - run: cpanm --installdeps --notest .
+      - run:
+          name: Wait for database
           command: |
-              while ! echo -n > /dev/tcp/127.0.0.1/3306; do
-                sleep 1
-                echo -n .
-              done
-          name: "Wait for database"
-      -
-        run:
+            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
+              sleep 1
+              echo -n .
+            done
+      - run:
+          name: Create database(s)
           command: |
-              mysql -e "create database seccubus"
-              mysql -e "create database seccubus_create"
-              mysql -e "create database seccubus_upgrade"
-          name: "Create database(s)"
-      -
-        run: "if [ -e .git/shallow ]; then git fetch --unshallow; fi"
-      -
-        run:
-          command: "circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=classname | xargs prove --harness TAP::Harness::JUnit"
-          name: "Unit test"
-      -
-        run:
+            mysql -e "create database seccubus"
+            mysql -e "create database seccubus_create"
+            mysql -e "create database seccubus_upgrade"
+      - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
+      - run:
+          name: Unit test
+          command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=classname | xargs prove --harness TAP::Harness::JUnit
+      - run:
+          name: Rename unit tests cache
           command: |
-              sed -i.bak -e 's/"t_/"t\//g; s/_t"/\.t"/g' junit_output.xml
-              mkdir testout
-              mv junit_output.xml testout/junit_$CIRCLE_NODE_INDEX.xml
-          name: "Rename unit tests cache"
-      -
-        save_cache:
-          key: "junit-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Environment.CIRCLE_SHA1 }}"
+            sed -i.bak -e 's/"t_/"t\//g; s/_t"/\.t"/g' junit_output.xml
+            mkdir testout
+            mv junit_output.xml testout/junit_$CIRCLE_NODE_INDEX.xml
+      - save_cache:
+          key: junit-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
-            - /root/project/testout
-      -
-        store_artifacts:
+            - "/root/project/testout"
+      - store_artifacts:
           path: /root/project/testout/
-      -
-        store_test_results:
+      - store_test_results:
           path: /root/project/testout/
-version: 2
+  build:
+    docker:
+      - image: perl:latest
+        environment:
+        - PERL5LIB: "."
+
+    steps:
+      - checkout
+      - run:
+          name: Install prerequisite packages
+          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client default-jre
+      - restore_cache:
+          key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Build
+          command: ./build_all
+      - store_artifacts:
+          path: /root/project/build/
+      - restore_cache:
+          key: junit-0-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: junit-1-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: junit-2-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: junit-3-{{ .Environment.CIRCLE_SHA1 }}
+      - store_test_results:
+          path: /root/project/testout/
+      - store_artifacts:
+          path: /root/project/testout/
+
+  build_deb:
+    docker:
+      - image: debian:9
+        environment:
+        - PERL5LIB: "."
+
+    steps:
+      - run: apt-get update; apt-get install -y git ssh
+      - checkout
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Install prerequisite packages
+          command: apt-get update; apt-get -y install build-essential debhelper default-jre-headless git debsigs
+      - run:
+          name: Build
+          command: deb/makedeb.sh
+      - save_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+          paths:
+            - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/
+
+  debian8_test:
+    docker:
+      - image: debian:8
+
+    steps:
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
+      - run: apt-get update; apt-get install -y ca-certificates
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  debian9_test:
+    docker:
+      - image: debian:9
+
+    steps:
+      - run: apt-get update; apt-get install -y ca-certificates
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  kali_test:
+    docker:
+      - image: kalilinux/kali-linux-docker:latest
+
+    steps:
+      - run: apt-get update; apt-get install -y ca-certificates
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  ubuntu14_test:
+    docker:
+      - image: ubuntu:14.04
+
+    steps:
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
+      - run: apt-get update; apt-get install -y ca-certificates
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  ubuntu16_test:
+    docker:
+      - image: ubuntu:16.04
+
+    steps:
+      - run: apt-get update; apt-get install -y ca-certificates
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  ubuntu17_test:
+    docker:
+      - image: ubuntu:17.10
+
+    steps:
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
+      - run: apt-get update; apt-get install -y ca-certificates
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  ubuntu18_test:
+    docker:
+      - image: ubuntu:18.04
+
+    steps:
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
+      - run: apt-get update; apt-get install -y ca-certificates
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  debian_ok:
+    docker:
+      - image: alpine
+    steps:
+      - run: apk update; apk add ca-certificates
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - store_artifacts:
+          path: /root/project/build
+
+  debian_upload:
+    docker:
+      - image: alpine
+    steps:
+      - run:
+          name: Installing prerequisites
+          command: apk update; apk add alpine-sdk ruby-dev ruby
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Setup package cloud
+          command: gem install package_cloud -N
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: |
+            package_cloud push seccubus/latest/debian/jessie build/*.deb
+            package_cloud push seccubus/latest/debian/stretch build/*.deb
+            package_cloud push seccubus/latest/ubuntu/trusty build/*.deb
+            package_cloud push seccubus/latest/ubuntu/zesty build/*.deb
+            package_cloud push seccubus/latest/ubuntu/artful build/*.deb
+            package_cloud push seccubus/latest/ubuntu/bionic build/*.deb
+
+  debian_upload_release:
+    docker:
+      - image: alpine
+    steps:
+      - run:
+          name: Installing prerequisites
+          command: apk update; apk add alpine-sdk ruby-dev ruby
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Setup package cloud
+          command: gem install package_cloud -N
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: |
+            package_cloud push seccubus/releases/debian/jessie build/*.deb
+            package_cloud push seccubus/releases/debian/stretch build/*.deb
+            package_cloud push seccubus/releases/ubuntu/trusty build/*.deb
+            package_cloud push seccubus/releases/ubuntu/zesty build/*.deb
+            package_cloud push seccubus/releases/ubuntu/artful build/*.deb
+            package_cloud push seccubus/releases/ubuntu/bionic build/*.deb
+
+  build_fc26:
+    docker:
+      - image: fedora:26
+    steps:
+      - run: dnf install -y git
+      - checkout
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Install prerequisite packages
+          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign make
+      - run:
+          name: Build
+          command: rpm/makerpm.sh
+      - save_cache:
+          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
+          paths:
+            - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/
+
+  test_fc26:
+    docker:
+      - image: fedora:26
+    steps:
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install rpm
+          command: dnf install -y build/*fc26*rpm
+      - run:
+          name: Start hypnotoad
+          command: cd /opt/seccubus; hypnotoad seccubus.pl
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  build_fc25:
+    docker:
+      - image: fedora:25
+    steps:
+      - run: dnf install -y git
+      - checkout
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Install prerequisite packages
+          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign
+      - run:
+          name: Build
+          command: rpm/makerpm.sh
+      - save_cache:
+          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
+          paths:
+            - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/
+
+  test_fc25:
+    docker:
+      - image: fedora:25
+    steps:
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run: ls -al build
+      - run:
+          name: Install rpm
+          command: dnf install -y build/*fc25*rpm
+      - run:
+          name: Start hypnotoad
+          command: cd /opt/seccubus; hypnotoad seccubus.pl
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  build_el7:
+    docker:
+      - image: centos:7
+    steps:
+      - run: yum install -y git
+      - checkout
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Install prerequisite packages
+          command: yum install -y java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign rpm-build make "perl(Test::Simple)" "perl(CPAN)" expect
+      - run:
+          name: Build
+          command: rpm/makerpm.sh
+      - save_cache:
+          key: rpm-el7-{{ .Branch }}-{{ checksum ".git-describe" }}
+          paths:
+            - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/
+
+  test_el7:
+    docker:
+      - image: centos:7
+    steps:
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: rpm-el7-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run: ls -al build
+      - run:
+          name: Install rpm
+          command: yum install -y epel-release && yum install -y build/*el7*rpm
+      - run:
+          name: Start hypnotoad
+          command: cd /opt/seccubus; hypnotoad seccubus.pl
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  el_ok:
+    docker:
+      - image: alpine
+    steps:
+      - run: apk update; apk add ca-certificates
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: rpm-el7-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - store_artifacts:
+          path: /root/project/build
+      - restore_cache:
+          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - store_artifacts:
+          path: /root/project/build
+      - restore_cache:
+          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - store_artifacts:
+          path: /root/project/build
+
+  el_upload:
+    docker:
+      - image: alpine
+    steps:
+      - run:
+          name: Installing prerequisites
+          command: apk update; apk add ca-certificates alpine-sdk ruby-dev ruby curl
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Setup package cloud
+          command: gem install package_cloud -N
+      - restore_cache:
+          key: rpm-el7-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: |
+            cd build
+            for file in *el7*rpm; do
+              REMOTE=${file/.el7/}
+              if [[ $(curl -Is https://packagecloud.io/seccubus/latest/packages/el/7/$REMOTE|grep 404|wc -l) -eq 1 ]]; then
+                package_cloud push seccubus/latest/el/7 $file
+              else
+                echo "$file already on packagecloud.io"
+              fi
+            done
+            cd ..
+      - restore_cache:
+          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: package_cloud push seccubus/latest/fedora/25 build/*fc25*rpm
+      - restore_cache:
+          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - store_artifacts:
+          path: /root/project/build
+      - run:
+          name : Upload to packagecloud.io
+          command: package_cloud push seccubus/latest/fedora/26 build/*fc26*rpm
+
+  el_upload_release:
+    docker:
+      - image: alpine
+    steps:
+      - run:
+          name: Installing prerequisites
+          command: apk update; apk add ca-certificates alpine-sdk ruby-dev ruby
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Setup package cloud
+          command: gem install package_cloud -N
+      - restore_cache:
+          key: rpm-el7-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io - el7
+          command: |
+            cd build
+            for file in *el7*rpm; do
+              REMOTE=${file/.el7/}
+              if [[ $(curl -I https://packagecloud.io/seccubus/releases/packages/el/7/$REMOTE|grep 404|wc -l) -eq 1 ]]; then
+                package_cloud push seccubus/releases/el/7 $file
+              else
+                echo "$file already on packagecloud.io"
+              fi
+            done
+            cd ..
+      - restore_cache:
+          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io - fc25
+          command: package_cloud push seccubus/releases/fedora/25 build/*fc25*rpm
+      - restore_cache:
+          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - store_artifacts:
+          path: /root/project/build
+      - run:
+          name : Upload to packagecloud.io - fc26
+          command: package_cloud push seccubus/releases/fedora/26 build/*fc26*rpm
+
 workflows:
+
+  version: 2
+
+  unit_and_integration_tests:
+    jobs:
+      - cache_perl
+      - unit_tests:
+          requires:
+            - cache_perl
+      - build:
+          requires:
+            - unit_tests
+
   debian_package_building:
     jobs:
-      -
-        build_deb:
+      - build_deb:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - deb-building
-      -
-        debian9_test:
-          filters:
-            branches:
-              only:
-                - master
-                - releases
-                - deb-building
+      - debian9_test:
           requires:
             - build_deb
-      -
-        debian8_test:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - deb-building
+      - debian8_test:
           requires:
             - build_deb
-      -
-        ubuntu14_test:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - deb-building
+      - ubuntu14_test:
           requires:
             - build_deb
-      -
-        ubuntu16_test:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - deb-building
+      - ubuntu16_test:
           requires:
             - build_deb
-      -
-        ubuntu17_test:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - deb-building
+      - ubuntu17_test:
           requires:
             - build_deb
-      -
-        ubuntu18_test:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - deb-building
+      - ubuntu18_test:
           requires:
             - build_deb
-      -
-        kali_test:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - deb-building
+      - kali_test:
           requires:
             - build_deb
-      -
-        debian_ok:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - deb-building
+      - debian_ok:
           requires:
             - debian8_test
             - debian9_test
@@ -825,115 +683,99 @@ workflows:
             - ubuntu17_test
             - ubuntu18_test
             - kali_test
-      -
-        debian_upload:
           filters:
             branches:
               only:
                 - master
+                - releases
+                - deb-building
+      - debian_upload:
           requires:
             - debian_ok
-      -
-        debian_upload_release:
+          filters:
+            branches:
+              only:
+                - master
+      - debian_upload_release:
+          requires:
+            - debian_ok
           filters:
             branches:
               only:
                 - releases
-          requires:
-            - debian_ok
+
   el_package_building:
     jobs:
-      -
-        build_el7:
+      - build_el7:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - rpm-build
-      -
-        test_el7:
-          filters:
-            branches:
-              only:
-                - master
-                - releases
-                - rpm-build
+      - test_el7:
           requires:
             - build_el7
-      -
-        build_fc25:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - rpm-build
-      -
-        test_fc25:
+      - build_fc25:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - rpm-build
+      - test_fc25:
           requires:
             - build_fc25
-      -
-        build_fc26:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - rpm-build
-      -
-        test_fc26:
+      - build_fc26:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - rpm-build
+      - test_fc26:
           requires:
             - build_fc26
-      -
-        el_ok:
           filters:
             branches:
               only:
                 - master
                 - releases
                 - rpm-build
+      - el_ok:
           requires:
             - test_el7
             - test_fc25
             - test_fc26
-      -
-        el_upload:
           filters:
             branches:
               only:
                 - master
+                - releases
+                - rpm-build
+      - el_upload:
           requires:
             - el_ok
-      -
-        el_upload_release:
+          filters:
+            branches:
+              only:
+                - master
+      - el_upload_release:
+          requires:
+            - el_ok
           filters:
             branches:
               only:
                 - releases
-          requires:
-            - el_ok
-  unit_and_integration_tests:
-    jobs:
-      - cache_perl
-      -
-        unit_tests:
-          requires:
-            - cache_perl
-      -
-        build:
-          requires:
-            - unit_tests
-  version: 2
