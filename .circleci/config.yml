@@ -9,7 +9,7 @@ jobs:
       - type: shell
         command:
           apk update &&
-          apk add wget git ssh
+          apk add wget git
       - checkout
       - run:
           name: Install prerequisite packages
