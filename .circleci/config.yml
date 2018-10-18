@@ -7,7 +7,9 @@ jobs:
     steps:
       - run: whoami
       - type: shell
-        command: apk update
+        command:
+          apk update &&
+          apk add wget git ssh
       - checkout
       - run:
           name: Install prerequisite packages
