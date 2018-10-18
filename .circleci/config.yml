@@ -5,21 +5,19 @@ jobs:
     docker:
       - image: alpine:3.8
     steps:
-      - run: whoami
-      - type: shell
-        command:
-          apk update ; apk add wget git
+      - run:
+          apk --no-progress update;
+          apk --no-progress add wget git
       - checkout
       - run:
           name: Install prerequisite packages
           command:
-            apk update &&
-            apk add wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make perl-type-tiny
+            apk --no-progress update ;
+            apk --no-progress add wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make perl-type-tiny
             perl-digest-hmac perl-module-runtime perl-try-tiny perl-moo perl-strictures perl-test-fatal
             perl-namespace-autoclean
       - run: cpanm Digest::SHA3
       - run: cpanm Crypt::PBKDF2
-
       - save_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
           paths:
