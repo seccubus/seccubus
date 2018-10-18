@@ -5,12 +5,13 @@ jobs:
     docker:
       - image: alpine:3.8
     steps:
+      - run: ls -al /sbin
       - checkout
       - run:
           name: Install prerequisite packages
           command:
-            apk update && \
-            apk add wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make perl-type-tiny \
+            /sbin/apk update && \
+            /sbin/apk add wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make perl-type-tiny \
             perl-digest-hmac perl-module-runtime perl-try-tiny perl-moo perl-strictures perl-test-fatal \
             perl-namespace-autoclean
       - run: cpanm Digest::SHA3
