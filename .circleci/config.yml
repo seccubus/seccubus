@@ -6,8 +6,10 @@ jobs:
       - image: alpine:3.8
     steps:
       - run:
-          apk --no-progress update;
-          apk --no-progress add wget git
+          name: Install git and wget
+          command:
+            apk --no-progress update;
+            apk --no-progress add git wget
       - checkout
       - run:
           name: Install prerequisite packages
@@ -36,16 +38,20 @@ jobs:
     parallelism: 3
 
     steps:
+      - run:
+          name: Install git and wget
+          command:
+            apk --no-progress update;
+            apk --no-progress add git wget
       - checkout
       - run:
           name: Install prerequisite packages
           command:
-            apk update
-            apk add make mysql-client \
-            perl-dbd-mysql perl-dbi perl-date-format perl-html-parser perl-json perl-libwww \
-            perl-lwp-protocol-https perl-net-ip perl-term-readkey perl-xml-simple perl-app-cpanminus \
-            perl-mojolicious perl-algorithm-diff perl-module-build perl-namespace-autoclean perl-moo \
-            perl-strictures perl-test-fatal perl-digest-hmac perl-type-tinyperl-type-tiny perl-digest-hmac \
+            apk add make mysql-client
+            perl-dbd-mysql perl-dbi perl-date-format perl-html-parser perl-json perl-libwww
+            perl-lwp-protocol-https perl-net-ip perl-term-readkey perl-xml-simple perl-app-cpanminus
+            perl-mojolicious perl-algorithm-diff perl-module-build perl-namespace-autoclean perl-moo
+            perl-strictures perl-test-fatal perl-digest-hmac perl-type-tinyperl-type-tiny perl-digest-hmac
             perl-module-runtime perl-try-tiny perl-moo perl-strictures perl-test-fatal perl-namespace-autoclean
       - restore_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
