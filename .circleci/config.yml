@@ -6,6 +6,8 @@ jobs:
       - image: alpine:3.8
     steps:
       - run: whoami
+      - type: shell
+        command: apk update
       - checkout
       - run:
           name: Install prerequisite packages
