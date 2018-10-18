@@ -8,15 +8,14 @@ jobs:
       - run: whoami
       - type: shell
         command:
-          apk update &&
-          apk add wget git
+          apk update ; apk add wget git
       - checkout
       - run:
           name: Install prerequisite packages
           command:
-            sudo apk update && \
-            sudo apk add wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make perl-type-tiny \
-            perl-digest-hmac perl-module-runtime perl-try-tiny perl-moo perl-strictures perl-test-fatal \
+            apk update &&
+            apk add wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make perl-type-tiny
+            perl-digest-hmac perl-module-runtime perl-try-tiny perl-moo perl-strictures perl-test-fatal
             perl-namespace-autoclean
       - run: cpanm Digest::SHA3
       - run: cpanm Crypt::PBKDF2
