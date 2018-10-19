@@ -7,23 +7,34 @@ jobs:
         environment:
         - PERL5LIB: "."
     steps:
-      - run: apk --no-progress update
-      - run: apk --no-progress add git wget
+      - run:
+        name: Instlal prerequisites
+        command: |
+          apk --no-progress update ;
+          apk --no-progress add git wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
+          perl-algorithm-diff perl-carp perl-dbd-mysql perl-dbi perl-data-dumper perl-date-format perl-exporter \
+          perl-html-parser perl-json perl-libwww perl-lwp-protocol-https perl-mojolicious perl-net-ip \
+          perl-term-readkey perl-xml-simple perl-module-build perl-module-pluggable perl-test-weaken \
+          perl-config-tiny perl-exception-class perl-test-deep perl-readonly perl-file-which \
+          perl-list-moreutils perl-params-util perl-class-inspector perl-file-remove perl-clone perl-class-tiny \
+          perl-path-tiny perl-type-tiny perl-module-runtime perl-namespace-autoclean perl-moo perl-strictures \
+          perl-digest-hmac perl-task-weaken
       - checkout
       - restore_cache:
-          key: cpanm-{{ checksum "Makefile.PL" }}-v2
+          key: cpanm-{{ checksum "Makefile.PL" }}-v3
+#      - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
       - run: cpanm --installdeps --notest .
+      - run: cpanm
       - save_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - "/usr/local/lib/perl5/site_perl"
             - "/usr/local/share/perl5/site_perl"
       - save_cache:
-          key: cpanm-{{ checksum "Makefile.PL" }}-v2
+          key: cpanm-{{ checksum "Makefile.PL" }}-v3
           paths:
             - "/usr/local/lib/perl5/site_perl"
             - "/usr/local/share/perl5/site_perl"
-#      - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
 
   unit_tests:
     docker:
