@@ -8,7 +8,7 @@ jobs:
         - PERL5LIB: "."
     steps:
       - run:
-          name: Instlal prerequisites
+          name: Install prerequisites
           command: |
             apk --no-progress update ;
             apk --no-progress add git wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
@@ -20,6 +20,7 @@ jobs:
             perl-path-tiny perl-type-tiny perl-module-runtime perl-namespace-autoclean perl-moo perl-strictures \
             perl-digest-hmac perl-task-weaken ;
             exit 0
+      - run: apk add git
       - checkout
       - restore_cache:
           key: cpanm-{{ checksum "Makefile.PL" }}-v3
