@@ -18,7 +18,8 @@ jobs:
             perl-config-tiny perl-exception-class perl-test-deep perl-readonly perl-file-which \
             perl-list-moreutils perl-params-util perl-class-inspector perl-file-remove perl-clone perl-class-tiny \
             perl-path-tiny perl-type-tiny perl-module-runtime perl-namespace-autoclean perl-moo perl-strictures \
-            perl-digest-hmac perl-task-weaken
+            perl-digest-hmac perl-task-weaken ;
+            exit 0
       - checkout
       - restore_cache:
           key: cpanm-{{ checksum "Makefile.PL" }}-v3
