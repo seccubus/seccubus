@@ -23,7 +23,6 @@ jobs:
       - restore_cache:
           key: cpanm-{{ checksum "Makefile.PL" }}-v3
       - run: cpanm --installdeps --notest .
-      - run: cpanm
       - save_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
           paths:
