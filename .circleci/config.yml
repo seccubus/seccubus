@@ -9,7 +9,7 @@ jobs:
     steps:
       - run:
         name: Instlal prerequisites
-        command:
+        command: |
           apk --no-progress update ;
           apk --no-progress add git wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
           perl-algorithm-diff perl-carp perl-dbd-mysql perl-dbi perl-data-dumper perl-date-format perl-exporter \
