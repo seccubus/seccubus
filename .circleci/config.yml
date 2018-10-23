@@ -42,7 +42,7 @@ jobs:
         - PERL5LIB: "."
         - MYSQL_HOME: "/root/project/.circleci"
 
-      - image: circleci/mysql:8
+      - image: circleci/mysql:5
 
     parallelism: 3
 
