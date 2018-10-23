@@ -67,10 +67,10 @@ jobs:
       - run:
           name: Wait for database
           command: |
-            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
+            bash -c "while ! echo -n > /dev/tcp/127.0.0.1/3306; do
               sleep 1
               echo -n .
-            done
+            done"
       - run:
           name: Create database(s)
           command: |
