@@ -42,7 +42,7 @@ jobs:
         - PERL5LIB: "."
         - MYSQL_HOME: "/root/project/.circleci"
 
-      - image: circleci/mysql:5.7
+      - image: circleci/mysql:8
 
     parallelism: 3
 
@@ -58,7 +58,7 @@ jobs:
             perl-config-tiny perl-exception-class perl-test-deep perl-readonly perl-file-which \
             perl-list-moreutils perl-params-util perl-class-inspector perl-file-remove perl-clone perl-class-tiny \
             perl-path-tiny perl-type-tiny perl-module-runtime perl-namespace-autoclean perl-moo perl-strictures \
-            perl-digest-hmac perl-task-weaken perl-test-harness perl-test-harness-utils bash
+            perl-digest-hmac perl-task-weaken perl-test-harness perl-test-harness-utils bash mysql-client
       - checkout
       - restore_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
