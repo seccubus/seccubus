@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk, Steve Launius
+# Copyright 2011-2018 Frank Breedijk, Steve Launius
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ sub create_workspace {
 	}
 
 	return sql( "return"	=> "id",
-		   "query"	=> "INSERT into workspaces(name) values (?)",
+		   "query"	=> "INSERT INTO`workspaces` (`name`) VALUES (?)",
 		   "values"	=> [ $name ]
 		 );
 }
@@ -137,28 +137,28 @@ sub delete_workspace {
 
 	# delete all records in host_names that matches workspace id
 	my $rows = sql( "return"	=> "rows",
-			 "query"	=> "DELETE FROM host_names where workspace_id = ?",
+			 "query"	=> "DELETE FROM `host_names` where `workspace_id` = ?",
 			 "values"	=> [ $workspace_id ]
 			 );
 	$result .= "Deleted $rows from host_names table.\n" if $verbose;
 
 	# delete all records in rights that matches workspace id
 	$rows = sql( "return"	=> "rows",
-		 		"query"	=> "DELETE FROM rights WHERE workspace_id = ?",
+		 		"query"	=> "DELETE FROM `rights` WHERE `workspace_id` = ?",
 		 		"values"	=> [ $workspace_id ]
 		 		);
 	$result .= "Deleted $rows from rights table.\n" if $verbose;
 
 	# For each id in scans that matches workspace id
 	my $scans = sql( "return"	=> "ref",
-					"query"	=> "SELECT id FROM scans WHERE workspace_id = ?",
+					"query"	=> "SELECT `id` FROM `scans` WHERE `workspace_id` = ?",
 					"values"	=> [ $workspace_id ],
 	       			);
 	my $total_runs_rows_del = 0;
 	foreach my $scan_id (@$scans) {
 		# delete all records in runs that matches scan_id
 		$rows = sql( "return"	=> "rows",
-			 "query"	=> "DELETE FROM runs where scan_id = ?",
+			 "query"	=> "DELETE FROM `runs` where `scan_id` = ?",
 			 "values"	=> [ $$scan_id[0] ]
 			 );
 		$total_runs_rows_del += $rows;
@@ -167,14 +167,14 @@ sub delete_workspace {
 
 	#	delete all records in scans that matches workspace id
 	$rows = sql( "return"	=> "rows",
-		 "query"	=> "DELETE FROM scans WHERE workspace_id = ?",
+		 "query"	=> "DELETE FROM `scans` WHERE `workspace_id` = ?",
 		 "values"	=> [ $workspace_id ]
 		 );
 	$result .= "Deleted $rows from scans table.\n" if $verbose;
 
 	# For each id in findings that matches workspace id
 	my $findings = sql( "return"	=> "ref",
-					   "query"	=> "SELECT id FROM findings WHERE workspace_id = ?",
+					   "query"	=> "SELECT `id` FROM `findings` WHERE `workspace_id` = ?",
 					   "values"	=> [ $workspace_id ],
 	       			 );
 	my $total_finding_changes_rows_del = 0;
@@ -185,41 +185,41 @@ sub delete_workspace {
 	foreach my $finding_id (@$findings) {
 		# delete all records in finding_changes that matches finding_id
 		$rows = sql( "return"	=> "rows",
-			 		"query"	=> "DELETE FROM finding_changes where finding_id = ?",
+			 		"query"	=> "DELETE FROM `finding_changes` where `finding_id` = ?",
 			 		"values"	=> [ $$finding_id[0] ]
 			 		);
 		$total_finding_changes_rows_del += $rows;
 
 		# for each unique issue_id in issues2findings that matches finding_id
 		my $issues2findings = sql( "return"	=> "ref",
-									"query"	=> "SELECT DISTINCT issue_id FROM issues2findings WHERE finding_id = ?",
+									"query"	=> "SELECT DISTINCT `issue_id` FROM `issues2findings` WHERE `finding_id` = ?",
 									"values"	=> [ $$finding_id[0] ],
 									);
 	    foreach my $issue_id (@$issues2findings) {
 			# delete all records in issue_changes that matches issue_id
 			$rows = sql( "return"	=> "rows",
-			 			"query"	=> "DELETE FROM issue_changes where issue_id = ?",
+			 			"query"	=> "DELETE FROM `issue_changes` where `issue_id` = ?",
 			 			"values"	=> [ $$issue_id[0] ]
 			 			);
 			$total_issue_changes_rows_del += $rows;
 
 			# delete all records in issue2finding_changes that matches issue_id
 			$rows = sql( "return"	=> "rows",
-			 			"query"	=> "DELETE FROM issue2finding_changes where issue_id = ?",
+			 			"query"	=> "DELETE FROM `issue2finding_changes` where `issue_id` = ?",
 			 			"values"	=> [ $$issue_id[0] ]
 			 			);
 			$total_issue2findings_changes_rows_del += $rows;
 
 			# delete the record in issues that matches issue_id
 			$rows = sql( "return"	=> "rows",
-			 			"query"	=> "DELETE FROM issue where id = ?",
+			 			"query"	=> "DELETE FROM `issue` where `id` = ?",
 			 			"values"	=> [ $$issue_id[0] ]
 			 			);
 			$total_issues_rows_del += $rows;
 	    }
 		# delete all issues2findings records that matches finding_id
 		$rows = sql( "return"	=> "rows",
-					"query"	=> "DELETE FROM issues2findings WHERE finding_id = ?",
+					"query"	=> "DELETE FROM `issues2findings` WHERE `finding_id` = ?",
 					"values"	=> [ @$finding_id ],
 	       			);
 	    $total_issue2findings_rows_del += $rows;
@@ -232,14 +232,14 @@ sub delete_workspace {
 
 	#	delete all findings records that matches workspace id
 	$rows = sql( "return"	=> "rows",
-				"query"	=> "DELETE FROM findings WHERE workspace_id = ?",
+				"query"	=> "DELETE FROM `findings` WHERE `workspace_id` = ?",
 				"values"	=> [ $workspace_id ],
 				);
 	$result .= "Deleted $rows from findings table.\n" if $verbose;
 
 	# Delete the record from the workspaces table that matches workspace id
 	$rows = sql( "return"	=> "rows",
-				"query"	=> "DELETE FROM workspaces WHERE id = ?",
+				"query"	=> "DELETE FROM `workspaces` WHERE `id` = ?",
 				"values"	=> [ $workspace_id ],
 				);
 	$result .= "Deleted $rows from workspaces table.\n" if $verbose;
@@ -290,7 +290,7 @@ sub edit_workspace {
 	}
 
 	my $rows = sql( "return"	=> "rows",
-			"query"	=> "UPDATE workspaces SET name = ? WHERE id = ?",
+			"query"	=> "UPDATE `workspaces` SET `name` = ? WHERE `id` = ?",
 			"values"	=> [ $newname, $id ]
 			 );
 	return $rows;
@@ -323,9 +323,9 @@ sub get_workspace_id {
 
 	my $id =
 		sql( "return"	=> "array",
-		     "query"	=> "SELECT id
-		 		    FROM workspaces
-				    WHERE name = ?
+		     "query"	=> "SELECT `id`
+		 		    FROM `workspaces`
+				    WHERE `name` = ?
 				    ",
 		     "values"	=> [ $name ],
 		);
@@ -365,23 +365,23 @@ sub get_workspaces {
 
     my $query = qq{
         SELECT DISTINCT
-            workspaces.id, workspaces.name,
-            ( SELECT MAX(time) FROM scans LEFT JOIN runs ON scans.id = runs.scan_id WHERE scans.workspace_id = workspaces.id) as lastrun,
+            `workspaces`.`id`, `workspaces`.`name`,
+            ( SELECT MAX(`time`) FROM `scans` LEFT JOIN `runs` ON `scans`.`id` = `runs`.`scan_id` WHERE `scans`.`workspace_id` = `workspaces`.`id`) as `lastrun`,
             '' as findings,
-            ( SELECT COUNT(*) FROM scans WHERE workspace_id = workspaces.id) as scans
-        FROM workspaces
-            LEFT JOIN rights ON workspaces.id = rights.workspace_id
-            LEFT JOIN groups ON rights.group_id = groups.id
-            LEFT JOIN user2group ON groups.id = user2group.group_id
-            LEFT JOIN users ON user2group.user_id = users.id
+            ( SELECT COUNT(*) FROM `scans` WHERE `workspace_id` = `workspaces`.`id`) as `scans`
+        FROM `workspaces`
+            LEFT JOIN `rights` ON `workspaces`.`id` = `rights`.`workspace_id`
+            LEFT JOIN `groups` ON `rights`.`group_id` = `groups`.`id`
+            LEFT JOIN `user2group` ON `groups`.`id` = `user2group`.`group_id`
+            LEFT JOIN `users` ON `user2group`.`user_id` = `users`.`id`
         WHERE
             (
-                (users.username= ? and rights.allow_read=1 or rights.allow_write=1)
+                (`users`.`username`= ? and `rights`.`allow_read`=1 or `rights`.`allow_write`=1)
                 OR (1=?)
             )
     };
-    $query .= " AND workspaces.id = ? " if $workspace_id;
-    $query .= " ORDER BY workspaces.name; ";
+    $query .= " AND `workspaces`.`id` = ? " if $workspace_id;
+    $query .= " ORDER BY `workspaces`.`name`; ";
 
     my $values = [ $ENV{SECCUBUS_USER}, $user_is_admin ];
     push @$values, $workspace_id if $workspace_id;

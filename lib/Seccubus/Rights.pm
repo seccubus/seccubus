@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk
+# Copyright 2011-2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -76,12 +76,12 @@ sub is_admin  {
 
 	$count = sql(
         "return"    => "array",    # Group 0 is admin
-		"query"     => "SELECT count(*)
-		      		    FROM users, user2group
+		"query"     => "SELECT COUNT(*)
+		      		    FROM `users`, `user2group`
 				        WHERE (
-				            users.id = user2group.user_id AND
-					        user2group.group_id = 1 AND
-					        users.username = ?
+				            `users`.`id` = `user2group`.`user_id` AND
+					        `user2group`.`group_id` = 1 AND
+					        `users`.`username` = ?
 				        );
                        ",
 		"values"    => [ $username ],
@@ -126,14 +126,14 @@ sub may_write  {
 	confess "No id specified" unless $id;
 
 	my $count = sql( "return"	=> "array",
-			 "query"	=> "SELECT count(*)
-			 		    FROM rights, user2group, user
+			 "query"	=> "SELECT COUNT(*)
+			 		    FROM `rights`, `user2group`, `user`
 					    WHERE
-					    	rights.workspace_id = ? and
-						rights.allow_write > 0 and
-						rights.group_id = user2group.group_id and
-						user2group.user_id = user.id and
-						user.username = ?
+					    	`rights`.`workspace_id` = ? AND
+						`rights`.`allow_write` > 0 AND
+						`rights`.`group_id` = `user2group`.`group_id` AND
+						`user2group`.`user_id` = `user`.`id` AND
+						`user`.`username` = ?
 					    ",
 			 "values"	=> [ $id, $ENV{SECCUBUS_USER} ],
 		       );
@@ -177,14 +177,14 @@ sub may_read {
 	confess "No id specified" unless $id;
 
 	my $count = sql( "return"	=> "array",
-			 "query"	=> "SELECT count(*)
-			 		    FROM rights, user2group, users
+			 "query"	=> "SELECT COUNT(*)
+			 		    FROM `rights`, `user2group`, `users`
 					    WHERE
-					    	rights.workspace_id = ? and
-						rights.allow_read > 0 and
-						rights.group_id = user2group.group_id and
-						user2group.user_id = users.id and
-						users.username = ?
+					    	`rights`.`workspace_id` = ? AND
+						`rights`.`allow_read` > 0 AND
+						`rights`.`group_id` = `user2group`.`group_id` AND
+						`user2group`.`user_id` = `users`.`id` AND
+						`users`.`username` = ?
 					    ",
 			 "values"	=> [ $id, $ENV{SECCUBUS_USER} ],
 		       );
