@@ -429,9 +429,9 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
-  build_fc26:
+  build_fc27:
     docker:
-      - image: fedora:26
+      - image: fedora:27
     steps:
       - run: dnf install -y git
       - checkout
@@ -445,7 +445,7 @@ jobs:
           name: Build
           command: rpm/makerpm.sh
       - save_cache:
-          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
+          key: rpm-fc27-{{ .Branch }}-{{ checksum ".git-describe" }}
           paths:
             - "/root/project/build"
       - store_artifacts:
@@ -510,8 +510,6 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
-
-
 
   build_el7:
     docker:
