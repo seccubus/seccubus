@@ -429,9 +429,9 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
-  build_fc25:
+  build_fc26:
     docker:
-      - image: fedora:25
+      - image: fedora:26
     steps:
       - run: dnf install -y git
       - checkout
@@ -440,36 +440,78 @@ jobs:
           command: echo $CIRCLE_SHA1 > .git-describe
       - run:
           name: Install prerequisite packages
-          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign
+          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign make
       - run:
           name: Build
           command: rpm/makerpm.sh
       - save_cache:
-          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
+          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
           paths:
             - "/root/project/build"
       - store_artifacts:
           path: /root/project/build/
 
-  test_fc25:
+  test_fc27:
     docker:
-      - image: fedora:25
+      - image: fedora:27
     steps:
       - run:
           name: Generate build signature
           command: echo $CIRCLE_SHA1 > .git-describe
       - restore_cache:
-          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - run: ls -al build
+          key: rpm-fc27-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
           name: Install rpm
-          command: dnf install -y build/*fc25*rpm
+          command: dnf install -y build/*fc27*rpm
       - run:
           name: Start hypnotoad
           command: cd /opt/seccubus; hypnotoad seccubus.pl
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
+
+  build_fc28:
+    docker:
+      - image: fedora:28
+    steps:
+      - run: dnf install -y git
+      - checkout
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Install prerequisite packages
+          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign make
+      - run:
+          name: Build
+          command: rpm/makerpm.sh
+      - save_cache:
+          key: rpm-fc28-{{ .Branch }}-{{ checksum ".git-describe" }}
+          paths:
+            - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/
+
+  test_fc28:
+    docker:
+      - image: fedora:28
+    steps:
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: rpm-fc28-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install rpm
+          command: dnf install -y build/*fc28*rpm
+      - run:
+          name: Start hypnotoad
+          command: cd /opt/seccubus; hypnotoad seccubus.pl
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+
 
   build_el7:
     docker:
@@ -526,11 +568,15 @@ jobs:
       - store_artifacts:
           path: /root/project/build
       - restore_cache:
-          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
+          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
       - store_artifacts:
           path: /root/project/build
       - restore_cache:
-          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
+          key: rpm-fc27-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - store_artifacts:
+          path: /root/project/build
+      - restore_cache:
+          key: rpm-fc28-{{ .Branch }}-{{ checksum ".git-describe" }}
       - store_artifacts:
           path: /root/project/build
 
@@ -563,17 +609,20 @@ jobs:
             done
             cd ..
       - restore_cache:
-          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - run:
-          name : Upload to packagecloud.io
-          command: package_cloud push seccubus/latest/fedora/25 build/*fc25*rpm
-      - restore_cache:
           key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - store_artifacts:
-          path: /root/project/build
       - run:
           name : Upload to packagecloud.io
           command: package_cloud push seccubus/latest/fedora/26 build/*fc26*rpm
+      - restore_cache:
+          key: rpm-fc27-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: package_cloud push seccubus/latest/fedora/27 build/*fc27*rpm
+      - restore_cache:
+          key: rpm-fc28-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: package_cloud push seccubus/latest/fedora/28 build/*fc28*rpm
 
   el_upload_release:
     docker:
@@ -604,17 +653,20 @@ jobs:
             done
             cd ..
       - restore_cache:
-          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - run:
-          name : Upload to packagecloud.io - fc25
-          command: package_cloud push seccubus/releases/fedora/25 build/*fc25*rpm
-      - restore_cache:
           key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - store_artifacts:
-          path: /root/project/build
       - run:
           name : Upload to packagecloud.io - fc26
           command: package_cloud push seccubus/releases/fedora/26 build/*fc26*rpm
+      - restore_cache:
+          key: rpm-fc27-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io - fc27
+          command: package_cloud push seccubus/releases/fedora/27 build/*fc27*rpm
+      - restore_cache:
+          key: rpm-fc28-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io - fc28
+          command: package_cloud push seccubus/releases/fedora/28 build/*fc28*rpm
 
 workflows:
 
@@ -750,22 +802,6 @@ workflows:
                 - master
                 - releases
                 - rpm-build
-      - build_fc25:
-          filters:
-            branches:
-              only:
-                - master
-                - releases
-                - rpm-build
-      - test_fc25:
-          requires:
-            - build_fc25
-          filters:
-            branches:
-              only:
-                - master
-                - releases
-                - rpm-build
       - build_fc26:
           filters:
             branches:
@@ -782,11 +818,44 @@ workflows:
                 - master
                 - releases
                 - rpm-build
+      - build_fc27:
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
+      - test_fc27:
+          requires:
+            - build_fc27
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
+      - build_fc28:
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
+      - test_fc28:
+          requires:
+            - build_fc28
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
       - el_ok:
           requires:
             - test_el7
-            - test_fc25
             - test_fc26
+            - test_fc27
+            - test_fc27
           filters:
             branches:
               only:

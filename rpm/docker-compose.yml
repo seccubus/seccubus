@@ -15,15 +15,29 @@
 version: '3'
 
 services:
-  fedora25:
-    image: fedora:25
+  fedora26:
+    image: fedora:26
     command: bash -c "tail -f /var/log/lastlog"
     environment:
       PERL5LIB: "."
     volumes:
       - ..:/root/project
-  fedora26:
-    image: fedora:26
+  fedora27:
+    image: fedora:27
+    command: bash -c "tail -f /var/log/lastlog"
+    environment:
+      PERL5LIB: "."
+    volumes:
+      - ..:/root/project
+  fedora28:
+    image: fedora:28
+    command: bash -c "tail -f /var/log/lastlog"
+    environment:
+      PERL5LIB: "."
+    volumes:
+      - ..:/root/project
+  fedora29:
+    image: fedora:29
     command: bash -c "tail -f /var/log/lastlog"
     environment:
       PERL5LIB: "."

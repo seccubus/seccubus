@@ -18,8 +18,12 @@
 docker-compose up -d
 docker-compose exec fedora26 bash -c "dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign make"
 docker-compose exec fedora26 bash -c "cd /root/project;rpm/makerpm.sh"
-docker-compose exec fedora25 bash -c "dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign"
-docker-compose exec fedora25 bash -c "cd /root/project;rpm/makerpm.sh"
+docker-compose exec fedora27 bash -c "dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign make"
+docker-compose exec fedora27 bash -c "cd /root/project;rpm/makerpm.sh"
+docker-compose exec fedora28 bash -c "dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign make"
+docker-compose exec fedora28 bash -c "cd /root/project;rpm/makerpm.sh"
+docker-compose exec fedora29 bash -c "dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign make"
+docker-compose exec fedora29 bash -c "cd /root/project;rpm/makerpm.sh"
 docker-compose exec centos7 bash -c "yum install -y java-1.8.0-openjdk-headless \"perl(ExtUtils::MakeMaker)\" gpg rpm-sign git rpm-build make \"perl(Test::Simple)\" \"perl(CPAN)\" expect"
 docker-compose exec centos7 bash -c "cd /root/project;rpm/makerpm.sh"
 
