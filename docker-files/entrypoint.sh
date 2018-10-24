@@ -18,14 +18,7 @@
 # not exist yet ;)
 # ------------------------------------------------------------------------------
 #
-#set -x
-
-if [[ $1 == "scan" ]] && [[ ! -z "$4" ]]; then
-    if [ "$(date '+%a')" != "$4" ]; then
-        echo "Today is $(date '+%a'), not $4"
-        exit 0
-    fi
-fi
+set -e
 
 STACK=${STACK:-'full'}
 DBHOST=${DBHOST:-'127.0.0.1'}
@@ -34,26 +27,55 @@ DBNAME=${DBNAME:-'seccubus'}
 DBUSER=${DBUSER:-'seccubus'}
 DBPASS=${DBPASS:-'seccubus'}
 TLS=${TLS:-'yes'}
+BUILDSTACK="%BUILDSTACK%"
+
+
+if [[ "$BUILDSTACK" != "full" ]]; then
+    STACK="$BUILDSTACK"
+fi
+
+echo "Seccubus setup"
+echo "--------------"
+
+export PERL5LIB=/opt/seccubus
+
+if [[ $1 == "scan" ]]; then
+    STACK="perl"
+    if [[ ! -z "$4" && "$(date '+%a')" != "$4" ]]; then
+        echo "Today is $(date '+%a'), not $4"
+        exit 0
+    fi
+fi
+
+if [[ $1 == "help" ]]; then
+    echo
+    echo
+    cat /README-docker.md
+    exit 0
+fi
+
 
 TZ=${TZ:-'UTC'}
 
 # Fix timezone
-if [[ -e "/usr/share/zoneinfo/$TZ" ]]; then
-    rm -f /etc/localtime
-    ln -s /usr/share/zoneinfo/$TZ /etc/localtime
+if [[ "$TZ" == "UTC" ]] ; then
+    echo "Timezone set to 'UTC'"
 else
-    echo "*** Timezone '$TZ' does not exist, sticking to UTC"
+    if [[ -e "/usr/share/zoneinfo/$TZ" ]]; then
+        rm -f /etc/localtime
+        ln -s /usr/share/zoneinfo/$TZ /etc/localtime
+        echo "Timezoen set to '$TZ'"
+    else
+        echo "*** Timezone '$TZ' does not exist, sticking to UTC"
+    fi
 fi
-
-if [[ "$1" == "scan" ]]; then
-    STACK="perl"
-fi
+echo
 
 # Check sanity of parameters
 if [[ "$STACK" != "full" && "$STACK" != "front" && "$STACK" != "api" && "$STACK" != "web" && \
     "$STACK" != "perl" && "$STACK" != "cron" ]]; then
     cat <<EOM
-\$STACK is currently \'$STACK\', it should be one of the following
+\$STACK is currently '$STACK', it should be one of the following
 * full - Run the full stack in a single container
 * front - Run a web server to serve just the front end HTML, Javascript and related files
 * api - Run a web server to serve just the JSON api
@@ -61,10 +83,13 @@ if [[ "$STACK" != "full" && "$STACK" != "front" && "$STACK" != "api" && "$STACK"
 * perl - Provide the Perl backend code, but not database or webserver
 * cron - Run a crontab scheduler with the perl backend
 EOM
+    exit 255
 fi
 
 # Handle TLS certificates
 if [[ "$TLS" == "yes" && "$STACK" != "cron" && "$STACK" != "perl" ]]; then
+    echo "Creating TLS certificate"
+    echo
     if [[ -e "/opt/seccubus/data/seccubus.pem" && -e "/opt/seccubus/data/seccubus.key" ]]; then
         TLSCERT="/opt/seccubus/data/seccubus.pem"
         TLSKEY="/opt/seccubus/data/seccubus.key"
@@ -86,6 +111,7 @@ if [[ "$TLS" == "yes" && "$STACK" != "cron" && "$STACK" != "perl" ]]; then
         TLSKEY="/opt/seccubus/data/seccubus.key"
     fi
     PORT=443
+    echo
 else
     TLSCERT=""
     TLSKEY=""
@@ -98,25 +124,24 @@ if [[ "$STACK" == "front" ]] ; then
         echo "\$STACK is set to '$STACK', but \$APIURL is empty, this won't work"
         exit
     else
+        echo "Setting up nginx"
+        echo
         # Sanitize urls
         [[ ! "$APIURL" = */ ]] && APIURL="$APIURL/"
         [[ ! -z "$BASEURI" ]] && [[ ! "$BASEURI" = /* ]] && BASEURI="/$BASEURI"
 
-        rm /etc/nginx/sites-enabled/*
+        rm /etc/nginx/conf.d/*
         if [[ "$TLS" == "yes" ]]; then
-            cp /front-tls.conf /etc/nginx/sites-available/seccubus
+            cp /docker/front-tls.conf /etc/nginx/conf.d/seccubus.conf
         else
-            cp /front.conf /etc/nginx/sites-available/seccubus
+            cp /docker/front.conf /etc/nginx/conf.d/seccubus.conf
         fi
-        ln -s /etc/nginx/sites-available/seccubus /etc/nginx/sites-enabled/seccubus
         # Patch BASEURI
-        sed -i.bak "s#%BASEURI%#$BASEURI#g" /etc/nginx/sites-available/seccubus
+        sed -i.bak "s#%BASEURI%#$BASEURI#g" /etc/nginx/conf.d/seccubus.conf
+        mv /etc/nginx/conf.d/*.bak /tmp
 
-        # Patch javascript to access remote URL
-        sed -i.bak "s#baseUrl(){return\"/api/\"}#baseUrl(){return\"$APIURL\"}#" /opt/seccubus/public/seccubus/production.js
-
-        service nginx start
-        DBHOST="Don't start"
+        mkdir -p /run/nginx
+        nginx
     fi
 else
     # Get rid of the log rotation for NGINX if we are not using it
@@ -132,6 +157,8 @@ fi
 # Set up SSH keys
 
 if [[ "$STACK" != "front" ]] ; then
+    echo "Setting up SSH keys"
+    echo
     mkdir -p ~seccubus/.ssh
     chmod 700 ~seccubus/.ssh
     echo "$SSHKEY1" > ~seccubus/.ssh/SSHKEY1
@@ -156,105 +183,132 @@ if [[ "$STACK" != "front" ]] ; then
     chmod 600 ~seccubus/.ssh/SSHKEY*
 fi
 
-# Configure Seccubus
-if [[ -z "$SESSION_KEY" ]]; then
-    SESSION_KEY=$(cat /opt/seccubus/etc/SESSION_KEY)
+if [[ "$STACK" != "front" ]]; then
+    # Configure Seccubus
+    echo "Configuring Seccubus"
+    echo
+    if [[ -z "$SESSION_KEY" ]]; then
+        SESSION_KEY=$(cat /opt/seccubus/etc/SESSION_KEY)
+    fi
+
+    cat <<EOF >/opt/seccubus/etc/config.xml
+        <seccubus>
+            <database>
+                <engine>mysql</engine>
+                <database>$DBNAME</database>
+                <host>$DBHOST</host>
+                <port>$DBPORT</port>
+                <user>$DBUSER</user>
+                <password>$DBPASS</password>
+            </database>
+            <paths>
+                <modules>/opt/seccubus/lib</modules>
+                <scanners>/opt/seccubus/scanners</scanners>
+                <bindir>/opt/seccubus/bin</bindir>
+                <configdir>/opt/seccubus/etc</configdir>
+                <dbdir>/opt/seccubus/db</dbdir>
+                <logdir>/var/log/seccubus</logdir>
+            </paths>
+            <smtp>
+                <server>$SMTPSERVER</server>
+                <from>$SMTPFROM</from>
+            </smtp>
+            <tickets>
+                <url_head>$TICKETURL_HEAD</url_head>
+                <url_tail>$TICKETURL_TAIL</url_tail>
+            </tickets>
+            <auth>
+                <http_auth_header>$HTTP_AUTH_HEADER</http_auth_header>
+                <sessionkey>$SESSION_KEY</sessionkey>
+                <jit_group>$JIT_GROUP</jit_group>
+            </auth>
+            <http>
+                <port>$PORT</port>
+                <cert>$TLSCERT</cert>
+                <key>$TLSKEY</key>
+                <baseurl>$BASEURI</baseurl>
+            </http>
+        </seccubus>
+EOF
 fi
 
-cat <<EOF >/opt/seccubus/etc/config.xml
-    <seccubus>
-        <database>
-            <engine>mysql</engine>
-            <database>$DBNAME</database>
-            <host>$DBHOST</host>
-            <port>$DBPORT</port>
-            <user>$DBUSER</user>
-            <password>$DBPASS</password>
-        </database>
-        <paths>
-            <modules>/opt/seccubus/lib</modules>
-            <scanners>/opt/seccubus/scanners</scanners>
-            <bindir>/opt/seccubus/bin</bindir>
-            <configdir>/opt/seccubus/etc</configdir>
-            <dbdir>/opt/seccubus/db</dbdir>
-            <logdir>/var/log/seccubus</logdir>
-        </paths>
-        <smtp>
-            <server>$SMTPSERVER</server>
-            <from>$SMTPFROM</from>
-        </smtp>
-        <tickets>
-            <url_head>$TICKETURL_HEAD</url_head>
-            <url_tail>$TICKETURL_TAIL</url_tail>
-        </tickets>
-        <auth>
-            <http_auth_header>$HTTP_AUTH_HEADER</http_auth_header>
-            <sessionkey>$SESSION_KEY</sessionkey>
-            <jit_group>$JIT_GROUP</jit_group>
-        </auth>
-        <http>
-            <port>$PORT</port>
-            <cert>$TLSCERT</cert>
-            <key>$TLSKEY</key>
-            <baseurl>$BASEURI</baseurl>
-        </http>
-    </seccubus>
-EOF
-
-if [[ "$STACK" == "full" ||  "$STACK" == "api" || "$STACK" == "web" ]] ; then
+if [[ "$STACK" == "full" || "$STACK" == "web" || "$STACK" == "front" ]] ; then
     # Patch javascript for baseurl or APIURL
     if [[ ! -z "$APIURL" ]]; then
         sed -i.bak "s#baseUrl(){return\"/api/\"}#baseUrl(){return\"$APIURL\"}#" /opt/seccubus/public/seccubus/production.js
     else
         sed -i.bak "s#baseUrl(){return\"/api/\"}#baseUrl(){return\"..\/api/\"}#" /opt/seccubus/public/seccubus/production.js
     fi
+fi
 
+if [[ "$STACK" == "full" || "$STACK" == "api" || "$STACK" == "web" ]] ; then
+    echo "Starting hypnotoad"
     # We need to start mojolicious
     cd /opt/seccubus
     PERL5LIB=/opt/seccubus hypnotoad seccubus.pl
+    echo
 fi
 
-
-# Let's figure out if we need a database...
-if [[ "$DBHOST" == "127.0.0.1" && "$DBPORT" == "3306" ]]; then
-    DBDIR="/var/lib/mysql"
-    if [[ -e /opt/seccubus/data/db ]]; then
-        DBDIR="/opt/seccubus/data/db"
-        sed -i.bak "s#/var/lib/mysql#$DBDIR#" /etc/mysql/mariadb.conf.d/50-server.cnf
-        if [[ ! -e "$DBDIR/ibdata1" ]]; then
-            # Assume that DB directory is unitialized
-            /usr/bin/mysql_install_db --datadir="$DBDIR" --user=mysql
+if [[ "$STACK" == "full" ]] ; then
+    # Let's figure out if we need a database...
+    if [[ "$DBHOST" == "127.0.0.1" && "$DBPORT" == "3306" ]]; then
+        echo "Setting up MariaDB"
+        echo
+        DBDIR="/var/lib/mysql"
+        if [[ -e /opt/seccubus/data/db ]]; then
+            DBDIR="/opt/seccubus/data/db"
+            sed -i.bak "s#/var/lib/mysql#$DBDIR#" /etc/mysql/mariadb.conf.d/50-server.cnf
+            if [[ ! -e "$DBDIR/ibdata1" ]]; then
+                # Assume that DB directory is unitialized
+                /usr/bin/mysql_install_db --datadir="$DBDIR" --user=mysql
+            fi
+            (cd /usr ; /usr/bin/mysqld_safe --datadir="/var/lib/mysql" --socket="/run/mysqld/mysqld.sock" --user=mysql  >/dev/null 2>&1 &)
+            sleep 3
+            /usr/bin/mysqladmin -u root password 'dwofMVR8&E^#3owHA0!Y'
+        else
+            (cd /usr ; /usr/bin/mysqld_safe --datadir="/var/lib/mysql" --socket="/run/mysqld/mysqld.sock" --user=mysql  >/dev/null 2>&1 &)
+            sleep 3
         fi
-        /etc/init.d/mysql start
-        /usr/bin/mysqladmin -u root password 'dwofMVR8&E^#3owHA0!Y'
-    else
-        /etc/init.d/mysql start
-    fi
-    if [[ ! -d "$DBDIR/seccubus" ]]; then
-/usr/bin/mysql -u root --password='dwofMVR8&E^#3owHA0!Y'<<EOF
-    create database seccubus;
-    grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus';
-    flush privileges;
+        if [[ ! -d "$DBDIR/seccubus" ]]; then
+    /usr/bin/mysql -u root --password='dwofMVR8&E^#3owHA0!Y'<<EOF
+        create database seccubus;
+        grant all privileges on seccubus.* to seccubus@localhost identified by 'seccubus';
+        flush privileges;
 EOF
-        /usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/structure*.mysql|tail -1)
-        /usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/data*.mysql|tail -1)
+            /usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/structure*.mysql|tail -1)
+            /usr/bin/mysql -u seccubus -pseccubus seccubus < $(ls /opt/seccubus/db/data*.mysql|tail -1)
 
-        /usr/bin/mysql -u seccubus -pseccubus seccubus <<EOF1
-    INSERT INTO workspaces VALUES (1,'Example');
-    INSERT INTO scans VALUES
-        (1,'ssllabs','SSLlabs','--hosts @HOSTS --from-cache','','www.seccubus.com',1),
-        (2,'nmap','Nmap','-o \"\" --hosts @HOSTS','','www.seccubus.com',1),
-        (3,'nikto','Nikto','-o \"\" --hosts @HOSTS','','www.seccubus.com',1);
+            /usr/bin/mysql -u seccubus -pseccubus seccubus <<EOF1
+        INSERT INTO workspaces VALUES (1,'Example');
+        INSERT INTO scans VALUES
+            (1,'ssllabs','SSLlabs','--hosts @HOSTS --from-cache','','www.seccubus.com',1),
+            (2,'nmap','Nmap','-o \"\" --hosts @HOSTS','','www.seccubus.com',1),
+            (3,'nikto','Nikto','-o \"\" --hosts @HOSTS','','www.seccubus.com',1);
 EOF1
-        (cd /opt/seccubus/;bin/seccubus_passwd -u admin -p 'GiveMeVulns!')
+            (cd /opt/seccubus/;bin/seccubus_passwd -u admin -p 'GiveMeVulns!')
+        fi
+    else
+        # If we don't need a DB, we don't need to logrotate it
+        rm -f /etc/logrotate.d/mysql-server
     fi
-else
-    # If we don't need a DB, we don't need to logrotate it
-    rm -f /etc/logrotate.d/mysql-server
+elif [[ "$STACK" != "front" ]]; then
+    if [[ "$DBHOST" == "127.0.0.1" && "$DBPORT" == "3306" ]]; then
+        echo "*** There is no local database in this image, you have to set \$DBHOST"
+        exit 255
+    fi
 fi
+
+# syslog
+touch /var/log/messages
+if [[ "$STACK" == "full" || "$STACK" == "cron" || "$STACK"  == "api" || "$STACK"  == "web" ]]; then
+    /sbin/syslogd
+fi
+
 
 # Crontab
 if [[ "$STACK" == "cron" || "$STACK" == "full" ]]; then
+    echo "Setting up crontab and mail"
+    echo
     CRON_MAIL_TO=${CRON_MAIL_TO:-"$SMTPFROM"}
     #if [[ ! -z $1 ]]; then
 
@@ -270,45 +324,55 @@ hostname=$(hostname).$SMTPDOMAIN
 EOF
         /etc/init.d/ssmtp start
     fi
-    /mkcron
-    /etc/init.d/rsyslog start
-    /etc/init.d/cron start
+    /docker/mkcron
+    /usr/sbin/crond
+    echo
 fi
 
-if [[ "$STACK" != "front" ]]; then
+if [[ "$STACK" != "front" && "$STACK" != "web" && "$STACK" != "api" ]]; then
+    echo "Updating nikto"
     cd /opt/nikto
     git pull
+    echo
+    echo "Updating testssl.sh"
     cd /opt/testssl.sh
     git pull
+    echo
 fi
 
 # Return to home
 cd
 
+echo
+echo "*** Setup DONE ***"
+echo
+
 # Execute commands if needed
 case $1 in
 "")
     if [[ "$STACK" == "front" ]]; then
-        tail -f /var/log/nginx/* 2>&1|grep -v '0x794c7630'|grep -v liblogging-stdlog
+        touch /var/log/nginx/error.log
+        tail -f /var/log/nginx/*
     fi
-    if [[ "$STACK" == "full" || "$STACK" == "front" || "$STACK" == "api" || "$STACK" == "web" ]]; then
-        tail -f /var/log/seccubus/* /var/log/syslog 2>&1|grep -v '0x794c7630'
+    if [[ "$STACK" == "full" || "$STACK" == "api" || "$STACK" == "web" ]]; then
+        tail -f /var/log/seccubus/* /var/log/messages
     fi
     if [[ "$STACK" == "cron" ]]; then
-        tail -f /var/log/syslog 2>&1|grep -v '0x794c7630'
+        tail -f /var/log/messages
+    fi
+    if [[ "$STACK" == "perl" ]]; then
+        su - seccubus -c bash
     fi
     ;;
 "scan")
-    touch /var/log/syslog
-    /etc/init.d/rsyslog start
-    (tail -f /var/log/syslog 2>&1|grep -v '0x794c7630'|grep -v liblogging-stdlog)&
+    (tail -f /var/log/messages 2>&1)&
     cd /opt/seccubus
-    su - seccubus -c "bin/do-scan -w \"$2\" -s \"$3\" -v"
+    su - seccubus -c ". ~/.bashrc;bin/do-scan -w \"$2\" -s \"$3\" -v"
     ;;
 "help")
     echo
     echo
-    cat /README.md
+    cat /README-docker.md
     ;;
 *)
     exec "$@"

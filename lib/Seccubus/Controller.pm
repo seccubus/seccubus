@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk, Jericho
+# Copyright 2018 Frank Breedijk, Jericho
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ sub new {
 	# Set some default security and caching headers
 	$res->headers()->header('Server' => "Seccubus v$SeccubusV2::VERSION");
 	$res->headers()->header('X-Frame-Options' => 'DENY');
-	$res->headers()->header('X-XSS-Protection' => "1; 'mode=block'");
+	$res->headers()->header('X-XSS-Protection' => "1; mode=block");
 	$res->headers()->header('Cache-Control' => 'no-store, no-cache, must-revalidate');
 	$res->headers()->header('X-Clacks-Overhead' => 'GNU Terry Pratchett');
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk
+# Copyright 2017-2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ $t->get_ok('/')
 	->header_is("location" => '/seccubus/seccubus.html')
 	->header_is("X-Clacks-Overhead" => 'GNU Terry Pratchett')
 	->header_is("X-Frame-Options" => "DENY")
-	->header_is("x-xss-protection" => "1; 'mode=block'")
+	->header_is("x-xss-protection" => "1; mode=block")
 	->header_like("Server", qr/^Seccubus v\d\.\d+$/)
 	->header_unlike("Server", qr/mojo/i)
 	;
@@ -57,7 +57,7 @@ $t->get_ok('/seccubus/seccubus.html')
 	->content_like(qr/Copyright 2011-20\d+ Frank Breedijk/i)
 	->header_is("X-Clacks-Overhead" => 'GNU Terry Pratchett')
 	->header_is("X-Frame-Options" => "DENY")
-	->header_is("x-xss-protection" => "1; 'mode=block'")
+	->header_is("x-xss-protection" => "1; mode=block")
 	->header_like("Server", qr/^Seccubus v\d\.\d+$/)
 	->header_unlike("Server", qr/mojo/i)
 	;
