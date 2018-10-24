@@ -96,12 +96,13 @@ jobs:
           path: /root/project/testout/
       - store_test_results:
           path: /root/project/testout/
+
+
   build:
     docker:
       - image: alpine:latest
         environment:
         - PERL5LIB: "."
-
     steps:
       - run:
           name: Install prerequisites
@@ -115,7 +116,7 @@ jobs:
             perl-list-moreutils perl-params-util perl-class-inspector perl-file-remove perl-clone perl-class-tiny \
             perl-path-tiny perl-type-tiny perl-module-runtime perl-namespace-autoclean perl-moo perl-strictures \
             perl-digest-hmac perl-task-weaken \
-            openjdk7-jre
+            openjdk7-jre bash
       - checkout
       - restore_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
