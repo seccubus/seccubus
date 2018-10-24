@@ -44,7 +44,7 @@ jobs:
 
       - image: circleci/mysql:5
 
-    parallelism: 3
+    parallelism: 4
 
     steps:
       - run:
@@ -98,15 +98,25 @@ jobs:
           path: /root/project/testout/
   build:
     docker:
-      - image: perl:latest
+      - image: alpine:latest
         environment:
         - PERL5LIB: "."
 
     steps:
-      - checkout
       - run:
-          name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client default-jre
+          name: Install prerequisites
+          command: |
+            apk --no-progress update ;
+            apk --no-progress add git wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
+            perl-algorithm-diff perl-carp perl-dbd-mysql perl-dbi perl-data-dumper perl-date-format perl-exporter \
+            perl-html-parser perl-json perl-libwww perl-lwp-protocol-https perl-mojolicious perl-net-ip \
+            perl-term-readkey perl-xml-simple perl-module-build perl-module-pluggable perl-test-weaken \
+            perl-config-tiny perl-exception-class perl-test-deep perl-readonly perl-file-which \
+            perl-list-moreutils perl-params-util perl-class-inspector perl-file-remove perl-clone perl-class-tiny \
+            perl-path-tiny perl-type-tiny perl-module-runtime perl-namespace-autoclean perl-moo perl-strictures \
+            perl-digest-hmac perl-task-weaken \
+            openjdk7-jre
+      - checkout
       - restore_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
       - run:
