@@ -47,6 +47,13 @@ if [[ $1 == "scan" ]]; then
     fi
 fi
 
+if [[ $1 == "help" ]]; then
+    echo
+    echo
+    cat /README-docker.md
+    exit 0
+fi
+
 
 TZ=${TZ:-'UTC'}
 
@@ -365,7 +372,7 @@ case $1 in
 "help")
     echo
     echo
-    cat /README.md
+    cat /README-docker.md
     ;;
 *)
     exec "$@"

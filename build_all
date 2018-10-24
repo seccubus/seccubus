@@ -26,7 +26,7 @@ echo '*************************************************************************'
 cp -r bin db docs lib scanners ChangeLog.md install.pl LICENSE.txt build
 [[ -d t ]] && cp -r t build
 [[ -d testdata ]] && cp -r testdata build
-cp Makefile.PL NOTICE.txt README.md seccubus.pl SeccubusV2.pm build
+cp Makefile.PL NOTICE.txt README.md README-docker.md seccubus.pl SeccubusV2.pm build
 
 mkdir -p build/etc
 cp etc/config.xml.mysql.example etc/v2.seccubus.com.bundle build/etc

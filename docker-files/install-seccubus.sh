@@ -209,6 +209,10 @@ EOF2
     chown seccubus:seccubus ~seccubus/.bashrc
 fi
 
+# Copy README files
+cp README.md README-docker.md /
+
+
 if [[ "$BUILDSTACK" == "full" ]]; then
     cd /opt/seccubus/
     perl -I . bin/seccubus_passwd -u admin -p 'GiveMeVulns!'

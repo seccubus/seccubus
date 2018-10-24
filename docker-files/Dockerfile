@@ -28,7 +28,7 @@ COPY etc /build/seccubus/etc
 COPY jmvc /build/seccubus/jmvc
 COPY lib /build/seccubus/lib
 COPY scanners /build/seccubus/scanners
-COPY build_all build_jmvc install.pl Makefile.PL seccubus.pl SeccubusV2.pm ChangeLog.md LICENSE.txt NOTICE.txt README.md /build/seccubus/
+COPY build_all build_jmvc install.pl Makefile.PL seccubus.pl SeccubusV2.pm ChangeLog.md LICENSE.txt NOTICE.txt README.md README-docker.md /build/seccubus/
 COPY docker-files/build-seccubus.sh /build/seccubus/docker-files
 RUN cd /build/seccubus;./docker-files/build-seccubus.sh
 COPY docker-files/install-seccubus.sh  /build/seccubus/build/docker-files/
@@ -53,4 +53,5 @@ ARG BUILD_DATE
 ARG VCS_REF
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.vcs-url="https://github.com/schubergphilis/Seccubus.git" \
-      org.label-schema.vcs-ref=$VCS_REF
+      org.label-schema.vcs-ref=$VCS_REF \
+      maintainer="Frank Breedijk"
