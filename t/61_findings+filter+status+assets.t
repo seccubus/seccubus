@@ -572,6 +572,14 @@ $count->{Severity}->{'null'} = 28;
 $count->{Finding}->{'null'} = 28;
 $count->{Remark}->{'null'} = 28;
 
+# Reactivate Mojo
+$t = Test::Mojo->new('Seccubus');
+
+# Log in
+$t->post_ok('/api/session' => { 'REMOTEUSER' => 'admin', "content-type" => "application/json" })
+    ->status_is(200,"Login ok")
+;
+
 foreach my $k ( qw(Status Host HostName Port Plugin Finding Severity Remark assetIds[]) ) {
     foreach my $h ( sort keys %{$count->{$k}} ) {
         if ( $h ne "" && $h ne "(blank)") {
@@ -625,7 +633,21 @@ foreach my $k ( qw(Status Host HostName Port Plugin Finding Severity Remark asse
     }
 }
 
-
+my $json127002;
+if ( `dig +noall +answer -x 127.0.0.2` =~ /ec2/ ) {
+    $json127002 = {
+        "name" => "ip-127-0-0-2.ec2.internal",
+        "number" => 4,
+        "selected" => 0
+    }
+} else {
+    $json127002 = {
+        "name" => "(blank)",
+        "number" => 4,
+        "selected" => 1,
+        "value" => ""
+    }
+}
 
 # Basic
 $t->get_ok("/api/workspace/101/filters")
@@ -675,12 +697,7 @@ $t->get_ok("/api/workspace/101/filters")
                     "name" => "*",
                     "number" => 8
                 },
-                {
-                    "name" => "(blank)",
-                    "number" => 4,
-                    "selected" => 1,
-                    "value" => ""
-                },
+                $json127002,
                 {
                     "name" => "localhost",
                     "number" => 4,
