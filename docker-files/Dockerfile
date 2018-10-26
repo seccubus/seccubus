@@ -18,24 +18,9 @@
 # not exist yet ;)
 # ------------------------------------------------------------------------------
 #
-#FROM debian:jessie
-FROM perl:5
-MAINTAINER fbreedijk@schubergphilis.com
+FROM alpine:3.8 as build
 
-RUN apt-get update && apt-get upgrade -y && \
-    (echo 'mysql-server mysql-server/root_password password dwofMVR8&E^#3owHA0!Y' | debconf-set-selections ) && \
-    (echo 'mysql-server mysql-server/root_password_again password dwofMVR8&E^#3owHA0!Y' | debconf-set-selections ) && \
-    apt-get install default-jre-headless mysql-server dnsutils nmap nginx cron rsyslog ssmtp bsdmainutils zip -y &&\
-    apt-get purge logrotate -y && \
-    apt autoremove -y
-RUN cpanm --notest DBD::mysql Mojolicious Net::IP JSON DBI HTML::Entities Crypt::PBKDF2 \
-    Algorithm::Diff XML::Simple LWP::Simple LWP::Protocol::https LWP::UserAgent\
-    Date::Format Term::ReadKey
-
-# cronie
-
-RUN mkdir -p /build/seccubus
-#COPY  . /build/seccubus/
+RUN mkdir -p /build/seccubus/docker-files
 COPY bin /build/seccubus/bin
 COPY db /build/seccubus/db
 COPY docs /build/seccubus/docs
@@ -43,16 +28,30 @@ COPY etc /build/seccubus/etc
 COPY jmvc /build/seccubus/jmvc
 COPY lib /build/seccubus/lib
 COPY scanners /build/seccubus/scanners
-COPY build_all build_jmvc install.pl Makefile.PL seccubus.pl SeccubusV2.pm /build/seccubus/
+COPY build_all build_jmvc install.pl Makefile.PL seccubus.pl SeccubusV2.pm ChangeLog.md LICENSE.txt NOTICE.txt README.md README-docker.md /build/seccubus/
+COPY docker-files/build-seccubus.sh /build/seccubus/docker-files
+RUN cd /build/seccubus;./docker-files/build-seccubus.sh
+COPY docker-files/install-seccubus.sh  /build/seccubus/build/docker-files/
 
-COPY docker-install.sh /tmp/install.sh
-RUN bash /tmp/install.sh && rm /tmp/install.sh
+FROM alpine:3.8
 
-COPY docker-files /
-COPY README.md /
+MAINTAINER fbreedijk@schubergphilis.com
 
-ENTRYPOINT ["/entrypoint.sh"]
+
+COPY --from=build /build/seccubus/build /build/seccubus/build
+ARG BUILDSTACK=full
+RUN /build/seccubus/build/docker-files/install-seccubus.sh ${BUILDSTACK}
+COPY docker-files /docker
+RUN sed -i.bak "s#%BUILDSTACK%#${BUILDSTACK}#" /docker/entrypoint.sh
+ENTRYPOINT ["/docker/entrypoint.sh"]
 VOLUME [ "/opt/seccubus/data" ]
 
 EXPOSE 80
-expose 443
+EXPOSE 443
+
+ARG BUILD_DATE
+ARG VCS_REF
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.vcs-url="https://github.com/schubergphilis/Seccubus.git" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      maintainer="Frank Breedijk"
