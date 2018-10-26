@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Arkanoi, Frank Breedijk, Petr
+# Copyright 2014-2018 Arkanoi, Frank Breedijk, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ sub get_asset_id {
 	my $asset_name = shift or confess "No asset_name provided";
 	if ( may_read($workspace_id) ) {
 		return sql( "return"	=> "array",
-			    "query"	=> "SELECT id from assets where name = ? and workspace_id = ?;",
+			    "query"	=> "SELECT `id` from `assets` where `name` = ? and `workspace_id` = ?;",
 			    "values"	=> [$asset_name, $workspace_id],
 			  );
 	} else {
@@ -115,9 +115,13 @@ sub get_assets {
 	if(! may_read($workspace_id) ) {
 	   confess "Permission denied";
 	} else {
-		return sql( "return" => "ref",
-		    "query"	=> "SELECT id, name, hosts, recipients, workspace_id FROM assets WHERE workspace_id = ? ORDER BY NAME",
-		    "values"	=> [$workspace_id]
+		return sql(
+            "return"    => "ref",
+		    "query"     => "SELECT `id`, `name`, `hosts`, `recipients`, `workspace_id`
+                FROM `assets`
+                WHERE `workspace_id` = ?
+                ORDER BY NAME",
+		    "values"    => [$workspace_id]
 		);
 	}
 }
@@ -151,10 +155,10 @@ sub get_asset_hosts {
 	my $asset_id = shift or confess "No asset_id provided";
 	confess "Permission denied" if(! may_read($workspace_id) );
 	return sql( "return" => "ref",
-	    "query"		=> "SELECT a.id, a.ip, a.host
-	    				FROM asset_hosts a, assets b
-	    				WHERE a.asset_id=b.id AND b.workspace_id = ? AND a.asset_id = ?
-	    				ORDER BY a.id",
+	    "query"		=> "SELECT `a`.`id`, `a`.`ip`, `a`.`host`
+	    				FROM `asset_hosts` `a`, `assets` `b`
+	    				WHERE `a`.`asset_id`=`b`.`id` AND `b`.`workspace_id` = ? AND `a`.`asset_id` = ?
+	    				ORDER BY `a`.`id`",
 	    "values"	=> [$workspace_id,$asset_id]
 	  );
 }
@@ -197,8 +201,8 @@ sub create_asset {
 			confess "A asset named '".$asset_name."' already exists in workspace ".$workspace_id;
 		}
 		my $assetid = sql( "return"	=> "id",
-			    "query"	=> "INSERT into assets
-			    		    SET name = ?, hosts = ?, recipients = ?, workspace_id = ?;
+			    "query"	=> "INSERT INTO `assets`
+			    		    SET `name` = ?, `hosts` = ?, `recipients` = ?, `workspace_id` = ?;
 					   ",
 			    "values"	=> [$asset_name, $hosts, $recipients, $workspace_id],
 			  );
@@ -233,7 +237,7 @@ sub _set_asset_host_auto_gen {
 	my $assetid = shift or confess "No asset Id Given";
 	my $hosts = shift;
 	sql( "return"	=> "handle",
-	     "query"	=> " DELETE FROM asset_hosts WHERE	asset_id = ? and auto_gen=1",
+	     "query"	=> " DELETE FROM `asset_hosts` WHERE `asset_id` = ? AND `auto_gen`=1",
 	     "values"	=> [ $assetid ]
 		);
 	return if(!$hosts);
@@ -249,7 +253,7 @@ sub _set_asset_host_auto_gen {
 		if(!$error){
 			do {
 				sql("return"=>"id",
-					"query"=>"INSERT into asset_hosts set asset_id=?,ip=?, auto_gen=1",
+					"query"=>"INSERT INTO `asset_hosts` SET `asset_id`=?, `ip`=?, `auto_gen`=1",
 					"values"=>[$assetid,$ipObj->ip()]
 				);
 			} while (++$ipObj);
@@ -262,12 +266,12 @@ sub _set_asset_host_auto_gen {
                     unless ( $done->{$a} ) {
     					my $ip = inet_ntoa($a);
     					sql("return"=>"id",
-    						"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?, auto_gen=1",
+    						"query"=>"INSERT INTO `asset_hosts` SET `asset_id`=?, `host`=?, `ip`=?, `auto_gen`=1",
     						"values"=>[$assetid,$name,$ip]
     					);
     					if ( $qname ne $name ) {
     						sql("return"=>"id",
-    							"query"=>"INSERT into asset_hosts set asset_id=?,host=?, ip=?, auto_gen=1",
+    							"query"=>"INSERT INTO `asset_hosts` SET `asset_id`=?, `host`=?, `ip`=?, `auto_gen`=1",
     							"values"=>[$assetid,$qname,$ip]
     						);
 	       				}
@@ -320,18 +324,27 @@ sub update_asset {
 	my $recipients = shift;
 
 	if ( may_write($workspace_id) ) {
-		my ($have) = sql("return" => "array", "query" => "select id, hosts from assets where id=? and workspace_id=?","values"=>[$asset_id,$workspace_id]);
+		my ($have) = sql(
+            "return"    => "array",
+            "query"     => "
+                SELECT `id`, `hosts`
+                FROM `assets`
+                WHERE `id`=? AND
+                    `workspace_id`=?",
+            "values"    => [$asset_id,$workspace_id]
+        );
 		confess "asset_id: ".$asset_id." not exists on workspace_id: ".$workspace_id." "  if(!$have);
         my $qid = get_asset_id($workspace_id, $asset_name);
         confess "An assets with that name already exists in the workspace" if ( $qid && $qid != $asset_id );
 
 		&_set_asset_host_auto_gen($asset_id,$hosts);
-		return sql( "return"	=> "rows",
-			    "query"	=> "UPDATE assets
-			    		    SET name = ?, hosts = ?, recipients = ?
-					    WHERE id = ? AND workspace_id = ?;
-					   ",
-			    "values"	=> [$asset_name, $hosts, $recipients, $asset_id, $workspace_id],
+		return sql(
+            "return"        => "rows",
+			    "query"     => "
+                    UPDATE `assets`
+			    	SET `name` = ?, `hosts` = ?, `recipients` = ?
+				    WHERE `id` = ? AND `workspace_id` = ?;",
+			    "values"    => [$asset_name, $hosts, $recipients, $asset_id, $workspace_id],
 			  );
 	} else {
 		confess "Permission denied";
@@ -358,16 +371,18 @@ This function deletes a asset host
 
 sub delete_asset_host {
 	my $asset_host_id = shift or confess "no asset_host_id provided";
-	my ($workspace_id) = sql( "return"=> "array",
-		"query"	=> "SELECT	a.workspace_id
-			    	FROM assets a, asset_hosts b
-			    	WHERE b.asset_id = a.id AND b.id = ? ",
-		"values"	=> [ $asset_host_id ]
+	my ($workspace_id) = sql(
+        "return"    => "array",
+		"query"     => "
+            SELECT `a`.`workspace_id`
+			FROM `assets` `a`, `asset_hosts` `b`
+			WHERE `b`.`asset_id` = `a`.`id` AND `b`.`id` = ? ",
+		"values"    => [ $asset_host_id ]
 	);
 
 	confess "Permission denied" if (! may_write($workspace_id) );
 	return sql( "return"	=> "handle",
-	    "query"	=> " DELETE FROM asset_hosts WHERE	id = ?",
+	    "query"	=> "DELETE FROM `asset_hosts` WHERE	`id` = ?",
 	    "values"	=> [ $asset_host_id ]
 		);
 }
@@ -397,15 +412,15 @@ User must be able to write workspace.
 sub delete_asset {
 	my $asset_id = shift or confess "no asset_id provided";
 	my ($workspace_id) = sql( "return"=> "array",
-		"query"	=> "SELECT	a.workspace_id FROM assets a where a.id = ? ",
+		"query"	=> "SELECT `a`.`workspace_id` FROM `assets` `a` WHERE `a`.`id` = ? ",
 		"values"	=> [ $asset_id ]
 	);
 
 	confess "Permission denied" if (! may_write($workspace_id) );
-	sql("return" => "handle", "query" => "DELETE FROM asset_hosts where asset_id = ?", "values"=>[$asset_id]);
-	sql("return" => "handle", "query" => "DELETE FROM asset2scan where asset_id = ?", "values"=>[$asset_id]);
+	sql("return" => "handle", "query" => "DELETE FROM `asset_hosts` WHERE `asset_id` = ?", "values"=>[$asset_id]);
+	sql("return" => "handle", "query" => "DELETE FROM `asset2scan` WHERE `asset_id` = ?", "values"=>[$asset_id]);
 	return sql( "return"	=> "handle",
-	    "query"	=> " DELETE FROM assets WHERE id = ?",
+	    "query"	=> " DELETE FROM `assets` WHERE `id` = ?",
 	    "values"	=> [ $asset_id ]
 		);
 }
@@ -453,16 +468,16 @@ sub create_asset_host {
 	confess "Permission denied" if (! may_write($workspace_id) );
 	my ($checkWSId) = sql(
 			"return"	=> "array",
-			"query"		=> "SELECT	a.workspace_id
-							FROM assets a
-							WHERE a.id = ?",
+			"query"		=> "SELECT `a`.`workspace_id`
+							FROM `assets` `a`
+							WHERE `a`.`id` = ?",
 			"values"	=> [ $asset_id ]
 		);
 	confess "Permission denied"  if( $checkWSId ne $workspace_id);
 	return sql (
 		"return"	=> "id",
-		"query" 	=> "INSERT INTO asset_hosts
-						SET ip=?, host=?, asset_id=?, auto_gen=0",
+		"query" 	=> "INSERT INTO `asset_hosts`
+						SET `ip`=?, `host`=?, `asset_id`=?, `auto_gen`=0",
 		"values"	=> [$ip,$host,$asset_id]
 	);
 }
@@ -504,17 +519,17 @@ sub update_asset_host {
 	}
 	my ($workspace_id) = sql(
 			"return"	=> "array",
-			"query"		=> "SELECT	a.workspace_id
-						    FROM assets a, asset_hosts b
-						    WHERE b.asset_id = a.id AND b.id = ? ",
+			"query"		=> "SELECT `a`.`workspace_id`
+						    FROM `assets` `a`, `asset_hosts` `b`
+						    WHERE `b`.`asset_id` = `a`.`id` AND `b`.`id` = ? ",
 			"values"	=> [ $host_id ]
 	);
 	confess "Permission denied" if (! may_write($workspace_id) );
 	return sql (
 		"return"	=> "rows",
-		"query" 	=> "UPDATE asset_hosts
-						SET ip=?, host=?, auto_gen=0
-						WHERE id=?",
+		"query" 	=> "UPDATE `asset_hosts`
+						SET `ip`=?, `host`=?, `auto_gen`=0
+						WHERE `id`=?",
 		"values"	=> [$ip,$host,$host_id]
 	);
 }
@@ -541,15 +556,15 @@ sub get_asset2scan {
 	my $scan_id = shift or confess "no scan_id provided";
 	my ($workspace_id) = sql(
 		"return"	=> "array",
-		"query" 	=> "SELECT	a.workspace_id FROM scans a where a.id = ? ",
+		"query" 	=> "SELECT `a`.`workspace_id` FROM `scans` `a` WHERE `a`.`id` = ? ",
 		"values" 	=> [ $scan_id ]
 	);
 	confess "Permission denied" if (! may_write($workspace_id) );
 	return sql (
 		"return" 	=> "ref",
-		"query" 	=> "SELECT a.scan_id,a.asset_id
-						FROM asset2scan a
-						WHERE a.scan_id=?",
+		"query" 	=> "SELECT `a`.`scan_id`, `a`.`asset_id`
+						FROM `asset2scan` `a`
+						WHERE `a`.`scan_id`=?",
 		"values" => [$scan_id]);
 }
 
@@ -577,20 +592,20 @@ sub update_asset2scan {
 	my @assets = @_;
 	my ($workspace_id) = sql(
 		"return"	=> "array",
-		"query"		=> "SELECT	a.workspace_id FROM scans a where a.id = ? ",
+		"query"		=> "SELECT `a`.`workspace_id` FROM `scans` `a` WHERE `a`.`id` = ? ",
 		"values"	=> [ $scan_id ]
 	);
 	confess "Permission denied" if (! may_write($workspace_id) );
 	sql("return" 	=> "rows",
-		"query" 	=> "DELETE FROM asset2scan
-						WHERE scan_id=?",
+		"query" 	=> "DELETE FROM `asset2scan`
+						WHERE `scan_id`=?",
 		"values" => [$scan_id]
 	);
 	my @ids = ();
 	map {
 		my $id = sql (
 			"return"	=> "id",
-			"query" 	=> "insert into asset2scan set scan_id=?, asset_id=?",
+			"query" 	=> "INSERT INTO `asset2scan` SET `scan_id`=?, `asset_id`=?",
 			"values" 	=> [$scan_id, $_]
 		);
 		push @ids,$id;

@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk, Petr
+# Copyright 2012-2018 Frank Breedijk, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -75,26 +75,26 @@ sub get_notifications  {
 	my ($workspace_id) =
 		sql( 	return	=> "array",
 			query	=> "
-				SELECT	workspace_id
-				FROM	scans
-				WHERE	scans.id = ?",
+				SELECT	`workspace_id`
+				FROM	`scans`
+				WHERE	`scans`.`id` = ?",
 			values	=> [ $scan_id ]
 	);
 	if ( $workspace_id && may_read($workspace_id)) {
 		my $sql = "
-			SELECT	notifications.id, subject, recipients, message, event_id, events.name,
-					scans.workspace_id
-			FROM	notifications, events, scans
-			WHERE	scans.workspace_id = ? AND
-					scans.id = ? AND
-					notifications.scan_id = scans.id AND
-					notifications.event_id = events.id";
+			SELECT	`notifications`.`id`, `subject`, `recipients`, `message`, `event_id`, `events`.`name`,
+					`scans`.`workspace_id`
+			FROM	`notifications`, `events`, `scans`
+			WHERE	`scans`.`workspace_id` = ? AND
+					`scans`.`id` = ? AND
+					`notifications`.`scan_id` = `scans`.`id` AND
+					`notifications`.`event_id` = `events`.`id`";
 		my $values = [ $workspace_id, $scan_id ];
 		if ( $id ) {
-			$sql .= " AND notifications.id = ? ";
+			$sql .= " AND `notifications`.`id` = ? ";
 			push @$values, $id;
 		}
-		$sql .= " ORDER BY events.id, subject ";
+		$sql .= " ORDER BY `events`.`id`, `subject` ";
 		return sql( "return"	=> "ref",
 			    "query"	=> $sql,
 			    "values"	=> $values
@@ -155,10 +155,10 @@ sub create_notification  {
 	if( may_write($workspace_id) ) {
 		my ($id) = sql( return	=> "array",
 				query	=> "
-					SELECT	scans.id
-					FROM	scans
-					WHERE	scans.id = ? AND
-					workspace_id = ?",
+					SELECT	`scans`.`id`
+					FROM	`scans`
+					WHERE	`scans`.`id` = ? AND
+					`workspace_id` = ?",
 				values	=> [ $scan_id, $workspace_id ]
 		);
 		if ( $id != $scan_id ) {
@@ -168,9 +168,9 @@ sub create_notification  {
 		($id, $event_name) = sql(
 			return 	=> "array",
 			query	=> "
-				SELECT 	id, name
-				FROM	events
-				WHERE	id = ?",
+				SELECT 	`id`, `name`
+				FROM	`events`
+				WHERE	`id` = ?",
 			values	=> [ $event_id ]
 		);
 		if ( $id != $event_id ) {
@@ -178,9 +178,9 @@ sub create_notification  {
 		};
 		$id = sql(	return	=> "id",
 				query	=> "
-					INSERT INTO notifications (scan_id,
-						event_id, subject, recipients,
-						message)
+					INSERT INTO `notifications` (`scan_id`,
+						`event_id`, `subject`, `recipients`,
+						`message`)
 					VALUES	(?,?,?,?,?)",
 				values	=> [ $scan_id, $event_id, $subject,
 					$recipients, $message ]
@@ -244,19 +244,19 @@ sub update_notification  {
 	my ($workspace_id, $scan_id) =
 		sql( 	return	=> "array",
 			query	=> "
-				SELECT	workspace_id, scans.id
-				FROM	scans, notifications
-				WHERE	notifications.id = ? AND
-					scans.id = notifications.scan_id",
+				SELECT	`workspace_id`, `scans`.`id`
+				FROM	`scans`, `notifications`
+				WHERE	`notifications`.`id` = ? AND
+					`scans`.`id` = `notifications`.`scan_id`",
 			values	=> [ $notification_id ]
 	);
 	if ( $workspace_id && may_write($workspace_id) ) {
 		my ($event_name) = sql(
 			return 	=> "array",
 			query	=> "
-				SELECT 	name
-				FROM	events
-				WHERE	id = ?",
+				SELECT 	`name`
+				FROM	`events`
+				WHERE	`id` = ?",
 			values	=> [ $event_id ]
 		);
 		if ( ! $event_name ) {
@@ -264,10 +264,10 @@ sub update_notification  {
 		};
 		my $id = sql(	return	=> "id",
 				query	=> "
-					UPDATE notifications
-					SET	event_id = ?, subject = ?,
-						recipients = ?,	message =?
-					WHERE	id = ?",
+					UPDATE `notifications`
+					SET	`event_id` = ?, `subject` = ?,
+						`recipients` = ?, `message` =?
+					WHERE	`id` = ?",
 				values	=> [ $event_id, $subject,
 					$recipients, $message, $notification_id
 					]
@@ -306,18 +306,18 @@ sub del_notification  {
 
 	my ($workspace_id) = sql(
 		"return"=> "array",
-		"query"	=> "SELECT	workspace_id
-			    FROM	notifications, scans
-			    WHERE	notifications.id = ? AND
-			    		notifications.scan_id = scans.id",
+		"query"	=> "SELECT	`workspace_id`
+			    FROM	`notifications`, `scans`
+			    WHERE	`notifications`.`id` = ? AND
+			    		`notifications`.`scan_id` = `scans`.`id`",
 		"values"	=> [ $notification_id ]
 	);
 
 	if ( may_write($workspace_id)) {
 		return sql( "return"	=> "handle",
 			    "query"	=> "
-			    	DELETE FROM notifications
-				WHERE	id = ?",
+			    	DELETE FROM `notifications`
+				WHERE	`id` = ?",
 			    "values"	=> [ $notification_id ]
 		);
 	} else {
@@ -367,12 +367,12 @@ sub do_notifications  {
 		# O.K. lets figure out if we have any notification configured
 		my $notifications = sql (
 			"return"=> "ref",
-			"query"	=> "SELECT	subject, recipients, message
-				    FROM	notifications, scans
-				    WHERE	scan_id = scans.id AND
-				    		workspace_id = ? AND
-						scan_id = ? AND
-						event_id = ?",
+			"query"	=> "SELECT	`subject`, `recipients`, `message`
+				    FROM	`notifications`, `scans`
+				    WHERE	`scan_id` = `scans`.`id` AND
+				    		`workspace_id` = ? AND
+						`scan_id` = ? AND
+						`event_id` = ?",
 			"values"=> [ $workspace_id, $scan_id, $event_id ]
 		);
 		if ( 0 == @{$notifications} ) {
@@ -383,14 +383,14 @@ sub do_notifications  {
 		my ( $workspace, $scan, $scanner, $param, $targets, $time) = sql(
 			"return"	=> "array",
 			"query"		=> "
-				SELECT	workspaces.name, scans.name,
-					scannername, scannerparam, targets,
-					max(runs.time)
-				FROM	workspaces, scans, runs
-				WHERE	workspaces.id = scans.workspace_id AND
-					runs.scan_id = scans.id AND
-					workspaces.id = ? AND
-					scans.id = ?",
+				SELECT	`workspaces`.`name`, `scans`.`name`,
+					`scannername`, `scannerparam`, `targets`,
+					MAX(`runs`.`time`)
+				FROM	`workspaces`, `scans`, `runs`
+				WHERE	`workspaces`.`id` = `scans`.`workspace_id` AND
+					`runs`.`scan_id` = `scans`.`id` AND
+					`workspaces`.`id` = ? AND
+					`scans`.`id` = ?",
 			"values"	=> [ $workspace_id, $scan_id ]
 		);
 
@@ -398,26 +398,26 @@ sub do_notifications  {
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
-					status = 1",
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
+					`status` = 1",
 			"values"	=> [ $scan_id ]
 		);
 		my ( $changed ) = sql(
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
-					status = 2",
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
+					`status` = 2",
 			"values"	=> [ $scan_id ]
 		);
 		my ( $open ) = sql(
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
 					status = 3",
 			"values"	=> [ $scan_id ]
 		);
@@ -425,8 +425,8 @@ sub do_notifications  {
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
 					status = 4",
 			"values"	=> [ $scan_id ]
 		);
@@ -434,8 +434,8 @@ sub do_notifications  {
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
 					status = 5",
 			"values"	=> [ $scan_id ]
 		);
@@ -443,18 +443,18 @@ sub do_notifications  {
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
-					status = 6",
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
+					`status` = 6",
 			"values"	=> [ $scan_id ]
 		);
 		my ( $masked ) = sql(
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
-					status = 99",
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
+					`status` = 99",
 			"values"	=> [ $scan_id ]
 		);
 		my $att = $new + $changed + $open + $gone;
@@ -509,19 +509,19 @@ $closed finding(s) have been marked as CLOSED/;
 				my ( $run_id ) = sql(
 					"return"	=> "array",
 					"query"		=> "
-						SELECT	id
-						FROM	runs
-						WHERE	scan_id = ?
-						ORDER BY time desc",
+						SELECT	`id`
+						FROM	`runs`
+						WHERE	`scan_id` = ?
+						ORDER BY `time` DESC`",
 					"values"	=> [ $scan_id ]
 				);
 				my $atts = sql(
 					"return"	=> "ref",
 					"query"		=> "
-						SELECT	id
-						FROM	attachments
-						WHERE	run_id = ? AND
-							name LIKE ?",
+						SELECT	`id`
+						FROM	`attachments`
+						WHERE	`run_id` = ? AND
+							`name` LIKE ?",
 					"values"	=> [ $run_id, "%.$ext" ]
 				);
 				if ( $atts ) {
@@ -584,19 +584,18 @@ sub send_notification_from_finding {
 	my $findingId = shift;
 	my ($email,$workspace_id,$scan_id) = sql(
 		query => "SELECT
-				a.recipients,
-				f.workspace_id,
-				f.scan_id
-
+				`a`.`recipients`,
+				`f`.`workspace_id`,
+				`f`.`scan_id`
 			FROM
-				findings f,
-				assets a,
-				asset_hosts h
-			where
-				a.id = h.asset_id and
-				(f.host = h.host or f.host = h.ip)
-				and f.id = ?
-			group by a.recipients",
+				`findings` `f`,
+				`assets` `a`,
+				`asset_hosts` `h`
+			WHERE
+				`a`.`id` = `h`.`asset_id` AND
+				(`f`.`host` = `h`.`host` or `f`.`host` = `h`.`ip`)
+				and `f`.`id` = ?
+			group by `a`.`recipients`",
 		values=>[$findingId],
 		'return'=>'array'
 		);
@@ -614,12 +613,12 @@ sub send_notification_from_finding {
 		# O.K. lets figure out if we have any notification configured
 		my $notifications = sql (
 			"return"=> "ref",
-			"query"	=> "SELECT	subject, recipients, message
-				    FROM	notifications, scans
-				    WHERE	scan_id = scans.id AND
-				    		workspace_id = ? AND
-						scan_id = ? AND
-						event_id = ?",
+			"query"	=> "SELECT	`subject`, `recipients`, `message`
+				    FROM	`notifications`, `scans`
+				    WHERE	`scan_id` = `scans`.`id` AND
+				    		`workspace_id` = ? AND
+						`scan_id` = ? AND
+						`event_id` = ?",
 			"values"=> [ $workspace_id, $scan_id, $event_id ]
 		);
 		if ( 0 == @{$notifications} ) {
@@ -631,14 +630,14 @@ sub send_notification_from_finding {
 		my ( $workspace, $scan, $scanner, $param, $targets, $time) = sql(
 			"return"	=> "array",
 			"query"		=> "
-				SELECT	workspaces.name, scans.name,
-					scannername, scannerparam, targets,
-					max(runs.time)
-				FROM	workspaces, scans, runs
-				WHERE	workspaces.id = scans.workspace_id AND
-					runs.scan_id = scans.id AND
-					workspaces.id = ? AND
-					scans.id = ?",
+				SELECT	`workspaces`.`name`, `scans`.`name`,
+					`scannername`, `scannerparam`, `targets`,
+					max(`runs`.`time`)
+				FROM	`workspaces`, `scans`, `runs`
+				WHERE	`workspaces`.`id` = `scans`.`workspace_id` AND
+					`runs`.`scan_id` = `scans`.`id` AND
+					`workspaces`.`id` = ? AND
+					`scans`.`id` = ?",
 			"values"	=> [ $workspace_id, $scan_id ]
 		);
 
@@ -646,63 +645,63 @@ sub send_notification_from_finding {
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
-					status = 1",
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
+					`status` = 1",
 			"values"	=> [ $scan_id ]
 		);
 		my ( $changed ) = sql(
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
-					status = 2",
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
+					`status` = 2",
 			"values"	=> [ $scan_id ]
 		);
 		my ( $open ) = sql(
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
-					status = 3",
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
+					`status` = 3",
 			"values"	=> [ $scan_id ]
 		);
 		my ( $noissue ) = sql(
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
-					status = 4",
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
+					`status` = 4",
 			"values"	=> [ $scan_id ]
 		);
 		my ( $gone ) = sql(
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
-					status = 5",
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
+					`status` = 5",
 			"values"	=> [ $scan_id ]
 		);
 		my ( $closed ) = sql(
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
-					status = 6",
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
+					`status` = 6",
 			"values"	=> [ $scan_id ]
 		);
 		my ( $masked ) = sql(
 			"return"	=> "array",
 			"query"		=> "
 				SELECT	count(*)
-				FROM	findings
-				WHERE	scan_id = ? AND
-					status = 99",
+				FROM	`findings`
+				WHERE	`scan_id` = ? AND
+					`status` = 99",
 			"values"	=> [ $scan_id ]
 		);
 		my $att = $new + $changed + $open + $gone;
@@ -757,19 +756,19 @@ $closed finding(s) have been marked as CLOSED/;
 				my ( $run_id ) = sql(
 					"return"	=> "array",
 					"query"		=> "
-						SELECT	id
-						FROM	runs
-						WHERE	scan_id = ?
-						ORDER BY time desc",
+						SELECT	`id`
+						FROM	`runs`
+						WHERE	`scan_id` = ?
+						ORDER BY `time` DESC",
 					"values"	=> [ $scan_id ]
 				);
 				my $atts = sql(
 					"return"	=> "ref",
 					"query"		=> "
-						SELECT	id
-						FROM	attachments
-						WHERE	run_id = ? AND
-							name LIKE ?",
+						SELECT	 `id`
+						FROM	`attachments`
+						WHERE	`run_id` = ? AND
+							`name` LIKE ?",
 					"values"	=> [ $run_id, "%.$ext" ]
 				);
 				if ( $atts ) {

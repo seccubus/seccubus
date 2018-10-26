@@ -61,7 +61,7 @@ my $tests = 0;
 
 my @files = split(/\n/, `find . -type f`);
 
-foreach my $file ( @files ) {
+foreach my $file ( sort @files ) {
     if ( $file !~ /\/\./ &&             # Skip hidden files
          $file !~ /tmp/ &&              # Skip temp files
          $file !~ /\.\/blib\// &&       # Skip blib directory

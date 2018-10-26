@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk, Steve Launius, Petr
+# Copyright 2011-2018 Frank Breedijk, Steve Launius, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -87,123 +87,124 @@ sub get_findings {
         my $params = [ $workspace_id, $workspace_id ];
 
         my $query = "
-            SELECT DISTINCT findings.id, findings.host, host_names.name as hostname,
-                port, plugin, finding, remark,
-                findings.severity as severity_id,
-                severity.name as severity_name,
-                findings.status as status_id,
-                finding_status.name as status,
-                findings.scan_id as scan_id,
-                scans.name as scan_name,
-                runs.time as run_time
+            SELECT DISTINCT `findings`.`id`, `findings`.`host`, `host_names`.`name` as `hostname`,
+                `port`, `plugin`, `finding`, `remark`,
+                `findings`.`severity` as `severity_id`,
+                `severity`.`name` as `severity_name`,
+                `findings`.`status` as `status_id`,
+                `finding_status`.`name` as `status`,
+                `findings`.`scan_id` as `scan_id`,
+                `scans`.`name` as `scan_name`,
+                `runs`.`time` as `run_time`
             FROM
-                findings
-            LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
-            LEFT JOIN severity on findings.severity = severity.id
-            LEFT JOIN finding_status on findings.status = finding_status.id
-            LEFT JOIN scans on scans.id = findings.scan_id
-            LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id
-            LEFT JOIN runs ON findings.run_id = runs.id
+                `findings`
+            LEFT JOIN `host_names` ON `host_names`.`ip` = `host` and `host_names`.`workspace_id` = ?
+            LEFT JOIN `severity` ON `findings`.`severity` = `severity`.`id`
+            LEFT JOIN `finding_status` ON `findings`.`status` = `finding_status`.`id`
+            LEFT JOIN `scans` ON `scans`.`id` = `findings`.`scan_id`
+            LEFT JOIN `issues2findings` ON `issues2findings`.`finding_id` = `findings`.`id`
+            LEFT JOIN `runs` ON `findings`.`run_id` = `runs`.`id`
             WHERE
-                findings.workspace_id = ?";
+                `findings`.`workspace_id` = ?";
         if ( $scan_id != 0 ) {
-            $query .= " AND findings.scan_id = ? ";
+            $query .= " AND `findings`.`scan_id` = ? ";
             push @$params, $scan_id;
         }
         if($asset_id != 0){
             $query = "
-            SELECT DISTINCT findings.id, findings.host, host_names.name as hostname,
-                port, plugin, finding, remark,
-                findings.severity as severity_id,
-                severity.name as severity_name,
-                findings.status as status_id,
-                finding_status.name as status,
-                findings.scan_id as scan_id,
-                scans.name as scan_name,
-                runs.time as run_time
+            SELECT DISTINCT `findings`.`id`, `findings`.`host`, `host_names`.`name` AS `hostname`,
+                `port`, `plugin`, `finding`, `remark`,
+                `findings`.`severity` AS `severity_id`,
+                `severity`.`name` AS `severity_name`,
+                `findings`.`status` AS `status_id`,
+                `finding_status`.`name` AS `status`,
+                `findings`.`scan_id` AS `scan_id`,
+                `scans`.`name` AS `scan_name`,
+                `runs`.`time` AS `run_time`
             FROM
-                findings
-                LEFT JOIN host_names on host_names.ip = host and host_names.workspace_id = ?
-                LEFT JOIN severity on findings.severity = severity.id
-                LEFT JOIN finding_status on findings.status = finding_status.id
-                LEFT JOIN scans on scans.id = findings.scan_id
-                LEFT JOIN issues2findings ON issues2findings.finding_id = findings.id
-                LEFT JOIN runs on findings.run_id = runs.id,
-                assets,
-                asset_hosts
-
+                `findings`
+                LEFT JOIN `host_names` ON `host_names`.`ip` = `host` AND `host_names`.`workspace_id` = ?
+                LEFT JOIN `severity` ON `findings`.`severity` = `severity`.`id`
+                LEFT JOIN `finding_status` ON `findings`.`status` = `finding_status`.`id`
+                LEFT JOIN `scans` ON `scans`.`id` = `findings`.`scan_id`
+                LEFT JOIN `issues2findings` ON `issues2findings`.`finding_id` = `findings`.`id`
+                LEFT JOIN `runs` ON `findings`.`run_id` = `runs`.`id`,
+                `assets`,
+                `asset_hosts`
             WHERE
-                findings.workspace_id = ? AND
-                assets.workspace_id = findings.workspace_id AND
-                asset_hosts.asset_id = assets.id AND (
-                    asset_hosts.ip = findings.`host` OR
-                    asset_hosts.`host` = findings.`host` OR
-                    findings.`host` LIKE CONCAT('%/',asset_hosts.ip) OR
-                    findings.`host` LIKE CONCAT(asset_hosts.host, '/%')
+                `findings`.`workspace_id` = ? AND
+                `assets`.`workspace_id` = `findings`.`workspace_id` AND
+                `asset_hosts`.`asset_id` = `assets`.`id` AND (
+                    `asset_hosts`.`ip` = `findings`.`host` OR
+                    `asset_hosts`.`host` = `findings`.`host` OR
+                    `findings`.`host` LIKE CONCAT('%/',`asset_hosts`.`ip`) OR
+                    `findings`.`host` LIKE CONCAT(`asset_hosts`.`host`, '/%')
                 )
                 ";
-            $query .= "AND assets.id = ?";
+            $query .= "AND `assets`.`id` = ?";
             push @$params, $asset_id;
 
         }
 
         if ( $filter ) {
             if ( $filter->{status} ) {
-                $query .= " AND status = ? ";
+                $query .= " AND `status` = ? ";
                 push @$params, $filter->{status};
             }
             if ( $filter->{host} ) {
                 $filter->{host} =~ s/\*/\%/;
-                $query .= " AND findings.host LIKE ? ";
+                $query .= " AND `findings`.`host` LIKE ? ";
                 push @$params, $filter->{host};
             }
             if ( defined $filter->{hostname} ) {
                 $filter->{hostname} =~ s/\*/\%/;
                 $filter->{hostname} = "%$filter->{hostname}%";
-                $query .= " AND host_names.name LIKE ? ";
+                $query .= " AND `host_names`.`name` LIKE ? ";
                 push @$params, $filter->{hostname};
             }
             if ( $filter->{port} ) {
-                $query .= " AND port = ? ";
+                $query .= " AND `port` = ? ";
                 push @$params, $filter->{port};
             }
             if ( $filter->{plugin} ) {
-                $query .= " AND plugin = ? ";
+                $query .= " AND `plugin` = ? ";
                 push @$params, $filter->{plugin};
             }
             if ( defined $filter->{severity} ) {
-                $query .= " AND findings.severity = ? ";
+                $query .= " AND `findings`.`severity` = ? ";
                 push @$params, $filter->{severity};
             }
             if ( $filter->{finding} ) {
-                $query .= " AND finding LIKE ? ";
+                $query .= " AND `finding` LIKE ? ";
                 push @$params, "%" . $filter->{finding} . "%";
             }
             if ( $filter->{remark} ) {
-                $query .= " AND remark LIKE ?";
+                $query .= " AND `remark` LIKE ?";
                 push @$params, "%" . $filter->{remark} . "%";
             }
             if ( $filter->{issue} ) {
-                $query .= " AND issues2findings.issue_id = ?";
+                $query .= " AND `issues2findings`.`issue_id` = ?";
                 push @$params, $filter->{issue};
             }
             if ( $filter->{id} ) {
-                $query .= " AND findings.id = ?";
+                $query .= " AND `findings`.`id` = ?";
                 push @$params, $filter->{id};
             }
         }
 
-        $query .= " ORDER BY host, port, plugin ";
+        $query .= " ORDER BY `host`, `port`, `plugin` ";
         if ( $limit ) {
             $query .= "LIMIT ?\n";
             push @$params, $limit;
         }
         #die $query;
 
-        return sql( "return"	=> "ref",
-                "query"	=> $query,
-                "values"	=> $params,
-                  );
+        #die $query;
+        return sql(
+            "return"    => "ref",
+            "query"     => $query,
+            "values"    => $params,
+        );
     } else {
         die "Permission denied!";
     }
@@ -249,82 +250,83 @@ sub get_status {
         push @$params, $workspace_id;
 
         my $query = "
-            SELECT	s.id, s.name, count(fi.id)
+            SELECT	`s`.`id`, `s`.`name`, COUNT(`fi`.`id`)
             FROM
-                finding_status s
+                `finding_status` `s`
             LEFT JOIN (
-                SELECT DISTINCT findings.id, findings.status
+                SELECT DISTINCT `findings`.`id`, `findings`.`status`
                 FROM
         ";
-        $query .= "asset_hosts,  " if @$asset_ids;
-        $query .= " findings
-                LEFT JOIN   host_names h
-                ON          ( h.ip = findings.host )
-                WHERE       findings.workspace_id = ?
+        $query .= "`asset_hosts`,  " if @$asset_ids;
+        $query .= " `findings`
+                LEFT JOIN   `host_names` `h`
+                ON          ( `h`.`ip` = `findings`.`host` )
+                WHERE       `findings`.`workspace_id` = ?
         ";
 
         if (@$asset_ids) {
-            $query .= "AND asset_hosts.asset_id IN (";
+            $query .= "AND `asset_hosts`.`asset_id` IN (";
             $query .= join ",", map { push @$params,$_; '?'; } @$asset_ids;
             $query .= " ) AND (
-                    asset_hosts.ip = findings.`host` OR
-                    asset_hosts.`host` = findings.`host` OR
-                    findings.`host` LIKE CONCAT('%/',asset_hosts.ip) OR
-                    findings.`host` LIKE CONCAT(asset_hosts.host, '/%')
+                    `asset_hosts`.`ip` = `findings`.`host` OR
+                    `asset_hosts`.`host` = `findings`.`host` OR
+                    `findings`.`host` LIKE CONCAT('%/',`asset_hosts`.`ip`) OR
+                    `findings`.`host` LIKE CONCAT(`asset_hosts`.`host`, '/%')
                 )
             ";
         } elsif ( @$scan_ids ) {
-            $query .= " AND findings.scan_id IN (  ";
+            $query .= " AND `findings`.`scan_id` IN (  ";
             $query .= join ",", map { push @$params,$_; '?'; } @$scan_ids if(@$scan_ids);
             $query .= " ) \n";
         }
         if ( $filter ) {
             if ( $filter->{host} ) {
                 $filter->{host} =~ s/\*/\%/;
-                $query .= " AND findings.host LIKE ? ";
+                $query .= " AND `findings`.`host` LIKE ? ";
                 push @$params, $filter->{host};
             }
             if ( $filter->{port} ) {
-                $query .= " AND findings.port = ? ";
+                $query .= " AND `findings`.`port` = ? ";
                 push @$params, $filter->{port};
             }
             if ( $filter->{plugin} ) {
-                $query .= " AND findings.plugin = ? ";
+                $query .= " AND `findings`.`plugin` = ? ";
                 push @$params, $filter->{plugin};
             }
             if ( $filter->{severity} ) {
-                $query .= " AND findings.severity = ? ";
+                $query .= " AND `findings`.`severity` = ? ";
                 push @$params, $filter->{severity};
             }
             if ( $filter->{finding} ) {
-                $query .= " AND finding LIKE ? ";
+                $query .= " AND `finding` LIKE ? ";
                 push @$params, "%" . $filter->{finding} . "%";
             }
             if ( $filter->{remark} ) {
-                $query .= " AND remark LIKE ?";
+                $query .= " AND `remark` LIKE ?";
                 push @$params, "%" . $filter->{remark} . "%";
             }
             if ( $filter->{issue} ) {
-                $query .= " AND finding.id IN ( SELECT finding_id FROM issues2findings WHERE issue_id = ? ) ";
+                $query .= " AND `finding`.`id` IN ( SELECT `finding_id` FROM `issues2findings` WHERE `issue_id` = ? ) ";
                 push @$params, $filter->{issue};
             }
             if ( $filter->{hostname} ) {
                 $filter->{hostname} =~ s/\*/\%/;
                 $filter->{hostname} = "%$filter->{hostname}%";
-                $query .= " AND h.name LIKE ? ";
+                $query .= " AND `h`.`name` LIKE ? ";
                 push @$params, $filter->{hostname};
             }
         }
 
         $query .= "
-        ) fi ON ( fi.status = s.id )
-        GROUP BY s.id
-        ORDER BY s.id";
+        ) `fi` ON ( `fi`.`status` = `s`.`id` )
+        GROUP BY `s`.`id`
+        ORDER BY `s`.`id`";
         #die $query;
-        return sql( "return"	=> "ref",
-                "query"	=> $query,
-                "values"	=> $params,
-                  );
+        return sql(
+            "return"    => "ref",
+            "query"     => $query,
+            "values"    => $params,
+        );
     } else {
         die "Permission denied!";
     }
@@ -370,31 +372,31 @@ sub get_filters {
     if ( ! may_read($workspace_id) ) {
         die "Permission denied!";
     } else {
-        my $from = " FROM findings";
-        my $where = "findings.workspace_id = ?";
+        my $from = " FROM `findings`";
+        my $where = "`findings`.`workspace_id` = ?";
         my $join = "";
-        $join .= "LEFT JOIN issues2findings i2f ON i2f.finding_id = findings.id " if exists $filter->{issue};
-        $join .= "LEFT JOIN host_names on host_names.ip = findings.host AND host_names.workspace_id = findings.workspace_id " if exists $filter->{hostname};
+        $join .= "LEFT JOIN `issues2findings` `i2f` ON `i2f`.`finding_id` = `findings`.`id `" if exists $filter->{issue};
+        $join .= "LEFT JOIN `host_names` ON `host_names`.`ip` = `findings`.`host` AND `host_names`.`workspace_id` = `findings`.`workspace_id` " if exists $filter->{hostname};
 
         # If we have scan_ids
         if ( @$scan_ids ) {
             $where .= " AND ( " if @$scan_ids;
             foreach my $scan ( @$scan_ids ) {
-                $where .= " scan_id = ? OR "
+                $where .= " `scan_id` = ? OR "
             }
             $where =~ s/OR $/\) /;
         } elsif ( @$asset_ids ) {
-            $from = "FROM asset_hosts, findings ";
-            $where .= " AND asset_hosts.asset_id in ( ";
+            $from = "FROM `asset_hosts`, `findings` ";
+            $where .= " AND `asset_hosts`.`asset_id` IN ( ";
             foreach my $asset ( @$asset_ids ) {
                 $where .= " ? , ";
             }
             $where =~ s/, $/\) /;
             $where .= "AND (
-                    asset_hosts.ip = findings.`host` OR
-                    asset_hosts.`host` = findings.`host` OR
-                    findings.`host` LIKE CONCAT('%/',asset_hosts.ip) OR
-                    findings.`host` LIKE CONCAT(asset_hosts.host, '/%')
+                    `asset_hosts`.`ip` = `findings`.`host` OR
+                    `asset_hosts`.`host` = `findings`.`host` OR
+                    `findings`.`host` LIKE CONCAT('%/',`asset_hosts`.`ip`) OR
+                    `findings`.`host` LIKE CONCAT(`asset_hosts`.`host`, '/%')
                 )
             ";
         }
@@ -406,27 +408,27 @@ sub get_filters {
         my $ffields = [];
         my $fwhere = construct_filter($filter,"host",$ffields,1);
         my $query = "
-            SELECT findings.host, count(*)
+            SELECT `findings`.`host`, COUNT(*)
             $from
             $join
             WHERE $where $fwhere
-            GROUP BY findings.host
-            ORDER BY INET_ATON(findings.host), findings.host
+            GROUP BY `findings`.`host`
+            ORDER BY INET_ATON(`findings`.`host`), `findings`.`host`
         ";
         my $hosts_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
         # Get hosts outside filter.
         $query = "
-            SELECT findings.host, count(*)
+            SELECT `findings`.`host`, COUNT(*)
             $from
-            WHERE $where AND findings.host NOT IN (
-                SELECT DISTINCT findings.host
+            WHERE $where AND `findings`.`host` NOT IN (
+                SELECT DISTINCT `findings`.`host`
                 $from
                 $join
                 WHERE $where $fwhere
             )
-            GROUP BY findings.host
-            ORDER BY INET_ATON(findings.host), findings.host
+            GROUP BY `findings`.`host`
+            ORDER BY INET_ATON(`findings`.`host`), `findings`.`host`
         ";
         my $hosts_out = sql(query => $query, values => [$workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
         my %count;
@@ -487,32 +489,32 @@ sub get_filters {
         $ffields = [];
         $fwhere = construct_filter($filter,"hostname",$ffields,1);
         $query = "
-            SELECT host_names.name as hostname, count(*)
+            SELECT `host_names`.`name` AS `hostname`, COUNT(*)
             $from
             $join";
-        $query .= " LEFT JOIN host_names on host_names.ip = findings.host AND host_names.workspace_id = findings.workspace_id " unless exists $filter->{hostname};
+        $query .= " LEFT JOIN `host_names` ON `host_names`.`ip` = `findings`.`host` AND `host_names`.`workspace_id` = `findings`.`workspace_id` " unless exists $filter->{hostname};
         $query .= "
             WHERE $where $fwhere
-            GROUP BY hostname
-            ORDER BY hostname
+            GROUP BY `hostname`
+            ORDER BY `hostname`
         ";
         my $hostnames_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
         # Get hosts not in filter.
         $query = "
-            SELECT host_names.name as hostname, count(*)
+            SELECT `host_names`.`name` AS `hostname`, COUNT(*)
             $from
             $join";
-        $query .= " LEFT JOIN host_names on host_names.ip = findings.host AND host_names.workspace_id = findings.workspace_id " unless exists $filter->{hostname};
+        $query .= " LEFT JOIN `host_names` ON `host_names`.`ip` = `findings`.`host` AND `host_names`.`workspace_id` = `findings`.`workspace_id` " unless exists $filter->{hostname};
         $query .= "
-            WHERE $where AND host_names.ip NOT IN (
-                SELECT DISTINCT findings.host
+            WHERE $where AND `host_names`.`ip` NOT IN (
+                SELECT DISTINCT `findings`.`host`
                 $from
                 $join
                 WHERE $where $fwhere
             )
-            GROUP BY hostname
-            ORDER BY hostname
+            GROUP BY `hostname`
+            ORDER BY `hostname`
         ";
         my $hostnames_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
@@ -550,27 +552,27 @@ sub get_filters {
         $ffields = [];
         $fwhere = construct_filter($filter,"port",$ffields,1);
         $query = "
-            SELECT port, count(*)
+            SELECT `port`, COUNT(*)
             $from
             $join
             WHERE $where $fwhere
-            GROUP BY port
-            ORDER BY CAST(port as SIGNED INTEGER), port
+            GROUP BY `port`
+            ORDER BY CAST(`port` as SIGNED INTEGER), `port`
         ";
         my $ports_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
         # Get ports outside filter
         $query = "
-            SELECT port, count(*)
+            SELECT `port`, COUNT(*)
             $from
-            WHERE $where AND port NOT IN (
-                SELECT DISTINCT port
+            WHERE $where AND `port` NOT IN (
+                SELECT DISTINCT `port`
                 $from
                 $join
                 WHERE $where $fwhere
             )
-            GROUP BY port
-            ORDER BY port
+            GROUP BY `port`
+            ORDER BY CAST(`port` as SIGNED INTEGER), `port`
         ";
         my $ports_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
@@ -605,12 +607,12 @@ sub get_filters {
         $ffields = [];
         $fwhere = construct_filter($filter,"plugin",$ffields,1);
         $query = "
-            SELECT plugin, count(*)
+            SELECT `plugin`, COUNT(*)
             $from
             $join
             WHERE $where $fwhere
-            GROUP BY plugin
-            ORDER BY CAST(plugin as SIGNED INTEGER), plugin
+            GROUP BY `plugin`
+            ORDER BY CAST(`plugin` AS SIGNED INTEGER), `plugin`
         ";
         my $plugins_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
         my @ids = ();
@@ -620,16 +622,16 @@ sub get_filters {
 
         # Get plugins outside filter
         $query = "
-            SELECT plugin, count(*)
+            SELECT `plugin`, COUNT(*)
             $from
-            WHERE $where AND plugin NOT IN (
-                SELECT DISTINCT plugin
+            WHERE $where AND `plugin` NOT IN (
+                SELECT DISTINCT `plugin`
                 $from
                 $join
                 WHERE $where $fwhere
             )
-            GROUP BY plugin
-            ORDER BY plugin
+            GROUP BY `plugin`
+            ORDER BY CAST(`plugin` AS SIGNED INTEGER), `plugin`
         ";
         my $plugins_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
@@ -665,30 +667,30 @@ sub get_filters {
         $ffields = [];
         $fwhere = construct_filter($filter,"severity",$ffields,1);
         $query = "
-            SELECT severity.id as severity, severity.name, count(*)
+            SELECT `severity`.`id` AS `severity`, `severity`.`name`, COUNT(*)
             $from
             $join
-            LEFT JOIN severity on findings.severity = severity.id
+            LEFT JOIN `severity` ON `findings`.`severity` = `severity`.`id`
             WHERE $where $fwhere
-            GROUP BY severity, name
-            ORDER BY severity
+            GROUP BY `severity`, `name`
+            ORDER BY `severity`
         ";
         my $severitys_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
         # Get severities outside filter
         $query = "
-            SELECT severity.id as severity, severity.name, count(*)
+            SELECT `severity`.`id` AS `severity`, `severity`.`name`, COUNT(*)
             $from
             $join
-            LEFT JOIN severity on findings.severity = severity.id
-            WHERE $where AND severity.id NOT IN (
-                SELECT DISTINCT severity
+            LEFT JOIN `severity` ON `findings`.`severity` = `severity`.`id`
+            WHERE $where AND `severity`.`id` NOT IN (
+                SELECT DISTINCT `severity`
                 $from
                 $join
                 WHERE $where $fwhere
             )
-            GROUP BY severity
-            ORDER BY severity
+            GROUP BY `severity`
+            ORDER BY `severity`
         ";
         my $severitys_out = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
@@ -721,32 +723,34 @@ sub get_filters {
         $ffields = [];
         $fwhere = construct_filter($filter,"issue",$ffields,1);
         $query = "
-            SELECT issues.id as issue_id, issues.name, ext_ref, count(*)
+            SELECT `issues`.`id` AS `issue_id`, `issues`.`name`, `ext_ref`, COUNT(*)
             $from
             $join";
-        $query .= " LEFT JOIN issues2findings i2f on findings.id = i2f.finding_id " unless $filter->{issue};
+        $query .= " LEFT JOIN `issues2findings` `i2f` ON `findings`.`id` = `i2f`.`finding_id` " unless $filter->{issue};
         $query .= "
-            LEFT JOIN issues on i2f.issue_id = issues.id
+            LEFT JOIN `issues` ON `i2f`.`issue_id` = `issues`.`id`
             WHERE $where $fwhere
-            GROUP BY issue_id, name, ext_ref
-            ORDER BY issue_id
+            GROUP BY `issue_id`, `name`, `ext_ref`
+            ORDER BY `issue_id`
         ";
+        #die $query . " +++ " . join " -- ", ($workspace_id, @$scan_ids, @$asset_ids, @$ffields);
         my $issues_in = sql(query => $query, values => [ $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
         # Get issues outside filter
+
         $query = "
-            SELECT issues.id, issues.name, ext_ref, '?'
-            FROM issues
-            WHERE issues.workspace_id = ? AND id NOT IN (
-                SELECT DISTINCT issues.id as issue_id
+            SELECT `issues`.`id`, `issues`.`name`, `ext_ref`, '?'
+            FROM `issues`
+            WHERE `issues`.`workspace_id` = ? AND `id` NOT IN (
+                SELECT DISTINCT `issues`.`id` AS `issue_id`
                 $from
                 $join";
-        $query .= " LEFT JOIN issues2findings i2f on findings.id = i2f.finding_id " unless $filter->{issue};
+        $query .= " LEFT JOIN `issues2findings` `i2f` ON `findings`.`id` = `i2f`.`finding_id` " unless $filter->{issue};
         $query .= "
-                LEFT JOIN issues on i2f.issue_id = issues.id
-                WHERE $where $fwhere AND issue_id IS NOT NULL
+                LEFT JOIN `issues` ON `i2f`.`issue_id` = `issues`.`id`
+                WHERE $where $fwhere AND `issue_id` IS NOT NULL
             )
-            ORDER BY id
+            ORDER BY `id`
         ";
         my $issues_out = sql(query => $query, values => [ $workspace_id, $workspace_id, @$scan_ids, @$asset_ids, @$ffields ] );
 
@@ -800,9 +804,9 @@ sub construct_filter {
     my $where = "AND ( ";
     if ( exists $filter->{status} && $exclude ne "status" ) {
         if ( $in ) {
-            $where .= "findings.status = ? AND ";
+            $where .= "`findings`.`status` = ? AND ";
         } else {
-            $where .= "findings.status != ? OR ";
+            $where .= "`findings`.`status` != ? OR ";
         }
         push @$args, $filter->{status};
     }
@@ -811,9 +815,9 @@ sub construct_filter {
         my $host = lc($filter->{host});
         $host =~ s/\*/%/g;
         if ( $in ) {
-            $where .= "findings.host like ? AND ";
+            $where .= "`findings`.`host` LIKE ? AND ";
         } else {
-            $where .= "findings.host not like ? OR ";
+            $where .= "`findings`.`host` NOT LIKE ? OR ";
         }
         push @$args, $host;
     }
@@ -822,45 +826,45 @@ sub construct_filter {
         my $hostname = lc($filter->{hostname});
         $hostname =~ s/\*/%/g;
         if ( $in ) {
-            $where .= "host_names.name like ? AND ";
+            $where .= "`host_names`.`name` LIKE ? AND ";
         } else {
-            $where .= "host_names.name not like ? OR ";
+            $where .= "`host_names`.`name` NOT LIKE ? OR ";
         }
         push @$args, $hostname;
     }
 
     if ( exists $filter->{port} && $exclude ne "port" ) {
         if ( $in ) {
-            $where .= "port = ? AND ";
+            $where .= "`port` = ? AND ";
         } else {
-            $where .= "port != ? OR ";
+            $where .= "`port` != ? OR ";
         }
         push @$args, $filter->{port};
     }
 
     if ( exists $filter->{plugin} && $exclude ne "plugin" ) {
         if ( $in ) {
-            $where .= "plugin = ? AND ";
+            $where .= "`plugin` = ? AND ";
         } else {
-            $where .= "plugin != ? OR ";
+            $where .= "`plugin` != ? OR ";
         }
         push @$args, $filter->{plugin};
     }
 
     if ( exists $filter->{severity} && $exclude ne "severity" ) {
         if ( $in ) {
-            $where .= "findings.severity = ? AND ";
+            $where .= "`findings`.`severity` = ? AND ";
         } else {
-            $where .= "findings.severity != ? OR ";
+            $where .= "`findings`.`severity` != ? OR ";
         }
         push @$args, $filter->{port};
     }
 
     if ( exists $filter->{issue} && $exclude ne "issue" ) {
         if ( $in ) {
-            $where .= "issue_id = ? AND ";
+            $where .= "`issue_id` = ? AND ";
         } else {
-            $where .= "issue_id != ? OR ";
+            $where .= "`issue_id` != ? OR ";
         }
         push @$args, $filter->{issue};
     }
@@ -868,9 +872,9 @@ sub construct_filter {
     if ( exists $filter->{finding} && $exclude ne "finding" ) {
         my $finding = "%" . lc($filter->{finding}) . "%";
         if ( $in ) {
-            $where .= "finding like ? AND ";
+            $where .= "`finding` LIKE ? AND ";
         } else {
-            $where .= "finding not like ? OR ";
+            $where .= "`finding` NOT LIKE ? OR ";
         }
         push @$args, $finding;
     }
@@ -878,9 +882,9 @@ sub construct_filter {
     if ( exists $filter->{remark} && $exclude ne "remark" ) {
         my $remark = "%" . lc($filter->{remark}) . "%";
         if ( $in ) {
-            $where .= "remark like ? AND ";
+            $where .= "`remark` LIKE ? AND ";
         } else {
-            $where .= "remark not like ? OR ";
+            $where .= "`remark` NOT LIKE ? OR ";
         }
         push @$args, $filter;
     }
@@ -1026,26 +1030,30 @@ sub get_finding {
         my $params = [ $workspace_id, $workspace_id ];
 
         my $query = "
-            SELECT 	finding_changes.id, findings.id, host,
-                host_names.name, port, plugin,
-                finding_changes.finding,
-                finding_changes.remark,
-                finding_changes.severity, severity.name,
-                finding_changes.status, finding_status.name,
-                user_id, username, finding_changes.time as changetime,
-                runs.time as runtime
+            SELECT  `finding_changes`.`id`, `findings`.`id`, `host`,
+                `host_names`.`name`, `port`, `plugin`,
+                `finding_changes`.`finding`,
+                `finding_changes`.`remark`,
+                `finding_changes`.`severity`, `severity`.`name`,
+                `finding_changes`.`status`, `finding_status`.`name`,
+                `user_id`, `username`, `finding_changes`.`time` as `changetime`,
+                `runs`.`time` as `runtime`
             FROM
-                finding_changes LEFT JOIN users on (finding_changes.user_id = users.id ),
-                finding_status, severity,
-                runs, findings LEFT JOIN host_names ON findings.host = host_names.ip
+                `finding_changes`
+                LEFT JOIN `users` ON (`finding_changes`.`user_id` = `users`.`id` ),
+                `finding_status`,
+                `severity`,
+                `runs`,
+                `findings`
+                LEFT JOIN `host_names` ON `findings`.`host` = `host_names`.`ip`
             WHERE
-                findings.workspace_id = ? AND
-                findings.id = ? AND
-                findings.id = finding_changes.finding_id AND
-                finding_changes.severity = severity.id AND
-                finding_changes.status = finding_status.id AND
-                runs.id = finding_changes.run_id
-            ORDER BY finding_changes.time DESC, finding_changes.id DESC
+                `findings`.`workspace_id` = ? AND
+                `findings`.`id` = ? AND
+                `findings`.`id` = `finding_changes`.`finding_id` AND
+                `finding_changes`.`severity` = `severity`.`id` AND
+                `finding_changes`.`status` = `finding_status`.`id` AND
+                `runs`.`id` = `finding_changes`.`run_id`
+            ORDER BY `finding_changes`.`time` DESC, `finding_changes`.`id` DESC
             ";
 
 
@@ -1139,9 +1147,14 @@ sub update_finding {
         # host port plugin combination
         $arg{finding_id} = sql (
             "return"	=> "array",
-            "query"		=> "SELECT id
-                        FROM findings
-                        WHERE workspace_id = ? and scan_id = ? AND host = ? AND port = ? AND plugin = ?",
+            "query"		=> "
+                SELECT `id`
+                FROM `findings`
+                WHERE `workspace_id` = ? AND
+                    `scan_id` = ? AND
+                    `host` = ? AND
+                    `port` = ? AND
+                    `plugin` = ?",
             "values"	=> [ $arg{workspace_id}, $arg{scan_id}, $arg{host}, $arg{port}, $arg{plugin} ],
             );
 
@@ -1162,22 +1175,22 @@ sub update_finding {
     }
     if ( $arg{finding_id} ) {
         # We need to update the record
-        my $query = "update findings set ";
+        my $query = "UPDATE findings SET ";
         $query .= join " = ? , ", @fields;
         $query .= " = ?";
         if ( exists $arg{remark} ) {
 
             if ( $arg{overwrite}  ) {
-                $query .= ", remark = ? ";
+                $query .= ", `remark` = ? ";
                 push @values, $arg{remark};
             } else {
                 if ( $arg{remark} ) {
-                    $query .= ", remark = CONCAT_WS('\n', remark, ?) ";
+                    $query .= ", `remark` = CONCAT_WS('\n', `remark`, ?) ";
                     push @values, $arg{remark};
                 }
             }
         }
-        $query .= "where id = ? and workspace_id = ?";
+        $query .= " WHERE `id` = ? AND `workspace_id` = ?";
         sql( "return"	=> "handle",
              "query" 	=> $query,
              "values"	=> [ @values, $arg{finding_id}, $arg{workspace_id} ]
@@ -1246,15 +1259,15 @@ sub create_finding_change {
     $user_id = get_user_id($ENV{SECCUBUS_USER}) unless $user_id;
 
     my @new_data = sql( "return"	=> "array",
-            "query"		=> "select status, finding, remark, severity, run_id from findings where id = ?",
+            "query"		=> "SELECT `status`, `finding`, `remark`, `severity`, `run_id` FROM `findings` WHERE `id` = ?",
             "values"	=> [ $finding_id ],
               );
     my @old_data = sql( "return"	=> "array",
             "query"		=> "
-                select status, finding, remark, severity, run_id from finding_changes
-                where finding_id = ?
-                order by id DESC
-                limit 1",
+                SELECT `status`, `finding`, `remark`, `severity`, `run_id` FROM `finding_changes`
+                WHERE `finding_id` = ?
+                ORDER BY `id` DESC
+                LIMIT 1",
             "values"	=> [ $finding_id ],
     );
     my $changed = 0;
@@ -1265,7 +1278,7 @@ sub create_finding_change {
         }
     }
     if ( $changed ) {
-        my $query = "insert into finding_changes(finding_id, status, finding, remark, severity, run_id, user_id";
+        my $query = "INSERT INTO `finding_changes` (`finding_id`, `status`, `finding`, `remark`, `severity`, `run_id`, `user_id`";
         $query .= ", time" if $timestamp;
         $query .= ") values (?, ?, ?, ?, ?, ?, ?";
         $query .= ", ?" if $timestamp;
@@ -1326,15 +1339,17 @@ sub process_status {
     # findings that currently have the status NEW (1), CHANGED(2), OPEN(3),
     # or NO ISSUE (4) (so basically 4 or lower) and isn't associated with
     # the current run
-    $ref = sql( "return"	=> "ref",
-            "query"	=> "SELECT	id
-                          FROM	findings
-                    WHERE 	workspace_id = ? AND
-                            scan_id = ? AND
-                        ( status <= 4 ) AND
-                        run_id <> ?",
-              "values"	=> [ $workspace_id, $scan_id, $run_id ],
-            );
+    $ref = sql(
+        "return"    => "ref",
+        "query"     => "
+            SELECT `id`
+            FROM `findings`
+            WHERE  `workspace_id` = ? AND
+                `scan_id` = ? AND
+                `status` <= 4  AND
+                `run_id` <> ?",
+      "values"	=> [ $workspace_id, $scan_id, $run_id ],
+    );
 
     foreach my $row ( @{$ref} ) {
         my $id = $$row[0]; # Get the id from the arrayref;
@@ -1348,30 +1363,34 @@ sub process_status {
 
     # Find ids for findings that were previously GONE (5) but
     # are associated with the current run
-    $ref = sql( "return"	=> "ref",
-            "query"	=> "SELECT	id
-                          FROM	findings
-                        WHERE 	workspace_id = ? AND
-                                scan_id = ? AND
-                                status = 5 AND
-                                run_id = ?",
-              "values"	=> [ $workspace_id, $scan_id, $run_id ],
-            );
+    $ref = sql(
+        "return"    => "ref",
+        "query"     => "
+            SELECT `id`
+            FROM    `findings`
+            WHERE   `workspace_id` = ? AND
+                `scan_id` = ? AND
+                `status` = 5 AND
+                `run_id` = ?",
+        "values"	=> [ $workspace_id, $scan_id, $run_id ],
+    );
     foreach my $row ( @{$ref} ) {
         my $id = $$row[0]; # Get the id from the arrayref;
         # Find status before gone
-        my @sbg = sql( 	return 	=> "array",
-                        query	=> "SELECT status, run_id
-                                    FROM finding_changes
-                                    WHERE
-                                        finding_id = ? AND
-                                        status <> 5 AND
-                                        status <> 6 AND
-                                        run_id <> ?
-                                    ORDER BY time DESC
-                                    LIMIT 1",
-                        values 	=> [ $id, $run_id ]
-                    );
+        my @sbg = sql(
+            return  => "array",
+            query   => "
+                SELECT `status`, `run_id`
+                FROM `finding_changes`
+                WHERE
+                    `finding_id` = ? AND
+                    `status` <> 5 AND
+                    `status` <> 6 AND
+                    `run_id` <> ?
+                ORDER BY `time` DESC
+                LIMIT 1",
+            values 	=> [ $id, $run_id ]
+        );
         if ( $sbg[0] == 2 ) { # SBG is Changed,set to changed
             print "Set finding $id to status NEW\n" if $verbose;
             update_finding(
@@ -1420,15 +1439,17 @@ sub process_status {
     # findings that currently have the status CLOSED (6) but
     # are associated with the current run (as provided by the user)
     # If a finding is created for the first time, it gets the status NEW by default
-    $ref = sql( "return"	=> "ref",
-            "query"	=> "SELECT	id
-                          FROM	findings
-                        WHERE 	workspace_id = ? AND
-                                scan_id = ? AND
-                                status = 6 AND
-                                run_id = ?",
-              "values"	=> [ $workspace_id, $scan_id, $run_id ],
-            );
+    $ref = sql(
+        "return"    => "ref",
+        "query"     => "
+            SELECT `id`
+            FROM `findings`
+            WHERE `workspace_id` = ? AND
+                `scan_id` = ? AND
+                `status` = 6 AND
+                run_id = ?",
+          "values"  => [ $workspace_id, $scan_id, $run_id ],
+    );
     foreach my $row ( @{$ref} ) {
         my $id = $$row[0]; # Get the id from the arrayref;
         print "Set finding $id to status NEW\n" if $verbose;
@@ -1442,10 +1463,10 @@ sub process_status {
     # Find out if there has been a previous run
     my $previous_run = sql(
         return	=> "array",
-        query	=> "SELECT	MAX(id)
-                    FROM	runs
-                    WHERE	scan_id = ? AND
-                            id <> ?",
+        query	=> "SELECT	MAX(`id`)
+                    FROM	`runs`
+                    WHERE	`scan_id` = ? AND
+                            `id` <> ?",
         values	=> [ $scan_id, $run_id ]
     );
     print "Previous run is: $previous_run\n" if $verbose;
@@ -1457,12 +1478,12 @@ sub process_status {
         # associated with the current run
         $ref = sql(
             "return"	=> "ref",
-            "query"	=> "SELECT	id
-                        FROM	findings
-                        WHERE 	workspace_id = ? AND
-                                scan_id = ? AND
-                                ( status = 3 OR status = 4 ) AND
-                                run_id = ?",
+            "query"	=> "SELECT	`id`
+                        FROM	`findings`
+                        WHERE 	`workspace_id` = ? AND
+                                `scan_id` = ? AND
+                                ( `status` = 3 OR `status` = 4 ) AND
+                                `run_id` = ?",
             "values"	=> [ $workspace_id, $scan_id, $run_id ],
         );
         foreach my $row ( @{$ref} ) {
@@ -1536,19 +1557,19 @@ sub diff_finding {
 
     if ( may_read($workspace_id) ) {
         my @current = sql( return	=> "array",
-                    query	=> "SELECT finding
-                                FROM findings
-                            WHERE id = ?
-                            AND workspace_id = ?",
+                    query	=> "SELECT `finding`
+                                FROM `findings`
+                            WHERE `id` = ?
+                            AND `workspace_id` = ?",
                     values	=> [ $finding_id, $workspace_id ],
                   );
         die "Unable to load current finding, ws: $workspace_id, id: $finding_id, run: $this_run" unless ( @current );
         my @prev = sql( return	=> "array",
-                query	=> "SELECT finding
-                           FROM finding_changes
-                        WHERE finding_id = ?
-                        AND run_id = ?
-                        ORDER BY time DESC
+                query	=> "SELECT `finding`
+                           FROM `finding_changes`
+                        WHERE `finding_id` = ?
+                        AND `run_id` = ?
+                        ORDER BY `time` DESC
                         LIMIT 1",
                    values	=> [ $finding_id, $prev_run ],
                  );

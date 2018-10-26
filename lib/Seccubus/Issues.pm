@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk, Steve Launius, Petr
+# Copyright 2015-2018 Frank Breedijk, Steve Launius, Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -119,10 +119,10 @@ sub update_issue {
 	if ( $arg{issue_id} ) {
 		# We need to update the record
 		if ( @fields ) {
-			my $query = "update issues set ";
+			my $query = "UPDATE `issues` SET ";
 			$query .= join " = ? , ", @fields;
 			$query .= " = ?";
-			$query .= "where id = ? and workspace_id = ?";
+			$query .= "WHERE `id` = ? AND `workspace_id` = ?";
 			sql( "return"	=> "handle",
 			     "query" 	=> $query,
 			     "values"	=> [ @values, $arg{issue_id}, $arg{workspace_id} ]
@@ -136,9 +136,9 @@ sub update_issue {
 		push @values, $arg{workspace_id};
 		my $count = @fields;
 		$count--;
-		my $query = "insert into issues(";
+		my $query = "INSERT INTO `issues`(";
 		$query .= join ",", @fields;
-		$query .= ") values (";
+		$query .= ") VALUES (";
 		$query .= "? ," x $count;
 		$query .= "? );";
 		$return = sql( "return"	=> "id",
@@ -202,11 +202,11 @@ sub create_issue_change {
 	my $user_id = get_user_id($ENV{SECCUBUS_USER});
 
 	my @new_data = sql( "return"	=> "array",
-		"query"		=> "select name, ext_ref, description,severity, status from issues where id = ?",
+		"query"		=> "SELECT `name`, `ext_ref`, `description`, `severity`, `status` FROM `issues` WHERE `id` = ?",
 		"values"	=> [ $issue_id ],
 	);
 	my @old_data = sql( "return"	=> "array",
-		"query"		=> "select name, ext_ref, description,severity, status from issue_changes where issue_id = ? order by time desc limit 1",
+		"query"		=> "SELECT `name`, `ext_ref`, `description`, `severity`, `status` FROM `issue_changes` WHERE `issue_id` = ? ORDER BY `time` DESC LIMIT 1",
 		"values"	=> [ $issue_id ],
 	);
 	#die Dumper @old_data;
@@ -223,9 +223,9 @@ sub create_issue_change {
 
 	my $id = 0;
 	if ( $diff || 0 == @old_data) {
-		my $query = "insert into issue_changes(issue_id, name, ext_ref, description, severity, status, user_id";
-		$query .= ", time" if $timestamp;
-		$query .= ") values (?, ?, ?, ?, ?, ?, ?";
+		my $query = "INSERT INTO `issue_changes` (`issue_id`, `name`, `ext_ref`, `description`, `severity`, `status`, `user_id`";
+		$query .= ", `time`" if $timestamp;
+		$query .= ") VALUES (?, ?, ?, ?, ?, ?, ?";
 		$query .= ", ?" if $timestamp;
 		$query .= ")";
 		my @values = ($issue_id, @new_data, $user_id);
@@ -277,31 +277,31 @@ sub get_issues {
 		my $params = [ $workspace_id ];
 
 		my $query = "
-			SELECT DISTINCT i.id, i.name, i.ext_ref, i.description, i.severity, severity.name,
-				i.status, issue_status.name";
-		$query .= ", i2f.finding_id" if $with_finding_ids;
+			SELECT DISTINCT `i`.`id`, `i`.`name`, `i`.`ext_ref`, `i`.`description`, `i`.`severity`, `severity`.`name`,
+				`i`.`status`, `issue_status`.`name`";
+		$query .= ", `i2f`.`finding_id`" if $with_finding_ids;
 		$query .= "
 			FROM
-				issues i
-			LEFT JOIN severity on i.severity = severity.id
-			LEFT JOIN issue_status on i.status = issue_status.id";
+				`issues` `i`
+			LEFT JOIN `severity` ON `i`.`severity` = `severity`.`id`
+			LEFT JOIN `issue_status` ON `i`.`status` = `issue_status`.`id`";
 		$query .= "
-			LEFT JOIN issues2findings i2f on i.id = i2f.issue_id
+			LEFT JOIN `issues2findings` `i2f` ON `i`.`id` = `i2f`.`issue_id`
 		" if $with_finding_ids || $finding_id;
 
 		$query .= "
 			WHERE
-				i.workspace_id = ?
+				`i`.`workspace_id` = ?
 		";
 		if ( $finding_id ) {
-			$query .= "AND i2f.finding_id = ?";
+			$query .= "AND `i2f`.`finding_id` = ?";
 			push @$params, $finding_id;
 		}
 		if ( $issue_id ) {
-			$query .= "AND i.id = ?";
+			$query .= "AND `i`.`id` = ?";
 			push @$params, $issue_id;
 		}
-		$query .= " ORDER BY i.id ";
+		$query .= " ORDER BY `i`.`id` ";
 
 		my $issues = sql(
 			"return"	=> "ref",
@@ -345,17 +345,18 @@ sub get_issue {
 		my $params = [ $workspace_id, $workspace_id ];
 
 		my $query = "
-			SELECT 	ic.id, ic.issue_id, ic.name, ic.ext_ref, ic.description, ic.severity, s.name as serverity_name,
-				ic.status, st.name as status_name, ic.user_id, u.username, ic.time as changetime
-			FROM issues i
-			LEFT JOIN issue_changes ic ON (i.id = ic.issue_id)
-			LEFT JOIN users u ON (ic.user_id = u.id )
-			LEFT JOIN issue_status st ON (ic.status = st.id)
-			LEFT JOIN severity s ON (ic.severity = s.id)
+			SELECT 	`ic`.`id`, `ic`.`issue_id`, `ic`.`name`, `ic`.`ext_ref`, `ic`.`description`,
+                `ic`.`severity`, `s`.`name` as `serverity_name`, `ic`.`status`, `st`.`name` as `status_name`,
+                `ic`.`user_id`, `u`.`username`, `ic`.`time` as `changetime`
+			FROM `issues` `i`
+			LEFT JOIN `issue_changes` `ic` ON (`i`.`id` = `ic`.`issue_id`)
+			LEFT JOIN `users` `u` ON (`ic`.`user_id` = `u`.`id` )
+			LEFT JOIN `issue_status` `st` ON (`ic`.`status` = `st`.`id`)
+			LEFT JOIN `severity` `s` ON (`ic`.`severity` = `s`.`id`)
 			WHERE
-				i.workspace_id = ? AND
-				i.id = ?
-			ORDER BY ic.time DESC, ic.id DESC
+				`i`.`workspace_id` = ? AND
+				`i`.`id` = ?
+			ORDER BY `ic`.`time` DESC, `ic`.`id` DESC
 			";
 
 		return sql( "return"	=> "ref",
@@ -404,9 +405,9 @@ sub issue_finding_link {
 
 	if ( may_write($workspace_id) ) {
 		$query = "
-			SELECT  count(*)
-			FROM	issues2findings
-			WHERE 	issue_id = ? AND finding_id = ?
+			SELECT  COUNT(*)
+			FROM	`issues2findings`
+			WHERE 	`issue_id` = ? AND `finding_id` = ?
 		";
 		my @row = sql(
 			"return"	=> "array",
@@ -416,14 +417,14 @@ sub issue_finding_link {
 		my $count = $row[0];
 		if ( $delete ) {
 			if ( $count ) { # A previous record exists
-				$query = "DELETE FROM issues2findings WHERE issue_id = ? AND finding_id = ?";
+				$query = "DELETE FROM `issues2findings` WHERE `issue_id` = ? AND `finding_id` = ?";
 				sql(
 					"return"	=> "handle",
 					"query"		=> $query,
 					"values"	=> [ $issue_id, $finding_id ]
 				);
 				my $user_id = get_user_id($ENV{SECCUBUS_USER});
-				$query = "INSERT INTO issue2finding_changes ( issue_id, finding_id, user_id, deleted ) VALUES ( ?, ?, ?, true )";
+				$query = "INSERT INTO `issue2finding_changes` ( `issue_id`, `finding_id`, `user_id`, `deleted` ) VALUES ( ?, ?, ?, true )";
 				sql(
 					"return"	=> "handle",
 					"query"		=> $query,
@@ -434,9 +435,9 @@ sub issue_finding_link {
 			unless ( $count ) { # A previous record does not exist
 				# Check if issues and finding exist in this workspace
 				$query = "
-					SELECT  count(*)
-					FROM	issues
-					WHERE 	id = ? AND workspace_id = ?
+					SELECT  COUNT(*)
+					FROM	`issues`
+					WHERE 	`id` = ? AND `workspace_id` = ?
 				";
 				@row = sql(
 					"return"	=> "array",
@@ -445,9 +446,9 @@ sub issue_finding_link {
 				);
 				my $icount = $row[0];
 				$query = "
-					SELECT 	count(*)
-					FROM 	findings
-					WHERE   id = ? AND workspace_id = ?
+					SELECT 	COUNT(*)
+					FROM 	`findings`
+					WHERE   `id` = ? AND `workspace_id` = ?
 				";
 				@row = sql(
 					"return"	=> "array",
@@ -456,14 +457,14 @@ sub issue_finding_link {
 				);
 				my $fcount = $row[0];
 				if ( $icount && $fcount ) { # Only if they exist in this workspace
-					$query = "INSERT INTO issues2findings ( issue_id, finding_id ) VALUES ( ?, ? )";
+					$query = "INSERT INTO `issues2findings` ( `issue_id`, `finding_id` ) VALUES ( ?, ? )";
 					sql(
 						"return"	=> "handle",
 						"query"		=> $query,
 						"values"	=> [ $issue_id, $finding_id ]
 					);
 					my $user_id = get_user_id($ENV{SECCUBUS_USER});
-					$query = "INSERT INTO issue2finding_changes ( issue_id, finding_id, user_id, deleted ) VALUES ( ?, ?, ?, false )";
+					$query = "INSERT INTO `issue2finding_changes` ( `issue_id`, `finding_id`, `user_id`, `deleted` ) VALUES ( ?, ?, ?, false )";
 					sql(
 						"return"	=> "handle",
 						"query"		=> $query,
