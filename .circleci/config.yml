@@ -424,7 +424,7 @@ jobs:
           command: dnf install -y build/*fc26*rpm
       - run:
           name: Start hypnotoad
-          command: cd /opt/seccubus; hypnotoad seccubus.pl
+          command: cd /opt/seccubus; PERL5LIB=$PERL5LIB:. hypnotoad seccubus.pl
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
@@ -465,7 +465,7 @@ jobs:
           command: dnf install -y build/*fc27*rpm
       - run:
           name: Start hypnotoad
-          command: cd /opt/seccubus; hypnotoad seccubus.pl
+          command: cd /opt/seccubus; PERL5LIB=$PERL5LIB:. hypnotoad seccubus.pl
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
@@ -506,7 +506,7 @@ jobs:
           command: dnf install -y build/*fc28*rpm
       - run:
           name: Start hypnotoad
-          command: cd /opt/seccubus; hypnotoad seccubus.pl
+          command: cd /opt/seccubus; PERL5LIB=$PERL5LIB:. hypnotoad seccubus.pl
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443

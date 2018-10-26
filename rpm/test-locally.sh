@@ -17,10 +17,15 @@
 
 docker-compose up -d
 docker-compose exec fedora26 bash -c "cd /root/project;dnf install -y build/seccubus*fc26*rpm"
+docker-compose exec fedora26 bash -c "cd /opt/seccubus;hypnotoad seccubus.pl;echo -n >>/dev/tcp/localhost/8443"
 docker-compose exec fedora27 bash -c "cd /root/project;dnf install -y build/seccubus*fc27*rpm"
+docker-compose exec fedora27 bash -c "cd /opt/seccubus;PERL5LIB=$PERL5LIB:. hypnotoad seccubus.pl;echo -n >>/dev/tcp/localhost/8443"
 docker-compose exec fedora28 bash -c "cd /root/project;dnf install -y build/seccubus*fc28*rpm"
+docker-compose exec fedora28 bash -c "cd /opt/seccubus;PERL5LIB=$PERL5LIB:. hypnotoad seccubus.pl;echo -n >>/dev/tcp/localhost/8443"
 docker-compose exec fedora29 bash -c "cd /root/project;dnf install -y build/seccubus*fc29*rpm"
+docker-compose exec fedora29 bash -c "cd /opt/seccubus;PERL5LIB=$PERL5LIB:. hypnotoad seccubus.pl;echo -n >>/dev/tcp/localhost/8443"
 docker-compose exec centos7 bash -c "cd /root/project;yum -y install epel-release;yum install -y build/perl*rpm build/seccubus*el7*rpm"
+docker-compose exec centos7 bash -c "cd /opt/seccubus;hypnotoad seccubus.pl;echo -n >/dev/tcp/localhost/8443"
 
 if [ $? == 0 ] ; then
     echo "Done building, shutting down docker image in 10 secoonds..."

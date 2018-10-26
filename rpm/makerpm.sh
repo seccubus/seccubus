@@ -86,8 +86,10 @@ if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
     $NOPWD /tmp/cpan2rpm/cpan2rpm Mojolicious $NOSIGN
     if [[ -z "$NOPWD" ]]; then
         echo y | /tmp/cpan2rpm/cpan2rpm EV $NOSIGN
+        (echo y;echo y)| /tmp/cpan2rpm/cpan2rpm IO::Socket::SSL $NOSIGN
     else
         $NOPWD echo y \| /tmp/cpan2rpm/cpan2rpm EV $NOSIGN
+        $NOPWD \(echo y\;echo y\) \| /tmp/cpan2rpm/cpan2rpm IO::Socket::SSL $NOSIGN
     fi
     set -x
 fi
