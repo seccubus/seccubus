@@ -855,7 +855,7 @@ workflows:
             - test_el7
             - test_fc26
             - test_fc27
-            - test_fc27
+            - test_fc28
           filters:
             branches:
               only:

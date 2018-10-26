@@ -62,5 +62,6 @@ Enhancements
 
 Bug Fixes
 ---------
-* Seccubus rpm's are now also being built for Fedora version 28 and 29
+* Seccubus rpm's are now also being built for Fedora version 27 and 28
 * RPMs for Fedora version 25 depricated
+* Fixed building of supporting Centos v7 rpms
