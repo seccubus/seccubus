@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#set -x
+set -x
 set -e
 UPSTREAM_VERSION=$1
 COMMITS=$2
@@ -71,9 +71,15 @@ if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
     curl -Ls http://cpanmin.us | perl - App::cpanminus
     #cpanm Mojolicious EV #Crypt::PBKDF2
     [[ ! -e /tmp/cpan2rpm ]] && (cd /tmp;git clone https://github.com/ekkis/cpan2rpm.git --depth=1)
+    if [[ $(/tmp/cpan2rpm/cpan2rpm -V) == '2.031' ]]; then
+        (cd /tmp/;rm -rf cpan2rpm;git clone https://github.com/seccubus/cpan2rpm.git;cd cpan2rpm;git checkout fix-metacpan)
+    fi
     cpanm IO::Socket::IP
     VER=$(cpanm IO::Socket::IP | sed 's/.*(//' | sed 's/).*//')
     $NOPWD /tmp/cpan2rpm/cpan2rpm IO::Socket::IP --version $VER $NOSIGN
+    cpanm List::Util
+    rm -f /usr/local/lib64/perl5/Scalar/Util.pm
+    $NOPWD /tmp/cpan2rpm/cpan2rpm List::Util $NOSIGN
     $NOPWD /tmp/cpan2rpm/cpan2rpm Mojolicious $NOSIGN
     set -x
     if [[ -z "$NOPWD" ]]; then
