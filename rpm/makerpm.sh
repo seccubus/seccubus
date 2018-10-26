@@ -82,6 +82,7 @@ if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
     cpanm List::Util
     rm -f /usr/local/lib64/perl5/Scalar/Util.pm
     $NOPWD /tmp/cpan2rpm/cpan2rpm List::Util $NOSIGN
+    $NOPWD /tmp/cpan2rpm/cpan2rpm Sub::Util $NOSIGN
     $NOPWD /tmp/cpan2rpm/cpan2rpm Mojolicious $NOSIGN
     if [[ -z "$NOPWD" ]]; then
         echo y | /tmp/cpan2rpm/cpan2rpm EV $NOSIGN
