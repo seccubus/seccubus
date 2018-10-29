@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk
+# Copyright 2011-2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -91,13 +91,13 @@ sub update_run {
 	if ( may_read($workspace_id) ) {
 		# Lets try to find the run_id first
 		$run_id = sql ( "return"	=> "array",
-			      	"query"		=> "SELECT runs.id FROM runs, scans WHERE scans.id = runs.scan_id and scans.workspace_id = ? and scans.id = ? and runs.time = ?;",
+			      	"query"		=> "SELECT `runs`.`id` FROM `runs`, `scans` WHERE `scans`.`id` = `runs`.`scan_id` and `scans`.`workspace_id` = ? and `scans`.`id` = ? and `runs`.`time` = ?;",
 				"values"	=> [ $workspace_id, $scan_id, $timestamp ],
 			      );
 		if ( may_write($workspace_id) ) {
 			if ( ! $run_id ) {
 				$run_id = sql ( "return"	=> "id",
-						"query"		=> "INSERT into runs (scan_id, time) values (?, ? );",
+						"query"		=> "INSERT into `runs` (`scan_id`, `time`) values (?, ? );",
 						"values"	=> [ $scan_id, $timestamp ],
 				      	      );
 			} elsif ( $attachment ) {
@@ -107,7 +107,7 @@ sub update_run {
 					close $ATT;
 					my $name = basename($attachment);
 					my $id = sql( "return"	=> "id",
-				      		"query"	=> "INSERT into attachments(run_id, name, description, data) values (?, ?, ?, ?);",
+				      		"query"	=> "INSERT into `attachments` (`run_id`, `name`, `description`, `data`) values (?, ?, ?, ?);",
 				      		"values"	=> [ $run_id, $name, $description, join "", @file ]
 				    		);
 					@file = undef;
@@ -158,17 +158,17 @@ sub get_runs {
 	if ( may_read($workspace_id) ) {
 		my $data = sql ( return	=> "ref",
 				 query	=> "
-				 	SELECT	runs.id, time, attachments.id,
-						attachments.name, description
-					FROM	runs
-					LEFT JOIN attachments
-					ON	runs.id = attachments.run_id
-					LEFT JOIN scans
-					on	runs.scan_id = scans.id
-					WHERE	runs.scan_id = scans.id AND
-						scans.workspace_id = ? AND
-						runs.scan_id = ?
-					ORDER BY runs.time DESC",
+				 	SELECT	`runs`.`id`, `time`, `attachments`.`id`,
+						`attachments`.`name`, `description`
+					FROM	`runs`
+					LEFT JOIN `attachments`
+					ON	`runs`.`id` = `attachments`.`run_id`
+					LEFT JOIN `scans`
+					on	`runs`.`scan_id` = `scans`.`id`
+					WHERE	`runs`.`scan_id` = `scans`.`id` AND
+						`scans`.`workspace_id` = ? AND
+						`runs`.`scan_id` = ?
+					ORDER BY `runs`.`time` DESC",
 				 values	=> [ $workspace_id, $scan_id ]
 			       );
 		return $data;
@@ -216,14 +216,14 @@ sub get_attachment {
 	if ( may_read($workspace_id) ) {
 		my $data = sql ( return	=> "ref",
 				 query	=> "
-				 	SELECT	attachments.name, data
-					FROM	scans,runs,attachments
-					WHERE	scans.id = runs.scan_id AND
-						runs.id = attachments.run_id AND
-						scans.workspace_id = ? AND
-						runs.scan_id = ? AND
-						runs.id = ? AND
-						attachments.id = ?",
+				 	SELECT	`attachments`.`name`, `data`
+					FROM	`scans`,`runs`,`attachments`
+					WHERE	`scans`.`id` = `runs`.`scan_id` AND
+						`runs`.`id` = `attachments`.`run_id` AND
+						`scans`.`workspace_id` = ? AND
+						`runs`.`scan_id` = ? AND
+						`runs`.`id` = ? AND
+						`attachments`.`id` = ?",
 				 values	=> [ $workspace_id, $scan_id, $run_id, $attachment_id ]
 			       );
 		return $data;

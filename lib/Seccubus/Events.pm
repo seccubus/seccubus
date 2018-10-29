@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk
+# Copyright 2012-2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -65,9 +65,9 @@ sub get_events {
 	$events =
 		sql( "return"	=> "ref",
 		     "query"	=> "
-				   SELECT id, name
-				   FROM events
-				   ORDER BY id
+				   SELECT `id`, `name`
+				   FROM `events`
+				   ORDER BY `id`
 				   ",
 	       );
 	return $events;

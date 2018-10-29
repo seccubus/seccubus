@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk, Alex Smirnoff
+# Copyright 2011-2018 Frank Breedijk, Alex Smirnoff
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -77,13 +77,13 @@ sub update_hostname {
 	if ( may_write($workspace_id) ) {
 		my $count = sql( "return"	=> "array",
 				 "query"	=> "SELECT COUNT(*)
-				 		    FROM host_names
-						    WHERE workspace_id = ? AND ip = ?",
+				 		    FROM `host_names`
+						    WHERE `workspace_id` = ? AND `ip` = ?",
 				 "values"	=> [ $workspace_id, $ip ]
 			       );
 		if ( $count == 0 ) {
 			sql( "return"	=> "id",
-			     "query"	=> "INSERT INTO host_names (workspace_id, ip, name) values (?, ?, ?);",
+			     "query"	=> "INSERT INTO `host_names` (`workspace_id`, `ip`, `name`) values (?, ?, ?);",
 			     "values"	=> [ $workspace_id, $ip, $name ],
 			   );
 		} else {
@@ -130,9 +130,9 @@ sub get_hostnames {
 	if ( may_read($workspace_id) ) {
 		my $hosts = sql(
 			return	=> "ref",
-			query	=> "SELECT 	ip, name
-						FROM 	host_names
-						WHERE 	workspace_id = ?",
+			query	=> "SELECT 	`ip`, `name`
+						FROM 	`host_names`
+						WHERE 	`workspace_id` = ?",
 			values	=> [ $workspace_id ]
 		);
 		return $hosts;
