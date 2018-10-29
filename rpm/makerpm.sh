@@ -98,6 +98,8 @@ find /root/rpmbuild -name "*.rpm" -exec cp {} /root/project/build \;
 
 if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
     for OLD in $(ls build/perl-*.noarch.rpm build/perl-*.x86_64.rpm); do
+        NEW=${OLD//-1.x86_64./-1.el7.x86_64.}
+        NEW=${NEW//-1.noarch./-1.el7.noarch.}
         NEW=${OLD//-1.x86_64./-1.el7.x86_64}
         NEW=${NEW//-1.noarch./-1.el7.noarch}
         mv $OLD $NEW
