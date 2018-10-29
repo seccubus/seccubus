@@ -44,7 +44,7 @@ jobs:
 
       - image: circleci/mysql:5
 
-    parallelism: 4
+    parallelism: 3
 
     steps:
       - run:
