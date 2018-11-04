@@ -66,3 +66,4 @@ Bug Fixes
 * RPMs for Fedora version 25 depricated
 * Fixed building of supporting Centos v7 rpms
 * #660 - Sudo added to docker images
+# #662 - Fixing documentation typos
