@@ -8,6 +8,11 @@ title: Installation from source
 
 Seccubus can be installed directly from a github clone.
 
+```
+Attention we actually recommand you use prebuilt packages located at [https://packagecloud.io/seccubus] or the docker 
+containers unless you are an experienced linux user
+```
+
 ## Clone the github repository
 
 ```bash
