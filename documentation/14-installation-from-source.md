@@ -14,10 +14,24 @@ Seccubus can be installed directly from a github clone.
 git clone https://github.com/schubergphilis/Seccubus.git
 ```
 
+## Make sure you have prerequisite software 
+
+You need to have the following software to build seccubus
+* git
+* Make
+* Java
+* Mojolicious
+
+On Debian based systems (e.g. Kali linux) you can run the following command to install it:
+
+```bash
+sudo apt-get install make git openjdk-11-jre libmojolicious-perl
+```
+
 ## Build
 
 ```bash
-cd Seccubus_v2
+cd Seccubus
 ./build_all
 ```
 
@@ -27,14 +41,14 @@ Now you need to run install.pl as root
 
 ```bash
 cd build
-sudo ./install.pl –help
+sudo ./install.pl –-help
 ```
 
 Running ./install.pl –help will show the help message and show the paramers
 for the Seccubus install. E.g. if you want to install everything in /opt/seccubus do:
 
 ```bash
-sudo ./install --base-dir=/opt/seccubus
+sudo ./install.pl --basedir=/opt/seccubus
 ```
 
 ## Start seccubus
@@ -42,7 +56,7 @@ sudo ./install --base-dir=/opt/seccubus
 
 ```bash
 cd /opt/seccubus
-hypnotoad seccubus.pl
+PERL5LIB=/opt/seccubus hypnotoad seccubus.pl
 ```
 
 ## Configure seccubus
