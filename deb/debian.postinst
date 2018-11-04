@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright 2012-2017 Frank Breedijk, Scott Pack
+# Copyright 2012-2018 Frank Breedijk, Scott Pack
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,8 +21,12 @@ if [ "$1" = "configure" ]; then
     # Set up the user
 
     if ! getent passwd seccubus >/dev/null; then
-	adduser --system --quiet --group --home /opt/seccubus --no-create-home \
-	    --disabled-password seccubus || :
+        adduser --system --quiet --group --home /opt/seccubus --no-create-home \
+            --disabled-password seccubus --shell /bin/bash || :
+        echo "export PERL5LIB=\"/opt/seccubus\"" >> ~seccubus/.profile
+        chown seccubus:seccubus ~seccubus/.profile
+        chmod 500 ~seccubus/.profile
+
     fi
 
     # Directories
