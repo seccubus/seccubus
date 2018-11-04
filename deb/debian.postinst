@@ -21,8 +21,12 @@ if [ "$1" = "configure" ]; then
     # Set up the user
 
     if ! getent passwd seccubus >/dev/null; then
-	adduser --system --quiet --group --home /opt/seccubus --no-create-home \
-	    --disabled-password seccubus || :
+        adduser --system --quiet --group --home /opt/seccubus --no-create-home \
+            --disabled-password seccubus --shell /bin/bash || :
+        echo "export PERL5LIB=\"/opt/seccubus\"" >> ~seccubus/.profile
+        chown seccubus:seccubus ~seccubus/.profile
+        chmod 500 ~seccubus/.profile
+
     fi
 
     # Directories
