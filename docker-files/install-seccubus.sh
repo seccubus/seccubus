@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-set -x
+#set -x
 set -e
 
 BUILDSTACK=$1
@@ -51,7 +51,7 @@ if [[ "$BUILDSTACK" == "full" || "$BUILDSTACK" == "cron" ]]; then
 fi
 if [[ "$BUILDSTACK" == "full" || "$BUILDSTACK" == "perl" || "$BUILDSTACK" == "cron" ]] ; then
     # Scan tools
-    APKS="$APKS git nmap"
+    APKS="$APKS git nmap sudo"
 fi
 if [[ "$BUILDSTACK" == "full" ]] ; then
     # Database
@@ -232,6 +232,9 @@ if [[ "$BUILDSTACK" == "full" || "$BUILDSTACK" == "perl" || "$BUILDSTACK" == "cr
     git clone https://github.com/drwetter/testssl.sh.git
     echo 'export PATH="$PATH:/opt/testssl.sh"' > /etc/profile.d/testssl.sh.sh
     echo 'export PATH="$PATH:/opt/testssl.sh"' >> /root/.bashrc
+
+    # Fix sudoers file
+    echo > /etc/sudoers "%wheel ALL=(ALL) NOPASSWD: ALL"
 fi
 
 # Cleanup build stuff
