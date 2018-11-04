@@ -39,8 +39,8 @@ docker run -e DBHOST=dns.name.of.db.host \
 Or, mount a data volume with a db directory on it
 ```
 mkdir data
-mmdir data/db
-docker run -it seccubus/seccubus -v ($pwd)/data:/opt/seccubus/data /bin/bash
+mkdir data/db
+docker run -it seccubus/seccubus -v $(pwd)/data:/opt/seccubus/data /bin/bash
 ```
 
 Please be aware that you can only run one container at a time if you mount a local directory on /var/lib/mysql.
