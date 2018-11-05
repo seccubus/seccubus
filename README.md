@@ -60,9 +60,9 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-x-x-2018 - v2.49 - Developement release
-====================================================
-New docker containers and compatibility with MySQL/MariaDB version 8
+5-11-2018 - v2.50 - Seccubus Alpine
+===================================
+This release brings new Alpine based docker containers and fixes a compatibility issue with MySQL/MariaDB version 8 and above.
 
 Differences with 2.48
 
