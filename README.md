@@ -39,9 +39,20 @@ Available images.
 | seccubus-perl  | Running command line scripts, e.g. to scan          |[![](https://images.microbadger.com/badges/image/seccubus/seccubus-perl.svg)](https://microbadger.com/images/seccubus/seccubus-perl "Get your own image badge on microbadger.com") |
 | seccubus-cron  | Running cron deamon to execute scans                |[![](https://images.microbadger.com/badges/image/seccubus/seccubus-cron.svg)](https://microbadger.com/images/seccubus/seccubus-cron "Get your own image badge on microbadger.com") |
 
-
-
 Information about the docker containers is in [README-docker.md]
+
+Default password, changinge it!!!!!
+===================================
+After installation the default username and paswword for seccubus is:
+```
+admin / GiveMeVulns!
+```
+
+*It is highly recommended you change this after installation.*
+
+```bash
+/bin/seccubus_passwd -u admin
+```
 
 Change log
 ==========
@@ -65,6 +76,7 @@ Bug Fixes
 * Seccubus rpm's are now also being built for Fedora version 27 and 28
 * RPMs for Fedora version 25 depricated
 * Fixed building of supporting Centos v7 rpms
+* #585 - Added default credentials to the readme file
 * #660 - Sudo added to docker images
 * #655 - Shell set to /bin/bash for user seccubus
 # #662 - Fixing documentation typos
