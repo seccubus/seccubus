@@ -79,5 +79,5 @@ Bug Fixes
 * #585 - Added default credentials to the readme file
 * #660 - Sudo added to docker images
 * #655 - Shell set to /bin/bash for user seccubus
-# #662 - Fixing documentation typos
+* #662 - Fixing documentation typos
 * #673 - PERL5LIB set to /opt/seccubus for seccubus user via debian package
