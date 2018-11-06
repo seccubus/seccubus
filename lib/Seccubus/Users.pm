@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk
+# Copyright 2017-2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ sub get_user_id {
 
     my $id = sql (
         "return"    => "array",
-        "query"     => "select id from users where username = ?",
+        "query"     => "select `id` from `users` where `username` = ?",
         "values"    => [ $user ],
     );
 
@@ -125,14 +125,14 @@ sub get_users {
         my $rows = sql (
             "return" => "ref",
             "query"  => "
-                SELECT      u.id, u.username, u.name, g.id, g.name
-                FROM        users u
-                LEFT JOIN   user2group u2g
-                ON          u2g.user_id = u.id
-                LEFT JOIN   groups g
-                ON          u2g.group_id = g.id
-                GROUP BY    u.id,u.username, u.name, g.id, g.name
-                ORDER BY    u.username, g.name;
+                SELECT      `u`.`id`, `u`.`username`, `u`.`name`, `g`.`id`, `g`.`name`
+                FROM        `users` `u`
+                LEFT JOIN   `user2group` `u2g`
+                ON          `u2g`.`user_id` = `u`.`id`
+                LEFT JOIN   `groups` `g`
+                ON          `u2g`.`group_id` = `g`.`id`
+                GROUP BY    `u`.`id`, `u`.`username`, `u`.`name`, `g`.`id`, `g`.`name`
+                ORDER BY    `u`.`username`, `g`.`name`;
             ",
         );
         my $users = [];
@@ -201,26 +201,26 @@ sub add_user {
     if ( is_admin() ) {
         my ( $id ) = sql(
             return      => "array",
-            query       => "SELECT id FROM users WHERE `username` = ?",
+            query       => "SELECT `id` FROM `users` WHERE `username` = ?",
             values      => [ $user ]
         );
         confess "Username '$user' already exists" if $id;
         $id = sql(
             "return"    => "id",
-            "query"     => "INSERT into users (`username`, `name`) values (? , ?)",
+            "query"     => "INSERT into `users` (`username`, `name`) values (? , ?)",
             "values"    => [$user, $name],
         );
         #Make sure member of the all group
         sql(
             "return"    => "id",
-            "query"     => "INSERT into user2group values (?, ?)",
+            "query"     => "INSERT into `user2group` values (?, ?)",
             "values"    => [$id, 2],
         );
         if ( $isadmin ) {
             # Make user meber of the admins group
             sql(
                 "return"    => "id",
-                "query"     => "INSERT into user2group values (?, ?)",
+                "query"     => "INSERT into `user2group` values (?, ?)",
                 "values"    => [$id, 1],
             );
         }
@@ -272,7 +272,7 @@ sub get_login {
 
     my $name = sql(
         "return"    => "array",
-        "query"     => "select name from users where username = ?",
+        "query"     => "select `name` from `users` where `username` = ?",
         "values"    => [ $username ],
     );
     if ( $name ) {
@@ -325,7 +325,7 @@ sub set_password {
 
         my $sth = sql (
             return  => "handle",
-            query   => "UPDATE users set `password` = ? where `username` = ?",
+            query   => "UPDATE `users` set `password` = ? where `username` = ?",
             values  => [ $hash, $user ],
         );
         return $sth->rows;
@@ -376,7 +376,7 @@ sub check_password {
     if ( $password ) {
         my ( $dbhash ) = sql (
             return  => "array",
-            query   => "select password from `users` where username = ?",
+            query   => "select `password` from `users` where `username` = ?",
             values  => [ $user ],
         );
         if ( $dbhash ) {
@@ -387,7 +387,7 @@ sub check_password {
     } elsif ( $hash ) {
         my ( $count ) = sql(
             return  => "array",
-            query   => "select count(*) from `users` where username = ? and sha2(password,256) = ?",
+            query   => "select count(*) from `users` where `username` = ? and sha2(`password`,256) = ?",
             values  => [ $user, $hash ]
         );
     } else {

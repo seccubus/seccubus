@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017	 Frank Breedijk, Steve Launius, Artien Bel (Ar0xA), Petr
+# Copyright 2011-2018 Frank Breedijk, Steve Launius, Artien Bel (Ar0xA), Petr
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -89,13 +89,13 @@ sub create_scan {
 	}
 	if ( may_write($workspace_id) ) {
 		return sql( "return"	=> "id",
-			    "query"	=> "INSERT INTO scans(
-			    			name,
-						scannername,
-						scannerparam,
-						password,
-						workspace_id,
-						targets)
+			    "query"	=> "INSERT INTO `scans` (
+			    			`name`,
+						`scannername`,
+						`scannerparam`,
+						`password`,
+						`workspace_id`,
+						`targets`)
 					    VALUES(?, ?, ?, ?, ?, ?);
 					   ",
 			    "values"	=> [$scanname, $scanner_name, $scanner_param, $password, $workspace_id, $targets],
@@ -134,7 +134,7 @@ sub get_scan_id {
 	my $scanname = shift or die "No scanname provide to getscanid";
 
 	return sql( "return"	=> "array",
-		    "query"	=> "SELECT id from scans where name = ? and workspace_id = ?;",
+		    "query"	=> "SELECT `id` from `scans` where `name` = ? and `workspace_id` = ?;",
 		    "values"	=> [$scanname, $workspace_id],
 		  );
 }
@@ -170,22 +170,22 @@ sub get_scans {
 
 	if ( may_read($workspace_id) ) {
 		my $values = [ $workspace_id ];
-		my $sql = "	SELECT id, name, scannername, scannerparam,
-					(SELECT MAX(time) FROM runs WHERE runs.scan_id = scans.id) as lastrun,
-					(SELECT COUNT(*) FROM runs WHERE runs.scan_id = scans.id) as total_runs,
-					'' as total_findings,
-					targets,
-					workspace_id,
-					(SELECT COUNT(*) FROM notifications WHERE notifications.scan_id = scans.id) as total_notifications,
-					password
-					FROM scans
-					WHERE workspace_id = ?
+		my $sql = "	SELECT `id`, `name`, `scannername`, `scannerparam`,
+					(SELECT MAX(`time`) FROM `runs` WHERE `runs`.`scan_id` = `scans`.`id`) as `lastrun`,
+					(SELECT COUNT(*) FROM `runs` WHERE `runs`.`scan_id` = `scans`.`id`) as `total_runs`,
+					'' as `total_findings`,
+					`targets`,
+					`workspace_id`,
+					(SELECT COUNT(*) FROM `notifications` WHERE `notifications`.`scan_id` = `scans`.`id`) as `total_notifications`,
+					`password`
+					FROM `scans`
+					WHERE `workspace_id` = ?
 		";
 		if ( $scan_id ) {
-			$sql .= " AND scans.id = ? ";
+			$sql .= " AND `scans`.`id` = ? ";
 			push @$values, $scan_id;
 		}
-		$sql .= " ORDER BY NAME ";
+		$sql .= " ORDER BY `name` ";
 		return sql( "return"	=> "ref",
 					"query"		=> $sql,
 					"values"	=> $values,
@@ -243,10 +243,10 @@ sub update_scan {
 			return 		=> "array",
 			query		=> "
 				SELECT COUNT(*)
-				FROM 	scans
-				WHERE 	workspace_id = ? AND
-						id <> ? AND
-						name = ?",
+				FROM 	`scans`
+				WHERE 	`workspace_id` = ? AND
+						`id` <> ? AND
+						`name` = ?",
 			values 		=> [ $workspace_id, $scan_id, $scanname ]
 		);
 		if ( $existing[0] > 0  ) {
@@ -254,19 +254,19 @@ sub update_scan {
 		}
 		if (length($password) > 0 ) {
 			return sql( "return"	=> "rows",
-				    "query"	=> "UPDATE scans
-				    		    SET name = ?, scannername = ?,
-						    scannerparam = ?, password = ?, targets = ?
-						    WHERE id = ? AND workspace_id = ?;
+				    "query"	=> "UPDATE `scans`
+				    		    SET `name` = ?, `scannername` = ?,
+						    `scannerparam` = ?, `password` = ?, `targets` = ?
+						    WHERE `id` = ? AND `workspace_id` = ?;
 						   ",
 				    "values"	=> [$scanname, $scanner_name, $scanner_param, $password, $targets, $scan_id, $workspace_id],
 				  );
 		} else {
 			return sql( "return"	=> "rows",
-				    "query"	=> "UPDATE scans
-				    		    SET name = ?, scannername = ?,
-						    scannerparam = ?, targets = ?
-						    WHERE id = ? AND workspace_id = ?;
+				    "query"	=> "UPDATE `scans`
+				    		    SET `name` = ?, `scannername` = ?,
+						    `scannerparam` = ?, `targets` = ?
+						    WHERE `id` = ? AND `workspace_id` = ?;
 						   ",
 				    "values"	=> [$scanname, $scanner_name, $scanner_param, $targets, $scan_id, $workspace_id],
 				  );
@@ -321,12 +321,12 @@ sub run_scan {
 	if ( may_write($workspace_id) ) {
 		my @scan = sql( "return"	=> "array",
 				"query"	=> "
-					SELECT scans.name, scannername,
-					scannerparam, password, targets, workspaces.name
-					FROM scans, workspaces
-					WHERE scans.workspace_id = workspaces.id
-					AND workspaces.id = ?
-					AND scans.id = ?",
+					SELECT `scans`.`name`, `scannername`,
+					`scannerparam`, `password`, `targets`, `workspaces`.`name`
+					FROM `scans`, `workspaces`
+					WHERE `scans`.`workspace_id` = `workspaces`.`id`
+					AND `workspaces`.`id` = ?
+					AND `scans`.`id` = ?",
 				"values"	=> [$workspace_id, $scan_id]
 			      );
 		if ( @scan ) {
@@ -368,10 +368,10 @@ sub run_scan {
 			if( $param =~ /\$ASSETS/ ){
 
 				my $assets = join ' ', map { $_->[0]; } @{sql(
-					"query"=>"SELECT a.ip
-						from asset_hosts a, asset2scan b
-						where b.asset_id = a.asset_id and b.scan_id = ?
-						group by a.ip",
+					"query"=>"SELECT `a`.`ip`
+						from `asset_hosts` `a`, `asset2scan` `b`
+						where `b`.`asset_id` = `a`.`asset_id` and `b`.`scan_id` = ?
+						group by `a`.`ip`",
 					'values'=>[$scan_id]
 					)};
 				$param =~ s/\$ASSETS/$assets/g;

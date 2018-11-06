@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk, Glenn ten Cate (blabla1337)
+# Copyright 2011-2018 Frank Breedijk, Glenn ten Cate (blabla1337)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -222,9 +222,9 @@ None
 sub get_severity {
 	return sql(
 		"return"	=> "ref",
-		"query"		=> "SELECT id, name, description
-						FROM severity
-						ORDER BY id"
+		"query"		=> "SELECT `id`, `name`, `description`
+						FROM `severity`
+						ORDER BY `id`"
 	);
 }
 

@@ -27,7 +27,8 @@ my %exclude = (
     "./NOTICE.txt"      => "Part of the license",
     "./ChangeLog.md"    => "No license needed",
     "./README.md"       => "No license needed",
-    "./README.md"       => "No license needed",
+    "./README-docker.md"
+                        => "No license needed",
     "./CONTRIBUTING.md" => "No license needed",
     "./docs/Development_on_MacOS.md"
                         => "No license needed",
@@ -60,7 +61,7 @@ my $tests = 0;
 
 my @files = split(/\n/, `find . -type f`);
 
-foreach my $file ( @files ) {
+foreach my $file ( sort @files ) {
     if ( $file !~ /\/\./ &&             # Skip hidden files
          $file !~ /tmp/ &&              # Skip temp files
          $file !~ /\.\/blib\// &&       # Skip blib directory

@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk
+# Copyright 2017-2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,6 +39,9 @@ if ( -e "/opt/seccubus/data/crontab" ) {
 		if ( $key =~ /^CRON_/ ) {
 			my $line = $ENV{$key};
 			chomp($line);
+            if ( ! is_valid($line) ) {
+                die "Cron line from variable '$key' is invalid: \n$line"
+            }
 			print $CRON "$line\n";
 			print "Added line '$line' to cron\n";
 		}
@@ -46,3 +49,19 @@ if ( -e "/opt/seccubus/data/crontab" ) {
 	close $CRON;
 }
 system("chmod 0600 /var/spool/cron/crontabs/seccubus");
+
+sub is_valid() {
+    my $line = shift;
+
+    # Remove comments
+    $line =~ s/\#.*$//;
+
+    # Is it a variable?
+    if ( $line =~ /^\w+\=.*$/ ) {
+        return 1;
+    } elsif ( $line =~ /^(\d+|\*)(\/\d+)?\s+(\d+|\*)\s+(\d+|\*)\s+(\d+|\*)\s+(\d+|\*)\s+.*$/ ) {
+        # Time line
+        return 1;
+    }
+    return 0;
+}

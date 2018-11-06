@@ -3,50 +3,75 @@ jobs:
 
   cache_perl:
     docker:
-      - image: perl:latest
+      - image: alpine:latest
         environment:
         - PERL5LIB: "."
     steps:
+      - run:
+          name: Install prerequisites
+          command: |
+            apk --no-progress update ;
+            apk --no-progress add git wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
+            perl-algorithm-diff perl-carp perl-dbd-mysql perl-dbi perl-data-dumper perl-date-format perl-exporter \
+            perl-html-parser perl-json perl-libwww perl-lwp-protocol-https perl-mojolicious perl-net-ip \
+            perl-term-readkey perl-xml-simple perl-module-build perl-module-pluggable perl-test-weaken \
+            perl-config-tiny perl-exception-class perl-test-deep perl-readonly perl-file-which \
+            perl-list-moreutils perl-params-util perl-class-inspector perl-file-remove perl-clone perl-class-tiny \
+            perl-path-tiny perl-type-tiny perl-module-runtime perl-namespace-autoclean perl-moo perl-strictures \
+            perl-digest-hmac perl-task-weaken
       - checkout
       - restore_cache:
-          key: cpanm-{{ checksum "Makefile.PL" }}-v2
-      - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
+          key: cpanm-{{ checksum "Makefile.PL" }}-v3
+      - run: cpanm --notest TAP::Harness::JUnit
       - run: cpanm --installdeps --notest .
       - save_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - "/usr/local/lib/perl5/site_perl"
+            - "/usr/local/share/perl5/site_perl"
       - save_cache:
-          key: cpanm-{{ checksum "Makefile.PL" }}-v2
+          key: cpanm-{{ checksum "Makefile.PL" }}-v3
           paths:
             - "/usr/local/lib/perl5/site_perl"
+            - "/usr/local/share/perl5/site_perl"
 
   unit_tests:
     docker:
-      - image: perl:latest
+      - image: alpine:latest
         environment:
         - PERL5LIB: "."
         - MYSQL_HOME: "/root/project/.circleci"
-      - image: circleci/mysql:latest
+
+      - image: circleci/mysql:5
+
     parallelism: 3
 
     steps:
-      - checkout
       - run:
-          name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client ssh git
+          name: Install prerequisites
+          command: |
+            apk --no-progress update ;
+            apk --no-progress add git wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
+            perl-algorithm-diff perl-carp perl-dbd-mysql perl-dbi perl-data-dumper perl-date-format perl-exporter \
+            perl-html-parser perl-json perl-libwww perl-lwp-protocol-https perl-mojolicious perl-net-ip \
+            perl-term-readkey perl-xml-simple perl-module-build perl-module-pluggable perl-test-weaken \
+            perl-config-tiny perl-exception-class perl-test-deep perl-readonly perl-file-which \
+            perl-list-moreutils perl-params-util perl-class-inspector perl-file-remove perl-clone perl-class-tiny \
+            perl-path-tiny perl-type-tiny perl-module-runtime perl-namespace-autoclean perl-moo perl-strictures \
+            perl-digest-hmac perl-task-weaken perl-test-harness perl-test-harness-utils bash mysql-client zip file \
+            bind-tools
+      - checkout
       - restore_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
-      - run: cpanm --notest REHSACK/List-MoreUtils-XS-0.425_001.tar.gz
       - run: cpanm --notest TAP::Harness::JUnit
       - run: cpanm --installdeps --notest .
       - run:
           name: Wait for database
           command: |
-            while ! echo -n > /dev/tcp/127.0.0.1/3306; do
+            bash -c "while ! echo -n > /dev/tcp/127.0.0.1/3306; do
               sleep 1
               echo -n .
-            done
+            done"
       - run:
           name: Create database(s)
           command: |
@@ -71,17 +96,28 @@ jobs:
           path: /root/project/testout/
       - store_test_results:
           path: /root/project/testout/
+
+
   build:
     docker:
-      - image: perl:latest
+      - image: alpine:latest
         environment:
         - PERL5LIB: "."
-
     steps:
-      - checkout
       - run:
-          name: Install prerequisite packages
-          command: apt-get update; apt-get -y install build-essential zip dnsutils bsdmainutils mysql-client default-jre
+          name: Install prerequisites
+          command: |
+            apk --no-progress update ;
+            apk --no-progress add git wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
+            perl-algorithm-diff perl-carp perl-dbd-mysql perl-dbi perl-data-dumper perl-date-format perl-exporter \
+            perl-html-parser perl-json perl-libwww perl-lwp-protocol-https perl-mojolicious perl-net-ip \
+            perl-term-readkey perl-xml-simple perl-module-build perl-module-pluggable perl-test-weaken \
+            perl-config-tiny perl-exception-class perl-test-deep perl-readonly perl-file-which \
+            perl-list-moreutils perl-params-util perl-class-inspector perl-file-remove perl-clone perl-class-tiny \
+            perl-path-tiny perl-type-tiny perl-module-runtime perl-namespace-autoclean perl-moo perl-strictures \
+            perl-digest-hmac perl-task-weaken \
+            openjdk7-jre bash
+      - checkout
       - restore_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
       - run:
@@ -265,6 +301,30 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
+  ubuntu18_test:
+    docker:
+      - image: ubuntu:18.04
+
+    steps:
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+      - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
+      - run: apt-get update; apt-get install -y ca-certificates
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install package (shoud fail)
+          shell: bash -ex
+          command: if dpkg -i /root/project/build/*.deb; then echo "NOT ok"; exit 99; else echo "OK" ; fi
+      - run:
+          name: Install failed packages (shoud work)
+          command: apt-get install -f -y
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
   debian_ok:
     docker:
       - image: alpine
@@ -301,6 +361,7 @@ jobs:
             package_cloud push seccubus/latest/ubuntu/trusty build/*.deb
             package_cloud push seccubus/latest/ubuntu/zesty build/*.deb
             package_cloud push seccubus/latest/ubuntu/artful build/*.deb
+            package_cloud push seccubus/latest/ubuntu/bionic build/*.deb
 
   debian_upload_release:
     docker:
@@ -325,6 +386,7 @@ jobs:
             package_cloud push seccubus/releases/ubuntu/trusty build/*.deb
             package_cloud push seccubus/releases/ubuntu/zesty build/*.deb
             package_cloud push seccubus/releases/ubuntu/artful build/*.deb
+            package_cloud push seccubus/releases/ubuntu/bionic build/*.deb
 
   build_fc26:
     docker:
@@ -362,14 +424,14 @@ jobs:
           command: dnf install -y build/*fc26*rpm
       - run:
           name: Start hypnotoad
-          command: cd /opt/seccubus; hypnotoad seccubus.pl
+          command: cd /opt/seccubus; PERL5LIB=$PERL5LIB:. hypnotoad seccubus.pl
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
 
-  build_fc25:
+  build_fc27:
     docker:
-      - image: fedora:25
+      - image: fedora:27
     steps:
       - run: dnf install -y git
       - checkout
@@ -378,33 +440,73 @@ jobs:
           command: echo $CIRCLE_SHA1 > .git-describe
       - run:
           name: Install prerequisite packages
-          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign
+          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign make
       - run:
           name: Build
           command: rpm/makerpm.sh
       - save_cache:
-          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
+          key: rpm-fc27-{{ .Branch }}-{{ checksum ".git-describe" }}
           paths:
             - "/root/project/build"
       - store_artifacts:
           path: /root/project/build/
 
-  test_fc25:
+  test_fc27:
     docker:
-      - image: fedora:25
+      - image: fedora:27
     steps:
       - run:
           name: Generate build signature
           command: echo $CIRCLE_SHA1 > .git-describe
       - restore_cache:
-          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - run: ls -al build
+          key: rpm-fc27-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
           name: Install rpm
-          command: dnf install -y build/*fc25*rpm
+          command: dnf install -y build/*fc27*rpm
       - run:
           name: Start hypnotoad
-          command: cd /opt/seccubus; hypnotoad seccubus.pl
+          command: cd /opt/seccubus; PERL5LIB=$PERL5LIB:. hypnotoad seccubus.pl
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+
+  build_fc28:
+    docker:
+      - image: fedora:28
+    steps:
+      - run: dnf install -y git
+      - checkout
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Install prerequisite packages
+          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign make
+      - run:
+          name: Build
+          command: rpm/makerpm.sh
+      - save_cache:
+          key: rpm-fc28-{{ .Branch }}-{{ checksum ".git-describe" }}
+          paths:
+            - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/
+
+  test_fc28:
+    docker:
+      - image: fedora:28
+    steps:
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: rpm-fc28-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install rpm
+          command: dnf install -y build/*fc28*rpm
+      - run:
+          name: Start hypnotoad
+          command: cd /opt/seccubus; PERL5LIB=$PERL5LIB:. hypnotoad seccubus.pl
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
@@ -420,7 +522,9 @@ jobs:
           command: echo $CIRCLE_SHA1 > .git-describe
       - run:
           name: Install prerequisite packages
-          command: yum install -y java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign rpm-build make "perl(Test::Simple)" "perl(CPAN)" expect
+          command: |
+            yum install -y java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign rpm-build make \
+            "perl(Test::Simple)" "perl(CPAN)" expect "perl(LWP::Protocol::https)"
       - run:
           name: Build
           command: rpm/makerpm.sh
@@ -464,11 +568,15 @@ jobs:
       - store_artifacts:
           path: /root/project/build
       - restore_cache:
-          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
+          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
       - store_artifacts:
           path: /root/project/build
       - restore_cache:
-          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
+          key: rpm-fc27-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - store_artifacts:
+          path: /root/project/build
+      - restore_cache:
+          key: rpm-fc28-{{ .Branch }}-{{ checksum ".git-describe" }}
       - store_artifacts:
           path: /root/project/build
 
@@ -501,17 +609,20 @@ jobs:
             done
             cd ..
       - restore_cache:
-          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - run:
-          name : Upload to packagecloud.io
-          command: package_cloud push seccubus/latest/fedora/25 build/*fc25*rpm
-      - restore_cache:
           key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - store_artifacts:
-          path: /root/project/build
       - run:
           name : Upload to packagecloud.io
           command: package_cloud push seccubus/latest/fedora/26 build/*fc26*rpm
+      - restore_cache:
+          key: rpm-fc27-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: package_cloud push seccubus/latest/fedora/27 build/*fc27*rpm
+      - restore_cache:
+          key: rpm-fc28-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: package_cloud push seccubus/latest/fedora/28 build/*fc28*rpm
 
   el_upload_release:
     docker:
@@ -542,17 +653,20 @@ jobs:
             done
             cd ..
       - restore_cache:
-          key: rpm-fc25-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - run:
-          name : Upload to packagecloud.io - fc25
-          command: package_cloud push seccubus/releases/fedora/25 build/*fc25*rpm
-      - restore_cache:
           key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - store_artifacts:
-          path: /root/project/build
       - run:
           name : Upload to packagecloud.io - fc26
           command: package_cloud push seccubus/releases/fedora/26 build/*fc26*rpm
+      - restore_cache:
+          key: rpm-fc27-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io - fc27
+          command: package_cloud push seccubus/releases/fedora/27 build/*fc27*rpm
+      - restore_cache:
+          key: rpm-fc28-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io - fc28
+          command: package_cloud push seccubus/releases/fedora/28 build/*fc28*rpm
 
 workflows:
 
@@ -622,6 +736,15 @@ workflows:
                 - master
                 - releases
                 - deb-building
+      - ubuntu18_test:
+          requires:
+            - build_deb
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - deb-building
       - kali_test:
           requires:
             - build_deb
@@ -638,6 +761,7 @@ workflows:
             - ubuntu14_test
             - ubuntu16_test
             - ubuntu17_test
+            - ubuntu18_test
             - kali_test
           filters:
             branches:
@@ -678,22 +802,6 @@ workflows:
                 - master
                 - releases
                 - rpm-build
-      - build_fc25:
-          filters:
-            branches:
-              only:
-                - master
-                - releases
-                - rpm-build
-      - test_fc25:
-          requires:
-            - build_fc25
-          filters:
-            branches:
-              only:
-                - master
-                - releases
-                - rpm-build
       - build_fc26:
           filters:
             branches:
@@ -710,11 +818,44 @@ workflows:
                 - master
                 - releases
                 - rpm-build
+      - build_fc27:
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
+      - test_fc27:
+          requires:
+            - build_fc27
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
+      - build_fc28:
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
+      - test_fc28:
+          requires:
+            - build_fc28
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
       - el_ok:
           requires:
             - test_el7
-            - test_fc25
             - test_fc26
+            - test_fc27
+            - test_fc28
           filters:
             branches:
               only:

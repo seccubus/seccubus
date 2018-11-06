@@ -74,11 +74,19 @@ foreach my $data_file (glob "db/data_v*.mysql") {
 
 ok($db_version > 0, "DB version = $db_version");
 `mysql -h 127.0.0.1 -u root -e "drop database seccubus"`;
+is($?,0,"Command executed ok");
 `mysql -h 127.0.0.1 -u root -e "create database seccubus"`;
-`mysql -h 127.0.0.1 -u root -e "grant all privileges on seccubus.* to seccubus\@localhost identified by 'seccubus';"`;
+is($?,0,"Command executed ok");
+`mysql -h 127.0.0.1 -u root -e "create user if not exists 'seccubus'\@'localhost' identified by 'seccubus'"`;
+is($?,0,"Command executed ok");
+`mysql -h 127.0.0.1 -u root -e "grant all privileges on seccubus.* to seccubus\@localhost;"`;
+is($?,0,"Command executed ok");
 `mysql -h 127.0.0.1 -u root -e "flush privileges;"`;
+is($?,0,"Command executed ok");
 `mysql -h 127.0.0.1 -u root seccubus < db/structure_v$db_version.mysql`;
+is($?,0,"Command executed ok");
 `mysql -h 127.0.0.1 -u root seccubus < db/data_v$db_version.mysql`;
+is($?,0,"Command executed ok");
 
 my $t = Test::Mojo->new('Seccubus');
 
@@ -130,7 +138,7 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
     unless( $f->{plugin} eq "scanTime" ) {
         like($f->{host},qr/^www\.seccubus\.com\/ipv[46]$/, "Finding $f->{id} has the right hostname");
     }
-    if ( $f->{plugin} =~ /^(X\-Served\-By|http_clock_skew|rp_header|order(_cipher)?|cbc_tls\d|CAA_record|banner_reverseproxy)$/ ) {
+    if ( $f->{plugin} =~ /^(X\-Served\-By|http_clock_skew|rp_header|order(_cipher)?|cbc_tls\d|CAA_record|banner_reverseproxy|HTTP_clock_skew)$/ ) {
         # May or may not differ
     } elsif( undef ) {
         like($f->{find},qr/^Findings vary per endpoint/,"Findings vary across endpoints for plugin '$f->{plugin}'");

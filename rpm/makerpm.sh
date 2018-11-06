@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2017 Frank Breedijk
+# Copyright 2017-2018 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#set -x
 set -e
 UPSTREAM_VERSION=$1
 COMMITS=$2
@@ -54,6 +53,7 @@ if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] ; then
     fi
 fi
 
+set -x
 echo "Creating directories"
 mkdir -p /root/rpmbuild/SOURCES
 
@@ -69,25 +69,37 @@ if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
     yum install -y perl-libwww-perl gcc "perl(Module::Build)" "perl(JSON::PP)" "perl(IO::Socket::IP)" "perl(Pod::Parser)" \
         "perl(Canary::Stability)" "perl(common::sense)"
     curl -Ls http://cpanmin.us | perl - App::cpanminus
-    #cpanm Mojolicious EV #Crypt::PBKDF2
+
     [[ ! -e /tmp/cpan2rpm ]] && (cd /tmp;git clone https://github.com/ekkis/cpan2rpm.git --depth=1)
+    if [[ $(/tmp/cpan2rpm/cpan2rpm -V) == '2.031' ]]; then
+        (cd /tmp/;rm -rf cpan2rpm;git clone https://github.com/seccubus/cpan2rpm.git;cd cpan2rpm;git checkout fix-metacpan)
+    fi
+
     cpanm IO::Socket::IP
     VER=$(cpanm IO::Socket::IP | sed 's/.*(//' | sed 's/).*//')
+    set +x
     $NOPWD /tmp/cpan2rpm/cpan2rpm IO::Socket::IP --version $VER $NOSIGN
+    cpanm List::Util
+    rm -f /usr/local/lib64/perl5/Scalar/Util.pm
+    $NOPWD /tmp/cpan2rpm/cpan2rpm List::Util $NOSIGN
+    $NOPWD /tmp/cpan2rpm/cpan2rpm Sub::Util $NOSIGN
     $NOPWD /tmp/cpan2rpm/cpan2rpm Mojolicious $NOSIGN
-    set -x
     if [[ -z "$NOPWD" ]]; then
         echo y | /tmp/cpan2rpm/cpan2rpm EV $NOSIGN
+        (echo y;echo y)| /tmp/cpan2rpm/cpan2rpm IO::Socket::SSL $NOSIGN
     else
         $NOPWD echo y \| /tmp/cpan2rpm/cpan2rpm EV $NOSIGN
+        $NOPWD \(echo y\;echo y\) \| /tmp/cpan2rpm/cpan2rpm IO::Socket::SSL $NOSIGN
     fi
+    set -x
 fi
 
 find /root/rpmbuild -name "*.rpm" -exec cp {} /root/project/build \;
 
 if [[ $(grep -i centos /etc/redhat-release|wc -l) -eq 1 ]]; then
     for OLD in $(ls build/perl-*.noarch.rpm build/perl-*.x86_64.rpm); do
-        NEW=${OLD//-1./-1.el7.}
+        NEW=${OLD//-1.x86_64./-1.el7.x86_64.}
+        NEW=${NEW//-1.noarch./-1.el7.noarch.}
         mv $OLD $NEW
     done
 fi
