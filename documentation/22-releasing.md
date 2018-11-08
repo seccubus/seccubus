@@ -35,7 +35,13 @@ This ensures that the packes build on all supported platforms too.
 
 # Make sure hub.docker.com is building the container
 
-Check [Docker Hub](https://hub.docker.com/r/seccubus/seccubus/builds/)
+Check:
+* [Main image](https://hub.docker.com/r/seccubus/seccubus/builds/)
+* [Frontend image](https://hub.docker.com/r/seccubus/seccubus-front/builds/)
+* [Web image](https://hub.docker.com/r/seccubus/seccubus-web/builds/)
+* [API image](https://hub.docker.com/r/seccubus/seccubus-api/builds/)
+* [Perl image](https://hub.docker.com/r/seccubus/seccubus-perl/builds/)
+* [Cron image](https://hub.docker.com/r/seccubus/seccubus-cron/builds/)
 
 # Tag the repo
 
@@ -81,19 +87,15 @@ See the release you just created at the [GitHub release page](https://github.com
 
 # Write a blog post on [seccubus.com](/)
 
-Code is on [Frank Breedijk's GitHub](https://github.com/seccubus/seccubus.github.io/tree/master/_posts)
+Code is in the [gp-pages branch Of the main GitHub repo](https://github.com/schubergphilis/Seccubus/tree/gh-pages/_posts)
 
-# Send a notification to [the maining list](https://www.seccubus.com/mailing_list/subscribe/)
+# Send a notification to [the slack channel](https://seccubus.slack.com/)
 
-You know how mail works.
+You know how slack works.
 
 # Update online version check
 
 Code is on [Frank Breedijk's GitHub](https://github.com/seccubus/Seccubus_version_check)
-
-# Import blog post in Medium
-
-On Medium [import the blog post](https://medium.com/p/import) and add it to the Schuberg Philis publication.
 
 # Tweet, LinkedIn, Facebook, etc...
 
