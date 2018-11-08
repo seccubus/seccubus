@@ -1,7 +1,7 @@
 version: 2
 jobs:
 
-  test:
+  build:
     docker:
       - image: jekyll/jekyll:latest
     steps:
@@ -12,10 +12,9 @@ jobs:
             apk --no-progress add git
       - checkout
       - run: jekyll build
-      - run: jekyll hyde
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - test
+      - build
