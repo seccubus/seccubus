@@ -9,7 +9,7 @@ jobs:
           name: Install prerequisites
           command: |
             apk --no-progress update ;
-            apk --no-progress git
+            apk --no-progress add git
       - checkout
       - run: jekyll build
       - run: jekyll hyde
