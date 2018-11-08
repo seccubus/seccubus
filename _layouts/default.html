@@ -13,7 +13,7 @@
     <style> html{display:none;} </style>
     <script>
         //alert(top.location.protocol + "-" + top.location.host + "-" + top.location.pathname );
-        if ( top.location.host == "127.0.0.1:4000" || top.location.host == "localhost:4000") { // Local Jekyll server
+        if ( top.location.host == "127.0.0.1:4000" || top.location.host == "localhost:4000"|| top.location.host == "0.0.0.0:4000") { // Local Jekyll server
             document.documentElement.style.display = 'block';
         } else if ( top.location.host == "www.seccubus.com" || top.location.host == "bla.seccubus.com" ) { // Correct URL
             if ( top.location.protocol == "https:" ) { // are we on https?
