@@ -15,20 +15,6 @@
 version: '3'
 
 services:
-  fedora26:
-    image: fedora:26
-    command: bash -c "tail -f /var/log/lastlog"
-    environment:
-      PERL5LIB: "."
-    volumes:
-      - ..:/root/project
-  fedora27:
-    image: fedora:27
-    command: bash -c "tail -f /var/log/lastlog"
-    environment:
-      PERL5LIB: "."
-    volumes:
-      - ..:/root/project
   fedora28:
     image: fedora:28
     command: bash -c "tail -f /var/log/lastlog"
