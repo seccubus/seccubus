@@ -36,8 +36,7 @@ BRANCH=$(git branch | grep '*'|awk '{print $2}')
 
 NOSIGN="--no-sign"
 if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] ; then
-    if [[ ! -z $SECCUBUS_GPG_KEY ]] ; then #&& [[ $(grep -i centos /etc/redhat-release | wc -l) -lt 1 ]]; then
-        # TODO fix signing on CentOS
+    if [[ ! -z $SECCUBUS_GPG_KEY ]] ; then
         echo Setting up gpg
         set +x
         echo $SECCUBUS_GPG_KEY | sed 's/\\n/\n/g' > /tmp/gpg.key
