@@ -71,5 +71,5 @@ rm /root/project/build/*.deb
 dpkg-deb --build debian/seccubus /root/project/build
 
 if [[ "$BRANCH" == "master" ]] && [[ ! -z $SECCUBUS_GPG_KEY ]]; then
-    debsigs --sign=origin -k EF5607C9981C85C3F4255B3E56C0D88A157EB9C4 /root/project/build/*.deb
+    debsigs --sign=origin -k ED16CED9AF006C6442854B45E1C5250AF27E692B /root/project/build/*.deb
 fi
