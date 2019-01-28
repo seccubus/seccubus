@@ -186,6 +186,9 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
+      - run:
+          naem: Seccubus should answer to call to api/app-status
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
 
   debian9_test:
     docker:
@@ -208,6 +211,9 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
+      - run:
+          naem: Seccubus should answer to call to api/app-status
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
 
   kali_test:
     docker:
@@ -230,6 +236,9 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
+      - run:
+          naem: Seccubus should answer to call to api/app-status
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
 
   ubuntu14_test:
     docker:
@@ -254,6 +263,9 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
+      - run:
+          naem: Seccubus should answer to call to api/app-status
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
 
   ubuntu16_test:
     docker:
@@ -276,6 +288,9 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
+      - run:
+          naem: Seccubus should answer to call to api/app-status
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
 
   ubuntu17_test:
     docker:
@@ -300,6 +315,9 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
+      - run:
+          naem: Seccubus should answer to call to api/app-status
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
 
   ubuntu18_test:
     docker:
@@ -324,6 +342,9 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
+      - run:
+          naem: Seccubus should answer to call to api/app-status
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
 
   debian_ok:
     docker:
@@ -388,88 +409,6 @@ jobs:
             package_cloud push seccubus/releases/ubuntu/artful build/*.deb
             package_cloud push seccubus/releases/ubuntu/bionic build/*.deb
 
-  build_fc26:
-    docker:
-      - image: fedora:26
-    steps:
-      - run: dnf install -y git
-      - checkout
-      - run:
-          name: Generate build signature
-          command: echo $CIRCLE_SHA1 > .git-describe
-      - run:
-          name: Install prerequisite packages
-          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign make
-      - run:
-          name: Build
-          command: rpm/makerpm.sh
-      - save_cache:
-          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
-          paths:
-            - "/root/project/build"
-      - store_artifacts:
-          path: /root/project/build/
-
-  test_fc26:
-    docker:
-      - image: fedora:26
-    steps:
-      - run:
-          name: Generate build signature
-          command: echo $CIRCLE_SHA1 > .git-describe
-      - restore_cache:
-          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - run:
-          name: Install rpm
-          command: dnf install -y build/*fc26*rpm
-      - run:
-          name: Start hypnotoad
-          command: cd /opt/seccubus; PERL5LIB=$PERL5LIB:. hypnotoad seccubus.pl
-      - run:
-          name: Seccubus should be running on port 8443
-          command: echo -n >/dev/tcp/localhost/8443
-
-  build_fc27:
-    docker:
-      - image: fedora:27
-    steps:
-      - run: dnf install -y git
-      - checkout
-      - run:
-          name: Generate build signature
-          command: echo $CIRCLE_SHA1 > .git-describe
-      - run:
-          name: Install prerequisite packages
-          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign make
-      - run:
-          name: Build
-          command: rpm/makerpm.sh
-      - save_cache:
-          key: rpm-fc27-{{ .Branch }}-{{ checksum ".git-describe" }}
-          paths:
-            - "/root/project/build"
-      - store_artifacts:
-          path: /root/project/build/
-
-  test_fc27:
-    docker:
-      - image: fedora:27
-    steps:
-      - run:
-          name: Generate build signature
-          command: echo $CIRCLE_SHA1 > .git-describe
-      - restore_cache:
-          key: rpm-fc27-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - run:
-          name: Install rpm
-          command: dnf install -y build/*fc27*rpm
-      - run:
-          name: Start hypnotoad
-          command: cd /opt/seccubus; PERL5LIB=$PERL5LIB:. hypnotoad seccubus.pl
-      - run:
-          name: Seccubus should be running on port 8443
-          command: echo -n >/dev/tcp/localhost/8443
-
   build_fc28:
     docker:
       - image: fedora:28
@@ -510,6 +449,53 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
+      - run:
+          naem: Seccubus should answer to call to api/app-status
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
+
+  build_fc29:
+    docker:
+      - image: fedora:29
+    steps:
+      - run: dnf install -y git
+      - checkout
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - run:
+          name: Install prerequisite packages
+          command: dnf install -y fedora-packager fedora-review java-1.8.0-openjdk-headless "perl(ExtUtils::MakeMaker)" gpg rpm-sign make
+      - run:
+          name: Build
+          command: rpm/makerpm.sh
+      - save_cache:
+          key: rpm-fc29-{{ .Branch }}-{{ checksum ".git-describe" }}
+          paths:
+            - "/root/project/build"
+      - store_artifacts:
+          path: /root/project/build/
+
+  test_fc29:
+    docker:
+      - image: fedora:29
+    steps:
+      - run:
+          name: Generate build signature
+          command: echo $CIRCLE_SHA1 > .git-describe
+      - restore_cache:
+          key: rpm-fc29-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name: Install rpm
+          command: dnf install -y build/*fc29*rpm
+      - run:
+          name: Start hypnotoad
+          command: cd /opt/seccubus; PERL5LIB=$PERL5LIB:. hypnotoad seccubus.pl
+      - run:
+          name: Seccubus should be running on port 8443
+          command: echo -n >/dev/tcp/localhost/8443
+      - run:
+          naem: Seccubus should answer to call to api/app-status
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
 
   build_el7:
     docker:
@@ -802,38 +788,7 @@ workflows:
                 - master
                 - releases
                 - rpm-build
-      - build_fc26:
-          filters:
-            branches:
-              only:
-                - master
-                - releases
-                - rpm-build
-      - test_fc26:
-          requires:
-            - build_fc26
-          filters:
-            branches:
-              only:
-                - master
-                - releases
-                - rpm-build
-      - build_fc27:
-          filters:
-            branches:
-              only:
-                - master
-                - releases
-                - rpm-build
-      - test_fc27:
-          requires:
-            - build_fc27
-          filters:
-            branches:
-              only:
-                - master
-                - releases
-                - rpm-build
+
       - build_fc28:
           filters:
             branches:
@@ -850,12 +805,27 @@ workflows:
                 - master
                 - releases
                 - rpm-build
+      - build_fc29:
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
+      - test_fc29:
+          requires:
+            - build_fc29
+          filters:
+            branches:
+              only:
+                - master
+                - releases
+                - rpm-build
       - el_ok:
           requires:
             - test_el7
-            - test_fc26
-            - test_fc27
             - test_fc28
+            - test_fc29
           filters:
             branches:
               only:
