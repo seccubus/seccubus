@@ -248,8 +248,8 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
       - run:
-          naem: Seccubus should answer to call to api/app-status
-          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
+          name: Seccubus should answer to call to api/appstatus
+          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
 
   debian9_test:
     docker:
@@ -273,8 +273,8 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
       - run:
-          naem: Seccubus should answer to call to api/app-status
-          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
+          name: Seccubus should answer to call to api/appstatus
+          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
 
   kali_test:
     docker:
@@ -298,8 +298,8 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
       - run:
-          naem: Seccubus should answer to call to api/app-status
-          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
+          name: Seccubus should answer to call to api/appstatus
+          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
 
   ubuntu14_test:
     docker:
@@ -325,8 +325,8 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
       - run:
-          naem: Seccubus should answer to call to api/app-status
-          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
+          name: Seccubus should answer to call to api/appstatus
+          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
 
   ubuntu16_test:
     docker:
@@ -350,8 +350,8 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
       - run:
-          naem: Seccubus should answer to call to api/app-status
-          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
+          name: Seccubus should answer to call to api/appstatus
+          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
 
   ubuntu17_test:
     docker:
@@ -377,8 +377,8 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
       - run:
-          naem: Seccubus should answer to call to api/app-status
-          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
+          name: Seccubus should answer to call to api/appstatus
+          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
 
   ubuntu18_test:
     docker:
@@ -404,8 +404,8 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
       - run:
-          naem: Seccubus should answer to call to api/app-status
-          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
+          name: Seccubus should answer to call to api/appstatus
+          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
 
   debian_ok:
     docker:
@@ -511,8 +511,8 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
       - run:
-          naem: Seccubus should answer to call to api/app-status
-          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
+          name: Seccubus should answer to call to api/appstatus
+          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
 
   build_fc29:
     docker:
@@ -555,8 +555,8 @@ jobs:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
       - run:
-          naem: Seccubus should answer to call to api/app-status
-          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/app-status
+          name: Seccubus should answer to call to api/appstatus
+          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
 
   build_el7:
     docker:
@@ -601,6 +601,9 @@ jobs:
       - run:
           name: Seccubus should be running on port 8443
           command: echo -n >/dev/tcp/localhost/8443
+      - run:
+          name: Seccubus should answer to call to api/appstatus
+          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
 
   el_ok:
     docker:
