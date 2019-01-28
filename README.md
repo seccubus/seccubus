@@ -73,3 +73,4 @@ Enhancements
 Bug Fixes
 ---------
 * #678 - Works on Mojolicious 8 again
+* #680 - RPMs are now signed again
