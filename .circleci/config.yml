@@ -11,7 +11,7 @@ jobs:
           name: Install prerequisites
           command: |
             apk --no-progress update ;
-            apk --no-progress add git wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
+            apk --no-progress add git ssh wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
             perl-algorithm-diff perl-carp perl-dbd-mysql perl-dbi perl-data-dumper perl-date-format perl-exporter \
             perl-html-parser perl-json perl-libwww perl-lwp-protocol-https perl-mojolicious perl-net-ip \
             perl-term-readkey perl-xml-simple perl-module-build perl-module-pluggable perl-test-weaken \
@@ -51,7 +51,7 @@ jobs:
           name: Install prerequisites
           command: |
             apk --no-progress update ;
-            apk --no-progress add git wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
+            apk --no-progress add git ssh wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
             perl-algorithm-diff perl-carp perl-dbd-mysql perl-dbi perl-data-dumper perl-date-format perl-exporter \
             perl-html-parser perl-json perl-libwww perl-lwp-protocol-https perl-mojolicious perl-net-ip \
             perl-term-readkey perl-xml-simple perl-module-build perl-module-pluggable perl-test-weaken \
@@ -113,7 +113,7 @@ jobs:
           name: Install prerequisites
           command: |
             apk --no-progress update ;
-            apk --no-progress add git wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
+            apk --no-progress add git ssh wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
             perl-algorithm-diff perl-carp perl-dbd-mysql perl-dbi perl-data-dumper perl-date-format perl-exporter \
             perl-html-parser perl-json perl-libwww perl-lwp-protocol-https perl-mojolicious perl-net-ip \
             perl-term-readkey perl-xml-simple perl-module-build perl-module-pluggable perl-test-weaken \
@@ -169,7 +169,7 @@ jobs:
           name: Install prerequisites
           command: |
             apk --no-progress update ;
-            apk --no-progress add git wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
+            apk --no-progress add git ssh wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
             perl-algorithm-diff perl-carp perl-dbd-mysql perl-dbi perl-data-dumper perl-date-format perl-exporter \
             perl-html-parser perl-json perl-libwww perl-lwp-protocol-https perl-mojolicious perl-net-ip \
             perl-term-readkey perl-xml-simple perl-module-build perl-module-pluggable perl-test-weaken \
