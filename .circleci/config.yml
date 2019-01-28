@@ -659,20 +659,15 @@ jobs:
             done
             cd ..
       - restore_cache:
-          key: rpm-fc26-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - run:
-          name : Upload to packagecloud.io
-          command: package_cloud push seccubus/latest/fedora/26 build/*fc26*rpm
-      - restore_cache:
-          key: rpm-fc27-{{ .Branch }}-{{ checksum ".git-describe" }}
-      - run:
-          name : Upload to packagecloud.io
-          command: package_cloud push seccubus/latest/fedora/27 build/*fc27*rpm
-      - restore_cache:
           key: rpm-fc28-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
           name : Upload to packagecloud.io
           command: package_cloud push seccubus/latest/fedora/28 build/*fc28*rpm
+      - restore_cache:
+          key: rpm-fc29-{{ .Branch }}-{{ checksum ".git-describe" }}
+      - run:
+          name : Upload to packagecloud.io
+          command: package_cloud push seccubus/latest/fedora/29 build/*fc29*rpm
 
   el_upload_release:
     docker:
