@@ -72,4 +72,4 @@ Enhancements
 
 Bug Fixes
 ---------
-* #678 - WOrks again on Mojolicious 8
+* #678 - Works on Mojolicious 8 again
