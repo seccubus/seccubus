@@ -60,24 +60,16 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-5-11-2018 - v2.50 - Seccubus Alpine
-===================================
-This release brings new Alpine based docker containers and fixes a compatibility issue with MySQL/MariaDB version 8 and above.
+xx-xx-2019 - v2.51 - Development release
+========================================
+Work in progress
 
-Differences with 2.48
+Differences with 2.50
 
 Enhancements
 ------------
-* Seccubus containers are now built based on Alpine
-* Minimal specialized docker containers available for front end, api, front end+api, perl and cron
+*
 
 Bug Fixes
 ---------
-* Seccubus rpm's are now also being built for Fedora version 27 and 28
-* RPMs for Fedora version 25 depricated
-* Fixed building of supporting Centos v7 rpms
-* #585 - Added default credentials to the readme file
-* #660 - Sudo added to docker images
-* #655 - Shell set to /bin/bash for user seccubus
-* #662 - Fixing documentation typos
-* #673 - PERL5LIB set to /opt/seccubus for seccubus user via debian package
+* #678 - WOrks again on Mojolicious 8
