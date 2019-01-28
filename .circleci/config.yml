@@ -678,6 +678,14 @@ workflows:
       - unit_tests:
           requires:
             - cache_perl
+      - integration_tests:
+          requires:
+            - cache_perl
+          filters:
+            branches:
+              only:
+                - master
+                - releases
       - build:
           requires:
             - unit_tests
