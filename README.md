@@ -68,7 +68,7 @@ Differences with 2.50
 
 Enhancements
 ------------
-*
+* Integration tests (testssl.sh and ssllabs) now only run when commits are merged into master
 
 Bug Fixes
 ---------
