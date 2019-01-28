@@ -81,7 +81,7 @@ jobs:
       - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
       - run:
           name: Unit test
-          command: circleci tests glob t/* | circleci tests split --split-by=timings --timings-type=classname | xargs prove --harness TAP::Harness::JUnit
+          command: circleci tests glob t/[012345678]* | circleci tests split --split-by=timings --timings-type=classname | xargs prove --harness TAP::Harness::JUnit
       - run:
           name: Rename unit tests cache
           command: |
@@ -97,6 +97,67 @@ jobs:
       - store_test_results:
           path: /root/project/testout/
 
+  integration_tests:
+    docker:
+      - image: alpine:latest
+        environment:
+        - PERL5LIB: "."
+        - MYSQL_HOME: "/root/project/.circleci"
+
+      - image: circleci/mysql:5
+
+    parallelism: 1
+
+    steps:
+      - run:
+          name: Install prerequisites
+          command: |
+            apk --no-progress update ;
+            apk --no-progress add git wget linux-headers perl-dev perl-app-cpanminus gcc libc-dev make \
+            perl-algorithm-diff perl-carp perl-dbd-mysql perl-dbi perl-data-dumper perl-date-format perl-exporter \
+            perl-html-parser perl-json perl-libwww perl-lwp-protocol-https perl-mojolicious perl-net-ip \
+            perl-term-readkey perl-xml-simple perl-module-build perl-module-pluggable perl-test-weaken \
+            perl-config-tiny perl-exception-class perl-test-deep perl-readonly perl-file-which \
+            perl-list-moreutils perl-params-util perl-class-inspector perl-file-remove perl-clone perl-class-tiny \
+            perl-path-tiny perl-type-tiny perl-module-runtime perl-namespace-autoclean perl-moo perl-strictures \
+            perl-digest-hmac perl-task-weaken perl-test-harness perl-test-harness-utils bash mysql-client zip file \
+            bind-tools
+      - checkout
+      - restore_cache:
+          key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
+      - run: cpanm --notest TAP::Harness::JUnit
+      - run: cpanm --installdeps --notest .
+      - run:
+          name: Wait for database
+          command: |
+            bash -c "while ! echo -n > /dev/tcp/127.0.0.1/3306; do
+              sleep 1
+              echo -n .
+            done"
+      - run:
+          name: Create database(s)
+          command: |
+            mysql -e "create database seccubus"
+            mysql -e "create database seccubus_create"
+            mysql -e "create database seccubus_upgrade"
+      - run: if [ -e .git/shallow ]; then git fetch --unshallow; fi
+      - run:
+          name: Unit test
+          command: circleci tests glob t/9* | circleci tests split --split-by=timings --timings-type=classname | xargs prove --harness TAP::Harness::JUnit
+      - run:
+          name: Rename unit tests cache
+          command: |
+            sed -i.bak -e 's/"t_/"t\//g; s/_t"/\.t"/g' junit_output.xml
+            mkdir testout
+            mv junit_output.xml testout/junit_$CIRCLE_NODE_INDEX.xml
+      - save_cache:
+          key: junit-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - "/root/project/testout"
+      - store_artifacts:
+          path: /root/project/testout/
+      - store_test_results:
+          path: /root/project/testout/
 
   build:
     docker:
@@ -689,6 +750,7 @@ workflows:
       - build:
           requires:
             - unit_tests
+            - integration_tests
 
   debian_package_building:
     jobs:
