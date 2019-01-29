@@ -249,7 +249,7 @@ jobs:
           command: echo -n >/dev/tcp/localhost/8443
       - run:
           name: Seccubus should answer to call to api/appstatus
-          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/appstatus -k
 
   debian9_test:
     docker:
@@ -274,7 +274,7 @@ jobs:
           command: echo -n >/dev/tcp/localhost/8443
       - run:
           name: Seccubus should answer to call to api/appstatus
-          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/appstatus -k
 
   kali_test:
     docker:
@@ -299,7 +299,7 @@ jobs:
           command: echo -n >/dev/tcp/localhost/8443
       - run:
           name: Seccubus should answer to call to api/appstatus
-          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/appstatus -k
 
   ubuntu14_test:
     docker:
@@ -326,7 +326,7 @@ jobs:
           command: echo -n >/dev/tcp/localhost/8443
       - run:
           name: Seccubus should answer to call to api/appstatus
-          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/appstatus -k
 
   ubuntu16_test:
     docker:
@@ -351,7 +351,7 @@ jobs:
           command: echo -n >/dev/tcp/localhost/8443
       - run:
           name: Seccubus should answer to call to api/appstatus
-          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/appstatus -k
 
   ubuntu17_test:
     docker:
@@ -378,7 +378,7 @@ jobs:
           command: echo -n >/dev/tcp/localhost/8443
       - run:
           name: Seccubus should answer to call to api/appstatus
-          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/appstatus -k
 
   ubuntu18_test:
     docker:
@@ -405,7 +405,7 @@ jobs:
           command: echo -n >/dev/tcp/localhost/8443
       - run:
           name: Seccubus should answer to call to api/appstatus
-          command: curl --connect-timeout 10 http://127.0.0.1:8443/api/appstatus
+          command: curl --connect-timeout 10 https://127.0.0.1:8443/api/appstatus -k
 
   debian_ok:
     docker:
