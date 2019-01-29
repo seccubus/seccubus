@@ -88,11 +88,11 @@ sub startup {
     my $r = $self->routes;
 
     # CSRF protection and cookies
-    $self->hook(before_routes => sub {
+    $self->hook(around_dispatch => sub {
+        my $next = shift;
         my $c = shift;
 
         my $req = $c->req();
-
         # Set up cookies
         $self->session(expiration => 900);
 
@@ -105,9 +105,20 @@ sub startup {
                 ( ! $req->{content}->{headers}->header('content-type') ) ||
                 $req->{content}->{headers}->header('content-type') !~ /^application\/json/
             ) {
-                $self->error("CSRF protection kicked in", 500);
-                return $self;
+                $c->render(
+                    json => {
+                        status => "Error",
+                        message => "CSRF protection kicked in",
+                    },
+                    status => 500
+                );
+                #$self->error("CSRF protection kicked in", 500);
+                #exit;
+            } else {
+                $next->();
             }
+        } else {
+                $next->();
         }
     });
 
@@ -115,7 +126,7 @@ sub startup {
 
 
     # Security headers
-    $self->hook(after_render => sub {
+    $self->hook(after_dispatch => sub {
         my ($c, $output, $format) = @_;
 
         my $res = $c->res();
