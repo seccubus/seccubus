@@ -159,7 +159,7 @@ jobs:
       - store_test_results:
           path: /root/project/testout/
 
-testssl:
+  testssl:
     docker:
       - image: alpine:latest
         environment:
