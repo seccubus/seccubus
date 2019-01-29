@@ -19,7 +19,6 @@ use strict;
 
 use SeccubusV2;
 use Seccubus::Users;
-#use Seccubus::Controller;
 use Data::Dumper;
 use Cwd 'cwd';
 
