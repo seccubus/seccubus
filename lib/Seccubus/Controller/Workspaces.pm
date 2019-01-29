@@ -62,6 +62,7 @@ sub create {
 # List
 sub list {
 	my $self = shift;
+
 	my $data = [];
 	my $workspaces = get_workspaces;
 	foreach my $row ( @$workspaces ) {
