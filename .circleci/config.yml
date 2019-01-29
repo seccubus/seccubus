@@ -647,17 +647,7 @@ jobs:
           key: rpm-el7-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
           name : Upload to packagecloud.io
-          command: |
-            cd build
-            for file in *el7*rpm; do
-              REMOTE=${file/.el7/}
-              if [[ $(curl -Is https://packagecloud.io/seccubus/latest/packages/el/7/$REMOTE|grep 404|wc -l) -eq 1 ]]; then
-                package_cloud push seccubus/latest/el/7 $file
-              else
-                echo "$file already on packagecloud.io"
-              fi
-            done
-            cd ..
+          command: package_cloud push seccubus/latest/el/7 build/*el7* --skip-errors
       - restore_cache:
           key: rpm-fc28-{{ .Branch }}-{{ checksum ".git-describe" }}
       - run:
