@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk, Glen Hinkle
+# Copyright 2017-2019 Frank Breedijk, Glen Hinkle
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ use strict;
 
 use SeccubusV2;
 use Seccubus::Users;
-use Seccubus::Controller;
 use Data::Dumper;
 use Cwd 'cwd';
 
@@ -28,6 +27,9 @@ use Cwd 'cwd';
 sub startup {
     my $self = shift;
     my $config = shift;
+
+    # Set an alternative controller class to set some global headers
+    #$self->controller_class('Seccubus::Controller');
 
     my $cfg = get_config();
 
@@ -60,9 +62,6 @@ sub startup {
         });
     }
 
-    # Set an alternative controller class to set some global headers
-    $self->controller_class('Seccubus::Controller');
-
     # Session Security
     my $sessionkey = $config->{auth}->{sessionkey};
     $sessionkey = 'SeccubusScanSmarterNotHarder' unless $sessionkey;
@@ -87,6 +86,57 @@ sub startup {
 
     # Router
     my $r = $self->routes;
+
+    # CSRF protection and cookies
+    $self->hook(around_dispatch => sub {
+        my $next = shift;
+        my $c = shift;
+
+        my $req = $c->req();
+        # Set up cookies
+        $self->session(expiration => 900);
+
+        if ( $req->{method} && $req->{method} ne "GET" && $req->{method} ne "DELETE" ) {
+            # GET methods are considered safe...
+            # DELETE requests cannot be made with CSRF techniques
+            # POST/PUT requests should be application/json which cannot be generated with CSRF techniques
+            # without violating same-origin policies
+            if (
+                ( ! $req->{content}->{headers}->header('content-type') ) ||
+                $req->{content}->{headers}->header('content-type') !~ /^application\/json/
+            ) {
+                $c->render(
+                    json => {
+                        status => "Error",
+                        message => "CSRF protection kicked in",
+                    },
+                    status => 500
+                );
+                #$self->error("CSRF protection kicked in", 500);
+                #exit;
+            } else {
+                $next->();
+            }
+        } else {
+                $next->();
+        }
+    });
+
+
+
+
+    # Security headers
+    $self->hook(after_dispatch => sub {
+        my ($c, $output, $format) = @_;
+
+        my $res = $c->res();
+
+        $res->headers()->header('Server' => "Seccubus v$SeccubusV2::VERSION");
+        $res->headers()->header('X-Frame-Options' => 'DENY');
+        $res->headers()->header('X-XSS-Protection' => "1; mode=block");
+        $res->headers()->header('Cache-Control' => 'no-store, no-cache, must-revalidate');
+        $res->headers()->header('X-Clacks-Overhead' => 'GNU Terry Pratchett');
+    });
 
     # Authentication callback
     my $auth_api = $r->under( sub {
