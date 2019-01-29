@@ -75,3 +75,4 @@ Bug Fixes
 * #678 - Works on Mojolicious 8 again
 * #680 - RPMs are now signed again
 * #685 - Test 54 did not initialize DB before test start
+* #686 - New key staplingRevocationStatus added to ssllabs scanner
