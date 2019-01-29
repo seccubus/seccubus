@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017-2018 Frank Breedijk
+# Copyright 2017-2019 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -63,6 +63,15 @@ $t->get_ok('/seccubus/seccubus.html')
 	->header_like("Server", qr/^Seccubus v\d\.\d+$/)
 	->header_unlike("Server", qr/mojo/i)
 	;
+
+# CSRF protection
+$t->post_ok('/api/session'=> { 'REMOTEUSER' => 'admin', "content-type" => "text/plain" } )
+    ->status_is(500)
+    ->json_is({
+        status => "Error",
+        message => "CSRF protection kicked in"
+    })
+;
 
 # CSRF protection
 $t->post_ok('/api/session'=> { 'REMOTEUSER' => 'admin' } )

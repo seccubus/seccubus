@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk
+# Copyright 2017-2019 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,6 +21,28 @@ use Test::Mojo;
 use SeccubusV2;
 
 use lib "lib";
+
+my $db_version = 0;
+foreach my $data_file (glob "db/data_v*.mysql") {
+    $data_file =~ /^db\/data_v(\d+)\.mysql$/;
+    $db_version = $1 if $1 > $db_version;
+}
+
+ok($db_version > 0, "DB version = $db_version");
+`mysql -h 127.0.0.1 -u root -e "drop database seccubus"`;
+is($?,0,"Command executed ok");
+`mysql -h 127.0.0.1 -u root -e "create database seccubus"`;
+is($?,0,"Command executed ok");
+`mysql -h 127.0.0.1 -u root -e "create user if not exists 'seccubus'\@'localhost' identified by 'seccubus'"`;
+is($?,0,"Command executed ok");
+`mysql -h 127.0.0.1 -u root -e "grant all privileges on seccubus.* to seccubus\@localhost;"`;
+is($?,0,"Command executed ok");
+`mysql -h 127.0.0.1 -u root -e "flush privileges;"`;
+is($?,0,"Command executed ok");
+`mysql -h 127.0.0.1 -u root seccubus < db/structure_v$db_version.mysql`;
+is($?,0,"Command executed ok");
+`mysql -h 127.0.0.1 -u root seccubus < db/data_v$db_version.mysql`;
+is($?,0,"Command executed ok");
 
 my $t = Test::Mojo->new('Seccubus');
 
