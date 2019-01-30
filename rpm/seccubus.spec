@@ -1,5 +1,5 @@
 #
-# Copyright 2011-2018 Peter Slootweg, Frank Breedijk, Glenn ten Cate
+# Copyright 2011-2019 Peter Slootweg, Frank Breedijk, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
 # limitations under the License.
 
 # OS detection
-#%define is_rh5 %(grep -qi 'Red Hat Enterprise Linux Server release 5' /etc/redhat-release && echo 1 || echo 0)
 
 # Seccubus
 %define installdir  /opt/seccubus
@@ -43,9 +42,6 @@ BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:  noarch
 
 Source0:    %{name}-%{version}.tar.gz
-
-#%{?el7:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.el7.%%{ARCH}.rpm}
-#%{?fedora:%define _build_name_fmt %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}%{dist}.%%{ARCH}.rpm}
 
 BuildRequires:  java-1.8.0-openjdk-headless
 BuildRequires:  perl(ExtUtils::MakeMaker)
@@ -81,11 +77,16 @@ Requires:   perl(Term::ReadKey)
 Requires:   perl(Time::HiRes)
 Requires:   perl(Sys::Syslog)
 Requires:   perl(Mojolicious) >= 6.0
+Requires:   openssl
 
 Requires:   mysql
 %{?el6:Requires: mysql-server}
 %{?el7:Requires: mariadb-server}
 %{?fedora:Requires: mariadb-server}
+
+# Mangle rpm output name
+#%{?el7:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.el7.%%{ARCH}.rpm}
+#%{?fedora:%define _build_name_fmt %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}%{dist}.%%{ARCH}.rpm}
 
 %description
 Tool to automatically fire regular vulnerability scans with Nessus, OpenVAS,
@@ -178,8 +179,8 @@ fi
 %post
 
 if [[ ! -e /etc/seccubus/seccubus.key && ! -e /etc/seccubus/seccubus.crt ]] ; then
-    openssl genrsa -des3 -passout pass:x -out /etc/seccubus/seccubus.pass.key 4096
-    openssl rsa -passin pass:x -in /etc/seccubus/seccubus.pass.key -out /etc/seccubus/seccubus.key
+    openssl genrsa -des3 -passout pass:seccubus12345 -out /etc/seccubus/seccubus.pass.key 4096
+    openssl rsa -passin pass:seccubus12345 -in /etc/seccubus/seccubus.pass.key -out /etc/seccubus/seccubus.key
     rm -f /etc/seccubus/seccubus.pass.key
     openssl req -new -key /etc/seccubus/seccubus.key -out /etc/seccubus/seccubus.csr \
         -subj "/CN=Seccubus"
@@ -246,7 +247,7 @@ systemctl --system daemon-reload
 
 %postun
 chkconfig --remove seccubus
-rm /etc/init.d/seccubus
+rm -f /etc/init.d/seccubus
 ## %postun
 
 ################################################################################
@@ -274,6 +275,8 @@ rm /etc/init.d/seccubus
 #
 
 %changelog
+* Wed Jan 30 2019 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Added openssl as a dependancy
 * Tue Jan 23 2018 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Fixed error in system.d startup files
 * Fri Dec  8 2017 Frank Breedijk <fbreedijk@schubergphilis.com>
