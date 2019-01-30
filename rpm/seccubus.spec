@@ -84,6 +84,10 @@ Requires:   mysql
 %{?el7:Requires: mariadb-server}
 %{?fedora:Requires: mariadb-server}
 
+# Mangle rpm output name
+#%{?el7:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.el7.%%{ARCH}.rpm}
+#%{?fedora:%define _build_name_fmt %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}%{dist}.%%{ARCH}.rpm}
+
 %description
 Tool to automatically fire regular vulnerability scans with Nessus, OpenVAS,
 Nikto or Nmap.
