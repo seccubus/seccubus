@@ -14,7 +14,6 @@
 # limitations under the License.
 
 # OS detection
-#%define is_rh5 %(grep -qi 'Red Hat Enterprise Linux Server release 5' /etc/redhat-release && echo 1 || echo 0)
 
 # Seccubus
 %define installdir  /opt/seccubus
@@ -43,9 +42,6 @@ BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:  noarch
 
 Source0:    %{name}-%{version}.tar.gz
-
-#%{?el7:%define _rpmfilename %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.el7.%%{ARCH}.rpm}
-#%{?fedora:%define _build_name_fmt %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}%{dist}.%%{ARCH}.rpm}
 
 BuildRequires:  java-1.8.0-openjdk-headless
 BuildRequires:  perl(ExtUtils::MakeMaker)
@@ -179,8 +175,8 @@ fi
 %post
 
 if [[ ! -e /etc/seccubus/seccubus.key && ! -e /etc/seccubus/seccubus.crt ]] ; then
-    openssl genrsa -des3 -passout pass:x -out /etc/seccubus/seccubus.pass.key 4096
-    openssl rsa -passin pass:x -in /etc/seccubus/seccubus.pass.key -out /etc/seccubus/seccubus.key
+    openssl genrsa -des3 -passout pass:seccubus12345 -out /etc/seccubus/seccubus.pass.key 4096
+    openssl rsa -passin pass:seccubus12345 -in /etc/seccubus/seccubus.pass.key -out /etc/seccubus/seccubus.key
     rm -f /etc/seccubus/seccubus.pass.key
     openssl req -new -key /etc/seccubus/seccubus.key -out /etc/seccubus/seccubus.csr \
         -subj "/CN=Seccubus"
