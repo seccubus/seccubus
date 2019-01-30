@@ -1,5 +1,5 @@
 #
-# Copyright 2011-2018 Peter Slootweg, Frank Breedijk, Glenn ten Cate
+# Copyright 2011-2019 Peter Slootweg, Frank Breedijk, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -81,6 +81,7 @@ Requires:   perl(Term::ReadKey)
 Requires:   perl(Time::HiRes)
 Requires:   perl(Sys::Syslog)
 Requires:   perl(Mojolicious) >= 6.0
+Requires:   openssl
 
 Requires:   mysql
 %{?el6:Requires: mysql-server}
@@ -246,7 +247,7 @@ systemctl --system daemon-reload
 
 %postun
 chkconfig --remove seccubus
-rm /etc/init.d/seccubus
+rm -f /etc/init.d/seccubus
 ## %postun
 
 ################################################################################
@@ -274,6 +275,8 @@ rm /etc/init.d/seccubus
 #
 
 %changelog
+* Wed Jan 30 2019 Frank Breedijk <fbreedijk@schubergphilis.com>
+- Added openssl as a dependancy
 * Tue Jan 23 2018 Frank Breedijk <fbreedijk@schubergphilis.com>
 - Fixed error in system.d startup files
 * Fri Dec  8 2017 Frank Breedijk <fbreedijk@schubergphilis.com>
