@@ -35,7 +35,7 @@ BRANCH=$(git branch | grep '*'|awk '{print $2}')
 [ -d $DIR ] && rm -rf $DIR
 
 NOSIGN="--no-sign"
-if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] ; then
+if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] || [[ "$BRANCH" == "releases" ]] ; then
     if [[ ! -z $SECCUBUS_GPG_KEY ]] ; then
         echo Setting up gpg
         set +x
