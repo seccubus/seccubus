@@ -43,7 +43,7 @@ if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] || [[ "$BRANCH"
         echo $SECCUBUS_GPG_KEY | sed 's/\\n/\n/g' > /tmp/gpg.key
         gpg --import --batch --yes /tmp/gpg.key
         rm /tmp/gpg.key
-        echo "%_gpg_name Frank Breedijk" > ~/.rpmmacros
+        echo "%_gpg_name Seccubus" > ~/.rpmmacros
         SIGN=" --sign "
         NOSIGN=" "
         if [[ $(grep -i centos /etc/redhat-release | wc -l) -eq 1 ]]; then
