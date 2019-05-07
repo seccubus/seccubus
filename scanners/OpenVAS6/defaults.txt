@@ -1,1 +1,1 @@
---server='<OpenVAS IP>' --user=<OpenVAS user> --password='$PASSWORD' --policy='Full and fast ultimate' --targetip='$HOSTS' --portlist='All TCP' --quiet
+--server='127.0.0.1' --user=seccubus  --password='$PASSWORD' --policy='Full and fast ti8m' --targetip='$HOSTS' --portlist='All TCP' --quiet
