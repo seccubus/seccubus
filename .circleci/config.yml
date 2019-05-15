@@ -9,9 +9,9 @@ jobs:
           name: Install prerequisites
           command: |
             apk --no-progress update ;
-            apk --no-progress add git
+            apk --no-progress add git ssh
       - checkout
-      - run: jekyll build
+      - run: cd /root/project && jekyll build
 
 workflows:
   version: 2
