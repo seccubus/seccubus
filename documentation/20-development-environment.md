@@ -15,7 +15,7 @@ This document details what you have to do to set up a development environment on
 
 Check out the code
 ------------------
-I checked out my code in ~/Repos with the following commend:
+I checked out my code in ~/Repos with the following command
 
 ```bash
 cd ~/Repos
@@ -41,6 +41,12 @@ mysql.server start
 
 Setting up perl and mysql
 -------------------------
+
+Make sure you have perl installed via homebrew
+```bash
+brew install perl
+brew link --overwrite perl # If needed
+```
 
 First we need to setup cpanm, I do this via Homebrew
 
