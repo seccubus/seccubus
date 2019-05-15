@@ -11,7 +11,8 @@ jobs:
             apk --no-progress update ;
             apk --no-progress add git 
       - checkout
-      - run: cd /root/project && jekyll build
+      - run: bundle install 
+      - run: bundle exec jekyll build
 
 workflows:
   version: 2
