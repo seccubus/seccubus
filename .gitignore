@@ -8,4 +8,4 @@ _site
 log
 .jekyll-metadata
 .bundle-cache
-
+Gemfile.lock
