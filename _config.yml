@@ -1,12 +1,13 @@
 paginate: 10
 plugins: [jekyll-paginate]
 
-name: Seccubus
+#name: Seccubus
 description: Easy Automated vulnerability scanning and reporting
 url: https://www.seccubus.com
 baseurl: 
 timezone: Europe/Amsterdam
 future: true
+encoding: utf-8
 
 permalink: pretty
 paginate_path: "news/:num/"

@@ -1,6 +1,17 @@
 #!/bin/bash
 
-docker run --rm --volume="$PWD:/srv/jekyll" -p4000:4000 -ti jekyll/jekyll bash -c "
+docker run --rm --volume="$PWD:/root/project" -p4000:4000 -ti ruby bash -c "
+	apt-get update && apt-get install -y locales
+	locale-gen C.UTF-8 && /usr/sbin/update-locale LANG=C.UTF-8
+	echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && locale-gen
+
+	# Set default locale for the environment
+	export LC_ALL=C.UTF-8
+	export LANG=en_US.UTF-8
+	export LANGUAGE=en_US.UTF-8
+
+	cd /root/project
+	gem install bundler
 	mkdir -p .bundle-cache
 	bundle install --path=.bundle-cache
 	bundle exec jekyll serve --incremental --host=0.0.0.0

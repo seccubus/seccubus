@@ -3,16 +3,29 @@ jobs:
 
   build:
     docker:
-      - image: jekyll/jekyll:latest
+      - image: ruby:latest
     steps:
       - run:
-          name: Install prerequisites
+          name: Setup locales
           command: |
-            apk --no-progress update ;
-            apk --no-progress add git 
-      - checkout
-      - run: bundle install 
-      - run: bundle exec jekyll build
+            apt-get update && apt-get install -y locales ;
+            locale-gen C.UTF-8 && /usr/sbin/update-locale LANG=C.UTF-8 ;
+            echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && locale-gen ;
+      - run:
+          name: Setup Jekyll
+          command: |
+            cd /root/project ;
+            gem install bundler ;
+            mkdir -p .bundle-cache
+            bundle install --path=.bundle-cache ;
+      - run:
+          name: Build site
+          command: |
+            # Set default locale for the environment
+            export LC_ALL=C.UTF-8 ;
+            export LANG=en_US.UTF-8 ;
+            export LANGUAGE=en_US.UTF-8 ;
+            bundle exec jekyll serve --incremental --host=0.0.0.0
 
 workflows:
   version: 2
