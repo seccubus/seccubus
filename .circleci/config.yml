@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: ruby:latest
     steps:
-      - run: apt-get update && apt-get install ssh git
+      - run: apt-get update && apt-get install -y ssh git
       - checkout
       - run:
           name: Setup locales
