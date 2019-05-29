@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Fabien Guillaume, Frank Breedijk, Andrey Danin, Floris Kraak, Alireza Karbasian
+# Copyright 2014-2019 Fabien Guillaume, Frank Breedijk, Andrey Danin, Floris Kraak, Alireza Karbasian, Bernd Leinfelder
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -43,6 +43,8 @@ my (
 	$portlist,
 	$portlistname,
 	$timeout,
+	$maxchecks,
+	$maxhosts,
 	$verbose,
 	$scan,
 	$timestamp,
@@ -77,6 +79,8 @@ GetOptions (
 	'portrange=s'		=> \$portlist,
 	'sleep=s'			=> \$sleep,
 	'timeout=s' 		=> \$timeout,
+	'maxchecks=s'		=> \$maxchecks,
+	'maxhosts=s'		=> \$maxhosts,
 	'nodelete'			=> \$nodelete,
 	'verbose|v+'		=> \$verbose,
 	'quiet|q!'			=> \$quiet,
@@ -91,6 +95,8 @@ $verbose = 0 if $quiet;
 $targetname=$targetip unless $targetname;
 $portlistname=$portlist unless $portlistname;
 $timeout=14400 unless $timeout;
+$maxchecks=4 unless $maxchecks;
+$maxhosts=10 unless $maxhosts;
 
 help("You must specify a policy") unless $policy;
 help("You must specify a user") unless $user;
@@ -219,6 +225,16 @@ $xml = omp_request("
 		<comment>$timestamp</comment>
 		<config id='$pol_id' />
 		<target id='$target_id' />
+		 <preferences>
+			 <preference>
+				 <scanner_name>max_checks</scanner_name>
+				 <value>$maxchecks</value>
+			 </preference>
+			 <preference>
+				 <scanner_name>max_hosts</scanner_name>
+				 <value>$maxhosts</value>
+			 </preference>
+		 </preferences>
 	</create_task>
 ");
 if ( $xml->{status} eq "201" ) {
@@ -365,6 +381,7 @@ Usage: scan     --workspace=<seccubus workspace> --scan=<seccubus scan>
 		        --policy=<OpenVAS Scan Config name> [--target=<OpenVAS target>]
 		        [--targetip=<IP(s) to scan>] [--portlist=<OpenVAS port listname>]
 		        [--portrange=<Port range(s) to scan>] [--sleep=<sleeptime>]
+		        [--maxchecks=<max checks>] [--maxhosts=<max hosts>]
 		        [--timeout=<timeout>] [--nodelete] [--verbose] [--quiet] [--help]
 
 --workspace (-ws) - Seccubus workspace the scan should be in
@@ -391,6 +408,10 @@ Usage: scan     --workspace=<seccubus workspace> --scan=<seccubus scan>
 --timeout         - # Seconds after which to abort a scan (optional,
 	                default=14400 (4 hours))
 --nodelete        - Don't erase temporary files
+--maxchecks       - The number of plugins that will run against each host at the
+                    same time (optional, default=4)
+--maxhosts        - The maximum number of hosts to test at the same time
+                    (optional, default=10)
 --verbose (-v)    - Be verbose during execution (repeat to increase verbosity)
 --quiet (-q)      - Don't print output
 --help (-h)       - Print this message

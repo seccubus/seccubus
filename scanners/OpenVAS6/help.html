@@ -1,5 +1,5 @@
 <!--
-Copyright 2016 Fabien Guillaume, Frank Breedijk
+Copyright 2014-2019 Fabien Guillaume, Frank Breedijk, Bernd Leinfelder
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ Usage: scan     --workspace=&lt;seccubus workspace&gt; --scan=&lt;seccubus scan&
 		        --policy=&lt;OpenVAS Scan Config name&gt; [--target=&lt;OpenVAS target&gt;]
 		        [--targetip=&lt;IP(s) to scan&gt;] [--portlist=&lt;OpenVAS port listname&gt;]
 		        [--portrange=&lt;Port range(s) to scan&gt;] [--sleep=&lt;sleeptime&gt;]
+		        [--maxchecks=&lt;max checks&gt;] [--maxhosts=&lt;max hosts&gt;]
 		        [--timeout=&lt;timeout&gt;] [--nodelete] [--verbose] [--quiet] [--help]
 <p>
 <br><br>
@@ -53,6 +54,10 @@ Parameters description :
 	                is specified and it exists)
 <li>--sleep           - Seconds to sleep between polls of the API  (optional, 
 	                default=10) 
+<li>--maxchecks       - The number of plugins that will run against each host at the
+                        same time (optional, default=4)
+<li>--maxhosts        - The maximum number of hosts to test at the same time
+                        (optional, default=10)
 <li>--timeout         - # Seconds after which to abort a scan (optional, 
 	                default=14400 (4 hours))
 <li>--nodelete        - Don't erase temporary files
