@@ -78,4 +78,5 @@ Bug Fixes
 * #685 - Test 54 did not initialize DB before test start
 * #686 - New key staplingRevocationStatus added to ssllabs scanner
 * #688 - RPM now requires openssl so fresh installs on EL listen on https too
+* Added some test time dependancies to testssl unit test in CircleCI
 
