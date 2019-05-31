@@ -453,7 +453,7 @@ jobs:
     steps:
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
-      - run: apt-get update; apt-get install -y ca-certificates curl mysql-server
+      - run: apt-get update; apt-get install -y ca-certificates curl
       - run:
           name: Generate build signature
           command: echo $CIRCLE_SHA1 > .git-describe
