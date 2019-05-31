@@ -104,7 +104,7 @@ $t->post_ok('/api/workspace/100/scans',
         "name"          => "cdn",
         "scanner"       => "SSLlabs",
         "parameters"    => '--hosts @HOSTS --from-cache --publish --cdn',
-        "targets"       => "www.schubergphilis.com"
+        "targets"       => "www.seccubus.com"
     })
     ->status_is(200)
 ;
@@ -115,7 +115,7 @@ $t->post_ok('/api/workspace/100/scans',
         "name"          => "cdn_gradeonly",
         "scanner"       => "SSLlabs",
         "parameters"    => '--hosts @HOSTS --from-cache --publish --cdn --gradeonly',
-        "targets"       => "www.schubergphilis.com\nwww.seccubus.com\nwww.cupfighter.net"
+        "targets"       => "www.akamai.com\nwww.seccubus.com\nwww.cloudflare.com"
     })
     ->status_is(200)
 ;
@@ -211,7 +211,7 @@ foreach my $f ( @{$t->{tx}->res()->json()} ) {
         unlike($f->{find},qr/^Findings vary per endpoint/,"Findings are consistent across endpoints for plugin '$f->{plugin}'");
     }
 }
-foreach my $host ( qw(www.seccubus.com www.schubergphilis.com www.cupfighter.net) ) {
+foreach my $host ( qw(www.seccubus.com www.akamai.com www.cloudflare.com) ) {
     cmp_ok($hosts->{$host}, '>', 0, "Has findings for $host");
     delete $hosts->{$host};
 }

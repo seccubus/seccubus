@@ -332,7 +332,7 @@ foreach my $host ( @hosts ) {
     if ( $scan->{port} ) {
         $finding->{port} = "$scan->{port}/tcp";
     } else {
-        $finding->{port} = "unknow";
+        $finding->{port} = "unknown";
     }
 
     # Handle errors first
