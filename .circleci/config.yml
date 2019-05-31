@@ -183,7 +183,7 @@ jobs:
             perl-list-moreutils perl-params-util perl-class-inspector perl-file-remove perl-clone perl-class-tiny \
             perl-path-tiny perl-type-tiny perl-module-runtime perl-namespace-autoclean perl-moo perl-strictures \
             perl-digest-hmac perl-task-weaken perl-test-harness perl-test-harness-utils bash mysql-client zip file \
-            bind-tools
+            bind-tools coreutils grep procps
       - checkout
       - restore_cache:
           key: cpanm-{{ .Environment.CIRCLE_SHA1 }}
