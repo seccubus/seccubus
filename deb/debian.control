@@ -9,4 +9,4 @@ Package: seccubus
 Architecture: all
 Depends: ${shlibs:Depends}, perl, libalgorithm-diff-perl, libdbi-perl, libdbd-mysql-perl, libjson-perl, libxml-simple-perl, libwww-perl, liblwp-protocol-https-perl, libnet-ip-perl, libtimedate-perl, libhtml-parser-perl, libcrypt-pbkdf2-perl, libterm-readkey-perl, libmojolicious-perl, default-mariadb-server | virtual-mariadb-server | mariadb-server
 Description: Automated regular vulnerability scanning with delta reporting
-For more information see http://www.seccubus.com
+ For more information see http://www.seccubus.com
