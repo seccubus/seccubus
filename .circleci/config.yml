@@ -282,7 +282,7 @@ jobs:
           command: apt-get update; apt-get -y install build-essential debhelper default-jre-headless git debsigs
       - run:
           name: Build
-          command: deb/makedeb.sh ; [[ $(ls /root/project/*.deb|wc -l ) -gt 0 ]]
+          command: deb/makedeb.sh ; [[ $(ls /root/project/build/*.deb|wc -l ) -gt 0 ]]
       - save_cache:
           key: deb-{{ .Branch }}-{{ checksum ".git-describe" }}
           paths:
