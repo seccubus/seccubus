@@ -419,9 +419,9 @@ jobs:
           name: Seccubus should answer to call to api/appstatus
           command: curl --connect-timeout 10 https://127.0.0.1:8443/api/appstatus -k
 
-  ubuntu17_test:
+  ubuntu_dev_test:
     docker:
-      - image: ubuntu:17.10
+      - image: ubuntu:devel
 
     steps:
       - run: debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
@@ -848,7 +848,7 @@ workflows:
                 - master
                 - releases
                 - deb-building
-      - ubuntu17_test:
+      - ubuntu_dev_test:
           requires:
             - build_deb
           filters:
@@ -881,7 +881,7 @@ workflows:
             - debian9_test
             - ubuntu14_test
             - ubuntu16_test
-            - ubuntu17_test
+            - ubuntu_dev_test
             - ubuntu18_test
             - kali_test
           filters:
