@@ -1,6 +1,10 @@
 seccubus (0.0.0-0) unstable; urgency=low
-  * Current release based on Mojolicious.
+  * Current release.
  -- Frank Breedijk <fbreedijk@schubergphilis.com>  Thu, 8 Jun 2017 11:08:00 +0200
+
+seccubus (2.25.0-0) unstable; urgency=low
+  * Switched from mysql-server to mariadb server.
+ -- Frank Breedijk <fbreedijk@schubergphilis.com>  Fri, 31 May 2019 11:08:00 +0200
 
 seccubus (2.22.0-1) unstable; urgency=low
   * Release based on perl and CGI.

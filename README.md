@@ -69,6 +69,7 @@ Differences with 2.50
 Enhancements
 ------------
 * Integration tests (testssl.sh and ssllabs) now only run when commits are merged into master
+* Switched from mysql-server to mariadb-server as a dependancy on Debian based systems
 
 Bug Fixes
 ---------
@@ -77,3 +78,4 @@ Bug Fixes
 * #685 - Test 54 did not initialize DB before test start
 * #686 - New key staplingRevocationStatus added to ssllabs scanner
 * #688 - RPM now requires openssl so fresh installs on EL listen on https too
+
