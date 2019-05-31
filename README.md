@@ -61,7 +61,7 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 ---
 
 31-5-2019 - v2.51.1 - Development release
-========================================
+=========================================
 Work in progress
 
 Differences with 2.50
