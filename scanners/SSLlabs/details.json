@@ -1,7 +1,7 @@
 {
 	"alpnProtocols"		: {
 		"type"			: "string",
-		"description"	: "Supported SLPN protcols : "
+		"description"	: "Supported ALPN protcols : "
 	},
     "bleichenbacher"    : {
         "type"          : "list",
@@ -64,6 +64,15 @@
 		],
 		"note"			: "This is based on client simulation results"
 	},
+    "goldenDoodle"    : {
+        "type"          : "list",
+        "values"        : [
+            "test failed", "unknown", "not vulnerable", "vulnerable", "vulnerable and exploitable"
+        ],
+        "description"   : "Golden Doodle attack: ",
+        "startsAt"      : -1,
+        "note"          : "See: https://www.tripwire.com/state-of-security/vert/goldendoodle-attack/"
+    },
 	"freak"	: {
 		"type"			: "vulnerability",
 		"name"			: "FREAK attack",
