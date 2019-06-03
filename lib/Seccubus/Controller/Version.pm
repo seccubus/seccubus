@@ -32,7 +32,7 @@ sub read {
 
 	my $ua = LWP::UserAgent->new;
 
-	my $current = $ua->get("http://0.0.0.0:4000/version/current.json", "Accept", "application/json");
+	my $current = $ua->get("https://www.seccubus.com/version/current.json", "Accept", "application/json");
 	if ( ! $current ) {
 		$self->render(
 			json => { link => "", status => "WARN", message => "Unable to perform online version check" }
@@ -62,7 +62,7 @@ sub read {
                 message => "Your version ($version) is the active development version of Seccubus, it includes the latest features but may include the latest artifacts as well ;)"
             };
         } else {
-            my $latest = $ua->get("http://0.0.0.0:4000/version/latest/", "Accept", "text/html")->decoded_content;
+            my $latest = $ua->get("https://www.seccubus.com/version/latest/", "Accept", "text/html")->decoded_content;
             my @lines = split(/\n/, $latest);
             my $line = shift @lines;
             while ( $line !~ /div class=\"content post\"/) {
