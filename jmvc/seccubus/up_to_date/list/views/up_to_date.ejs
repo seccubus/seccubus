@@ -1,4 +1,4 @@
-<%# Copyright 2013 Frank Breedijk                                            %>
+ <%# Copyright 2011-2019 Frank Breedijk                                            %>
 <%#                                                                          %>
 <%# Licensed under the Apache License, Version 2.0 (the "License");          %>
 <%# you may not use this file except in compliance with the License.         %>
@@ -12,7 +12,9 @@
 <%# See the License for the specific language governing permissions and      %>
 <%# limitations under the License.                                           %>
 <div class='<%= status %>'><b><%= status %></b>
-<% if(link) { %>
-	Download link: <a href='<%= link %>'><%= link %></a>
+<p><%== message %></p>
+<% if(typeof link !== 'undefined') { %>
+    <br><br><br>
+    Download link: <a href='<%= link %>'><%= link %></a>
 <% } %>
-<p><br><pre><%= message %></pre></p></div>
+</dev?
