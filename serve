@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker run --rm --volume="$PWD:/root/project" -p4000:4000 -ti ruby bash -c "
+docker run --rm --volume="$PWD:/root/project:delegated" -p4000:4000 -ti ruby bash -c "
 	apt-get update && apt-get install -y locales
 	locale-gen C.UTF-8 && /usr/sbin/update-locale LANG=C.UTF-8
 	echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && locale-gen

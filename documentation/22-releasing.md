@@ -29,19 +29,19 @@ Make sure that README.md reflects all changes since the last released version, M
 
 # Make sure that all unit tests pass
 
-Check [![Circle-CI build status](https://circleci.com/gh/schubergphilis/Seccubus.svg?style=shield&circle-token=63e8efd7e0bff0b1e9578ff312b4b0c47963709a)](https://circleci.com/gh/schubergphilis/Seccubus)
+Check [![CircleCI build status](https://circleci.com/gh/seccubus/seccubus/tree/master.svg?style=svg)](https://circleci.com/gh/seccubus/seccubus/tree/master) 
 
 This ensures that the packes build on all supported platforms too.
 
 # Make sure hub.docker.com is building the container
 
 Check:
-* [Main image](https://hub.docker.com/r/seccubus/seccubus/builds/)
-* [Frontend image](https://hub.docker.com/r/seccubus/seccubus-front/builds/)
-* [Web image](https://hub.docker.com/r/seccubus/seccubus-web/builds/)
-* [API image](https://hub.docker.com/r/seccubus/seccubus-api/builds/)
-* [Perl image](https://hub.docker.com/r/seccubus/seccubus-perl/builds/)
-* [Cron image](https://hub.docker.com/r/seccubus/seccubus-cron/builds/)
+* [Main image](https://hub.docker.com/u/seccubus/seccubus/builds/)
+* [Frontend image](https://hub.docker.com/u/seccubus/seccubus-front/builds/)
+* [Web image](https://hub.docker.com/u/seccubus/seccubus-web/builds/)
+* [API image](https://hub.docker.com/u/seccubus/seccubus-api/builds/)
+* [Perl image](https://hub.docker.com/u/seccubus/seccubus-perl/builds/)
+* [Cron image](https://hub.docker.com/u/seccubus/seccubus-cron/builds/)
 
 # Tag the repo
 
@@ -62,7 +62,7 @@ To git@github.com:schubergphilis/Seccubus
 
 # Make sure that all unit tests pass (AGAIN!)
 
-Check [![Circle-CI build status](https://circleci.com/gh/schubergphilis/Seccubus.svg?style=shield&circle-token=63e8efd7e0bff0b1e9578ff312b4b0c47963709a)](https://circleci.com/gh/schubergphilis/Seccubus)
+Check [![CircleCI build status](https://circleci.com/gh/seccubus/seccubus/tree/master.svg?style=svg)](https://circleci.com/gh/seccubus/seccubus/tree/master) 
 
 # Create a pull request from master to releases
 
@@ -70,24 +70,24 @@ This will make sure the release also gets uploaded to the releases repository.
 
 # Create a release on GitHub
 
-See [GitHub release page](https://github.com/schubergphilis/Seccubus/releases).
+See [GitHub release page](https://github.com/seccubus/seccubus/releases).
 
 Use the tag you have just created. If you committed after you created the tag you need to [delete the tag](https://nathanhoad.net/how-to-delete-a-remote-git-tag) first.
 
 # Download the binary packages
 
-Get the following from [CircleCI](https://circleci.com/gh/schubergphilis/workflows/Seccubus/tree/master):
+Get the following from [CircleCI](https://circleci.com/gh/seccubus/workflows/seccubus/tree/master):
 
 * RPMS: master / fedora_package_building -> fedora_ok -> artifacts
 * .deb file: master / debian_package_building -> debian_ok -> artifacts
 
 # Attach them to the build
 
-See the release you just created at the [GitHub release page](https://github.com/schubergphilis/Seccubus/releases).
+See the release you just created at the [GitHub release page](https://github.com/seccubus/seccubus/releases).
 
 # Write a blog post on [seccubus.com](/)
 
-Code is in the [gp-pages branch Of the main GitHub repo](https://github.com/schubergphilis/Seccubus/tree/gh-pages/_posts)
+Code is in the [gp-pages branch Of the main GitHub repo](https://github.com/seccubus/seccubus/tree/gh-pages/_posts)
 
 # Send a notification to [the slack channel](https://seccubus.slack.com/)
 
@@ -95,7 +95,7 @@ You know how slack works.
 
 # Update online version check
 
-Code is on [Frank Breedijk's GitHub](https://github.com/seccubus/Seccubus_version_check)
+Code is in the [gp-pages branch Of the main GitHub repo](https://github.com/seccubus/seccubus/tree/gh-pages/version)
 
 # Tweet, LinkedIn, Facebook, etc...
 
