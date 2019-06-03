@@ -70,6 +70,7 @@ Enhancements
 ------------
 * Integration tests (testssl.sh and ssllabs) now only run when commits are merged into master
 * Switched from mysql-server to mariadb-server as a dependancy on Debian based systems
+* Online version check is now served from the main seccubus.com website
 
 Bug Fixes
 ---------
