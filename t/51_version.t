@@ -25,7 +25,7 @@ my $t = Test::Mojo->new('Seccubus');
 
 $t->get_ok('/api/version')
 	->status_is(200)
-	->json_is("/link","")
+	->json_is("/link",undef)
 	->json_like("/status",qr/^(OK|WARN)$/)
 	->json_like("/message",qr/(using the newest version|active development version|is up to date)/i)
 	;
