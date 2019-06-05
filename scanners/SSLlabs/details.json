@@ -1,7 +1,7 @@
 {
 	"alpnProtocols"		: {
 		"type"			: "string",
-		"description"	: "Supported SLPN protcols : "
+		"description"	: "Supported ALPN protcols : "
 	},
     "bleichenbacher"    : {
         "type"          : "list",
@@ -64,6 +64,15 @@
 		],
 		"note"			: "This is based on client simulation results"
 	},
+    "goldenDoodle"    : {
+        "type"          : "list",
+        "values"        : [
+            "test failed", "unknown", "not vulnerable", "vulnerable", "vulnerable and exploitable"
+        ],
+        "description"   : "Golden Doodle attack: ",
+        "startsAt"      : -1,
+        "note"          : "See: https://www.tripwire.com/state-of-security/vert/goldendoodle-attack/"
+    },
 	"freak"	: {
 		"type"			: "vulnerability",
 		"name"			: "FREAK attack",
@@ -239,6 +248,15 @@
 		"description"	: "Client simulation results\n=========================\n",
 		"note"			: "Unable to determine DH/ECDH amd FS details from API results at this time."
 	},
+    "sleepingPoodle"    : {
+        "type"          : "list",
+        "values"        : [
+                "test failed", "unknown", "not vulnerable", "", "", "", "", "", "", "", "", "vulnerable", "vulnerable and exploitable"
+        ],
+        "description"   : "Sleeping Poodle attack: ",
+        "startsAt"      : -1,
+        "note"          : "See: https://blog.qualys.com/technology/2019/04/22/zombie-poodle-and-goldendoodle-vulnerabilities"
+    },
 	"sniRequired" : {
 		"type"			: "boolean",
 		"description"	: "This site requires SNI : "
@@ -255,14 +273,34 @@
         "type"          : "boolean",
         "description"   : "This endpoint supports ALPN : "
     },
-	"supportsNpn" : {
+    "supportsAead" : {
+        "type"          : "boolean",
+        "description"   : "This endpoint supports AEAD ciphers : "
+    },
+    "supportsNpn" : {
+        "type"          : "boolean",
+        "description"   : "This endpoint supports NPN : "
+    },
+	"supportsCBC" : {
 		"type"			: "boolean",
-		"description"	: "This endpoint supports NPN : "
+		"description"	: "This endpoint supports Cypher Block Chaining : "
 	},
 	"supportsRc4" : {
 		"type"			: "boolean",
 		"description"	: "This endpoint supports RC4 : "
 	},
+    "staplingRevocationStatus" : {
+        "type"          : "list",
+        "values"        : [
+            "not checked",
+            "certificate revoked",
+            "certificate not revoked",
+            "revocation check error",
+            "no revocation information",
+            "internal error"
+        ],
+        "description"   : "Certificate revocation status obtained via OSCP stapling"
+    },
 	"staticPkpPolicy" : {
 		"type"			: "staticPkpPolicy",
 		"description"	: "Static Private Key Pinning meanse that the hpkpPolicy is statically embedded in the browser (See: https://community.qualys.com/thread/17152-what-is-static-public-key-pinning)"
@@ -292,5 +330,33 @@
 	"httpTransactions"		: { "ignore" : true },
 	"nonPrefixDelegation"	: { "ignore" : true },
 	"prefixDelegation"		: { "ignore" : true },
-	"zz" : {}
+    "zeroLengthPaddingOracle"    : {
+        "type"          : "list",
+        "values"        : [
+            "test failed", "unknown", "not vulnerable", "", "", "", "", "vulnerable", "vulnerable and exploitable"
+        ],
+        "description"   : "results of the 0-Length Padding Oracle (CVE-2019-1559) test: ",
+        "startsAt"      : -1,
+        "note"          : "See: https://blog.qualys.com/technology/2019/04/22/zombie-poodle-and-goldendoodle-vulnerabilities"
+    },
+    "zeroRTTEnabled"    : {
+        "type"          : "list",
+        "values"        : [
+            "test failed", "test not performed (default)", "0-RTT is not enabled", "0-RTT is enabled"
+        ],
+        "description"   : "results of the 0-RTT test. This test will only be performed if TLS 1.3 is enabled: ",
+        "startsAt"      : -2,
+        "note"          : "See: https://blog.qualys.com/technology/2019/04/22/zombie-poodle-and-goldendoodle-vulnerabilities"
+    },
+
+    "zombiePoodle"    : {
+        "type"          : "list",
+        "values"        : [
+            "test failed", "unknown", "not vulnerable", "vulnerable", "vulnerable and exploitable"
+        ],
+        "description"   : "results of the Zombie POODLE test: ",
+        "startsAt"      : -1,
+        "note"          : "See: https://blog.qualys.com/technology/2019/04/22/zombie-poodle-and-goldendoodle-vulnerabilities"
+    },
+    "zz" : {}
 }

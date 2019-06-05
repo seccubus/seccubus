@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2017 Frank Breedijk
+# Copyright 2017-2019 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ my $t = Test::Mojo->new('Seccubus');
 
 $t->get_ok('/api/version')
 	->status_is(200)
-	->json_is("/link","")
+	->json_is("/link",undef)
 	->json_like("/status",qr/^(OK|WARN)$/)
 	->json_like("/message",qr/(using the newest version|active development version|is up to date)/i)
 	;

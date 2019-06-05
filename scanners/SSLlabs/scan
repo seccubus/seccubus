@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright 2014-2017 Frank Breedijk, Alex Smirnoff, Glenn ten Cate
+# Copyright 2014-2019 Frank Breedijk, Alex Smirnoff, Glenn ten Cate
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -332,7 +332,7 @@ foreach my $host ( @hosts ) {
     if ( $scan->{port} ) {
         $finding->{port} = "$scan->{port}/tcp";
     } else {
-        $finding->{port} = "unknow";
+        $finding->{port} = "unknown";
     }
 
     # Handle errors first

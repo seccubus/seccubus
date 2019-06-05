@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2017-2018 Frank Breedijk
+# Copyright 2017-2019 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,8 +36,7 @@ BRANCH=$(git branch | grep '*'|awk '{print $2}')
 
 NOSIGN="--no-sign"
 if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "rpm-build" ]] || [[ "$BRANCH" == "releases" ]] ; then
-    if [[ ! -z $SECCUBUS_GPG_KEY ]] ; then #&& [[ $(grep -i centos /etc/redhat-release | wc -l) -lt 1 ]]; then
-        # TODO fix sgining on CentOS
+    if [[ ! -z $SECCUBUS_GPG_KEY ]] ; then
         echo Setting up gpg
         set +x
         echo $SECCUBUS_GPG_KEY | sed 's/\\n/\n/g' > /tmp/gpg.key

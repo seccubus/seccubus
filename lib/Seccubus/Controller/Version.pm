@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright 2017 Frank Breedijk
+# Copyright 2017-2019 Frank Breedijk
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,24 +32,59 @@ sub read {
 
 	my $ua = LWP::UserAgent->new;
 
-	my $verdict = $ua->get("http://v2.seccubus.com/up2date.json.pl?version=$SeccubusV2::VERSION", "Accept", "application/json");
-	if ( ! $verdict ) {
+	my $current = $ua->get("https://www.seccubus.com/version/current.json", "Accept", "application/json");
+	if ( ! $current ) {
 		$self->render(
-			json => { link => "", status => "WARN", message => "Unable to perform online version check" } 
+			json => { link => "", status => "WARN", message => "Unable to perform online version check" }
 		);
-	} else { 
+	} else {
 		my $json = {};
 		eval {
-			$json = decode_json($verdict->decoded_content);
+			$json = decode_json($current->decoded_content);
 		};
 		if ($@) {
 			$self->render(
-				json => { link => "", status => "ERROR", message => "ERROR: " . $verdict->decoded_content}
+				json => { link => "", status => "ERROR", message => "ERROR: " . $current->decoded_content}
 			);
 			return;
 		}
+        my $version = $SeccubusV2::VERSION;
+        my ( $major, $minor) = split /\./, $version;
+
+        if ( $major == ${$json->{cool}}[0] && $minor == ${$json->{cool}}[1] ) {
+            $json = {
+                status => "OK",
+                message => "You are using the newest version of Seccubus. This version check will be updated soon"
+            };
+        } elsif ( $major == ${$json->{dev}}[0] && $minor == ${$json->{dev}}[1] ) {
+            $json = {
+                status => "OK",
+                message => "Your version ($version) is the active development version of Seccubus, it includes the latest features but may include the latest artifacts as well ;)"
+            };
+        } else {
+            my $latest = $ua->get("https://www.seccubus.com/version/latest/", "Accept", "text/html")->decoded_content;
+            my @lines = split(/\n/, $latest);
+            my $line = shift @lines;
+            while ( $line !~ /div class=\"content post\"/) {
+                $line = shift @lines;
+            }
+            $line = shift @lines;
+            my $readme = "";
+            while ( $line !~ /\<\/div\>/ ) {
+                $readme .= "$line\n";
+                $line = shift @lines;
+            }
+            $json = {
+                status => "Error",
+                message => "<h1>Version $json->{current}[0].$json->{current}[1] is available, please upgrade...</h1>$readme",
+                link => "https://github.com/schubergphilis/Seccubus/releases/latest"
+            }
+        }
+
+
+
 		$self->render(
-			json => $$json[0],
+			json => $json,
 		);
 	}
 }

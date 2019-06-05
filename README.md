@@ -60,24 +60,25 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-5-11-2018 - v2.50 - Seccubus Alpine
-===================================
-This release brings new Alpine based docker containers and fixes a compatibility issue with MySQL/MariaDB version 8 and above.
+5-6-2019 - v2.52 Varna release
+=========================================
+Hello! It is the first Seccubus release made by Glanc team. Mostly bug fixes.
 
-Differences with 2.48
+Differences with 2.50
 
 Enhancements
 ------------
-* Seccubus containers are now built based on Alpine
-* Minimal specialized docker containers available for front end, api, front end+api, perl and cron
+* Integration tests (testssl.sh and ssllabs) now only run when commits are merged into master
+* Switched from mysql-server to mariadb-server as a dependancy on Debian based systems
+* Online version check is now served from the main seccubus.com website
 
 Bug Fixes
 ---------
-* Seccubus rpm's are now also being built for Fedora version 27 and 28
-* RPMs for Fedora version 25 depricated
-* Fixed building of supporting Centos v7 rpms
-* #585 - Added default credentials to the readme file
-* #660 - Sudo added to docker images
-* #655 - Shell set to /bin/bash for user seccubus
-* #662 - Fixing documentation typos
-* #673 - PERL5LIB set to /opt/seccubus for seccubus user via debian package
+* #678 - Works on Mojolicious 8 again
+* #680 - RPMs are now signed again
+* #685 - Test 54 did not initialize DB before test start
+* #686 - New key staplingRevocationStatus added to ssllabs scanner
+* #688 - RPM now requires openssl so fresh installs on EL listen on https too
+* Added some test time dependancies to testssl unit test in CircleCI
+* Failing unit tests for ssllabs and testssl have been fixed again
+
