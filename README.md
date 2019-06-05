@@ -60,9 +60,9 @@ Changes of this branch vs the [latest/previous release](https://github.com/schub
 
 ---
 
-31-5-2019 - v2.51.1 - Development release
+5-6-2019 - v2.52 Varna release
 =========================================
-Work in progress
+Hello! It is the first Seccubus release made by Glanc team. Mostly bug fixes.
 
 Differences with 2.50
 
