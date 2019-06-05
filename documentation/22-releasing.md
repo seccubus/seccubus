@@ -36,12 +36,12 @@ This ensures that the packes build on all supported platforms too.
 # Make sure hub.docker.com is building the container
 
 Check:
-* [Main image](https://hub.docker.com/u/seccubus/seccubus/builds/)
-* [Frontend image](https://hub.docker.com/u/seccubus/seccubus-front/builds/)
-* [Web image](https://hub.docker.com/u/seccubus/seccubus-web/builds/)
-* [API image](https://hub.docker.com/u/seccubus/seccubus-api/builds/)
-* [Perl image](https://hub.docker.com/u/seccubus/seccubus-perl/builds/)
-* [Cron image](https://hub.docker.com/u/seccubus/seccubus-cron/builds/)
+* [Main image](https://hub.docker.com/r/seccubus/seccubus/builds)
+* [Frontend image](https://hub.docker.com/r/seccubus/seccubus-front/builds)
+* [Web image](https://hub.docker.com/r/seccubus/seccubus-web/builds)
+* [API image](https://hub.docker.com/r/seccubus/seccubus-api/builds)
+* [Perl image](https://hub.docker.com/r/seccubus/seccubus-perl/builds)
+* [Cron image](https://hub.docker.com/r/seccubus/seccubus-cron/builds)
 
 # Tag the repo
 
