@@ -61,6 +61,11 @@ sub read {
                 status => "OK",
                 message => "Your version ($version) is the active development version of Seccubus, it includes the latest features but may include the latest artifacts as well ;)"
             };
+        } elsif ( $major == ${$json->{current}}[0] && $minor == ${$json->{current}}[1] ) {
+            $json = {
+                status => "OK",
+                message => "Your version ($version) is up to date"
+            };
         } else {
             my $latest = $ua->get("https://www.seccubus.com/version/latest/", "Accept", "text/html")->decoded_content;
             my @lines = split(/\n/, $latest);

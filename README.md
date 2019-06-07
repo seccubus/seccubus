@@ -72,4 +72,4 @@ Enhancements
 
 Bug Fixes
 ---------
-*
+* #698 - Version check was broken
