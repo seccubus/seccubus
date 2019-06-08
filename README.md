@@ -68,7 +68,7 @@ Differences with 2.52
 
 Enhancements
 ------------
-*
+* Improved unit test for version check
 
 Bug Fixes
 ---------
