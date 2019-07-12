@@ -247,6 +247,7 @@ sub startup {
 
     # Version
     $r->get          ('api/version')->to('version#read');
+    $r->get          ('api/version/:major/:minor')->to('version#read');
 
     # Workspace
     $auth_api->post  ('api/workspaces')->to('workspaces#create');

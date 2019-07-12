@@ -25,6 +25,8 @@ use JSON;
 # This action will render a template
 sub read {
 	my $self = shift;
+    my $q_major = $self->param('major');
+    my $q_minor = $self->param('minor');
 
 	my $config = get_config();
 
@@ -49,7 +51,12 @@ sub read {
 			return;
 		}
         my $version = $SeccubusV2::VERSION;
-        my ( $major, $minor) = split /\./, $version;
+        my ( $major, $minor );
+        if ( $q_major && $q_minor ) {
+            ( $major, $minor) = ( $q_major, $q_minor );
+        } else {
+            ( $major, $minor) = split /\./, $version;
+        }
 
         if ( $major == ${$json->{cool}}[0] && $minor == ${$json->{cool}}[1] ) {
             $json = {
@@ -60,6 +67,11 @@ sub read {
             $json = {
                 status => "OK",
                 message => "Your version ($version) is the active development version of Seccubus, it includes the latest features but may include the latest artifacts as well ;)"
+            };
+        } elsif ( $major == ${$json->{current}}[0] && $minor == ${$json->{current}}[1] ) {
+            $json = {
+                status => "OK",
+                message => "Your version ($version) is up to date"
             };
         } else {
             my $latest = $ua->get("https://www.seccubus.com/version/latest/", "Accept", "text/html")->decoded_content;
@@ -77,7 +89,7 @@ sub read {
             $json = {
                 status => "Error",
                 message => "<h1>Version $json->{current}[0].$json->{current}[1] is available, please upgrade...</h1>$readme",
-                link => "https://github.com/schubergphilis/Seccubus/releases/latest"
+                link => "https://github.com/seccubus/seccubus/releases/latest"
             }
         }
 
