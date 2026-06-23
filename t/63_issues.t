@@ -308,7 +308,7 @@ $t->get_ok('/api/workspace/100/issues')
                         "statusName" => "New"
                     },
                     {
-                        "find" => "Errors in drown test : False\n\nTrue if errors occured while running drowntests",
+                        "find" => "Errors in drown test : False\n\nTrue if errors occurred while running drowntests",
                         "host" => "www.seccubus.com/184.50.88.72",
                         "hostName" => undef,
                         "id" => "5",
@@ -383,7 +383,7 @@ $t->get_ok('/api/workspace/100/issues')
             "findings" =>
                 [
                     {
-                        "find" => "Errors in drown test : False\n\nTrue if errors occured while running drowntests",
+                        "find" => "Errors in drown test : False\n\nTrue if errors occurred while running drowntests",
                         "host" => "www.seccubus.com/184.50.88.72",
                         "hostName" => undef,
                         "id" => "5",
@@ -524,7 +524,7 @@ $t->get_ok('/api/workspace/100/issues')
                     "statusName" => "New"
                 },
                 {
-                    "find" => "Errors in drown test : False\n\nTrue if errors occured while running drowntests",
+                    "find" => "Errors in drown test : False\n\nTrue if errors occurred while running drowntests",
                     "host" => "www.seccubus.com/184.50.88.72",
                     "hostName" => undef,
                     "id" => "5",
@@ -598,7 +598,7 @@ $t->get_ok('/api/workspace/100/findings?Issue=3')
             ]
         },
         {
-            "find" => "Errors in drown test : False\n\nTrue if errors occured while running drowntests",
+            "find" => "Errors in drown test : False\n\nTrue if errors occurred while running drowntests",
             "host" => "www.seccubus.com/184.50.88.72",
             "hostName" => undef,
             "id" => "5",
